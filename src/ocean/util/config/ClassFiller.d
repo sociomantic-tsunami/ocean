@@ -899,7 +899,7 @@ struct ClassIterator ( T, Source = ConfigParser )
                  && key[0 .. this.root.length] == this.root
                  && key[this.root.length] == '.' )
             {
-                fill(key, instance, this.config);
+                .fill(key, instance, this.config);
 
                 auto name = key[this.root.length + 1 .. $];
                 result = dg(name, instance);
