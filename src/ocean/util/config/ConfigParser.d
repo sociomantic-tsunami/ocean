@@ -279,7 +279,7 @@ class ConfigParser
 
     ***************************************************************************/
 
-    private istring configFile;
+    private istring config_file;
 
 
     /***************************************************************************
@@ -383,7 +383,7 @@ class ConfigParser
         ---
 
         Params:
-            filePath = string that contains the path to the configuration file
+            file_path = string that contains the path to the configuration file
             clean_old = true if the existing configuration should be overwritten
                         with the result of the current parse, false if the
                         current parse should only add to or update the existing
@@ -391,12 +391,12 @@ class ConfigParser
 
     ***************************************************************************/
 
-    public void parseFile ( istring filePath = "etc/config.ini",
+    public void parseFile ( istring file_path = "etc/config.ini",
                             bool clean_old = true )
     {
-        this.configFile = filePath;
+        this.config_file = file_path;
 
-        auto get_line = new TextFileInput(this.configFile);
+        auto get_line = new TextFileInput(this.config_file);
 
         this.parseIter(get_line, clean_old);
     }
