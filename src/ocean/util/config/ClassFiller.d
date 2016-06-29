@@ -910,6 +910,24 @@ struct ClassIterator ( T, Source = ConfigParser )
 
         return result;
     }
+
+    /***************************************************************************
+
+        Fills the properties of the given category into an instance representing
+        that category.
+
+        Params:
+            name = category whose properties are to be filled
+            instance = instance into which to fill the properties
+
+    ***************************************************************************/
+
+    public void fill ( cstring name, ref T instance )
+    {
+        auto key = this.root ~ "." ~ name;
+
+        .fill(key, instance, this.config);
+    }
 }
 
 /*******************************************************************************

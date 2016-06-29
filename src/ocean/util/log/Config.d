@@ -85,7 +85,7 @@ module ocean.util.log.Config;
 import ocean.transition;
 
 import ocean.io.Stdout;
-import ocean.core.Array : removePrefix, removeSuffix;
+import ocean.core.Array : removePrefix, removeSuffix, sort;
 import ocean.util.config.ClassFiller;
 import ocean.util.config.ConfigParser;
 import ocean.util.log.AppendSysLog;
@@ -384,11 +384,35 @@ public void configureLoggers ( Source = ConfigParser, FileLayout = LayoutDate,
 {
     enable_loose_parsing(loose);
 
+    // It is important to ensure that parent loggers are configured before child
+    // loggers. This is because parent loggers will override the settings of
+    // child loggers when the 'propagate' property is enabled, thus preventing
+    // child loggers from customizing their properties via the config file(s).
+    // However, since the parsed configuration is stored in an AA, ordered
+    // iteration of the logging config is not directly possible. For this
+    // reason, the names of all loggers present in the configuration are first
+    // sorted, and the loggers are then configured based on the sorted list. The
+    // sorting is performed in increasing order of the lengths of the logger
+    // names so that parent loggers appear before child loggers.
+
+    istring[] logger_names;
+
     foreach (name, settings; config)
+    {
+        logger_names ~= name;
+    }
+
+    sort(logger_names);
+
+    Config settings;
+
+    foreach(name; logger_names)
     {
         bool console_enabled = false;
         bool syslog_enabled = false;
         Logger log;
+
+        config.fill(name, settings);
 
         if ( name == "Root" )
         {
@@ -534,8 +558,7 @@ file = dummy
     test!("==")(temp_appender.latest_log_msg, "");
 
     log_D.warn("warn log (shouldn't be sent to appender)");
-    // TODO: fix parent loggers overriding settings of child loggers
-    // test!("==")(temp_appender.latest_log_msg, "");
+    test!("==")(temp_appender.latest_log_msg, "");
 
     log_D.error("error log");
     test!("==")(temp_appender.latest_log_msg, "error log");
