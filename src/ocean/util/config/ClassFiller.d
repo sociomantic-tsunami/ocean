@@ -1043,22 +1043,61 @@ body
 
 version ( UnitTest )
 {
-    class Dummy { }
+    class SolarSystemEntity
+    {
+        uint radius;
+        uint circumference;
+    }
 }
 
 unittest
 {
-    class DummyParser : ConfigParser
-    {
-        istring[] categories = ["ROOT.valid", "ROOT-invalid", "ROOT_invalid",
-                                "ROOTINVALID"];
-    }
+    auto config_parser = new ConfigParser();
 
-    auto iter = iterate!(Dummy)("ROOT", new DummyParser);
+    auto config_str =
+`
+[SUN.earth]
+radius = 6371
+circumference = 40075
 
-    foreach ( name, conf; iter )
+[SUN-andromeda]
+lunch = dessert_place
+
+[SUN_wannabe_solar_system_entity]
+radius = 4525
+circumference = 35293
+
+[SUN.earth.moon]
+radius = 1737
+circumference = 10921
+
+[SUNBLACKHOLE]
+shoe_size = 42
+`;
+
+    config_parser.parseString(config_str);
+
+    auto iter = iterate!(SolarSystemEntity)("SUN", config_parser);
+
+    SolarSystemEntity entity_details;
+
+    foreach ( entity, conf; iter )
     {
-        test!("==")(name, "valid"[]);
+        test((entity == "earth") || (entity == "earth.moon"),
+            "'" ~ entity ~ "' is neither 'earth' nor 'earth.moon'");
+
+        iter.fill(entity, entity_details);
+
+        if (entity == "earth")
+        {
+            test!("==")(entity_details.radius, 6371);
+            test!("==")(entity_details.circumference, 40075);
+        }
+        else // if (entity == "earth.moon")
+        {
+            test!("==")(entity_details.radius, 1737);
+            test!("==")(entity_details.circumference, 10921);
+        }
     }
 }
 
