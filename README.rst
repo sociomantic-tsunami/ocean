@@ -106,9 +106,7 @@ Releases
 ========
 
 `Latest release notes
-<https://github.com/sociomantic-tsunami/ocean/releases/latest>`_ | `Current, in
-development, release notes
-<https://github.com/sociomantic-tsunami/ocean/blob/master/RELEASE_NOTES.md>`_ | `All
+<https://github.com/sociomantic-tsunami/ocean/releases/latest>`_ | `All
 releases <https://github.com/sociomantic-tsunami/ocean/releases>`_
 
 Ocean's release process is based on `SemVer
