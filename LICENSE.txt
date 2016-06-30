@@ -1,0 +1,29 @@
+This project includes parts of the Tango[1] project, and because of that the
+license terms are not trivial.
+
+All files written by Sociomantic Labs GmbH that are free from Tango code are
+distributed under a dual license: Boost Software License Version 1.0 and Tango
+3-Clause BSD License (you can pick one and only follow the terms of that one).
+
+Almost all files coming from the Tango project have another dual license: Tango
+3-Clause BSD and Academic Free License v3.0. A few files have MIT license
+though, but this license is more permissive than Tango 3-Clause BSD, so you
+should still be able to use all the code under the terms of the Tango 3-Clause
+BSD license.
+
+So, for all practical purposes you can consider this project to be distributed
+under Tango 3-Clause BSD License. If you need to use any of the other license
+options, please consult each file's headers to know the exact licensing options
+if you need to use a license other than Tango 3-Clause BSD.
+
+Also please note that some parts of ocean depend on external library
+functionality whose license may be more restrictive than those described here;
+this may affect the licenses you can choose between when distributing aggregate
+binary works.  If you link against any external libraries when building your
+ocean-derived project, you should check all the individual licenses for those
+libraries to see if more restrictive terms apply.
+
+For the complete license text, please consult the files LICENSE_BSD.txt and
+LICENSE_BOOST.txt for Sociomantic files and LICENSE_TANGO.txt for Tango files.
+
+[1] http://www.dsource.org/projects/tango/
