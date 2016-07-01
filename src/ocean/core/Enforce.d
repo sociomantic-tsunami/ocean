@@ -162,7 +162,7 @@ public void enforceImpl ( T ) ( lazy Exception e, T ok, lazy istring msg,
         }
         else
         {
-            if (!exception.msg.length)
+            if (!getMsg(exception).length)
             {
                 exception.msg = "enforcement has failed";
             }
