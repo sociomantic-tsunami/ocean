@@ -69,15 +69,12 @@ module ocean.io.device.DirectIO;
 
 import ocean.transition;
 
+import core.memory;
+
 import ocean.io.model.IConduit;
-
 import ocean.io.device.File;
-
 import ocean.core.Exception_tango: IOException;
-
 import ocean.stdc.posix.fcntl : O_DIRECT; // Linux only
-
-
 
 /*******************************************************************************
 
@@ -164,7 +161,12 @@ private template AlignedBufferedStream ( )
         //
         // If we can't rely on this eventually, we can use posix_memalign(3)
         // instead to allocate the memory.
-        this.setBuffer(new ubyte[buffer_blocks * BLOCK_SIZE]);
+
+        // https://dlang.org/phobos/core_memory.html#.GC.malloc promises to
+        // return aligned block of managed memory
+        auto bytes = buffer_blocks * BLOCK_SIZE;
+        auto buffer = cast(ubyte[]) GC.malloc(bytes)[0 .. bytes];
+        this.setBuffer(buffer);
     }
 
     /***************************************************************************
@@ -248,7 +250,7 @@ public class BufferedDirectWriteFile: OutputStream
             Params:
                 path = path at which to open file
                 style = file open mode
- 
+
             Throws:
                 IOException on error opening the file
 
