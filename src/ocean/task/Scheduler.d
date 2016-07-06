@@ -597,13 +597,19 @@ unittest
 
     Singleton scheduler instance.
 
+    `initScheduler` must be called before the singleton instance can be used.
+
     Returns:
-        null if `initScheduler` has not been called, global scheduler instance
-        otherwise
+        the global scheduler instance
 
 *******************************************************************************/
 
 public Scheduler theScheduler ( )
+in
+{
+    assert(_scheduler !is null, "Scheduler is null, initScheduler must be called before using it");
+}
+body
 {
     return _scheduler;
 }
