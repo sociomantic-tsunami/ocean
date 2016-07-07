@@ -70,7 +70,7 @@ template WithIndirectionsBufferImpl ( )
             end = this.length();
         this.data[begin .. end] = rhs[];
     }
-    
+
     ///
     unittest
     {

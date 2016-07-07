@@ -102,11 +102,14 @@ struct Buffer ( T )
     ///
     unittest
     {
-        Buffer!(T) buffer;
-        buffer = [ some!(ElementType), some!(ElementType) ];
-        buffer.reset();
-        test!("==")(buffer[], (T[]).init);
-        test!("!is")(buffer.data.ptr, null);
+        static if (!is(ElementType == class))
+        {
+            Buffer!(T) buffer;
+            buffer = [ some!(ElementType), some!(ElementType) ];
+            buffer.reset();
+            test!("==")(buffer[], (T[]).init);
+            test!("!is")(buffer.data.ptr, null);
+        }
     }
 
     /***************************************************************************
@@ -121,12 +124,15 @@ struct Buffer ( T )
         return this.data.length;
     }
 
-    /// 
+    ///
     unittest
     {
-        Buffer!(T) buffer;
-        buffer = [ some!(ElementType), some!(ElementType), some!(ElementType) ];
-        test!("==")(buffer.length, 3);
+        static if (!is(ElementType == class))
+        {
+            Buffer!(T) buffer;
+            buffer = [ some!(ElementType), some!(ElementType), some!(ElementType) ];
+            test!("==")(buffer.length, 3);
+        }
     }
 
     /***************************************************************************
@@ -147,12 +153,15 @@ struct Buffer ( T )
             assumeSafeAppend(this.data);
     }
 
-    /// 
+    ///
     unittest
     {
-        Buffer!(T) buffer;
-        buffer.length = 1;
-        test!("==")(buffer.length, 1);
+        static if (!is(ElementType == class))
+        {
+            Buffer!(T) buffer;
+            buffer.length = 1;
+            test!("==")(buffer.length, 1);
+        }
     }
 
     /***************************************************************************
@@ -179,7 +188,7 @@ struct Buffer ( T )
     ///
     unittest
     {
-        static if (!is(T == class))
+        static if (!is(ElementType == class))
         {
             Buffer!(T) buffer;
             buffer.reserve(20);
@@ -201,7 +210,7 @@ struct Buffer ( T )
 
         Returns:
             requested slice fo stored data
-        
+
     ***************************************************************************/
 
     Inout!(T[]) opSlice ( size_t begin, size_t end ) /* d1to2fix_inject: inout */
@@ -212,9 +221,12 @@ struct Buffer ( T )
     ///
     unittest
     {
-        auto buffer = createBuffer([ some!(ElementType), some!(ElementType) ]);
-        test!("==")(buffer[0 .. buffer.length],
-            [ some!(ElementType), some!(ElementType) ]);
+        static if (!is(ElementType == class))
+        {
+            auto buffer = createBuffer([ some!(ElementType), some!(ElementType) ]);
+            test!("==")(buffer[0 .. buffer.length],
+                [ some!(ElementType), some!(ElementType) ]);
+        }
     }
 
     /***************************************************************************
@@ -234,9 +246,12 @@ struct Buffer ( T )
     ///
     unittest
     {
-        auto buffer = createBuffer([ some!(ElementType), some!(ElementType) ]);
-        test!("==")(buffer[],
-            [ some!(ElementType), some!(ElementType) ]);
+        static if (!is(ElementType == class))
+        {
+            auto buffer = createBuffer([ some!(ElementType), some!(ElementType) ]);
+            test!("==")(buffer[],
+                [ some!(ElementType), some!(ElementType) ]);
+        }
     }
 }
 
@@ -296,11 +311,6 @@ version (UnitTest)
     }
 }
 
-unittest
-{
-    Buffer!(C) buffer;
-}
-
 /******************************************************************************
 
     Creates valid comparable value of generic type T.
@@ -320,14 +330,14 @@ unittest
 ******************************************************************************/
 
 version (UnitTest)
-private T some ( T ) ( ) 
+private T some ( T ) ( )
 {
     static if (isFloatingPointType!(T))
         return 42.0;
     else static if (isIntegerType!(T))
         return 42;
     else static if (is(T == class))
-    {   
+    {
         static if (is(typeof(new T())))
             return new T();
         else static if (is(typeof(new T(T.init.tupleof))))
@@ -351,14 +361,14 @@ unittest
     assert (some!(double) == 42.0);
 
     static class C1
-    {   
+    {
         int x;
         this ( ) { this.x = 42; }
-    }   
+    }
     assert (some!(C1).x == 42);
 
     static class C2
-    {   
+    {
         int x;
         this ( int x ) { this.x = x; }
     }
