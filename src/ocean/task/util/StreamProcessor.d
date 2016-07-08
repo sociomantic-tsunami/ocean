@@ -40,6 +40,11 @@ debug (TaskScheduler)
     import ocean.io.Stdout;
 }
 
+version (UnitTest)
+{
+    import ocean.core.Test;
+}
+
 /*******************************************************************************
 
     Class that handles distribution of data read from streams over a set of
@@ -137,12 +142,42 @@ class StreamProcessor ( TaskT : Task )
 
         if (suspend_point == size_t.max)
             suspend_point = total / 3 * 2;
+        else
+        {
+            enforce(
+                this.throttler_failure_e,
+                suspend_point < total,
+                Format(
+                    "Trying to configure StreamProcessor with suspend point ({}) " ~
+                        "larger or equal to task queue size {}",
+                    suspend_point, total
+                )
+            );
+        }
+
         if (resume_point == size_t.max)
             resume_point = total / 5;
+        {
+            enforce(
+                this.throttler_failure_e,
+                resume_point < total,
+                Format(
+                    "Trying to configure StreamProcessor with resume point ({}) " ~
+                        "larger or equal to task queue size {}",
+                    resume_point, total
+                )
+            );
+        }
 
-        enforce(total >= max_tasks,
-            Format("Trying to configure StreamProcessor task pool size ({}) " ~
-                " larger than max total task queue size {}", max_tasks, total));
+        enforce(
+            this.throttler_failure_e,
+            max_tasks < total,
+            Format(
+                "Trying to configure StreamProcessor task pool size ({}) " ~
+                    " larger than max total task queue size {}",
+                max_tasks, total
+            )
+        );
 
         this.task_pool = new ThrottledTaskPool!(TaskT)(suspend_point, resume_point);
         this.task_pool.setLimit(max_tasks);
@@ -259,6 +294,35 @@ unittest
     stream_processor.process(record);
 
     theScheduler.eventLoop();
+}
+
+unittest
+{
+    SchedulerConfiguration config;
+    initScheduler(config);
+
+    static class DummyTask : Task
+    {
+        override public void run ( ) { }
+        public void copyArguments ( ) { }
+    }
+
+    // pool size > task queue
+    testThrown!(ThrottlerFailureException)(new StreamProcessor!(DummyTask)(
+        config.task_queue_limit + 1));
+
+    // suspend point >= task queue
+    testThrown!(ThrottlerFailureException)(new StreamProcessor!(DummyTask)(
+        config.task_queue_limit, config.task_queue_limit));
+
+    // resume point >= task queue
+    testThrown!(ThrottlerFailureException)(new StreamProcessor!(DummyTask)(
+        config.task_queue_limit, config.task_queue_limit - 1,
+        config.task_queue_limit));
+
+    // works
+    auto processor = new StreamProcessor!(DummyTask)(config.task_queue_limit - 1,
+        config.task_queue_limit -1, config.task_queue_limit - 2);
 }
 
 /*******************************************************************************
