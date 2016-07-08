@@ -79,6 +79,17 @@ class StreamProcessor ( TaskT : Task )
 
     /***************************************************************************
 
+        Common constructor code
+
+    ***************************************************************************/
+
+    private this ( )
+    {
+        this.throttler_failure_e = new ThrottlerFailureException;
+    }
+
+    /***************************************************************************
+
         Constructor which accepts a custom throttler. (For standard throttling
         behaviour, based on the number of busy tasks, use the other ctor.)
 
@@ -92,6 +103,7 @@ class StreamProcessor ( TaskT : Task )
 
     public this ( size_t max_tasks, ISuspendableThrottler throttler )
     {
+        this();
         this.task_pool = new ThrottledTaskPool!(TaskT)(throttler);
         this.task_pool.setLimit(max_tasks);
     }
@@ -119,6 +131,8 @@ class StreamProcessor ( TaskT : Task )
     public this ( size_t max_tasks, size_t suspend_point = size_t.max,
         size_t resume_point = size_t.max )
     {
+        this();
+
         auto total = theScheduler.getStats().task_queue_total;
 
         if (suspend_point == size_t.max)
