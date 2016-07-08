@@ -299,8 +299,8 @@ final class Scheduler
             task_queue_total : this.queued_tasks.maxItems(),
             suspended_queue_busy : this.suspended_tasks.length(),
             suspended_queue_total : this.suspended_tasks.maxItems(),
-            worker_fiber_busy : this.fiber_pool.limit(),
-            worker_fiber_total : this.fiber_pool.num_busy()
+            worker_fiber_busy : this.fiber_pool.num_busy(),
+            worker_fiber_total : this.fiber_pool.limit()
         };
         return stats;
     }
