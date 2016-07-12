@@ -29,6 +29,11 @@ import ocean.task.Scheduler;
 import ocean.core.Traits;
 import ocean.util.container.pool.ObjectPool;
 
+version (UnitTest)
+{
+    import ocean.core.Test;
+}
+
 /*******************************************************************************
 
     Task pool which integrates with ocean.task.Scheduler.
@@ -69,8 +74,17 @@ class TaskPool ( TaskT : Task ) : ObjectPool!(Task)
 
     private class OwnedTask : TaskT
     {
+        /***********************************************************************
+
+            Recycles the task by first calling its own recycle method to
+            reset it to a clean state, and returns it to the pool of
+            available tasks instances afterwards.
+
+        ***********************************************************************/
+
         override public void recycle ( )
         {
+            super.recycle();
             this.outer.recycle(this);
         }
     }
@@ -141,4 +155,38 @@ unittest
     pool.start("xyz");
 
     theScheduler.eventLoop();
+}
+
+unittest
+{
+    // Test that the recycle method of custom tasks is called
+    static class RecycleTask : Task
+    {
+        static size_t recycle_count;
+
+        public void copyArguments ( )
+        {
+
+        }
+
+        override public void recycle ( )
+        {
+            recycle_count++;
+        }
+
+        override public void run ( )
+        {
+
+        }
+    }
+
+    auto pool = new TaskPool!(RecycleTask);
+    initScheduler(SchedulerConfiguration.init);
+
+    pool.start();
+    pool.start();
+
+    theScheduler.eventLoop();
+    test!("==")(RecycleTask.recycle_count, 2,
+        "RecycleTask.recycle was not called the correct number of times");
 }
