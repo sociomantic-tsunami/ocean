@@ -119,4 +119,18 @@ class NodePool ( Node ) : INodePool!(Node)
     {
         return new Node;
     }
+
+    /***************************************************************************
+
+        Resets the maintained list of free nodes so that the pool becomes empty.
+
+        All nodes in the pool will be lost. You should call this method if and
+        only if you otherwise delete the free nodes.
+
+    ***************************************************************************/
+
+    protected void resetFreeList ()
+    {
+        this.free_nodes.length = 0;
+    }
 }
