@@ -998,9 +998,7 @@ class MapSerializer
 
         static if ( Version.Info!(T[index]).exists )
         {
-            const can_convert =
-                (Version.Info!(T[index]).number > 0)
-             || Version.Info!(T[index]).next.exists;
+            const can_convert = (Version.Info!(T[index]).number > 0);
         }
         else
         {
@@ -1628,4 +1626,25 @@ unittest
     testCombination!(OldKey, OldStruct, NewKey, NewStruct, version4_load_code)(Iterations);
     testCombination!(OldKey, OldStruct, NewerKey, NewStruct, version4_load_code)(Iterations);
     testCombination!(OldKey, OldStruct, NewerKey, NewerStruct,version4_load_code)(Iterations);
+}
+
+version (UnitTest)
+{
+    // Make sure structs with a StructNext can be instantiated
+    struct S ( ubyte V )
+    {
+        const StructVersion = V;
+
+        // comment this out and it works
+        static if (V == 0)
+            alias S!(1) StructNext;
+
+        static if (V == 1)
+            alias S!(0) StructPrevious;
+    }
+
+    unittest
+    {
+        alias SerializingMap!(S!(0), ulong) Map;
+    }
 }
