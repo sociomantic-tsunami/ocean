@@ -1108,8 +1108,8 @@ public T[] removeShift ( T ) ( ref Buffer!(T) buffer, size_t index,
     size_t remove_elems = 1 )
 in
 {
-    assert(index < buffer.length, "removeShift: index is > buffer length");
-    assert(index + remove_elems - 1 < buffer.length, "removeShift: end is > buffer length");
+    assert(index < buffer.length, "removeShift: index is >= buffer length");
+    assert(index + remove_elems - 1 < buffer.length, "removeShift: end is >= buffer length");
 }
 body
 {
