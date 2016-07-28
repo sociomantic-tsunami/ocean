@@ -17,8 +17,6 @@
  */
 deprecated module ocean.core.Array_tango;
 
-pragma(msg, "import either `ocean.core.Array` or one of `ocean.core.array` package modules");
-
 public import ocean.core.array.Search;
 public import ocean.core.array.Mutation;
 public import ocean.core.array.Transformation;
