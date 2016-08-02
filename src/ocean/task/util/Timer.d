@@ -42,15 +42,15 @@ version (UnitTest)
 
 /*******************************************************************************
 
-    Suspends the current fiber/task and resumes it again after `ms`
-    milleseconds.
+    Suspends the current fiber/task and resumes it again after `micro_seconds`
+    microseconds.
 
     Params:
-        ms = amount of milliseconds to suspend for
+        micro_seconds = amount of microseconds to suspend for
 
 *******************************************************************************/
 
-public void wait ( uint ms )
+public void wait ( uint micro_seconds )
 {
     auto task = Task.getThis();
     assert (task !is null);
@@ -74,10 +74,11 @@ public void wait ( uint ms )
                 cast(void*) event.to_resume);
             event.to_resume.resume();
         },
-        ms
+        micro_seconds
     );
 
-    debug_trace("Suspending task <{}> for {} ms", cast(void*) task, ms);
+    debug_trace("Suspending task <{}> for {} microseconds",
+        cast(void*) task, micro_seconds);
     task.suspend();
 }
 
