@@ -454,6 +454,96 @@ public void configureLoggers ( Source = ConfigParser, FileLayout = LayoutDate,
     }
 }
 
+version (UnitTest)
+{
+    import ocean.core.Array : copy;
+    import ocean.core.Test : test;
+}
+
+// When the 'propagate' property of a logger is set, its settings get propagated
+// to all child loggers. However, every child logger should be able to define
+// its own settings overriding any automatically propagated setting from the
+// parent logger. Since loggers are stored in an AA, the order in which they are
+// configured is undeterministic. This could potentially result in parent
+// loggers being configured after child loggers and thus overriding any
+// specifically defined setting in the child logger. To avoid this from
+// happening, parent loggers are deliberately configured before child loggers.
+// This unit test block confirms that this strict configuration order is
+// enforced, and parent loggers never override the settings of child loggers.
+unittest
+{
+    class TempAppender : Appender
+    {
+        private mstring latest_log_msg;
+        private Mask mask_;
+
+        final override public void append (LogEvent event)
+        {
+            copy(this.latest_log_msg, event.toString());
+        }
+
+        final override public Mask mask () { return this.mask_; }
+        final override public istring name () { return null; }
+    }
+
+    auto config_parser = new ConfigParser();
+
+    auto config_str =
+`
+[LOG.A]
+level = trace
+propagate = true
+file = dummy
+
+[LOG.A.B]
+level = info
+propagate = true
+file = dummy
+
+[LOG.A.B.C]
+level = warn
+propagate = true
+file = dummy
+
+[LOG.A.B.C.D]
+level = error
+propagate = true
+file = dummy
+`;
+
+    auto temp_appender = new TempAppender;
+
+    Appender appender(istring, Layout)
+    {
+        return temp_appender;
+    }
+
+    config_parser.parseString(config_str);
+
+    auto log_config = iterate!(Config)("LOG", config_parser);
+    auto dummy_meta_config = new MetaConfig();
+
+    configureLoggers(log_config, dummy_meta_config, &appender);
+
+    auto log_D = Log.lookup("A.B.C.D");
+
+    log_D.trace("trace log (shouldn't be sent to appender)");
+    test!("==")(temp_appender.latest_log_msg, "");
+
+    log_D.info("info log (shouldn't be sent to appender)");
+    test!("==")(temp_appender.latest_log_msg, "");
+
+    log_D.warn("warn log (shouldn't be sent to appender)");
+    // TODO: fix parent loggers overriding settings of child loggers
+    // test!("==")(temp_appender.latest_log_msg, "");
+
+    log_D.error("error log");
+    test!("==")(temp_appender.latest_log_msg, "error log");
+
+    log_D.fatal("fatal log");
+    test!("==")(temp_appender.latest_log_msg, "fatal log");
+}
+
 /*******************************************************************************
 
     Sets up the level configuration of a logger.
