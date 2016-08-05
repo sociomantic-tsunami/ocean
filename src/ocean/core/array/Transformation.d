@@ -526,7 +526,8 @@ deprecated unittest
 
 *******************************************************************************/
 
-public T2[][] split ( T1, T2 ) ( T1[] src, T1[] pattern, ref Buffer!(T2[]) result )
+public T3[] split ( T1, T2, T3 ) ( T1[] src, T2[] pattern,
+    ref Buffer!(T3) result )
 {
     result.length = 0;
 
@@ -557,14 +558,18 @@ unittest
 unittest
 {
     Buffer!(cstring) result;
+
     split(`abc"def"`, `"`, result);
+    test!("==")(result[], [ "abc", "def", "" ]);
+
+    split(`abc"def"`.dup, `"`, result);
     test!("==")(result[], [ "abc", "def", "" ]);
 }
 
 // deprecated ("Must use Buffer as a buffer argument")
-public T2[][] split ( T1, T2 ) ( T1[] src, T1[] pattern, ref T2[][] result )
+public T3[][] split ( T1, T2, T3 ) ( T1[] src, T2[] pattern, ref T3[][] result )
 {
-    auto buffer = cast(Buffer!(T2[])*) &result;
+    auto buffer = cast(Buffer!(T3[])*) &result;
     return split(src, pattern, *buffer)[];
 }
 
@@ -573,6 +578,13 @@ deprecated unittest
     istring[] result;
     split("aaa..bbb..ccc", "..", result);
     test!("==")(result, [ "aaa", "bbb", "ccc" ]);
+}
+
+deprecated unittest
+{
+    mstring[] result;
+    split("aaa.bbb.".dup, ".", result);
+    test!("==")(result, [ "aaa", "bbb", "" ]);
 }
 
 /*******************************************************************************
