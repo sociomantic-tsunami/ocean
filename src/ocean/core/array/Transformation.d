@@ -12,7 +12,7 @@
         Copyright (C) 2005-2006 Sean Kelly.
         Some parts copyright (c) 2009-2016 Sociomantic Labs GmbH.
         All rights reserved.
-    
+
     License:
         Tango Dual License: 3-Clause BSD License / Academic Free License v3.0.
         See LICENSE_TANGO.txt for details.
@@ -358,7 +358,7 @@ unittest
 {
     auto result = reduce([1, 17, 8, 12][], (int i, int j){ return i * j; });
     test!("==")(result, 1632);
-    
+
     result = reduce("", (char c1, char c2) { return 'X'; });
     test!("==")(result, char.init);
 }
@@ -530,15 +530,18 @@ public T2[][] split ( T1, T2 ) ( T1[] src, T1[] pattern, ref Buffer!(T2[]) resul
 {
     result.length = 0;
 
-    do
+    while (true)
     {
         auto index = find(src, pattern);
         result ~= src[0 .. index];
         if (index < src.length)
+        {
             index += pattern.length;
-        src = src[index .. $];
+            src = src[index .. $];
+        }
+        else
+            break;
     }
-    while (src.length);
 
     return result[];
 }
@@ -549,6 +552,13 @@ unittest
     Buffer!(cstring) result;
     split("aaa..bbb..ccc", "..", result);
     test!("==")(result[], [ "aaa", "bbb", "ccc" ]);
+}
+
+unittest
+{
+    Buffer!(cstring) result;
+    split(`abc"def"`, `"`, result);
+    test!("==")(result[], [ "abc", "def", "" ]);
 }
 
 // deprecated ("Must use Buffer as a buffer argument")
@@ -599,7 +609,7 @@ public T[] substitute ( T ) ( in T[] source, in T[] match,
             result ~= replacement;
             index += match.length;
         }
-        src = src[index .. $]; 
+        src = src[index .. $];
     }
     while (src.length);
 
