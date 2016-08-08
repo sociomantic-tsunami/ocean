@@ -3,7 +3,7 @@
     Collection of utilities to modify arrays and buffers in-place.
 
     All function is this module only work on mutable arguments and modify them
-    in place. New memory must never be allocated. 
+    in place. New memory must never be allocated.
 
     Based on `tango.core.Array` module from Tango library.
 
@@ -11,11 +11,11 @@
         Copyright (C) 2005-2006 Sean Kelly.
         Some parts copyright (c) 2009-2016 Sociomantic Labs GmbH.
         All rights reserved.
-    
+
     License:
         Tango Dual License: 3-Clause BSD License / Academic Free License v3.0.
         See LICENSE_TANGO.txt for details.
-     
+
 *******************************************************************************/
 
 module ocean.core.array.Mutation;
@@ -54,7 +54,7 @@ version (UnitTest)
         pred  = The evaluation predicate, which should return true if e1 is
             equal to e2 and false if not.  This predicate may be any
             callable type.
-  
+
     Returns:
         The number of elements replaced.
 
@@ -752,7 +752,7 @@ unittest
     testOne("the quick brown fox jumped over the lazy dog");
     testOne("abcdefghijklmnopqrstuvwxyz");
     testOne("zyxwvutsrqponmlkjihgfedcba");
-    
+
     auto longer = new char[500];
     foreach (i, ref c; longer)
         c = cast(char) (i % 7);
@@ -889,7 +889,7 @@ unittest
 // deprecated("Must use Buffer argument")
 public DE[] concat ( DE, T... ) ( ref DE[] dest, T arrays )
 {
-    return concat(*(cast(Buffer!(char)*) &dest), arrays);
+    return concat(*(cast(Buffer!(DE)*) &dest), arrays);
 }
 
 deprecated unittest
