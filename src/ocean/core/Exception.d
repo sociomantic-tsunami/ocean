@@ -101,7 +101,7 @@ unittest
 public template ReusableExceptionImplementation()
 {
     import ocean.transition;
-    import ocean.text.convert.Integer_tango;
+    static import ocean.text.convert.Integer_tango;
     import ocean.core.Buffer;
     static import ocean.core.array.Mutation;
 
@@ -238,10 +238,14 @@ public template ReusableExceptionImplementation()
         if (hex)
         {
             ocean.core.array.Mutation.append(this.reused_msg, "0x"[]);
-            ocean.core.array.Mutation.append(this.reused_msg, format (buff, num, "X"));
+            ocean.core.array.Mutation.append(
+                this.reused_msg,
+                ocean.text.convert.Integer_tango.format(buff, num, "X"));
         }
         else
-            ocean.core.array.Mutation.append(this.reused_msg, format (buff, num));
+            ocean.core.array.Mutation.append(
+                this.reused_msg,
+                ocean.text.convert.Integer_tango.format(buff, num));
         return this;
     }
 }
@@ -341,4 +345,11 @@ unittest
         test!("==")(e.file, __FILE__[]);
         test!("==")(e.line, __LINE__ - 9);
     }
+}
+
+// Check that the inherited `Exception.toString` is not
+// shadowed by anything (like nested imports).
+unittest
+{
+    auto s = (new SomeReusableException).toString();
 }
