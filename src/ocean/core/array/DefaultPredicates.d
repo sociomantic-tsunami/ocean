@@ -18,6 +18,12 @@
 
 module ocean.core.array.DefaultPredicates;
 
+version (UnitTest)
+{
+    import ocean.core.Test;
+    import ocean.transition;
+}
+
 struct DefaultPredicates
 {
     struct IsEqual ( T )
@@ -28,7 +34,7 @@ struct DefaultPredicates
             auto _p1 = cast(T) p1;
             auto _p2 = cast(T) p2;
 
-            return _p1 == _p2;
+            return !!(_p1 == _p2);
         }
     }
 
@@ -43,4 +49,42 @@ struct DefaultPredicates
             return _p1 < _p2;
         }
     }
+}
+
+// Test to enforce that IsEqual work with both
+// value and reference types
+unittest
+{
+    class C
+    {
+        int x;
+
+        mixin (genOpEquals(
+        `{
+            auto o = cast(typeof(this)) rhs;
+            if (o is null) return false;
+            return (this.x == o.x);
+        }`));
+    }
+
+    struct S
+    {
+        int x;
+
+        mixin (genOpEquals("
+        {
+            return this.x == rhs.x;
+        }
+        "));
+    }
+
+    auto c1 = new C;
+    auto c2 = new C;
+    S s1, s2;
+
+    auto r1 = DefaultPredicates.IsEqual!(C)(c1, c2);
+    auto r2 = DefaultPredicates.IsEqual!(S)(s1, s2);
+
+    test!("==")(r1, true);
+    test!("==")(r2, true);
 }
