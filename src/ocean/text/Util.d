@@ -108,6 +108,9 @@ module ocean.text.Util;
 
 import ocean.transition;
 
+version (UnitTest) import ocean.core.Test;
+
+
 /******************************************************************************
 
         Trim the provided array by stripping whitespace from both
@@ -330,10 +333,18 @@ bool contains(T) (T[] source, T match)
 
 ******************************************************************************/
 
-bool containsPattern(T) (T[] source, T[] match)
+bool containsPattern(T, TC) (T[] source, TC[] match)
 {
         return locatePattern (source, match) != source.length;
 }
+
+unittest
+{
+    mstring greeting = "Hello world".dup;
+    istring satan = "Hell";
+    test(containsPattern(greeting, satan), "Pattern not found");
+}
+
 
 /******************************************************************************
 
