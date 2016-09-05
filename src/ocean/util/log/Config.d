@@ -88,6 +88,7 @@ import ocean.io.Stdout;
 import ocean.core.Array : removePrefix, removeSuffix, sort;
 import ocean.util.config.ClassFiller;
 import ocean.util.config.ConfigParser;
+import ocean.util.log.AppendFile;
 import ocean.util.log.AppendSysLog;
 import ocean.text.util.StringSearch;
 
