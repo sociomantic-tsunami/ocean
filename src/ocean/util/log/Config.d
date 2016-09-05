@@ -355,6 +355,21 @@ public void configureLoggers ( Source = ConfigParser, FileLayout = LayoutDate,
 
 /*******************************************************************************
 
+    Instantiate the template to make sure it compiles but doesn't test it.
+
+*******************************************************************************/
+
+unittest
+{
+    void f ( )
+    {
+        configureLoggers!()(ClassIterator!(Config, ConfigParser).init,
+            MetaConfig.init);
+    }
+}
+
+/*******************************************************************************
+
     Sets up logging configuration. Calls the provided new_appender delegate once
     per log being configured and passes the returned appender to the log's add()
     method.
@@ -566,6 +581,22 @@ file = dummy
 
     log_D.fatal("fatal log");
     test!("==")(temp_appender.latest_log_msg, "fatal log");
+}
+
+/*******************************************************************************
+
+    Instantiate the template to make sure it compiles but doesn't test it.
+
+*******************************************************************************/
+
+unittest
+{
+    void f ( )
+    {
+        Appender delegate ( istring file, Layout layout ) new_appender;
+        configureLoggers!()(ClassIterator!(Config, ConfigParser).init,
+            MetaConfig.init, new_appender);
+    }
 }
 
 /*******************************************************************************
