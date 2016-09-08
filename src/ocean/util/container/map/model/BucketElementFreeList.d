@@ -122,7 +122,7 @@ class BucketElementFreeList ( BucketElement ) : IBucketElementFreeList
 
 *******************************************************************************/
 
-public BucketElementFreeList!(Map.Bucket) instantiateAllocator ( Map ) ( )
+public BucketElementFreeList!(Map.Bucket.Element) instantiateAllocator ( Map ) ( )
 {
     return new BucketElementFreeList!(Map.Bucket.Element);
 }
