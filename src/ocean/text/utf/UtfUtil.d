@@ -50,9 +50,23 @@ import ocean.stdc.string: memrchr;
 
 import ocean.core.Array: append, copy;
 
+import ocean.math.IEEE: isNaN;
+
+import ocean.text.Unicode : isSpace;
+
 import ocean.text.utf.c.glib_unicode;
 
 import ocean.core.Test;
+
+
+/*******************************************************************************
+
+    UTF-8 representation of "…".
+
+*******************************************************************************/
+
+public istring ellipsis = "\xE2\x80\xA6";  // The char '…'
+
 
 /*******************************************************************************
 
@@ -353,4 +367,316 @@ unittest
         "praktischem Ablagebogen in Kernnussbaumfarben oder Schwarz. "
         "Winkelfüße mit Alukante. B", "Designstarker Couchtisch in hochwertiger"
         " Holznachbildung. Mit praktischem Ablagebogen...", 90);
+}
+
+
+/*******************************************************************************
+
+    Truncates a string at the last space before the n-th Unicode character or,
+    if the resulting string is too short, at the n-th Unicode character.
+    The string should be a valid UTF-8 (the caller should have validated it
+    before calling this function).
+
+    If a string is truncated before the end, then the final Unicode chartacter
+    is made an ending. Trailing space is removed before the ending is added.
+    The returned string will always be no more than n Unicode characters
+    (including the ending).
+
+    The basic algorithm is to walk through src keeping track of how many
+    bytes needed to be sliced at any particular time until we know when
+    we need to end. Because we don't know till the end if we need an
+    ending we need to keep track of one Unicode character behind as well as the
+    position of the Unicode character berore the last space. We have to be
+    careful we never point at spaces.
+
+    Important points when reading the algorithm:
+
+    1) Unicode character != byte
+    2) i == the number of bytes required to include the _previous_
+        Unicode character (i.e. the number of bytes to the start of c)
+
+    Params:
+        src        = the string to truncate (must be UTF-8 encoded)
+        n          = the maximum number of Unicode characters allowed in the
+                     returned string
+        buffer     = a buffer to be used to store the result in (may be
+                     resized). The buffer is required because "ending" may
+                     contain Unicode characters taking more bytes than the
+                     Unicode characters in src they replace, thus leading to a
+                     string with fewer Unicode characters but more bytes.
+        ending     = These Unicode characters will be appended when "src" needs
+                     to be truncated.
+        fill_ratio = if cutting the string in the last space would make its
+                     Unicode character length smaller than "n*fill_ratio",
+                     then we cut it on the n-th Unicode character
+
+    Returns:
+        buffer
+
+*******************************************************************************/
+
+public mstring truncateAtN(cstring src, size_t n, ref mstring buffer,
+    cstring ending = ellipsis, float fill_ratio = 0.75)
+in
+{
+    size_t ending_length = 0;   // Ending's number of Unicode characters
+    foreach ( dchar c; ending )
+    {
+        ++ending_length;
+    }
+
+    assert(n > ending_length);
+
+    assert(!isNaN(fill_ratio));
+    assert(fill_ratio>=0 && fill_ratio<=1);
+}
+out (result)
+{
+    size_t result_length = 0;
+    foreach ( dchar c; result )
+    {
+        ++result_length;
+    }
+
+    assert(result_length <= n);
+}
+body
+{
+    size_t ending_length = 0;   // Ending's number of Unicode characters
+    foreach ( size_t i, dchar c; ending )
+    {
+        ++ending_length;
+    }
+
+    size_t net_length = n - ending_length;  // The maximum number of Unicode
+                                            // characters that can be kept, if
+                                            // ending is used.
+
+    size_t code_point_count;    // Which Unicode character are we up to.
+    size_t bytes_needed = 0;    // Number of bytes needed to include the last
+                                // valid looking Unicode character.
+    size_t last_space_bytes_net = 0; // Number of bytes needed to include the
+                                     // last valid Unicode character which is
+                                     // before the last known space, if ending
+                                     // is used.
+    size_t last_space_code_points_net = 0; // The number of Unicode characters
+                                     // that precede the last space, if ending
+                                     // is used.
+    size_t last_space_bytes_n = 0;   // Number of bytes needed to include the
+                                     // last valid Unicode character which is
+                                     // before the last known space, if ending
+                                     // is not used.
+    size_t last_space_code_points_n = 0; // The number of Unicode characters
+                                     // that precede the last space, if ending
+                                     // is not used.
+    bool need_ending;       // Do we know we need an ending already?
+    bool last_was_space;    // Was the previous character a space?
+
+    foreach ( size_t i, dchar c; src )
+    {
+        bool curr_is_space = isSpace(c);
+
+        // Keep Unicode characters that will be returned if the ending is used.
+        if ( code_point_count <= net_length )
+        {
+            // We still need more Unicode characters so we update the counters.
+            // In the edge case (code_point_count == net_length), the
+            // current Unicode character is not needed. However, we need its "i"
+            // in order to find the bytes of the string which includes the
+            // previous Unicode character.
+            if ( ! last_was_space )
+            {
+                bytes_needed = i;
+
+                if ( curr_is_space )
+                {
+                    // If the current Unicode character is a space, the previous
+                    // is not a space and we are not at the end, keep its
+                    // position.
+                    last_space_bytes_net = i;
+                    last_space_code_points_net = code_point_count;
+                }
+            }
+        }
+
+        // Keep Unicode characters that will be returned if the ending is not
+        // used.
+        if ( code_point_count <= n
+            && ! last_was_space
+            && curr_is_space )
+        {
+            // Use "n" instead of "net_length".
+            last_space_bytes_n = i;
+            last_space_code_points_n = code_point_count;
+        }
+
+        last_was_space = curr_is_space;
+
+        // This Unicode character will be truncated, but we need to check if it
+        // is a space character. If the Unicode characters that we ommit are
+        // spaces, we will not append the ending, we will just remove the spaces.
+        if ( code_point_count >= n )
+        {
+            if ( ! curr_is_space )
+            {
+                // This is a non-space Unicode character so we are truncating.
+                need_ending = true;
+                break;
+            }
+        }
+
+        // Track which Unicode character we are up to (as opposed to byte)
+        ++code_point_count;
+    }
+
+    // We may have fallen off the end of src before we had time to set up all
+    // our variables. If need_ending is true though we know that isn't the case.
+    if ( need_ending )
+    {
+        // Check if there is a long enough string before the last space.
+        if ( last_space_bytes_net
+            && (last_space_code_points_net / (cast(float)n) > fill_ratio) )
+        {
+            bytes_needed = last_space_bytes_net;
+        }
+        // Copy up to the prev positon, which may be the 2nd last Unicode
+        // character or the Unicode character before the last space.
+        enableStomping(buffer);
+        buffer.length = bytes_needed + ending.length;
+        enableStomping(buffer);
+        buffer[0 .. bytes_needed] = src[0 .. bytes_needed];
+        // And append an ending
+        buffer[bytes_needed .. bytes_needed + ending.length] = ending[];
+    }
+    else
+    {
+        // We need to check if we finished one or more iterations short
+        if ( code_point_count <= n )
+        {
+            // We did so src is short and if there is no trailing space
+            // we can just use it as is. If there was trailing space then
+            // "last_space_bytes" will have already been set correctly on the
+            // iteration caused by the space
+            if ( ! last_was_space )
+            {
+                last_space_bytes_n = src.length;
+            }
+        }
+        // No need to append the ending so use the full string we found
+        enableStomping(buffer);
+        buffer.length = last_space_bytes_n;
+        enableStomping(buffer);
+        buffer[] = src[0 .. last_space_bytes_n];
+    }
+    return(buffer);
+}
+
+unittest
+{
+    auto t = new NamedTest(
+        "truncateAtN"
+    );
+
+    mstring buffer;
+
+    // Old test
+    foreach (i, char c; "…")
+    {
+        t.test!("==")(ellipsis[i], c);
+    }
+
+    istring str = "Hello World!";
+    t.test!("==")(str.truncateAtN(str.length, buffer), "Hello World!");
+    t.test!("==")(str.truncateAtN(str.length + 5, buffer), "Hello World!");
+    t.test!("==")(str.truncateAtN(10, buffer), "Hello Wor" ~ ellipsis);
+
+    t.test!("==")("Hällö World!"c.truncateAtN(10, buffer),
+        "Hällö Wor"c ~ ellipsis);
+    t.test!("==")("äöü"c.truncateAtN(3, buffer), "äöü"c);
+    t.test!("==")("Hello  World!".dup.truncateAtN(10, buffer),
+        "Hello  Wo" ~ ellipsis);
+    t.test!("==")("HelloWörld!"c.truncateAtN(10, buffer, "+"), "HelloWörl+"c);
+    t.test!("==")(
+        "Designstarker Couchtisch in hochwertiger Holznachbildung. Mit praktischem Ablagebogen in Kernnussbaumfarben oder Schwarz. Winkelfüße mit Alukante. B"c.truncateAtN(100, buffer),
+        "Designstarker Couchtisch in hochwertiger Holznachbildung. Mit praktischem Ablagebogen in"c ~ ellipsis
+    );
+
+    // Andrew's tests
+
+    t.test!("==")("This should be the longest string of all the unit tests.\n"
+        "We do this so that the buffer never needs expanding again.\n"
+        "This way we can check for unnecessary allocations.".truncateAtN(
+            160, buffer),
+        "This should be the longest string of all the unit tests.\n"
+        "We do this so that the buffer never needs expanding again.\n"
+        "This way we can check for unnecessary…"
+    );
+
+    typeof(buffer.ptr) orig_ptr = buffer.ptr;
+
+    t.test!("==")("     ".truncateAtN(2, buffer), "");
+    t.test!("==")("12   ".truncateAtN(4, buffer), "12");
+    t.test!("==")("12   ".truncateAtN(6, buffer), "12");
+    t.test!("==")("hello".truncateAtN(2, buffer), "h…");
+    t.test!("==")("hello".truncateAtN(4, buffer), "hel…");
+    t.test!("==")("hello".truncateAtN(5, buffer), "hello");
+    t.test!("==")("hello".truncateAtN(6, buffer), "hello");
+    t.test!("==")("hello".truncateAtN(10, buffer), "hello");
+    t.test!("==")("h l o".truncateAtN(5, buffer), "h l o");
+    t.test!("==")("hello ".truncateAtN(5, buffer), "hello");
+    t.test!("==")("hello ".truncateAtN(6, buffer), "hello");
+    t.test!("==")("hello ".truncateAtN(7, buffer), "hello");
+    t.test!("==")("hello ".truncateAtN(10, buffer), "hello");
+    t.test!("==")("hello   world".truncateAtN(8, buffer), "hello…");
+    t.test!("==")("hello | world".truncateAtN(7, buffer), "hello…");
+    t.test!("==")("hello | world".truncateAtN(8, buffer), "hello |…");
+    t.test!("==")("hello | world".truncateAtN(32, buffer), "hello | world");
+    t.test!("==")("h llo world".truncateAtN(3, buffer), "h…");
+    t.test!("==")("he  ll  o  world".truncateAtN(9, buffer), "he  ll…");
+    t.test!("==")("he  ll  o  world".truncateAtN(10, buffer), "he  ll  o…");
+    t.test!("==")("he  ll  o  world".truncateAtN(32, buffer),
+        "he  ll  o  world");
+
+    t.test!("==")("a".truncateAtN(4, buffer), "a");
+    t.test!("==")("ab".truncateAtN(4, buffer), "ab");
+    t.test!("==")("a|".truncateAtN(4, buffer), "a|");
+    t.test!("==")("ab|".truncateAtN(4, buffer), "ab|");
+    t.test!("==")("ab|d".truncateAtN(4, buffer), "ab|d");
+    t.test!("==")("abc|".truncateAtN(4, buffer), "abc|");
+    t.test!("==")("abcd| ".truncateAtN(4, buffer), "abc…");
+    t.test!("==")("a| d".truncateAtN(4, buffer), "a| d");
+
+    t.test!("==")("По оживлённым берегам"c.truncateAtN(2, buffer), "П…"c);
+    t.test!("==")("По оживлённым берегам"c.truncateAtN(3, buffer), "По…"c);
+    t.test!("==")("По оживлённым берегам"c.truncateAtN(4, buffer), "По…"c);
+    t.test!("==")("По оживлённым берегам"c.truncateAtN(5, buffer), "По о…"c);
+    t.test!("==")("Ἰοὺ ἰού· τὰ πάντʼ ἂν ἐξήκοι σαφῆ."c.truncateAtN(2, buffer),
+        "Ἰ…"c);
+    t.test!("==")("Ἰοὺ ἰού· τὰ πάντʼ ἂν ἐξήκοι σαφῆ."c.truncateAtN(3, buffer),
+        "Ἰο…"c);
+    t.test!("==")("Ἰοὺ ἰού· τὰ πάντʼ ἂν ἐξήκοι σαφῆ."c.truncateAtN(4, buffer),
+        "Ἰοὺ…"c);
+    t.test!("==")("Ἰοὺ ἰού· τὰ πάντʼ ἂν ἐξήκοι σαφῆ."c.truncateAtN(5, buffer),
+        "Ἰοὺ…"c);
+    t.test!("==")("Ἰοὺ ἰού· τὰ πάντʼ ἂν ἐξήκοι σαφῆ."c.truncateAtN(6, buffer),
+        "Ἰοὺ ἰ…"c);
+    t.test!("==")("Ξεσκεπάζω τὴν ψυχοφθόρα βδελυγμία"c.truncateAtN(256, buffer),
+        "Ξεσκεπάζω τὴν ψυχοφθόρα βδελυγμία"c);
+    t.test!("==")("पशुपतिरपि तान्यहानि कृच्छ्राद्"c.truncateAtN(6,buffer), "पशुपत…"c); // NB शु is 2 chars
+    t.test!("==")("पशुपतिरपि तान्यहानि कृच्छ्राद्"c.truncateAtN(8, buffer), "पशुपतिर…"c);
+    t.test!("==")("子曰：「學而時習之，不亦說乎？有朋自遠方來，不亦樂乎？"c.truncateAtN(5, buffer), "子曰：「…"c);
+
+    // we don't yet support R-To-L languages so don't test Arabic
+    //test(truncate_at_n("بِسْمِ ٱللّٰهِ ٱلرَّحْمـَبنِ ٱلرَّحِيمِ", 5c, buffer) = "…رَّحِيمِ"c);
+
+    // Use some other ending that is not one character.
+    t.test!("==")("a| d".truncateAtN(4, buffer, "..."), "a| d");
+    t.test!("==")("a| d1".truncateAtN(4, buffer, "..."), "a...");
+    t.test!("==")("1234567890".truncateAtN(7, buffer, "..."), "1234...");
+    t.test!("==")("1234567890".truncateAtN(70, buffer, "..."), "1234567890");
+    t.test!("==")("1234 6789 1234 6789 1234 6789".truncateAtN(25, buffer, "..."),
+        "1234 6789 1234 6789...");
+
+    // check nothing has allocated
+    t.test!("==")(orig_ptr, buffer.ptr);
 }
