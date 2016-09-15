@@ -37,8 +37,37 @@ deprecated("Use the equivalent AES128 instead")
 public alias GcryptNoIV!(Algorithm.GCRY_CIPHER_AES, Mode.GCRY_CIPHER_MODE_ECB) AES;
 
 public alias GcryptNoIV!(Algorithm.GCRY_CIPHER_AES, Mode.GCRY_CIPHER_MODE_ECB) AES128;
+
+/// Usage example of AES with 128-bit keys
+unittest
+{
+    // AES128 requires a key of length 16 bytes.
+    const KEY = "asdfghjklqwertyu";
+
+    testAES!(AES128, KEY)();
+}
+
 public alias GcryptNoIV!(Algorithm.GCRY_CIPHER_AES192, Mode.GCRY_CIPHER_MODE_ECB) AES192;
+
+/// Usage example of AES with 192-bit keys
+unittest
+{
+    // AES192 requires a key of length 24 bytes.
+    const KEY = "abcdefghijklmnopqrstuvwx";
+
+    testAES!(AES192, KEY);
+}
+
 public alias GcryptNoIV!(Algorithm.GCRY_CIPHER_AES256, Mode.GCRY_CIPHER_MODE_ECB) AES256;
+
+/// Usage example of AES with 256-bit keys
+unittest
+{
+    // AES256 requires a key of length 32 bytes.
+    const KEY = "abcdefghijklmnopqrstuvwxyz012345";
+
+    testAES!(AES256, KEY);
+}
 
 /*******************************************************************************
 
@@ -49,8 +78,46 @@ public alias GcryptNoIV!(Algorithm.GCRY_CIPHER_AES256, Mode.GCRY_CIPHER_MODE_ECB
 *******************************************************************************/
 
 public alias GcryptWithIV!(Algorithm.GCRY_CIPHER_AES, Mode.GCRY_CIPHER_MODE_CBC) AES128_CBC;
+
+/// Usage example of AES-CBC with 128-bit keys
+unittest
+{
+    // AES128-CBC requires a key of length 16 bytes.
+    const KEY = "asdfghjklqwertyu";
+
+    // AES128-CBC requires an IV of length 16 bytes.
+    const IV = "0123456789ABCDEF";
+
+    testAES_IV!(AES128_CBC, KEY, IV);
+}
+
 public alias GcryptWithIV!(Algorithm.GCRY_CIPHER_AES192, Mode.GCRY_CIPHER_MODE_CBC) AES192_CBC;
+
+/// Usage example of AES-CBC with 192-bit keys
+unittest
+{
+    // AES192-CBC requires a key of length 24 bytes.
+    const KEY = "abcdefghijklmnopqrstuvwx";
+
+    // AES192-CBC requires an IV of length 16 bytes.
+    const IV = "0123456789ABCDEF";
+
+    testAES_IV!(AES192_CBC, KEY, IV);
+}
+
 public alias GcryptWithIV!(Algorithm.GCRY_CIPHER_AES256, Mode.GCRY_CIPHER_MODE_CBC) AES256_CBC;
+
+/// Usage example of AES-CBC with 256-bit keys
+unittest
+{
+    // AES256-CBC requires a key of length 32 bytes.
+    const KEY = "abcdefghijklmnopqrstuvwxyz012345";
+
+    // AES256-CBC requires an IV of length 16 bytes.
+    const IV = "0123456789ABCDEF";
+
+    testAES_IV!(AES256_CBC, KEY, IV);
+}
 
 version ( UnitTest )
 {
@@ -114,67 +181,4 @@ version ( UnitTest )
         // We have now successfully encrypted and decrypted a string.
         test!("==")(text, decrypted_text);
     }
-}
-
-/// Usage example of AES with 128-bit keys
-unittest
-{
-    // AES128 requires a key of length 16 bytes.
-    const KEY = "asdfghjklqwertyu";
-
-    testAES!(AES128, KEY)();
-}
-
-/// Usage example of AES with 192-bit keys
-unittest
-{
-    // AES192 requires a key of length 24 bytes.
-    const KEY = "abcdefghijklmnopqrstuvwx";
-
-    testAES!(AES192, KEY);
-}
-
-/// Usage example of AES with 256-bit keys
-unittest
-{
-    // AES256 requires a key of length 32 bytes.
-    const KEY = "abcdefghijklmnopqrstuvwxyz012345";
-
-    testAES!(AES256, KEY);
-}
-
-/// Usage example of AES-CBC with 128-bit keys
-unittest
-{
-    // AES128-CBC requires a key of length 16 bytes.
-    const KEY = "asdfghjklqwertyu";
-
-    // AES128-CBC requires an IV of length 16 bytes.
-    const IV = "0123456789ABCDEF";
-
-    testAES_IV!(AES128_CBC, KEY, IV);
-}
-
-/// Usage example of AES-CBC with 192-bit keys
-unittest
-{
-    // AES192-CBC requires a key of length 24 bytes.
-    const KEY = "abcdefghijklmnopqrstuvwx";
-
-    // AES192-CBC requires an IV of length 16 bytes.
-    const IV = "0123456789ABCDEF";
-
-    testAES_IV!(AES192_CBC, KEY, IV);
-}
-
-/// Usage example of AES-CBC with 256-bit keys
-unittest
-{
-    // AES256-CBC requires a key of length 32 bytes.
-    const KEY = "abcdefghijklmnopqrstuvwxyz012345";
-
-    // AES256-CBC requires an IV of length 16 bytes.
-    const IV = "0123456789ABCDEF";
-
-    testAES_IV!(AES256_CBC, KEY, IV);
 }
