@@ -23,3 +23,6 @@ Deprecations
 New Features
 ============
 
+* `ocean.util.cipher.gcrypt.AES`
+
+  Aliases for AES-CBC ciphers have been added.
