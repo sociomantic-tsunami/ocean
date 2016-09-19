@@ -32,3 +32,15 @@ New Features
   Add `truncateAtN` method which truncates a string at the last space before
   the n-th character or, if the resulting string is too short, at the n-th
   character.
+
+* `ocean.util.cipher.gcrypt.c.kdf`
+
+  Bindings to gcrypt's C functions for key derivation have been added.
+
+* `ocean.util.cipher.gcrypt.core.KeyDerivationCore`
+
+  A wrapper class for gcrypt's key derivation functions has been added.
+
+* `ocean.util.cipher.gcrypt.PBKDF2`
+
+  An alias for key derivation using the PBKDF2 algorithm has been added.
