@@ -44,3 +44,8 @@ New Features
 * `ocean.util.cipher.gcrypt.PBKDF2`
 
   An alias for key derivation using the PBKDF2 algorithm has been added.
+
+* `ocean.util.cipher.misc.Padding`
+
+  New module with cryptographic padding functions, currently contains functions
+  for PKCS#7 and PKCS#5 padding.
