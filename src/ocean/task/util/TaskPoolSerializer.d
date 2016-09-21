@@ -36,11 +36,11 @@ public class TaskPoolSerializer
 {
     import ocean.transition;
 
+    import ocean.core.Array: concat;
     import ocean.core.Enforce;
     import ocean.core.Traits;
     import ocean.core.TypeConvert;
     import ocean.io.device.File;
-    import ocean.io.device.TempFile;
     import ocean.io.model.IConduit;
     import ocean.io.FilePath;
     import ocean.io.serialize.SimpleSerializer;
@@ -56,8 +56,19 @@ public class TaskPoolSerializer
 
     /***************************************************************************
 
+        Temporary file path to be used while dumping tasks to disk.
+
+    ***************************************************************************/
+
+    private mstring temp_dump_file_path;
+
+    /***************************************************************************
+
         Dump the current contents of the task pool to disk.
         If the task pool is empty then no file will be created.
+
+        Uses `ocean.io.device.File` instead of `ocean.io.device.TempFile` due to
+        issues copying across partitions in the AUFS storage driver.
 
         Params:
             task_pool = The task pool to dump to disk.
@@ -75,10 +86,13 @@ public class TaskPoolSerializer
     {
         if ( task_pool.num_busy == 0 ) return 0;
 
-        scope file = new TempFile(TempFile.Permanent);
+        concat(this.temp_dump_file_path, dump_file_path, ".tmp");
+        scope file = new File(this.temp_dump_file_path, File.WriteCreate);
+
         auto items_written = this.dump(task_pool, file);
         file.sync();
-        FilePath(file.toString).rename(dump_file_path);
+        file.close();
+        FilePath(this.temp_dump_file_path).rename(dump_file_path);
         return items_written;
     }
 
