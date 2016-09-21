@@ -132,5 +132,6 @@ class NodePool ( Node ) : INodePool!(Node)
     protected void resetFreeList ()
     {
         this.free_nodes.length = 0;
+        enableStomping(this.free_nodes);
     }
 }

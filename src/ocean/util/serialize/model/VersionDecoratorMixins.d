@@ -25,14 +25,14 @@ module ocean.util.serialize.model.VersionDecoratorMixins;
 import ocean.transition;
 
 import ocean.core.Enforce,
+       ocean.core.Exception,
        ocean.util.container.ConcatBuffer,
        ocean.core.StructConverter;
 
 import ocean.util.serialize.Version,
        ocean.util.serialize.model.Traits;
 
-import ocean.text.convert.Format,
-       ocean.stdc.string;
+import ocean.stdc.string;
 
 
 version (UnitTest) import ocean.core.Test;
@@ -431,16 +431,7 @@ unittest
 
 class VersionHandlingException : Exception
 {
-    /***************************************************************************
-
-        No-op constructor, all actual data gets set up by throwing methods
-
-    ***************************************************************************/
-
-    this()
-    {
-        super(null);
-    }
+    mixin ReusableExceptionImplementation;
 
     /***************************************************************************
 
@@ -462,13 +453,13 @@ class VersionHandlingException : Exception
     {
         if (input_length <= Version.Type.sizeof)
         {
-            this.msg = Format(
-                "Loading {} has failed, input buffer too short " ~
-                    "(length {}, need {})",
-                S.stringof,
-                input_length,
-                Version.Type.sizeof
-            );
+            this.set("Loading ")
+                .append(S.stringof)
+                .append(" has failed, input buffer too short (length ")
+                .append(input_length)
+                .append(", need ")
+                .append(Version.Type.sizeof)
+                .append(")");
             this.line = line;
             this.file = file;
 
@@ -494,12 +485,13 @@ class VersionHandlingException : Exception
     void throwCantConvert(S)(Version.Type input_version, istring file = __FILE__,
         int line = __LINE__)
     {
-        this.msg = Format(
-            "Got version {} for struct {}, expected {}. Can't convert between these",
-            input_version,
-            S.stringof,
-            Version.Info!(S).number
-        );
+        this.set("Got version ")
+            .append(input_version)
+            .append(" for struct ")
+            .append(S.stringof)
+            .append(", expected ")
+            .append(Version.Info!(S).number)
+            .append(". Can't convert between these");
         this.line = line;
         this.file = file;
 

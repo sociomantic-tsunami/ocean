@@ -45,6 +45,11 @@ version (UnitTest)
     be used, its `copyArguments` method will be called, allowing the specified
     parameters to be passed into it.
 
+    If the derived tasks contains a method matching the signature of
+    `void deserialize ( void[] )` then the TaskPool with be created with
+    support for starting tasks with a void buffer (via the restore() method).
+    This supports serialization and deserialization of task internal state.
+
     It is crucial for tasks to either deep copy their initial parameters or
     ensure that those can never change during the task's lifetime, otherwise
     very hard to debug fiber races can happen.
@@ -61,6 +66,14 @@ class TaskPool ( TaskT : Task ) : ObjectPool!(Task)
         "Task derivative must define copyArguments function to work with " ~
             " a task pool"
     );
+
+    /***************************************************************************
+
+        Convenience alias for knowing task type.
+
+    ***************************************************************************/
+
+    public alias TaskT TaskType;
 
     /***************************************************************************
 
@@ -115,6 +128,38 @@ class TaskPool ( TaskT : Task ) : ObjectPool!(Task)
         theScheduler.schedule(task);
 
         return true;
+    }
+
+    static if( hasMethod!(TaskT, "deserialize", void delegate(void[])) )
+    {
+        /***********************************************************************
+
+            Starts a task in the same manner as `start` but instead calls the
+            `deserialize()` method on the derived task with a serialized buffer
+            of the state. This is to support dumping and loading tasks from disk.
+
+            Params:
+                serialized = Buffer containing serialized data for restoring
+                             the internal state of a task.
+
+            Returns:
+                'false' if new task can't be started because pool limit is reached
+                for now, 'true' otherwise
+
+        ***********************************************************************/
+
+        public bool restore ( void[] serialized )
+        {
+            if (this.num_busy() >= this.limit())
+                return false;
+
+            auto task = cast(TaskT) this.get(new OwnedTask);
+            assert (task !is null);
+            task.deserialize(serialized);
+            theScheduler.schedule(task);
+
+            return true;
+        }
     }
 }
 

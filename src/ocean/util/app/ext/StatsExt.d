@@ -2,6 +2,21 @@
 
     Application extension to parse configuration for the stats output.
 
+    This extension writes to a file the list of value and identifier in
+    an easily parseable way. It also has the option to send metrics
+    directly to a Collectd unix socket.
+
+    Should one want to use the Collectd socket, several additional configuration
+    values need to be provided:
+    - path to the unix socket (which enables the option);
+    - application name: If not provided, default to the name passed to the
+        application framework;
+    - application instance: Optional, no default value
+    - hostname: If not provided, the value of `gethostname` (2) will be used;
+    - default type: A convention on the type of the 'application stats',
+        which will be used when calling `StatsLog.add`.
+        Defaults to `application_name ~ "_stats"`.
+
     Copyright:
         Copyright (c) 2009-2016 Sociomantic Labs GmbH.
         All rights reserved.
@@ -23,7 +38,11 @@ module ocean.util.app.ext.StatsExt;
 
 *******************************************************************************/
 
+import core.sys.posix.unistd : gethostname;
+
+import ocean.core.Enforce;
 import ocean.core.TypeConvert;
+import ocean.sys.ErrnoException;
 
 import ocean.util.app.model.ExtensibleClassMixin;
 import ocean.util.app.Application;
@@ -89,8 +108,18 @@ class StatsExt : IConfigExtExtension
 
     public override void processConfig ( IApplication app, ConfigParser config )
     {
-        this.stats_log = this.newStatsLog(app,
-            ClassFiller.fill!(StatsLog.Config)("STATS", config));
+        auto c = ClassFiller.fill!(StatsLog.Config)("STATS", config);
+
+        if (!c.app_name.length)
+            c.app_name = app.name;
+        if (!c.hostname.length)
+            c.hostname = getHostName();
+        if (!c.default_type.length)
+            c.default_type = c.app_name ~ "_stats";
+
+        assert(c.app_name.length);
+
+        this.stats_log = this.newStatsLog(app, c);
     }
 
 
@@ -172,3 +201,26 @@ class StatsExt : IConfigExtExtension
         return files;
     }
 }
+
+
+/*******************************************************************************
+
+    An helper function to get the hostname, used by Collectd
+
+    Returns:
+        A string representing the hostname
+
+*******************************************************************************/
+
+private istring getHostName ()
+{
+    // SuSv2 ensure that hostname are <= 255 bytes
+    // On Linux, they are <= HOST_MAX_NAME which has been 64 bytes
+    // for almost all of Linux lifetime
+    char[256] buffer;
+    enforce!(ErrnoException)(gethostname(buffer.ptr, buffer.length) == 0);
+    return idup(buffer[0 .. strnlen(buffer.ptr, buffer.length)]);
+
+}
+
+private extern(C) size_t strnlen(Const!(char)* s, size_t maxlen);

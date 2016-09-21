@@ -53,7 +53,8 @@ import ocean.util.container.AppendBuffer;
 
 
 import ocean.util.container.map.Map,
-       ocean.util.container.map.model.StandardHash;
+       ocean.util.container.map.model.StandardHash,
+       ocean.util.container.map.model.IAllocator;
 
 import ocean.transition;
 
@@ -105,6 +106,24 @@ class TimeoutManager : TimeoutManagerBase
         {
             return super.client.id;
         }
+    }
+
+
+    /***************************************************************************
+
+        Constructor.
+
+            n = expected number of elements in expiry registration to
+                ISelectClient map
+            allocator = use this bucket element allocator for the expiry
+                registration to ISelectClient map. If it is null the default map
+                allocator (BucketElementGCAllocator) is used.
+
+    ***************************************************************************/
+
+    public this ( size_t n = 1024, IAllocator allocator = null )
+    {
+        super(n, allocator);
     }
 
     /***************************************************************************
@@ -222,12 +241,23 @@ abstract class TimeoutManagerBase : ITimeoutManager
 
             Params:
                 n = expected number of elements in mapping
+                allocator = use this bucket element allocator for the map. If it
+                    is null the default allocator is used.
 
         ***********************************************************************/
 
-        public this ( size_t n )
+        public this ( size_t n, IAllocator allocator = null )
         {
-            super(n);
+            // create the map with the default allocator
+            // BucketElementGCAllocator
+            if ( allocator is null )
+            {
+                super(n);
+            }
+            else
+            {
+                super(allocator, n);
+            }
         }
 
         protected override hash_t toHash ( Expiry* expiry )
@@ -251,12 +281,18 @@ abstract class TimeoutManagerBase : ITimeoutManager
 
         Constructor.
 
+            n = expected number of elements in expiry registration to
+                ISelectClient map
+            allocator = use this bucket element allocator for the expiry
+                registration to ISelectClient map. If it is null the default
+                allocator (BucketElementGCAllocator) is used.
+
     ***************************************************************************/
 
-    protected this ( size_t n = 1024 )
+    protected this ( size_t n = 1024, IAllocator allocator = null )
     {
         this.expiry_tree           = new ExpiryTree;
-        this.expiry_to_client      = new ExpiryToClient(n);
+        this.expiry_to_client      = new ExpiryToClient(n, allocator);
         this.expired_registrations = new AppendBuffer!(IExpiryRegistration)(n);
     }
 

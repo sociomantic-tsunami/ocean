@@ -953,9 +953,12 @@ class ConfigParser
             auto r = fromString8!(Unqual!(U))(property, T.init);
             return cast(T) r.dup;
         }
-        else static assert(false,
-                           Format("{} : get(): type '{}' is not supported",
-                                  __FILE__, T.stringof));
+        else
+        {
+            static assert(false,
+                          __FILE__ ~ " : get(): type '" ~ T.stringof
+                          ~ "' is not supported");
+        }
     }
 
 

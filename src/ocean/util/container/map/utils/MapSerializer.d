@@ -76,6 +76,12 @@ private class Converter : VersionDecorator
     Everything else is identical to the class Map, that means you still need to
     implement your own hashing functionality.
 
+    Note:
+        The serializer allows simple transition from using a map with a
+        non-versioned key / value to a versioned one. The version of the
+        key / value must be v0 and the layout must be the same,
+        otherwise loading will fail.
+
     Template_Params:
         V = type of the value
         K = type of the key

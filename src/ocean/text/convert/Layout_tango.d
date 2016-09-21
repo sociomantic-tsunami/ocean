@@ -46,14 +46,6 @@ import Float = ocean.text.convert.Float,
 
 import ocean.io.model.IConduit : OutputStream;
 
-version(WithVariant)
-    import ocean.core.Variant;
-
-version(WithExtensions)
-{
-    import ocean.text.convert.Extensions;
-}
-
 
 /*******************************************************************************
 
@@ -277,14 +269,6 @@ class Layout(T)
         return assumeUnique(output);
     }
 
-    /**********************************************************************
-
-     **********************************************************************/
-
-    version (old) public final T[] convertOne (T[] result, TypeInfo ti, Arg arg)
-    {
-        return dispatch (result, null, ti, arg);
-    }
 
     /******************************************************************
 
@@ -402,7 +386,7 @@ class Layout(T)
                     {
                         version (D_Version2)
                         {
-                            case 0: // null literal, consider it pointer size 
+                            case 0: // null literal, consider it pointer size
                                 static if (is(size_t == ulong))
                                 {
                                     storedArgs[i].l = va_arg!(long)(args);
@@ -613,20 +597,7 @@ class Layout(T)
             // an astonishing number of typehacks needed to handle arrays :(
             void process (TypeInfo _ti, Arg _arg)
             {
-                // Because Variants can contain AAs (and maybe
-                // even static arrays someday), we need to
-                // process them here.
-                version (WithVariant)
-                {
-                    if (_ti is typeid(Variant))
-                    {
-                        // Unpack the variant and forward
-                        auto vptr = cast(Variant*)_arg;
-                        auto innerTi = vptr.type;
-                        auto innerArg = vptr.ptr;
-                        process (innerTi, innerArg);
-                    }
-                }
+
                 if (_ti.classinfo.name.length is 20 && _ti.classinfo.name[9..$] == "StaticArray" )
                 {
                     auto tiStat = cast(TypeInfo_StaticArray)_ti;

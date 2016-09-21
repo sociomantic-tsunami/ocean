@@ -49,6 +49,7 @@ import ocean.text.convert.Format,
 
 *******************************************************************************/
 
+deprecated("Use MultiVersionDecorator instead")
 class VersionDecorator
 {
     /***************************************************************************
@@ -59,14 +60,6 @@ class VersionDecorator
 
     public alias VersionDecorator This;
 
-    /**************************************************************************
-
-        NB! This will suppress any compilation errors, comment out during
-        development and enable only when commiting.
-
-    **************************************************************************/
-
-    static assert (isDecorator!(This));
 
     /***************************************************************************
 
@@ -153,7 +146,7 @@ import core.memory;
 
 *******************************************************************************/
 
-unittest
+deprecated unittest
 {
     struct S
     {
@@ -187,7 +180,7 @@ unittest
 
 *******************************************************************************/
 
-unittest
+deprecated unittest
 {
     struct S
     {
@@ -213,7 +206,7 @@ unittest
 
 *******************************************************************************/
 
-unittest
+deprecated unittest
 {
     auto loader = new VersionDecorator;
     void[] buffer = null;
@@ -274,7 +267,7 @@ struct Test1
     }
 }
 
-unittest
+deprecated unittest
 {
     auto loader = new VersionDecorator;
 
@@ -323,7 +316,7 @@ struct Test2
     }
 }
 
-unittest
+deprecated unittest
 {
     auto loader = new VersionDecorator;
 
@@ -567,7 +560,7 @@ struct Test3
     }
 }
 
-Dst testConv(Src, Dst)(Src src)
+deprecated Dst testConv(Src, Dst)(Src src)
 {
     auto test = new NamedTest(Src.stringof ~ " -> " ~ Dst.stringof);
 
@@ -600,7 +593,7 @@ Dst testConv(Src, Dst)(Src src)
     }
 }
 
-unittest
+deprecated unittest
 {
     with (Test3)
     {
@@ -620,7 +613,7 @@ unittest
     }
 }
 
-Dst testConvMemory(Src, Dst)(Src src)
+deprecated Dst testConvMemory(Src, Dst)(Src src)
 {
     auto test = new NamedTest(Src.stringof ~ " -> " ~ Dst.stringof);
 
@@ -676,7 +669,7 @@ Dst testConvMemory(Src, Dst)(Src src)
     return *result.ptr;
 }
 
-unittest
+deprecated unittest
 {
     with (Test3)
     {
@@ -720,7 +713,7 @@ struct Test4
     }
 }
 
-unittest
+deprecated unittest
 {
     auto loader = new VersionDecorator;
     void[] buffer;

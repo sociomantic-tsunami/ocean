@@ -22,13 +22,16 @@ module ocean.sys.socket.UnixSocket;
 
 *******************************************************************************/
 
+import ocean.transition;
+
 import ocean.core.Enforce;
 import ocean.sys.socket.model.ISocket;
 
 import ocean.net.device.LocalSocket;
 import ocean.stdc.posix.sys.socket;
-import ocean.stdc.posix.sys.socket;
+import ocean.stdc.posix.sys.un: UNIX_PATH_MAX;
 import ocean.stdc.posix.unistd;
+import ocean.text.convert.Format;
 
 
 /*******************************************************************************
@@ -39,6 +42,25 @@ import ocean.stdc.posix.unistd;
 
 public class UnixSocket : ISocket
 {
+
+    /***************************************************************************
+
+        Path to the unix domain socket.
+
+    ***************************************************************************/
+
+    private char[UNIX_PATH_MAX] path;
+
+
+    /***************************************************************************
+
+        Number of valid characters in path.
+
+    ***************************************************************************/
+
+    private size_t path_len = 0;
+
+
     /***************************************************************************
 
         Constructor.
@@ -106,6 +128,10 @@ public class UnixSocket : ISocket
     }
     body
     {
+        auto path = address.path;
+        this.path_len = path.length;
+        this.path[0 .. this.path_len] = path;
+
         // note: cast due to duplicate but separate definitions of sockaddr
         // in Tango
         return super.bind(cast(sockaddr*)address.name());
@@ -128,8 +154,29 @@ public class UnixSocket : ISocket
     }
     body
     {
+        auto path = address.path;
+        this.path_len = path.length;
+        this.path[0 .. this.path_len] = path;
+
         // note: cast due to duplicate but separate definitions of sockaddr
         // in Tango
         return super.connect(cast(sockaddr*)address.name());
+    }
+
+
+    /**************************************************************************
+
+        Formats information about the socket into the provided buffer.
+
+        Params:
+            buf      = buffer to format into
+            io_error = true if an I/O error has been reported
+
+     **************************************************************************/
+
+    override public void formatInfo ( ref char[] buf, bool io_error )
+    {
+        Format.format(buf, "fd={}, unix_path={}, ioerr={}",
+            this.fileHandle, this.path[0 .. this.path_len], io_error);
     }
 }

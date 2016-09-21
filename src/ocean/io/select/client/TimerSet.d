@@ -94,11 +94,28 @@ public class TimerSet ( EventData ) : TimerEventTimeoutManager
 
     /***************************************************************************
 
+        Interface to a scheduled event.
+
+    ***************************************************************************/
+
+    public interface IEvent
+    {
+        /***********************************************************************
+
+            Unregisters this event.
+
+        ***********************************************************************/
+
+        void unregister ( );
+    }
+
+    /***************************************************************************
+
         Internal event class.
 
     ***************************************************************************/
 
-    private class Event : ITimeoutClient
+    private class Event : ITimeoutClient, IEvent
     {
         /***********************************************************************
 
@@ -288,14 +305,21 @@ public class TimerSet ( EventData ) : TimerEventTimeoutManager
             The pool throws a LimitExceededException if the event pool is full
             and the new event cannot be scheduled.
 
+        Returns:
+            the newly scheduled event
+
     ***************************************************************************/
 
-    public void schedule ( EventSetupDg setup_dg, EventFiredDg fired_dg,
+    public IEvent schedule ( EventSetupDg setup_dg, EventFiredDg fired_dg,
         ulong schedule_us )
     in
     {
         assert(setup_dg !is null, typeof(this).stringof ~ ".schedule: event setup delegate is null");
         assert(fired_dg !is null, typeof(this).stringof ~ ".schedule: event fired delegate is null");
+    }
+    out ( event )
+    {
+        assert(event !is null);
     }
     body
     {
@@ -316,6 +340,8 @@ public class TimerSet ( EventData ) : TimerEventTimeoutManager
         {
             event.timeout();
         }
+
+        return event;
     }
 
 

@@ -413,7 +413,7 @@ public void configureLoggers ( Source = ConfigParser, FileLayout = LayoutDate,
 
     istring[] logger_names;
 
-    foreach (name, settings; config)
+    foreach (name; config)
     {
         logger_names ~= name;
     }

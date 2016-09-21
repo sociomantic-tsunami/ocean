@@ -58,7 +58,7 @@ public void wait ( uint micro_seconds )
     if (.timer is null)
         .timer = new typeof(timer);
 
-    .timer.schedule(
+    auto scheduled_event =  .timer.schedule(
         // EventData setup is run from the same fiber so it is ok to reference
         // variable from this function stack
         ( ref EventData event )
@@ -77,9 +77,13 @@ public void wait ( uint micro_seconds )
         micro_seconds
     );
 
+    task.registerOnKillHook(&scheduled_event.unregister);
+
     debug_trace("Suspending task <{}> for {} microseconds",
         cast(void*) task, micro_seconds);
     task.suspend();
+
+    task.unregisterOnKillHook(&scheduled_event.unregister);
 }
 
 ///

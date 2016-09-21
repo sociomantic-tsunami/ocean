@@ -44,19 +44,20 @@ module ocean.util.log.Stats;
 
 *******************************************************************************/
 
-import ocean.core.Traits : FieldName;
-
-import ocean.core.TypeConvert;
-
-import ocean.text.convert.Layout: StringLayout;
-
-import ocean.util.log.layout.LayoutStatsLog;
-
 import ocean.transition;
-import ocean.core.Traits;
+import ocean.core.Enforce;
+import ocean.core.Exception_tango;
+import ocean.core.Traits : FieldName;
+import ocean.core.TypeConvert;
+import ocean.io.select.EpollSelectDispatcher;
+import ocean.io.select.client.TimerEvent;
+import ocean.net.collectd.Collectd;
+import ocean.stdc.time : time_t;
+import ocean.sys.ErrnoException;
+import ocean.text.convert.Layout: StringLayout;
+import ocean.util.log.layout.LayoutStatsLog;
 import ocean.util.log.Log;
 
-import ocean.stdc.time : time_t;
 
 version (UnitTest)
 {
@@ -109,15 +110,154 @@ public class StatsLog
 
         Stats log config class
 
+        The field `hostname`, `app_name`, `app_instance` and `default_type`
+        are values used by the Collectd integration of `StatsLog`.
+
+        Collectd identify resources using an identifier, that has the
+        following form: 'hostname/plugin-pinstance/type-tinstance'.
+        Every resource written by a process MUST have the same 'hostname',
+       'plugin' and 'pinstance' values.
+        `hostname` value is not limited or checked in any way.
+        Other identifier shall only include alphanum ([a-z] [A-Z] [0-9]),
+        underscores ('_') and dots ('.').
+        Instance parts can also include dashes ('-').
+
     ***************************************************************************/
 
     public static class Config
     {
         public istring file_name;
+        public size_t max_file_size;
+        public size_t file_count;
+        public size_t start_compress;
 
-        public this ( istring file_name = default_file_name )
+
+        /***********************************************************************
+
+            Path to the collectd socket
+
+            It is null by default. When set through the constructor (usual value
+            is provided through `default_collectd_socket`, `StatsLog` will
+            write to the Collectd socket.
+
+            When this is set, it is required that `app_name` and
+            `app_instance` be set.
+
+        ***********************************************************************/
+
+        public istring socket_path;
+
+
+        /***********************************************************************
+
+            'hostname' to use when logging using 'add'
+
+            This is the 'hostname' part of the identifier.
+            If not set, gethostname (2) will be called.
+            See this class' documentation for further details.
+
+        ***********************************************************************/
+
+        public istring hostname;
+
+
+        /***********************************************************************
+
+            Collectd 'plugin' name to used
+
+            This is the 'plugin' part of the identifier, and should be set
+            to your application's name. It should hardly ever change.
+
+            By default, the name provided to the application framework will be
+            used.  If the application framework isn't used, or the name needs
+            to be overriden, set this value to a non-empty string.
+
+            See this class' documentation for further details.
+
+        ***********************************************************************/
+
+        public istring app_name;
+
+
+        /***********************************************************************
+
+            Collectd 'plugin instance' name to used
+
+            This is the 'pinstance' part of the identifier, and should be set
+            to your application's "instance". This can be an id (1, 2, 3...)
+            or a more complicated string, like the ranges over which your app
+            operate ("0x00000000_0x0FFFFFFF"). Change to this value should be
+            rare, if any.
+            The duo of 'plugin' and 'pinstance' should uniquely identify
+            a process (for the same `hostname`).
+
+            See this class' documentation for further details.
+
+        ***********************************************************************/
+
+        public istring app_instance;
+
+
+        /***********************************************************************
+
+            Default 'type' to use when logging using 'add'
+
+            This is the 'type' part of the identifier. Usually it is provided
+            as a string template argument to `addObject`, but for convenience,
+            `add` provide a default logging channel. If this argument is not
+            supplied, `collectd_name ~ "_stats"` will be used.
+
+            See this class' documentation for further details.
+
+        ***********************************************************************/
+
+        public istring default_type;
+
+
+        /***********************************************************************
+
+            Frequency at which Collectd should expect to receive metrics
+
+            This metric is expressed in metric, and should rarely needs to be
+            modified. Defaults to 30s.
+
+        ***********************************************************************/
+
+        public ulong interval;
+
+
+        /***********************************************************************
+
+            Constructor
+
+            Emulates struct's default constructor by providing a default value
+            for all parameters.
+
+        ***********************************************************************/
+
+        public this ( istring file_name = default_file_name,
+            size_t max_file_size = default_max_file_size,
+            size_t file_count = default_file_count,
+            size_t start_compress = default_start_compress,
+            istring socket_path = null,
+            istring hostname = null,
+            istring app_name = null,
+            istring app_instance = null,
+            istring default_type = null,
+            ulong interval = 30)
+
         {
             this.file_name = file_name;
+            this.max_file_size = max_file_size;
+            this.file_count = file_count;
+            this.start_compress = start_compress;
+            // Collectd settings
+            this.socket_path = socket_path;
+            this.hostname = hostname;
+            this.app_name = app_name;
+            this.app_instance = app_instance;
+            this.default_type = default_type;
+            this.interval = interval;
         }
     }
 
@@ -129,12 +269,24 @@ public class StatsLog
     ***************************************************************************/
 
     public const time_t default_period = 30; // 30 seconds
+    public const default_file_count = 10;
+    public const default_max_file_size = 10 * 1024 * 1024; // 10Mb
     public const istring default_file_name = "log/stats.log";
+    public const size_t default_start_compress = 4;
 
 
     /***************************************************************************
 
-        Logger instance
+        Logger instance via which error messages can be emitted
+
+    ***************************************************************************/
+
+    private Logger error_log;
+
+
+    /***************************************************************************
+
+        Logger instance via which stats should be output
 
     ***************************************************************************/
 
@@ -197,18 +349,44 @@ public class StatsLog
     public this ( Config config,
         Appender delegate ( istring file, Appender.Layout layout ) new_appender,
         istring name = "Stats" )
+    in
     {
+        if (config.socket_path.length)
+        {
+            assert(config.hostname.length);
+            assert(config.app_name.length);
+            assert(config.default_type.length);
+        }
+    }
+    body
+    {
+        // logger via which error messages can be emitted
+        this.error_log = Log.lookup("ocean.util.log.Stats.StatsLog");
+
+        // logger to which stats should be written
         this.logger = Log.lookup(name);
         this.logger.clear();
         this.logger.additive(false);
 
         this.logger.add(new_appender(config.file_name, new LayoutStatsLog));
 
-        // Explcitly set the logger to output all levels, to avoid the situation
+        // Explicitly set the logger to output all levels, to avoid the situation
         // where the root logger is configured to not output level 'info'.
         this.logger.level = this.logger.Level.Trace;
 
         this.layout = new StringLayout!();
+
+        if (config.socket_path.length)
+        {
+            // Will throw if it can't connect to the socket
+            this.collectd = new Collectd(config.socket_path);
+
+            this.identifier.host = config.hostname;
+            this.identifier.plugin = config.app_name;
+            this.identifier.plugin_instance = config.app_instance;
+            this.identifier.type = config.default_type;
+            this.options.interval = config.interval;
+        }
     }
 
 
@@ -227,7 +405,8 @@ public class StatsLog
         static assert (is(T == struct) || is(T == class),
                        "Parameter to add must be a struct or a class");
         this.format!(null)(values, istring.init);
-
+        if (this.collectd !is null)
+            this.sendToCollectd!(null)(values, istring.init);
         return this;
     }
 
@@ -238,10 +417,9 @@ public class StatsLog
         the aggregate will be output as
         <category>/<instance>/<member name>:<member value>.
 
-        Template_Params:
+        Params:
             category = The name of the category this object belongs to.
 
-        Params:
             instance = Name of the object to add.
             values = aggregate containing values to write to the log.
 
@@ -260,6 +438,8 @@ public class StatsLog
     body
     {
         this.format!(category)(values, instance);
+        if (this.collectd !is null)
+            this.sendToCollectd!(category)(values, instance);
         return this;
     }
 
@@ -294,12 +474,11 @@ public class StatsLog
         Note: When the aggregate is a class, the members of the super class
         are not iterated over.
 
-        Template_Params:
+        Params:
             category = the type or category of the object, such as 'channels',
                        'users'... May be null (see the 'instance' parameter).
             T = the type of the aggregate containing the fields to log
 
-        Params:
             values = aggregate containing values to write to the log. Passed as
                      ref purely to avoid making a copy -- the aggregate is not
                      modified.
@@ -349,6 +528,91 @@ public class StatsLog
             this.add_separator = true;
         }
     }
+
+
+    /***************************************************************************
+
+        Send the content of the struct to Collectd
+
+        This will format and send data to the Collectd daemon.
+        If any error happen, they will be reported by a log message but won't
+        be propagated up, so applications that have trouble logging won't
+        fail.
+
+        Note:
+        As with `format`, when the aggregate is a class, the members of
+        the super class are not iterated over.
+
+        Params:
+            category = the type or category of the object, such as 'channels',
+                       'users'... May be null (see the 'instance' parameter).
+            T = the type of the aggregate containing the fields to log
+
+            values = aggregate containing values to write to the log. Passed as
+                     ref purely to avoid making a copy -- the aggregate is not
+                     modified.
+            instance = the name of the instance of the category, or null if
+                none. For example, if the category is 'companies', then the name
+                of an instance may be "google". This value should be null if
+                category is null, and non-null otherwise.
+
+    ***************************************************************************/
+
+    private void sendToCollectd (istring category, T) (ref T values,
+                                                       cstring instance)
+    in
+    {
+        assert(this.collectd !is null);
+        static if (!category.length)
+            assert(!instance.length);
+    }
+    body
+    {
+        // It's a value type (struct), do a copy
+        auto id = this.identifier;
+        static if (category.length)
+        {
+            id.type = category;
+            id.type_instance = instance;
+        }
+
+        // putval returns null on success, a failure reason else
+        try
+            this.collectd.putval!(T)(id, values, this.options);
+        catch (CollectdException e)
+            this.error_log.error("Sending stats to Collectd failed: {}", e);
+        catch (ErrnoException e)
+            this.error_log.error("I/O error while sending stats: {}", e);
+    }
+
+
+    /***************************************************************************
+
+        Collectd instance
+
+    ***************************************************************************/
+
+    protected Collectd collectd;
+
+
+    /***************************************************************************
+
+        Default identifier when doing `add`.
+
+    ***************************************************************************/
+
+    protected Identifier identifier;
+
+
+    /***************************************************************************
+
+        Default set options to send
+
+        Currently it's only `interval=30`.
+
+    ***************************************************************************/
+
+    protected Collectd.PutvalOptions options;
 }
 
 /// Usage example for StatsLog in a simple application

@@ -21,7 +21,6 @@ module ocean.core.Exception;
 
 *******************************************************************************/
 
-import ocean.text.convert.Format;
 import ocean.transition;
 
 static import ocean.core.Enforce;

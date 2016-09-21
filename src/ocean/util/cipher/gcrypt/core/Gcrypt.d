@@ -1,14 +1,12 @@
 /*******************************************************************************
 
-    Base class for gcrypt algorithms which require an initialisation vector.
+    Templates for gcrypt algorithms
 
     Requires linking with libgcrypt:
             -L-lgcrypt
 
-    This module has support for algorithms that require an initialisation vector
-    but it could be easily adapted (/split) to support other algorithms too.
-
-    See_Also: https://gnupg.org/documentation/manuals/gcrypt/index.html
+    See_Also:
+        https://gnupg.org/documentation/manuals/gcrypt/index.html
 
     Copyright:
         Copyright (c) 2009-2016 Sociomantic Labs GmbH.
@@ -96,11 +94,7 @@ public class GcryptException : Exception
     {
         if ( error )
         {
-            this.set(`Error: "`, file, line)
-                .append(fromStringz(gcry_strerror(error)))
-                .append(`" Source: "`)
-                .append(fromStringz(gcry_strsource(error)))
-                .append(`"`);
+            this.setGcryptErrorMsg(error, file, line);
             throw this;
         }
     }
@@ -137,12 +131,69 @@ public class GcryptException : Exception
             throw this;
         }
     }
-}
 
+    /***************************************************************************
+
+        Throws a new instance of this class if `error` indicates an error. The
+        exception message is set to contain the error from libgcrypt.
+
+        Params:
+            error = error code from gcrypt
+            file = file from which this exception can be thrown
+            line = line from which this exception can be thrown
+
+        Throws:
+            a new instance of this class if error != 0
+
+    ***************************************************************************/
+
+    public static void throwNewIfGcryptError ( gcry_error_t error,
+                                               istring file = __FILE__,
+                                               int line = __LINE__ )
+    {
+        if (error)
+        {
+            auto e = new typeof(this);
+            e.setGcryptErrorMsg(error, file, line);
+            throw e;
+        }
+    }
+
+    /***************************************************************************
+
+        Set the exception message to contain the error from libgcrypt.
+
+        Params:
+            error = error code from gcrypt
+            file = file from which this exception can be thrown
+            line = line from which this exception can be thrown
+
+    ***************************************************************************/
+
+    private void setGcryptErrorMsg ( gcry_error_t error,
+                                     istring file = __FILE__,
+                                     int line = __LINE__  )
+    {
+        this.set(`Error: "`, file, line)
+            .append(fromStringz(gcry_strerror(error)))
+            .append(`" Source: "`)
+            .append(fromStringz(gcry_strsource(error)))
+            .append(`"`);
+    }
+}
 
 /*******************************************************************************
 
-    Gcrypt algorithm template.
+    Alias to preserve old, deprecated Gcrypt template name.
+
+*******************************************************************************/
+
+deprecated("Use GcryptNoIV or GcryptWithIV instead")
+public alias GcryptWithIV Gcrypt;
+
+/*******************************************************************************
+
+    Gcrypt algorithm base class template.
 
     Template_Params:
         algorithm = algorithm which this class uses for en/decryption
@@ -155,7 +206,7 @@ public class GcryptException : Exception
 
 *******************************************************************************/
 
-public class Gcrypt ( Algorithm algorithm, Mode mode )
+private class GcryptBase ( Algorithm algorithm, Mode mode )
 {
     /***************************************************************************
 
@@ -164,7 +215,7 @@ public class Gcrypt ( Algorithm algorithm, Mode mode )
 
     ***************************************************************************/
 
-    private gcry_cipher_hd_t handle;
+    protected gcry_cipher_hd_t handle;
 
     /***************************************************************************
 
@@ -172,7 +223,7 @@ public class Gcrypt ( Algorithm algorithm, Mode mode )
 
     ***************************************************************************/
 
-    private GcryptException exception;
+    protected GcryptException exception;
 
     /***************************************************************************
 
@@ -231,9 +282,9 @@ public class Gcrypt ( Algorithm algorithm, Mode mode )
     ***************************************************************************/
 
     public static size_t required_key_len ( )
-    out ( key_len )
+    out ( blk_len )
     {
-        assert(key_len != 0);
+        assert(blk_len != 0);
     }
     body
     {
@@ -243,16 +294,14 @@ public class Gcrypt ( Algorithm algorithm, Mode mode )
     /***************************************************************************
 
         Returns:
-            required length of initialisation vector (in bytes) for this
-            algorithm. Note that, if called for an algorithm which does not
-            require an IV, the return value will be undefined.
+            required length of one block (in bytes) for this algorithm
 
     ***************************************************************************/
 
-    public static size_t required_iv_len ( )
-    out ( iv_len )
+    public static size_t required_blk_len ( )
+    out ( key_len )
     {
-        assert(iv_len != 0);
+        assert(key_len != 0);
     }
     body
     {
@@ -271,6 +320,156 @@ public class Gcrypt ( Algorithm algorithm, Mode mode )
     {
         gcry_cipher_close(this.handle);
         this.handle = null;
+    }
+
+    /***************************************************************************
+
+        Set the key to use.
+
+        Params:
+            key = the encryption key
+
+        Throws:
+            A GcryptException if the key failed to be set
+
+    ***************************************************************************/
+
+    protected void setKey ( in void[] key )
+    {
+        this.exception.throwIfLenMismatch("key", key.length,
+            this.required_key_len);
+
+        auto err = gcry_cipher_setkey(this.handle, key.ptr, key.length);
+        this.exception.throwIfGcryptError(err);
+    }
+
+    /***************************************************************************
+
+        Unittests for the class. Note that as this class is a template, the
+        unittests will not be run unless it is instantiated (see modules in
+        ocean.util.cipher.gcrypt).
+
+    ***************************************************************************/
+
+    version ( UnitTest )
+    {
+        import ocean.core.Test;
+
+        /***********************************************************************
+
+            Helper function to generate a void[] of the specified length, filled
+            with bytes of incrementing value.
+
+            Params:
+                length = number of bytes to generate
+
+            Returns:
+                void[] containing the specified number of bytes, with
+                incrementing values
+
+        ***********************************************************************/
+
+        private static void[] generateString ( size_t length )
+        {
+            auto str = new ubyte[length];
+            ubyte i;
+            foreach ( ref v; str )
+            {
+                v = i++;
+            }
+            return str;
+        }
+
+        /***********************************************************************
+
+            Helper function to generate a void[] suitable for use as a key in
+            unittests.
+
+            Returns:
+                void[] of the correct length for a key
+
+        ***********************************************************************/
+
+        public static void[] generateKey ( )
+        {
+            return generateString(typeof(this).required_key_len);
+        }
+
+        /***********************************************************************
+
+            Helper function to generate a char[] suitable for use as a message
+            to encrypt in unittests. For compatibility with certain algorithms,
+            a message of the defined block-length is generated.
+
+            Returns:
+                char[] of the correct length
+
+        ***********************************************************************/
+
+        public static char[] generateMessage ( )
+        {
+            auto length = typeof(this).required_blk_len;
+            auto str = new char[length];
+            char i = 'a';
+            foreach ( ref v; str )
+            {
+                v = i++;
+            }
+            return str;
+        }
+    }
+
+    /***************************************************************************
+
+        Test that only keys of the correct length are acceptable.
+
+    ***************************************************************************/
+
+    unittest
+    {
+        auto key = generateKey();
+
+        // Too short should fail
+        testThrown!(GcryptException)(new typeof(this)(key[0 .. $-1]));
+
+        // Too long should fail
+        key.length = key.length + 1;
+        testThrown!(GcryptException)(new typeof(this)(key));
+        key.length = key.length - 1;
+
+        // The correct length should succeed
+        new typeof(this)(key);
+    }
+}
+
+/*******************************************************************************
+
+    Gcrypt algorithm template for algorithms with initialization vectors.
+
+    Params:
+        algorithm = algorithm which this class uses for en/decryption
+        mode = algorithm mode which this class uses for en/decryption
+
+*******************************************************************************/
+
+public class GcryptWithIV ( Algorithm algorithm, Mode mode )
+    : GcryptBase!(algorithm, mode)
+{
+    /***************************************************************************
+
+        Constructor
+
+        Params:
+            key = the key to use.
+
+        Throws:
+            A GcryptException if gcrypt fails to open or the key fails to be set
+
+    ***************************************************************************/
+
+    public this ( in void[] key )
+    {
+        super(key);
     }
 
     /***************************************************************************
@@ -329,23 +528,21 @@ public class Gcrypt ( Algorithm algorithm, Mode mode )
 
     /***************************************************************************
 
-        Set the key to use.
-
-        Params:
-            key = the encryption key
-
-        Throws:
-            A GcryptException if the key failed to be set
+        Returns:
+            required length of initialisation vector (in bytes) for this
+            algorithm. Note that, if called for an algorithm which does not
+            require an IV, the return value will be undefined.
 
     ***************************************************************************/
 
-    protected void setKey ( in void[] key )
+    public static size_t required_iv_len ( )
+    out ( iv_len )
     {
-        this.exception.throwIfLenMismatch("key", key.length,
-            this.required_key_len);
-
-        auto err = gcry_cipher_setkey(this.handle, key.ptr, key.length);
-        this.exception.throwIfGcryptError(err);
+        assert(iv_len != 0);
+    }
+    body
+    {
+        return gcry_cipher_get_algo_blklen(algorithm);
     }
 
     /***************************************************************************
@@ -370,56 +567,12 @@ public class Gcrypt ( Algorithm algorithm, Mode mode )
 
     /***************************************************************************
 
-        Unittests for the class. Note that as this class is a template, the
-        unittests will not be run unless it is instantiated (see modules in
-        ocean.util.cipher.gcrypt).
+        IV-using algorithm-specific unittest resources
 
     ***************************************************************************/
 
     version ( UnitTest )
     {
-        import ocean.core.Test;
-
-        /***********************************************************************
-
-            Helper function to generate a void[] of the specified length, filled
-            with bytes of incrementing value.
-
-            Params:
-                length = number of bytes to generate
-
-            Returns:
-                void[] containing the specified number of bytes, with
-                incrementing values
-
-        ***********************************************************************/
-
-        private static void[] generateString ( size_t length )
-        {
-            auto str = new ubyte[length];
-            ubyte i;
-            foreach ( ref v; str )
-            {
-                v = i++;
-            }
-            return str;
-        }
-
-        /***********************************************************************
-
-            Helper function to generate a void[] suitable for use as a key in
-            unittests.
-
-            Returns:
-                void[] of the correct length for a key
-
-        ***********************************************************************/
-
-        public static void[] generateKey ( )
-        {
-            return generateString(typeof(this).required_key_len);
-        }
-
         /***********************************************************************
 
             Helper function to generate a void[] suitable for use as an IV in
@@ -438,28 +591,6 @@ public class Gcrypt ( Algorithm algorithm, Mode mode )
 
     /***************************************************************************
 
-        Test that only keys of the correct length are acceptable.
-
-    ***************************************************************************/
-
-    unittest
-    {
-        auto key = generateKey();
-
-        // Too short should fail
-        testThrown!(GcryptException)(new typeof(this)(key[0 .. $-1]));
-
-        // Too long should fail
-        key.length = key.length + 1;
-        testThrown!(GcryptException)(new typeof(this)(key));
-        key.length = key.length - 1;
-
-        // The correct length should succeed
-        new typeof(this)(key);
-    }
-
-    /***************************************************************************
-
         Test that only initialisation vectors of the correct length are
         acceptable.
 
@@ -472,8 +603,7 @@ public class Gcrypt ( Algorithm algorithm, Mode mode )
 
         auto crypt = new typeof(this)(key);
 
-        mstring buf;
-        buf.length = 1;
+        auto buf = generateMessage();
 
         // Too short should fail
         testThrown!(GcryptException)(crypt.encrypt(buf, iv[0 .. $-1]));
@@ -500,7 +630,7 @@ public class Gcrypt ( Algorithm algorithm, Mode mode )
 
         auto crypt = new typeof(this)(key);
 
-        istring original = "apabepacepa";
+        auto original = generateMessage();
         mstring buf;
         buf ~= original;
 
@@ -512,5 +642,175 @@ public class Gcrypt ( Algorithm algorithm, Mode mode )
         crypt.decrypt(buf, iv);
         test!("==")(buf, original);
     }
+
+    /***************************************************************************
+
+        Test that setting an IV does affect the outcome of encryption.
+
+    ***************************************************************************/
+
+    unittest
+    {
+        auto key = generateKey();
+
+        auto crypt = new typeof(this)(key);
+
+        auto original = generateMessage();
+        mstring buf;
+        buf ~= original;
+
+        // Encrypt buf in place
+        auto iv = generateIV();
+        crypt.encrypt(buf, iv);
+
+        // Encrypt with a different IV and test that is not the same as before
+        mstring buf2;
+        buf2 ~= original;
+        auto iv2 = generateIV();
+        foreach ( ref b; cast(ubyte[])iv2 )
+        {
+            b++;
+        }
+        crypt.encrypt(buf2, iv2);
+
+        test!("!=")(buf, buf2, "This template is only compatible with algorithm/mode "
+            "combinations that require IVs. Use GcryptNoIV.");
+    }
 }
 
+/*******************************************************************************
+
+    Gcrypt algorithm template for algorithms without initialization vectors.
+
+    Params:
+        algorithm = algorithm which this class uses for en/decryption
+        mode = algorithm mode which this class uses for en/decryption
+
+*******************************************************************************/
+
+public class GcryptNoIV ( Algorithm algorithm, Mode mode )
+    : GcryptBase!(algorithm, mode)
+{
+    /***************************************************************************
+
+        Constructor
+
+        Params:
+            key = the key to use.
+
+        Throws:
+            A GcryptException if gcrypt fails to open or the key fails to be set
+
+    ***************************************************************************/
+
+    public this ( in void[] key )
+    {
+        super(key);
+    }
+
+    /***************************************************************************
+
+        Encrypt the content of buffer in place.
+
+        Params:
+            buffer = the content to be encrypted in place
+
+        Throws:
+            if the encryption fails
+
+    ***************************************************************************/
+
+    public void encrypt ( mstring buffer )
+    {
+        assert(this.handle);
+
+        if ( !buffer.length )
+            return;
+
+        auto err =
+            gcry_cipher_encrypt(this.handle, buffer.ptr, buffer.length, null, 0);
+        this.exception.throwIfGcryptError(err);
+    }
+
+    /***************************************************************************
+
+        Decrypt the content of buffer in place.
+
+        Params:
+            buffer = the content to be decrypted in place
+
+        Throws:
+            if the decryption fails
+
+    ***************************************************************************/
+
+    public void decrypt ( mstring buffer )
+    {
+        assert(this.handle);
+
+        if ( !buffer.length )
+            return;
+
+        auto err =
+            gcry_cipher_decrypt(this.handle, buffer.ptr, buffer.length, null, 0);
+        this.exception.throwIfGcryptError(err);
+    }
+
+    /***************************************************************************
+
+        Test encrypting and decrypting a short value.
+
+    ***************************************************************************/
+
+    unittest
+    {
+        auto key = generateKey();
+
+        auto crypt = new typeof(this)(key);
+
+        auto original = generateMessage();
+        mstring buf;
+        buf ~= original;
+
+        // Encrypt buf in place
+        crypt.encrypt(buf);
+        test!("!=")(buf, original);
+
+        // Decrypt buf in place
+        crypt.decrypt(buf);
+        test!("==")(buf, original);
+    }
+
+    /***************************************************************************
+
+        Test that encrypting a value after setting an IV gives the same result
+        as not setting an IV. For these algorithms, the IV should not be used.
+
+    ***************************************************************************/
+
+    unittest
+    {
+        auto key = generateKey();
+
+        auto crypt = new typeof(this)(key);
+
+        auto original = generateMessage();
+        mstring buf;
+        buf ~= original;
+
+        // Encrypt buf in place
+        crypt.encrypt(buf);
+
+        // Generate and set an IV
+        auto iv = generateMessage();
+        gcry_cipher_setiv(crypt.handle, iv.ptr, iv.length);
+
+        // Encrypt another buf in place and test that is the same as before
+        mstring buf2;
+        buf2 ~= original;
+        crypt.encrypt(buf2);
+
+        test!("==")(buf, buf2, "This template is only compatible with algorithm/mode "
+            "combinations that don't require IVs. Use GcryptWithIV.");
+    }
+}

@@ -25,12 +25,11 @@ module ocean.task.util.StreamProcessor;
 import ocean.transition;
 
 import ocean.task.Task;
-import ocean.task.TaskPool;
+import ocean.task.ThrottledTaskPool;
 import ocean.task.Scheduler;
 
 import ocean.core.Traits;
 import ocean.core.Enforce;
-import ocean.text.convert.Format;
 import ocean.text.convert.Format;
 import ocean.io.model.ISuspendable;
 import ocean.io.model.ISuspendableThrottler;
@@ -43,6 +42,47 @@ debug (TaskScheduler)
 version (UnitTest)
 {
     import ocean.core.Test;
+}
+
+/*******************************************************************************
+
+    Config struct to use when creating a stream processor that should use
+    the default PoolThrottler for throttling.
+
+*******************************************************************************/
+
+public struct ThrottlerConfig
+{
+    /***************************************************************************
+
+        The number of busy tasks to suspend at.
+
+        The default value of `size_t.max` means that the suspend point will be
+        calculated based on the task queue size in the constructor.
+
+    ***************************************************************************/
+
+    size_t suspend_point = size_t.max;
+
+    /***************************************************************************
+
+        The number of busy tasks to resume at.
+
+        The default value of `size_t.max` means that the resume point will be
+        calculated based on the task queue size in the constructor.
+
+    ***************************************************************************/
+
+    size_t resume_point = size_t.max;
+
+    /***************************************************************************
+
+        The maximum number of simultaneous tasks.
+
+    ***************************************************************************/
+
+    deprecated("Use getTaskPool().setLimit() to manually set max tasks limit")
+    size_t max_tasks;
 }
 
 /*******************************************************************************
@@ -99,6 +139,74 @@ class StreamProcessor ( TaskT : Task )
         behaviour, based on the number of busy tasks, use the other ctor.)
 
         Params:
+            throttler = custom throttler to use.
+
+    ***************************************************************************/
+
+    public this ( ISuspendableThrottler throttler )
+    {
+        this();
+        this.task_pool = new ThrottledTaskPool!(TaskT)(throttler);
+    }
+
+    /***************************************************************************
+
+        Constructor
+
+        NB: configure suspend point so that there is always at least one
+            "extra" spare task in the pool available after the limit is
+            reached. This is necessary because throttling happens in the
+            end of the task, not after it finishes and gets recycled.
+
+        Params:
+            throttler_config = The throttler configuration
+
+    ***************************************************************************/
+
+    public this ( ThrottlerConfig throttler_config )
+    {
+        this();
+
+        auto total = theScheduler.getStats().task_queue_total;
+
+        if (throttler_config.suspend_point == size_t.max)
+            throttler_config.suspend_point = total / 3 * 2;
+        else
+        {
+            enforce(
+                this.throttler_failure_e,
+                throttler_config.suspend_point < total,
+                Format(
+                    "Trying to configure StreamProcessor with suspend point ({}) " ~
+                        "larger or equal to task queue size {}",
+                    throttler_config.suspend_point, total
+                )
+            );
+        }
+
+        if (throttler_config.resume_point == size_t.max)
+            throttler_config.resume_point = total / 5;
+        {
+            enforce(
+                this.throttler_failure_e,
+                throttler_config.resume_point < total,
+                Format(
+                    "Trying to configure StreamProcessor with resume point ({}) " ~
+                        "larger or equal to task queue size {}",
+                    throttler_config.resume_point, total
+                )
+            );
+        }
+
+        this.task_pool = new ThrottledTaskPool!(TaskT)(throttler_config.suspend_point, throttler_config.resume_point);
+    }
+
+    /***************************************************************************
+
+        Constructor which accepts a custom throttler. (For standard throttling
+        behaviour, based on the number of busy tasks, use the other ctor.)
+
+        Params:
             max_tasks = the maximum number of simultaneous stream processing
                 tasks allowed. Configure it based on the memory consumed by a
                 single task.
@@ -106,6 +214,7 @@ class StreamProcessor ( TaskT : Task )
 
     ***************************************************************************/
 
+    deprecated("Use getTaskPool().setLimit() to manually set max tasks limit")
     public this ( size_t max_tasks, ISuspendableThrottler throttler )
     {
         this();
@@ -133,6 +242,7 @@ class StreamProcessor ( TaskT : Task )
 
     ***************************************************************************/
 
+    deprecated("Use constructor that accepts a ThrottlerConfig struct")
     public this ( size_t max_tasks, size_t suspend_point = size_t.max,
         size_t resume_point = size_t.max )
     {
@@ -199,8 +309,6 @@ class StreamProcessor ( TaskT : Task )
 
     public void process ( ParameterTupleOf!(TaskT.copyArguments) args )
     {
-        this.task_pool.throttler.throttledSuspend();
-
         if (!this.task_pool.start(args))
         {
             enforce(this.throttler_failure_e, false,
@@ -240,6 +348,20 @@ class StreamProcessor ( TaskT : Task )
     {
         this.task_pool.throttler.removeSuspendable(s);
     }
+
+    /***************************************************************************
+
+        Get the task pool.
+
+        Returns:
+            The task pool
+
+    ***************************************************************************/
+
+    public ThrottledTaskPool!(TaskT) getTaskPool ( )
+    {
+        return this.task_pool;
+    }
 }
 
 ///
@@ -277,8 +399,8 @@ unittest
         }
     }
 
-    const max_tasks = 5;
-    auto stream_processor = new StreamProcessor!(MyProcessingTask)(max_tasks);
+    auto throttler_config = ThrottlerConfig(5, 1);
+    auto stream_processor = new StreamProcessor!(MyProcessingTask)(throttler_config);
 
     // Set of input streams. In this example there are none. In your application
     // there should be more than none.
@@ -307,6 +429,38 @@ unittest
         public void copyArguments ( ) { }
     }
 
+    {
+        // suspend point >= task queue
+        auto throttler_config = ThrottlerConfig(config.task_queue_limit, 1);
+        testThrown!(ThrottlerFailureException)(new StreamProcessor!(DummyTask)(
+            throttler_config));
+    }
+
+    {
+        // resume point >= task queue
+        auto throttler_config = ThrottlerConfig(1, config.task_queue_limit);
+        testThrown!(ThrottlerFailureException)(new StreamProcessor!(DummyTask)(
+            throttler_config));
+    }
+
+    {
+        // works
+        auto throttler_config = ThrottlerConfig(config.task_queue_limit - 1, 1);
+        auto processor = new StreamProcessor!(DummyTask)(throttler_config);
+    }
+}
+
+deprecated unittest
+{
+    SchedulerConfiguration config;
+    initScheduler(config);
+
+    static class DummyTask : Task
+    {
+        override public void run ( ) { }
+        public void copyArguments ( ) { }
+    }
+
     // pool size > task queue
     testThrown!(ThrottlerFailureException)(new StreamProcessor!(DummyTask)(
         config.task_queue_limit + 1));
@@ -323,191 +477,6 @@ unittest
     // works
     auto processor = new StreamProcessor!(DummyTask)(config.task_queue_limit - 1,
         config.task_queue_limit -1, config.task_queue_limit - 2);
-}
-
-/*******************************************************************************
-
-    Special modified version of task pool used in StreamProcessor to enhance
-    `outer` context of task with reference to throttler. Inheriting from
-    TaskPool is necessary here because class can't have multiple `outer`
-    contexts but inheriting `StreamProcessor` itself from task pool would
-    expose all its public methods (which is not good).
-
-*******************************************************************************/
-
-private class ThrottledTaskPool ( TaskT ) : TaskPool!(TaskT)
-{
-   /***************************************************************************
-
-        Throttler used to control tempo of data consumption from streams. By
-        default internally defined PoolThrottler is used which is bound by
-        task pool size limit.
-
-    ***************************************************************************/
-
-    private ISuspendableThrottler throttler;
-
-    /***************************************************************************
-
-        Task class used to process stream data. It inherits from user-supplied
-        task type to insert throttling hooks before and after its main fiber
-        method. Everything else is kept as is.
-
-    ***************************************************************************/
-
-    private class ProcessingTask : OwnedTask
-    {
-        override protected void run ( )
-        {
-            // Bug? Deduces type of `this.outer` as one of base class.
-            auto pool = cast(ThrottledTaskPool) this.outer;
-            assert (pool !is null);
-
-            super.run();
-
-            pool.throttler.throttledResume();
-        }
-    }
-
-    /***************************************************************************
-
-        Default throttler implementation used if no external one is supplied
-        via constructor. It throttles on amount of busy tasks in internal
-        task pool.
-
-    ***************************************************************************/
-
-    private class PoolThrottler : ISuspendableThrottler
-    {
-        /***********************************************************************
-
-          When amount of total queued tasks is >= this value, the input
-          will be suspended.
-
-        ***********************************************************************/
-
-        private size_t suspend_point;
-
-        /***********************************************************************
-
-          When amount of total queued tasks is <= this value, the input
-          will be resumed.
-
-        ***********************************************************************/
-
-        private size_t resume_point;
-
-        /***********************************************************************
-
-            Constructor
-
-            Params:
-                suspend_point = when number of busy tasks reaches this count,
-                    processing will get suspended
-                resume_point = when number of busy tasks reaches this count,
-                    processing will get resumed
-
-        ***********************************************************************/
-
-        public this ( size_t suspend_point, size_t resume_point )
-        {
-            assert(suspend_point > resume_point);
-            assert(suspend_point < this.outer.limit());
-
-            this.suspend_point = suspend_point;
-            this.resume_point = resume_point;
-        }
-
-        /**********************************************************************/
-
-        override protected bool suspend ( )
-        {
-            auto stats = theScheduler.getStats();
-            auto total = stats.task_queue_total;
-            auto used = stats.task_queue_busy;
-
-            debug_trace("Throttler.suspend({}) : used = {}, total = {}, " ~
-                "pool.busy = {}, pool.limit = {}", this.suspend_point, used,
-                total, this.outer.num_busy(), this.outer.limit());
-
-            return used >= this.suspend_point
-                || (this.outer.num_busy() >= this.outer.limit() - 1);
-        }
-
-        /**********************************************************************/
-
-        override protected bool resume ( )
-        {
-            auto stats = theScheduler.getStats();
-            auto total = stats.task_queue_total;
-            auto used = stats.task_queue_busy;
-
-            debug_trace("Throttler.resume({}) : used = {}, total = {}, " ~
-                "pool.busy = {}, pool.limit = {}", this.resume_point, used,
-                total, this.outer.num_busy(), this.outer.limit());
-
-            return used <= this.resume_point
-                && (this.outer.num_busy() < this.outer.limit());
-        }
-    }
-
-    /***************************************************************************
-
-        Constructor
-
-        Params:
-            throttler = custom throttler to use.
-
-    ***************************************************************************/
-
-    private this ( ISuspendableThrottler throttler )
-    {
-        assert(throttler !is null);
-        this.throttler = throttler;
-    }
-
-    /***************************************************************************
-
-        Constructor
-
-        Params:
-            suspend_point = when number of busy tasks reaches this count,
-                processing will get suspended
-            resume_point = when number of busy tasks reaches this count,
-                processing will get resumed
-
-    ***************************************************************************/
-
-    private this ( size_t suspend_point, size_t resume_point )
-    {
-        this.throttler = new PoolThrottler(suspend_point, resume_point);
-    }
-
-    /***************************************************************************
-
-        Rewrite of TaskPool.start changed to use `ProcessingTask` as actual
-        task type instead of plain OwnedTask. Right now it is done by dumb
-        copy-paste, if that pattern will appear more often, TaskPool base
-        class may need a slight refactoring to support it.
-
-        Params:
-            args = same set of args as defined by `copyArguments` method of
-                user-supplied task class, will be forwarded to it.
-
-    ***************************************************************************/
-
-    override protected bool start ( ParameterTupleOf!(TaskT.copyArguments) args )
-    {
-        if (this.num_busy() >= this.limit())
-            return false;
-
-        auto task = cast(TaskT) this.get(new ProcessingTask);
-        assert (task !is null);
-        task.copyArguments(args);
-        theScheduler.schedule(task);
-
-        return true;
-    }
 }
 
 /*******************************************************************************

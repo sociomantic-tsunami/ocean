@@ -41,6 +41,18 @@ import ocean.core.TypeConvert;
 
 import ocean.sys.socket.model.ISocket;
 
+import ocean.text.convert.Format;
+
+deprecated("MSG_NOSIGNAL deprecated, please use the one in "
+        "ocean.sys.socket.model.ISocket instead")
+public alias ocean.sys.socket.model.ISocket.MSG_NOSIGNAL MSG_NOSIGNAL;
+
+deprecated("SocketFlags deprecated, please use the one in "
+        "ocean.sys.socket.model.ISocket instead")
+public alias ocean.sys.socket.model.ISocket.SocketFlags SocketFlags;
+
+
+
 /******************************************************************************
 
     TCP option codes supported by getsockopt()/setsockopt()
@@ -752,6 +764,28 @@ class IPSocket ( bool IPv6 = false ) : IIPSocket
     public override int getpeername ( sockaddr* remote_address, out socklen_t addrlen )
     {
         return super.getpeername(remote_address, addrlen);
+    }
+
+    /**************************************************************************
+
+        Formats information about the socket into the provided buffer.
+
+        Params:
+            buf      = buffer to format into
+            io_error = true if an I/O error has been reported
+
+     **************************************************************************/
+
+    override public void formatInfo ( ref char[] buf, bool io_error )
+    {
+        InetAddress in_address;
+        char[in_address.addrstrlen] ip_address_;
+        this.getpeername(in_address.addr);
+        size_t ip_address_len = in_address.inet_ntop(ip_address_).length;
+
+        Format.format(buf, "fd={}, remote={}:{}, ioerr={}",
+            this.fileHandle, ip_address_[0 .. ip_address_len],
+            in_address.port, io_error);
     }
 }
 

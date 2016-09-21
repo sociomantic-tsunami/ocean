@@ -3,7 +3,7 @@
     Linux signal file descriptor event for use with epoll.
 
     Allows signals to be handled as events in epoll, rather than as interrupts.
-    One or more signals can be speicified. Once the SignalEvent is registered,
+    One or more signals can be specified. Once the SignalEvent is registered,
     the default interrupt-based signal handlers will no longer receive these
     events, and they will cause this select client's event to fire in epoll
     instead. When the fired event is handled, a user-provided delegate is
@@ -12,6 +12,13 @@
 
     Note that when the SignalEvent is unregistered from epoll, the interrupt-
     based signal handlers are automatically reinstated.
+
+    Warning: signalfd behaves poorly in multi-threaded programs, (including
+    programs using third party libraries which use threads internally).
+    SignalEvents are triggered only if signals are masked in all threads.
+    Ensuring that this condition is met is often impossible, particularly if
+    threads are created inside third-party libraries. For this reason it is
+    generally more reliable to use a signal handler rather than a SignalEvent.
 
     Copyright:
         Copyright (c) 2009-2016 Sociomantic Labs GmbH.

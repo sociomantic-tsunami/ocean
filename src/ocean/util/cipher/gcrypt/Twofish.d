@@ -1,6 +1,6 @@
 /*******************************************************************************
 
-    Wrapper for libgcrypt with algorithm Twofish and mode CFB
+    libgcrypt with algorithm Twofish and mode CFB
 
     Requires linking with libgcrypt:
             -L-lgcrypt
@@ -38,7 +38,7 @@ import ocean.transition;
 
 *******************************************************************************/
 
-public alias Gcrypt!(Algorithm.GCRY_CIPHER_TWOFISH, Mode.GCRY_CIPHER_MODE_CFB) Twofish;
+public alias GcryptWithIV!(Algorithm.GCRY_CIPHER_TWOFISH, Mode.GCRY_CIPHER_MODE_CFB) Twofish;
 
 version ( UnitTest )
 {

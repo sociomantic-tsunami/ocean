@@ -68,6 +68,10 @@ import ocean.text.convert.Format;
 
 import ocean.text.convert.Layout_tango;
 
+import ocean.text.util.Time;
+
+import ocean.util.container.map.Set;
+
 import ocean.core.Traits;
 
 
@@ -112,6 +116,13 @@ public class StringStructSerializer ( Char )
 
     private cstring fp_format;
 
+    /***************************************************************************
+
+        Known list of common timestamp field names
+
+    ***************************************************************************/
+
+    private StandardHashingSet!(cstring) known_timestamp_fields;
 
     /***************************************************************************
 
@@ -130,6 +141,7 @@ public class StringStructSerializer ( Char )
         Format.format(tmp, "{}", fp_dec_to_display);
         tmp ~= "}\n";
         this.fp_format = tmp;
+        this.known_timestamp_fields = new StandardHashingSet!(cstring)(128);
     }
 
 
@@ -137,17 +149,29 @@ public class StringStructSerializer ( Char )
 
         Convenience method to serialize a struct.
 
-        Template_Params:
-            T = type of struct to serialize
+        If a field name of a struct matches one of the names in the
+        timestamp_fields array and implicitly converts to `ulong`
+        an ISO formatted string will be emitted in parentheses next to the
+        value of the field (which is assumed to be a unix timestamp).
 
         Params:
-            output = string to serialize struct data to
-            item = struct to serialize
+            T                = type of item
+            output           = string to serialize struct data to
+            item             = item to append
+            timestamp_fields = (optional) an array of timestamp field names
 
     ***************************************************************************/
 
-    public void serialize ( T ) ( ref Char[] output, ref T item )
+    public void serialize ( T ) ( ref Char[] output, ref T item,
+        cstring[] timestamp_fields = null )
     {
+        this.known_timestamp_fields.clear();
+
+        foreach (field_name; timestamp_fields)
+        {
+            this.known_timestamp_fields.put(field_name);
+        }
+
         StructSerializer!(true).serialize(&item, this, output);
     }
 
@@ -216,7 +240,18 @@ public class StringStructSerializer ( Char )
         }
         else
         {
-            Layout!(Char).format(output, "{}{} {} : {}\n", this.indent, T.stringof, name, item);
+            Layout!(Char).format(output, "{}{} {} : {}", this.indent,
+                T.stringof, name, item);
+
+            if (is(T : ulong) && name in this.known_timestamp_fields)
+            {
+                Char[20] tmp;
+                Layout!(Char).format(output, " ({})\n", formatTime(item, tmp));
+            }
+            else
+            {
+                Layout!(Char).format(output, "\n");
+            }
         }
     }
 
@@ -270,7 +305,9 @@ public class StringStructSerializer ( Char )
 
     public void serializeArray ( T ) ( ref Char[] output, cstring name, T[] array )
     {
-        Layout!(Char).format(output, "{}{}[] {} (length {}): {}\n", this.indent, T.stringof, name, array.length, array);
+        Layout!(Char).format(output, "{}{}[] {} (length {}):{}{}\n",
+            this.indent, T.stringof, name, array.length,
+            array.length ? " " : "", array);
     }
 
 
@@ -351,12 +388,13 @@ public class StringStructSerializer ( Char )
 version(UnitTest)
 {
     import ocean.core.Test;
+    import ocean.stdc.time;
 }
 
 unittest
 {
     auto t = new NamedTest("struct serializer test");
-    auto srlz = new StringStructSerializer!(char);
+    auto serializer = new StringStructSerializer!(char);
 
     struct TextFragment
     {
@@ -369,7 +407,7 @@ unittest
     text_fragment.type = 1;
 
     char[] buffer;
-    srlz.serialize(buffer, text_fragment);
+    serializer.serialize(buffer, text_fragment);
 
     t.test(buffer.length == 69, "Incorrect string serializer result length");
     t.test(buffer == "struct TextFragment:\n"
@@ -377,6 +415,46 @@ unittest
                      "   int type : 1\n",
         "Incorrect string serializer result");
 
+    cstring[] timestamp_fields = ["lastseen", "timestamp", "update_time"];
+
+    struct TextFragmentTime
+    {
+        char[] text;
+        time_t time;        // not detected
+        char[] lastseen;    // not detected (doesn't convert to ulong)
+        time_t timestamp;   // detected
+        time_t update_time; // detected
+    }
+
+    TextFragmentTime text_fragment_time;
+    text_fragment_time.text = "eins".dup;
+    text_fragment_time.time = 1456829726;
+
+    buffer.length = 0;
+    enableStomping(buffer);
+    serializer.serialize(buffer, text_fragment_time, timestamp_fields);
+
+    t.test(buffer.length == 204, "Incorrect string serializer result length");
+    t.test(buffer == "struct TextFragmentTime:\n"
+                     "   char[] text (length 4): eins\n"
+                     "   long time : 1456829726\n"
+                     "   char[] lastseen (length 0):\n"
+                     "   long timestamp : 0 (1970-01-01 00:00:00)\n"
+                     "   long update_time : 0 (1970-01-01 00:00:00)\n",
+        "Incorrect string serializer result");
+
+    buffer.length = 0;
+    enableStomping(buffer);
+    serializer.serialize(buffer, text_fragment_time);
+
+    t.test(buffer.length == 160, "Incorrect string serializer result length");
+    t.test(buffer == "struct TextFragmentTime:\n"
+                     "   char[] text (length 4): eins\n"
+                     "   long time : 1456829726\n"
+                     "   char[] lastseen (length 0):\n"
+                     "   long timestamp : 0\n"
+                     "   long update_time : 0\n",
+        "Incorrect string serializer result");
 
     struct MultiDimensionalArray
     {
@@ -389,7 +467,7 @@ unittest
 
     buffer.length = 0;
     enableStomping(buffer);
-    srlz.serialize(buffer, multi_dimensional_array);
+    serializer.serialize(buffer, multi_dimensional_array);
 
     t.test(buffer.length == 461, "Incorrect string serializer result length");
     t.test(buffer == "struct MultiDimensionalArray:\n"

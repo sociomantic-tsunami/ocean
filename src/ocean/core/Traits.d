@@ -1396,3 +1396,72 @@ unittest
     static void foo () {}
     testNoAlloc({ auto str = identifier!(foo); } ());
 }
+
+
+/*******************************************************************************
+
+    Get key and value type of an associative array in D1 (and D2)
+
+    In D2, one would check if a type `T` is an associative array (and
+    get its key / value type in scope) by using an `is` expression:
+
+    ---
+    static if (is(T V : V[K], K))
+        pragma(msg, "Key type: ", K, ", value type: ", V);
+    ---
+
+    Sadly D1 doesn't support this syntax.  However we can use type matching
+    in template argument to work around this problem.
+
+    The above example would then be rewritten as:
+
+    ---
+    static if (is(AAType!(T).Key))
+        pragma(msg, "Key type: ", AAType!(T).Key, ", value type: ",
+                AAType!(T).Value);
+    ---
+
+    Params:
+        T   = Associative array type
+        V   = Type of the AA value (deduced from the first arg)
+        K   = Type of the AA key (deduced from the first arg)
+
+*******************************************************************************/
+
+public template AAType (T : V[K], V, K)
+{
+    /***************************************************************************
+
+        Key type for the AA
+
+    ***************************************************************************/
+
+    public alias K Key;
+
+
+    /***************************************************************************
+
+        Value type for the AA
+
+    ***************************************************************************/
+
+    public alias V Value;
+}
+
+unittest
+{
+    static assert(is(AAType!(ushort[ulong]).Key == ulong));
+    static assert(is(AAType!(ushort[ulong]).Value == ushort));
+
+    static assert(is(AAType!(istring[Object]).Key == Object));
+    static assert(is(AAType!(istring[Object]).Value == istring));
+
+    static assert(!is(AAType!(istring[]).Key));
+    static assert(!is(AAType!(istring[]).Value));
+
+    static assert(!is(AAType!(int[42]).Key));
+    static assert(!is(AAType!(int[42]).Value));
+
+    static assert(!is(AAType!(Object).Key));
+    static assert(!is(AAType!(Object).Value));
+}

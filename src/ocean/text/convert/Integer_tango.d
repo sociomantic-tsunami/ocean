@@ -29,8 +29,8 @@
 module ocean.text.convert.Integer_tango;
 
 import ocean.transition;
-
 import ocean.core.Exception_tango;
+import ocean.core.Traits_tango;
 
 /******************************************************************************
 
@@ -233,9 +233,10 @@ unittest
 
  *******************************************************************************/
 
-Const!(T)[] format(T, TC = T) (T[] dst, long i, TC[] fmt = null)
+Const!(T)[] format(T, N) (T[] dst, N i, in T[] fmt = null)
 {
-    static assert (is(Unqual!(TC) == T));
+    static assert(isIntegerType!(N),
+                  "Integer_tango.format only supports integers");
 
     char    pre,
             type;
@@ -279,13 +280,17 @@ private void decode(T) (T[] fmt, ref char type, out char pre, out int width)
 
 private struct _FormatterInfo(T)
 {
-    uint    radix;
+    byte    radix;
     T[]     prefix;
     T[]     numbers;
 }
 
-Const!(T)[] formatter(T) (T[] dst, long i, char type, char pre, int width)
+Const!(T)[] formatter(T, N) (T[] dst, N i, char type, char pre, int width)
 {
+    static assert(isIntegerType!(N),
+                  "Integer_tango.formatter only supports integers");
+
+
     const Immut!(T)[] lower = "0123456789abcdef";
     const Immut!(T)[] upper = "0123456789ABCDEF";
 
@@ -293,7 +298,7 @@ Const!(T)[] formatter(T) (T[] dst, long i, char type, char pre, int width)
 
     const Info[] formats = [
         { 10, null, lower},
-        { 10, "-" , lower},
+        { -10, "-" , lower},
         { 10, " " , lower},
         { 10, "+" , lower},
         {  2, "0b", lower},
@@ -314,10 +319,7 @@ Const!(T)[] formatter(T) (T[] dst, long i, char type, char pre, int width)
             case 'g':
             case 'G':
                 if (i < 0)
-                {
                     index = 1;
-                    i = -i;
-                }
                 else
                     if (pre is ' ')
                         index = 2;
@@ -358,19 +360,23 @@ Const!(T)[] formatter(T) (T[] dst, long i, char type, char pre, int width)
 
         // convert number to text
         auto p = dst.ptr + len;
-        if (uint.max >= cast(ulong) i)
+
+
+        // Base 10 formatting
+        if (index <= 3 && index)
         {
-            auto v = cast (uint) i;
-            do {
-                *--p = numbers [v % radix];
-            } while ((v /= radix) && --len);
-        }
-        else
+            assert((i >= 0 && radix > 0) || (i < 0 && radix < 0));
+
+            do
+                *--p = numbers[abs(i % radix)];
+            while ((i /= radix) && --len);
+         }
+        else // Those numbers are not signed
         {
-            auto v = cast (ulong) i;
-            do {
-                *--p = numbers [cast(uint) (v % radix)];
-            } while ((v /= radix) && --len);
+            ulong v = reinterpretInteger!(ulong)(i);
+            do
+                *--p = numbers[v % radix];
+            while ((v /= radix) && --len);
         }
 
         auto prefix = (pre is '#') ? info.prefix : null;
@@ -700,6 +706,80 @@ unittest
     assert (s == "422");
 }
 
+
+/*******************************************************************************
+
+    Get the absolute value of a number
+
+    The number should not be == `T.min` if `T` is a signed number.
+    Since signed numbers use the two's complement, `-T.min` cannot be
+    represented: It would be `T.max + 1`.
+    Trying to calculate `-T.min` causes an integer overflow and results in
+    `T.min`.
+
+    Params:
+        x = A value between `T.min` (exclusive for signed number) and `T.max`
+
+    Returns:
+        The absolute value of `x` (`|x|`)
+
+*******************************************************************************/
+
+private T abs (T) (T x)
+in
+{
+    static if (T.min < 0)
+        assert(x != T.min, "abs cannot be called with x == " ~ T.stringof ~ ".min");
+}
+body
+{
+    return x >= 0 ? x : -x;
+}
+
+
+/*******************************************************************************
+
+    Truncates or zero-extend a value of type `From` to fit into `To`.
+
+    Getting the same binary representation of a number in a larger type can be
+    quite tedious, especially when it comes to negative numbers.
+    For example, turning `byte(-1)` into `long` or `ulong` gives different
+    result.
+    This functions allows to get the same exact binary representation of an
+    integral type into another. If the representation is truncating, it is
+    just a cast. If it is widening, it zero extends `val`.
+
+    Params:
+        To      = Type to convert to
+        From    = Type to convert from. If not specified, it is infered from
+                  val, so it will be an `int` when passing a literal.
+        val     = Value to reinterpret
+
+    Returns:
+        Binary representation of `val` typed as `To`
+
+*******************************************************************************/
+
+private To reinterpretInteger (To, From) (From val)
+{
+    static if (From.sizeof >= To.sizeof)
+        return cast(To) val;
+    else
+    {
+        static struct Reinterpreter
+        {
+            version (LittleEndian) From value;
+            // 0 padding
+            ubyte[To.sizeof - From.sizeof] pad;
+            version (BigEndian) From value;
+        }
+
+        Reinterpreter r = { value: val };
+        return *(cast(To*) &r.value);
+    }
+}
+
+
 /******************************************************************************
 
  ******************************************************************************/
@@ -814,6 +894,11 @@ unittest
     char[8] tmp1;
     assert (format(tmp1, 10L, "b12#") == "0b001010");
     assert (format(tmp1, 10L, "o12#") == "0o000012");
+
+    assert(format(tmp, long.min, "d") == "-9223372036854775808", tmp);
+    assert(format(tmp, long.max, "d") ==  "9223372036854775807", tmp);
+    assert(format(tmp, cast(ubyte) -1, "b") ==  "11111111", tmp);
+    assert(format(tmp, -1, "b") ==  "11111111111111111111111111111111", tmp);
 }
 
 /******************************************************************************
@@ -878,6 +963,3 @@ debug (Integer)
         Stdout.formatln (consume("0.123e-10  s", true)).newline;
     }
 }
-
-
-

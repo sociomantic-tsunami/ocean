@@ -17,7 +17,7 @@
 
 *******************************************************************************/
 
-module ocean.text.xml.c.LibXml2;
+deprecated module ocean.text.xml.c.LibXml2;
 
 
 
@@ -222,6 +222,7 @@ extern ( C )
 
 *******************************************************************************/
 
+deprecated("This function is to be moved into another repository")
 public void formatXmlErrorString ( xmlErrorPtr err, ref mstring str )
 {
     cstring dstr ( char* cstr )

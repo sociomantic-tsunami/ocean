@@ -117,6 +117,5 @@ that don't cause breaking changes.
 
 Any major version branch is maintained for 6 months from the point when the
 first release from the next major version branch happens. For example, the
-*v2.x.x* branch will get new features and bug fixes for 3 months starting with
+*v2.x.x* branch will get new features and bug fixes for 6 months starting with
 the release of *v3.0.0* and will then be dropped out of support.
-

@@ -13,7 +13,7 @@
         // A table with 3 columns
         scope table = new Table(3);
 
-        // First row is just a divider (---------------------)
+        // First row is just a divider
         table.firstRow.setDivider();
 
         // Next row contains the headings, a series of strings
@@ -68,7 +68,7 @@
         // A table with 4 columns
         scope table = new Table(4);
 
-        // First row is just a divider (---------------------)
+        // First row is just a divider
         table.firstRow.setDivider();
 
         // Next row contains a hash range occupying two (merged) cells. Note

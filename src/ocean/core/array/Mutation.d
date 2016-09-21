@@ -769,7 +769,7 @@ unittest
     Swaps elements of argument array so they all come in reverse order
 
     Params:
-        array slice to reverse in-place
+        array = array slice to reverse in-place
 
     Returns:
         slice of the argument

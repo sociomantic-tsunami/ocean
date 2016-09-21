@@ -25,6 +25,7 @@ module ocean.task.Task;
 static import core.thread;
 
 import ocean.transition;
+import ocean.core.array.Mutation : remove;
 import ocean.core.Test;
 import ocean.io.select.EpollSelectDispatcher;
 import ocean.io.model.ISuspendable;
@@ -155,6 +156,16 @@ public abstract class Task : ISuspendable
 
     /**************************************************************************
 
+        List of hooks that needs to be fired in case Task is killed in order
+        for other parts of the system to be able to tell that this task is
+        killed, in case they will reference it.
+
+    **************************************************************************/
+
+    private void delegate()[] kill_hooks;
+
+    /**************************************************************************
+
         Reserved index field which ensures that any Task derivative can be
         used with ObjectPool. That comes at minor cost of one unused size_t
         per Task instance if not needed which is not a problem.
@@ -277,6 +288,35 @@ public abstract class Task : ISuspendable
 
     /***************************************************************************
 
+        Registers a kill hook that will be executed when the Task is killed.
+
+        Params:
+            hook = delegate to be called when the task is killed
+
+    ***************************************************************************/
+
+    public void registerOnKillHook (void delegate() hook)
+    {
+        this.kill_hooks ~= hook;
+    }
+
+    /***************************************************************************
+
+        Unregisters a kill hook that would be executed when the Task is killed.
+
+        Params:
+            hook = delegate that would be called when the task is killed
+
+    ***************************************************************************/
+
+    public void unregisterOnKillHook (void delegate() hook)
+    {
+        this.kill_hooks.length = .remove(this.kill_hooks, hook);
+        enableStomping(this.kill_hooks);
+    }
+
+    /***************************************************************************
+
         Returns:
             true if the fiber is suspended
 
@@ -300,6 +340,12 @@ public abstract class Task : ISuspendable
 
         Task.kill_exception.file = file;
         Task.kill_exception.line = line;
+
+        // Perform additional callbacks on killing the Task
+        foreach (hook; this.kill_hooks)
+        {
+            hook();
+        }
 
         if (this is Task.getThis())
             throw Task.kill_exception;
@@ -357,6 +403,14 @@ public abstract class Task : ISuspendable
                 cast(void*) this, getMsg(e), e.file, e.line);
             this.fiber.yieldAndThrow(e);
             return;
+        }
+        finally
+        {
+            // This really belongs to this.recycle, however, that would
+            // impose a breaking change meaning that all users overriding
+            // this should call `super.recycle()`
+            this.kill_hooks.length = 0;
+            enableStomping(this.kill_hooks);
         }
 
         debug_trace("<{}> termination (end of main function)", cast(void*) this);

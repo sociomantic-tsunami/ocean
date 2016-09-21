@@ -381,8 +381,13 @@ unittest
 
 *******************************************************************************/
 
-void enableStomping(T)(ref T array)
+void enableStomping(T)(ref T[] array)
 {
+    static assert (
+        is(T == Unqual!(T)),
+        "Must not call `enableStomping` on const/immutable array"
+    );
+
     version(D_Version2)
     {
         assumeSafeAppend(array);
@@ -870,7 +875,7 @@ cstring getMsg ( Throwable e )
             // reusable exceptions don't have common base class which makes
             // impossible to accesss `reused_msg` directly but it is best to
             // ensure at least "traditional" exceptions are formatted correctly
-            // before failing 
+            // before failing
             if (e.msg.length)
                 return e.msg;
             else
@@ -894,7 +899,7 @@ cstring getMsg ( Throwable e )
         enableStomping(buffer);
         e.message((cstring chunk) {
             buffer ~= chunk;
-        });  
+        });
         return buffer;
     }
 }
@@ -914,7 +919,16 @@ unittest
 
 static import core.memory;
 
-static if (is(typeof(core.memory.GC.usage)))
+static if (is(typeof(core.memory.GC.stats)))
+{
+    void gc_usage ( out size_t used, out size_t free )
+    {
+        auto stats = core.memory.GC.stats();
+        used = stats.usedSize;
+        free = stats.freeSize;
+    }
+}
+else static if (is(typeof(core.memory.GC.usage)))
 {
     alias core.memory.GC.usage gc_usage;
 }

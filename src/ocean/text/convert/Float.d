@@ -34,6 +34,7 @@ import ocean.transition;
 
 import ocean.core.Exception_tango;
 static import tsm = ocean.stdc.math;
+static import Integer = ocean.text.convert.Integer_tango;
 
 /******************************************************************************
 
@@ -210,6 +211,81 @@ private bool negative (NumType x)
         auto pe = cast(ubyte *)&x;
         return (pe[9] & 0x80) != 0;
     }
+}
+
+
+/*******************************************************************************
+
+    Format a floating-point value according to a format string
+
+    Defaults to 2 decimal places and 10 exponent, as the other format overload
+    does.
+
+    Format specifiers (additive unless stated otherwise):
+        '.' = Do not pad
+        'e' or 'E' = Display exponential notation
+        Any number = Set the decimal precision
+
+    Params:
+        T      = character type
+        V      = Floating point type
+        output = Where to write the string to - expected to be large enough
+        v      = Number to format
+        fmt    = Format string, see this function's description
+
+    Returns:
+        A const reference to `output`
+
+*******************************************************************************/
+
+public Const!(T)[] format (T, V) (T[] output, V v, in T[] fmt)
+{
+    static assert(is(V : Const!(real)),
+                  "Float.format only support floating point types or types that"
+                  ~ "implicitly convert to them");
+
+    int dec = Dec;
+    int exp = Exp;
+    bool pad = true;
+
+    for (auto p = fmt.ptr, e = p + fmt.length; p < e; ++p)
+        switch (*p)
+        {
+        case '.':
+            pad = false;
+            break;
+        case 'e':
+        case 'E':
+            exp = 0;
+            break;
+        default:
+            Unqual!(T) c = *p;
+            if (c >= '0' && c <= '9')
+            {
+                dec = c - '0', c = p[1];
+                if (c >= '0' && c <= '9' && ++p < e)
+                    dec = dec * 10 + c - '0';
+            }
+            break;
+        }
+
+    return format!(T)(output, v, dec, exp, pad);
+}
+
+
+unittest
+{
+    char[64] buff;
+
+    assert(format(buff, 1.23f, cstring.init ) == "1.23" );
+    assert(format(buff, 1.23f, "f" ) == "1.23" );
+    assert(format(buff, 1.23456789L, "f4") == "1.2346" );
+    assert(format(buff, 0.0001, "e4") == "1.0000e-04");
+    assert(format(buff, 0.0001, "e4") == "1.0000e-04");
+
+    // Unlike Layout.floater, 'x' and 'X' aren't handled.
+    //assert(format(buff, 8400.0, "X") == "0X40C0680000000000");
+    assert(format(buff, 8400.0, "X") == "8400.00");
 }
 
 
@@ -444,6 +520,7 @@ version (float_dtoa)
 
      **********************************************************************/
 
+    deprecated("version = float_dtoa is deprecated")
     NumType parse (char[] src, uint* ate=null)
     {
         char* end;
@@ -462,6 +539,7 @@ version (float_dtoa)
 
      **********************************************************************/
 
+    deprecated("version = float_dtoa is deprecated")
     NumType parse (wchar[] src, uint* ate=null)
     {
         // cheesy hack to avoid pre-parsing :: max digits == 100
@@ -486,6 +564,7 @@ version (float_dtoa)
 
      **********************************************************************/
 
+    deprecated("version = float_dtoa is deprecated")
     NumType parse (dchar[] src, uint* ate=null)
     {
         // cheesy hack to avoid pre-parsing :: max digits == 100
@@ -504,8 +583,6 @@ version (float_dtoa)
 }
 else
 {
-    import Integer = ocean.text.convert.Integer_tango;
-
     /******************************************************************************
 
       Convert a formatted string of digits to a floating-point number.
@@ -705,6 +782,7 @@ TODO: this should be replaced, as it is not sufficiently accurate
 
      ******************************************************************************/
 
+    deprecated("version = float_old is deprecated")
     T[] format(T) (T[] dst, NumType x, uint decimals=Dec, int e=Exp, bool pad=Pad)
     {
         static T[] inf = "-inf";

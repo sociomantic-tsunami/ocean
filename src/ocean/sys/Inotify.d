@@ -219,7 +219,7 @@ public class Inotify : ISelectable
     public uint addWatch ( char[] path, uint events )
     {
         return cast(uint) this.e.enforceRet!(.inotify_add_watch)(&verify)
-                      .call(this.fd, StringC.toCstring(path), events);
+                      .call(this.fd, StringC.toCString(path), events);
     }
 
 

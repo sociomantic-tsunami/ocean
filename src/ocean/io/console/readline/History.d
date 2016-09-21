@@ -66,6 +66,6 @@ static this()
 
 void addHistory(mstring line)
 {
-    char* line_ptr = StringC.toCstring( line );
+    char* line_ptr = StringC.toCString( line );
     C.add_history(line_ptr);
 }

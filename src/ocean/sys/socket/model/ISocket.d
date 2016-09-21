@@ -1264,6 +1264,19 @@ public abstract class ISocket : InputDevice, IOutputDevice
         this.fd                  = -1;
         this.close_in_destructor = false;
     }
+
+
+    /**************************************************************************
+
+        Formats information about the socket into the provided buffer.
+
+        Params:
+            buf      = buffer to format into
+            io_error = true if an I/O error has been reported
+
+     **************************************************************************/
+
+    abstract public void formatInfo ( ref char[] buf, bool io_error );
 }
 
 // TODO: Replace with import ocean.stdc.posix.sys.socket: accept4

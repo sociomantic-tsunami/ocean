@@ -88,7 +88,7 @@ mstring readline(ref mstring prompt, ref mstring buffer)
     char* prompt_ptr = null;
     if (prompt != null)
     {
-        prompt_ptr = StringC.toCstring( prompt );
+        prompt_ptr = StringC.toCString( prompt );
     }
 
     char* c_buf = C.readline(prompt_ptr);

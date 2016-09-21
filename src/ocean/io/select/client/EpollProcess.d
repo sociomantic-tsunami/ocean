@@ -68,60 +68,15 @@
 
     ---
 
-
-    All EpollProcess instances created in this manner need to share the same
-    EpollSelectDispatcher instance (since they would rely on the singleton
-    instance of the ProcessMonitor class).
-
-    However, it is sometimes desirable to use more than one
+    It is sometimes desirable to use more than one
     EpollSelectDispatcher instance with various EpollProcess instances.
     One example of such usage is when an application needs to create
     short-lived EpollProcess instance(s) in a unittest block. In this case
     one EpollSelectDispatcher instance would be needed in the unittest
     block, and a different one in the application's main logic.
-    To achieve this, the singleton ProcessMonitor instance needs to be
-    circumvented for the EpollProcess instances of the unittest block.
-    This can be done by explicitly creating a ProcessMonitor instance and
-    passing it to both the constructor and the 'start' method of
-    EpollProcess. This involves the following changes to the usage example
-    above:
 
-    ---
-
-        class CurlProcess : EpollProcess
-        {
-            // Change the constructor to allow a process monitor to be passed.
-            this ( EpollSelectDispatcher epoll,
-                   ProcessMonitor process_monitor = null )
-            {
-                super(epoll, process_monitor);
-            }
-
-            // Similarly change the start method to allow a process monitor to
-            // be passed.
-            public void start ( char[] url,
-                                ProcessMonitor process_monitor = null )
-            {
-                super.start("curl", [url], process_monitor);
-            }
-
-            // The remaining code in this class is same as above.
-        }
-
-        // Create epoll selector instance (as above)
-
-        // Explicitly create a process monitor instance.
-        auto process_monitor = new EpollProcess.ProcessMonitor(epoll);
-
-        // Create a curl process instance passing the created process monitor.
-        auto process = new CurlProcess(epoll, process_monitor);
-
-        // Start the process, again passing the created process monitor.
-        process.start("http://www.google.com", process_monitor);
-
-        // Handle arriving data (as above)
-
-    ---
+    This will work provided that all processes created during the test have
+    terminated before the main application starts.
 
     Copyright:
         Copyright (c) 2009-2016 Sociomantic Labs GmbH.
@@ -150,9 +105,9 @@ import ocean.util.container.map.Map;
 
 import ocean.io.select.client.model.ISelectClient;
 
-import ocean.io.select.EpollSelectDispatcher;
+import ocean.io.select.client.SelectEvent;
 
-import ocean.io.select.client.SignalEvent;
+import ocean.io.select.EpollSelectDispatcher;
 
 import ocean.io.model.IConduit;
 
@@ -194,39 +149,24 @@ public abstract class EpollProcess
     /***************************************************************************
 
         Class to monitor and handle inter-process signals via a signal event
-        registered with epoll. All processes monitored by a given ProcessMonitor
-        instance must share the same EpollSelectDispatcher instance.
+        registered with epoll.
 
-        Note that an application would normally not need to explicitly
-        instantiate this class. Instead it could rely on the implicit singleton
-        instance created in the constructor of EpollProcess. However sometimes
-        an application needs to use different EpollSelectDispatcher instances
-        with different EpollProcess instances. In such situations, this class
-        can be explicitly instantiated and passed to EpollProcess. Refer the
-        usage example at the top of this module to see how this is done.
+        SIGCHLD event handling is an intrinsically global operation, so this
+        class exists only as a singleton.
 
     ***************************************************************************/
 
-    public static class ProcessMonitor
+    private static class GlobalProcessMonitor
     {
         /***********************************************************************
 
-            Signal event instance which handles SIGCHLD, indicating that a child
-            process has terminated. Registered with epoll when one or more
-            EpollProcesses are running.
+            Select event instance which is triggered when a SIGCHLD signal is
+            generated, indicating that a child process has terminated.
+            Registered with epoll when one or more EpollProcesses are running.
 
         ***********************************************************************/
 
-        private SignalEvent signal_event;
-
-
-        /***********************************************************************
-
-            Epoll instance which signal event is registered with.
-
-        ***********************************************************************/
-
-        private EpollSelectDispatcher epoll;
+        private SelectEvent sigchild_event;
 
 
         /***********************************************************************
@@ -242,27 +182,76 @@ public abstract class EpollProcess
 
             Constructor.
 
+        ***********************************************************************/
+
+        public this ( )
+        {
+            this.processes = new StandardKeyHashingMap!(EpollProcess, int)(20);
+
+            this.sigchild_event = new SelectEvent(&this.selectEventHandler);
+
+        }
+
+
+        /***********************************************************************
+
+            Enables or disables the SIGCHLD signal handler.
+
+            If the handler is enabled, then when a SIGCHLD event occurs, the
+            sigchild_event will be triggered.
+
             Params:
-                epoll = epoll instance to use for registering / unregistering
-                    signal event handler
+                enable = true to enable the handler, false to restore default
+                    signal handling
 
         ***********************************************************************/
 
-        public this ( EpollSelectDispatcher epoll )
+        private void enableSigChildHander ( bool enable )
         {
-            this.epoll = epoll;
 
-            this.processes = new StandardKeyHashingMap!(EpollProcess, int)(20);
+            sigaction_t sa;
 
-            this.signal_event = new SignalEvent(&this.signalHandler, [SIGCHLD]);
+            // SA_RESTART must be specified, to avoid problems with
+            // poorly-written code that does not handle EINTR correctly.
+
+            sa.sa_flags = SA_RESTART;
+            sa.sa_handler = enable ? &this.sigchld_handler : SIG_DFL;
+
+            sigaction(SIGCHLD, &sa, null);
+        }
+
+
+        /***********************************************************************
+
+            Signal handler for SIGCHLD.
+            Triggers the sigchild_event select event when a SIGCHLD signal
+            was received.
+
+            Params:
+                sig = the signal which has happened (always SIGCHLD)
+
+        ***********************************************************************/
+
+        static extern(C) void sigchld_handler ( int sig )
+        {
+            // It is legal to call SignalEvent.trigger() from inside a signal
+            // handler. This is because it is implemented using write(), which
+            // is included in the POSIX,1 2004 list of "safe functions" for
+            // signal handlers.
+
+            if ( EpollProcess.process_monitor.sigchild_event )
+            {
+                EpollProcess.process_monitor.sigchild_event.trigger();
+            }
         }
 
 
         /***********************************************************************
 
             Adds an EpollProcess instance to the set of running processes. The
-            SIGCHLD event handler is registered with epoll, and will call the
-            signalHandler() method when a child process terminates.
+            SIGCHLD event handler is registered with the epoll instance used
+            by the EpollProcess, and will call the signalHandler() method when
+            a child process terminates.
 
             Params:
                 process = process which has just started
@@ -272,29 +261,33 @@ public abstract class EpollProcess
         public void add ( EpollProcess process )
         {
             this.processes[process.process.pid] = process;
-            this.epoll.register(this.signal_event);
+
+            process.epoll.register(this.sigchild_event);
+
+            this.enableSigChildHander(true);
         }
 
 
         /***********************************************************************
 
-            Signal handler, fires when a SIGCHLD signal occurs. Calls waitpid to
-            find out which child process caused the signal to fire, informs the
-            corresponding EpollProcess instance that the process has exited, and
-            removes that process from the set of running signals. If there are
-            no further running processes, the SIGCHLD handler is unregistered
-            from epoll.
+            Event handler for the SIGCHILD SelectEvent.
 
-            Params:
-                siginfo = signal information struct, contains the id of the
-                    process which caused the signal to fire
+            Fired by the signal handler when a SIGCHLD signal occurs. Calls
+            waitpid to find out which child process caused the signal to fire,
+            informs the corresponding EpollProcess instance that the process has
+            exited, and removes that process from the set of running signals.
+            If there are no further running processes, the event is unregistered
+            from epoll and the signal handler is disabled.
+
+            Returns:
+                true if the event should fire again, false if it should be
+                unregistered from epoll
 
         ***********************************************************************/
 
-        private void signalHandler ( SignalEvent.SignalInfo siginfo )
+        private bool selectEventHandler ( )
         {
-            debug ( EpollProcess ) Stdout.formatln("Signal fired in epoll: "
-                                                   "pid = {}", siginfo.ssi_pid);
+            debug ( EpollProcess ) Stdout.formatln("Sigchild fired in epoll: ");
 
             pid_t pid;
             do
@@ -309,7 +302,7 @@ public abstract class EpollProcess
                 {
                     assert( errno() == ECHILD );
                     assert( this.processes.length == 0 );
-                    return;
+                    return false;
                 }
 
                 // waitpid returns 0 in the case where it would hang (if no
@@ -328,21 +321,55 @@ public abstract class EpollProcess
                         debug ( EpollProcess ) Stdout.formatln("pid {} "
                                                  "finished, ok = {}, code = {}",
                                                  pid, exited_ok, exit_code);
+
+                        auto epoll = process.epoll;
+
                         process.exit(exited_ok, exit_code);
+
+                        this.processes.remove(pid);
+
+                        this.unregisterEpollIfFinished(epoll);
                     }
 
-                    this.processes.remove(pid);
-
-                    if ( this.processes.length == 0 )
-                    {
-                        this.epoll.unregister(this.signal_event);
-
-                        // There cannot be any more children.
-                        return;
-                    }
                 }
             }
             while ( pid );
+
+            return true;
+        }
+
+        /***********************************************************************
+
+            Unregister the SIGCHLD event with epoll, if there are no more
+            processes using this epoll instance
+
+            Params:
+                epoll = epoll instance to use for unregistering
+
+        ***********************************************************************/
+
+        private void unregisterEpollIfFinished ( EpollSelectDispatcher epoll )
+        {
+            foreach ( pid, process ; this.processes )
+            {
+                if ( process.epoll == epoll )
+                {
+                    return;
+                }
+            }
+
+            // There are no remaining processes using this epoll instance, so
+            // unregister the event.
+
+            epoll.unregister(this.sigchild_event);
+
+            // If there are no more processes using _any_ epoll instance,
+            // disconnect the signal handler.
+
+            if ( !this.processes.length )
+            {
+                this.enableSigChildHander(false);
+            }
         }
     }
 
@@ -601,12 +628,11 @@ public abstract class EpollProcess
 
     /***************************************************************************
 
-        Singleton instance of ProcessMonitor that is used if an instance was not
-        explicitly given when instantiating the EpollProcess class.
+        Singleton instance of GlobalProcessMonitor
 
     ***************************************************************************/
 
-    private static ProcessMonitor process_monitor;
+    private mixin(global("static GlobalProcessMonitor process_monitor"));
 
 
     /***************************************************************************
@@ -697,6 +723,7 @@ public abstract class EpollProcess
     protected Process process;
 
 
+
     /***************************************************************************
 
         Constructor.
@@ -706,13 +733,10 @@ public abstract class EpollProcess
 
         Params:
             epoll = epoll selector to use
-            process_monitor = process monitor to use (null if the implicit
-                              singleton process monitor is to be used)
 
     ***************************************************************************/
 
-    public this ( EpollSelectDispatcher epoll,
-                  ProcessMonitor process_monitor = null )
+    public this ( EpollSelectDispatcher epoll )
     {
         this.epoll = epoll;
 
@@ -720,22 +744,13 @@ public abstract class EpollProcess
         this.stdout_handler = new StdoutHandler;
         this.stderr_handler = new StderrHandler;
 
-        if ( process_monitor is null )
+        if ( this.process_monitor is null )
         {
-            if ( this.process_monitor is null )
-            {
-                debug ( EpollProcess ) Stdout.formatln("Creating the implicit "
-                                                   "singleton process monitor");
+            debug ( EpollProcess ) Stdout.formatln("Creating the implicit "
+                                               "singleton process monitor");
 
-                this.process_monitor = new ProcessMonitor(this.epoll);
-            }
-
-            process_monitor = this.process_monitor;
+            this.process_monitor = new GlobalProcessMonitor();
         }
-
-        assert(this.epoll == process_monitor.epoll, "Mismatch between given "
-                   "EpollSelectDispatcher instance and the process monitor's "
-                   "EpollSelectDispatcher instance");
     }
 
 
@@ -748,13 +763,10 @@ public abstract class EpollProcess
 
         Params:
             args_with_command = command followed by arguments
-            process_monitor = process monitor to use (null if the implicit
-                              singleton process monitor is to be used)
 
     ***************************************************************************/
 
-    public void start ( Const!(mstring)[] args_with_command,
-                        ProcessMonitor process_monitor = null )
+    public void start ( Const!(mstring)[] args_with_command )
     {
         assert(this.state == State.None); // TODO: error notification?
 
@@ -773,18 +785,9 @@ public abstract class EpollProcess
 
         this.state = State.Running;
 
-        if ( process_monitor is null )
-        {
-            assert(this.process_monitor !is null, "Implicit singleton process "
-                                                  "monitor not initialised");
-
-            debug ( EpollProcess ) Stdout.formatln("Starting process using the "
-                                          "implicit singleton process monitor");
-
-            process_monitor = this.process_monitor;
-        }
-
-        process_monitor.add(this);
+        assert(this.process_monitor !is null, "Implicit singleton process "
+                                              "monitor not initialised");
+        this.process_monitor.add(this);
     }
 
 
@@ -806,6 +809,11 @@ public abstract class EpollProcess
             if ( !this.stdout_finalized )
             {
                 this.epoll.unregister(this.stdout_handler);
+            }
+
+            if ( !this.stderr_finalized )
+            {
+                this.epoll.unregister(this.stderr_handler);
             }
         }
     }
@@ -836,7 +844,16 @@ public abstract class EpollProcess
         if ( this.state == State.Suspended )
         {
             this.state = State.Running;
-            this.epoll.register(this.stdout_handler);
+
+            if ( !this.stdout_finalized )
+            {
+                this.epoll.register(this.stdout_handler);
+            }
+
+            if ( !this.stderr_finalized )
+            {
+                this.epoll.register(this.stderr_handler);
+            }
         }
     }
 
@@ -986,6 +1003,88 @@ public abstract class EpollProcess
             this.finished(this.exited_ok, this.exit_code);
         }
     }
+
+
+    /***************************************************************************
+
+        This class exists only for backwards compatibility. It has no effect.
+
+    ***************************************************************************/
+
+
+    deprecated ("This class has no effect. All instances of this class should "
+        "be removed") public static class ProcessMonitor
+    {
+        /***********************************************************************
+
+            Constructor.
+
+            Params:
+                epoll = Not used
+
+        ***********************************************************************/
+
+        public this ( EpollSelectDispatcher epoll )
+        {
+        }
+
+        /***********************************************************************
+
+            This function exists only for backwards compatibility.
+
+            Params:
+                process = Not used
+
+        ***********************************************************************/
+
+        public void add ( EpollProcess process )
+        {
+        }
+
+    }
+
+
+    /***************************************************************************
+
+        Constructor.
+
+        Note: the constructor does not actually start a process, the start()
+        method does that.
+
+        Params:
+            epoll = epoll selector to use
+            process_monitor = this parameter is ignored
+
+    ***************************************************************************/
+
+    deprecated("Remove the unused ProcessMonitor parameter from this call")
+    public this ( EpollSelectDispatcher epoll,
+                  ProcessMonitor unused )
+    {
+        this(epoll);
+    }
+
+
+    /***************************************************************************
+
+        Starts the process with the specified command and arguments. Registers
+        the handlers for the process' stdout and stderr streams with epoll, so
+        that notifications will be triggered when the process generates output.
+        The command to execute is args_with_command[0].
+
+        Params:
+            args_with_command = command followed by arguments
+            process_monitor = this parameter is ignored
+
+    ***************************************************************************/
+
+    deprecated("Remove the unused ProcessMonitor parameter from this call")
+    public void start ( Const!(mstring)[] args_with_command,
+                        ProcessMonitor process_monitor )
+    {
+        this.start(args_with_command);
+    }
+
 }
 
 
@@ -1003,27 +1102,11 @@ version ( UnitTest )
 
 unittest
 {
-    /* IMPORTANT NOTE:
-     * In this unittest block, do not do anything that would cause
-     * EpollProcess to be instantiated with the 'process_monitor' argument
-     * being null. Doing so would result in the singleton process monitor
-     * instance being created even before an application's main function is
-     * entered. This would preclude the application's ability to use the
-     * singleton process monitor instance, as there would be no way for the
-     * application to use the same EpollSelectDispatcher instance as that of
-     * the already created singleton process monitor. */
-
     class MyProcess : EpollProcess
     {
-        /* The 'process_monitor' argument of this constructor deliberately
-         * does not have a default value. This makes sure that a process
-         * monitor must be explicitly supplied to create an instance of this
-         * class, and thus prevents automatic creation of the singleton
-         * process monitor. */
-        public this ( EpollSelectDispatcher epoll,
-                      ProcessMonitor process_monitor )
+        public this ( EpollSelectDispatcher epoll )
         {
-            super(epoll, process_monitor);
+            super(epoll);
         }
         protected override void stdout ( ubyte[] data ) { }
         protected override void stderr ( ubyte[] data ) { }
@@ -1033,33 +1116,10 @@ unittest
     scope epoll1 = new EpollSelectDispatcher;
     scope epoll2 = new EpollSelectDispatcher;
 
-    scope process_monitor1 = new EpollProcess.ProcessMonitor(epoll1);
-    scope process_monitor2 = new EpollProcess.ProcessMonitor(epoll2);
+    // It is ok to have two different epoll instances.
 
-    scope proc1 = new MyProcess(epoll1, process_monitor1);
+    scope proc1 = new MyProcess(epoll1);
 
-    bool thrown = false;
-    try
-    {
-        // should throw because of mismatch between epoll2 and
-        // process_monitor1.
-        scope proc2 = new MyProcess(epoll2, process_monitor1);
-    }
-    catch
-    {
-        thrown = true;
-    }
-    test(thrown, "Expected exception was not thrown");
-
-    try
-    {
-        // should not throw now because the instances of
-        // EpollSelectDispatcher now match.
-        scope proc2 = new MyProcess(epoll2, process_monitor2);
-    }
-    catch
-    {
-        test(false, "Exception should not have been thrown");
-    }
+    scope proc2 = new MyProcess(epoll2);
 }
 

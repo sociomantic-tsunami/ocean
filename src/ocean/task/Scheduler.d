@@ -103,6 +103,15 @@ final class Scheduler
 {
     /***************************************************************************
 
+        Set when shutdown sequence is initiated and normal mode of operations
+        has to be prevented.
+
+    ***************************************************************************/
+
+    private bool shutting_down = false;
+
+    /***************************************************************************
+
         Thrown instead of `AssertError` when scheduler sanity is violated. Such
         issues are almost impossible to reason about if not caught in time
         thus we want all sanity checks to remain even in `-release` mode.
@@ -265,6 +274,9 @@ final class Scheduler
         Forces early termination of all active tasks and shuts down
         event loop.
 
+        After this method has been called any attempt to interact with
+        the scheduler will kill the calling task.
+
     ***************************************************************************/
 
     public void shutdown ( )
@@ -273,12 +285,17 @@ final class Scheduler
             " discardead, {} suspended tasks will be killed",
             this.queued_tasks.length(), this.suspended_tasks.length());
 
+        this.shutting_down = true;
         this.queued_tasks.clear();
 
         Task task;
         while (this.suspended_tasks.pop(task))
             task.kill();
         this.epoll.shutdown();
+
+        task = Task.getThis();
+        if (task !is null)
+            task.kill();
     }
 
     /***************************************************************************
@@ -323,6 +340,13 @@ final class Scheduler
 
     public void schedule ( Task task )
     {
+        if (this.shutting_down)
+        {
+            auto caller_task = Task.getThis();
+            if (caller_task !is null)
+                caller_task.kill();
+        }
+
         if (this.fiber_pool.num_busy() >= this.fiber_pool.limit())
         {
             if (!this.queued_tasks.push(task))
@@ -402,6 +426,10 @@ final class Scheduler
     public void processEvents ( istring file = __FILE__, int line = __LINE__ )
     {
         auto task = Task.getThis();
+
+        if (this.shutting_down)
+            task.kill();
+
         enforceImpl(
             this.suspend_queue_full_e,
             this.suspended_tasks.push(task),
@@ -458,7 +486,7 @@ final class Scheduler
 
         runTask(fiber, task);
 
-        while (this.queued_tasks.pop(task))
+        while (this.queued_tasks.pop(task) && !this.shutting_down)
         {
             // there are some scheduled tasks in the queue. it is best for
             // latency and performance to start one of those immediately in
@@ -498,7 +526,10 @@ final class Scheduler
         {
             Task task;
             enforce(this.sanity_e, this.suspended_tasks.pop(task));
-            task.resume();
+            if (this.shutting_down)
+                task.kill();
+            else
+                task.resume();
         }
     }
 }
