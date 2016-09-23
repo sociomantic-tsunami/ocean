@@ -57,15 +57,7 @@ public alias size_t delegate(cstring) Sink;
 
 public istring format (Args...) (cstring fmt, Args args)
 {
-    // Small allocation optimization: If the formatted string is 128 chars
-    // or less, this will perform only one allocation, while appending to
-    // a 0-length buffer may perform multiple.
-    // 128 was picked because it is reasonable enough without
-    // using too much of the stack
-    char[128] stackBuffer = void;
-    mstring buffer = stackBuffer;
-    buffer.length = 0;
-    enableStomping(buffer);
+    mstring buffer;
 
     scope Sink sink = (cstring s)
     {
@@ -74,8 +66,7 @@ public istring format (Args...) (cstring fmt, Args args)
     };
 
     sformat(sink, fmt, args);
-    return buffer.ptr is stackBuffer.ptr
-        ? idup(buffer) : assumeUnique(buffer);
+    return assumeUnique(buffer);
 }
 
 
