@@ -88,7 +88,7 @@ public class KeyDerivationCore ( KDF algorithm, Hasher hasher )
 
     ***************************************************************************/
 
-    public this ( Immut!(ubyte)[] passphrase, Immut!(ubyte)[] salt )
+    public this ( in ubyte[] passphrase, in ubyte[] salt )
     {
         this.passphrase = passphrase;
         this.salt = salt;
