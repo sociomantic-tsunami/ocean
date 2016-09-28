@@ -11,12 +11,12 @@
 
     Copyright:
         Copyright (c) 2009-2016 Sociomantic Labs GmbH.
+        Some parts (marked explicitly) copyright Kris and/or Larvisi.
         All rights reserved.
 
     License:
-        Boost Software License Version 1.0. See LICENSE_BOOST.txt for details.
-        Alternatively, this file may be distributed under the terms of the Tango
-        3-Clause BSD License (see LICENSE_BSD.txt for details).
+        Tango Dual License: 3-Clause BSD License / Academic Free License v3.0.
+        See LICENSE_TANGO.txt for details.
 
 ******************************************************************************/
 
@@ -540,6 +540,11 @@ private template DropTypedef (T)
             sink    = An output delegate to write to
             fmt     = The format string to consume
 
+        Copyright:
+            This function was adapted from
+            `tango.text.convert.Layout.Layout.consume`.
+            The original was (c) Kris
+
         Returns:
             A description of the format specification, see `FormatInfo`'s
             definition for more details
@@ -724,6 +729,10 @@ private size_t writeSpace (Sink s, size_t n)
             f = Value in which to store the number
             s = Pointer to consume / read from
 
+        Copyright:
+            Originally from `tango.text.convert.Layout`.
+            Copyright Kris
+
         Returns:
             `true` if a number was read, `false` otherwise
 
@@ -842,6 +851,10 @@ private struct FormatInfo
 /*******************************************************************************
 
     Original tango Layout unittest, minus changes of behaviour
+
+    Copyright:
+        Those unittests come from `tango.text.convert.Layout`.
+        Copyright Kris & Larvisi
 
     Note:
         Those tests use `assert` instead of `ocean.core.Test.test`
