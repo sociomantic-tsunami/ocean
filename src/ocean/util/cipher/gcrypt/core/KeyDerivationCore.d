@@ -60,7 +60,7 @@ public class KeyDerivationCore ( KDF algorithm, Hasher hasher )
 
     ***************************************************************************/
 
-    private Const!(void)[] passphrase;
+    private Const!(ubyte)[] passphrase;
 
     /***************************************************************************
 
@@ -68,7 +68,7 @@ public class KeyDerivationCore ( KDF algorithm, Hasher hasher )
 
     ***************************************************************************/
 
-    private Const!(void)[] salt;
+    private Const!(ubyte)[] salt;
 
     /***************************************************************************
 
@@ -118,7 +118,7 @@ public class KeyDerivationCore ( KDF algorithm, Hasher hasher )
     {
         auto error = gcry_kdf_derive(this.passphrase.ptr, this.passphrase.length,
             algorithm, hasher, this.salt.ptr, this.salt.length, iterations,
-            key_buf.length, cast(void*)key_buf.ptr);
+            key_buf.length, key_buf.ptr);
 
         this.exception.throwIfGcryptError(error);
 
