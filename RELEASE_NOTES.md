@@ -12,13 +12,6 @@ be used (and will be removed in the next major release) but will not break any
 old code, and **New Features** which are new features available in the new
 version that users might find interesting.
 
-Migration Instructions
-======================
-
-
-Deprecations
-============
-
 
 New Features
 ============
