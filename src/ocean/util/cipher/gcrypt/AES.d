@@ -9,7 +9,7 @@
         http://csrc.nist.gov/publications/fips/fips197/fips-197.pdf
 
     Copyright:
-        Copyright (c) 2015-2016 Sociomantic Labs GmbH.
+        Copyright (c) 2009-2016 Sociomantic Labs GmbH.
         All rights reserved.
 
     License:
