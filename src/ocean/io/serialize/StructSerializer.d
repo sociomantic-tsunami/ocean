@@ -544,7 +544,7 @@ struct StructSerializer ( bool AllowUnions = false )
             alias typeof(field) T;
             const field_name = FieldName!(i, S);
 
-            static if ( is(T == struct) )
+            static if ( is(T == struct) && !is(T.IsTypedef) )
             {
                 serializer.openStruct(data, field_name);
                 serialize_(&field, serializer, data);                            // recursive call

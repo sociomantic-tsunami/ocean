@@ -830,10 +830,9 @@ unittest
 
     version (D_Version2)
     {
-        t.test!("==")(buffer.length, 64);
+        t.test!("==")(buffer.length, 50);
         t.test(buffer == "struct StructWithTypedef:\n" ~
-                         "   struct a:\n" ~
-                         "      ulong value : 1000\n",
+                         "   AdskilletId a : 1000\n",
             "Incorrect string serializer result");
     }
     else
