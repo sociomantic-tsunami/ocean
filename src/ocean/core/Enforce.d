@@ -22,7 +22,7 @@ module ocean.core.Enforce;
 *******************************************************************************/
 
 import ocean.transition;
-import ocean.text.convert.Format;
+import ocean.text.convert.Formatter;
 
 
 /******************************************************************************
@@ -384,7 +384,7 @@ unittest
     catch (Exception e)
     {
         assert(e.line == __LINE__ - 5);
-        assert(getMsg(e) == "expression '0 !is 0' evaluates to false");
+        assert(getMsg(e) == "expression 'null !is null' evaluates to false");
     }
 
     // Check that enforce won't try to modify the exception reference
@@ -424,7 +424,7 @@ public void enforceImpl ( istring op, T1, T2 ) ( lazy Exception e, T1 a,
     if (!ok)
     {
         auto exception = e;
-        exception.msg = Format("expression '{} {} {}' evaluates to false", a, op, b);
+        exception.msg = format("expression '{} {} {}' evaluates to false", a, op, b);
         exception.file = file;
         exception.line = line;
         throw exception;
@@ -478,7 +478,7 @@ unittest
     catch (MyException e)
     {
         assert(e.line == __LINE__ - 5);
-        assert(getMsg(e) == "expression '2b is 2a' evaluates to false");
+        assert(getMsg(e) == "expression '0X000000000000002B is 0X000000000000002A' evaluates to false");
     }
 
     // call enforce() with condition "2 == 2" and verify it doesn't evaluate its

@@ -27,7 +27,7 @@ import ocean.transition;
 
 import core.memory;
 import ocean.core.Enforce;
-import ocean.text.convert.Format;
+import ocean.text.convert.Formatter;
 
 /******************************************************************************
 
@@ -228,11 +228,11 @@ class NamedTest : TestException
         {
             if (this.name.length)
             {
-                return Format("[{}] {}", this.name, this.msg);
+                return format("[{}] {}", this.name, this.msg);
             }
             else
             {
-                return Format("{}", this.msg);
+                return format("{}", this.msg);
             }
         }
     }
@@ -342,4 +342,38 @@ unittest
     testThrown!(TestException)(
         testNoAlloc({ auto x = new int; } ())
     );
+}
+
+unittest
+{
+    auto t = new NamedTest("struct");
+
+    struct S { int a; char[2] arr; }
+
+    try
+    {
+        t.test!("==")(S(1, ['a', 'b']), S(2, ['c', 'd']));
+        assert(false);
+    }
+    catch (TestException e)
+    {
+        assert(getMsg(e) == `[struct] expression '{ a: 1, arr: "ab" } == { a: 2, arr: "cd" }' evaluates to false`);
+    }
+}
+
+unittest
+{
+    auto t = new NamedTest("typedef");
+
+    mixin(Typedef!(int, "MyInt"));
+
+    try
+    {
+        t.test!("==")(cast(MyInt)10, cast(MyInt)20);
+        assert(false);
+    }
+    catch (TestException e)
+    {
+        assert(getMsg(e) == `[typedef] expression '10 == 20' evaluates to false`);
+    }
 }
