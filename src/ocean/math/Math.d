@@ -1819,16 +1819,25 @@ unittest
 {
     static real[3][] vals = // x,y,hypot
     [
-        [   0,  0,  0],
-        [   0,  -0, 0],
-        [   3,  4,  5],
-        [   -300,   -400,   500],
-        [   3 * min_normal!(real) * real.epsilon, 4 * min_normal!(real) * real.epsilon, 5 * min_normal!(real) * real.epsilon],
-        [   min_normal!(real), min_normal!(real),  0x1.6a09e667f3bcc908p-16382L],
-        [   real.max/2, real.max/2, 0x1.6a09e667f3bcc908p+16383L /*8.41267e+4931L*/],
-        [   real.max, 1, real.max],
-        [   real.infinity, real.nan, real.infinity],
-        [   real.nan, real.nan, real.nan],
+        [ 0.0,   0.0,  0.0],
+        [ 0.0,  -0.0,  0.0],
+        [-0.0,  -0.0,  0.0],
+        [ 3.0,   4.0,  5.0],
+        [-300,  -400,  500],
+        [ 0.0,   7.0,  7.0],
+        [ 9.0,   9.0 * real.epsilon, 9.0],
+        [ 0xb.0p+8188L /+88 / (64 * sqrt(real.min_normal))+/, 0xd.2p+8188L /+105 / (64 * sqrt(real.min_normal))+/, 0x8.9p+8189L /+137 / (64 * sqrt(real.min_normal))+/],
+        [ 0xb.0p+8187L /+88 / (128 * sqrt(real.min_normal))+/, 0xd.2p+8187L /+105 / (128 * sqrt(real.min_normal))+/, 0x8.9p+8188L /+137 / (128 * sqrt(real.min_normal))+/],
+        [ 3 * min_normal!(real) * real.epsilon, 4 * min_normal!(real) * real.epsilon, 5 * min_normal!(real) * real.epsilon],
+        [ min_normal!(real), min_normal!(real),  0x1.6a09e667f3bcc908p-16382L /+sqrt(2.0L) * real,min_normal+/],
+        [ real.max / 2.0, real.max / 2.0, 0x1.6a09e667f3bcc908p+16383L /+real.max / sqrt(2.0L)+/],
+        [ 0x1.6a09e667f3bcc908p+16383L /+real.max / sqrt(2.0L)+/, 0x1.6a09e667f3bcc908p+16383L /+real.max / sqrt(2.0L)+/, real.max],
+        [ real.max, 1.0, real.max],
+        [ real.infinity, real.nan, real.infinity],
+        [ real.nan, real.infinity, real.infinity],
+        [ real.nan, real.nan, real.nan],
+        [ real.nan, real.max, real.nan],
+        [ real.max, real.nan, real.nan]
     ];
 
     for (int i = 0; i < vals.length; i++)
