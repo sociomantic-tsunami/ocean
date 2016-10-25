@@ -1004,7 +1004,14 @@ class MapSerializer
 
         static if ( Version.Info!(T[index]).exists )
         {
-            const can_convert = (Version.Info!(T[index]).number > 0);
+            // Normally we should be able to use `MissingVersion.exists`
+            // directly (which is `false`), but it triggers a DMD bug in D1.
+            // DMD doesn't seem able to do anything with
+            // `Version.Info!(T[index]).prev` except compare it with a type.
+            // This can be checked by replacing `can_convert` with:
+            // `const can_convert = Version.Info!(T[index]).prev.exists;`
+            const can_convert
+                = !is(Version.Info!(T[index]).prev == MissingVersion);
         }
         else
         {
