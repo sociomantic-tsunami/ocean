@@ -1823,6 +1823,7 @@ unittest
         [   0,  -0, 0],
         [   3,  4,  5],
         [   -300,   -400,   500],
+        [   3 * min_normal!(real) * real.epsilon, 4 * min_normal!(real) * real.epsilon, 5 * min_normal!(real) * real.epsilon],
         [   min_normal!(real), min_normal!(real),  0x1.6a09e667f3bcc908p-16382L],
         [   real.max/2, real.max/2, 0x1.6a09e667f3bcc908p+16383L /*8.41267e+4931L*/],
         [   real.max, 1, real.max],
