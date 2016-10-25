@@ -1584,6 +1584,47 @@ unittest
         }
     }
 
+    static struct NoPrevious
+    {
+        const StructVersion = 42;
+
+        int hello;
+
+        bool compare ( NoPrevious* olds )
+        {
+            return olds.hello == hello;
+        }
+    }
+
+    static struct SinglePrevious
+    {
+        const StructVersion = 42;
+        int hello42;
+
+        void convert_hello42 ( ref StructPrevious p)
+        {
+            this.hello42 = p.hello + 42;
+        }
+
+        bool compare ( StructPrevious* olds )
+        {
+            return this.hello42 == (olds.hello + 42);
+        }
+
+        static struct StructPrevious
+        {
+            const StructVersion = 41;
+            alias SinglePrevious StructNext;
+            int hello;
+
+            bool compare ( StructNext* news )
+            {
+                return this.hello == (news.hello42 - 42);
+            }
+        }
+    }
+
+
     // Test creation of a SerializingMap instance
     class HashingSerializingMap : SerializingMap!(int,int)
     {
@@ -1639,6 +1680,11 @@ unittest
     testCombination!(OldKey, OldStruct, NewKey, NewStruct, version4_load_code)(Iterations);
     testCombination!(OldKey, OldStruct, NewerKey, NewStruct, version4_load_code)(Iterations);
     testCombination!(OldKey, OldStruct, NewerKey, NewerStruct,version4_load_code)(Iterations);
+
+    // Test that structs that stripped backward compatibily can be used
+    testCombination!(hash_t, NoPrevious, hash_t, NoPrevious)(Iterations);
+    testCombination!(hash_t, SinglePrevious.StructPrevious,
+                     hash_t, SinglePrevious)(Iterations);
 }
 
 version (UnitTest)
