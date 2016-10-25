@@ -1763,70 +1763,56 @@ unittest
  */
 real hypot(real x, real y)
 {
-    /*
-     * This is based on code from:
-     * Cephes Math Library Release 2.1:  January, 1989
-     * Copyright 1984, 1987, 1989 by Stephen L. Moshier
-     * Direct inquiries to 30 Frost Street, Cambridge, MA 02140
-     */
+    // Scale x and y to avoid underflow and overflow.
+    // If one is huge and the other tiny, return the larger.
+    // If both are huge, avoid overflow by scaling by 1/sqrt(real.max/2).
+    // If both are tiny, avoid underflow by scaling by sqrt(real.min_normal*real.epsilon).
 
-    const int PRECL = real.mant_dig/2; // = 32
+    const real SQRTMIN = 0x8.0p-8195L; // 0.5 * sqrt(min_normal!(real)); // This is a power of 2.
+    const real SQRTMAX = 1.0L / SQRTMIN; // 2^^((max_exp)/2) = nextUp(sqrt(real.max))
 
-    real xx, yy, b, re, im;
-    int ex, ey, e;
+    static assert(2 * (SQRTMAX / 2) * (SQRTMAX / 2) <= real.max);
 
-    // Note, hypot(INFINITY, NAN) = INFINITY.
-    if (ocean.math.IEEE.isInfinity(x) || ocean.math.IEEE.isInfinity(y))
-        return real.infinity;
+    // Proves that sqrt(real.max) ~~  0.5/sqrt(real.min_normal)
+    static assert(min_normal!(real) * real.max > 2 && min_normal!(real) * real.max <= 4);
 
-    if (ocean.math.IEEE.isNaN(x))
-        return x;
-    if (ocean.math.IEEE.isNaN(y))
-        return y;
-
-    re = ocean.math.IEEE.fabs(x);
-    im = ocean.math.IEEE.fabs(y);
-
-    if (re == 0.0)
-        return im;
-    if (im == 0.0)
-        return re;
-
-    // Get the exponents of the numbers
-    xx = ocean.math.IEEE.frexp(re, ex);
-    yy = ocean.math.IEEE.frexp(im, ey);
-
-    // Check if one number is tiny compared to the other
-    e = ex - ey;
-    if (e > PRECL)
-        return re;
-    if (e < -PRECL)
-        return im;
-
-    // Find approximate exponent e of the geometric mean.
-    e = (ex + ey) >> 1;
-
-    // Rescale so mean is about 1
-    xx = ocean.math.IEEE.ldexp(re, -e);
-    yy = ocean.math.IEEE.ldexp(im, -e);
-
-    // Hypotenuse of the right triangle
-    b = sqrt(xx * xx  +  yy * yy);
-
-    // Compute the exponent of the answer.
-    yy = ocean.math.IEEE.frexp(b, ey);
-    ey = e + ey;
-
-    // Check it for overflow and underflow.
-    if (ey > real.max_exp + 2) {
-        return real.infinity;
+    real u = fabs(x);
+    real v = fabs(y);
+    if (!(u >= v))  // check for NaN as well.
+    {
+        v = u;
+        u = fabs(y);
+        if (u == real.infinity) return u; // hypot(inf, nan) == inf
+        if (v == real.infinity) return v; // hypot(nan, inf) == inf
     }
-    if (ey < real.min_exp - 2)
-        return 0.0;
 
-    // Undo the scaling
-    b = ocean.math.IEEE.ldexp(b, e);
-    return b;
+    // Now u >= v, or else one is NaN.
+    if (v >= SQRTMAX * 0.5)
+    {
+            // hypot(huge, huge) -- avoid overflow
+        u *= SQRTMIN * 0.5;
+        v *= SQRTMIN * 0.5;
+        return sqrt(u * u + v * v) * SQRTMAX * 2.0;
+    }
+
+    if (u <= SQRTMIN)
+    {
+        // hypot (tiny, tiny) -- avoid underflow
+        // This is only necessary to avoid setting the underflow
+        // flag.
+        u *= SQRTMAX / real.epsilon;
+        v *= SQRTMAX / real.epsilon;
+        return sqrt(u * u + v * v) * SQRTMIN * real.epsilon;
+    }
+
+    if (u * real.epsilon > v)
+    {
+        // hypot (huge, tiny) = huge
+        return u;
+    }
+
+    // both are in the normal range
+    return sqrt(u * u + v * v);
 }
 
 unittest
