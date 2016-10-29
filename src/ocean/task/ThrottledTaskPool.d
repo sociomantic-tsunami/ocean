@@ -32,6 +32,7 @@ public class ThrottledTaskPool ( TaskT ) : TaskPool!(TaskT)
     import ocean.core.Traits;
     import ocean.core.Enforce;
     import ocean.io.model.ISuspendableThrottler;
+    import ocean.task.Task;
     import ocean.task.Scheduler;
     import ocean.text.convert.Format;
 
@@ -238,11 +239,25 @@ public class ThrottledTaskPool ( TaskT ) : TaskPool!(TaskT)
 
         auto task = cast(TaskT) this.get(new ProcessingTask);
         assert (task !is null);
-        scope(failure)
-            this.recycle(task);
 
-        task.copyArguments(args);
-        theScheduler.schedule(task);
+        try
+        {
+            task.copyArguments(args);
+            theScheduler.schedule(task);
+        }
+        catch (TaskKillException e)
+        {
+            // don't try recycling task upon TaskKillException as this is not
+            // normal code flow and it may have already been recycled by
+            // finishing on its own
+            throw e;
+        }
+        catch (Exception e)
+        {
+            this.recycle(task);
+            throw e;
+        }
+
         this.throttler.throttledSuspend();
 
         return true;
@@ -273,11 +288,25 @@ public class ThrottledTaskPool ( TaskT ) : TaskPool!(TaskT)
 
             auto task = cast(TaskT) this.get(new ProcessingTask);
             assert (task !is null);
-            scope(failure)
-                this.recycle(task);
 
-            task.deserialize(serialized);
-            theScheduler.schedule(task);
+            try
+            {
+                task.deserialize(serialized);
+                theScheduler.schedule(task);
+            }
+            catch (TaskKillException e)
+            {
+                // don't try recycling task upon TaskKillException as this is not
+                // normal code flow and it may have already been recycled by
+                // finishing on its own
+                throw e;
+            }
+            catch (Exception e)
+            {
+                this.recycle(task);
+                throw e;
+            }
+
             this.throttler.throttledSuspend();
 
             return true;

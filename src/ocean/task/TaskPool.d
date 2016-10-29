@@ -131,11 +131,24 @@ class TaskPool ( TaskT : Task ) : ObjectPool!(Task)
 
         auto task = cast(TaskT) this.get(new OwnedTask);
         assert (task !is null);
-        scope(failure)
-            this.recycle(task);
 
-        task.copyArguments(args);
-        theScheduler.schedule(task);
+        try
+        {
+            task.copyArguments(args);
+            theScheduler.schedule(task);
+        }
+        catch (TaskKillException e)
+        {
+            // don't try recycling task upon TaskKillException as this is not
+            // normal code flow and it may have already been recycled by
+            // finishing on its own
+            throw e;
+        }
+        catch (Exception e)
+        {
+            this.recycle(task);
+            throw e;
+        }
 
         return true;
     }
@@ -165,11 +178,24 @@ class TaskPool ( TaskT : Task ) : ObjectPool!(Task)
 
             auto task = cast(TaskT) this.get(new OwnedTask);
             assert (task !is null);
-            scope(failure)
-                this.recycle(task);
 
-            task.deserialize(serialized);
-            theScheduler.schedule(task);
+            try
+            {
+                task.deserialize(serialized);
+                theScheduler.schedule(task);
+            }
+            catch (TaskKillException e)
+            {
+                // don't try recycling task upon TaskKillException as this is not
+                // normal code flow and it may have already been recycled by
+                // finishing on its own
+                throw e;
+            }
+            catch (Exception e)
+            {
+                this.recycle(task);
+                throw e;
+            }
 
             return true;
         }
