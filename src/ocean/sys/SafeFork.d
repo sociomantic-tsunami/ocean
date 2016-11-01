@@ -281,10 +281,17 @@ public class SafeFork
 
         siginfo_t siginfo;
 
-        this.exception.enforceRetCode!(waitid)().call(
-            idtype_t.P_PID, this.child_pid, &siginfo,
-                 WEXITED | (block ? 0 : WNOHANG) | (clear ? 0 : WNOWAIT)
-        );
+        // In the case where we are blocking, we need to consider signals
+        // arriving while we wait, and resume the waiting if EINTR is returned
+        int waitid_ret = void;
+        do
+        {
+            waitid_ret = waitid(idtype_t.P_PID, this.child_pid, &siginfo,
+                 WEXITED | (block ? 0 : WNOHANG) | (clear ? 0 : WNOWAIT));
+        }
+        while (waitid_ret == -1 && errno == EINTR);
+
+        this.exception.enforce(waitid_ret == 0, "waitid failed", "waitid");
 
         return siginfo._sifields._kill.si_pid == 0;
     }

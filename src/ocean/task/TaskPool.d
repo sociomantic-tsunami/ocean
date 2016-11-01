@@ -131,6 +131,9 @@ class TaskPool ( TaskT : Task ) : ObjectPool!(Task)
 
         auto task = cast(TaskT) this.get(new OwnedTask);
         assert (task !is null);
+        scope(failure)
+            this.recycle(task);
+
         task.copyArguments(args);
         theScheduler.schedule(task);
 
@@ -162,6 +165,9 @@ class TaskPool ( TaskT : Task ) : ObjectPool!(Task)
 
             auto task = cast(TaskT) this.get(new OwnedTask);
             assert (task !is null);
+            scope(failure)
+                this.recycle(task);
+
             task.deserialize(serialized);
             theScheduler.schedule(task);
 

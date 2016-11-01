@@ -1,3 +1,6 @@
+# This will make D2 unittests fail if stomping prevention is triggered
+export ASSERT_ON_STOMPING_PREVENTION=1
+
 override DFLAGS += -w -version=GLIBC
 
 # Makd auto-detects if Ocean's test runner should be used based on submodules,

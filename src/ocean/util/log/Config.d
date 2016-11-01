@@ -29,6 +29,10 @@
         ; looking for more appenders?
         additive  = true
 
+    Note that `LOG.Root` will be treated specially: it will configure the
+    'root' logger, which is the parent of all loggers.
+    `Root` is case insensitive, so `LOG.root` or `LOG.ROOT` will work as well.
+
     See the class Config for further options and documentation.
 
     There are global logger configuration options as well:
@@ -85,11 +89,12 @@ module ocean.util.log.Config;
 import ocean.transition;
 
 import ocean.io.Stdout;
-import ocean.core.Array : removePrefix, removeSuffix, sort;
+import ocean.core.Array : insertShift, removePrefix, removeSuffix, sort;
 import ocean.util.config.ClassFiller;
 import ocean.util.config.ConfigParser;
 import ocean.util.log.AppendFile;
 import ocean.util.log.AppendSysLog;
+import ocean.stdc.string;
 import ocean.text.util.StringSearch;
 
 import ocean.util.log.Log;
@@ -412,13 +417,25 @@ public void configureLoggers ( Source = ConfigParser, FileLayout = LayoutDate,
     // names so that parent loggers appear before child loggers.
 
     istring[] logger_names;
+    istring   root_name;
 
     foreach (name; config)
     {
-        logger_names ~= name;
+        if (name.length == "root".length
+            && strncasecmp(name.ptr, "root".ptr, "root".length) == 0)
+            root_name = name;
+        else
+            logger_names ~= name;
     }
 
     sort(logger_names);
+    // As 'Root' is the parent logger of all loggers, we need to special-case it
+    // and put it at the beginning of the list
+    if (root_name.length)
+    {
+        logger_names.insertShift(0);
+        logger_names[0] = root_name;
+    }
 
     Config settings;
 
@@ -430,7 +447,7 @@ public void configureLoggers ( Source = ConfigParser, FileLayout = LayoutDate,
 
         config.fill(name, settings);
 
-        if ( name == "Root" )
+        if ( root_name == name )
         {
             log = Log.root;
             console_enabled = settings.console(true);
@@ -547,6 +564,11 @@ file = dummy
 
 [LOG.A.B.C.D]
 level = error
+propagate = true
+file = dummy
+
+[LOG.Root]
+level = trace
 propagate = true
 file = dummy
 `;

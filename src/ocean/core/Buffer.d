@@ -42,6 +42,11 @@ Buffer!(Unqual!(T)) createBuffer ( T ) ( T[] initial... )
 
 struct Buffer ( T )
 {
+    static assert (
+        !isArrayType!(T) || !is(BaseTypeOfArrays!(T) == void),
+        "Buffer doesn't work as void[][] replacement, try use ubyte[][] instead"
+    );
+
     /***************************************************************************
 
         Disable postblit constructor in D2 to prevent copying
