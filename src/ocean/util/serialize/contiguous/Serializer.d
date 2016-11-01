@@ -222,6 +222,9 @@ struct Serializer
             }
             else
             {
+                // Since len > buffer.length, we defensively enable stomping
+                // before in case it hasn't been done by the caller
+                enableStomping(buffer);
                 buffer.length = len;
                 enableStomping(buffer);
             }
@@ -879,4 +882,21 @@ unittest
 
     test!("==")(ptr.a, 1);
     test!("==")(ptr.b, 3);
+}
+
+// Allocation test
+unittest
+{
+    static struct Dummy
+    {
+        size_t v;
+    }
+
+    ubyte[] buffer;
+    Dummy d;
+
+    Serializer.serialize(d, buffer);
+    test!("==")(buffer.length, d.sizeof);
+    buffer.length = 0;
+    testNoAlloc(Serializer.serialize(d, buffer));
 }
