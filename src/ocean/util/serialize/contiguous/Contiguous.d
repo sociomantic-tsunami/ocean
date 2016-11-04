@@ -197,14 +197,6 @@ private void enforceContiguous (S) ( ref S input, in void[] allowed_range )
         "can't verify integrity of non-struct types"
     );
 
-    void enforceRange(in void[] slice)
-    {
-        auto upper_limit = allowed_range.ptr + allowed_range.length;
-        enforce!(">=")(slice.ptr, allowed_range.ptr);
-        enforce!("<=")(slice.ptr, upper_limit);
-        enforce!("<=")(slice.ptr + slice.length, upper_limit);
-    }
-
     foreach (ref member; input.tupleof)
     {
         alias typeof(member) Member;
@@ -219,7 +211,7 @@ private void enforceContiguous (S) ( ref S input, in void[] allowed_range )
                 {
                     if (member.ptr)
                     {
-                        enforceRange(member);
+                        enforceRange(member, allowed_range);
                     }
                 }
 
@@ -237,7 +229,8 @@ private void enforceContiguous (S) ( ref S input, in void[] allowed_range )
 
                 if (member)
                 {
-                    enforceRange((cast(void*) member)[0 .. U.sizeof]);
+                    enforceRange((cast(void*) member)[0 .. U.sizeof],
+                                  allowed_range);
                 }
             }
             else static if (is(Member == struct))
@@ -256,6 +249,28 @@ private void enforceContiguous (S) ( ref S input, in void[] allowed_range )
         }
     }
 }
+
+/*******************************************************************************
+
+    Verifies that `slice` only refers to data inside `allowed_range`
+
+    Params:
+        slice = array slice to verify
+        allowed_range = data buffer it must fit into
+
+    Throws:
+        Exception if assumption is not verified
+
+*******************************************************************************/
+
+private void enforceRange(in void[] slice, in void[] allowed_range)
+{
+    auto upper_limit = allowed_range.ptr + allowed_range.length;
+    enforce!(">=")(slice.ptr, allowed_range.ptr);
+    enforce!("<=")(slice.ptr, upper_limit);
+    enforce!("<=")(slice.ptr + slice.length, upper_limit);
+}
+
 
 unittest
 {
