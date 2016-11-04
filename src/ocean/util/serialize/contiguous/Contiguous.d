@@ -250,7 +250,7 @@ private void enforceContiguous (S) ( ref S input, in void[] allowed_range )
             {
                 static assert (
                     false,
-                    "Contiguous structs don't suport fields of type " ~ typeof(member).stringof
+                    "Contiguous structs don't support fields of type " ~ typeof(member).stringof
                 );
             }
         }
