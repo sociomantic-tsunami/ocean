@@ -110,7 +110,7 @@ Releases
 releases <https://github.com/sociomantic-tsunami/ocean/releases>`_
 
 Ocean's release process is based on `SemVer
-<https://github.com/sociomantic-tsunami/ocean/blob/master/VERSIONING.rst>`_. This means
+<https://github.com/sociomantic-tsunami/ocean/blob/v2.x.x/VERSIONING.rst>`_. This means
 that the major version is increased for breaking changes, the minor version is
 increased for feature releases, and the patch version is increased for bug fixes
 that don't cause breaking changes.
