@@ -123,8 +123,6 @@ import ocean.transition;
 public import ocean.core.Enforce;
 
 import ocean.core.Traits;
-
-import ocean.core.Traits;
 import ocean.core.Tuple;
 
 version (UnitTest)

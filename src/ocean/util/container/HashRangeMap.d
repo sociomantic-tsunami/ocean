@@ -635,7 +635,6 @@ unittest
 version ( UnitTest )
 {
     import ocean.core.Traits;
-    import ocean.core.Traits;
 
     private template hasAtomicEquality ( T )
     {

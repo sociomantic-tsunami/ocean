@@ -374,7 +374,7 @@ private scope class UnitTestRunner
 
     ***************************************************************************/
 
-    private XmlNode xmlAddFailure (cstring type = "failure") (
+    private XmlNode xmlAddFailure (istring type = "failure") (
             cstring name, timeval tv, cstring msg )
     {
         static assert (type == "failure" || type == "error");
@@ -465,12 +465,6 @@ private scope class UnitTestRunner
         {
             Stderr.formatln("{}: error: writing XML file '{}': {} [{}:{}]",
                     this.prog, this.xml_file, getMsg(e), e.file, e.line);
-            return false;
-        }
-        catch
-        {
-            Stderr.formatln("{}: error: unknown error writing XML file '{}'",
-                    this.prog, this.xml_file);
             return false;
         }
 
@@ -621,7 +615,7 @@ private scope class UnitTestRunner
 
     ***************************************************************************/
 
-    private Result timedTest ( ModuleInfoPtr m, out timeval tv, out mstring err )
+    private Result timedTest ( ModuleInfoPtr m, out timeval tv, ref mstring err )
     {
         timeval start = this.now();
         scope (exit) tv = elapsedTime(start);
@@ -638,21 +632,26 @@ private scope class UnitTestRunner
         }
         catch (TestException e)
         {
-            err = format(err, "{}:{}: test error: {}", e.file, e.line, getMsg(e));
+            version (D_Version2)
+                e.toString((d) { err ~= d; });
+            else
+                err = format(err, "{}:{}: test error: {}", e.file, e.line, getMsg(e));
             return Result.Fail;
         }
         catch (AssertException e)
         {
-            err = format(err, "{}:{}: assert error: {}", e.file, e.line, getMsg(e));
+            version (D_Version2)
+                e.toString((d) { err ~= d; });
+            else
+                err = format(err, "{}:{}: assert error: {}", e.file, e.line, getMsg(e));
         }
         catch (Exception e)
         {
-            err = format(err, "{}:{}: unexpected exception {}: {}",
-                    e.file, e.line, e.classinfo.name, getMsg(e));
-        }
-        catch
-        {
-            err = format(err, "{}: unexpected unknown exception", m.name);
+            version (D_Version2)
+                e.toString((d) { err ~= d; });
+            else
+                err = format(err, "{}:{}: unexpected exception {}: {}",
+                             e.file, e.line, e.classinfo.name, getMsg(e));
         }
 
         return Result.Error;

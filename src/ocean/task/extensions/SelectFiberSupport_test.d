@@ -17,7 +17,7 @@ module ocean.task.extensions.SelectFiberSupport_test;
 
 import ocean.task.Scheduler;
 import ocean.task.Task;
-import ocean.task.extensions.SelectFiberSupport;;
+import ocean.task.extensions.SelectFiberSupport;
 import ocean.task.TaskPool;
 
 import ocean.io.select.client.FiberTimerEvent;

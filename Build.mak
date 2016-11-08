@@ -18,6 +18,7 @@ endif
 # Remove deprecated modules from testing:
 TEST_FILTER_OUT += \
 	$C/src/ocean/core/Array_tango.d \
+	$C/src/ocean/util/config/ClassFiller.d \
 	$C/src/ocean/text/xml/Xslt.d \
 	$C/src/ocean/text/xml/c/LibXslt.d \
 	$C/src/ocean/text/xml/c/LibXml2.d \
@@ -29,6 +30,8 @@ TEST_FILTER_OUT += $C/test/collectd/main.d
 $O/test-filesystemevent: override LDFLAGS += -lrt
 
 $O/test-selectlistener: override LDFLAGS += -lebtree
+
+$O/test-unixlistener: override LDFLAGS += -lebtree
 
 # Link unittests to all used libraries
 $O/%unittests: override LDFLAGS += -lglib-2.0 -lpcre -lxml2 -lxslt -lebtree \

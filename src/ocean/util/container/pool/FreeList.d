@@ -42,7 +42,6 @@ import ocean.util.container.pool.model.IFreeList;
 import ocean.core.Array : pop;
 
 import ocean.core.Traits;
-import ocean.core.Traits;
 
 import ocean.transition;
 

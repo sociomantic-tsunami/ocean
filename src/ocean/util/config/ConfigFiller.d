@@ -1,9 +1,9 @@
 /*******************************************************************************
 
-    Provides convenient functions to fill the values of a given class
+    Provides convenient functions to fill the values of a given aggregate.
 
     Provides functions that use a given source to fill the member variables
-    of a provided or newly created instance of a given class.
+    of a provided aggregate or newly created instance of a given class.
 
     The provided class can use certain wrappers to add conditions or
     informations to the variable in question. The value of a wrapped variable
@@ -56,7 +56,7 @@
 
     Usage Example:
     -------
-    import Class = ocean.util.config.ClassFiller;
+    import Class = ocean.util.config.ConfigFiller;
     import ocean.util.Config;
 
     class ConfigParameters
@@ -119,9 +119,8 @@
 
 *******************************************************************************/
 
-deprecated module ocean.util.config.ClassFiller;
+module ocean.util.config.ConfigFiller;
 
-pragma (msg, "Deprecated. Please use `ocean.util.config.ConfigFiller` instead.");
 
 /*******************************************************************************
 
@@ -133,6 +132,8 @@ import ocean.transition;
 
 public import ocean.util.config.ConfigParser: ConfigException;
 
+import ocean.core.Traits;
+
 import ocean.core.Exception_tango, ocean.core.Enforce;
 
 import ocean.core.Traits;
@@ -140,6 +141,9 @@ import ocean.core.Traits;
 import ocean.util.config.ConfigParser;
 
 import ocean.util.Convert;
+
+import ocean.core.Traits : DynamicArrayType, isStringType,
+                           isIntegerType, isRealType;
 
 import ocean.io.Stdout;
 
@@ -749,11 +753,11 @@ public bool enable_loose_parsing ( bool state = true )
 
 *******************************************************************************/
 
-public T fill ( T : Object, Source = ConfigParser )
+public T fill ( T, Source = ConfigParser )
               ( cstring group, Source config )
 in
 {
-    assert(config !is null, "ClassFiller.fill: Cannot use null config");
+    assert(config !is null, "ConfigFiller.fill: Cannot use null config");
 }
 body
 {
@@ -787,17 +791,20 @@ body
 
 *******************************************************************************/
 
-public T fill ( T : Object, Source = ConfigParser )
+public T fill ( T, Source = ConfigParser )
               ( cstring group, ref T reference, Source config )
 in
 {
-    assert(config !is null, "ClassFiller.fill: Cannot use null config");
+    assert(config !is null, "ConfigFiller.fill: Cannot use null config");
 }
 body
 {
-    if ( reference is null )
+    static if (is (T: Object))
     {
-        reference = new T;
+        if ( reference is null )
+        {
+            reference = new T;
+        }
     }
 
     foreach ( var; config.iterateCategory(group) )
@@ -832,7 +839,7 @@ body
 
 *******************************************************************************/
 
-private bool hasField ( T : Object ) ( T reference, cstring field )
+private bool hasField ( T ) ( T reference, cstring field )
 {
     foreach ( si, unused; reference.tupleof )
     {
@@ -905,7 +912,7 @@ struct ClassIterator ( T, Source = ConfigParser )
     invariant()
     {
         assert(this.config !is null,
-            "ClassFiller.ClassIterator: Cannot have null config");
+            "ConfigFiller.ClassIterator: Cannot have null config");
     }
 
     /***************************************************************************
@@ -1017,7 +1024,7 @@ public ClassIterator!(T) iterate ( T, Source = ConfigParser )
                                  ( istring root, Source config )
 in
 {
-    assert(config !is null, "ClassFiller.iterate: Cannot use null config");
+    assert(config !is null, "ConfigFiller.iterate: Cannot use null config");
 }
 body
 {
@@ -1041,10 +1048,10 @@ body
 *******************************************************************************/
 
 protected void readFields ( T, Source )
-                          ( cstring group, T reference, Source config )
+                          ( cstring group, ref T reference, Source config )
 in
 {
-    assert ( config !is null, "ClassFiller.readFields: Cannot use null config");
+    assert ( config !is null, "ConfigFiller.readFields: Cannot use null config");
 }
 body
 {
@@ -1053,7 +1060,7 @@ body
         alias BaseType!(typeof(field)) Type;
 
         static assert ( IsSupported!(Type),
-                        "ClassFiller.readFields: Type "
+                        "ConfigFiller.readFields: Type "
                         ~ Type.stringof ~ " is not supported" );
 
         auto key = reference.tupleof[si].stringof["reference.".length .. $];
@@ -1112,11 +1119,12 @@ version ( UnitTest )
         uint radius;
         uint circumference;
     }
-}
 
-unittest
-{
-    auto config_parser = new ConfigParser();
+    class SolarSystemEntityStruct
+    {
+        uint radius;
+        uint circumference;
+    }
 
     auto config_str =
 `
@@ -1138,6 +1146,11 @@ circumference = 10921
 [SUNBLACKHOLE]
 shoe_size = 42
 `;
+}
+
+unittest
+{
+    auto config_parser = new ConfigParser();
 
     config_parser.parseString(config_str);
 
@@ -1167,6 +1180,35 @@ shoe_size = 42
 
 unittest
 {
+    auto config_parser = new ConfigParser();
+
+    config_parser.parseString(config_str);
+
+    auto iter = iterate!(SolarSystemEntityStruct)("SUN", config_parser);
+
+    SolarSystemEntityStruct entity_details;
+
+    foreach ( entity; iter )
+    {
+        test((entity == "earth") || (entity == "earth.moon"),
+            "'" ~ entity ~ "' is neither 'earth' nor 'earth.moon'");
+
+        iter.fill(entity, entity_details);
+
+        if (entity == "earth")
+        {
+            test!("==")(entity_details.radius, 6371);
+            test!("==")(entity_details.circumference, 40075);
+        }
+        else // if (entity == "earth.moon")
+        {
+            test!("==")(entity_details.radius, 1737);
+            test!("==")(entity_details.circumference, 10921);
+        }
+    }
+}
+unittest
+{
     const config_text =
 `
 [Section]
@@ -1186,6 +1228,14 @@ pi = 3.14
         uint default_value = 99;
     }
 
+    struct SingleValuesStruct
+    {
+        istring str;
+        int integer;
+        float pi;
+        uint default_value = 99;
+    }
+
     auto single_values = new SingleValues();
 
     readFields("Section", single_values, config_parser);
@@ -1193,6 +1243,20 @@ pi = 3.14
     test!("==")(single_values.integer, -300);
     test!("==")(single_values.pi, cast(float)3.14);
     test!("==")(single_values.default_value, 99);
+
+    SingleValuesStruct single_values_struct;
+
+    readFields("Section", single_values_struct, config_parser);
+    test!("==")(single_values_struct.str, "I'm a string");
+    test!("==")(single_values_struct.integer, -300);
+    test!("==")(single_values_struct.pi, cast(float)3.14);
+    test!("==")(single_values_struct.default_value, 99);
+
+    auto single_values_fill = fill!(SingleValuesStruct)("Section", config_parser);
+    test!("==")(single_values_fill.str, "I'm a string");
+    test!("==")(single_values_fill.integer, -300);
+    test!("==")(single_values_fill.pi, cast(float)3.14);
+    test!("==")(single_values_fill.default_value, 99);
 }
 
 unittest
@@ -1258,4 +1322,20 @@ float_arr = 10.2
     test!("==")(array_values.ulong_arr, ulong_array);
     float[] float_array = [10.2, -25.3, 90, 0.000000001];
     test!("==")(array_values.float_arr, float_array);
+
+
+    struct ArrayValuesStruct
+    {
+        istring[] string_arr;
+        int[] int_arr;
+        ulong[] ulong_arr;
+        float[] float_arr;
+    }
+
+    ArrayValuesStruct array_struct;
+    readFields("SectionArray", array_struct, config_parser);
+    test!("==")(array_struct.string_arr, ["Hello", "World"]);
+    test!("==")(array_struct.int_arr, [30, 40, -60, 1111111111, 0x10]);
+    test!("==")(array_struct.ulong_arr, ulong_array);
+    test!("==")(array_struct.float_arr, float_array);
 }

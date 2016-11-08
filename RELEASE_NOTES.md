@@ -1,4 +1,4 @@
-Release Notes for Ocean v2.2.0
+Release Notes for Ocean v2.3.0
 ==============================
 
 Note: If you are upgrading from an older version, you have to upgrade
@@ -12,84 +12,65 @@ be used (and will be removed in the next major release) but will not break any
 old code, and **New Features** which are new features available in the new
 version that users might find interesting.
 
-
 New Features
 ============
 
-* `ocean.util.cipher.gcrypt.AES`
+* `ocean.core.Traits`
+  A new symbol, `TemplateInstanceArgs` was introduced.
+  It allows to get the arguments of a template instance in a D1-friendly manner.
+  It can also be used to check if a type is an instance of a given template.
 
-  Aliases for AES-CBC ciphers have been added.
+* `ocean.util.config.ConfigFiller`
 
-* `ocean.text.utf.UtfUtil`
+  Provides the same functionality as the old `ClassFiller`, but it's
+  extended to support `struct`s too.
 
-  Add `truncateAtN` method which truncates a string at the last space before
-  the n-th character or, if the resulting string is too short, at the n-th
-  character.
+* `ocean.util.container.queue.LinkedListQueue`
 
-* `ocean.util.cipher.gcrypt.c.kdf`
+  Added the ability to walk over a `LinkedListQueue` with a foreach statement.
+  It will walk in order from head to tail.
 
-  Bindings to gcrypt's C functions for key derivation have been added.
+* `ocean.util.encode.Base64`
 
-* `ocean.util.cipher.gcrypt.core.KeyDerivationCore`
+  - the encode and decode tables used by `encode`, `encodeChunk` and `decode` have been rewritten in a readable way,
+    and made accessible to user (`public`) under the `defaultEncodeTable` and `defaultDecodeTable` names, respectively;
+  - encode and decode table for url-safe base64 (according to RFC4648) have been added under the `urlSafeEncodeTable`
+    and `urlSafeDecodeTable`, respectively;
+  - `encode` and `decode` now accepts their table as template argument: this means one can provide which characters are
+    used for base64 encoding / decoding. By default `default{Encode,Decode}Table` are used to keep the old behavior.
+  - `encode` now takes a 3rd argument, `bool pad` which defaults to `true`, to tell the encoder whether to pad or not.
 
-  A wrapper class for gcrypt's key derivation functions has been added.
+* `ocean.net.server.unix.UnixListener`, `ocean.net.server.unix.UnixConnectionHandler`
 
-* `ocean.util.cipher.gcrypt.PBKDF2`
+  `UnixListener` and `UnixConnectionHandler` classes are added with support for listening on the unix socket
+   and responding with the appropriate actions on the given commands. Users can connect to the application on
+   the desired unix socket, send a command, and wait for the application to perform the action and/or write
+   back the response on the same connection.
 
-  An alias for key derivation using the PBKDF2 algorithm has been added.
+* `ocean.io.serialize.StringStructSerializer`
 
-* `ocean.util.cipher.misc.Padding`
+  A new optional boolean flag has been added to the `serialize()` function. If
+  this flag is set, then single character fields in structs will be serialized
+  into equivalent friendly string representations if the fields contain
+  whitespace or other unprintable characters.
+  For example, the string '\n' will be generated for the newline character, '\t'
+  for the tab character and so on.
 
-  New module with cryptographic padding functions, currently contains functions
-  for PKCS#7 and PKCS#5 padding.
+* `ocean.io.select.EpollSelectDispatcher`
 
-* `ocean.text.convert.Formatter`
+  Optional delegate argument of `eventLoop` method now can return `bool`,
+  indicating if there is any pending work left at the call
+  site. This is likely to only be relevant for `ocean.task.Scheduler` internals
 
-  This new module provides similar functionalities to `ocean.text.convert.Layout_tango`,
-  but use compile-time type information instead of `TypeInfo` to do so.
-  In the long run, `ocean.text.convert.Layout_tango` will be deprecated and this module will replace it.
+Deprecations
+============
 
-  The module provides 4 different functions:
-  - `format` takes no buffer and allocate a new `istring`. Equivalent to `Format(format_string, args)`.
-  - The first `sformat` overload takes a `Sink` (`scope` delegate of type `size_t delegate (cstring)`) as first parameter and will
-   call this sink (possibly multiple times) with the data to append.
-  - The second `sformat` overload takes a buffer (`ref mstring`) which will be appended to.
-  - A `snformat` function which takes a buffer (`mstring`) and will overwrite it. The buffer won't be extended and if the formatted
-    string is too long, the extra data will be discarded.
+* `ocean.util.config.ClassFiller`
 
-  This brings a couple of advantages:
-  - If a type isn't supported, an error will be issued at compile-time
-  - Support formatting of type which don't have enough TypeInfo attached, like `struct`
-  - As a result of the previous point, support formatting our Typedef implementation
-  - Better code is generated, as lots of branches can be taken in advance
-  - Doesn't use excessive amount of stack space
+  Deprecated in favour of the new `ConfigFiller` which provides the
+  same interface.
 
-  As a result of the re-implementation, some behaviour might differ from `Layout_tango`'s.
-  For example:
-  - Pointers are now formatted as "{X16#}" in 64 bits and "{X8#}" in 32 bits
-    So formatting a random pointer will give "0XFF002A0042000000" in 64 bits for example.
-  - `null` pointers and references will now be formatted as `null` instead of `0`
-  - If a type define an overload of `toString` that takes a string sink as a parameter
-    (e.g. `void toString (scope size_t delegate (cstring) sink)`, it will be preferred
-    over the regular `toString` overload, as the sink one is most-likely non-allocating.
-    Previously only `istring toString()` was supported.
-  - Structs will now be formatted as a curly-braced enclosed, comma-separated list
-    of "field: value".
-    For example `struct T { uint c; char[] data }` will be formatted as `{ c: 0, data: null }`
-    by default.
-    Inside structs, `char` and string types will be quoted. Using the previously defined `struct T`,
-    an instance of `T(42, "Hello world")` will result in `{ c: 42, data: "Hello world" }`
-  - AA formatting changed from `{key => value, ...}` to `[ key: value, ... ]`.
-  - String nested inside an aggregate (arrays, AAs, struct...) are now quoted.
-  - Function pointers are now formatted as their type + pointer, delegates as type + funcptr + ptr.
-  - `union` is the only built-in type which is not supported, as the formatter would need to be
-    able to discriminate it in order to print it, or avoid following references, which would lead
-    to an inconsistent behaviour.
-  - Many types might now be more respectful of the formatting options given to them, especially
-    when it comes to string size limitation.
+* `ocean.io.select.EpollSelectDispatcher`
 
-  In addition, the following are not supported by `Formatter`:
-  - Formatting from / into arrays of `wchar` or `dchar` will output an array instead of string.
-    Though it is not inherent to the design, the current version only support arrays of `char` as strings.
-  - Formatting values of imaginary or complex floating point type. Those are deprecated in D2.
-  - Formatting floating point as hexadecimal
+  Old overload of `eventLoop` was deprecated. If your app call `eventLoop` with
+  no arguments, it won't be affected.

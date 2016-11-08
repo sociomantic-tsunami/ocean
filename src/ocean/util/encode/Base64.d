@@ -1,5 +1,17 @@
 /*******************************************************************************
 
+    This module is used to decode and encode base64 `cstring` / `ubyte[]` arrays
+
+    ---
+    istring blah = "Hello there, my name is Jeff.";
+    scope encodebuf = new char[allocateEncodeSize(blah.length)];
+    mstring encoded = encode(cast(Const!(ubyte)[])blah, encodebuf);
+
+    scope decodebuf = new ubyte[encoded.length];
+    if (cast(cstring)decode(encoded, decodebuf) == "Hello there, my name is Jeff.")
+      Stdout("yay").newline;
+    ---
+
         Copyright:
             Copyright (c) 2008 Jeff Davey.
             Some parts copyright (c) 2009-2016 Sociomantic Labs GmbH.
@@ -15,79 +27,160 @@
 
 *******************************************************************************/
 
-/*******************************************************************************
-
-    This module is used to decode and encode base64 char[] arrays.
-
-    Example:
-    ---
-    istring blah = "Hello there, my name is Jeff.";
-    scope encodebuf = new char[allocateEncodeSize(cast(ubyte[])blah)];
-    mstring encoded = encode(cast(ubyte[])blah, encodebuf);
-
-    scope decodebuf = new ubyte[encoded.length];
-    if (cast(cstring)decode(encoded, decodebuf) == "Hello there, my name is Jeff.")
-        Stdout("yay").newline;
-    ---
-
-*******************************************************************************/
-
 module ocean.util.encode.Base64;
 
 import ocean.transition;
 
 version (UnitTest) import ocean.core.Test;
 
+
 /*******************************************************************************
 
-    calculates and returns the size needed to encode the length of the
-    array passed.
+    Default base64 encode/decode table
+
+    This manifest constant is the default set of characters used by base64
+    encoding/decoding, according to RFC4648.
+
+*******************************************************************************/
+
+public const istring defaultEncodeTable = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+
+/// Ditto
+public const ubyte[char.max + 1] defaultDecodeTable = [
+    'A' :  0, 'B' :  1, 'C' :  2, 'D' :  3, 'E' :  4,
+    'F' :  5, 'G' :  6, 'H' :  7, 'I' :  8, 'J' :  9,
+    'K' : 10, 'L' : 11, 'M' : 12, 'N' : 13, 'O' : 14,
+    'P' : 15, 'Q' : 16, 'R' : 17, 'S' : 18, 'T' : 19,
+    'U' : 20, 'V' : 21, 'W' : 22, 'X' : 23, 'Y' : 24,
+    'Z' : 25,
+
+    'a' : 26, 'b' : 27, 'c' : 28, 'd' : 29, 'e' : 30,
+    'f' : 31, 'g' : 32, 'h' : 33, 'i' : 34, 'j' : 35,
+    'k' : 36, 'l' : 37, 'm' : 38, 'n' : 39, 'o' : 40,
+    'p' : 41, 'q' : 42, 'r' : 43, 's' : 44, 't' : 45,
+    'u' : 46, 'v' : 47, 'w' : 48, 'x' : 49, 'y' : 50,
+    'z' : 51,
+
+    '0' : 52, '1' : 53, '2' : 54, '3' : 55, '4' : 56,
+    '5' : 57, '6' : 58, '7' : 59, '8' : 60, '9' : 61,
+
+    '+' : 62, '/' : 63,
+
+    '=' : BASE64_PAD
+];
+
+
+/*******************************************************************************
+
+    URL-safe base64 encode/decode table
+
+    This manifest constant exposes the url-safe ("base64url") variant of the
+    encode/decode table, according to RFC4648.
+
+*******************************************************************************/
+
+public const istring urlSafeEncodeTable = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_=";
+
+/// Ditto
+public const ubyte[char.max + 1] urlSafeDecodeTable = [
+    'A' :  0, 'B' :  1, 'C' :  2, 'D' :  3, 'E' :  4,
+    'F' :  5, 'G' :  6, 'H' :  7, 'I' :  8, 'J' :  9,
+    'K' : 10, 'L' : 11, 'M' : 12, 'N' : 13, 'O' : 14,
+    'P' : 15, 'Q' : 16, 'R' : 17, 'S' : 18, 'T' : 19,
+    'U' : 20, 'V' : 21, 'W' : 22, 'X' : 23, 'Y' : 24,
+    'Z' : 25,
+
+    'a' : 26, 'b' : 27, 'c' : 28, 'd' : 29, 'e' : 30,
+    'f' : 31, 'g' : 32, 'h' : 33, 'i' : 34, 'j' : 35,
+    'k' : 36, 'l' : 37, 'm' : 38, 'n' : 39, 'o' : 40,
+    'p' : 41, 'q' : 42, 'r' : 43, 's' : 44, 't' : 45,
+    'u' : 46, 'v' : 47, 'w' : 48, 'x' : 49, 'y' : 50,
+    'z' : 51,
+
+    '0' : 52, '1' : 53, '2' : 54, '3' : 55, '4' : 56,
+    '5' : 57, '6' : 58, '7' : 59, '8' : 60, '9' : 61,
+
+    '-' : 62, '_' : 63,
+
+    '=' : BASE64_PAD
+];
+
+
+/// Value set to the padding
+private const ubyte BASE64_PAD = 64;
+
+/*******************************************************************************
+
+    Provide the size of the data once base64 encoded
+
+    When data is encoded in Base64, it is packed in groups of 3 bytes, which
+    are then encoded in 4 bytes (by groups of 6 bytes).
+    In case length is not a multiple of 3, we add padding.
+    It means we need `length / 3 * 4` + `length % 3 ? 4 : 0`.
 
     Params:
-    data = An array that will be encoded
+      data = An array that will be encoded
+
+    Returns:
+      The size needed to encode `data` in base64
 
 *******************************************************************************/
 
 
-size_t allocateEncodeSize(in ubyte[] data)
+public size_t allocateEncodeSize (in ubyte[] data)
 {
     return allocateEncodeSize(data.length);
 }
 
 /*******************************************************************************
 
-    calculates and returns the size needed to encode the length passed.
+    Provide the size of the data once base64 encoded
+
+    When data is encoded in Base64, it is packed in groups of 3 bytes, which
+    are then encoded in 4 bytes (by groups of 6 bytes).
+    In case length is not a multiple of 3, we add padding.
+    It means we need `length / 3 * 4` + `length % 3 ? 4 : 0`.
 
     Params:
-    length = Number of bytes to be encoded
+      length = Number of bytes to be encoded
+
+    Returns:
+      The size needed to encode a data of the provided length
 
 *******************************************************************************/
 
-size_t allocateEncodeSize(size_t length)
+public size_t allocateEncodeSize (size_t length)
 {
     size_t tripletCount = length / 3;
     size_t tripletFraction = length % 3;
-    return (tripletCount + (tripletFraction ? 1 : 0)) * 4; // for every 3 bytes we need 4 bytes to encode, with any fraction needing an additional 4 bytes with padding
+    return (tripletCount + (tripletFraction ? 1 : 0)) * 4;
 }
 
 
 /*******************************************************************************
 
-    encodes data into buff and returns the number of bytes encoded.
-    this will not terminate and pad any "leftover" bytes, and will instead
+    Encodes `data` into `buff` and returns the number of bytes encoded.
+    This will not terminate and pad any "leftover" bytes, and will instead
     only encode up to the highest number of bytes divisible by three.
 
-    returns the number of bytes left to encode
-
     Params:
-    data = what is to be encoded
-    buff = buffer large enough to hold encoded data
-    bytesEncoded = ref that returns how much of the buffer was filled
+      table = The encode table to use, either `defaultEncodeTable` (the default)
+              or `urlSafeEncodeTable`, or one's own encode table.
+      data = what is to be encoded
+      buff = buffer large enough to hold encoded data
+      bytesEncoded = ref that returns how much of the buffer was filled
+
+    Returns:
+      The number of bytes left to encode
 
 *******************************************************************************/
 
-int encodeChunk(in ubyte[] data, mstring buff, ref int bytesEncoded)
+public int encodeChunk (istring table = defaultEncodeTable)
+    (in ubyte[] data, mstring buff, ref int bytesEncoded)
 {
+    static assert(validateEncodeTable(table) is null,
+                  validateEncodeTable(table));
+
     size_t tripletCount = data.length / 3;
     int rtn = 0;
     char *rtnPtr = buff.ptr;
@@ -99,10 +192,10 @@ int encodeChunk(in ubyte[] data, mstring buff, ref int bytesEncoded)
         bytesEncoded = cast(int) tripletCount * 4;
         for (size_t i; i < tripletCount; i++)
         {
-            *rtnPtr++ = _encodeTable[((dataPtr[0] & 0xFC) >> 2)];
-            *rtnPtr++ = _encodeTable[(((dataPtr[0] & 0x03) << 4) | ((dataPtr[1] & 0xF0) >> 4))];
-            *rtnPtr++ = _encodeTable[(((dataPtr[1] & 0x0F) << 2) | ((dataPtr[2] & 0xC0) >> 6))];
-            *rtnPtr++ = _encodeTable[(dataPtr[2] & 0x3F)];
+            *rtnPtr++ = table[((dataPtr[0] & 0xFC) >> 2)];
+            *rtnPtr++ = table[(((dataPtr[0] & 0x03) << 4) | ((dataPtr[1] & 0xF0) >> 4))];
+            *rtnPtr++ = table[(((dataPtr[1] & 0x0F) << 2) | ((dataPtr[2] & 0xC0) >> 6))];
+            *rtnPtr++ = table[(dataPtr[2] & 0x3F)];
             dataPtr += 3;
         }
     }
@@ -112,23 +205,28 @@ int encodeChunk(in ubyte[] data, mstring buff, ref int bytesEncoded)
 
 /*******************************************************************************
 
-    encodes data and returns as an ASCII base64 string.
+    Encodes data and returns as an ASCII base64 string.
 
     Params:
-    data = what is to be encoded
-    buff = buffer large enough to hold encoded data
+      table = The encode table to use, either `defaultEncodeTable` (the default)
+              or `urlSafeEncodeTable`, or one's own encode table.
+              An array of 65 chars is expected, where the last char is used
+              for padding
+      data = what is to be encoded
+      buff = buffer large enough to hold encoded data
+      pad  = Whether or not to pad the output - default to `true`
 
     Example:
     ---
     char[512] encodebuf;
-    char[] myEncodedString = encode(cast(ubyte[])"Hello, how are you today?", encodebuf);
+    mstring myEncodedString = encode(cast(Const!(ubyte)[])"Hello, how are you today?", encodebuf);
     Stdout(myEncodedString).newline; // SGVsbG8sIGhvdyBhcmUgeW91IHRvZGF5Pw==
     ---
 
-
 *******************************************************************************/
 
-mstring encode(in ubyte[] data, mstring buff)
+public mstring encode (istring table = defaultEncodeTable)
+    (in ubyte[] data, mstring buff, bool pad = true)
 in
 {
     assert(data);
@@ -136,12 +234,15 @@ in
 }
 body
 {
+    static assert(validateEncodeTable(table) is null,
+                  validateEncodeTable(table));
+
     mstring rtn = null;
 
     if (data.length > 0)
     {
         int bytesEncoded = 0;
-        int numBytes = encodeChunk(data, buff, bytesEncoded);
+        int numBytes = encodeChunk!(table)(data, buff, bytesEncoded);
         char *rtnPtr = buff.ptr + bytesEncoded;
         Const!(ubyte)* dataPtr = data.ptr + numBytes;
         auto tripletFraction = data.length - (dataPtr - data.ptr);
@@ -149,16 +250,20 @@ body
         switch (tripletFraction)
         {
             case 2:
-                *rtnPtr++ = _encodeTable[((dataPtr[0] & 0xFC) >> 2)];
-                *rtnPtr++ = _encodeTable[(((dataPtr[0] & 0x03) << 4) | ((dataPtr[1] & 0xF0) >> 4))];
-                *rtnPtr++ = _encodeTable[((dataPtr[1] & 0x0F) << 2)];
-                *rtnPtr++ = '=';
+                *rtnPtr++ = table[((dataPtr[0] & 0xFC) >> 2)];
+                *rtnPtr++ = table[(((dataPtr[0] & 0x03) << 4) | ((dataPtr[1] & 0xF0) >> 4))];
+                *rtnPtr++ = table[((dataPtr[1] & 0x0F) << 2)];
+                if (pad)
+                    *rtnPtr++ = table[BASE64_PAD];
                 break;
             case 1:
-                *rtnPtr++ = _encodeTable[((dataPtr[0] & 0xFC) >> 2)];
-                *rtnPtr++ = _encodeTable[((dataPtr[0] & 0x03) << 4)];
-                *rtnPtr++ = '=';
-                *rtnPtr++ = '=';
+                *rtnPtr++ = table[((dataPtr[0] & 0xFC) >> 2)];
+                *rtnPtr++ = table[((dataPtr[0] & 0x03) << 4)];
+                if (pad)
+                {
+                    *rtnPtr++ = table[BASE64_PAD];
+                    *rtnPtr++ = table[BASE64_PAD];
+                }
                 break;
             default:
                 break;
@@ -169,12 +274,16 @@ body
     return rtn;
 }
 
+
 /*******************************************************************************
 
-    encodes data and returns as an ASCII base64 string.
+    Encodes data and returns as an ASCII base64 string
 
     Params:
-    data = what is to be encoded
+      table = The encode table to use, either `defaultEncodeTable` (the default)
+              or `urlSafeEncodeTable`, or one's own encode table.
+      data = what is to be encoded
+      pad  = Whether or not to pad the output - default to `true`
 
     Example:
     ---
@@ -182,11 +291,10 @@ body
     Stdout(myEncodedString).newline; // SGVsbG8sIGhvdyBhcmUgeW91IHRvZGF5Pw==
     ---
 
-
 *******************************************************************************/
 
-
-mstring encode(in ubyte[] data)
+public mstring encode (istring table = defaultEncodeTable)
+    (in ubyte[] data, bool pad = true)
 in
 {
     assert(data);
@@ -194,33 +302,39 @@ in
 body
 {
     auto rtn = new char[allocateEncodeSize(data)];
-    return encode(data, rtn);
+    return encode!(table)(data, rtn, pad);
 }
+
 
 /*******************************************************************************
 
-    decodes an ASCCI base64 string and returns it as ubyte[] data. Pre-allocates
-    the size of the array.
+    Decodes an ASCII base64 string and returns it as ubyte[] data.
+    Allocates the size of the array.
 
-    This decoder will ignore non-base64 characters. So:
-    SGVsbG8sIGhvd
-    yBhcmUgeW91IH
-    RvZGF5Pw==
-
-    Is valid.
+    This decoder will ignore non-base64 characters, so for example data with
+    newline in it is valid.
 
     Params:
-    data = what is to be decoded
+      Table = The decode table to use. Variadic template parameter is used to
+              allow passing it as an expression in D1, but a single `ubyte[256]`
+              is expected.
+      data = what is to be decoded
 
     Example:
     ---
-    char[] myDecodedString = cast(char[])decode("SGVsbG8sIGhvdyBhcmUgeW91IHRvZGF5Pw==");
+    mstring myDecodedString = cast(mstring)decode("SGVsbG8sIGhvdyBhcmUgeW91IHRvZGF5Pw==");
     Stdout(myDecodedString).newline; // Hello, how are you today?
     ---
 
 *******************************************************************************/
 
-ubyte[] decode(cstring data)
+public ubyte[] decode () (cstring data)
+{
+    return decode!(defaultDecodeTable)(data);
+}
+
+/// Ditto
+public ubyte[] decode (Table...) (cstring data)
 in
 {
     assert(data);
@@ -228,40 +342,51 @@ in
 body
 {
     auto rtn = new ubyte[data.length];
-    return decode(data, rtn);
+    return decode!(Table)(data, rtn);
 }
 
 /*******************************************************************************
 
-    decodes an ASCCI base64 string and returns it as ubyte[] data.
+    Decodes an ASCCI base64 string and returns it as ubyte[] data.
 
-    This decoder will ignore non-base64 characters. So:
-    SGVsbG8sIGhvd
-    yBhcmUgeW91IH
-    RvZGF5Pw==
-
-    Is valid.
+    This decoder will ignore non-base64 characters, so for example data with
+    newline in it is valid.
 
     Params:
-    data = what is to be decoded
-    buff = a big enough array to hold the decoded data
+      Table = The decode table to use. Variadic template parameter is used to
+              allow passing it as an expression in D1, but a single `ubyte[256]`
+              is expected.
+      data = what is to be decoded
+      buff = a big enough array to hold the decoded data
 
     Example:
     ---
     ubyte[512] decodebuf;
-    char[] myDecodedString = cast(char[])decode("SGVsbG8sIGhvdyBhcmUgeW91IHRvZGF5Pw==", decodebuf);
+    mstring myDecodedString = cast(mstring)decode("SGVsbG8sIGhvdyBhcmUgeW91IHRvZGF5Pw==", decodebuf);
     Stdout(myDecodedString).newline; // Hello, how are you today?
     ---
 
 *******************************************************************************/
 
-ubyte[] decode(cstring data, ubyte[] buff)
+public ubyte[] decode () (cstring data, ubyte[] buff)
+{
+    return decode!(defaultDecodeTable)(data, buff);
+}
+
+/// Ditto
+public ubyte[] decode (Table...) (cstring data, ubyte[] buff)
 in
 {
     assert(data);
 }
 body
 {
+    static assert(Table.length == 1,
+                  "A single argument is expected, not: " ~ Table.stringof);
+    static assert(validateDecodeTable(Table[0]) == null,
+                  validateDecodeTable(Table[0]));
+
+    const table = Table[0];
     ubyte[] rtn;
 
     if (data.length > 0)
@@ -278,7 +403,7 @@ body
         foreach_reverse(char piece; data)
         {
             paddedPos++;
-            ubyte current = _decodeTable[piece];
+            ubyte current = table[piece];
             if (current || piece == 'A')
             {
                 endCount++;
@@ -297,7 +422,7 @@ body
         auto nonPadded = data[0..($ - paddedPos)];
         foreach(piece; nonPadded)
         {
-            ubyte next = _decodeTable[piece];
+            ubyte next = table[piece];
             if (next || piece == 'A')
                 *quadPtr++ = next;
             if (quadPtr is endPtr)
@@ -317,7 +442,7 @@ body
             auto padded = data[($ - paddedPos) .. $];
             foreach(char piece; padded)
             {
-                ubyte next = _decodeTable[piece];
+                ubyte next = table[piece];
                 if (next || piece == 'A')
                     *quadPtr++ = next;
                 if (quadPtr is endPtr)
@@ -379,30 +504,162 @@ unittest
     }
 }
 
+// Encode without padding
+unittest
+{
+    istring str = "Hello, how are you today?";
+    Const!(ubyte)[] payload = cast(Const!(ubyte)[]) str;
+    cstring result = encode(payload, false);
+    test!("==")(result, "SGVsbG8sIGhvdyBhcmUgeW91IHRvZGF5Pw");
+}
 
-private:
 
-/*
-    Static immutable tables used for fast lookups to
-    encode and decode data.
-*/
-const ubyte BASE64_PAD = 64;
-static istring _encodeTable = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+/*******************************************************************************
 
-static Const!(ubyte)[] _decodeTable = [
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,62,0,0,0,63,52,53,54,55,56,57,58,
-    59,60,61,0,0,0,BASE64_PAD,0,0,0,0,1,2,3,
-    4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,
-    19,20,21,22,23,24,25,0,0,0,0,0,0,26,27,
-    28,29,30,31,32,33,34,35,36,37,38,39,40,
-    41,42,43,44,45,46,47,48,49,50,51,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0
-];
+    Helper function, called only at CTFE, to validate that the encode table
+    passed to `encode` is valid
+
+    Params:
+      s = Input string to `encode` to check for base64 compliance
+
+    Returns:
+      An error message if there is an error, `null` otherwise
+
+*******************************************************************************/
+
+private istring validateEncodeTable (istring s)
+{
+    if (s.length != 65)
+        return "Base64 expects a 65-chars string for encoding, not: " ~ s;
+
+    bool[char.max + 1] v;
+    foreach (char c; s)
+    {
+        if (v[c])
+            return "Base64 expects 65 unique chars, but '" ~  s
+                ~ "' contains duplicated entry: " ~ c;
+        v[c] = true;
+    }
+    return null;
+}
+
+unittest
+{
+    test!("is")(validateEncodeTable(defaultEncodeTable), istring.init);
+    test!("is")(validateEncodeTable(urlSafeEncodeTable), istring.init);
+    istring too_long = defaultEncodeTable ~ 'A';
+    test!("!is")(validateEncodeTable(too_long), istring.init);
+    mstring _dupes = defaultEncodeTable.dup;
+    _dupes[1] = 'A';
+    istring dupes = assumeUnique(_dupes);
+    assert(dupes[0] == dupes[1]);
+    test!("!is")(validateEncodeTable(dupes), istring.init);
+}
+
+
+/*******************************************************************************
+
+    Helper function, called only at CTFE, to validate that the decode table
+    passed to `decode` is valid
+
+    Params:
+      table = Input encode table to `decode` to check for base64 compliance
+
+    Returns:
+      An error message if there is an error, `null` otherwise
+
+*******************************************************************************/
+
+private istring validateDecodeTable (T) (in T table)
+{
+    static if (!is(T : ubyte[char.max + 1]))
+    {
+        return "Expected an decode table of type `ubyte[char.max+1]`, got: "
+            ~ T.stringof;
+    }
+    else
+    {
+        // The char we find might not be printable, hence we print it as number
+        istring asNumber(ubyte c)
+        {
+            char[3] ret;
+            ret[0] = ('0' + (c / 100));
+            ret[1] = ('0' + (c % 100 / 10));
+            ret[2] = ('0' + (c % 10));
+            return idup(ret);
+        }
+
+        char[65] encode = 0;
+        // DMD BUG: Using foreach here iterates over the same index twice...
+        for (size_t i; i < table.length; ++i)
+        {
+            char decodedChar = cast(char) i;
+            ubyte encodedValue = table[i];
+
+            if (encodedValue > BASE64_PAD)
+                return "Decode table cannot contain values > 64";
+            // Unused entries have values 0, so that's the only one we cannot
+            // validate
+            if (encodedValue == 0)
+                continue;
+            if (encode[encodedValue])
+                return "Multiple values (char) found for decoding "
+                    ~ asNumber(encodedValue)
+                    ~ " previous index: " ~ asNumber(encode[encodedValue])
+                    ~ " new index: " ~ asNumber(decodedChar);
+            encode[encodedValue] = decodedChar;
+        }
+        return null;
+    }
+}
+
+unittest
+{
+    test!("is")(validateDecodeTable(defaultDecodeTable), istring.init);
+    test!("is")(validateDecodeTable(urlSafeDecodeTable), istring.init);
+
+    ubyte[] notATable = new ubyte[char.max + 1];
+    test!("!is")(validateDecodeTable(notATable), istring.init);
+
+    ubyte[char.max + 1] table = defaultDecodeTable;
+    assert(validateDecodeTable(table) is null);
+    table['*'] = BASE64_PAD;
+    assert(table['='] == table['*']);
+    test!("!is")(validateDecodeTable(table), istring.init);
+}
+
+
+// base64url tests
+unittest
+{
+    istring str = "Why so serious?";
+    Const!(ubyte)[] payload = cast(Const!(ubyte)[]) str;
+
+    // encodeChunktest
+    {
+        mstring encoded = new char[allocateEncodeSize(payload)];
+        int bytesEncoded = 0;
+        int numBytesLeft = encodeChunk!(urlSafeEncodeTable)(payload, encoded, bytesEncoded);
+        cstring result = encoded[0..bytesEncoded] ~ encode!(urlSafeEncodeTable)(payload[numBytesLeft..$], encoded[bytesEncoded..$]);
+        test!("==")(result, "V2h5IHNvIHNlcmlvdXM_");
+    }
+
+    // encodeTest
+    {
+        mstring encoded = new char[allocateEncodeSize(payload)];
+        cstring result = encode!(urlSafeEncodeTable)(payload, encoded);
+        test!("==")(result, "V2h5IHNvIHNlcmlvdXM_");
+
+        cstring result2 = encode!(urlSafeEncodeTable)(payload);
+        test!("==")(result, "V2h5IHNvIHNlcmlvdXM_");
+    }
+
+    // decodeTest
+    {
+        ubyte[1024] decoded;
+        ubyte[] result = decode!(urlSafeDecodeTable)("V2h5IHNvIHNlcmlvdXM_", decoded);
+        test!("==")(result, payload);
+        result = decode!(urlSafeDecodeTable)("V2h5IHNvIHNlcmlvdXM_");
+        test!("==")(result, payload);
+    }
+}

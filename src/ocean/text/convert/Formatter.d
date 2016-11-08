@@ -11,14 +11,14 @@
 
     Copyright:
         Copyright (c) 2009-2016 Sociomantic Labs GmbH.
-        Some parts (marked explicitly) copyright Kris and/or Larvisi.
+        Some parts (marked explicitly) copyright Kris and/or Larsivi.
         All rights reserved.
 
     License:
         Tango Dual License: 3-Clause BSD License / Academic Free License v3.0.
         See LICENSE_TANGO.txt for details.
 
-******************************************************************************/
+*******************************************************************************/
 
 module ocean.text.convert.Formatter;
 
@@ -44,7 +44,7 @@ public alias size_t delegate(cstring) Sink;
 
 /*******************************************************************************
 
-    Format an input string into a newly-allocated string and returns it
+    Formats an input string into a newly-allocated string and returns it
 
     Params:
         fmt     = Format string to use
@@ -107,7 +107,7 @@ public mstring sformat (Args...) (ref mstring buffer, cstring fmt, Args args)
 
     Params:
         buffer  = The buffer to write the formatted string into.
-                  Unlike the format overloads, the buffer won't be extended.
+                  Unlike the sformat overloads, the buffer won't be extended.
                   This leads to a slightly different semantic for this
                   buffer (the others are only appended to, this one is
                   written to).
@@ -144,12 +144,12 @@ public mstring snformat (Args...) (mstring buffer, cstring fmt, Args args)
 
     Params:
         sink    = A delegate that will be called, possibly multiple
-                    times, with fraction of the result string
+                    times, with a portion of the result string
         fmt     = Format string to use
         args    = Variadic arguments to format according to fmt
 
     Returns:
-        If formatting was successfull, returns `true`, `false` otherwise.
+        If formatting was successful, returns `true`, `false` otherwise.
 
 *******************************************************************************/
 
@@ -182,7 +182,7 @@ public bool sformat (Args...) (Sink sink, cstring fmt, Args args)
 
             /*
              * The foreach within the switch is executed at compile time
-             * It allows accessing a compile-time know parameter (and most
+             * It allows accessing a compile-time known parameter (and most
              * importantly, its type) using a runtime index.
              * It is basically generating a jump table, which is exactly
              * what the codegen will produce.
@@ -214,13 +214,13 @@ public bool sformat (Args...) (Sink sink, cstring fmt, Args args)
 
 /*******************************************************************************
 
-    Internal sink type that wraps the user-provided one and take care
+    Internal sink type that wraps the user-provided one and takes care
     of cropping and width
 
-    This sink espect to receive a full element as first parameter,
-    in other word the full chunk of text that needs a fixed size.
-    This is why one cannot format a whole aggregate (struct, arrays...),
-    only individual element
+    This sink expects to receive a full element as the first parameter,
+    in other words, the full chunk of text that needs a fixed size.
+    This is why one cannot format a whole aggregate (struct, arrays etc.), but
+    only individual elements.
 
 *******************************************************************************/
 
@@ -276,15 +276,15 @@ private size_t widthSink (Sink sink, cstring str, ref Const!(FormatInfo) f)
 }
 
 
-/***************************************************************************
+/*******************************************************************************
 
-    Converts a value of a given type to it's string representation
+    Converts a value of a given type to its string representation
 
     Params:
         T   = Type of the argument to convert
         v   = Value of the argument to convert
         f   = Format information gathered from parsing
-        sf  = Fragment sink, to emit part of the text without alignment
+        sf  = Fragment sink, to emit a part of the text without alignment
         se  = Element sink, to emit a single element with alignment
 
 *******************************************************************************/
@@ -301,7 +301,7 @@ private void handle (T) (T v, FormatInfo f, Sink sf, ElementSink se)
         }
     }
 
-    /** The order in which those conditions apply matters
+    /** The order in which the following conditions are applied matters.
      * Explicit type checks (e.g. associative array, or `is(T == V)`)
      * should go first as they are unambiguous.
      * Multiple conditions could be matched by the same type.
@@ -309,13 +309,13 @@ private void handle (T) (T v, FormatInfo f, Sink sf, ElementSink se)
 
     /** D1 + D2 support of typedef
      * Note that another approach would be to handle `struct` at the very
-     * last stage and relying on `alias this` for implicit convertions
+     * last stage and relying on `alias this` for implicit conversions.
      * However this is not a reliable approach, as having an `alias this`
-     * doesn't mean it will be a typedef, and a user might want the struct
+     * doesn't mean that it will be a typedef, and a user might want the struct
      * to be printed instead of the first matching `alias this`.
      * In fact, there is no way to semantically express subtyping,
-     * only means to perform it.
-     * This could be solved later with UDA, but it's at best a workaround.
+     * but only the means to perform it.
+     * This could be solved later with a UDA, but it's at best a workaround.
      */
     static if (IsTypedef!(T))
         handle!(DropTypedef!(T))(v, f, sf, se);
@@ -334,7 +334,7 @@ private void handle (T) (T v, FormatInfo f, Sink sf, ElementSink se)
         handle!(Object)(cast(Object) v, f, sf, se);
 
     // Aggregate should be matched before basic type to avoid
-    // alias this kicking in. See typedef support for more infos.
+    // `alias this` kicking in. See typedef support for more info.
     else static if (is (T == struct))
     {
         Flags old = f.flags;
@@ -424,7 +424,7 @@ private void handle (T) (T v, FormatInfo f, Sink sf, ElementSink se)
             sf(b[1 .. 2]);
     }
 
-    // Pointers needs to be at the top because `(int*).min` compiles
+    // Pointers need to be at the top because `(int*).min` compiles
     // and hence would match the integer rules
     else static if (is (T P == P*))
         writePointer(v, f, se);
@@ -440,7 +440,8 @@ private void handle (T) (T v, FormatInfo f, Sink sf, ElementSink se)
     // Unsigned integer
     else static if (is(typeof(T.min)) && T.min == 0)
     {
-        // Needs to support base 2 at most, plus an optional prefix of 2 chars max
+        // Needs to support base 2 at most, plus an optional prefix of 2 chars
+        // max
         char[T.sizeof * 8 + 2] buff = void;
         se(Integer.format(buff, v, (f.format.length ? f.format : "u")), f);
     }
@@ -484,8 +485,8 @@ private void handle (T) (T v, FormatInfo f, Sink sf, ElementSink se)
         This bears the same name as the template in `ocean.core.Traits`.
         However, the definition in `Traits` unconditionally returns `false`
         in D2.
-        While it might be suitable for most use case, here we have to explicitly
-        handle `typedef`.
+        While it might be suitable for most use cases, here we have to
+        explicitly handle `typedef`.
 
         Params:
             T   = Type to check
@@ -506,8 +507,8 @@ private template IsTypedef (T)
 
         This bears the same name as the template in `ocean.core.Traits`.
         However, the definition in `Traits` unconditionally returns `T` in D2.
-        While it might be suitable for most use case, here we have to explicitly
-        handle `typedef`.
+        While it might be suitable for most use cases, here we have to
+        explicitly handle `typedef`.
 
         Params:
             T   = Typedef for which to get the underlying type
@@ -530,7 +531,7 @@ private template DropTypedef (T)
 /*******************************************************************************
 
         Consumes the format string until a format specifier is found,
-        then returns informations about that format specifier
+        then returns information about that format specifier
 
         Note:
           This function iterates over 'char', and is *NOT* Unicode-correct.
@@ -607,7 +608,7 @@ private FormatInfo consume (Sink sink, ref cstring fmt)
     }
 
     // Finally get the format string, if any
-    // E.g. for `{5:X} that would be 'X'
+    // e.g. for `{5:X} that would be 'X'
     if (*s == ':' && s < end)
     {
         auto fs = ++s;
@@ -792,20 +793,20 @@ private void writePointer (void* v, ref FormatInfo f, ElementSink se)
 private enum Flags : ubyte
 {
     None        = 0x00,     /// Default
-    Format      = 0x01,     /// There was a formating string (even if empty)
+    Format      = 0x01,     /// There was a formatting string (even if empty)
     Error       = 0x02,     /// An error happened during formatting, bail out
     AlignLeft   = 0x04,     /// Left alignment requested (via ',-' or '.-')
     AlignRight  = 0x08,     /// Right alignment requested (via ',' or '.')
     Crop        = 0x10,     /// Crop to width (via '.')
     Index       = 0x20,     /// An index was explicitly provided
-    Width       = 0x40,     /// A width was explicilty provided
+    Width       = 0x40,     /// A width was explicitly provided
     Nested      = 0x80,     /// We are formatting something nested
                             ///   (i.e. in an aggregate type or an array)
 }
 
 /*******************************************************************************
 
-    Internal struct to hold informations about the format specification
+    Internal struct to hold information about the format specification
 
 *******************************************************************************/
 
@@ -853,13 +854,13 @@ private struct FormatInfo
     Original tango Layout unittest, minus changes of behaviour
 
     Copyright:
-        Those unittests come from `tango.text.convert.Layout`.
-        Copyright Kris & Larvisi
+        These unit tests come from `tango.text.convert.Layout`.
+        Copyright Kris & Larsivi
 
     Note:
-        Those tests use `assert` instead of `ocean.core.Test.test`
-        since the later will in the future use `format` to format its output,
-        thus that would create a circular dependency.
+        These tests use `assert` instead of `ocean.core.Test.test`
+        since the latter will in the future use `format` to format its output,
+        thus creating a circular dependency.
 
 *******************************************************************************/
 
@@ -1061,8 +1062,8 @@ unittest
     }
 
 
-    // snformat is supposed to overwrite provided buffer without changing its
-    // length and ignore any remaining formatted data that does not fit
+    // snformat is supposed to overwrite the provided buffer without changing
+    // its length and ignore any remaining formatted data that does not fit
     mstring target;
     snformat(target, "{}", 42);
     assert(target.ptr is null);
@@ -1074,24 +1075,24 @@ unittest
 
 /*******************************************************************************
 
-    Tests for the new behaviour that diverge from the original Layout unittests
+    Tests for the new behaviour that diverge from the original Layout unit tests
 
 *******************************************************************************/
 
 unittest
 {
-    // This is handled as a pointer, not an integer literal
+    // This is handled as a pointer, not as an integer literal
     assert(format("{}", null) == "null");
 
-    // Imaginary and complex number aren't supported anymore (deprecated in D2)
+    // Imaginary and complex numbers aren't supported anymore (deprecated in D2)
     // assert(format("{0:f}", 1.23f*1i) == "1.23*1i");
-    // See the original Tango's code for more example
+    // See the original Tango's code for more examples
 
     static struct S2 { }
     assert(format("{}", S2.init) == "{ empty struct }");
-    // This use to produce '{unhandled argument type}'
+    // This used to produce '{unhandled argument type}'
 
-    // Tango's Layout support UTF-16 and UTF-32 (`wchar` and `dchar`, we don't
+    // Tango's Layout supports UTF-16 and UTF-32 (`wchar` and `dchar`), we don't.
     // Instead of `assert(format("{}", "42"w) == "42")` we now trigger a
     // `static assert`
     version(none) assert(format("{}", "42"w) == "42");
@@ -1135,7 +1136,7 @@ unittest
 
 /*******************************************************************************
 
-    Additional unittests
+    Additional unit tests
 
 *******************************************************************************/
 
@@ -1147,7 +1148,7 @@ unittest
     // Wasn't tested either, but also the same behaviour
     assert(format("foo {1} bar", 42) == "foo {invalid index} bar");
 
-    // Typedef are correctly formatted
+    // Typedefs are correctly formatted
     mixin(Typedef!(ulong, "RandomTypedef"));
     RandomTypedef r;
     assert(format("{}", r) == "0");

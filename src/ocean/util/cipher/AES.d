@@ -649,12 +649,12 @@ class AES : BlockCipher
         uint ROUNDS, // Number of rounds depends on keysize
              s0, s1, s2, s3; // State
         uint[] w; // Expanded key
-        ubyte[] workingKey;
+        Const!(ubyte)[] workingKey;
 
     } // end private
 
     this() {}
-    this(bool encrypt, ubyte[] key) {
+    this(bool encrypt, in ubyte[] key) {
         init(encrypt, key);
     }
 
@@ -675,7 +675,7 @@ class AES : BlockCipher
         return BLOCK_SIZE;
     }
 
-    final void init(bool encrypt, ubyte[] key)
+    final void init(bool encrypt, in ubyte[] key)
     {
         _encrypt = encrypt;
 
@@ -819,13 +819,13 @@ class AES : BlockCipher
                        RS[cast(ubyte) t0];
     }
 
-    final override uint update(void[] input_, void[] output_)
+    final override uint update (in void[] input_, void[] output_)
     {
         if (!_initialized)
             invalid(name()~": Cipher not initialized.");
 
-        ubyte[] input = cast(ubyte[]) input_,
-                output = cast(ubyte[]) output_;
+        auto input = cast(Const!(ubyte)[]) input_;
+        auto output = cast(ubyte[]) output_;
 
         if (input.length < BLOCK_SIZE)
             invalid(name()~": Input buffer too short");
@@ -858,7 +858,7 @@ class AES : BlockCipher
                 (S[cast(ubyte)x]));
     }
 
-    private void setup(ubyte[] key)
+    private void setup (in ubyte[] key)
     {
         uint nk = cast(uint) key.length / 4;
         ROUNDS = nk + 6;
@@ -898,7 +898,7 @@ class AES : BlockCipher
     /** Some AES test vectors from the FIPS-197 paper and BC. */
     unittest
     {
-        static istring[] test_keys = [
+        const istring[] test_keys = [
             "000102030405060708090a0b0c0d0e0f",
             "000102030405060708090a0b0c0d0e0f1011121314151617",
             "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
@@ -907,7 +907,7 @@ class AES : BlockCipher
             "0000000000000000000000000000000000000000000000000000000000000000"
         ];
 
-        static istring[] test_plaintexts = [
+        const istring[] test_plaintexts = [
             "00112233445566778899aabbccddeeff",
             "00112233445566778899aabbccddeeff",
             "00112233445566778899aabbccddeeff",
@@ -916,7 +916,7 @@ class AES : BlockCipher
             "80000000000000000000000000000000"
         ];
 
-        static istring[] test_ciphertexts = [
+        const istring[] test_ciphertexts = [
             "69c4e0d86a7b0430d8cdb78070b4c55a",
             "dda97ca4864cdfe06eaf70a0ec0d7191",
             "8ea2b7ca516745bfeafc49904b496089",
@@ -927,22 +927,24 @@ class AES : BlockCipher
         ];
 
         AES t = new AES();
-        foreach (uint i, istring test_key; test_keys)
+        foreach (i, test_key; test_keys)
         {
             ubyte[] buffer = new ubyte[t.blockSize];
             istring result;
-            auto key = ByteConverter.hexDecode(test_key);
+            Const!(ubyte)[] key = ByteConverter.hexDecode(test_key);
+            Const!(ubyte)[] hex_plain = ByteConverter.hexDecode(test_plaintexts[i]);
+            Const!(ubyte)[] hex_cipher = ByteConverter.hexDecode(test_ciphertexts[i]);
 
             // Encryption
             t.init(true, key);
-            t.update(ByteConverter.hexDecode(test_plaintexts[i]), buffer);
+            t.update(hex_plain, buffer);
             result = ByteConverter.hexEncode(buffer);
             assert(result == test_ciphertexts[i],
                     t.name~": ("~result~") != ("~test_ciphertexts[i]~")");
 
             // Decryption
             t.init(false, key);
-            t.update(ByteConverter.hexDecode(test_ciphertexts[i]), buffer);
+            t.update(hex_cipher, buffer);
             result = ByteConverter.hexEncode(buffer);
             assert(result == test_plaintexts[i],
                     t.name~": ("~result~") != ("~test_plaintexts[i]~")");

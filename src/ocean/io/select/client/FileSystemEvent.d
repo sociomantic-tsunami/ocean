@@ -29,7 +29,7 @@ module ocean.io.select.client.FileSystemEvent;
 import ocean.sys.Inotify;
 import ocean.sys.linux.inotify;
 
-import ocean.stdc.posix.unistd;;
+import ocean.stdc.posix.unistd;
 
 import ocean.io.select.EpollSelectDispatcher;
 import ocean.io.select.client.model.ISelectClient: ISelectClient;

@@ -199,7 +199,7 @@ unittest
 
 *******************************************************************************/
 
-size_t remove ( T, Pred = DefaultPredicates.IsEqual!(T) )
+size_t moveToEnd ( T, Pred = DefaultPredicates.IsEqual!(T) )
     ( T[] array, in T element, Pred pred = Pred.init )
 {
     static assert( isCallableType!(Pred) );
@@ -225,26 +225,42 @@ size_t remove ( T, Pred = DefaultPredicates.IsEqual!(T) )
     return array.length - cnt;
 }
 
+/// ditto
+deprecated ("Use `moveToEnd()` instead")
+size_t remove ( T, Pred = DefaultPredicates.IsEqual!(T) )
+    ( T[] array, in T element, Pred pred = Pred.init )
+{
+    return moveToEnd(array, element, pred);
+}
+
 ///
 unittest
 {
     auto array = "abbcc".dup;
-    test!("==")(remove(array, 'b'), 3);
+    test!("==")(moveToEnd(array, 'b'), 3);
     test!("==")(array, "accbb");
 }
 
 /// ditto
+size_t moveToEnd ( T, Pred = DefaultPredicates.IsEqual!(T) )
+    ( ref Buffer!(T) array, in T element, Pred pred = Pred.init )
+{
+    return moveToEnd(array[0..array.length], element, pred);
+}
+
+/// ditto
+deprecated ("Use `moveToEnd()` instead")
 size_t remove ( T, Pred = DefaultPredicates.IsEqual!(T) )
     ( ref Buffer!(T) array, in T element, Pred pred = Pred.init )
 {
-    return remove(array[0..array.length], element, pred);
+    return moveToEnd(array[0..array.length], element, pred);
 }
 
 ///
 unittest
 {
     auto buffer = createBuffer("abbcc");
-    test!("==")(remove(buffer, 'b'), 3);
+    test!("==")(moveToEnd(buffer, 'b'), 3);
     test!("==")(buffer[], "accbb");
 }
 
@@ -254,8 +270,8 @@ unittest
         char element, size_t num, int line = __LINE__ )
     {
         auto array = _array.dup;
-        auto t = new NamedTest(Format("remove.testOne:{}", line));
-        t.test!("==")(remove(array, element), num);
+        auto t = new NamedTest(Format("moveToEnd.testOne:{}", line));
+        t.test!("==")(moveToEnd(array, element), num);
         foreach (pos, cur; array)
             t.test(pos < num ? cur != element : cur == element);
     }

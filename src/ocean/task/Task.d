@@ -32,7 +32,7 @@ module ocean.task.Task;
 static import core.thread;
 
 import ocean.transition;
-import ocean.core.array.Mutation : remove;
+import ocean.core.array.Mutation : moveToEnd;
 import ocean.core.Test;
 import ocean.io.select.EpollSelectDispatcher;
 import ocean.io.model.ISuspendable;
@@ -318,7 +318,7 @@ public abstract class Task : ISuspendable
 
     public void unregisterOnKillHook (void delegate() hook)
     {
-        this.kill_hooks.length = .remove(this.kill_hooks, hook);
+        this.kill_hooks.length = .moveToEnd(this.kill_hooks, hook);
         enableStomping(this.kill_hooks);
     }
 

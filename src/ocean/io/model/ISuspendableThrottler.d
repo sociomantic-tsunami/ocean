@@ -38,7 +38,7 @@ abstract public class ISuspendableThrottler
 {
     import ocean.io.model.ISuspendable;
 
-    import ocean.core.array.Mutation : remove;
+    import ocean.core.array.Mutation : moveToEnd;
     import ocean.core.array.Search : contains;
 
     /***************************************************************************
@@ -94,7 +94,8 @@ abstract public class ISuspendableThrottler
 
     public void removeSuspendable ( ISuspendable s )
     {
-        this.suspendables = this.suspendables[0 .. this.suspendables.remove(s)];
+        this.suspendables =
+            this.suspendables[0 .. this.suspendables.moveToEnd(s)];
     }
 
 

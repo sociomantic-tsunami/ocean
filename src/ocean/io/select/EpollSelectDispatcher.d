@@ -658,6 +658,14 @@ public class EpollSelectDispatcher : IEpollSelectDispatcherInfo
         this.shutdown_event.trigger();
     }
 
+    /**************************************************************************/
+
+    deprecated("cycle hook delegate must return bool")
+    public void eventLoop ( void delegate ( ) select_cycle_hook )
+    {
+        this.eventLoop({ select_cycle_hook(); return false; });
+    }
+
     /***************************************************************************
 
         While there are clients registered, repeatedly waits for registered
@@ -667,11 +675,12 @@ public class EpollSelectDispatcher : IEpollSelectDispatcherInfo
         Params:
             select_cycle_hook = if not null, will be called each time select
                 cycle finished before waiting for more events. Also called
-                once before the first select.
+                once before the first select. If returns `true`, epoll will
+                return immediately if there are no active events.
 
      **************************************************************************/
 
-    public void eventLoop ( void delegate ( ) select_cycle_hook = null )
+    public void eventLoop ( bool delegate ( ) select_cycle_hook = null )
     in
     {
         assert (!this.in_event_loop, "Event loop has already been started.");
@@ -681,14 +690,16 @@ public class EpollSelectDispatcher : IEpollSelectDispatcherInfo
         this.in_event_loop = true;
         scope ( exit ) this.in_event_loop = false;
 
+        bool caller_work_pending = false;
+
         if (select_cycle_hook !is null)
-            select_cycle_hook();
+            caller_work_pending = select_cycle_hook();
 
         while ( this.registered_clients.length && !this.shutdown_triggered )
         {
-            this.select();
+            this.select(caller_work_pending);
             if (select_cycle_hook !is null)
-                select_cycle_hook();
+                caller_work_pending = select_cycle_hook();
         }
     }
 
@@ -696,12 +707,17 @@ public class EpollSelectDispatcher : IEpollSelectDispatcherInfo
 
         Executes an epoll select.
 
+        Params:
+            exit_asap = if set to 'true', epoll will exit immediately
+                if there are no events to trigger. Otherwise epoll will wait
+                indefinitely until any event fires.
+
         Returns:
             the number of epoll keys for which an event was reported.
 
      **************************************************************************/
 
-    protected uint select ( )
+    protected uint select ( bool exit_asap )
     {
         debug ( ISelectClient )
         {
@@ -728,7 +744,20 @@ public class EpollSelectDispatcher : IEpollSelectDispatcherInfo
             // epoll_wait actually timed out or not (this is indicated by
             // n == 0).
 
-            int n = this.epoll.wait(this.events, have_timeout? cast (int) this.usToMs(us_left) : -1);
+            int epoll_wait_time;
+
+            if (exit_asap)
+                epoll_wait_time = 0;
+            else
+            {
+                if (have_timeout)
+                    epoll_wait_time = cast (int) this.usToMs(us_left);
+                else
+                    epoll_wait_time = -1;
+            }
+
+            int n = this.epoll.wait(this.events, epoll_wait_time);
+
             version ( EpollCounters ) this.counters.selects++;
 
             if (n >= 0)

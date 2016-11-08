@@ -43,9 +43,17 @@ import ocean.transition;
 import ocean.core.Test;
 import ocean.core.Buffer;
 
-public import ocean.core.array.Mutation;;
-public import ocean.core.array.Transformation;;
+public import ocean.core.array.Mutation;
+public import ocean.core.array.Transformation;
 public import ocean.core.array.Search;
+
+/*******************************************************************************
+
+    Alias to keep backwards compatibility with Array module in v1.x.x
+
+*******************************************************************************/
+
+public alias ocean.core.array.Transformation.remove remove;
 
 /*******************************************************************************
 
@@ -127,4 +135,14 @@ unittest
     const conststr1 = "hi ";
     const conststr2 = "there";
     test(concat_test(dest, conststr1, conststr2), "Const array concatenation test failed");
+}
+
+unittest
+{
+    // Check there is not function clashes calling remove() from this module.
+    // The remove() function defined in ocean.core.array.Transformation is
+    // expected to be the default.
+    int[] array;
+    remove([0, 1, 2, 2, 2, 3, 4], [2], array);
+    test!("==")(array, [0, 1, 3, 4], "Array does not match");
 }

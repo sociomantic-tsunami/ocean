@@ -87,7 +87,9 @@ import ocean.core.Traits;
 
 public class StringStructSerializer ( Char )
 {
-    static assert ( isCharType!(Char), typeof(this).stringof ~ " - this class can only handle {char, wchar, dchar}, not " ~ Char.stringof );
+    static assert(isCharType!(Char), typeof(this).stringof ~
+        " - this class can only handle {char, wchar, dchar}, not " ~
+        Char.stringof);
 
 
     /***************************************************************************
@@ -116,6 +118,7 @@ public class StringStructSerializer ( Char )
 
     private cstring fp_format;
 
+
     /***************************************************************************
 
         Known list of common timestamp field names
@@ -123,6 +126,30 @@ public class StringStructSerializer ( Char )
     ***************************************************************************/
 
     private StandardHashingSet!(cstring) known_timestamp_fields;
+
+
+    /***************************************************************************
+
+        Flag that is set to true if single character fields in structs should be
+        serialized into equivalent friendly string representations (applicable
+        only if these fields contain whitespace or other unprintable
+        characters).
+        e.g. the newline character will be serialized to the string '\n' instead
+        of to an actual new line.
+
+    ***************************************************************************/
+
+    private bool turn_ws_char_to_str;
+
+
+    /***************************************************************************
+
+        Temporary formatting buffer.
+
+    ***************************************************************************/
+
+    private mstring buf;
+
 
     /***************************************************************************
 
@@ -159,12 +186,17 @@ public class StringStructSerializer ( Char )
             output           = string to serialize struct data to
             item             = item to append
             timestamp_fields = (optional) an array of timestamp field names
+            turn_ws_char_to_str = true if individual whitespace or unprintable
+                character fields should be serialized into a friendlier string
+                representation, e.g. tab character into '\t' (defaults to false)
 
     ***************************************************************************/
 
     public void serialize ( T ) ( ref Char[] output, ref T item,
-        cstring[] timestamp_fields = null )
+        cstring[] timestamp_fields = null, bool turn_ws_char_to_str = false )
     {
+        this.turn_ws_char_to_str = turn_ws_char_to_str;
+
         this.known_timestamp_fields.clear();
 
         foreach (field_name; timestamp_fields)
@@ -189,6 +221,8 @@ public class StringStructSerializer ( Char )
 
     public void open ( ref Char[] output, cstring name )
     {
+        assert(this.indent.length == 0, "Non-zero indentation in open");
+
         Layout!(Char).format(output, "{}struct {}:\n", this.indent, name);
         this.increaseIndent();
     }
@@ -229,21 +263,34 @@ public class StringStructSerializer ( Char )
 
     public void serialize ( T ) ( ref Char[] output, ref T item, cstring name )
     {
+        assert(this.indent.length > 0, "Incorrect indentation in serialize");
+
         // TODO: temporary support for unions by casting them to ubyte[]
         static if ( is(T == union) )
         {
-            Layout!(Char).format(output, "{}union {} {} : {}\n", this.indent, T.stringof, name, (cast(ubyte*)&item)[0..item.sizeof]);
+            Layout!(Char).format(output, "{}union {} {} : {}\n", this.indent,
+                T.stringof, name, (cast(ubyte*)&item)[0..item.sizeof]);
         }
         else static if ( isFloatingPointType!(T) )
         {
-            Layout!(Char).format(output, this.fp_format, this.indent, T.stringof, name, item);
+            Layout!(Char).format(output, this.fp_format, this.indent,
+                T.stringof, name, item);
+        }
+        else static if ( is(T == char) )
+        {
+            // Individual character fields are handled in a special manner so
+            // that friendly string representations can be generated for them if
+            // necessary
+
+            Layout!(Char).format(output, "{}{} {} : {}\n", this.indent,
+                T.stringof, name, this.getCharAsString(item));
         }
         else
         {
             Layout!(Char).format(output, "{}{} {} : {}", this.indent,
                 T.stringof, name, item);
 
-            if (is(T : ulong) && name in this.known_timestamp_fields)
+            if ( is(T : ulong) && name in this.known_timestamp_fields )
             {
                 Char[20] tmp;
                 Layout!(Char).format(output, " ({})\n", formatTime(item, tmp));
@@ -268,6 +315,8 @@ public class StringStructSerializer ( Char )
 
     public void openStruct ( ref Char[] output, cstring name )
     {
+        assert(this.indent.length > 0, "Incorrect indentation in openStruct");
+
         Layout!(Char).format(output, "{}struct {}:\n", this.indent, name);
         this.increaseIndent();
     }
@@ -303,8 +352,12 @@ public class StringStructSerializer ( Char )
 
     ***************************************************************************/
 
-    public void serializeArray ( T ) ( ref Char[] output, cstring name, T[] array )
+    public void serializeArray ( T ) ( ref Char[] output, cstring name,
+        T[] array )
     {
+        assert(this.indent.length > 0,
+            "Incorrect indentation in serializeArray");
+
         Layout!(Char).format(output, "{}{}[] {} (length {}):{}{}\n",
             this.indent, T.stringof, name, array.length,
             array.length ? " " : "", array);
@@ -325,9 +378,14 @@ public class StringStructSerializer ( Char )
 
     ***************************************************************************/
 
-    public void openStructArray ( T ) ( ref Char[] output, cstring name, T[] array )
+    public void openStructArray ( T ) ( ref Char[] output, cstring name,
+        T[] array )
     {
-        Layout!(Char).format(output, "{}{}[] {} (length {}):\n", this.indent, T.stringof, name, array.length);
+        assert(this.indent.length > 0,
+            "Incorrect indentation in openStructArray");
+
+        Layout!(Char).format(output, "{}{}[] {} (length {}):\n", this.indent,
+            T.stringof, name, array.length);
         this.increaseIndent();
     }
 
@@ -346,7 +404,8 @@ public class StringStructSerializer ( Char )
 
     ***************************************************************************/
 
-    public void closeStructArray ( T ) ( ref Char[] output, cstring name, T[] array )
+    public void closeStructArray ( T ) ( ref Char[] output, cstring name,
+        T[] array )
     {
         this.decreaseIndent();
     }
@@ -373,15 +432,94 @@ public class StringStructSerializer ( Char )
     ***************************************************************************/
 
     private void decreaseIndent ( )
-    in
     {
-        assert(this.indent.length >= indent_size, typeof(this).stringof ~ ".decreaseIndent - indentation cannot be decreased");
-    }
-    body
-    {
+        assert(this.indent.length >= indent_size, typeof(this).stringof ~
+            ".decreaseIndent - indentation cannot be decreased");
+
         this.indent.length = this.indent.length - indent_size;
         enableStomping(this.indent);
-        this.indent[] = ' ';
+    }
+
+
+    /***************************************************************************
+
+        Gets the string equivalent of a character. For most characters, the
+        string contains just the character itself; but in case of whitespace or
+        other unprintable characters, a friendlier string representation is
+        generated (provided the flag requesting this generation has been set).
+        For example, the string '\n' will be generated for the newline
+        character, '\t' for the tab character and so on.
+
+        Params:
+            c = character whose string equivalent is to be got
+
+        Returns:
+            string equivalent of the character
+
+    ***************************************************************************/
+
+    private mstring getCharAsString ( char c )
+    {
+        this.buf.length = 0;
+        enableStomping(this.buf);
+
+        if ( !this.turn_ws_char_to_str )
+        {
+            Layout!(Char).format(this.buf, "{}", c);
+            return this.buf;
+        }
+
+        // The set of characters to use for creating cases within the following
+        // switch block. These are just whitepace or unprintable characters but
+        // without their preceding backslashes.
+        const letters = ['0', 'a', 'b', 'f', 'n', 'r', 't', 'v'];
+
+        switch ( c )
+        {
+            case c.init:
+                Layout!(Char).format(this.buf, "{}", "''");
+                break;
+
+            mixin(ctfeCreateCases(letters));
+
+            default:
+                Layout!(Char).format(this.buf, "{}", c);
+                break;
+        }
+
+        return this.buf;
+    }
+
+
+    /***************************************************************************
+
+        Creates a string containing all the necessary case statements to be
+        mixed-in into the switch block that generates friendly string
+        representations of whitespace or unprintable characters. This function
+        is evaluated at compile-time.
+
+        Params:
+            letters = string containing all the characters corresponding to the
+                various case statements
+
+        Returns:
+            string containing all case statements to be mixed-in
+
+    ***************************************************************************/
+
+    private static istring ctfeCreateCases ( istring letters )
+    {
+        istring mixin_str;
+
+        foreach ( c; letters )
+        {
+            mixin_str ~=
+                `case '\` ~ c ~ `':` ~
+                    `Layout!(Char).format(this.buf, "{}", "'\\` ~ c ~ `'");` ~
+                    `break;`;
+        }
+
+        return mixin_str;
     }
 }
 
@@ -395,6 +533,19 @@ unittest
 {
     auto t = new NamedTest("struct serializer test");
     auto serializer = new StringStructSerializer!(char);
+    char[] buffer;
+
+    struct EmptyStruct
+    {
+    }
+
+    EmptyStruct e;
+
+    serializer.serialize(buffer, e);
+
+    t.test!("==")(buffer.length, 20);
+    t.test(buffer == "struct EmptyStruct:\n",
+        "Incorrect string serializer result");
 
     struct TextFragment
     {
@@ -406,12 +557,13 @@ unittest
     text_fragment.text = "eins".dup;
     text_fragment.type = 1;
 
-    char[] buffer;
+    buffer.length = 0;
+    enableStomping(buffer);
     serializer.serialize(buffer, text_fragment);
 
-    t.test(buffer.length == 69, "Incorrect string serializer result length");
-    t.test(buffer == "struct TextFragment:\n"
-                     "   char[] text (length 4): eins\n"
+    t.test!("==")(buffer.length, 69);
+    t.test(buffer == "struct TextFragment:\n" ~
+                     "   char[] text (length 4): eins\n" ~
                      "   int type : 1\n",
         "Incorrect string serializer result");
 
@@ -434,12 +586,12 @@ unittest
     enableStomping(buffer);
     serializer.serialize(buffer, text_fragment_time, timestamp_fields);
 
-    t.test(buffer.length == 204, "Incorrect string serializer result length");
-    t.test(buffer == "struct TextFragmentTime:\n"
-                     "   char[] text (length 4): eins\n"
-                     "   long time : 1456829726\n"
-                     "   char[] lastseen (length 0):\n"
-                     "   long timestamp : 0 (1970-01-01 00:00:00)\n"
+    t.test!("==")(buffer.length, 204);
+    t.test(buffer == "struct TextFragmentTime:\n" ~
+                     "   char[] text (length 4): eins\n" ~
+                     "   long time : 1456829726\n" ~
+                     "   char[] lastseen (length 0):\n" ~
+                     "   long timestamp : 0 (1970-01-01 00:00:00)\n" ~
                      "   long update_time : 0 (1970-01-01 00:00:00)\n",
         "Incorrect string serializer result");
 
@@ -447,12 +599,12 @@ unittest
     enableStomping(buffer);
     serializer.serialize(buffer, text_fragment_time);
 
-    t.test(buffer.length == 160, "Incorrect string serializer result length");
-    t.test(buffer == "struct TextFragmentTime:\n"
-                     "   char[] text (length 4): eins\n"
-                     "   long time : 1456829726\n"
-                     "   char[] lastseen (length 0):\n"
-                     "   long timestamp : 0\n"
+    t.test!("==")(buffer.length, 160);
+    t.test(buffer == "struct TextFragmentTime:\n" ~
+                     "   char[] text (length 4): eins\n" ~
+                     "   long time : 1456829726\n" ~
+                     "   char[] lastseen (length 0):\n" ~
+                     "   long timestamp : 0\n" ~
                      "   long update_time : 0\n",
         "Incorrect string serializer result");
 
@@ -469,19 +621,165 @@ unittest
     enableStomping(buffer);
     serializer.serialize(buffer, multi_dimensional_array);
 
-    t.test(buffer.length == 461, "Incorrect string serializer result length");
-    t.test(buffer == "struct MultiDimensionalArray:\n"
-                     "   TextFragment[][] text_fragments (length 2):\n"
-                     "      TextFragment[] text_fragments (length 1):\n"
-                     "         struct TextFragment:\n"
-                     "            char[] text (length 4): eins\n"
-                     "            int type : 1\n"
-                     "      TextFragment[] text_fragments (length 2):\n"
-                     "         struct TextFragment:\n"
-                     "            char[] text (length 4): zwei\n"
-                     "            int type : 2\n"
-                     "         struct TextFragment:\n"
-                     "            char[] text (length 4): drei\n"
+    t.test!("==")(buffer.length, 461);
+    t.test(buffer == "struct MultiDimensionalArray:\n" ~
+                     "   TextFragment[][] text_fragments (length 2):\n" ~
+                     "      TextFragment[] text_fragments (length 1):\n" ~
+                     "         struct TextFragment:\n" ~
+                     "            char[] text (length 4): eins\n" ~
+                     "            int type : 1\n" ~
+                     "      TextFragment[] text_fragments (length 2):\n" ~
+                     "         struct TextFragment:\n" ~
+                     "            char[] text (length 4): zwei\n" ~
+                     "            int type : 2\n" ~
+                     "         struct TextFragment:\n" ~
+                     "            char[] text (length 4): drei\n" ~
                      "            int type : 3\n",
+        "Incorrect string serializer result");
+
+    struct OuterStruct
+    {
+        int outer_a;
+        struct InnerStruct
+        {
+            int inner_a;
+        }
+        InnerStruct s;
+    }
+
+    OuterStruct s;
+    s.outer_a = 100;
+    s.s.inner_a = 200;
+
+    buffer.length = 0;
+    enableStomping(buffer);
+    serializer.serialize(buffer, s);
+
+    t.test!("==")(buffer.length, 78);
+    t.test(buffer == "struct OuterStruct:\n" ~
+                     "   int outer_a : 100\n" ~
+                     "   struct s:\n" ~
+                     "      int inner_a : 200\n",
+        "Incorrect string serializer result");
+
+    struct StructWithFloatingPoints
+    {
+        float a;
+        double b;
+        real c;
+    }
+
+    StructWithFloatingPoints sf;
+    sf.a = 10.00;
+    sf.b = 23.42;
+
+    buffer.length = 0;
+    enableStomping(buffer);
+    serializer.serialize(buffer, sf);
+
+    t.test!("==")(buffer.length, 85);
+    t.test(buffer == "struct StructWithFloatingPoints:\n" ~
+                     "   float a : 10\n" ~
+                     "   double b : 23.42\n" ~
+                     "   real c : nan\n",
+        "Incorrect string serializer result");
+
+    struct StructWithUnion
+    {
+        union U
+        {
+            int a;
+            char b;
+            double c;
+        }
+
+        U u;
+    }
+
+    StructWithUnion su;
+    su.u.a = 100;
+
+    buffer.length = 0;
+    enableStomping(buffer);
+    serializer.serialize(buffer, su);
+
+    t.test!("==")(buffer.length, 66);
+    t.test(buffer == "struct StructWithUnion:\n" ~
+                     "   union U u : [100, 0, 0, 0, 0, 0, 0, 0]\n",
+        "Incorrect string serializer result");
+
+    su.u.b = 'a';
+
+    buffer.length = 0;
+    enableStomping(buffer);
+    serializer.serialize(buffer, su);
+
+    t.test!("==")(buffer.length, 65);
+    t.test(buffer == "struct StructWithUnion:\n" ~
+                     "   union U u : [97, 0, 0, 0, 0, 0, 0, 0]\n",
+        "Incorrect string serializer result");
+
+    struct StructWithChars
+    {
+        char c0;
+        char c1;
+        char c2;
+        char c3;
+        char c4;
+        char c5;
+        char c6;
+        char c7;
+        char c8;
+        char c9;
+    }
+
+    StructWithChars sc;
+    sc.c0 = 'g';
+    sc.c1 = 'k';
+    sc.c2 = '\0';
+    sc.c3 = '\a';
+    sc.c4 = '\b';
+    sc.c5 = '\f';
+    sc.c6 = '\n';
+    sc.c7 = '\r';
+    sc.c8 = '\t';
+    sc.c9 = '\v';
+
+    // Generation of friendly string representations of characters disabled
+    buffer.length = 0;
+    enableStomping(buffer);
+    serializer.serialize(buffer, sc);
+
+    t.test!("==")(buffer.length, 174);
+    t.test(buffer == "struct StructWithChars:\n" ~
+                     "   char c0 : g\n" ~
+                     "   char c1 : k\n" ~
+                     "   char c2 : \0\n" ~
+                     "   char c3 : \a\n" ~
+                     "   char c4 : \b\n" ~
+                     "   char c5 : \f\n" ~
+                     "   char c6 : \n\n" ~
+                     "   char c7 : \r\n" ~
+                     "   char c8 : \t\n" ~
+                     "   char c9 : \v\n",
+        "Incorrect string serializer result");
+
+    // Generation of friendly string representations of characters enabled
+    buffer.length = 0;
+    enableStomping(buffer);
+    serializer.serialize(buffer, sc, [""], true);
+
+    t.test!("==")(buffer.length, 198);
+    t.test(buffer == "struct StructWithChars:\n" ~
+                     "   char c0 : g\n" ~
+                     "   char c1 : k\n" ~
+                     "   char c2 : '\\0'\n" ~
+                     "   char c3 : '\\a'\n" ~
+                     "   char c4 : '\\b'\n" ~
+                     "   char c5 : '\\f'\n" ~
+                     "   char c6 : '\\n'\n" ~
+                     "   char c7 : '\\r'\n" ~
+                     "   char c8 : '\\t'\n" ~
+                     "   char c9 : '\\v'\n",
         "Incorrect string serializer result");
 }

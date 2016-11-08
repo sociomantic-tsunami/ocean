@@ -35,7 +35,7 @@ import ocean.util.app.ext.ReopenableFilesExt;
 
 import ocean.util.config.ConfigParser;
 import LogUtil = ocean.util.log.Config;
-import ClassFiller = ocean.util.config.ClassFiller;
+import ConfigFiller = ocean.util.config.ConfigFiller;
 
 import ocean.transition;
 import ocean.io.device.File;
@@ -129,8 +129,8 @@ class LogExt : IConfigExtExtension
                     this.use_insert_appender);
         }
 
-        auto log_config = ClassFiller.iterate!(LogUtil.Config)("LOG", config);
-        auto log_meta_config = ClassFiller.fill!(LogUtil.MetaConfig)("LOG", config);
+        auto log_config = ConfigFiller.iterate!(LogUtil.Config)("LOG", config);
+        auto log_meta_config = ConfigFiller.fill!(LogUtil.MetaConfig)("LOG", config);
 
         Appender appender ( istring file, LogUtil.Layout layout )
         {

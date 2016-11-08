@@ -54,7 +54,7 @@ import ocean.util.app.ext.ReopenableFilesExt;
 
 import ocean.util.config.ConfigParser;
 import ocean.util.log.Stats;
-import ClassFiller = ocean.util.config.ClassFiller;
+import ConfigFiller = ocean.util.config.ConfigFiller;
 
 import ocean.transition;
 import ocean.io.device.File;
@@ -108,7 +108,7 @@ class StatsExt : IConfigExtExtension
 
     public override void processConfig ( IApplication app, ConfigParser config )
     {
-        auto c = ClassFiller.fill!(StatsLog.Config)("STATS", config);
+        auto c = ConfigFiller.fill!(StatsLog.Config)("STATS", config);
 
         if (!c.app_name.length)
             c.app_name = app.name;

@@ -90,7 +90,7 @@ import ocean.transition;
 
 import ocean.io.Stdout;
 import ocean.core.Array : insertShift, removePrefix, removeSuffix, sort;
-import ocean.util.config.ClassFiller;
+import ocean.util.config.ConfigFiller;
 import ocean.util.config.ConfigParser;
 import ocean.util.log.AppendFile;
 import ocean.util.log.AppendSysLog;

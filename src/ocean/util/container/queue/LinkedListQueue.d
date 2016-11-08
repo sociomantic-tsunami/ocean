@@ -422,6 +422,43 @@ public class LinkedListQueue ( T, alias gc_tracking_policy = GCTrackingPolicy.re
         return old_count - this.count;
     }
 
+
+    /***************************************************************************
+
+        Walk through the linked list
+
+        Params:
+            dg = delegate to be called for each value in the list
+
+        Returns:
+            the return value of the last call to the delegate,
+            or zero if no call happened (no elements to walk over)
+
+    ***************************************************************************/
+
+    public int opApply ( int delegate ( ref T value ) dg )
+    {
+        int result;
+
+        if (!this.empty())
+        {
+            auto current = this.head;
+
+            do
+            {
+                result = dg(current.value);
+
+                if (result)
+                    break;
+
+                current = current.next;
+            }
+            while (current !is null);
+        }
+
+        return result;
+    }
+
     /**************************************************************************
 
         Returns:
@@ -543,6 +580,36 @@ public struct GCTrackingPolicy
         return true;
     }
 }
+
+/******************************************************************************
+
+    Test walking over the linked list
+
+*******************************************************************************/
+
+unittest
+{
+    auto list = new LinkedListQueue!(int);
+
+    bool iterated = false;
+    foreach (item; list) iterated = true;
+    test!("==")(iterated, false);
+
+    *list.push = 0;
+    *list.push = 1;
+    *list.push = 2;
+
+    size_t count;
+    size_t idx;
+    foreach (item; list)
+    {
+        test!("==")(item, idx++);
+        ++count;
+    }
+
+    test!("==")(count, 3);
+}
+
 
 /******************************************************************************
 
