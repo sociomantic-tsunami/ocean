@@ -1548,11 +1548,15 @@ class Process
                     if (path[$-1] != FileConst.PathSeparatorChar)
                     {
                         path_buf.length = path.length + 1 + filename.length + 1;
+                        enableStomping(path_buf);
+
                         path_buf[] = path ~ FileConst.PathSeparatorChar ~ filename ~ '\0';
                     }
                     else
                     {
                         path_buf.length = path.length +filename.length + 1;
+                        enableStomping(path_buf);
+
                         path_buf[] = path ~ filename ~ '\0';
                     }
 
