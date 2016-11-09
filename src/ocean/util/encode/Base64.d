@@ -313,6 +313,9 @@ body
 
     This decoder will ignore non-base64 characters, so for example data with
     newline in it is valid.
+    Note that the entries in the provided decode table are not required to be
+    unique. This allows the use of decode tables with alternatives for certain
+    characters.
 
     Params:
       Table = The decode table to use. Variadic template parameter is used to
@@ -351,6 +354,9 @@ body
 
     This decoder will ignore non-base64 characters, so for example data with
     newline in it is valid.
+    Note that the entries in the provided decode table are not required to be
+    unique. This allows the use of decode tables with alternatives for certain
+    characters.
 
     Params:
       Table = The decode table to use. Variadic template parameter is used to
@@ -579,17 +585,6 @@ private istring validateDecodeTable (T) (in T table)
     }
     else
     {
-        // The char we find might not be printable, hence we print it as number
-        istring asNumber(ubyte c)
-        {
-            char[3] ret;
-            ret[0] = ('0' + (c / 100));
-            ret[1] = ('0' + (c % 100 / 10));
-            ret[2] = ('0' + (c % 10));
-            return idup(ret);
-        }
-
-        char[65] encode = 0;
         // DMD BUG: Using foreach here iterates over the same index twice...
         for (size_t i; i < table.length; ++i)
         {
@@ -602,12 +597,6 @@ private istring validateDecodeTable (T) (in T table)
             // validate
             if (encodedValue == 0)
                 continue;
-            if (encode[encodedValue])
-                return "Multiple values (char) found for decoding "
-                    ~ asNumber(encodedValue)
-                    ~ " previous index: " ~ asNumber(encode[encodedValue])
-                    ~ " new index: " ~ asNumber(decodedChar);
-            encode[encodedValue] = decodedChar;
         }
         return null;
     }
@@ -625,7 +614,7 @@ unittest
     assert(validateDecodeTable(table) is null);
     table['*'] = BASE64_PAD;
     assert(table['='] == table['*']);
-    test!("!is")(validateDecodeTable(table), istring.init);
+    test!("is")(validateDecodeTable(table), istring.init);
 }
 
 
