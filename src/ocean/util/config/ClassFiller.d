@@ -131,34 +131,13 @@ pragma (msg, "Deprecated. Please use `ocean.util.config.ConfigFiller` instead.")
 
 import ocean.transition;
 
-public import ocean.util.config.ConfigParser: ConfigException;
+import ConfigFiller = ocean.util.config.ConfigFiller;
 
-import ocean.core.Exception_tango, ocean.core.Enforce;
-
-import ocean.core.Traits;
-
-import ocean.util.config.ConfigParser;
-
-import ocean.util.Convert;
-
-import ocean.io.Stdout;
-
-import ocean.text.convert.Format;
-
-version (UnitTest) import ocean.core.Test;
-
-/*******************************************************************************
-
-    Whether loose parsing is enabled or not.
-    Loose parsing means, that variables that have no effect are allowed.
-
-    States
-        false = variables that have no effect cause an exception
-        true  = variables that have no effect cause a stderr warning message
-
-*******************************************************************************/
-
-private bool loose_parsing = false;
+version (UnitTest)
+{
+    import ocean.core.Test;
+    import ocean.util.config.ConfigParser;
+}
 
 /*******************************************************************************
 
@@ -171,17 +150,7 @@ private bool loose_parsing = false;
 
 *******************************************************************************/
 
-template BaseType ( T )
-{
-    static if ( is(typeof(T.value)) )
-    {
-        alias BaseType!(typeof(T.value)) BaseType;
-    }
-    else
-    {
-        alias T BaseType;
-    }
-}
+public alias ConfigFiller.BaseType BaseType;
 
 /*******************************************************************************
 
@@ -194,17 +163,7 @@ template BaseType ( T )
 
 *******************************************************************************/
 
-BaseType!(T) Value ( T ) ( T v )
-{
-    static if ( is(T == BaseType!(typeof(v))) )
-    {
-        return v;
-    }
-    else
-    {
-        return Value(v.value);
-    }
-}
+public alias ConfigFiller.Value Value;
 
 /*******************************************************************************
 
@@ -216,79 +175,7 @@ BaseType!(T) Value ( T ) ( T v )
 
 *******************************************************************************/
 
-template WrapperStructCore ( T, T init = T.init )
-{
-    /***************************************************************************
-
-        The value of the configuration setting
-
-    ***************************************************************************/
-
-    private T value = init;
-
-
-    /***************************************************************************
-
-        Returns the value that is wrapped
-
-    ***************************************************************************/
-
-    public BaseType!(T) opCall ( )
-    {
-        return Value(this.value);
-    }
-
-    /***************************************************************************
-
-        Returns the value that is wrapped
-
-    ***************************************************************************/
-
-    public BaseType!(T) opCast ( )
-    {
-        return Value(this.value);
-    }
-
-    /***************************************************************************
-
-        Sets the wrapped value to val
-
-        Params:
-            val = new value
-
-        Returns:
-            val
-
-    ***************************************************************************/
-
-    public BaseType!(T) opAssign ( BaseType!(T) val )
-    {
-        return value = val;
-    }
-
-    /***************************************************************************
-
-        Calls check_() with the same parameters. If check doesn't throw an
-        exception it checks whether the wrapped value is also a struct and if so
-        its check function is called.
-
-        Params:
-            bool  = whether the variable existed in the configuration file
-            group = group this variable should appear
-            name  = name of the variable
-
-    ***************************************************************************/
-
-    private void check ( bool found, cstring group, cstring name )
-    {
-        static if ( !is (BaseType!(T) == T) )
-        {
-            scope(success) this.value.check(found, group, name);
-        }
-
-        this.check_(found, group, name);
-    }
-}
+public alias ConfigFiller.WrapperStructCore WrapperStructCore;
 
 /*******************************************************************************
 
@@ -303,31 +190,7 @@ template WrapperStructCore ( T, T init = T.init )
 
 *******************************************************************************/
 
-struct Required ( T )
-{
-    mixin WrapperStructCore!(T);
-
-    /***************************************************************************
-
-        Checks whether the checked value was found, throws if not
-
-        Params:
-            found = whether the variable was found in the configuration
-            group = group the variable appeares in
-            name  = name of the variable
-
-        Throws:
-            ConfigException
-
-    ***************************************************************************/
-
-    private void check_ ( bool found, cstring group, cstring name )
-    {
-        enforce!(ConfigException)(
-            found,
-            Format("Mandatory variable {}.{} not set.", group, name));
-    }
-}
+public alias ConfigFiller.Required Required;
 
 /*******************************************************************************
 
@@ -346,38 +209,7 @@ struct Required ( T )
 
 *******************************************************************************/
 
-struct MinMax ( T, T min, T max, T init = T.init )
-{
-    mixin WrapperStructCore!(T, init);
-
-    /***************************************************************************
-
-        Checks whether the configuration value is bigger than the smallest
-        allowed value and smaller than the biggest allowed value.
-        If not, an exception is thrown
-
-        Params:
-            bool  = whether the variable existed in the configuration file
-            group = group this variable should appear
-            name  = name of the variable
-
-        Throws:
-            ConfigException
-
-    ***************************************************************************/
-
-    private void check_ ( bool found, cstring group, cstring name )
-    {
-        enforce!(ConfigException)(
-            Value(this.value) >= min,
-            Format("Configuration key {}.{} is smaller than allowed minimum of {}",
-                   group, name, min));
-        enforce!(ConfigException)(
-            Value(this.value) <= max,
-            Format("Configuration key {}.{} is bigger than allowed maximum of {}",
-                   group, name, max));
-    }
-}
+public alias ConfigFiller.MinMax MinMax;
 
 /*******************************************************************************
 
@@ -395,34 +227,7 @@ struct MinMax ( T, T min, T max, T init = T.init )
 
 *******************************************************************************/
 
-struct Min ( T, T min, T init = T.init )
-{
-    mixin WrapperStructCore!(T, init);
-
-    /***************************************************************************
-
-        Checks whether the configuration value is bigger than the smallest
-        allowed value. If not, an exception is thrown
-
-        Params:
-            bool  = whether the variable existed in the configuration file
-            group = group this variable should appear
-            name  = name of the variable
-
-        Throws:
-            ConfigException
-
-    ***************************************************************************/
-
-    private void check_ ( bool found, cstring group, cstring name )
-    {
-        enforce!(ConfigException)(
-            Value(this.value) >= min,
-            Format("Configuration key {}.{} is smaller than allowed minimum of {}",
-                   group, name, min));
-    }
-}
-
+public alias ConfigFiller.Min Min;
 
 /*******************************************************************************
 
@@ -440,34 +245,7 @@ struct Min ( T, T min, T init = T.init )
 
 *******************************************************************************/
 
-struct Max ( T, T max, T init = T.init )
-{
-    mixin WrapperStructCore!(T, init);
-
-    /***************************************************************************
-
-        Checks whether the configuration value is smaller than the biggest
-        allowed value. If not, an exception is thrown
-
-        Params:
-            bool  = whether the variable existed in the configuration file
-            group = group this variable should appear
-            name  = name of the variable
-
-        Throws:
-            ConfigException
-
-    ***************************************************************************/
-
-    private void check_ ( bool found, cstring group, cstring name )
-    {
-        enforce!(ConfigException)(
-            Value(this.value) <= max,
-            Format("Configuration key {}.{} is bigger than allowed maximum of {}",
-                   group, name, max));
-    }
-}
-
+public alias ConfigFiller.Max Max;
 
 /*******************************************************************************
 
@@ -482,10 +260,7 @@ struct Max ( T, T max, T init = T.init )
 
 *******************************************************************************/
 
-bool defComp ( T ) ( T a, T b )
-{
-    return a == b;
-}
+public alias ConfigFiller.defComp defComp;
 
 /*******************************************************************************
 
@@ -504,55 +279,7 @@ bool defComp ( T ) ( T a, T b )
 
 *******************************************************************************/
 
-struct LimitCmp ( T, T init = T.init, alias comp = defComp!(T), Set... )
-{
-    mixin WrapperStructCore!(T, init);
-
-    /***************************************************************************
-
-        Checks whether the configuration value is within the set of allowed
-        values. If not, an exception is thrown
-
-        Params:
-            bool  = whether the variable existed in the configuration file
-            group = group this variable should appear
-            name  = name of the variable
-
-         Throws:
-            ConfigException
-
-    ***************************************************************************/
-
-    private void check_ ( bool found, cstring group, cstring name )
-    {
-        if ( found == false ) return;
-
-        foreach ( el ; Set )
-        {
-            static assert (
-                is ( typeof(el) : T ),
-                "Tuple contains incompatible types! ("
-                    ~ typeof(el).stringof ~ " to " ~ T.stringof ~ " )"
-            );
-
-            if ( comp(Value(this.value), el) )
-                return;
-        }
-
-        istring allowed_vals;
-
-        foreach ( el ; Set )
-        {
-            allowed_vals ~= ", " ~ to!(istring)(el);
-        }
-
-        throw new ConfigException(
-            Format("Value '{}' of configuration key {}.{} is not within the "
-                   ~ "set of allowed values ({})",
-                   Value(this.value), group, name, allowed_vals[2 .. $]));
-    }
-}
-
+public alias ConfigFiller.LimitCmp LimitCmp;
 
 unittest
 {
@@ -571,10 +298,7 @@ unittest
 
 *******************************************************************************/
 
-template LimitInit ( T, T init = T.init, Set... )
-{
-    alias LimitCmp!(T, init, defComp!(T), Set) LimitInit;
-}
+public alias ConfigFiller.LimitInit LimitInit;
 
 unittest
 {
@@ -594,11 +318,7 @@ unittest
 
 *******************************************************************************/
 
-template Limit ( T, Set... )
-{
-    alias LimitInit!(T, T.init, Set) Limit;
-}
-
+public alias ConfigFiller.Limit Limit;
 
 /*******************************************************************************
 
@@ -610,56 +330,7 @@ template Limit ( T, Set... )
 
 *******************************************************************************/
 
-struct SetInfo ( T )
-{
-    mixin WrapperStructCore!(T);
-
-    /***************************************************************************
-
-        Query method for the value with optional default initializer
-
-        Params:
-            def = the value that should be used when it was not found in the
-                  configuration
-
-    ***************************************************************************/
-
-    public BaseType!(T) opCall ( BaseType!(T) def = BaseType!(T).init )
-    {
-        if ( set )
-        {
-            return Value(this.value);
-        }
-
-        return def;
-    }
-
-    /***************************************************************************
-
-        Whether this value has been set
-
-    ***************************************************************************/
-
-    public bool set;
-
-    /***************************************************************************
-
-        Sets the set attribute according to whether the variable appeared in
-        the configuration or not
-
-        Params:
-            bool  = whether the variable existed in the configuration file
-            group = group this variable should appear
-            name  = name of the variable
-
-    ***************************************************************************/
-
-    private void check_ ( bool found, cstring group, cstring name )
-    {
-        this.set = found;
-    }
-}
-
+public alias ConfigFiller.SetInfo SetInfo;
 
 /*******************************************************************************
 
@@ -670,41 +341,7 @@ struct SetInfo ( T )
 
 *******************************************************************************/
 
-public template IsSupported ( T )
-{
-    static if ( is(T : bool) )
-    {
-        const IsSupported = true;
-    }
-    else static if ( isIntegerType!(T) || isRealType!(T) )
-    {
-        const IsSupported = true;
-    }
-    else static if ( is(T U : U[])) // If it is an array
-    {
-        static if ( isStringType!(T) ) // If it is a string
-        {
-            const IsSupported = true;
-        }
-        else static if ( isStringType!(U) ) // If it is string of strings
-        {
-            const IsSupported = true;
-        }
-        else static if ( isIntegerType!(U) || isRealType!(U) )
-        {
-            const IsSupported = true;
-        }
-        else
-        {
-            const IsSupported = false;
-        }
-    }
-    else
-    {
-        const IsSupported = false;
-    }
-}
-
+public alias ConfigFiller.IsSupported IsSupported;
 
 /*******************************************************************************
 
@@ -721,45 +358,7 @@ public template IsSupported ( T )
 
 *******************************************************************************/
 
-public bool enable_loose_parsing ( bool state = true )
-{
-    return loose_parsing = state;
-}
-
-
-/*******************************************************************************
-
-    Creates an instance of T, and fills it with according values from the
-    configuration file. The name of each variable will used to get it
-    from the given section in the configuration file.
-
-    Variables can be marked as required with the Required template.
-    If it is important to know whether the setting has been set, the
-    SetInfo struct can be used.
-
-    Params:
-        group     = the group/section of the variable
-        config    = instance of the source to use
-
-    Returns:
-        a new instance filled with values from the configuration file
-
-    See_Also:
-        Required, SetInfo
-
-*******************************************************************************/
-
-public T fill ( T : Object, Source = ConfigParser )
-              ( cstring group, Source config )
-in
-{
-    assert(config !is null, "ClassFiller.fill: Cannot use null config");
-}
-body
-{
-    T reference;
-    return fill(group, reference, config);
-}
+public alias ConfigFiller.enable_loose_parsing enable_loose_parsing;
 
 
 /*******************************************************************************
@@ -787,34 +386,8 @@ body
 
 *******************************************************************************/
 
-public T fill ( T : Object, Source = ConfigParser )
-              ( cstring group, ref T reference, Source config )
-in
-{
-    assert(config !is null, "ClassFiller.fill: Cannot use null config");
-}
-body
-{
-    if ( reference is null )
-    {
-        reference = new T;
-    }
+public alias ConfigFiller.fill fill;
 
-    foreach ( var; config.iterateCategory(group) )
-    {
-        if ( !hasField(reference, var) )
-        {
-            auto msg = cast(istring) ("Invalid configuration key "
-                ~ group ~ "." ~ var);
-            enforce!(ConfigException)(loose_parsing, msg);
-            Stderr.formatln("#### WARNING: {}", msg);
-        }
-    }
-
-    readFields!(T)(group, reference, config);
-
-    return reference;
-}
 
 /*******************************************************************************
 
@@ -832,34 +405,8 @@ body
 
 *******************************************************************************/
 
-private bool hasField ( T : Object ) ( T reference, cstring field )
-{
-    foreach ( si, unused; reference.tupleof )
-    {
-        auto key = reference.tupleof[si].stringof["reference.".length .. $];
+private alias ConfigFiller.hasField hasField;
 
-        if ( key == field ) return true;
-    }
-
-    bool was_found = true;
-
-    // Recurse into super any classes
-    static if ( is(T S == super ) )
-    {
-        was_found = false;
-
-        foreach ( G; S ) static if ( !is(G == Object) )
-        {
-            if ( hasField!(G)(cast(G) reference, field))
-            {
-                was_found = true;
-                break;
-            }
-        }
-    }
-
-    return was_found;
-}
 
 /*******************************************************************************
 
@@ -873,126 +420,8 @@ private bool hasField ( T : Object ) ( T reference, cstring field )
 
 *******************************************************************************/
 
-struct ClassIterator ( T, Source = ConfigParser )
-{
-    /***************************************************************************
+public alias ConfigFiller.ClassIterator ClassIterator;
 
-        The full parsed configuration. This contains all sections of the
-        configuration, but only those that begin with the root string are
-        iterated upon.
-
-    ***************************************************************************/
-
-    Source config;
-
-    /***************************************************************************
-
-        The root string that is used to filter sections of the configuration
-        over which to iterate.
-        For instance, in a config file containing sections 'LOG.a', 'LOG.b',
-        'LOG.a.a1' etc., the root string would be "LOG".
-
-    ***************************************************************************/
-
-    istring root;
-
-    /***************************************************************************
-
-        Class invariant.
-
-    ***************************************************************************/
-
-    invariant()
-    {
-        assert(this.config !is null,
-            "ClassFiller.ClassIterator: Cannot have null config");
-    }
-
-    /***************************************************************************
-
-        Variable Iterator. Iterates over variables of a category, with the
-        foreach delegate being called with the name of the category (not
-        including the root string prefix) and an instance containing the
-        properties within that category.
-
-    ***************************************************************************/
-
-    public int opApply ( int delegate ( ref istring name, ref T x ) dg )
-    {
-        int result = 0;
-
-        foreach ( key; this.config )
-        {
-            scope T instance = new T;
-
-            if ( key.length > this.root.length
-                 && key[0 .. this.root.length] == this.root
-                 && key[this.root.length] == '.' )
-            {
-                .fill(key, instance, this.config);
-
-                auto name = key[this.root.length + 1 .. $];
-                result = dg(name, instance);
-
-                if (result) break;
-            }
-        }
-
-        return result;
-    }
-
-    /***************************************************************************
-
-        Variable Iterator. Iterates over variables of a category, with the
-        foreach delegate being called with only the name of the category (not
-        including the root string prefix).
-
-        This iterator may be used in cases where iteration over categories
-        prefixed by the root string can be done, with the decision of whether to
-        call 'fill()' or not being made on a case-by-case basis.
-
-    ***************************************************************************/
-
-    public int opApply ( int delegate ( ref istring name ) dg )
-    {
-        int result = 0;
-
-        foreach ( key; this.config )
-        {
-            if ( key.length > this.root.length
-                 && key[0 .. this.root.length] == this.root
-                 && key[this.root.length] == '.' )
-            {
-                auto name = key[this.root.length + 1 .. $];
-                result = dg(name);
-
-                if (result) break;
-            }
-        }
-
-        return result;
-    }
-
-    /***************************************************************************
-
-        Fills the properties of the given category into an instance representing
-        that category.
-
-        Params:
-            name = category whose properties are to be filled (this name will be
-                prefixed with the root string and a period to form an actual
-                section name of the parsed configuration)
-            instance = instance into which to fill the properties
-
-    ***************************************************************************/
-
-    public void fill ( cstring name, ref T instance )
-    {
-        auto key = this.root ~ "." ~ name;
-
-        .fill(key, instance, this.config);
-    }
-}
 
 /*******************************************************************************
 
@@ -1013,16 +442,7 @@ struct ClassIterator ( T, Source = ConfigParser )
 
 *******************************************************************************/
 
-public ClassIterator!(T) iterate ( T, Source = ConfigParser )
-                                 ( istring root, Source config )
-in
-{
-    assert(config !is null, "ClassFiller.iterate: Cannot use null config");
-}
-body
-{
-    return ClassIterator!(T, Source)(config, root);
-}
+public alias ConfigFiller.iterate iterate;
 
 
 /*******************************************************************************
@@ -1040,69 +460,7 @@ body
 
 *******************************************************************************/
 
-protected void readFields ( T, Source )
-                          ( cstring group, T reference, Source config )
-in
-{
-    assert ( config !is null, "ClassFiller.readFields: Cannot use null config");
-}
-body
-{
-    foreach ( si, field; reference.tupleof )
-    {
-        alias BaseType!(typeof(field)) Type;
-
-        static assert ( IsSupported!(Type),
-                        "ClassFiller.readFields: Type "
-                        ~ Type.stringof ~ " is not supported" );
-
-        auto key = reference.tupleof[si].stringof["reference.".length .. $];
-
-        if ( config.exists(group, key) )
-        {
-            static if ( is(Type U : U[]) && !isStringType!(Type))
-            {
-                reference.tupleof[si] = config.getListStrict!(DynamicArrayType!(U))(group, key);
-            }
-            else
-            {
-                reference.tupleof[si] = config.getStrict!(DynamicArrayType!(Type))(group, key);
-            }
-
-
-            debug (Config) Stdout.formatln("Config Debug: {}.{} = {}", group,
-                             reference.tupleof[si]
-                            .stringof["reference.".length  .. $],
-                            Value(reference.tupleof[si]));
-
-            static if ( !is (Type == typeof(field)) )
-            {
-                reference.tupleof[si].check(true, group, key);
-            }
-        }
-        else
-        {
-            debug (Config) Stdout.formatln("Config Debug: {}.{} = {} (builtin)", group,
-                             reference.tupleof[si]
-                            .stringof["reference.".length  .. $],
-                            Value(reference.tupleof[si]));
-
-            static if ( !is (Type == typeof(field)) )
-            {
-                reference.tupleof[si].check(false, group, key);
-            }
-        }
-    }
-
-    // Recurse into super any classes
-    static if ( is(T S == super ) )
-    {
-        foreach ( G; S ) static if ( !is(G == Object) )
-        {
-            readFields!(G)(group, cast(G) reference, config);
-        }
-    }
-}
+public alias ConfigFiller.readFields readFields;
 
 
 version ( UnitTest )
