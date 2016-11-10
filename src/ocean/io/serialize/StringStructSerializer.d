@@ -358,9 +358,23 @@ public class StringStructSerializer ( Char )
         assert(this.indent.length > 0,
             "Incorrect indentation in serializeArray");
 
-        Layout!(Char).format(output, "{}{}[] {} (length {}):{}{}\n",
-            this.indent, T.stringof, name, array.length,
-            array.length ? " " : "", array);
+        Layout!(Char).format(output, "{}{}[] {} (length {}):", this.indent,
+            T.stringof, name, array.length);
+
+        if ( array.length )
+        {
+            Layout!(Char).format(output, " {}", array);
+        }
+        else
+        {
+            // Zero-length non-character arrays get formatted as '[]'.
+            static if ( !isCharType!(T) )
+            {
+                Layout!(Char).format(output, "[]");
+            }
+        }
+
+        Layout!(Char).format(output, "\n");
     }
 
 
