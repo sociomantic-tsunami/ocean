@@ -64,9 +64,7 @@ import ocean.core.Array;
 
 import ocean.io.serialize.StructSerializer;
 
-import ocean.text.convert.Format;
-
-import ocean.text.convert.Layout_tango;
+import ocean.text.convert.Formatter;
 
 import ocean.text.util.Time;
 
@@ -165,7 +163,7 @@ public class StringStructSerializer ( Char )
     public this ( size_t fp_dec_to_display = 2 )
     {
         mstring tmp = "{}{} {} : {:.".dup;
-        Format.format(tmp, "{}", fp_dec_to_display);
+        sformat(tmp, "{}", fp_dec_to_display);
         tmp ~= "}\n";
         this.fp_format = tmp;
         this.known_timestamp_fields = new StandardHashingSet!(cstring)(128);
@@ -223,7 +221,7 @@ public class StringStructSerializer ( Char )
     {
         assert(this.indent.length == 0, "Non-zero indentation in open");
 
-        Layout!(Char).format(output, "struct {}:\n", name);
+        sformat(output, "struct {}:\n", name);
         this.increaseIndent();
     }
 
@@ -268,13 +266,13 @@ public class StringStructSerializer ( Char )
         // TODO: temporary support for unions by casting them to ubyte[]
         static if ( is(T == union) )
         {
-            Layout!(Char).format(output, "{}union {} {} : {}\n", this.indent,
-                T.stringof, name, (cast(ubyte*)&item)[0..item.sizeof]);
+            sformat(output, "{}union {} {} : {}\n", this.indent, T.stringof,
+                name, (cast(ubyte*)&item)[0..item.sizeof]);
         }
         else static if ( isFloatingPointType!(T) )
         {
-            Layout!(Char).format(output, this.fp_format, this.indent,
-                T.stringof, name, item);
+            sformat(output, this.fp_format, this.indent, T.stringof, name,
+                item);
         }
         else static if ( is(T == char) )
         {
@@ -282,22 +280,22 @@ public class StringStructSerializer ( Char )
             // that friendly string representations can be generated for them if
             // necessary
 
-            Layout!(Char).format(output, "{}{} {} : {}\n", this.indent,
-                T.stringof, name, this.getCharAsString(item));
+            sformat(output, "{}{} {} : {}\n", this.indent, T.stringof, name,
+                this.getCharAsString(item));
         }
         else
         {
-            Layout!(Char).format(output, "{}{} {} : {}", this.indent,
-                T.stringof, name, item);
+            sformat(output, "{}{} {} : {}", this.indent, T.stringof, name,
+                item);
 
             if ( is(T : ulong) && name in this.known_timestamp_fields )
             {
                 Char[20] tmp;
-                Layout!(Char).format(output, " ({})\n", formatTime(item, tmp));
+                sformat(output, " ({})\n", formatTime(item, tmp));
             }
             else
             {
-                Layout!(Char).format(output, "\n");
+                sformat(output, "\n");
             }
         }
     }
@@ -317,7 +315,7 @@ public class StringStructSerializer ( Char )
     {
         assert(this.indent.length > 0, "Incorrect indentation in openStruct");
 
-        Layout!(Char).format(output, "{}struct {}:\n", this.indent, name);
+        sformat(output, "{}struct {}:\n", this.indent, name);
         this.increaseIndent();
     }
 
@@ -358,23 +356,23 @@ public class StringStructSerializer ( Char )
         assert(this.indent.length > 0,
             "Incorrect indentation in serializeArray");
 
-        Layout!(Char).format(output, "{}{}[] {} (length {}):", this.indent,
-            T.stringof, name, array.length);
+        sformat(output, "{}{}[] {} (length {}):", this.indent, T.stringof, name,
+            array.length);
 
         if ( array.length )
         {
-            Layout!(Char).format(output, " {}", array);
+            sformat(output, " {}", array);
         }
         else
         {
             // Zero-length non-character arrays get formatted as '[]'.
             static if ( !isCharType!(T) )
             {
-                Layout!(Char).format(output, "[]");
+                sformat(output, "[]");
             }
         }
 
-        Layout!(Char).format(output, "\n");
+        sformat(output, "\n");
     }
 
 
@@ -398,8 +396,8 @@ public class StringStructSerializer ( Char )
         assert(this.indent.length > 0,
             "Incorrect indentation in openStructArray");
 
-        Layout!(Char).format(output, "{}{}[] {} (length {}):\n", this.indent,
-            T.stringof, name, array.length);
+        sformat(output, "{}{}[] {} (length {}):\n", this.indent, T.stringof,
+            name, array.length);
         this.increaseIndent();
     }
 
@@ -479,7 +477,7 @@ public class StringStructSerializer ( Char )
 
         if ( !this.turn_ws_char_to_str )
         {
-            Layout!(Char).format(this.buf, "{}", c);
+            sformat(this.buf, "{}", c);
             return this.buf;
         }
 
@@ -491,13 +489,13 @@ public class StringStructSerializer ( Char )
         switch ( c )
         {
             case c.init:
-                Layout!(Char).format(this.buf, "{}", "''");
+                sformat(this.buf, "{}", "''");
                 break;
 
             mixin(ctfeCreateCases(letters));
 
             default:
-                Layout!(Char).format(this.buf, "{}", c);
+                sformat(this.buf, "{}", c);
                 break;
         }
 
@@ -529,7 +527,7 @@ public class StringStructSerializer ( Char )
         {
             mixin_str ~=
                 `case '\` ~ c ~ `':` ~
-                    `Layout!(Char).format(this.buf, "{}", "'\\` ~ c ~ `'");` ~
+                    `sformat(this.buf, "{}", "'\\` ~ c ~ `'");` ~
                     `break;`;
         }
 

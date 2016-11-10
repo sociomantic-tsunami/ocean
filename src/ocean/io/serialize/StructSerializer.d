@@ -862,7 +862,7 @@ version ( UnitTest )
 
     struct TestSerializer
     {
-        import ocean.text.convert.Format;
+        import ocean.text.convert.Formatter;
 
         void open ( ref char[] dst, cstring name )
         {
@@ -876,7 +876,7 @@ version ( UnitTest )
 
         void serialize ( T ) ( ref char[] dst, ref T item, cstring name )
         {
-            Format.format(dst, "{} {}={} ", T.stringof, name, item);
+            sformat(dst, "{} {}={} ", T.stringof, name, item);
         }
 
         void openStruct ( ref char[] dst, cstring name )
@@ -893,17 +893,17 @@ version ( UnitTest )
         {
             static if ( is(T == char) )
             {
-                Format.format(dst, "{}[] {}=\"{}\" ", T.stringof, name, array);
+                sformat(dst, "{}[] {}=\"{}\" ", T.stringof, name, array);
             }
             else
             {
-                Format.format(dst, "{}[] {}={} ", T.stringof, name, array);
+                sformat(dst, "{}[] {}={} ", T.stringof, name, array);
             }
         }
 
         void serializeStaticArray ( T ) ( ref char[] dst, cstring name, T[] array )
         {
-            Format.format(dst, "{}[{}] {}={} ", T.stringof, array.length, name, array);
+            sformat(dst, "{}[{}] {}={} ", T.stringof, array.length, name, array);
         }
 
         void openStructArray ( T ) ( ref char[] dst, cstring name, T[] array )
