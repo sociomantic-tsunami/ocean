@@ -223,7 +223,7 @@ public class StringStructSerializer ( Char )
     {
         assert(this.indent.length == 0, "Non-zero indentation in open");
 
-        Layout!(Char).format(output, "{}struct {}:\n", this.indent, name);
+        Layout!(Char).format(output, "struct {}:\n", name);
         this.increaseIndent();
     }
 
