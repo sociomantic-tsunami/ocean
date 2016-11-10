@@ -1047,7 +1047,7 @@ body
 
 *******************************************************************************/
 
-protected void readFields ( T, Source )
+protected void readFieldsImpl ( T, Source )
                           ( cstring group, ref T reference, Source config )
 in
 {
@@ -1111,6 +1111,49 @@ body
     }
 }
 
+/*******************************************************************************
+
+    Fills the fields of the `reference` from config file's group.
+
+    Template Params:
+        T  = type of the class to fill
+        Source = source to use
+
+    Params:
+        group = group to read fields from
+        reference = reference to the object to be filled
+        config = instance of the source to use
+
+*******************************************************************************/
+
+protected void readFields ( T : Object, Source )
+                          ( cstring group, T reference, Source config )
+{
+    // Workaround to work on both l- and r-values
+    T tmp = reference;
+    readFieldsImpl(group, tmp, config);
+}
+
+/*******************************************************************************
+
+    Fills the fields of the `reference` from config file's group.
+
+    Template Params:
+        T  = type of the aggregate to fill
+        Source = source to use
+
+    Params:
+        group = group to read fields from
+        reference = reference to the object to be filled
+        config = instance of the source to use
+
+*******************************************************************************/
+
+protected void readFields ( T, Source )
+                          ( cstring group, ref T reference, Source config )
+{
+    readFieldsImpl(group, reference, config);
+}
 
 version ( UnitTest )
 {
@@ -1323,6 +1366,15 @@ float_arr = 10.2
     float[] float_array = [10.2, -25.3, 90, 0.000000001];
     test!("==")(array_values.float_arr, float_array);
 
+    // Make sure it works on lvalues as well
+    Object o = new ArrayValues();
+    readFields("SectionArray", cast(ArrayValues)o, config_parser);
+
+    array_values = cast(ArrayValues)o;
+    test!("==")(array_values.string_arr, ["Hello", "World"]);
+    test!("==")(array_values.int_arr, [30, 40, -60, 1111111111, 0x10]);
+    test!("==")(array_values.ulong_arr, ulong_array);
+    test!("==")(array_values.float_arr, float_array);
 
     struct ArrayValuesStruct
     {
