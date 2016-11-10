@@ -1047,7 +1047,7 @@ body
 
 *******************************************************************************/
 
-protected void readFieldsImpl ( T, Source )
+private void readFieldsImpl ( T, Source )
                           ( cstring group, ref T reference, Source config )
 in
 {
@@ -1126,7 +1126,7 @@ body
 
 *******************************************************************************/
 
-protected void readFields ( T : Object, Source )
+private void readFields ( T : Object, Source )
                           ( cstring group, T reference, Source config )
 {
     // Workaround to work on both l- and r-values
@@ -1149,7 +1149,7 @@ protected void readFields ( T : Object, Source )
 
 *******************************************************************************/
 
-protected void readFields ( T, Source )
+private void readFields ( T, Source )
                           ( cstring group, ref T reference, Source config )
 {
     readFieldsImpl(group, reference, config);
