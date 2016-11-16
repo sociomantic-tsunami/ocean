@@ -1210,6 +1210,12 @@ public class Arguments
 
         foreach ( arg; this.args )
         {
+            // Skip the null argument
+            if ( arg.name.length == 0 )
+            {
+                continue;
+            }
+
             this.displayArgumentHelp(arg, output);
         }
 
@@ -1500,11 +1506,6 @@ public class Arguments
     private void displayArgumentHelp ( Argument arg,
         typeof(Stderr) output = Stderr )
     {
-        if ( arg.text.length == 0 )
-        {
-            return;
-        }
-
         output.format("  ");
 
         foreach ( i, al; arg.aliases )
