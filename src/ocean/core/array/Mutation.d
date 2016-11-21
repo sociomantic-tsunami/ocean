@@ -1050,6 +1050,21 @@ unittest
     test!("==")(dest[0][], "hello");
 }
 
+// deprecated ("Must use Buffer as a buffer argument")
+public void appendCopy ( T ) ( ref T[][] dest, in T[] src )
+{
+    appendCopy(*(cast(Buffer!(T)[]*) &dest), src);
+}
+
+///
+deprecated unittest
+{
+    mstring[] dest;
+    cstring src = "hello";
+    appendCopy(dest, src);
+    test!("==")(dest[0][], "hello");
+}
+
 /*******************************************************************************
 
     Removes and returns (via the 'popped' out parameter) the last element in an
