@@ -597,7 +597,7 @@ unittest
 
         public this ( int set_just_some_int ) { this.just_some_int = set_just_some_int; }
 
-        override public bool opEquals ( Object _another )
+        override public equals_t opEquals ( Object _another )
         {
             auto another = cast(JustSomeClass) _another;
             if (another is null)
