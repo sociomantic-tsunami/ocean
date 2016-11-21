@@ -6,7 +6,7 @@
     on which signals are specified in the constructor.
 
     Note: not only must the extension be registered with the application but its
-    internal SignalEvent (returned by the selectClient() method) must also be
+    internal ISelectClient (returned by the selectClient() method) must also be
     registered with an epoll instance! Until the event is registered with epoll
     and the event loop started, the signal handlers will not be called in
     response to signals which have occurred.
@@ -105,12 +105,19 @@ import ocean.util.app.Application;
 
 import ocean.util.app.ext.model.ISignalExtExtension;
 
-import ocean.io.select.client.SignalEvent;
-
-
+import ocean.sys.Pipe;
 
 public class SignalExt : IApplicationExtension
 {
+    import core.sys.posix.signal;
+
+    // For SignalErrnoException
+    import ocean.sys.SignalFD;
+
+    import ocean.io.select.protocol.SelectReader;
+    import ocean.io.device.IODevice;
+    import ocean.io.device.Device;
+    import ocean.io.device.Conduit: ISelectable;
     import ocean.io.select.client.model.ISelectClient;
 
     /***************************************************************************
@@ -122,16 +129,120 @@ public class SignalExt : IApplicationExtension
 
     mixin ExtensibleClassMixin!(ISignalExtExtension);
 
-
     /***************************************************************************
 
-        Signal event which is registered with epoll to handle notifications of
-        the occurrence of the signal.
+        SignalErrnoException.
 
     ***************************************************************************/
 
-    private SignalEvent event_;
+    alias SignalFD.SignalErrnoException SignalErrnoException;
 
+    /***************************************************************************
+
+        SelectReader instance used to read the data from pipe written by
+        signal handler.
+
+    ***************************************************************************/
+
+    private SelectReader reader;
+
+    /***************************************************************************
+
+        Associative array of old signal handlers, addressed by the signal
+        number.
+
+    ***************************************************************************/
+
+    private sigaction_t[int] old_signals;
+
+    /***************************************************************************
+
+        Helper class wrapping Device to InputDevice. Used to read from Pipe
+        via SelectReader.
+
+    ***************************************************************************/
+
+    private static class InputDeviceWrapper: InputDevice, ISelectable
+    {
+        /***********************************************************************
+
+            Device instance to read from.
+
+        ***********************************************************************/
+
+        private Device device;
+
+        /***********************************************************************
+
+            Constructor.
+
+            Params:
+                device = device instance to read from.
+
+        ***********************************************************************/
+
+        public this (Device device)
+        {
+            this.device = device;
+        }
+
+        /***********************************************************************
+
+            Returns:
+                file handle of the underlying device.
+
+        ***********************************************************************/
+
+        override Handle fileHandle()
+        {
+            return this.device.fileHandle();
+        }
+    }
+
+    /***************************************************************************
+
+        InputDevice reading data from the file.
+
+    ***************************************************************************/
+
+    private InputDeviceWrapper pipe_source;
+
+    /***************************************************************************
+
+        Pipe used to tranfser the data from the signal handler back to the
+        application. Static as used from the static signal handler
+
+    ***************************************************************************/
+
+    private static Pipe signal_pipe;
+
+    /***************************************************************************
+
+        Signal handler. Needs to be static method as it is registered as
+        C callback.
+
+        Params:
+            signum = signal being handled
+
+    ***************************************************************************/
+
+    private static extern(C) void signalHandler (int signum)
+    {
+        typeof(this).signal_pipe.sink.write(cast(ubyte[])(&signum)[0..1]);
+    }
+
+    /***************************************************************************
+
+        Static constructor. Initialises signal_pipe static member.
+
+    ***************************************************************************/
+
+    static this()
+    {
+        // Setup a pipe for transferring the signal info. Unbuffered,
+        // as we want these to be available as soon as possible.
+        SignalExt.signal_pipe = new Pipe(0);
+    }
 
     /***************************************************************************
 
@@ -146,15 +257,22 @@ public class SignalExt : IApplicationExtension
             signals = list of signals to handle
 
         Throws:
-            SignalErrnoException if the creation of the SignalEvent fails
+            SignalErrnoException if setting up the signal handling fails
 
     ***************************************************************************/
 
     public this ( int[] signals )
     {
-        this.event_ = new SignalEvent(&this.handleSignal, signals);
-    }
+        typeof(this).signal_pipe.source.setNonBlock();
+        this.pipe_source = new InputDeviceWrapper(typeof(this).signal_pipe.source);
+        this.reader = new SelectReader(this.pipe_source, int.sizeof);
+        this.installSignalHandlers(signals);
 
+        // Make the intention to read 4 bytes (the signal number). This will
+        // read it from the pipe in one of the epoll cycles, after the data
+        // is written into the pipe from signal handler.
+        this.reader.read(&this.handleSignals);
+    }
 
     /***************************************************************************
 
@@ -168,13 +286,13 @@ public class SignalExt : IApplicationExtension
             this instance for chaining
 
         Throws:
-            SignalErrnoException if the updating of the SignalEvent fails
+            SignalErrnoException if the updating the signal handling fails
 
     ***************************************************************************/
 
     public typeof(this) register ( int signal )
     {
-        this.event_.register(signal);
+        this.installSignalHandlers(cast(int[])(&signal)[0..1]);
 
         return this;
     }
@@ -191,7 +309,7 @@ public class SignalExt : IApplicationExtension
 
     public ISelectClient selectClient ( )
     {
-        return this.event_;
+        return this.reader;
     }
 
 
@@ -217,18 +335,92 @@ public class SignalExt : IApplicationExtension
         turn notifies all registered extensions about the signal.
 
         Params:
-            siginfo = info about signal which has fired
+            signals = info about signals which have fired
 
     ***************************************************************************/
 
-    private void handleSignal ( SignalEvent.SignalInfo siginfo )
+    private void handleSignals ( void[] signals_read )
     {
+        auto signals = cast(int[])signals_read;
+
         foreach ( ext; this.extensions )
         {
-            ext.onSignal(siginfo.ssi_signo);
+            foreach (signal; signals)
+            {
+                ext.onSignal(signal);
+            }
         }
     }
 
+    /***************************************************************************
+
+        atExit IApplicationExtension method.
+
+        Should restore the original signal handlers.
+
+    ***************************************************************************/
+
+    public override void atExit ( IApplication app, istring[] args, int status,
+            ExitException exception )
+    {
+        this.restoreSignalHandlers();
+    }
+
+    /***************************************************************************
+
+        Installs the signal handlers.
+
+        Params:
+            signals = list of signals to handle
+
+        Throws:
+            SignalErrnoException if setting up the signal fails
+
+    ***************************************************************************/
+
+    private void installSignalHandlers ( int[] signals )
+    {
+        sigaction_t sa;
+
+        sa.sa_handler = &this.signalHandler;
+
+        if (sigemptyset(&sa.sa_mask) == -1)
+        {
+            throw (new SignalErrnoException).useGlobalErrno("sigemptyset");
+        }
+
+        foreach (signal; signals)
+        {
+            this.old_signals[signal] = sigaction_t.init;
+            sigaction_t* old_handler = signal in this.old_signals;
+            assert(old_handler !is null);
+
+            if (sigaction(signal, &sa, old_handler) == -1)
+            {
+                throw (new SignalErrnoException).useGlobalErrno("sigaction");
+            }
+        }
+    }
+
+    /***************************************************************************
+
+        Restores the original signal handlers.
+
+        Throws:
+            SignalErrnoException if resetting up the signal fails
+
+    ***************************************************************************/
+
+    private void restoreSignalHandlers ( )
+    {
+        foreach (signal, sa; this.old_signals)
+        {
+            if (sigaction(signal, &sa, null) == -1)
+            {
+                throw (new SignalErrnoException).useGlobalErrno("sigaction");
+            }
+        }
+    }
 
     /***************************************************************************
 
@@ -245,12 +437,6 @@ public class SignalExt : IApplicationExtension
 
     /// ditto
     public override void postRun ( IApplication app, istring[] args, int status )
-    {
-    }
-
-    /// ditto
-    public override void atExit ( IApplication app, istring[] args, int status,
-            ExitException exception )
     {
     }
 
