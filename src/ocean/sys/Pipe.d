@@ -44,16 +44,6 @@ private enum {DefaultBufferSize = 8 * 1024}
 
 class PipeConduit : Device
 {
-    version (OLD)
-    {
-        alias Device.fileHandle  fileHandle;
-        alias Device.copy        copy;
-        alias Device.read        read;
-        alias Device.write       write;
-        alias Device.close       close;
-        alias Device.error       error;
-    }
-
     private uint _bufferSize;
 
 
@@ -94,53 +84,6 @@ class PipeConduit : Device
     public override istring toString()
     {
         return "<pipe>";
-    }
-
-    version (OLD)
-    {
-        /**
-         * Read a chunk of bytes from the file into the provided array
-         * (typically that belonging to an IBuffer)
-         */
-        protected override uint read (void[] dst)
-        {
-            uint result;
-            DWORD read;
-            void *p = dst.ptr;
-
-            if (!ReadFile (handle, p, dst.length, &read, null))
-            {
-                if (SysError.lastCode() == ERROR_BROKEN_PIPE)
-                {
-                    return Eof;
-                }
-                else
-                {
-                    error();
-                }
-            }
-
-            if (read == 0 && dst.length > 0)
-            {
-                return Eof;
-            }
-            return read;
-        }
-
-        /**
-         * Write a chunk of bytes to the file from the provided array
-         * (typically that belonging to an IBuffer).
-         */
-        protected override uint write (void[] src)
-        {
-            DWORD written;
-
-            if (!WriteFile (handle, src.ptr, src.length, &written, null))
-            {
-                error();
-            }
-            return written;
-        }
     }
 }
 
