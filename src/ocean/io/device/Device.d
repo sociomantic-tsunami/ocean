@@ -74,6 +74,30 @@ class Device : Conduit, ISelectable
 
         /***********************************************************************
 
+            Sets the device in the non-blocking mode.
+
+            Throws:
+                IOException if setting the device mode fails
+
+        ***********************************************************************/
+
+        public void setNonBlock ()
+        {
+            auto existing_flags = fcntl(this.fileHandle(), F_GETFL, 0);
+
+            if (existing_flags == -1)
+            {
+                this.error(errno, "fcntl");
+            }
+
+            if (fcntl(this.fileHandle(), F_SETFL, existing_flags | O_NONBLOCK) < 0)
+            {
+                this.error(errno, "fcntl");
+            }
+        }
+
+        /***********************************************************************
+
                  Unix-specific code.
 
         ***********************************************************************/
