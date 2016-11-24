@@ -197,7 +197,7 @@ private void enforceContiguous (S) ( ref S input, in void[] allowed_range )
         "can't verify integrity of non-struct types"
     );
 
-    foreach (ref member; input.tupleof)
+    foreach (i, ref member; input.tupleof)
     {
         alias typeof(member) Member;
 
@@ -241,10 +241,7 @@ private void enforceContiguous (S) ( ref S input, in void[] allowed_range )
             }
             else
             {
-                static assert (
-                    false,
-                    "Contiguous structs don't support fields of type " ~ typeof(member).stringof
-                );
+                alias ensureValueTypeMember!(S, i) evt;
             }
         }
     }
@@ -271,6 +268,53 @@ private void enforceRange(in void[] slice, in void[] allowed_range)
     enforce!("<=")(slice.ptr + slice.length, upper_limit);
 }
 
+
+
+/*******************************************************************************
+
+    Ensures that the type of the `i`th member of `S` (i.e. `S.tupleof[i]`) is a
+    value type; that is, it contains no references.
+
+    Params:
+        S = an aggregate type (usually a struct)
+        i = the index of the aggregate member to check
+
+*******************************************************************************/
+
+package template ensureValueTypeMember ( S, size_t i )
+{
+    alias ensureValueTypeMember!(S, i, typeof(S.tupleof)[i]) ensureValueTypeMember;
+}
+
+/*******************************************************************************
+
+    Ensures that `T`, which is a the nested type of the type of the `i`th member
+    of `S` (i.e. `S.tupleof[i]`),  is a value type; that is, it contains no
+    references.
+
+    Params:
+        S = an aggregate type (usually a struct), for the message
+        i = the index of the aggregate member to check, for the message
+        T = the type that is expected to be a value type
+
+*******************************************************************************/
+
+package template ensureValueTypeMember ( S, size_t i, T )
+{
+    alias typeof(S.tupleof)[i] M;
+
+    static if (is (T == union))
+    {
+        static assert (!ContainsDynamicArray!(T),
+                       M.stringof ~ " " ~ S.tupleof[i].stringof ~
+                       " - unions containing dynamic arrays are not "
+                       "allowed, sorry");
+    }
+
+    static assert(!hasIndirections!(T),
+                  M.stringof ~ " " ~ S.tupleof[i].stringof ~
+                  " is a or contains an unsupported reference type");
+}
 
 unittest
 {
