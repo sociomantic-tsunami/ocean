@@ -223,16 +223,6 @@ private void enforceContiguous (S) ( ref S input, in void[] allowed_range )
                     }
                 }
             }
-            else static if (is(Member U == U*))
-            {
-                // any pointer types
-
-                if (member)
-                {
-                    enforceRange((cast(void*) member)[0 .. U.sizeof],
-                                  allowed_range);
-                }
-            }
             else static if (is(Member == struct))
             {
                // member structs
@@ -267,8 +257,6 @@ private void enforceRange(in void[] slice, in void[] allowed_range)
     enforce!("<=")(slice.ptr, upper_limit);
     enforce!("<=")(slice.ptr + slice.length, upper_limit);
 }
-
-
 
 /*******************************************************************************
 
@@ -331,16 +319,12 @@ unittest
     {
         int a, b, c;
         S1 subs;
-
-        struct S3 { int a; }
-        S3* ptr;
     }
 
     // prepare data
     void[] buffer = new void[100];
     auto tested = cast(S2*) buffer.ptr;
     tested.subs.arr = (buffer.ptr + S2.sizeof)[0..2];
-    tested.ptr = cast(S2.S3*) (buffer.ptr + S2.sizeof + 2);
 
     enforceContiguous(*tested, buffer);
 
