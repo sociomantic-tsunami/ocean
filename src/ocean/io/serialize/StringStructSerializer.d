@@ -782,4 +782,23 @@ unittest
                      "   char c8 : '\\t'\n" ~
                      "   char c9 : '\\v'\n",
         "Incorrect string serializer result");
+
+    struct StructWithIntArrays
+    {
+        int[] a;
+        int[] b;
+    }
+
+    StructWithIntArrays sia;
+    sia.a = [10, 20, 30];
+
+    buffer.length = 0;
+    enableStomping(buffer);
+    serializer.serialize(buffer, sia);
+
+    t.test!("==")(buffer.length, 89);
+    t.test(buffer == "struct StructWithIntArrays:\n" ~
+                     "   int[] a (length 3): [10, 20, 30]\n" ~
+                     "   int[] b (length 0):[]\n",
+        "Incorrect string serializer result");
 }
