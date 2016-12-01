@@ -813,4 +813,34 @@ unittest
                      "   int[] a (length 3): [10, 20, 30]\n" ~
                      "   int[] b (length 0):[]\n",
         "Incorrect string serializer result");
+
+    mixin(Typedef!(hash_t, "AdskilletId"));
+
+    struct StructWithTypedef
+    {
+        AdskilletId a;
+    }
+
+    StructWithTypedef st;
+    st.a = cast(AdskilletId)1000;
+
+    buffer.length = 0;
+    enableStomping(buffer);
+    serializer.serialize(buffer, st);
+
+    version (D_Version2)
+    {
+        t.test!("==")(buffer.length, 64);
+        t.test(buffer == "struct StructWithTypedef:\n" ~
+                         "   struct a:\n" ~
+                         "      ulong value : 1000\n",
+            "Incorrect string serializer result");
+    }
+    else
+    {
+        t.test!("==")(buffer.length, 44);
+        t.test(buffer == "struct StructWithTypedef:\n" ~
+                         "   ulong a : 1000\n",
+            "Incorrect string serializer result");
+    }
 }
