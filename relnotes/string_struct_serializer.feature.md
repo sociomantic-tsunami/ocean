@@ -6,3 +6,8 @@
   field called 'value'. This is now fixed so that typedef fields are correctly
   resolved to their base types and formatted without the introduction of any
   nested sub-structs.
+
+  This is applicable to both D1 & D2 builds.
+  When serializing structs into strings, if the struct contains zero-length char
+  arrays, then they'll be formatted as `""` (in the past, zero-length char
+  arrays were not formatted at all).
