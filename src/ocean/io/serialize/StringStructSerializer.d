@@ -365,8 +365,11 @@ public class StringStructSerializer ( Char )
         }
         else
         {
-            // Zero-length non-character arrays get formatted as '[]'.
-            static if ( !isCharType!(T) )
+            static if ( isCharType!(T) )
+            {
+                sformat(output, ` ""`);
+            }
+            else
             {
                 sformat(output, " []");
             }
@@ -598,11 +601,11 @@ unittest
     enableStomping(buffer);
     serializer.serialize(buffer, text_fragment_time, timestamp_fields);
 
-    t.test!("==")(buffer.length, 204);
+    t.test!("==")(buffer.length, 207);
     t.test(buffer == "struct TextFragmentTime:\n" ~
                      "   char[] text (length 4): eins\n" ~
                      "   long time : 1456829726\n" ~
-                     "   char[] lastseen (length 0):\n" ~
+                     `   char[] lastseen (length 0): ""` ~ "\n" ~
                      "   long timestamp : 0 (1970-01-01 00:00:00)\n" ~
                      "   long update_time : 0 (1970-01-01 00:00:00)\n",
         "Incorrect string serializer result");
@@ -611,11 +614,11 @@ unittest
     enableStomping(buffer);
     serializer.serialize(buffer, text_fragment_time);
 
-    t.test!("==")(buffer.length, 160);
+    t.test!("==")(buffer.length, 163);
     t.test(buffer == "struct TextFragmentTime:\n" ~
                      "   char[] text (length 4): eins\n" ~
                      "   long time : 1456829726\n" ~
-                     "   char[] lastseen (length 0):\n" ~
+                     `   char[] lastseen (length 0): ""` ~ "\n" ~
                      "   long timestamp : 0\n" ~
                      "   long update_time : 0\n",
         "Incorrect string serializer result");
