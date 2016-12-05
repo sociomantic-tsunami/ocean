@@ -368,7 +368,7 @@ public class StringStructSerializer ( Char )
             // Zero-length non-character arrays get formatted as '[]'.
             static if ( !isCharType!(T) )
             {
-                sformat(output, "[]");
+                sformat(output, " []");
             }
         }
 
@@ -808,10 +808,10 @@ unittest
     enableStomping(buffer);
     serializer.serialize(buffer, sia);
 
-    t.test!("==")(buffer.length, 89);
+    t.test!("==")(buffer.length, 90);
     t.test(buffer == "struct StructWithIntArrays:\n" ~
                      "   int[] a (length 3): [10, 20, 30]\n" ~
-                     "   int[] b (length 0):[]\n",
+                     "   int[] b (length 0): []\n",
         "Incorrect string serializer result");
 
     mixin(Typedef!(hash_t, "AdskilletId"));
