@@ -122,7 +122,7 @@ class HttpException : HttpServerException
         {
             e.enforce(false, StatusCode.OK, "Invalid resource");
         }
-        catch
+        catch (Exception)
         {
             test!("==")(e.status, StatusCode.OK);
             test!("==")(getMsg(e), "Ok Invalid resource");
@@ -133,7 +133,7 @@ class HttpException : HttpServerException
             auto path = "/path/with/errors";
             e.enforce(false, StatusCode.NotFound, "Unable to locate URI path:", path);
         }
-        catch
+        catch (Exception)
         {
             test!("==")(e.status, StatusCode.NotFound);
             test!("==")(getMsg(e), "Not Found Unable to locate URI path: /path/with/errors");

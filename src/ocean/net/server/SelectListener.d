@@ -226,7 +226,7 @@ abstract class ISelectListener : ISelectClient
                 IConnectionHandler handler = this.getConnectionHandler();
                 this.acceptConnection(handler);
             }
-            catch
+            catch (Exception)
             {
                 /* Catch an exception (or object) thrown by
                    getConnectionHandler() to prevent it from falling through
