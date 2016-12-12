@@ -422,6 +422,7 @@ class ConfigParser
         ---
 
         Params:
+            T   = Type of characters in the string
             str = string to parse
             clean_old = true if the existing configuration should be overwritten
                         with the result of the current parse, false if the
@@ -430,13 +431,13 @@ class ConfigParser
 
     ***************************************************************************/
 
-    public void parseString ( istring str, bool clean_old = true )
+    public void parseString (T : dchar) ( T[] str, bool clean_old = true )
     {
         static struct Iterator
         {
-            istring data;
+            T[] data;
 
-            int opApply ( int delegate ( ref istring x ) dg )
+            int opApply ( int delegate ( ref T[] x ) dg )
             {
                 int result = 0;
 
@@ -1275,7 +1276,7 @@ float_arr = 10.2
         0.000000001
 bool_arr = true
        false
-`;
+`.dup;
     ConfigSanity str1_expectations =
         { 1,
           [ "Section1" ],
