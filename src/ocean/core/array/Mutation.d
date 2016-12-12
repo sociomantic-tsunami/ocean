@@ -934,8 +934,11 @@ deprecated unittest
 
 *******************************************************************************/
 
-public T[] copy ( T ) ( ref Buffer!(T) dest, in T[] src )
+public T[] copy ( T, T2 ) ( ref Buffer!(T) dest, T2[] src )
 {
+    static assert (is(typeof({ dest[] = src[]; })),
+                   "Type " ~ T2.stringof ~ " cannot be assigned to " ~ T.stringof);
+
     dest.length = src.length;
     dest[] = src[];
     return dest[];
@@ -951,7 +954,7 @@ unittest
 }
 
 // deprecated("Must use Buffer argument")
-public T[] copy ( T ) ( ref T[] dest, in T[] src )
+public T[] copy ( T, T2 ) ( ref T[] dest, T2[] src )
 {
     return copy(*(cast(Buffer!(T)*) &dest), src);
 }
@@ -982,8 +985,11 @@ deprecated unittest
 
 *******************************************************************************/
 
-public T[] copyExtend ( T ) ( ref Buffer!(T) dest, in T[] src )
+public T[] copyExtend ( T, T2 ) ( ref Buffer!(T) dest, T2[] src )
 {
+    static assert (is(typeof({ dest[] = src[]; })),
+                   "Type " ~ T2.stringof ~ " cannot be assigned to " ~ T.stringof);
+
     if (dest.length < src.length)
         dest.length = src.length;
     dest[0 .. src.length] = src[];
@@ -1001,7 +1007,7 @@ unittest
 }
 
 // deprecated("Must use Buffer argument")
-public T[] copyExtend ( T ) ( ref T[] dest, in T[] src )
+public T[] copyExtend ( T, T2 ) ( ref T[] dest, T2[] src )
 {
     return copyExtend(*(cast(Buffer!(T)*) &dest), src);
 }
@@ -1035,7 +1041,7 @@ deprecated unittest
 
 *******************************************************************************/
 
-public void appendCopy ( T ) ( ref Buffer!(T)[] dest, in T[] src )
+public void appendCopy ( T, T2 ) ( ref Buffer!(T)[] dest, T2[] src )
 {
     dest.length = dest.length + 1;
     copy(dest[dest.length - 1], src);
@@ -1051,7 +1057,7 @@ unittest
 }
 
 // deprecated ("Must use Buffer as a buffer argument")
-public void appendCopy ( T ) ( ref T[][] dest, in T[] src )
+public void appendCopy ( T, T2 ) ( ref T[][] dest, T2[] src )
 {
     appendCopy(*(cast(Buffer!(T)[]*) &dest), src);
 }
