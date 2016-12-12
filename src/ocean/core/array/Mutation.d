@@ -953,6 +953,15 @@ unittest
     test!("==")(dest[], "hello"[]);
 }
 
+unittest
+{
+    Buffer!(cstring) dest;
+    mstring[] src = [ "Hello".dup, "World".dup ];
+    copy(dest, src);
+    // Doesn't compile in D2...
+    //test!("==")(dest[], src);
+}
+
 // deprecated("Must use Buffer argument")
 public T[] copy ( T, T2 ) ( ref T[] dest, T2[] src )
 {
@@ -1055,6 +1064,16 @@ unittest
     appendCopy(dest, src);
     test!("==")(dest[0][], "hello");
 }
+
+unittest
+{
+    Buffer!(cstring)[] dest;
+    mstring[] src = [ "Hello".dup, "World".dup ];
+    appendCopy(dest, src);
+    // Doesn't compile in D2...
+    //test!("==")(dest[0][], src);
+}
+
 
 // deprecated ("Must use Buffer as a buffer argument")
 public void appendCopy ( T, T2 ) ( ref T[][] dest, T2[] src )
