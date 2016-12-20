@@ -147,6 +147,7 @@ version(UnitTest):
 import ocean.transition;
 import ocean.core.Test;
 import ocean.core.StructConverter;
+import ocean.core.DeepCompare;
 
 /******************************************************************************
 
@@ -661,4 +662,30 @@ version (D_Version2) unittest
                   "Serializer should reject a struct with 'istring'");
     static assert(!is(typeof({Deserializer.deserialize!(II)(buffer2);})),
                   "Deserializer should reject a struct with 'immutable' element");
+}
+
+/******************************************************************************
+
+    Ensure that full-const struct can be serialized
+
+******************************************************************************/
+
+unittest
+{
+    static struct S1
+    {
+        mstring s;
+    }
+
+    static struct S2
+    {
+        S1[] nested;
+    }
+
+    auto s = Const!(S2)([ Const!(S1)("Hello world") ]);
+    void[] buffer;
+
+    Serializer.serialize(s, buffer);
+    auto d = Deserializer.deserialize!(S2)(buffer);
+    test(deepEquals(*d.ptr, s));
 }

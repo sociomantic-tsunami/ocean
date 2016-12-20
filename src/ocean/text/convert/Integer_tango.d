@@ -285,10 +285,11 @@ private struct _FormatterInfo(T)
     T[]     numbers;
 }
 
-Const!(T)[] formatter(T, N) (T[] dst, N i, char type, char pre, int width)
+Const!(T)[] formatter(T, N) (T[] dst, N i_, char type, char pre, int width)
 {
     static assert(isIntegerType!(N),
                   "Integer_tango.formatter only supports integers");
+    Unqual!(N) i = i_;
 
 
     const Immut!(T)[] lower = "0123456789abcdef";

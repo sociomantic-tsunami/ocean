@@ -614,6 +614,7 @@ import ocean.transition;
 import ocean.io.Stdout_tango;
 import ocean.math.Math;
 import ocean.text.Util;
+import ocean.text.convert.Formatter;
 import ocean.text.convert.Integer_tango;
 import ocean.util.container.SortedMap;
 import ocean.util.container.more.Stack;
@@ -816,6 +817,15 @@ public class Arguments
     ***************************************************************************/
 
     private mstring spaces;
+
+
+    /***************************************************************************
+
+        Temporary formatting buffer
+
+    ***************************************************************************/
+
+    private mstring tmp_buf;
 
 
     /***************************************************************************
@@ -1180,7 +1190,7 @@ public class Arguments
         Displays the full help message for the application.
 
         Params:
-            output = stream where to print the errors (Stderr by default)
+            output = stream where to print the help message (Stderr by default)
 
     ***************************************************************************/
 
@@ -1216,7 +1226,7 @@ public class Arguments
                 continue;
             }
 
-            this.displayArgumentHelp(arg, output);
+            output.formatln("{}", this.formatArgumentHelp(arg, this.tmp_buf));
         }
 
         output.newline;
@@ -1495,43 +1505,51 @@ public class Arguments
 
     /***************************************************************************
 
-        Displays help text for a single argument.
+        Formats the help text for a single argument.
 
         Params:
-            arg = argument instance for which the help text is to be printed
-            output = stream where to print the help text (Stderr by default)
+            arg = argument instance for which the help text is to be formatted
+            buf = buffer into which to format the help text
+
+        Returns:
+            the formatted help text
 
     ***************************************************************************/
 
-    private void displayArgumentHelp ( Argument arg,
-        typeof(Stderr) output = Stderr )
+    private mstring formatArgumentHelp ( Argument arg, ref mstring buf )
     {
-        output.format("  ");
+        buf.length = 0;
+        enableStomping(buf);
+
+        sformat(buf, "  ");
 
         foreach ( i, al; arg.aliases )
         {
-            output.format("-{}", al);
+            sformat(buf, "-{}", al);
 
             if ( i != arg.aliases.length - 1 || arg.name.length )
             {
-                output.format(", ");
+                sformat(buf, ", ");
             }
         }
 
         // there is no trailing ", " in this case, so add two spaces instead.
         if ( arg.aliases.length == 0 )
         {
-            output.format("  ");
+            sformat(buf, "  ");
         }
 
-        output.format("{}",
+        sformat(buf, "{}",
             this.space(this.aliases_width -
                        this.aliasesWidth(arg.aliases.length)));
 
-        output.format("--{}{}  ",
+        sformat(buf, "--{}{}  ",
             arg.name, this.space(this.long_name_width - arg.name.length));
 
-        output.format("{}", arg.text);
+        if ( arg.text.length )
+        {
+            sformat(buf, "{}", arg.text);
+        }
 
         uint extras;
 
@@ -1550,22 +1568,22 @@ public class Arguments
 
                 if ( extras )
                 {
-                    output.format(", ");
+                    sformat(buf, ", ");
                 }
             }
 
-            output.format(" (");
+            sformat(buf, " (");
 
             if ( params )
             {
                 if ( arg.min == arg.max )
                 {
-                    output.format("{} param{}", arg.min,
+                    sformat(buf, "{} param{}", arg.min,
                         arg.min == 1 ? "" : "s");
                 }
                 else
                 {
-                    output.format("{}-{} params", arg.min, arg.max);
+                    sformat(buf, "{}-{} params", arg.min, arg.max);
                 }
 
                 next();
@@ -1573,22 +1591,22 @@ public class Arguments
 
             if ( arg.options.length )
             {
-                output.format("{}", arg.options);
+                sformat(buf, "{}", arg.options);
 
                 next();
             }
 
             if ( arg.deefalts.length )
             {
-                output.format("default: {}", arg.deefalts);
+                sformat(buf, "default: {}", arg.deefalts);
 
                 next();
             }
 
-            output.format(")");
+            sformat(buf, ")");
         }
 
-        output.newline.flush;
+        return buf;
     }
 
 
@@ -1604,15 +1622,17 @@ public class Arguments
 
     ***************************************************************************/
 
-    private mstring space ( size_t width )
+    private cstring space ( size_t width )
     {
+        if ( width == 0 )
+        {
+            return "";
+        }
+
         this.spaces.length = width;
         enableStomping(this.spaces);
 
-        if ( width > 0 )
-        {
-            this.spaces[0 .. $] = ' ';
-        }
+        this.spaces[] = ' ';
 
         return this.spaces;
     }

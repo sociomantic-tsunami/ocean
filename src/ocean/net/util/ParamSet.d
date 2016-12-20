@@ -485,11 +485,11 @@ class ParamSet
         Adds an entry for key.
 
         Params:
-            keys = parameter key to add
+            keys = parameter key to add (will be duplicated)
 
      **************************************************************************/
 
-    protected void addKeys ( in istring[] keys ... )
+    protected void addKeys ( in cstring[] keys ... )
     {
         foreach (key; keys)
         {
@@ -502,7 +502,7 @@ class ParamSet
         Adds an entry for key.
 
         Params:
-            key = parameter key to add
+            key = parameter key to add (will be duplicated)
 
      **************************************************************************/
 

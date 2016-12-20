@@ -461,13 +461,18 @@ package struct FS
 
                         Create a new file.
 
+                        Params:
+                            mode = mode for the new file (defaults to 0660)
+
                 ***************************************************************/
 
-                static void createFile (cstring name)
+                static void createFile (cstring name,
+                        mode_t mode = Octal!("660"))
                 {
                         int fd;
 
-                        fd = posix.open (name.ptr, O_CREAT | O_WRONLY | O_TRUNC, Octal!("660"));
+                        fd = posix.open (name.ptr, O_CREAT | O_WRONLY | O_TRUNC,
+                                mode);
                         if (fd is -1)
                             exception (name);
 
@@ -479,11 +484,15 @@ package struct FS
 
                         Create a new directory.
 
+                        Params:
+                            mode = mode for the new directory (defaults to 0777)
+
                 ***************************************************************/
 
-                static void createFolder (cstring name)
+                static void createFolder (cstring name,
+                        mode_t mode = Octal!("777"))
                 {
-                        if (posix.mkdir (name.ptr, Octal!("777")))
+                        if (posix.mkdir (name.ptr, mode))
                             exception (name);
                 }
 

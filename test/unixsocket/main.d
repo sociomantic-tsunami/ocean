@@ -28,6 +28,7 @@ import ocean.sys.socket.UnixSocket;
 
 import ocean.transition;
 import ocean.stdc.posix.sys.socket;
+import ocean.stdc.posix.sys.un;
 import ocean.stdc.posix.sys.wait;
 import ocean.stdc.posix.unistd;
 import ocean.stdc.posix.stdlib : mkdtemp;
@@ -35,7 +36,6 @@ import ocean.stdc.stdio;
 import ocean.math.Math;
 import ocean.core.Thread;
 import ocean.core.Time;
-import ocean.net.device.LocalSocket;
 import ocean.stdc.string;
 import ocean.stdc.errno;
 
@@ -45,7 +45,7 @@ const istring CLIENT_STRING = "Hello from the client";
 
 const istring SERVER_STRING = "Hello from the server";
 
-int runClient ( LocalAddress socket_address )
+int runClient ( sockaddr_un* socket_address )
 {
     auto client = new UnixSocket();
 
@@ -111,7 +111,7 @@ int main ( )
 
     auto socket_path = test_dir ~ "/socket";
 
-    auto socket_address = new LocalAddress(socket_path);
+    auto socket_address = sockaddr_un.create(socket_path);
 
     pid_t pid = fork();
 
@@ -120,7 +120,7 @@ int main ( )
     if (pid == 0)  // client
     {
         in_child = true;
-        return runClient(socket_address);
+        return runClient(&socket_address);
     }
 
     auto server = new UnixSocket();
@@ -131,7 +131,7 @@ int main ( )
     auto socket_fd = server.socket();
     enforce(socket_fd >= 0, "socket() call failed!");
 
-    auto bind_result = server.bind(socket_address);
+    auto bind_result = server.bind(&socket_address);
     enforce(bind_result == 0, "bind() call failed!");
 
     scope (exit)

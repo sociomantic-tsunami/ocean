@@ -23,7 +23,7 @@
 
 *******************************************************************************/
 
-module ocean.net.http.HttpClient;
+deprecated module ocean.net.http.HttpClient;
 
 import ocean.transition;
 
@@ -88,7 +88,7 @@ import Integer = ocean.text.convert.Integer_tango;
 
 *******************************************************************************/
 
-class HttpClient
+deprecated class HttpClient
 {
         /// callback for sending PUT content
         alias void delegate (OutputBuffer) Pump;

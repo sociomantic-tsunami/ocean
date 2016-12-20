@@ -30,7 +30,7 @@ import ocean.core.Enforce;
 import ocean.core.Time;
 import ocean.io.select.EpollSelectDispatcher;
 import ocean.stdc.errno: ECONNREFUSED;
-import ocean.net.device.LocalSocket: LocalAddress;
+import ocean.stdc.posix.sys.un;
 import ocean.sys.socket.UnixSocket;
 import ocean.net.server.unix.UnixListener;
 import Integer = ocean.text.convert.Integer_tango;
@@ -52,7 +52,7 @@ import Integer = ocean.text.convert.Integer_tango;
 
 void writeToClient( cstring socket_path, cstring command )
 {
-    auto local_address = new LocalAddress(socket_path);
+    auto local_address = sockaddr_un.create(socket_path);
     auto client = new UnixSocket();
 
     scope (exit) client.close();
@@ -64,7 +64,7 @@ void writeToClient( cstring socket_path, cstring command )
     for (int i = 0; i < 5 && connect_result == ECONNREFUSED; i++)
     {
         Thread.sleep(seconds(0.5));
-        connect_result = client.connect(local_address);
+        connect_result = client.connect(&local_address);
     }
     enforce(connect_result == 0, "connect() call failed after 5 tries!");
 

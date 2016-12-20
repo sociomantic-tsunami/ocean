@@ -39,7 +39,6 @@ import ocean.util.container.pool.model.IResettable;
 
 import ocean.sys.Epoll : epoll_event_t;
 
-import ocean.net.device.Socket : Socket;
 import ocean.text.convert.Format;
 
 debug ( ConnectionHandler ) import ocean.io.Stdout : Stderr;

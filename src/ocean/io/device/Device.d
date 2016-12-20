@@ -33,6 +33,8 @@ public  import ocean.io.device.Conduit;
 
 class Device : Conduit, ISelectable
 {
+        import core.stdc.errno;
+
         /// expose superclass definition also
         public alias Conduit.error error;
 
@@ -132,7 +134,7 @@ class Device : Conduit, ISelectable
                         auto read = posix.read (handle, dst.ptr, dst.length);
 
                         if (read is -1)
-                            error;
+                            error(errno, "read");
                         else
                            if (read is 0 && dst.length > 0)
                                return Eof;
@@ -151,7 +153,7 @@ class Device : Conduit, ISelectable
                 {
                         auto written = posix.write (handle, src.ptr, src.length);
                         if (written is -1)
-                            error;
+                            error(errno, "write");
                         return written;
                 }
         }

@@ -1,6 +1,7 @@
 /*******************************************************************************
 
-        Based upon Doug Lea's Java collection package
+    This is Tango's implementation of a hash map which is now deprecated.
+    Use 'ocean.util.container.map.HashMap' instead.
 
         Copyright:
             Copyright (c) 2008 Kris Bell.
@@ -17,7 +18,8 @@
 
 *******************************************************************************/
 
-module ocean.util.container.HashMap;
+deprecated module ocean.util.container.HashMap;
+pragma(msg, "`ocean.util.container.HashMap` is deprecated. Use `ocean.util.container.map.HashMap` instead.");
 
 import ocean.util.container.Slink;
 

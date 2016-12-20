@@ -153,6 +153,88 @@ alias ILogger.Level Level;
 
 public struct Log
 {
+        /***********************************************************************
+
+            Structure for accumulating number of log events issued.
+
+            Note:
+                this takes the logging level in account, so calls that are not
+                logged because of the minimum logging level are not counted.
+
+        ***********************************************************************/
+
+        public static struct Stats
+        {
+            mixin TypeofThis!();
+
+            /// Number of trace log events issued
+            public uint logged_trace;
+
+            /// Number of info log events issued
+            public uint logged_info;
+
+            /// Number of warn log events issued
+            public uint logged_warn;
+
+            /// Number of error log events issued
+            public uint logged_error;
+
+            /// Number of fatal log events issue
+            public uint logged_fatal;
+
+            static assert(Level.max == This.tupleof.length,
+                    "Number of members doesn't match Levels");
+
+            /*******************************************************************
+
+                Resets the counters.
+
+            *******************************************************************/
+
+            private void reset ()
+            {
+                foreach (ref field; this.tupleof)
+                {
+                    field = field.init;
+                }
+            }
+
+            /*******************************************************************
+
+                Accumulate the LogEvent into the stats.
+
+                Params:
+                    event_level = level of the event that has been logged.
+
+            *******************************************************************/
+
+            private void accumulate (Level event_level)
+            {
+                with (Level) switch (event_level)
+                {
+                    case Trace:
+                        this.logged_trace++;
+                        break;
+                    case Info:
+                        this.logged_info++;
+                        break;
+                    case Warn:
+                        this.logged_warn++;
+                        break;
+                    case Error:
+                        this.logged_error++;
+                        break;
+                    case Fatal:
+                        this.logged_fatal++;
+                        break;
+                    case None:
+                        break;
+                    default:
+                        assert(false, "Non supported log level");
+                }
+            }
+        }
+
         // support for old API
         public alias lookup getLogger;
 
@@ -194,6 +276,14 @@ public struct Log
         [
                 "Trace", "Info", "Warn", "Error", "Fatal", "None"
         ];
+
+        /***********************************************************************
+
+            Logger stats.
+
+        ***********************************************************************/
+
+        private static Stats logger_stats;
 
         /***********************************************************************
 
@@ -322,6 +412,26 @@ public struct Log
         {
                 root.add (new AppendStream (stream, flush));
         }
+
+        /***********************************************************************
+
+            Gets the stats of the logger system between two calls to this
+            method.
+
+            Returns:
+                number of log events issued after last call to stats, aggregated
+                per logger level
+
+        ***********************************************************************/
+
+        public static Stats stats ()
+        {
+            // Make a copy to return
+            Stats s = logger_stats;
+            logger_stats.reset();
+
+            return s;
+        }
 }
 
 
@@ -443,18 +553,32 @@ public class Logger : ILogger
 
         /***********************************************************************
 
+            Indicator if the log emits should be counted towards global
+            stats.
+
+        ***********************************************************************/
+
+        private bool            collect_stats;
+
+        /***********************************************************************
+
                 Construct a LoggerInstance with the specified name for the
                 given hierarchy. By default, logger instances are additive
                 and are set to emit all events.
+
+                Params:
+                    host = Hierarchy instance that is hosting this logger
+                    name = name of this Logger
 
         ***********************************************************************/
 
         private this (Hierarchy host, istring name)
         {
-                host_ = host;
-                level_ = Level.Trace;
-                additive_ = true;
-                name_ = name;
+                this.host_ = host;
+                this.level_ = Level.Trace;
+                this.additive_ = true;
+                this.collect_stats = true;
+                this.name_ = name;
         }
 
         /***********************************************************************
@@ -624,10 +748,12 @@ public class Logger : ILogger
         final Logger level (Level level, bool propagate)
         {
                 level_ = level;
+
                 if (propagate)
-                    foreach (log; host_)
-                             if (log.isChildOf (name_))
-                                 log.level_ = level;
+                {
+                    this.host_.propagateValue!("level_")(this.name_, level);
+                }
+
                 return this;
         }
 
@@ -711,6 +837,29 @@ public class Logger : ILogger
 
         /***********************************************************************
 
+            Toggles the stats collecting for this logger and optionally
+            for all its descentends.
+
+            Params:
+                value = indicator if the stats collection for this logger
+                    should happen
+                propagate = should we propagate this change to all children
+                    loggers
+
+        ***********************************************************************/
+
+        void collectStats (bool value, bool propagate)
+        {
+            this.collect_stats = value;
+
+            if (propagate)
+            {
+                this.host_.propagateValue!("collect_stats")(this.name_, value);
+            }
+        }
+
+        /***********************************************************************
+
                 Get time since this application started
 
         ***********************************************************************/
@@ -747,6 +896,10 @@ public class Logger : ILogger
 
         private void append (LogEvent event)
         {
+                // indicator if the event was at least once emmited to the
+                // appender (to use for global stats)
+                bool event_emmited;
+
                 // combine appenders from all ancestors
                 auto links = this;
                 Appender.Mask masks = 0;
@@ -766,12 +919,21 @@ public class Logger : ILogger
                                  // append message and update mask
                                  appender.append (event);
                                  masks |= mask;
+                                 event_emmited = true;
                                  }
                          // process all appenders for this node
                          appender = appender.next;
                          }
                      // process all ancestors
                    } while (links.additive_ && ((links = links.parent) !is null));
+
+                // If the event was emitted to at least one appender, and the
+                // collecting stats for this log is enabled, increment the
+                // stats counters
+                if (this.collect_stats && event_emmited)
+                {
+                    Log.logger_stats.accumulate(event.level);
+                }
         }
 
         /***********************************************************************
@@ -1154,6 +1316,30 @@ public class Hierarchy : Logger.Context
 
         /***********************************************************************
 
+            Propagates the property to all child loggers.
+
+            Params:
+                Property = property to set
+                T = type of the property
+                parent_name = name of the parent logger
+                value = value to set
+
+        ***********************************************************************/
+
+        private void propagateValue (istring property, T)(istring parent_name,
+                T value)
+        {
+            foreach (log; this)
+            {
+                if (log.isChildOf (parent_name))
+                {
+                    mixin("log." ~ property ~ " = value;");
+                }
+            }
+        }
+
+        /***********************************************************************
+
                 Propagate changes in the hierarchy downward to child Loggers.
                 Note that while 'parent' is always changed, the adjustment of
                 'level' is selectable.
@@ -1164,15 +1350,18 @@ public class Hierarchy : Logger.Context
         {
                 // is the changed instance a better match for our parent?
                 if (logger.isCloserAncestor (changed))
-                   {
-                   // update parent (might actually be current parent)
-                   logger.parent = changed;
+                {
+                    // update parent (might actually be current parent)
+                    logger.parent = changed;
 
-                   // if we don't have an explicit level set, inherit it
-                   // Be careful to avoid recursion, or other overhead
-                   if (force)
-                       logger.level_ = changed.level;
-                   }
+                    // if we don't have an explicit level set, inherit it
+                    // Be careful to avoid recursion, or other overhead
+                    if (force)
+                    {
+                        logger.level_ = changed.level;
+                        logger.collect_stats = changed.collect_stats;
+                    }
+                }
         }
 }
 

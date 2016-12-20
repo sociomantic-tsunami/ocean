@@ -15,7 +15,7 @@
 
 *******************************************************************************/
 
-module ocean.net.http.HttpGet;
+deprecated module ocean.net.http.HttpGet;
 
 public import ocean.net.Uri;
 
@@ -36,7 +36,7 @@ import ocean.net.http.HttpClient,
 
 *******************************************************************************/
 
-class HttpGet : HttpClient
+deprecated class HttpGet : HttpClient
 {
         alias HttpClient.read read;
 

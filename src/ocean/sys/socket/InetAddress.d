@@ -71,7 +71,7 @@ import ocean.core.TypeConvert;
 
  ******************************************************************************/
 
-public enum GetNameInfoFlags
+public enum GetNameInfoFlags : int
 {
     None = 0,
     NI_NUMERICHOST              = 1 << 0, /// Don't try to look up hostname.
@@ -88,6 +88,8 @@ public enum GetNameInfoFlags
 
 struct InetAddress ( bool IPv6 = false )
 {
+    import core.sys.posix.netdb;
+
     /**************************************************************************
 
         Constants and aliases.
@@ -424,20 +426,9 @@ struct InetAddress ( bool IPv6 = false )
     public int getnameinfo(mstring host, mstring serv,
                            GetNameInfoFlags flags = GetNameInfoFlags.None)
     {
-        return .getnameinfo(cast (sockaddr*) &this.addr, this.addr.sizeof,
+        return core.sys.posix.netdb.getnameinfo(
+            cast (sockaddr*) &this.addr, this.addr.sizeof,
             host.ptr, castFrom!(size_t).to!(int)(host.length), serv.ptr,
             castFrom!(size_t).to!(int)(serv.length), flags);
     }
 }
-
-/**
-The getnameinfo() function is the inverse of getaddrinfo: it converts a socket
-address to a corresponding host and service, in a protocol-independent manner.
-It combines the functionality of gethostbyaddr and getservbyport, but unlike
-those functions, getaddrinfo is reentrant and allows programs to eliminate
-IPv4-versus-IPv6 dependencies. (C) MAN
-*/
-extern (C)private int getnameinfo(sockaddr* sa, int salen,
-                                  char* host, int hostlen,
-                                  char* serv, int servlen,
-                                  GetNameInfoFlags flags = GetNameInfoFlags.None);

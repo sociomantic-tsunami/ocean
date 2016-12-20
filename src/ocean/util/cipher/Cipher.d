@@ -13,7 +13,8 @@
  *
  */
 
-module ocean.util.cipher.Cipher;
+deprecated module ocean.util.cipher.Cipher;
+pragma(msg, "ocean.util.cipher is deprecated, use ocean.util.cipher.gcrypt instead.");
 
 import ocean.transition;
 

@@ -186,9 +186,29 @@ class Conduit : IConduit
 
         ***********************************************************************/
 
-        final void error (istring msg)
+        void error (istring msg)
         {
                 throw new IOException (msg);
+        }
+
+        /*******************************************************************
+
+            Throw an IOException, with the provided message, function name
+            and error code.
+
+            Params:
+                error_num = error code
+                func_name = name of the method that failed
+                msg = message description of the error
+                file = file where exception is thrown
+                line = line where exception is thrown
+
+        *******************************************************************/
+
+        public void error ( int error_code, istring func_name,
+                istring msg = "", istring file = __FILE__, long line = __LINE__ )
+        {
+            throw new IOException (msg, error_code, func_name, file, line);
         }
 
         /***********************************************************************

@@ -15,7 +15,8 @@
  *
  */
 
-module ocean.util.cipher.Blowfish;
+deprecated module ocean.util.cipher.Blowfish;
+pragma(msg, "ocean.util.cipher is deprecated, use ocean.util.cipher.gcrypt instead.");
 
 import ocean.transition;
 

@@ -75,6 +75,7 @@ public abstract class DaemonApp : Application,
     import ocean.util.app.ext.TimerExt;
     import ocean.util.app.ext.SignalExt;
     import ocean.util.app.ext.ReopenableFilesExt;
+    import ocean.util.app.ext.PidLockExt;
     import ocean.util.app.ExitException;
 
     import ocean.util.log.Log;
@@ -170,6 +171,16 @@ public abstract class DaemonApp : Application,
     ***************************************************************************/
 
     public ReopenableFilesExt reopenable_files_ext;
+
+    /***************************************************************************
+
+        PidLock extension. Tries to create and lock the pid lock file (if
+        specified in the config), ensuring that only one application instance
+        per pidlock may exist.
+
+    ***************************************************************************/
+
+    public PidLockExt pidlock_ext;
 
     /***************************************************************************
 
@@ -326,6 +337,10 @@ public abstract class DaemonApp : Application,
         this.reopenable_files_ext = new ReopenableFilesExt(this.signal_ext,
             settings.reopen_signal);
         this.registerExtension(this.reopenable_files_ext);
+
+        this.pidlock_ext = new PidLockExt();
+        this.config_ext.registerExtension(this.pidlock_ext);
+        this.registerExtension(this.pidlock_ext);
     }
 
     /***************************************************************************
@@ -340,8 +355,8 @@ public abstract class DaemonApp : Application,
 
     public void startEventHandling ( )
     {
-        this.timer_ext.register(&this.statsTimer, StatsLog.default_period);
-        this.epoll.register(this.signal_ext.event);
+        this.timer_ext.register(&this.statsTimer, this.stats_ext.config.interval);
+        this.epoll.register(this.signal_ext.selectClient());
     }
 
     /***************************************************************************

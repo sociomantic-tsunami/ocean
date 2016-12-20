@@ -96,7 +96,7 @@ import ocean.transition;
 import ocean.core.Enforce;
 import ocean.core.Exception;
 import ocean.core.Traits;
-import ocean.net.device.LocalSocket; // LocalAddress
+import ocean.stdc.posix.sys.un;
 import ocean.stdc.time; // time
 import ocean.stdc.posix.sys.types; // time_t
 import ocean.sys.ErrnoException;
@@ -210,7 +210,8 @@ public final class Collectd
 
     public this (istring socket_path)
     {
-        auto socketaddr = new LocalAddress(socket_path);
+        auto socketaddr = sockaddr_un.create(socket_path);
+
         this.socket = new UnixSocket();
 
         this.e_errno = new ErrnoException();
@@ -221,7 +222,7 @@ public final class Collectd
         if (sockRet < 0)
             throw this.e_errno.useGlobalErrno("socket");
 
-        if (auto connectRet = this.socket.connect(socketaddr))
+        if (auto connectRet = this.socket.connect(&socketaddr))
             throw this.e_errno.useGlobalErrno("connect");
 
         // This ought to be enough for any numeric argument

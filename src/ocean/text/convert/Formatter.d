@@ -374,7 +374,8 @@ private void handle (T) (T v, FormatInfo f, Sink sf, ElementSink se)
 
     // Floating point values - Explicitly typed because we don't want
     // to support imaginary and complex FP types
-    else static if (is(T == float) || is(T == double) || is(T == real))
+    else static if (is(Unqual!(T) == float) || is(Unqual!(T) == double)
+                    || is(Unqual!(T) == real))
     {
         char[T.sizeof * 8] buff = void;
         se(Float.format(buff, v, f.format), f);
@@ -766,7 +767,7 @@ private bool readNumber (out size_t f, ref Const!(char)* s)
 
 *******************************************************************************/
 
-private void writePointer (void* v, ref FormatInfo f, ElementSink se)
+private void writePointer (in void* v, ref FormatInfo f, ElementSink se)
 {
     alias void* T;
 
@@ -1251,4 +1252,27 @@ unittest
            == "int function(char[], char, int): 0X4444111122223333");
     assert(format("{}", dg)
            == "int delegate(void[], char, int): { funcptr: 0X1111222233334444, ptr: 0X5555666677778888 }");
+}
+
+// Const tests
+unittest
+{
+    const int ai = 42;
+    const double ad = 42.00;
+    static struct Answer_struct { int value; }
+    static class Answer_class
+    {
+        public override istring toString () /* d1to2fix_inject: const */
+        {
+            return "42";
+        }
+    }
+
+    Const!(Answer_struct) as = Answer_struct(42);
+    auto ac = new Const!(Answer_class);
+
+    assert(format("{}", ai) == "42");
+    assert(format("{:f2}", ad) == "42.00", format("{:f2}", ad));
+    assert(format("{}", as) == "{ value: 42 }");
+    assert(format("{}", ac) == "42");
 }

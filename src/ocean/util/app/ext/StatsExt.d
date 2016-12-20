@@ -80,6 +80,10 @@ class StatsExt : IConfigExtExtension
     public StatsLog stats_log;
 
 
+    /// Config instance for creating the default StatsLog.
+    public StatsLog.Config config;
+
+
     /***************************************************************************
 
         Extension order. This extension uses -500 because it should be
@@ -102,24 +106,24 @@ class StatsExt : IConfigExtExtension
 
         Params:
             app = the application instance
-            config = configuration instance
+            parser = configuration instance
 
     ***************************************************************************/
 
-    public override void processConfig ( IApplication app, ConfigParser config )
+    public override void processConfig ( IApplication app, ConfigParser parser )
     {
-        auto c = ConfigFiller.fill!(StatsLog.Config)("STATS", config);
+        ConfigFiller.fill!(StatsLog.Config)("STATS", this.config, parser);
 
-        if (!c.app_name.length)
-            c.app_name = app.name;
-        if (!c.hostname.length)
-            c.hostname = getHostName();
-        if (!c.default_type.length)
-            c.default_type = c.app_name ~ "_stats";
+        if (!this.config.app_name.length)
+            this.config.app_name = app.name;
+        if (!this.config.hostname.length)
+            this.config.hostname = getHostName();
+        if (!this.config.default_type.length)
+            this.config.default_type = this.config.app_name ~ "_stats";
 
-        assert(c.app_name.length);
+        assert(this.config.app_name.length);
 
-        this.stats_log = this.newStatsLog(app, c);
+        this.stats_log = this.newStatsLog(app, this.config);
     }
 
 

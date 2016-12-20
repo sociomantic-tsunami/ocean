@@ -34,13 +34,13 @@ version (UnitTest)
 
 *******************************************************************************/
 
-enum {SOCKET_ERROR = ocean.stdc.posix.sys.socket.SOCKET_ERROR}
+deprecated enum {SOCKET_ERROR = ocean.stdc.posix.sys.socket.SOCKET_ERROR}
 
 /*******************************************************************************
 
 *******************************************************************************/
 
-enum SocketOption
+deprecated enum SocketOption
 {
         DEBUG        =   .SO_DEBUG     ,       /* turn on debugging info recording */
         BROADCAST    =   .SO_BROADCAST ,       /* permit sending of broadcast msgs */
@@ -80,7 +80,7 @@ enum SocketOption
 
 *******************************************************************************/
 
-enum SocketOptionLevel
+deprecated enum SocketOptionLevel
 {
         SOCKET = .SOL_SOCKET    ,
         IP     = .IPPROTO_IP    ,
@@ -92,7 +92,7 @@ enum SocketOptionLevel
 
 *******************************************************************************/
 
-enum SocketType
+deprecated enum SocketType
 {
         STREAM    = .SOCK_STREAM   , /++ sequential, reliable +/
         DGRAM     = .SOCK_DGRAM    , /++ connectionless unreliable, max length +/
@@ -103,7 +103,7 @@ enum SocketType
 
 *******************************************************************************/
 
-enum ProtocolType
+deprecated enum ProtocolType
 {
         IP   = .IPPROTO_IP   ,     /// default internet protocol (probably 4 for compatibility)
         IPV4 = .IPPROTO_IP   ,     /// internet protocol version 4
@@ -120,7 +120,7 @@ enum ProtocolType
 
 *******************************************************************************/
 
-enum AddressFamily
+deprecated enum AddressFamily
 {
         UNSPEC    = .AF_UNSPEC   ,
         UNIX      = .AF_UNIX     ,
@@ -134,7 +134,7 @@ enum AddressFamily
 
 *******************************************************************************/
 
-enum SocketShutdown
+deprecated enum SocketShutdown
 {
         RECEIVE =  .SHUT_RD,
         SEND =     .SHUT_WR,
@@ -145,7 +145,7 @@ enum SocketShutdown
 
 *******************************************************************************/
 
-enum SocketFlags
+deprecated enum SocketFlags
 {
         NONE =           0,
         OOB =            .MSG_OOB,        /// out of band
@@ -154,7 +154,7 @@ enum SocketFlags
         NOSIGNAL =       0x4000,                /// inhibit signals
 }
 
-enum AIFlags: int
+deprecated enum AIFlags: int
 {
         PASSIVE = .AI_PASSIVE,            /// get address to use bind()
         CANONNAME = .AI_CANONNAME,        /// fill ai_canonname
@@ -170,7 +170,7 @@ enum AIFlags: int
         DEFAULT = .AI_DEFAULT,
 }
 
-enum AIError
+deprecated enum AIError
 {
         BADFLAGS = .EAI_BADFLAGS,	        /// Invalid value for `ai_flags' field.
         NONAME = .EAI_NONAME,	        /// NAME or SERVICE is unknown.
@@ -184,7 +184,7 @@ enum AIError
 }
 
 
-enum NIFlags: int
+deprecated enum NIFlags: int
 {
         MAXHOST = .NI_MAXHOST,
         MAXSERV = .NI_MAXSERV,
@@ -234,7 +234,7 @@ else
 
 *******************************************************************************/
 
-private extern (C)
+deprecated private extern (C)
 {
         import ocean.stdc.errno;
 
@@ -302,19 +302,19 @@ private extern (C)
 
 *******************************************************************************/
 
-public struct Berkeley
+deprecated public struct Berkeley
 {
         socket_t        sock;
         SocketType      type;
         AddressFamily   family;
         ProtocolType    protocol;
 
-        enum : socket_t
+        deprecated enum : socket_t
         {
                 INVALID_SOCKET = socket_t.init
         }
 
-        enum
+        deprecated enum
         {
                 Error = -1
         }
@@ -330,7 +330,7 @@ public struct Berkeley
 
         ***********************************************************************/
 
-        void open (AddressFamily family, SocketType type, ProtocolType protocol, bool create=true)
+        deprecated void open (AddressFamily family, SocketType type, ProtocolType protocol, bool create=true)
         {
                 this.type = type;
                 this.family = family;
@@ -345,7 +345,7 @@ public struct Berkeley
 
         ***********************************************************************/
 
-        void reopen (socket_t sock = sock.init)
+        deprecated void reopen (socket_t sock = sock.init)
         {
                 if (this.sock != sock.init)
                     this.detach;
@@ -367,7 +367,7 @@ public struct Berkeley
 
         ***********************************************************************/
 
-        void detach ()
+        deprecated void detach ()
         {
                 if (sock != sock.init)
                     .close (sock);
@@ -380,7 +380,7 @@ public struct Berkeley
 
         ***********************************************************************/
 
-        socket_t handle ()
+        deprecated socket_t handle ()
         {
                 return sock;
         }
@@ -391,7 +391,7 @@ public struct Berkeley
 
         ***********************************************************************/
 
-        int error ()
+        deprecated int error ()
         {
                 int errcode;
                 getOption (SocketOptionLevel.SOCKET, SocketOption.ERROR, (&errcode)[0..1]);
@@ -404,7 +404,7 @@ public struct Berkeley
 
         ***********************************************************************/
 
-        static int lastError ()
+        deprecated static int lastError ()
         {
                return errno;
         }
@@ -416,7 +416,7 @@ public struct Berkeley
 
         ***********************************************************************/
 
-        bool isAlive ()
+        deprecated bool isAlive ()
         {
                 int type, typesize = type.sizeof;
                 return getsockopt (sock, SocketOptionLevel.SOCKET,
@@ -428,7 +428,7 @@ public struct Berkeley
 
         ***********************************************************************/
 
-        AddressFamily addressFamily ()
+        deprecated AddressFamily addressFamily ()
         {
                 return family;
         }
@@ -437,7 +437,7 @@ public struct Berkeley
 
         ***********************************************************************/
 
-        Berkeley* bind (Address addr)
+        deprecated Berkeley* bind (Address addr)
         {
                 if(Error == .bind (sock, addr.name, addr.nameLen))
                    exception ("Unable to bind socket: ");
@@ -448,7 +448,7 @@ public struct Berkeley
 
         ***********************************************************************/
 
-        Berkeley* connect (Address to)
+        deprecated Berkeley* connect (Address to)
         {
                 if (Error == .connect (sock, to.name, to.nameLen))
                    {
@@ -469,7 +469,7 @@ public struct Berkeley
 
         ***********************************************************************/
 
-        Berkeley* listen (int backlog)
+        deprecated Berkeley* listen (int backlog)
         {
                 if (Error == .listen (sock, backlog))
                     exception ("Unable to listen on socket: ");
@@ -482,7 +482,7 @@ public struct Berkeley
 
         ***********************************************************************/
 
-        void accept (ref Berkeley target)
+        deprecated void accept (ref Berkeley target)
         {
                 auto newsock = .accept (sock, null, null);
                 if (socket_t.init is newsock)
@@ -509,7 +509,7 @@ public struct Berkeley
 
         ***********************************************************************/
 
-        Berkeley* shutdown (SocketShutdown how)
+        deprecated Berkeley* shutdown (SocketShutdown how)
         {
                 .shutdown (sock, how);
                 return this;
@@ -521,7 +521,7 @@ public struct Berkeley
 
         ***********************************************************************/
 
-        Berkeley* linger (int period)
+        deprecated Berkeley* linger (int period)
         {
                 alias uint attr;
 
@@ -547,7 +547,7 @@ public struct Berkeley
 
         ***********************************************************************/
 
-        Berkeley* addressReuse (bool enabled)
+        deprecated Berkeley* addressReuse (bool enabled)
         {
                 int[1] x = enabled;
                 return setOption (SocketOptionLevel.SOCKET, SocketOption.REUSEADDR, x);
@@ -559,7 +559,7 @@ public struct Berkeley
 
         ***********************************************************************/
 
-        Berkeley* noDelay (bool enabled)
+        deprecated Berkeley* noDelay (bool enabled)
         {
                 int[1] x = enabled;
                 return setOption (SocketOptionLevel.TCP, SocketOption.TCP_NODELAY, x);
@@ -572,7 +572,7 @@ public struct Berkeley
 
         ***********************************************************************/
 
-        void joinGroup (IPv4Address address, bool onOff)
+        deprecated void joinGroup (IPv4Address address, bool onOff)
         {
                 assert (address, "Socket.joinGroup :: invalid null address");
 
@@ -596,7 +596,7 @@ public struct Berkeley
 
         ***********************************************************************/
 
-        Address newFamilyObject ()
+        deprecated Address newFamilyObject ()
         {
                 if (family is AddressFamily.INET)
                    return new IPv4Address;
@@ -611,7 +611,7 @@ public struct Berkeley
 
         ***********************************************************************/
 
-        static istring hostName ()
+        deprecated static istring hostName ()
         {
                 char[64] name;
 
@@ -626,7 +626,7 @@ public struct Berkeley
 
         ***********************************************************************/
 
-        static uint hostAddress ()
+        deprecated static uint hostAddress ()
         {
                 auto ih = new NetHost;
                 ih.getHostByName (hostName);
@@ -640,7 +640,7 @@ public struct Berkeley
 
         ***********************************************************************/
 
-        Address remoteAddress ()
+        deprecated Address remoteAddress ()
         {
                 auto addr = newFamilyObject;
                 auto nameLen = addr.nameLen;
@@ -656,7 +656,7 @@ public struct Berkeley
 
         ***********************************************************************/
 
-        Address localAddress ()
+        deprecated Address localAddress ()
         {
                 auto addr = newFamilyObject;
                 auto nameLen = addr.nameLen;
@@ -676,7 +676,7 @@ public struct Berkeley
 
         ***********************************************************************/
 
-        int send (Const!(void)[] buf, SocketFlags flags=SocketFlags.NONE)
+        deprecated int send (Const!(void)[] buf, SocketFlags flags=SocketFlags.NONE)
         {
                 if (buf.length is 0)
                     return 0;
@@ -703,7 +703,7 @@ public struct Berkeley
 
         ***********************************************************************/
 
-        int sendTo (Const!(void)[] buf, SocketFlags flags, Address to)
+        deprecated int sendTo (Const!(void)[] buf, SocketFlags flags, Address to)
         {
                 return sendTo (buf, cast(int) flags, to.name, to.nameLen);
         }
@@ -714,7 +714,7 @@ public struct Berkeley
 
         ***********************************************************************/
 
-        int sendTo (Const!(void)[] buf, Address to)
+        deprecated int sendTo (Const!(void)[] buf, Address to)
         {
                 return sendTo (buf, SocketFlags.NONE, to);
         }
@@ -725,7 +725,7 @@ public struct Berkeley
 
         ***********************************************************************/
 
-        int sendTo (Const!(void)[] buf, SocketFlags flags=SocketFlags.NONE)
+        deprecated int sendTo (Const!(void)[] buf, SocketFlags flags=SocketFlags.NONE)
         {
                 return sendTo (buf, cast(int) flags, null, 0);
         }
@@ -740,7 +740,7 @@ public struct Berkeley
 
         ***********************************************************************/
 
-        private int sendTo (Const!(void)[] buf, int flags, Address.sockaddr* to, int len)
+        deprecated private int sendTo (Const!(void)[] buf, int flags, Address.sockaddr* to, int len)
         {
                 if (buf.length is 0)
                     return 0;
@@ -768,7 +768,7 @@ public struct Berkeley
 
         ***********************************************************************/
 
-        int receive (void[] buf, SocketFlags flags=SocketFlags.NONE)
+        deprecated int receive (void[] buf, SocketFlags flags=SocketFlags.NONE)
         {
                 if (!buf.length)
                      badArg ("Socket.receive :: target buffer has 0 length");
@@ -786,7 +786,7 @@ public struct Berkeley
 
         ***********************************************************************/
 
-        int receiveFrom (void[] buf, SocketFlags flags, Address from)
+        deprecated int receiveFrom (void[] buf, SocketFlags flags, Address from)
         {
                 if (!buf.length)
                      badArg ("Socket.receiveFrom :: target buffer has 0 length");
@@ -802,7 +802,7 @@ public struct Berkeley
 
         ***********************************************************************/
 
-        int receiveFrom (void[] buf, Address from)
+        deprecated int receiveFrom (void[] buf, Address from)
         {
                 return receiveFrom(buf, SocketFlags.NONE, from);
         }
@@ -828,7 +828,7 @@ public struct Berkeley
 
         ***********************************************************************/
 
-        int getOption (SocketOptionLevel level, SocketOption option, void[] result)
+        deprecated int getOption (SocketOptionLevel level, SocketOption option, void[] result)
         {
                 int len = cast(int) result.length;
                 if(Error == .getsockopt (sock, cast(int)level, cast(int)option, result.ptr, &len))
@@ -840,7 +840,7 @@ public struct Berkeley
 
         ***********************************************************************/
 
-        Berkeley* setOption (SocketOptionLevel level, SocketOption option, void[] value)
+        deprecated Berkeley* setOption (SocketOptionLevel level, SocketOption option, void[] value)
         {
                 if(Error == .setsockopt (sock, cast(int)level, cast(int)option, value.ptr, cast(int) value.length))
                    exception ("Unable to set socket option: ");
@@ -853,7 +853,7 @@ public struct Berkeley
 
         ***********************************************************************/
 
-        bool blocking()
+        deprecated bool blocking()
         {
                 return !(fcntl(sock, F_GETFL, 0) & O_NONBLOCK);
         }
@@ -864,7 +864,7 @@ public struct Berkeley
 
         ***********************************************************************/
 
-        void blocking(bool yes)
+        deprecated void blocking(bool yes)
         {
                 int x = fcntl(sock, F_GETFL, 0);
                 if(yes)
@@ -880,7 +880,7 @@ public struct Berkeley
 
         ***********************************************************************/
 
-        static void exception (istring msg)
+        deprecated static void exception (istring msg)
         {
                 throw new SocketException (msg ~ SysError.lookup(lastError));
         }
@@ -889,7 +889,7 @@ public struct Berkeley
 
         ***********************************************************************/
 
-        protected static void badArg (istring msg)
+        deprecated protected static void badArg (istring msg)
         {
                 throw new IllegalArgumentException (msg);
         }
@@ -902,7 +902,7 @@ public struct Berkeley
 
 *******************************************************************************/
 
-public abstract class Address
+deprecated public abstract class Address
 {
         public alias .sockaddr sockaddr;
 
@@ -1000,7 +1000,7 @@ public abstract class Address
 
         ***********************************************************************/
 
-        static Address resolve (istring host, istring service = null,
+        deprecated static Address resolve (istring host, istring service = null,
                                 AddressFamily af = AddressFamily.UNSPEC,
                                 AIFlags flags = cast(AIFlags)0)
         {
@@ -1011,7 +1011,7 @@ public abstract class Address
 
         ***********************************************************************/
 
-        static Address resolve (istring host, ushort port,
+        deprecated static Address resolve (istring host, ushort port,
                                 AddressFamily af = AddressFamily.UNSPEC,
                                 AIFlags flags = cast(AIFlags)0)
         {
@@ -1022,7 +1022,7 @@ public abstract class Address
 
         ***********************************************************************/
 
-        static Address[] resolveAll (istring host, istring service = null,
+        deprecated static Address[] resolveAll (istring host, istring service = null,
                                      AddressFamily af = AddressFamily.UNSPEC,
                                      AIFlags flags = cast(AIFlags)0)
         {
@@ -1053,7 +1053,7 @@ public abstract class Address
 
         ***********************************************************************/
 
-        static Address[] resolveAll (istring host, ushort port,
+        deprecated static Address[] resolveAll (istring host, ushort port,
                                      AddressFamily af = AddressFamily.UNSPEC,
                                      AIFlags flags = cast(AIFlags)0)
         {
@@ -1065,7 +1065,7 @@ public abstract class Address
 
         ***********************************************************************/
 
-        static Address passive (istring service,
+        deprecated static Address passive (istring service,
                                 AddressFamily af = AddressFamily.UNSPEC,
                                 AIFlags flags = cast(AIFlags)0)
         {
@@ -1076,7 +1076,7 @@ public abstract class Address
 
          ***********************************************************************/
 
-        static Address passive (ushort port, AddressFamily af = AddressFamily.UNSPEC,
+        deprecated static Address passive (ushort port, AddressFamily af = AddressFamily.UNSPEC,
                                 AIFlags flags = cast(AIFlags)0)
         {
                 return resolve (null, port, af, flags | AIFlags.PASSIVE);
@@ -1124,7 +1124,7 @@ public abstract class Address
 
          ***********************************************************************/
 
-        AddressFamily addressFamily()
+        deprecated AddressFamily addressFamily()
         {
                 return cast(AddressFamily)name.sa_family;
         }
@@ -1135,7 +1135,7 @@ public abstract class Address
 
 *******************************************************************************/
 
-public class UnknownAddress : Address
+deprecated public class UnknownAddress : Address
 {
         sockaddr sa;
 
@@ -1182,13 +1182,13 @@ public class UnknownAddress : Address
 
 *******************************************************************************/
 
-public class IPv4Address : Address
+deprecated public class IPv4Address : Address
 {
         /***********************************************************************
 
         ***********************************************************************/
 
-        enum
+        deprecated enum
         {
                 ADDR_ANY = 0,
                 ADDR_NONE = cast(uint)-1,
@@ -1361,7 +1361,7 @@ public class IPv4Address : Address
 
 *******************************************************************************/
 
-unittest
+deprecated unittest
 {
     IPv4Address ia = new IPv4Address("63.105.9.61", 80);
     test!("==")(ia.toString(), "63.105.9.61:80"[], "Address not properly set");
@@ -1465,7 +1465,7 @@ unittest
 
 *******************************************************************************/
 
-class IPv6Address : Address
+deprecated class IPv6Address : Address
 {
 protected:
         /***********************************************************************
@@ -1629,7 +1629,7 @@ protected:
 
 *******************************************************************************/
 
-unittest
+deprecated unittest
 {
     IPv6Address ia = new IPv6Address("7628:0d18:11a3:09d7:1f34:8a2e:07a0:765d", 8080);
     test!("==")(ia.toString(), "[7628:d18:11a3:9d7:1f34:8a2e:7a0:765d]:8080"[],
@@ -1642,7 +1642,7 @@ unittest
 
 *******************************************************************************/
 
-public class NetHost
+deprecated public class NetHost
 {
         istring          name;
         istring[]        aliases;
@@ -1796,7 +1796,7 @@ unittest
 
 *******************************************************************************/
 
-public class SocketSet
+deprecated public class SocketSet
 {
         import ocean.stdc.config;
 

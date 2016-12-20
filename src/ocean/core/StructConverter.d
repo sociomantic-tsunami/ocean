@@ -26,8 +26,7 @@ module ocean.core.StructConverter;
 *******************************************************************************/
 
 import ocean.transition;
-import ocean.core.Traits,
-       ocean.core.Traits;
+import ocean.core.Traits;
 
 /***************************************************************************
 

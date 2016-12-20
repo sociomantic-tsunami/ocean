@@ -102,6 +102,22 @@ functions will remain slighty broken, and the tests (``make DVER=2`` after
 
 
 
+Support Guarantees
+------------------
+
+* Major branch development period: 6 months
+* Maintained minor versions: 2 most recent
+
+Maintained Major Branches
+-------------------------
+
+====== ==================== ===============
+Major  Initial release date Supported until
+====== ==================== ===============
+v2.x.x v2.0.0_: 30/06/2016  TBD
+====== ==================== ===============
+.. _v2.0.0: https://github.com/sociomantic-tsunami/ocean/releases/tag/v2.0.0
+
 Releases
 ========
 
@@ -115,7 +131,14 @@ that the major version is increased for breaking changes, the minor version is
 increased for feature releases, and the patch version is increased for bug fixes
 that don't cause breaking changes.
 
-Any major version branch is maintained for 6 months from the point when the
-first release from the next major version branch happens. For example, the
-*v2.x.x* branch will get new features and bug fixes for 6 months starting with
-the release of *v3.0.0* and will then be dropped out of support.
+Releases are handled using GitHub releases. The notes associated with a
+major or minor github release are designed to help developers to migrate from
+one version to another. The changes listed are the steps you need to take to
+move from the previous version to the one listed.
+
+The release notes are structured in 3 sections, a **Migration Instructions**,
+which are the mandatory steps that users have to do to update to a new version,
+**Deprecated** which contains deprecated functions that are recommended not to
+use but will not break any old code, and the **New Features** which are optional
+new features available in the new version that users might find interesting.
+Using them is optional, but encouraged.

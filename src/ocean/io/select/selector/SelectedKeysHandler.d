@@ -208,7 +208,9 @@ class SelectedKeysHandler: ISelectedKeysHandler
     {
         if (events & events.EPOLLERR)
         {
-            throw this.e.set(client.error_code).addMessage("error event reported");
+            this.e.set(client.error_code).append(" -- error event reported for ");
+            client.fmtInfo((cstring chunk) {this.e.append(chunk);});
+            throw this.e;
         }
     }
 

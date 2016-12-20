@@ -132,35 +132,31 @@ align (1) struct epoll_event_t
 
     /**************************************************************************
 
-        Mapping from Event -> string, useful for printouts (debug only at the
-        moment)
+        Mapping from Event -> string, useful for printouts
 
      **************************************************************************/
 
-    debug
-    {
-        static istring[Event] event_to_name;
+    static istring[Event] event_to_name;
 
-        static this ( )
+    static this ( )
+    {
+        with ( Event )
         {
-            with ( Event )
-            {
-                event_to_name[EPOLLIN]       = "Re";
-                event_to_name[EPOLLPRI]      = "Pr";
-                event_to_name[EPOLLOUT]      = "Wr";
-                event_to_name[EPOLLRDNORM]   = "Rn";
-                event_to_name[EPOLLRDBAND]   = "Rb";
-                event_to_name[EPOLLWRNORM]   = "Wn";
-                event_to_name[EPOLLWRBAND]   = "Wb";
-                event_to_name[EPOLLMSG]      = "Ms";
-                event_to_name[EPOLLERR]      = "Er";
-                event_to_name[EPOLLHUP]      = "Hu";
-                event_to_name[EPOLLRDHUP]    = "Rh";
-                event_to_name[EPOLLONESHOT]  = "Os";
-                event_to_name[EPOLLET]       = "Et";
-            }
-            event_to_name.rehash;
+            event_to_name[EPOLLIN]       = "Re";
+            event_to_name[EPOLLPRI]      = "Pr";
+            event_to_name[EPOLLOUT]      = "Wr";
+            event_to_name[EPOLLRDNORM]   = "Rn";
+            event_to_name[EPOLLRDBAND]   = "Rb";
+            event_to_name[EPOLLWRNORM]   = "Wn";
+            event_to_name[EPOLLWRBAND]   = "Wb";
+            event_to_name[EPOLLMSG]      = "Ms";
+            event_to_name[EPOLLERR]      = "Er";
+            event_to_name[EPOLLHUP]      = "Hu";
+            event_to_name[EPOLLRDHUP]    = "Rh";
+            event_to_name[EPOLLONESHOT]  = "Os";
+            event_to_name[EPOLLET]       = "Et";
         }
+        event_to_name.rehash;
     }
 
     /**************************************************************************

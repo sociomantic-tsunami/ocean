@@ -32,9 +32,11 @@ import ocean.stdc.errno: ECONNREFUSED;
 import ocean.stdc.posix.sys.types : pid_t;
 import ocean.stdc.posix.sys.wait: waitpid;
 import ocean.stdc.posix.unistd: fork, unlink;
-import ocean.net.device.LocalSocket: LocalAddress;
 import ocean.time.timeout.TimeoutManager;
 import ocean.sys.socket.UnixSocket;
+import ocean.stdc.posix.sys.un;
+import core.sys.posix.sys.socket;
+import core.stdc.stdlib;
 
 import test.selectlistener.UnixServer;
 
@@ -57,7 +59,7 @@ import test.selectlistener.UnixServer;
 
 int run_client( istring socket_path)
 {
-    auto local_address = new LocalAddress(socket_path);
+    auto local_address = sockaddr_un.create(socket_path);
     auto client = new UnixSocket();
 
     scope (exit) client.close();
@@ -69,7 +71,7 @@ int run_client( istring socket_path)
     for (int i = 0; i < 5 && connect_result == ECONNREFUSED; i++)
     {
         Thread.sleep(seconds(0.5));
-        connect_result = client.connect(local_address);
+        connect_result = client.connect(&local_address);
     }
     enforce(connect_result == 0, "connect() call failed after 5 tries!");
 
@@ -113,9 +115,10 @@ int run_server( istring socket_path)
     auto epoll = new EpollSelectDispatcher(timeout_mgr);
 
     unlink(socket_path.ptr);
-    auto local_address = new LocalAddress(socket_path);
+    auto local_address = sockaddr_un.create(socket_path);
     auto unix_socket   = new UnixSocket;
-    auto unix_server   = new UnixServer(local_address.name, unix_socket, epoll);
+    auto unix_server   = new UnixServer(cast(sockaddr*)&local_address,
+            unix_socket, epoll);
     epoll.register(unix_server);
 
     epoll.eventLoop();

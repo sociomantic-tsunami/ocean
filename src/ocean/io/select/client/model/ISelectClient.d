@@ -49,7 +49,7 @@ import ocean.text.util.ClassName;
 
 debug import ocean.io.Stdout;
 
-debug import ocean.text.convert.Format;
+import ocean.text.convert.Format;
 
 /******************************************************************************
 
@@ -391,7 +391,7 @@ public abstract class ISelectClient : ITimeoutClient, ISelectable, ISelectClient
 
      **************************************************************************/
 
-    debug public cstring id ( )
+    public cstring id ( )
     {
         return classname(this);
     }
@@ -405,24 +405,35 @@ public abstract class ISelectClient : ITimeoutClient, ISelectable, ISelectClient
 
     ***************************************************************************/
 
-    debug
+    debug public override istring toString ( )
     {
-        private mstring to_string_buf;
+        mstring to_string_buf;
+        this.fmtInfo((cstring chunk) {to_string_buf ~= chunk;});
+        return assumeUnique(to_string_buf);
+    }
 
-        public override istring toString ( )
+    /***************************************************************************
+
+        Produces a string containing information about this instance: Dynamic
+        type, file descriptor and events.
+
+        Params:
+            sink = `Layout.convert()`-style sink of string chunks
+
+    ***************************************************************************/
+
+    public void fmtInfo ( void delegate ( cstring chunk ) sink )
+    {
+        Format.convert(
+            (cstring chunk) {sink(chunk); return chunk.length;},
+            "{} fd={} events=", this.id, this.fileHandle
+        );
+        foreach ( event, name; epoll_event_t.event_to_name )
         {
-            this.to_string_buf.length = 0;
-            Format.format(this.to_string_buf, "{} fd={} events=", this.id,
-                this.fileHandle);
-            foreach ( event, name; epoll_event_t.event_to_name )
+            if ( this.events & event )
             {
-                if ( this.events & event )
-                {
-                    this.to_string_buf ~= name;
-                }
+                sink(name);
             }
-
-            return idup(this.to_string_buf);
         }
     }
 }

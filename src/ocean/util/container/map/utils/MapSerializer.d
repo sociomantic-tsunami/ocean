@@ -185,13 +185,45 @@ template MapExtension ( K, V )
         Loads a file into the map
 
         Params:
-            file_path = path to teh file
+            io_device = the device to load from
+
+    ***************************************************************************/
+
+    public void load ( IConduit io_device )
+    {
+        this.serializer.loadConduit!(K, V)(this, io_device);
+    }
+
+    /***************************************************************************
+
+        Loads a file into the map
+
+        Params:
+            file_path = path to the file
             check     = function called for every entry, should return true if
                         it should be loaded
 
     ***************************************************************************/
 
-    public void load ( cstring file_path, CheckDg check  )
+    public void load ( cstring file_path, CheckDg check )
+    {
+        scope file = new File(file_path, File.ReadExisting);
+
+        this.load(file, check);
+    }
+
+    /***************************************************************************
+
+        Loads a file into the map
+
+        Params:
+            io_device = the device to load from
+            check     = function called for every entry, should return true if
+                        it should be loaded
+
+    ***************************************************************************/
+
+    public void load ( IConduit io_device, CheckDg check )
     {
         void add ( ref K k, ref V v )
         {
@@ -217,7 +249,7 @@ template MapExtension ( K, V )
             }
         }
 
-        this.serializer.loadDg!(K, V)(file_path, &add);
+        this.serializer.loadDgConduit!(K, V)(io_device, &add);
     }
 
     /***************************************************************************
@@ -236,6 +268,20 @@ template MapExtension ( K, V )
 
     /***************************************************************************
 
+        Dumps a map to an IO device
+
+        Params:
+            io_device = the device to dump to
+
+    ***************************************************************************/
+
+    public void dump ( IConduit io_device )
+    {
+        this.serializer.dumpConduit!(K, V)(this, io_device);
+    }
+
+    /***************************************************************************
+
         Writes a map to a file.
 
         Params:
@@ -247,6 +293,26 @@ template MapExtension ( K, V )
 
     public void dump ( cstring file_path, CheckDg check )
     {
+        scope file = new File(file_path, File.Style(File.Access.Write,
+                                                    File.Open.Create,
+                                                    File.Share.None));
+
+        this.dump(file, check);
+    }
+
+    /***************************************************************************
+
+        Writes a map to an IO device.
+
+        Params:
+            io_device = the device to dump to
+            check     = function called for each key/value to confirm that it
+                        should be dumped
+
+     ***************************************************************************/
+
+    public void dump ( IConduit io_device, CheckDg check )
+    {
         void adder ( void delegate ( ref K, ref V ) add )
         {
             foreach ( ref k, ref v; this ) if ( check(k,v) )
@@ -255,7 +321,7 @@ template MapExtension ( K, V )
             }
         }
 
-        this.serializer.dumpDg!(K, V)(file_path, &adder);
+        this.serializer.dumpDgConduit!(K, V)(io_device, &adder);
     }
 }
 
@@ -628,6 +694,26 @@ class MapSerializer
 
     public void dump ( K, V ) ( Map!(V, K) map, cstring file_path )
     {
+        scope file = new File(file_path, File.Style(File.Access.Write,
+                                                    File.Open.Create,
+                                                    File.Share.None));
+
+        this.dumpConduit(map, file);
+    }
+
+
+    /***************************************************************************
+
+        Writes a map to an IO device.
+
+        Params:
+            io_device = the device to dump to
+            file_path = path to where the map should be dumped to
+
+    ***************************************************************************/
+
+    public void dumpConduit ( K, V ) ( Map!(V, K) map, IConduit io_device )
+    {
         void adder ( void delegate ( ref K, ref V ) add )
         {
             foreach ( ref k, ref v; map )
@@ -636,7 +722,7 @@ class MapSerializer
             }
         }
 
-        this.dumpDg!(K, V)(file_path, &adder);
+        this.dumpDgConduit!(K, V)(io_device, &adder);
     }
 
 
@@ -657,8 +743,26 @@ class MapSerializer
         scope file = new File(file_path, File.Style(File.Access.Write,
                                                     File.Open.Create,
                                                     File.Share.None));
+        this.dumpDgConduit!(K, V)(file, adder);
+    }
 
-        this.buffered_output.output(file);
+
+    /***************************************************************************
+
+        Writes a map to an IO device.
+
+        Params:
+            io_device = the device to dump to
+            adder     = function called with a delegate that can be used to add
+                        elements that are to be dumped. Once that delegate
+                        returns, the rest will be written.
+
+    ***************************************************************************/
+
+    public void dumpDgConduit ( K, V ) ( IConduit io_device,
+        AdderDg!(K, V) adder )
+    {
+        this.buffered_output.output(io_device);
         this.buffered_output.clear();
 
         this.dumpInternal!(K,V)(this.buffered_output, adder);
@@ -733,6 +837,32 @@ class MapSerializer
 
     public void load ( K, V ) ( Map!(V, K) map, cstring file_path )
     {
+        scope file = new File(file_path, File.ReadExisting);
+
+        this.loadConduit(map, file);
+    }
+
+
+    /***************************************************************************
+
+        loads dumped map content from the file system
+
+        Does not support structs with dynamic arrays yet.
+
+        Throws:
+            Exception when the file has not the expected fileheader and
+            other Exceptions for various kinds of errors (file not found, etc)
+
+        Params:
+            K = key of the array map
+            V = value of the corresponding key
+            map       = instance of the array map
+            io_device = the device to load from
+
+    ***************************************************************************/
+
+    public void loadConduit ( K, V ) ( Map!(V, K) map, IConduit io_device )
+    {
         void putter ( ref K k, ref V v )
         {
             bool added = false;
@@ -754,7 +884,7 @@ class MapSerializer
             }
         }
 
-        this.loadDg!(K, V)(file_path, &putter);
+        this.loadDgConduit!(K, V)(io_device, &putter);
     }
 
 
@@ -780,7 +910,32 @@ class MapSerializer
     {
         scope file = new File(file_path, File.ReadExisting);
 
-        this.buffered_input.input(file);
+        this.loadDgConduit!(K, V)(file, putter);
+    }
+
+
+    /***************************************************************************
+
+        Loads dumped map content from the file system
+
+        Does not support structs with dynamic arrays yet.
+
+        Throws:
+            Exception when the file has not the expected fileheader and
+            other Exceptions for various kinds of errors (file not found, etc)
+
+        Params:
+            K = key of the array map
+            V = value of the corresponding key
+            io_device = the device to load from
+            putter    = function called for each entry to insert it into the map
+
+    ***************************************************************************/
+
+    public void loadDgConduit ( K, V ) ( IConduit io_device,
+        PutterDg!(K, V) putter )
+    {
+        this.buffered_input.input(io_device);
 
         loadInternal!(K,V)(this.buffered_input, putter);
     }
@@ -1701,4 +1856,28 @@ version (UnitTest)
     {
         alias SerializingMap!(S!(0), ulong) Map;
     }
+}
+
+unittest
+{
+    class Map : SerializingMap!(int, int)
+    {
+        this ( ) { super(10); }
+        public override hash_t toHash ( int key ) { return key; }
+    }
+
+    scope device = new MemoryDevice;
+    auto map = new Map;
+    *map.put(10) = 20;
+    map.dump(device);
+
+    map.clear();
+    test!("==")(map.length, 0);
+    device.seek(0);
+
+    map.load(device);
+
+    test!("==")(map.length, 1);
+    test!("in")(10, map);
+    test!("==")(map[10], 20);
 }

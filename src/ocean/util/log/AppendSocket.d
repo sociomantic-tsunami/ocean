@@ -15,7 +15,7 @@
 
 *******************************************************************************/
 
-module ocean.util.log.AppendSocket;
+deprecated module ocean.util.log.AppendSocket;
 
 import ocean.transition;
 
@@ -34,7 +34,7 @@ import ocean.net.device.Socket,
 
 *******************************************************************************/
 
-public class AppendSocket : Appender
+deprecated public class AppendSocket : Appender
 {
         private char[]          eol;
         private Mask            mask_;

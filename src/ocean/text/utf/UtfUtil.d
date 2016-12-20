@@ -372,6 +372,74 @@ unittest
 
 /*******************************************************************************
 
+    Limits the length of a UTF-8 string, to at most the specified number of
+    bytes.
+
+    This is conceptually equal to str[0..max_len], except that we take care to
+    avoid chopping a multi-byte UTF-8 character in half.
+
+    Params:
+        str     = the string to be sliced
+        max_len = the maximum allowable length (in bytes) of the string
+
+    Returns:
+        a slice of the original string, of length at most max_len.
+
+*******************************************************************************/
+
+public Inout!(mstring) limitStringLength ( Inout!(mstring) str, size_t max_len )
+{
+    if ( str.length <= max_len )
+    {
+        return str;
+    }
+
+    // Make sure we don't chop a character in half.
+    // All UTF-8 continuation bytes are of the form 0b10xxxxxxx,
+    // so we must skip all such bytes
+
+    auto k = max_len;
+
+    while ( k != 0 && ( (str[k] & 0xC0 ) ==  0x80) )
+    {
+        --k;
+    }
+
+    return str[ 0 .. k ];
+
+}
+
+
+unittest
+{
+    // String ending with a 1-byte character
+
+    test!("==")(limitStringLength("abc", 5), "abc");
+    test!("==")(limitStringLength("abc", 2), "ab");
+
+    // String ending with a 2-byte character
+
+    test!("==")(limitStringLength("ÜÄ", 5), "ÜÄ");
+    test!("==")(limitStringLength("ÜÄ", 4), "ÜÄ");
+    test!("==")(limitStringLength("ÜÄ", 3), "Ü");
+    test!("==")(limitStringLength("ÜÄ", 2), "Ü");
+    test!("==")(limitStringLength("ÜÄ", 1), "");
+
+    // String ending with a 3-byte character
+
+    test!("==")(limitStringLength("Ü眼", 6), "Ü眼");
+    test!("==")(limitStringLength("Ü眼", 5), "Ü眼");
+    test!("==")(limitStringLength("Ü眼", 4), "Ü");
+
+    // Ensure it compiles with an mstring
+
+    mstring x = "abcd".dup;
+    mstring y = limitStringLength(x, 2);
+}
+
+
+/*******************************************************************************
+
     Truncates a string at the last space before the n-th Unicode character or,
     if the resulting string is too short, at the n-th Unicode character.
     The string should be a valid UTF-8 (the caller should have validated it

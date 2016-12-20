@@ -92,8 +92,6 @@ unittest
 
             // the FiberTimerEvent always leaves itself registered, as
             // a workaround for a mis-design in our select fiber system.
-            // See https://github.com/sociomantic/ocean/issues/27 for
-            // more details
             select_fiber.unregister();
         }
     }

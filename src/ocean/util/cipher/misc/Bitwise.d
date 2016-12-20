@@ -14,7 +14,8 @@
  *
  */
 
-module ocean.util.cipher.misc.Bitwise;
+deprecated module ocean.util.cipher.misc.Bitwise;
+pragma(msg, "This module is deprecated, please inline the bitwise ops instead.");
 
 /** Common bitwise operations */
 struct Bitwise

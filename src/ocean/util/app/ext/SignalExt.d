@@ -6,7 +6,7 @@
     on which signals are specified in the constructor.
 
     Note: not only must the extension be registered with the application but its
-    internal SignalEvent (returned by the event() method) must also be
+    internal SignalEvent (returned by the selectClient() method) must also be
     registered with an epoll instance! Until the event is registered with epoll
     and the event loop started, the signal handlers will not be called in
     response to signals which have occurred.
@@ -67,7 +67,7 @@
                 // Important: onSignal() will not be called until the signal
                 // extension's event has been registered with epoll!
                 auto epoll = new EpollSelectDispatcher;
-                epoll.register(this.signal_ext.event);
+                epoll.register(this.signal_ext.selectClient());
                 epoll.eventLoop();
 
                 return 0;
@@ -111,6 +111,8 @@ import ocean.io.select.client.SignalEvent;
 
 public class SignalExt : IApplicationExtension
 {
+    import ocean.io.select.client.model.ISelectClient;
+
     /***************************************************************************
 
         Adds a list of extensions (this.extensions) and methods to handle them.
@@ -187,7 +189,23 @@ public class SignalExt : IApplicationExtension
 
     ***************************************************************************/
 
+    deprecated("Please use SignalExt.selectClient() instead.")
     public SignalEvent event ( )
+    {
+        return this.event_;
+    }
+
+
+    /***************************************************************************
+
+        ISelectClient getter, for registering with epoll.
+
+        Returns:
+            ISelectClient interface to register with epoll
+
+    ***************************************************************************/
+
+    public ISelectClient selectClient ( )
     {
         return this.event_;
     }

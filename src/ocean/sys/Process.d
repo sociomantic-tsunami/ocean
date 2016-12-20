@@ -154,6 +154,21 @@ enum Redirect
  * catch (ProcessException e)
  *        Stdout.formatln ("Process execution failed: {}", e);
  * ---
+ *
+ * ---
+ *    // Example how to pipe two processes together:
+ *    auto p1 = new Process("ls");
+ *    auto p2 = new Process("head");
+ *
+ *    p1.execute();
+ *    p2.execute();
+ *
+ *    p2.stdin.copy(p1.stdout);
+ *
+ *    p2.wait();
+ *    Stdout.copy(p2.stdout);
+ *
+ * ---
  */
 class Process
 {

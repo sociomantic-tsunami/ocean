@@ -2,9 +2,16 @@
 
     Utility for manipulation of reusable mutable array buffers.
 
-    NB: because of DMD1 bug, declaring Buffer!(Buffer!(T)) is not possible and
-    will result in compile-time error complaining about recursive template
-    instantiation.
+    Notes:
+    * Because of a DMD1 bug, declaring Buffer!(Buffer!(T)) is not possible and
+      will result in a compile-time error complaining about recursive template
+      instantiation.
+    * Buffers of void of any dimension greater than one are disallowed (i.e.
+      Buffer!(void) is allowed; Buffer!(void[]), Buffer!(void[][]), etc are
+      not). For > 1d arrays, you should use buffers of ubyte instead. The reason
+      for this limitation is that any array type can be implicitly cast to
+      void[], leading to internal ambiguities in the code of Buffer. (A fix for
+      this problem may possible, but would add a lot of complexity to the code.)
 
     Copyright:
         Copyright (c) 2016 Sociomantic Labs GmbH.

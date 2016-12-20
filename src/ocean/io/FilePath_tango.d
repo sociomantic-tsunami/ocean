@@ -67,6 +67,8 @@ import ocean.stdc.string : memmove;
 
 class FilePath : PathView
 {
+        import core.sys.posix.sys.types: mode_t;
+
         private PathParser      p;              // the parsed path
         private bool            dir_;           // this represents a dir?
 
@@ -1014,11 +1016,14 @@ class FilePath : PathView
 
                 Create a new file.
 
+                Params:
+                    mode = mode for the new file (defaults to 0660)
+
         ***********************************************************************/
 
-        final FilePath createFile ()
+        final FilePath createFile (mode_t mode = Octal!("660"))
         {
-                FS.createFile (cString);
+                FS.createFile (cString, mode);
                 return this;
         }
 
@@ -1026,11 +1031,14 @@ class FilePath : PathView
 
                 Create a new directory.
 
+                Params:
+                    mode = mode for the new directory (defaults to 0777)
+
         ***********************************************************************/
 
-        final FilePath createFolder ()
+        final FilePath createFolder (mode_t mode = Octal!("777"))
         {
-                FS.createFolder (cString);
+                FS.createFolder (cString, mode);
                 return this;
         }
 

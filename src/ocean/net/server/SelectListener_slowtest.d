@@ -32,8 +32,9 @@ import ocean.core.Test;
 import ocean.sys.socket.AddressIPSocket;
 import ocean.sys.socket.UnixSocket;
 import ocean.sys.socket.InetAddress;
-import ocean.net.device.LocalSocket: LocalAddress;
 import ocean.stdc.posix.unistd: unlink;
+import ocean.stdc.posix.sys.un;
+import core.sys.posix.sys.socket;
 
 
 /*******************************************************************************
@@ -129,11 +130,11 @@ void test_unix (istring path)
     // 1) during the socket creation if the socket file can not be creater.
     // 2) during the socket termination, if the socket file can not be deleted.
 
-    auto local_address = new LocalAddress(path);
+    auto local_address = sockaddr_un.create(path);
     auto unix_socket = new UnixSocket;
 
     auto listener = new SelectListener!(DummyConHandlerUnix)(
-        local_address.name, unix_socket);
+        cast(sockaddr*)&local_address, unix_socket);
 
     test(unix_socket.error ==0, "Something wrong happened");
 
@@ -141,10 +142,10 @@ void test_unix (istring path)
     {
         listener.shutdown();
 
-        if ( (local_address.path[0] != '\0')
-            && unlink(local_address.path.ptr) == -1 )
+        if ( (local_address.sun_path[0] != '\0')
+            && unlink(local_address.sun_path.ptr) == -1 )
         {
-            test(false, "Socket file '" ~ local_address.path ~
+            test(false, "Socket file '" ~ local_address.sun_path ~
                 "' could not be unlinked (it may not exist or "
                 "the executalbe lacks permissions).");
         }

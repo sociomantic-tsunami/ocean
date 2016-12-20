@@ -33,6 +33,7 @@ import ocean.stdc.posix.sys.un: UNIX_PATH_MAX;
 import ocean.stdc.posix.unistd;
 import ocean.text.convert.Format;
 
+import ocean.stdc.posix.sys.un;
 
 /*******************************************************************************
 
@@ -69,7 +70,7 @@ public class UnixSocket : ISocket
 
     public this ()
     {
-        super(LocalAddress.sockaddr_un.sizeof);
+        super(sockaddr_un.sizeof);
     }
 
 
@@ -121,6 +122,32 @@ public class UnixSocket : ISocket
 
     ***************************************************************************/
 
+    public int bind ( sockaddr_un* address )
+    {
+        auto path = address.sun_path;
+        this.path_len = path.length;
+        this.path[0 .. this.path_len] = path;
+
+        // note: cast due to that bind accepts generic `sockaddr*` pointer`
+        return super.bind(cast(sockaddr*)address);
+    }
+
+
+    /***************************************************************************
+
+        Assigns a local address to this socket.
+        socket() must have been called previously.
+
+        address = The LocalAddress instance to use. Must be non-null.
+
+        Returns:
+            0 on success or -1 on failure.
+            On failure errno is set appropriately.
+            See the ISocket bind() implementation for details.
+
+    ***************************************************************************/
+
+    deprecated("Please pass pointer to sockaddr_un instead.")
     public int bind ( LocalAddress address )
     in
     {
@@ -128,13 +155,7 @@ public class UnixSocket : ISocket
     }
     body
     {
-        auto path = address.path;
-        this.path_len = path.length;
-        this.path[0 .. this.path_len] = path;
-
-        // note: cast due to duplicate but separate definitions of sockaddr
-        // in Tango
-        return super.bind(cast(sockaddr*)address.name());
+        return this.bind(cast(sockaddr_un*)address.name());
     }
 
 
@@ -147,6 +168,26 @@ public class UnixSocket : ISocket
 
     ***************************************************************************/
 
+    public int connect ( sockaddr_un* address )
+    {
+        auto path = address.sun_path;
+        this.path_len = path.length;
+        this.path[0 .. this.path_len] = path;
+
+        // note: cast due to that connect accepts generic `sockaddr*` pointer`
+        return super.connect(cast(sockaddr*)address);
+    }
+
+    /***************************************************************************
+
+        Connects this socket the specified address and port.
+        socket() must have been called previously.
+
+        address = The LocalAddress instance to use. Must be non-null.
+
+    ***************************************************************************/
+
+    deprecated("Please pass pointer to sockaddr_un instead")
     public int connect ( LocalAddress address )
     in
     {
@@ -154,13 +195,7 @@ public class UnixSocket : ISocket
     }
     body
     {
-        auto path = address.path;
-        this.path_len = path.length;
-        this.path[0 .. this.path_len] = path;
-
-        // note: cast due to duplicate but separate definitions of sockaddr
-        // in Tango
-        return super.connect(cast(sockaddr*)address.name());
+        return this.connect(cast(sockaddr_un*)address.name());
     }
 
 

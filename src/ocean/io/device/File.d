@@ -31,6 +31,7 @@ import ocean.sys.Common;
 import ocean.io.device.Device;
 
 import stdc = ocean.stdc.stringz;
+import ocean.stdc.errno;
 
 /*******************************************************************************
 
@@ -137,8 +138,69 @@ import ocean.stdc.posix.unistd;
 
 class File : Device, Device.Seek, Device.Truncate
 {
+        import TangoException = ocean.core.Exception_tango;
+
         public alias Device.read  read;
         public alias Device.write write;
+
+        /***********************************************************************
+
+            Exception class thrown on errors.
+
+        ***********************************************************************/
+
+        public static class IOException: TangoException.IOException
+        {
+            import ocean.core.Exception: ReusableExceptionImplementation;
+
+            mixin ReusableExceptionImplementation!() ReusableImpl;
+
+            /*******************************************************************
+
+                Sets the exception instance.
+
+                Params:
+                    file_path = path of the file
+                    error_num = error code (defaults to .errno)
+                    func_name = name of the method that failed
+                    msg = message description of the error (uses stderr if empty)
+                    file = file where exception is thrown
+                    line = line where exception is thrown
+
+            *******************************************************************/
+
+
+            public typeof(this) set ( cstring file_path,
+                    int error_num, istring func_name = "",
+                    istring msg = "",
+                    istring file = __FILE__, long line = __LINE__)
+            {
+                this.error_num = error_num;
+                this.func_name = func_name;
+
+                this.ReusableImpl.set(this.func_name, file, line);
+
+                if (this.func_name.length)
+                    this.ReusableImpl.append(": ");
+
+                if (msg.length == 0)
+                {
+                    char[256] buf;
+                    auto errmsg = fromStringz(strerror_r(this.error_num, buf.ptr,
+                                buf.length));
+
+                    this.ReusableImpl.append(errmsg);
+                }
+                else
+                {
+                    this.ReusableImpl.append(msg);
+                }
+
+                this.ReusableImpl.append(" on ").append(file_path);
+
+                return this;
+            }
+        }
 
         /***********************************************************************
 
@@ -279,15 +341,28 @@ class File : Device, Device.Seek, Device.Truncate
 
         /***********************************************************************
 
+            Reusable exception instance
+
+        ***********************************************************************/
+
+        private IOException exception;
+
+        /***********************************************************************
+
                 Create a File for use with open().
 
                 Note that File is unbuffered by default - wrap an instance
                 within ocean.io.stream.Buffered for buffered I/O.
 
+                Params:
+                    exception = reusable exception instance to use, or null
+                    to create a fresh one.
+
         ***********************************************************************/
 
-        this ()
+        this (IOException exception = null)
         {
+            this.exception = exception;
         }
 
         /***********************************************************************
@@ -297,10 +372,16 @@ class File : Device, Device.Seek, Device.Truncate
                 Note that File is unbuffered by default - wrap an instance
                 within ocean.io.stream.Buffered for buffered I/O.
 
+                Params:
+                    exception = reusable exception instance to use, or null
+                    to create a fresh one.
+
         ***********************************************************************/
 
-        this (cstring path, Style style = ReadExisting)
+        this (cstring path, Style style = ReadExisting,
+                IOException exception = null)
         {
+                this(exception);
                 open (path, style);
         }
 
@@ -469,7 +550,7 @@ class File : Device, Device.Seek, Device.Truncate
         void open (cstring path, Style style = ReadExisting)
         {
             if (! open (path, style, 0))
-                error;
+                error(.errno, "open");
         }
 
         /***********************************************************************
@@ -479,7 +560,7 @@ class File : Device, Device.Seek, Device.Truncate
 
         ***********************************************************************/
 
-         void truncate ()
+        void truncate ()
         {
             truncate (position);
         }
@@ -495,7 +576,7 @@ class File : Device, Device.Seek, Device.Truncate
         {
             // set filesize to be current seek-position
             if (posix.ftruncate (handle, cast(off_t) size) is -1)
-                error;
+                error(.errno, "ftruncate");
         }
 
         /***********************************************************************
@@ -509,7 +590,7 @@ class File : Device, Device.Seek, Device.Truncate
         {
             long result = posix.lseek (handle, cast(off_t) offset, anchor);
             if (result is -1)
-                error;
+                error(.errno, "seek");
             return result;
         }
 
@@ -534,7 +615,7 @@ class File : Device, Device.Seek, Device.Truncate
         {
             stat_t stats = void;
             if (posix.fstat (handle, &stats))
-                error;
+                error(.errno, "fstat");
             return cast(long) stats.st_size;
         }
 
@@ -553,8 +634,49 @@ class File : Device, Device.Seek, Device.Truncate
         void sync ()
         {
             if (fsync (handle))
-                error;
+                error(.errno, "fsync");
         }
+
+        /*******************************************************************
+
+            Throw a potentially reusable IOException, with the provided
+            message, function name and error code.
+
+            Params:
+                error_num = error code
+                func_name = name of the method that failed
+                msg = message description of the error (uses stderr if empty)
+                file = file where exception is thrown
+                line = line where exception is thrown
+
+        *******************************************************************/
+
+        public override void error ( int error_code, istring func_name,
+                istring msg = "", istring file = __FILE__, long line = __LINE__ )
+        {
+            if (this.exception is null)
+            {
+                this.exception = new IOException;
+            }
+
+            throw this.exception.set(this.path_, error_code, func_name, msg, file, line);
+        }
+
+        /***********************************************************************
+
+                Throw an IOException, with the provided message.
+
+        ***********************************************************************/
+
+        public alias Conduit.error error;
+
+        /***********************************************************************
+
+                Throw an IOException noting the last error.
+
+        ***********************************************************************/
+
+        public alias Device.error error;
 }
 
 debug (File)
