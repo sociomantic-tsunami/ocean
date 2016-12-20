@@ -968,7 +968,7 @@ class Text(T) : TextView!(T)
      ***********************************************************************/
 
     final override
-    bool equals (TextViewT other)
+    equals_t equals (TextViewT other)
     {
         if (other is this)
             return true;
@@ -982,7 +982,7 @@ class Text(T) : TextView!(T)
      ***********************************************************************/
 
     final override
-    bool equals (T[] other)
+    equals_t equals (T[] other)
     {
         if (other.length == contentLength)
             return Util.matching (other.ptr, content.ptr, contentLength);
