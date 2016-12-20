@@ -255,23 +255,42 @@ public class SignalExt : IApplicationExtension
 
         Params:
             signals = list of signals to handle
+            ignore_signals = list of signals to ignore
 
         Throws:
             SignalErrnoException if setting up the signal handling fails
 
     ***************************************************************************/
 
-    public this ( int[] signals )
+    public this ( int[] signals, int[] ignore_signals = null )
     {
         typeof(this).signal_pipe.source.setNonBlock();
         this.pipe_source = new InputDeviceWrapper(typeof(this).signal_pipe.source);
         this.reader = new SelectReader(this.pipe_source, int.sizeof);
         this.installSignalHandlers(signals);
+        this.ignore(ignore_signals);
 
         // Make the intention to read 4 bytes (the signal number). This will
         // read it from the pipe in one of the epoll cycles, after the data
         // is written into the pipe from signal handler.
         this.reader.read(&this.handleSignals);
+    }
+
+    /***************************************************************************
+
+        Ignores the signals.
+
+        Params:
+            signals = list of signals to ignore
+
+        Throws:
+            SignalErrnoException if setting up the signal fails
+
+    ***************************************************************************/
+
+    public void ignore ( int[] signals )
+    {
+        this.installSignalHandlers(signals, SIG_IGN);
     }
 
     /***************************************************************************
@@ -372,17 +391,19 @@ public class SignalExt : IApplicationExtension
 
         Params:
             signals = list of signals to handle
+            signal_handler = signal handler to install
 
         Throws:
             SignalErrnoException if setting up the signal fails
 
     ***************************************************************************/
 
-    private void installSignalHandlers ( int[] signals )
+    private void installSignalHandlers ( int[] signals,
+            typeof(sigaction_t.sa_handler) signal_handler = &this.signalHandler)
     {
         sigaction_t sa;
 
-        sa.sa_handler = &this.signalHandler;
+        sa.sa_handler = signal_handler;
 
         if (sigemptyset(&sa.sa_mask) == -1)
         {
