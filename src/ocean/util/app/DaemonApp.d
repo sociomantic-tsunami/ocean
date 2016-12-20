@@ -279,6 +279,16 @@ public abstract class DaemonApp : Application,
         ***********************************************************************/
 
         int reopen_signal = SIGHUP;
+
+        /***********************************************************************
+
+            Set of signals to ignore. Delivery of the signals specified in this
+            set will have no effect on the application -- they are not passed
+            to the default signal handler.
+
+        ***********************************************************************/
+
+        int[] ignore_signals;
     }
 
     /***************************************************************************
@@ -337,7 +347,8 @@ public abstract class DaemonApp : Application,
         this.config_ext.registerExtension(this.stats_ext);
 
         // Create and register signal extension
-        this.signal_ext = new SignalExt(settings.signals);
+        this.signal_ext = new SignalExt(settings.signals,
+                settings.ignore_signals);
         this.signal_ext.registerExtension(this);
         this.registerExtension(this.signal_ext);
 
