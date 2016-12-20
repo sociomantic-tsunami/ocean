@@ -288,7 +288,7 @@ public class SignalExt : IApplicationExtension
 
     ***************************************************************************/
 
-    public void ignore ( int[] signals )
+    public void ignore ( in int[] signals )
     {
         this.installSignalHandlers(signals, SIG_IGN);
     }
@@ -398,8 +398,8 @@ public class SignalExt : IApplicationExtension
 
     ***************************************************************************/
 
-    private void installSignalHandlers ( int[] signals,
-            typeof(sigaction_t.sa_handler) signal_handler = &this.signalHandler)
+    private void installSignalHandlers ( in int[] signals,
+            in typeof(sigaction_t.sa_handler) signal_handler = &this.signalHandler)
     {
         sigaction_t sa;
 
