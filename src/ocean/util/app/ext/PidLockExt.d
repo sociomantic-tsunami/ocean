@@ -324,22 +324,22 @@ class PidLockExt : IConfigExtExtension, IApplicationExtension
         int count;
         while (count < buf.length)
         {
-			auto written = write(fd, buf.ptr + count,
-				buf.length - count);
+            auto written = write(fd, buf.ptr + count,
+                buf.length - count);
 
-			if (written < 0)
-			{
-				if (errno == EINTR)
-				{
-					continue;
-				}
-				else
-				{
-					throw (new ErrnoException).useGlobalErrno("write");
-				}
-			}
+            if (written < 0)
+            {
+                if (errno == EINTR)
+                {
+                    continue;
+                }
+                else
+                {
+                    throw (new ErrnoException).useGlobalErrno("write");
+                }
+            }
 
-			count += written;
+            count += written;
         }
     }
 }
