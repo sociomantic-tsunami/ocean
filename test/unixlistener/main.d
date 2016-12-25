@@ -114,7 +114,7 @@ int main ( )
     // Spin the server
     epoll.eventLoop();
 
-    // This will be reached only if "shutdown" command was succesfull.
+    // This will be reached only if "shutdown" command was successful.
     test!("==")(expected_value, 3);
 
     return 0;

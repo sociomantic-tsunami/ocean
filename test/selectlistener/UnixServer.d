@@ -35,7 +35,7 @@ public alias SelectListener!(UnixConnectionHandler, EpollSelectDispatcher) UnixS
 
 /*******************************************************************************
 
-    The conection handler is based on IFiberConnectionHandler
+    The connection handler is based on IFiberConnectionHandler
 
 *******************************************************************************/
 
@@ -52,7 +52,7 @@ private class UnixConnectionHandler: IFiberConnectionHandler
 
     /***************************************************************************
 
-        Shutdowns the server when ore request is served.
+        Shuts down the server when one request is served.
 
     ***************************************************************************/
 
