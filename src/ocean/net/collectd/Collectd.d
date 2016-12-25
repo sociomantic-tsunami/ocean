@@ -350,7 +350,7 @@ public final class Collectd
         The socket is a streaming (TCP) socket.
 
         The minimal status line one can get is "0 Value found\n", which has a
-        length of 14. If we limit ourselve to a max value of
+        length of 14. If we limit ourselves to a max value of
         size_t.length, or 18_446_744_073_709_551_615 on 64 bits machines,
         we can get a status line which size is comprised between 14 and 34.
 

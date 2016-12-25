@@ -44,10 +44,10 @@ import test.selectlistener.UnixServer;
 /*******************************************************************************
 
     Opens a client connection and issues a request. The reply must be exactly
-    what was send.
+    what was sent.
 
     Params:
-        socket_path = the uxins socket path.
+        socket_path = the unix socket path.
 
     Returns:
         0 on success
@@ -91,7 +91,7 @@ int run_client( istring socket_path)
 
     Makes a test. Starts the client in its own process, then starts the server
     in the current process and waits for them to finish.
-    The client sends a message, gets an answer, compare the two strings and
+    The client sends a message, gets an answer, compares the two strings and
     exits.
     The server opens the socket, accepts one request, reads the message,
     replies with the same message and exits (no more requests are handled).

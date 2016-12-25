@@ -351,7 +351,7 @@ deprecated class HttpClient
 
         /***********************************************************************
 
-                enable/disable the internal redirection suppport
+                enable/disable the internal redirection support
 
         ***********************************************************************/
 
