@@ -192,7 +192,7 @@ struct PeriodicTracer
     {
         va_list ap;
 
-        va_start(ap, __va_argsave);
+        va_start(ap, fmt);
 
         scope(exit) va_end(ap);
 
