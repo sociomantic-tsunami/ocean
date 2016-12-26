@@ -185,8 +185,13 @@ class File : Device, Device.Seek, Device.Truncate
 
                 if (msg.length == 0)
                 {
+                    static if (__VERSION__ < 2070)
+                        import ocean.stdc.gnu.string : strerror_r;
+                    else
+                        import core.stdc.string : strerror_r;
+
                     char[256] buf;
-                    auto errmsg = fromStringz(strerror_r(this.error_num, buf.ptr,
+                    auto errmsg = stdc.fromStringz(strerror_r(this.error_num, buf.ptr,
                                 buf.length));
 
                     this.ReusableImpl.append(errmsg);
