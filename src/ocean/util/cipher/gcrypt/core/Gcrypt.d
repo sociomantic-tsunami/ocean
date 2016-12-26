@@ -34,6 +34,7 @@ module ocean.util.cipher.gcrypt.core.Gcrypt;
 
 import ocean.util.cipher.gcrypt.c.gcrypt;
 import ocean.transition;
+version ( UnitTest ) import ocean.core.Test;
 
 
 /*******************************************************************************
@@ -352,8 +353,6 @@ private class GcryptBase ( Algorithm algorithm, Mode mode )
 
     version ( UnitTest )
     {
-        import ocean.core.Test;
-
         /***********************************************************************
 
             Helper function to generate a void[] of the specified length, filled
