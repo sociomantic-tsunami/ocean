@@ -497,9 +497,9 @@ private void handle (T) (T v, FormatInfo f, Sink sf, ElementSink se)
 private template IsTypedef (T)
 {
     version (D_Version2)
-        const IsTypedef = is(T.IsTypedef);
+        static immutable IsTypedef = is(T.IsTypedef);
     else
-        const IsTypedef = mixin("is(T == typedef)");
+        static immutable IsTypedef = mixin("is(T == typedef)");
 }
 
 /*******************************************************************************
@@ -705,7 +705,7 @@ private Const!(char)* skipSpace (Const!(char)* s, Const!(char)* end)
 
 private size_t writeSpace (Sink s, size_t n)
 {
-    const istring Spaces32 = "                                ";
+    static immutable istring Spaces32 = "                                ";
     size_t ret;
 
     // Make 'n' a multiple of Spaces32.length (32)
@@ -774,8 +774,8 @@ private void writePointer (in void* v, ref FormatInfo f, ElementSink se)
     version (D_Version2)
         mixin("enum int l = (T.sizeof * 2);");
     else
-        const int l = (T.sizeof * 2); // Needs to be int to avoid suffix
-    const defaultFormat = "X" ~ l.stringof ~ "#";
+        static immutable int l = (T.sizeof * 2); // Needs to be int to avoid suffix
+    static immutable defaultFormat = "X" ~ l.stringof ~ "#";
 
     // Needs to support base 2 at most, plus an optional prefix
     // of 2 chars max
@@ -1157,7 +1157,7 @@ unittest
     // Support for new sink-based toString
     static struct S1
     {
-        void toString (size_t delegate(cstring d) sink)
+        void toString (scope size_t delegate(cstring d) sink)
         {
             sink("42424242424242");
         }
@@ -1168,7 +1168,7 @@ unittest
     // For classes too
     static class C1
     {
-        void toString (size_t delegate(cstring d) sink)
+        void toString (scope size_t delegate(cstring d) sink)
         {
             sink("42424242424242");
         }
@@ -1179,7 +1179,7 @@ unittest
     // Compile time support is awesome, isn't it ?
     static struct S2
     {
-        void toString (size_t delegate(cstring d) sink, cstring default_ = "42")
+        void toString (scope size_t delegate(cstring d) sink, cstring default_ = "42")
         {
             sink(default_);
         }
@@ -1257,12 +1257,12 @@ unittest
 // Const tests
 unittest
 {
-    const int ai = 42;
-    const double ad = 42.00;
+    static immutable int ai = 42;
+    static immutable double ad = 42.00;
     static struct Answer_struct { int value; }
     static class Answer_class
     {
-        public override istring toString () /* d1to2fix_inject: const */
+        public override istring toString () const
         {
             return "42";
         }

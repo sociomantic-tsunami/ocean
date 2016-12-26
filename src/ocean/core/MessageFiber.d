@@ -372,7 +372,7 @@ class MessageFiber
 
      **************************************************************************/
 
-    public this ( void delegate ( ) coroutine )
+    public this ( scope void delegate ( ) coroutine )
     {
         this(new Fiber(coroutine));
     }
@@ -387,7 +387,7 @@ class MessageFiber
 
      **************************************************************************/
 
-    public this ( void delegate ( ) coroutine, size_t sz )
+    public this ( scope void delegate ( ) coroutine, size_t sz )
     {
         this(new Fiber(coroutine, sz));
     }
@@ -797,7 +797,7 @@ class MessageFiber
 
      **************************************************************************/
 
-    public void reset ( void delegate() coroutine )
+    public void reset ( scope void delegate() coroutine )
     {
         this.fiber.reset(coroutine);
     }

@@ -160,18 +160,7 @@ public class StaticSyncPrint
             return s.length;
         }
 
-        version (DigitalMarsX64)
-        {
-            va_list ap;
-
-            va_start(ap, __va_argsave);
-
-            scope(exit) va_end(ap);
-
-            Layout!(char).instance()(&sink, _arguments, ap, fmt);
-        }
-        else
-            Layout!(char).instance()(&sink, _arguments, _argptr, fmt);
+        Layout!(char).instance()(&sink, _arguments, _argptr, fmt);
 
         size_t lines = 0;
         istring nl = "";

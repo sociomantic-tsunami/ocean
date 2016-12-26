@@ -745,7 +745,7 @@ uint multibyteMulAdd(char op)(uint [] dest, uint[] src, uint multiplier, uint ca
     // EDI = dest
     // ESI = src
 
-    const char [] OP = (op=='+')? "add" : "sub";
+    static immutable char [] OP = (op=='+')? "add" : "sub";
     version(D_PIC) {
         enum { zero = 0 }
     } else {

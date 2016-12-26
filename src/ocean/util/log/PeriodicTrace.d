@@ -188,15 +188,15 @@ struct PeriodicTracer
 
     ***************************************************************************/
 
-    public typeof(this) format ( cstring fmt, ... )
+    public typeof((&this)) format ( cstring fmt, ... )
     {
         va_list ap;
 
-        va_start(ap, __va_argsave);
+        va_start(ap, fmt);
 
         scope(exit) va_end(ap);
 
-        return this.format(fmt, ap, _arguments);
+        return (&this).format(fmt, ap, _arguments);
     }
 
 
@@ -216,10 +216,10 @@ struct PeriodicTracer
 
     ***************************************************************************/
 
-    public typeof(this) format ( ulong interval, char[] fmt, ... )
+    public typeof((&this)) format ( ulong interval, char[] fmt, ... )
     {
-        this.interval = interval;
-        return this.format(fmt, _argptr, _arguments);
+        (&this).interval = interval;
+        return (&this).format(fmt, _argptr, _arguments);
     }
 
 
@@ -243,8 +243,8 @@ struct PeriodicTracer
 
     public bool timeToUpdate ( )
     {
-        this.now = timer.microsec();
-        return this.now > this.last_update_time + this.interval;
+        (&this).now = timer.microsec();
+        return (&this).now > (&this).last_update_time + (&this).interval;
     }
 
 
@@ -264,32 +264,32 @@ struct PeriodicTracer
 
     ***************************************************************************/
 
-    private typeof(this) format ( cstring fmt, va_list args, TypeInfo[] types )
+    private typeof((&this)) format ( cstring fmt, va_list args, TypeInfo[] types )
     {
-        if ( this.timeToUpdate() )
+        if ( (&this).timeToUpdate() )
         {
-            this.last_update_time = this.now;
+            (&this).last_update_time = (&this).now;
 
-            this.formatted.length = 0;
+            (&this).formatted.length = 0;
             size_t sink ( cstring s )
             {
-                this.formatted ~= s;
+                (&this).formatted ~= s;
                 return s.length;
             }
 
             Layout!(char).instance()(&sink, types, args, fmt);
 
-            if ( this.static_display )
+            if ( (&this).static_display )
             {
-                StaticTrace.format("{}", this.formatted).flush;
+                StaticTrace.format("{}", (&this).formatted).flush;
             }
             else
             {
-                Stderr.formatln("{}", this.formatted).flush;
+                Stderr.formatln("{}", (&this).formatted).flush;
             }
         }
 
-        return this;
+        return (&this);
     }
 
 

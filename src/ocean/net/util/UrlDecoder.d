@@ -117,7 +117,7 @@ class UrlDecoder
 
     **************************************************************************/
 
-    public int opApply ( int delegate ( ref cstring chunk ) dg )
+    public int opApply ( scope int delegate ( ref cstring chunk ) dg )
     {
         int callDg ( cstring str )
         {

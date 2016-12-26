@@ -33,8 +33,8 @@ import ocean.transition;
 extern (C):
 
 /// See original's library documentation for details.
-const GPG_ERROR_VERSION_NUMBER = 0x011500;
-const GPGRT_VERSION_NUMBER =     0x011500;
+static immutable GPG_ERROR_VERSION_NUMBER = 0x011500;
+static immutable GPGRT_VERSION_NUMBER =     0x011500;
 
 /// See original's library documentation for details.
 alias uint gpg_error_t;
@@ -70,7 +70,7 @@ enum GPG_ERR_SOURCE
 }
 
 /// See original's library documentation for details.
-const GPG_ERR_SOURCE_DIM = GPG_ERR_SOURCE.max + 1;
+static immutable GPG_ERR_SOURCE_DIM = GPG_ERR_SOURCE.max + 1;
 
 
 /// See original's library documentation for details.
@@ -600,10 +600,10 @@ enum GPG_ERR_CODE
 }
 
 /// See original's library documentation for details.
-const GPG_ERR_CODE_DIM = GPG_ERR_CODE.max + 1;
+static immutable GPG_ERR_CODE_DIM = GPG_ERR_CODE.max + 1;
 
 /// See original's library documentation for details.
-const GPG_ERR_SOURCE_SHIFT  = 24;
+static immutable GPG_ERR_SOURCE_SHIFT  = 24;
 
 /// See original's library documentation for details.
 uint gpg_err_init();

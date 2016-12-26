@@ -51,7 +51,7 @@ struct HeaderFieldNames
 
      **************************************************************************/
 
-    const General GeneralNames =
+    enum General GeneralNames =
     {
         CacheControl:     "Cache-Control",
         Connection:       "Connection",
@@ -109,7 +109,7 @@ struct HeaderFieldNames
 
      **********************************************************************/
 
-    const Request RequestNames =
+    enum Request RequestNames =
     {
         Accept:             "Accept",
         AcceptCharset:      "Accept-Charset",
@@ -173,7 +173,7 @@ struct HeaderFieldNames
 
      **********************************************************************/
 
-    const Response ResponseNames =
+    enum Response ResponseNames =
     {
         AcceptRanges:      "Accept-Ranges",
         Age:               "Age",
@@ -234,7 +234,7 @@ struct HeaderFieldNames
 
      **********************************************************************/
 
-    const Entity EntityNames =
+    enum Entity EntityNames =
     {
         Allow:           "Allow",
         ContentEncoding: "Content-Encoding",

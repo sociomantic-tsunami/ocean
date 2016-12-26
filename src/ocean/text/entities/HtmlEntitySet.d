@@ -52,7 +52,7 @@ public class HtmlEntitySet : XmlEntitySet
 
     ***************************************************************************/
 
-    protected const Entity[] ISO8859_1 = xml_entities ~ ISO8859_1_extra;
+    protected static immutable Entity[] ISO8859_1 = xml_entities ~ ISO8859_1_extra;
 
 
     /***************************************************************************
@@ -62,7 +62,7 @@ public class HtmlEntitySet : XmlEntitySet
 
     ***************************************************************************/
 
-    public const Entity[] html_entities = ISO8859_1 ~ ISO8859_15_extra;
+    public static immutable Entity[] html_entities = ISO8859_1 ~ ISO8859_15_extra;
 
 
     /***************************************************************************
@@ -72,7 +72,7 @@ public class HtmlEntitySet : XmlEntitySet
 
     ***************************************************************************/
 
-    protected const Entity[] ISO8859_1_extra =
+    protected static immutable Entity[] ISO8859_1_extra =
     [
         {"nbsp",   0x00A0}, // ' '
         {"iexcl",  0x00A1}, // '¡'
@@ -180,7 +180,7 @@ public class HtmlEntitySet : XmlEntitySet
 
     ***************************************************************************/
 
-    protected const Entity[] ISO8859_15_extra =
+    protected static immutable Entity[] ISO8859_15_extra =
     [
         {"OElig",  0x0152}, // 'Œ'
         {"OElig",  0x0153}, // 'œ'

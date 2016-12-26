@@ -75,7 +75,7 @@ public class SelectListenerPool ( T, Args ... ) :
 
     ***************************************************************************/
 
-    public int opApply ( int delegate ( ref IConnectionHandlerInfo ) dg )
+    public int opApply ( scope int delegate ( ref IConnectionHandlerInfo ) dg )
     {
         int ret;
         scope it = this.new BusyItemsIterator;
@@ -96,7 +96,7 @@ public class SelectListenerPool ( T, Args ... ) :
 
     ***************************************************************************/
 
-    public int opApply ( int delegate ( ref size_t, ref IConnectionHandlerInfo ) dg )
+    public int opApply ( scope int delegate ( ref size_t, ref IConnectionHandlerInfo ) dg )
     {
         int ret;
         scope it = this.new BusyItemsIterator;

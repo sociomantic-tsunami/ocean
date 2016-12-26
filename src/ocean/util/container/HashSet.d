@@ -126,7 +126,7 @@ class HashSet (V, alias Hash = Container.hash,
 
         ***********************************************************************/
 
-        final int opApply (int delegate(ref V value) dg)
+        final int opApply (scope int delegate(ref V value) dg)
         {
                 return iterator.opApply (dg);
         }
@@ -749,7 +749,7 @@ class HashSet (V, alias Hash = Container.hash,
 
                 ***************************************************************/
 
-                int opApply (int delegate(ref V value) dg)
+                int opApply (scope int delegate(ref V value) dg)
                 {
                         int result;
 
@@ -851,7 +851,7 @@ debug (HashSet)
                 auto test = new HashSet!(int, Container.hash, Container.reap, Container.Chunk);
                 test.cache (1000, 1_000_000);
                 test.buckets = 1_500_000;
-                const count = 1_000_000;
+                static immutable count = 1_000_000;
                 StopWatch w;
 
                 // benchmark adding

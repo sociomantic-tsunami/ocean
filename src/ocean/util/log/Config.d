@@ -409,7 +409,7 @@ unittest
 public void configureLoggers ( Source = ConfigParser, FileLayout = LayoutDate,
     ConsoleLayout = LayoutSimple )
     ( ClassIterator!(Config, Source) config, MetaConfig m_config,
-    Appender delegate ( istring file, Layout layout ) new_appender,
+    scope Appender delegate ( istring file, Layout layout ) new_appender,
     bool loose = false, bool use_insert_appender = false )
 {
     enable_loose_parsing(loose);

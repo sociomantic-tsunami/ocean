@@ -474,7 +474,7 @@ class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
 
         ***********************************************************************/
 
-        final bool next (size_t delegate (Const!(void)[]) scan)
+        final bool next (scope size_t delegate (Const!(void)[]) scan)
         {
                 return reader (scan) != IConduit.Eof;
         }
@@ -616,7 +616,7 @@ class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
 
         ***********************************************************************/
 
-        final size_t writer (size_t delegate (void[]) dg)
+        final size_t writer (scope size_t delegate (void[]) dg)
         {
                 auto count = dg (data [extent..dimension]);
 
@@ -649,7 +649,7 @@ class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
 
         ***********************************************************************/
 
-        final size_t reader (size_t delegate (Const!(void)[]) dg)
+        final size_t reader (scope size_t delegate (Const!(void)[]) dg)
         {
                 auto count = dg (data [index..extent]);
 

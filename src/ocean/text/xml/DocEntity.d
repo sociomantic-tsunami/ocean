@@ -112,7 +112,7 @@ T[] fromEntity (T) (T[] src, T[] dst = null)
 
 ******************************************************************************/
 
-void fromEntity (T) (T[] src, void delegate(T[]) emit)
+void fromEntity (T) (T[] src, scope void delegate(T[]) emit)
 {
         int delta;
         auto s = src.ptr;
@@ -260,7 +260,7 @@ T[] toEntity(T) (T[] src, T[] dst = null)
 
 ******************************************************************************/
 
-void toEntity(T) (T[] src, void delegate(T[]) emit)
+void toEntity(T) (T[] src, scope void delegate(T[]) emit)
 {
         T[]  entity;
         auto s = src.ptr;

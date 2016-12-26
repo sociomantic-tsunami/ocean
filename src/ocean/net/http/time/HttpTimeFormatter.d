@@ -40,7 +40,7 @@ struct HttpTimeFormatter
 
      **************************************************************************/
 
-    public const size_t ResultLength = "Sun, 06 Nov 1994 08:49:37 GMT".length;
+    public enum size_t ResultLength = "Sun, 06 Nov 1994 08:49:37 GMT".length;
 
     /**************************************************************************
 
@@ -66,8 +66,8 @@ struct HttpTimeFormatter
 
      **************************************************************************/
 
-    private const istring[7]  weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-    private const istring[12] months   = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    private enum istring[7]  weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    private enum istring[12] months   = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
     /**************************************************************************
 
@@ -87,7 +87,7 @@ struct HttpTimeFormatter
 
     public mstring format ( time_t t )
     {
-        return this.format(this.buf, t);
+        return (&this).format((&this).buf, t);
     }
 
     /**************************************************************************
@@ -105,7 +105,7 @@ struct HttpTimeFormatter
 
     public mstring format ( )
     {
-        return this.format(this.buf);
+        return (&this).format((&this).buf);
     }
 
     /**************************************************************************

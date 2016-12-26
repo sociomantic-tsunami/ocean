@@ -200,13 +200,13 @@ template MapIterator ( V, K = hash_t )
 
     static if (is (K Kelement : Kelement[]) && !is (K == Kelement[]))
     {
-        const k_is_static_array = true;
+        static immutable k_is_static_array = true;
 
         alias Kelement[] Kref;
     }
     else
     {
-        const k_is_static_array = false;
+        static immutable k_is_static_array = false;
 
         alias K Kref;
     }
@@ -227,7 +227,7 @@ template MapIterator ( V, K = hash_t )
 
     static if (is (V == void))
     {
-        const v_is_static_array = false;
+        static immutable v_is_static_array = false;
 
         alias int delegate ( ref Kref ) Dg;
         alias int delegate ( ref size_t i, ref Kref ) Dgi;
@@ -240,13 +240,13 @@ template MapIterator ( V, K = hash_t )
         {
             alias Velement[] Vref;
 
-            const v_is_static_array = true;
+            static immutable v_is_static_array = true;
         }
         else
         {
             alias V Vref;
 
-            const v_is_static_array = false;
+            static immutable v_is_static_array = false;
         }
 
         alias int delegate ( ref Kref, ref Vref ) Dg;

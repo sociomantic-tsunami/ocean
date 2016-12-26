@@ -354,7 +354,7 @@ unittest
 unittest
 {
     static void testOne ( cstring _array,
-        bool delegate(char) dg, size_t num, int line = __LINE__ )
+        scope bool delegate(char) dg, size_t num, int line = __LINE__ )
     {
         auto array = _array.dup;
         auto t = new NamedTest(Format("removeIf.testOne:{}", line));
@@ -549,7 +549,7 @@ unittest
     test!("==")(partition("".dup, (char c) { return true; }), 0);
 
     static void testOne ( cstring _array,
-        bool delegate(char) dg, size_t num, int line = __LINE__ )
+        scope bool delegate(char) dg, size_t num, int line = __LINE__ )
     {
         auto array = _array.dup;
         auto t = new NamedTest(Format("partition.testOne:{}", line));
@@ -1377,7 +1377,7 @@ public bool containsDuplicate ( T, bool sort = true ) ( T[] array )
 *******************************************************************************/
 
 public int findDuplicates ( T, bool sort = true )
-    ( T[] array, int delegate ( ref size_t index, ref T element ) found )
+    ( T[] array, scope int delegate ( ref size_t index, ref T element ) found )
 {
     if (array.length)
     {
@@ -1592,8 +1592,8 @@ unittest
 *******************************************************************************/
 
 private size_t filterInPlaceCore ( size_t length,
-    bool delegate ( size_t index ) exclude,
-    void delegate ( size_t i, size_t j ) swap )
+    scope bool delegate ( size_t index ) exclude,
+    scope void delegate ( size_t i, size_t j ) swap )
 out (end)
 {
     assert(end <= length, "result length out of bounds");
@@ -1775,7 +1775,7 @@ unittest
 
 *******************************************************************************/
 
-public T[] shuffle ( T ) ( T[] array, size_t delegate ( size_t i ) new_index )
+public T[] shuffle ( T ) ( T[] array, scope size_t delegate ( size_t i ) new_index )
 {
     for (auto i = array.length? array.length - 1 : 0; i; i--)
     {
@@ -1842,7 +1842,7 @@ unittest
 
 bool isClearable ( T ) ( )
 {
-    const size_t n = T.sizeof;
+    static immutable size_t n = T.sizeof;
 
     T init;
 

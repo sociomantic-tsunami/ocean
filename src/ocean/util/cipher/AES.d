@@ -645,7 +645,7 @@ class AES : BlockCipher
             0xcb84617bu, 0x32b670d5u, 0x6c5c7448u, 0xb85742d0u
         ];
 
-        const uint BLOCK_SIZE = 16;
+        static immutable uint BLOCK_SIZE = 16;
 
         uint ROUNDS, // Number of rounds depends on keysize
              s0, s1, s2, s3; // State
@@ -899,7 +899,7 @@ class AES : BlockCipher
     /** Some AES test vectors from the FIPS-197 paper and BC. */
     unittest
     {
-        const istring[] test_keys = [
+        static immutable istring[] test_keys = [
             "000102030405060708090a0b0c0d0e0f",
             "000102030405060708090a0b0c0d0e0f1011121314151617",
             "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
@@ -908,7 +908,7 @@ class AES : BlockCipher
             "0000000000000000000000000000000000000000000000000000000000000000"
         ];
 
-        const istring[] test_plaintexts = [
+        static immutable istring[] test_plaintexts = [
             "00112233445566778899aabbccddeeff",
             "00112233445566778899aabbccddeeff",
             "00112233445566778899aabbccddeeff",
@@ -917,7 +917,7 @@ class AES : BlockCipher
             "80000000000000000000000000000000"
         ];
 
-        const istring[] test_ciphertexts = [
+        static immutable istring[] test_ciphertexts = [
             "69c4e0d86a7b0430d8cdb78070b4c55a",
             "dda97ca4864cdfe06eaf70a0ec0d7191",
             "8ea2b7ca516745bfeafc49904b496089",

@@ -232,7 +232,7 @@ class XmlStructSerializer ( Char )
 
     ***************************************************************************/
 
-    void serializeStruct ( ref Char[] output, Char[] name, void delegate ( ) serialize_struct )
+    void serializeStruct ( ref Char[] output, Char[] name, scope void delegate ( ) serialize_struct )
     {
         openEntity(output, name);
 
@@ -309,7 +309,7 @@ class XmlStructSerializer ( Char )
 
     ***************************************************************************/
 
-    void serializeStructArray ( T ) ( ref Char[] output, Char[] name, T[] array, void delegate ( ref T ) serialize_element )
+    void serializeStructArray ( T ) ( ref Char[] output, Char[] name, T[] array, scope void delegate ( ref T ) serialize_element )
     {
         openEntity(output, name);
 

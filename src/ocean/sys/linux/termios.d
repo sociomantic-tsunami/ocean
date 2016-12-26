@@ -18,4 +18,4 @@ public import core.sys.posix.termios;
 
 import ocean.transition;
 
-const B57600    = Octal!("0010001");
+static immutable B57600    = Octal!("0010001");

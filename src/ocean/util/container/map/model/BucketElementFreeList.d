@@ -381,7 +381,7 @@ abstract class IBucketElementFreeList: IAllocator
     ***************************************************************************/
 
     public override void parkElements (size_t n,
-                                       void delegate ( IParkingStack park ) dg)
+                                       scope void delegate ( IParkingStack park ) dg)
     {
         scope parking_stack = this.new ParkingStack(n);
 

@@ -90,7 +90,7 @@ body
     tm time;
     time = *gmtime(&utc);
 
-    const format = "%F %T\0";
+    static immutable format = "%F %T\0";
     output.length = strftime(output.ptr, output.length, format.ptr, &time);
 
     return output;
@@ -264,10 +264,10 @@ public void extractTimePeriods ( ulong s, out uint years, out uint days,
         return cast(uint) extracted;
     }
 
-    const minute_timespan   = 60;
-    const hour_timespan     = minute_timespan * 60;
-    const day_timespan      = hour_timespan * 24;
-    const year_timespan     = day_timespan * 365;
+    static immutable minute_timespan   = 60;
+    static immutable hour_timespan     = minute_timespan * 60;
+    static immutable day_timespan      = hour_timespan * 24;
+    static immutable year_timespan     = day_timespan * 365;
 
     enforce(s <= uint.max);
     seconds = cast(uint) s;

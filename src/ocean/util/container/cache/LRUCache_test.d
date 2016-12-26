@@ -52,7 +52,7 @@ unittest
     // Test of static sized cache
 
     {
-        const n_records  = 33,
+        static immutable n_records  = 33,
               capacity   = 22,
               n_overflow = 7;
 
@@ -359,7 +359,7 @@ unittest
         }
 
         // Test if the whenCacheItemDropped is being called
-        const max_items = 10;
+        static immutable max_items = 10;
         auto item_dropped = false;
         size_t index = 0;
 
@@ -512,9 +512,9 @@ unittest
 
         auto random = new Random;
 
-        const cache_size = 100_000;
+        static immutable cache_size = 100_000;
 
-        const max_item_size = 1024 * 4;
+        static immutable max_item_size = 1024 * 4;
 
         StopWatch sw;
 
@@ -543,7 +543,7 @@ unittest
         printf("%d puts, %f puts/s\n".ptr, cache_size, cast(float)cache_size / (cast(float)sw.microsec / 1_000_000));
 
         // Put values into full cache
-        const puts = 1_000_000;
+        static immutable puts = 1_000_000;
         printf("Writing to cache:\n".ptr);
         sw.start;
         for ( uint i; i < puts; i++ )
@@ -556,7 +556,7 @@ unittest
         printf("%d puts, %f puts/s\n".ptr, puts, cast(float)puts / (cast(float)sw.microsec / 1_000_000));
 
         // Get values from cache
-        const gets = 1_000_000;
+        static immutable gets = 1_000_000;
         printf("Reading from cache: %d gets, %f gets/s\n".ptr, gets, cast(float)gets / (cast(float)sw.microsec / 1_000_000));
         sw.start;
         for ( uint i; i < gets; i++ )

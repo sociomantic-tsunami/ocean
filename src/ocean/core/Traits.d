@@ -66,7 +66,7 @@ version (UnitTest)
 
 public bool isKeyword ( cstring str )
 {
-    const istring[] keywords = [
+    static immutable istring[] keywords = [
         "abstract",     "alias",        "align",        "asm",
         "assert",       "auto",         "body",         "bool",
         "break",        "byte",         "case",         "cast",
@@ -204,7 +204,7 @@ unittest
 
 public template isPrimitiveType ( T )
 {
-    const isPrimitiveType =
+    static immutable isPrimitiveType =
         is(Unqual!(T) == void)
      || is(Unqual!(T) == bool)
      || isIntegerType!(T)
@@ -232,7 +232,7 @@ public template isPrimitiveType ( T )
 
 public template hasIndirections ( T... )
 {
-    const hasIndirections = hasIndirectionsImpl!(T)();
+    static immutable hasIndirections = hasIndirectionsImpl!(T)();
 }
 
 private bool hasIndirectionsImpl ( T... )()
@@ -324,7 +324,7 @@ public template hasMultiDimensionalDynamicArrays ( T )
      * DMD1 bug if T contains itself like "struct T {T[] t;}".
      */
 
-    const typeof(hasMultiDimensionalDynamicArraysImpl!(T)()) hasMultiDimensionalDynamicArrays = hasMultiDimensionalDynamicArraysImpl!(T)();
+    static immutable typeof(hasMultiDimensionalDynamicArraysImpl!(T)()) hasMultiDimensionalDynamicArrays = hasMultiDimensionalDynamicArraysImpl!(T)();
 }
 
 /*
@@ -444,11 +444,11 @@ public template isCompoundType ( T )
 {
     static if ( is(T == struct) || is(T == class) || is(T== union) )
     {
-        const isCompoundType = true;
+        static immutable isCompoundType = true;
     }
     else
     {
-        const isCompoundType = false;
+        static immutable isCompoundType = false;
     }
 }
 
@@ -598,7 +598,7 @@ public template FieldName ( size_t i, T )
         static assert(false, "FieldName!(" ~ T.stringof ~ "): type is not a struct / class");
     }
 
-    const FieldName = StripFieldName!(T.tupleof[i].stringof);
+    static immutable FieldName = StripFieldName!(T.tupleof[i].stringof);
 }
 
 unittest
@@ -623,19 +623,19 @@ private template StripFieldName ( istring name, size_t n = size_t.max )
 {
     static if ( n >= name.length )
     {
-        const StripFieldName = StripFieldName!(name, name.length - 1);
+        static immutable StripFieldName = StripFieldName!(name, name.length - 1);
     }
     else static if ( name[n] == '.' )
     {
-        const StripFieldName = name[n + 1 .. $];
+        static immutable StripFieldName = name[n + 1 .. $];
     }
     else static if ( n )
     {
-        const StripFieldName = StripFieldName!(name, n - 1);
+        static immutable StripFieldName = StripFieldName!(name, n - 1);
     }
     else
     {
-        const StripFieldName = name;
+        static immutable StripFieldName = name;
     }
 }
 
@@ -657,11 +657,11 @@ public template SizeofTuple ( Tuple ... )
 {
     static if ( Tuple.length > 0 )
     {
-        const size_t SizeofTuple = Tuple[0].sizeof + SizeofTuple!(Tuple[1..$]);
+        static immutable size_t SizeofTuple = Tuple[0].sizeof + SizeofTuple!(Tuple[1..$]);
     }
     else
     {
-        const size_t SizeofTuple = 0;
+        static immutable size_t SizeofTuple = 0;
     }
 }
 
@@ -798,11 +798,11 @@ public template isUniqueTypesInTuple ( Tuple ... )
 {
     static if ( Tuple.length > 1 )
     {
-        const bool isUniqueTypesInTuple = (CountTypesInTuple!(Tuple[0], Tuple) == 1) && isUniqueTypesInTuple!(Tuple[1..$]);
+        static immutable bool isUniqueTypesInTuple = (CountTypesInTuple!(Tuple[0], Tuple) == 1) && isUniqueTypesInTuple!(Tuple[1..$]);
     }
     else
     {
-        const bool isUniqueTypesInTuple = true;
+        static immutable bool isUniqueTypesInTuple = true;
     }
 }
 
@@ -832,11 +832,11 @@ public template CountTypesInTuple ( Type, Tuple ... )
 {
     static if ( Tuple.length > 0 )
     {
-        const uint CountTypesInTuple = is(Type == Tuple[0]) + CountTypesInTuple!(Type, Tuple[1..$]);
+        static immutable uint CountTypesInTuple = is(Type == Tuple[0]) + CountTypesInTuple!(Type, Tuple[1..$]);
     }
     else
     {
-        const uint CountTypesInTuple = 0;
+        static immutable uint CountTypesInTuple = 0;
     }
 }
 
@@ -864,7 +864,7 @@ version (D_Version2)
 {
     public template isTypedef (T)
     {
-        const bool isTypedef = false;
+        static immutable bool isTypedef = false;
     }
 }
 else
@@ -1004,33 +1004,33 @@ template ContainsDynamicArray ( T ... )
         {
             // Recurse into struct/union members.
 
-            const ContainsDynamicArray = ContainsDynamicArray!(typeof (T[0].tupleof)) ||
+            static immutable ContainsDynamicArray = ContainsDynamicArray!(typeof (T[0].tupleof)) ||
                                          ContainsDynamicArray!(T[1 .. $]);
         }
         else
         {
             static if (is (T[0] Element == Element[])) // array
             {
-                const ContainsDynamicArray = true;
+                static immutable ContainsDynamicArray = true;
             }
             else static if (is (T[0] Element : Element[]))
             {
                 // Static array, recurse into base type.
 
-                const ContainsDynamicArray = ContainsDynamicArray!(Element) ||
+                static immutable ContainsDynamicArray = ContainsDynamicArray!(Element) ||
                                              ContainsDynamicArray!(T[1 .. $]);
             }
             else
             {
                 // Skip non-dynamic or static array type.
 
-                const ContainsDynamicArray = ContainsDynamicArray!(T[1 .. $]);
+                static immutable ContainsDynamicArray = ContainsDynamicArray!(T[1 .. $]);
             }
         }
     }
     else
     {
-        const ContainsDynamicArray = false;
+        static immutable ContainsDynamicArray = false;
     }
 }
 
@@ -1233,23 +1233,27 @@ ReturnTypeOf!(Func) delegate (ParameterTupleOf!(Func)) toDg ( Func ) ( Func f )
     return &closure.call;
 }
 
-unittest
+version ( UnitTest )
 {
-    static int foo() { return 42; }
-    static assert (is(typeof(toDg(&foo)) == int delegate()));
-    assert (toDg(&foo)() == 42);
+    int testToDgFoo() { return 42; }
 
-
-    static void bar(int a, int b)
+    void testToDgBar(int a, int b)
     {
         assert (a == 3);
         assert (b == 4);
     }
 
-    toDg(&bar)(3, 4);
+    int testToDgBad(ref int x) { return x; }
+}
 
-    static int bad(ref int x) { return x; }
-    static assert(!is(typeof(toDg(&bad))));
+unittest
+{
+    static assert (is(typeof(toDg(&testToDgFoo)) == int delegate()));
+    assert (toDg(&testToDgFoo)() == 42);
+
+    toDg(&testToDgBar)(3, 4);
+
+    static assert(!is(typeof(toDg(&testToDgBad))));
 }
 
 /*******************************************************************************
@@ -1275,11 +1279,11 @@ template hasMethod ( T, istring name, Dg )
 
     static if ( is(typeof( { Dg dg = mixin("&T.init." ~ name); } )) )
     {
-        const bool hasMethod = true;
+        static immutable bool hasMethod = true;
     }
     else
     {
-        const bool hasMethod = false;
+        static immutable bool hasMethod = false;
     }
 }
 
@@ -1354,7 +1358,7 @@ unittest
 
 public template identifier(alias Sym)
 {
-    const identifier = _identifier!(Sym)();
+    static immutable identifier = _identifier!(Sym)();
 }
 
 private istring _identifier(alias Sym)()

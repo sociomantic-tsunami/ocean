@@ -176,7 +176,7 @@ public final class ClientSet : IRegisteredClients
 
         ***********************************************************************/
 
-        const max_clients_estimate = 1000;
+        static immutable max_clients_estimate = 1000;
 
         /***********************************************************************
 
@@ -267,7 +267,7 @@ public final class ClientSet : IRegisteredClients
 
     ***************************************************************************/
 
-    public int opApply ( int delegate ( ref ISelectClient ) dg )
+    public int opApply ( scope int delegate ( ref ISelectClient ) dg )
     {
         int res;
         foreach ( client; this.clients )

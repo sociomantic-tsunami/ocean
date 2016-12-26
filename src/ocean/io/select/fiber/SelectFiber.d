@@ -85,7 +85,7 @@ public class SelectFiber : MessageFiber
 
      **************************************************************************/
 
-    this ( EpollSelectDispatcher epoll, void delegate ( ) coroutine )
+    this ( EpollSelectDispatcher epoll, scope void delegate ( ) coroutine )
     {
         this.epoll = epoll;
 
@@ -103,7 +103,7 @@ public class SelectFiber : MessageFiber
 
      **************************************************************************/
 
-    this ( EpollSelectDispatcher epoll, void delegate ( ) coroutine, size_t sz )
+    this ( EpollSelectDispatcher epoll, scope void delegate ( ) coroutine, size_t sz )
     {
         this.epoll = epoll;
 

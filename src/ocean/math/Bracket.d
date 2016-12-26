@@ -61,7 +61,7 @@ public:
  *   Fortran code available from www.netlib.org as algorithm TOMS478.
  *
  */
-T findRoot(T, R)(R delegate(T) f, T ax, T bx)
+T findRoot(T, R)(scope R delegate(T) f, T ax, T bx)
 {
     auto r = findRoot(f, ax, bx, f(ax), f(bx), (BracketResult!(T,R) r){
          return r.xhi==nextUp(r.xlo); });
@@ -76,8 +76,8 @@ private:
  * tolerance   Defines the termination condition. Return true when acceptable
  *             bounds have been obtained.
  */
-BracketResult!(T, R) findRoot(T,R)(R delegate(T) f, T ax, T bx, R fax, R fbx,
-    bool delegate(BracketResult!(T,R) r) tolerance)
+BracketResult!(T, R) findRoot(T,R)(scope R delegate(T) f, T ax, T bx, R fax, R fbx,
+    scope bool delegate(BracketResult!(T,R) r) tolerance)
 in {
     assert(ax<=bx, "Parameters ax and bx out of order.");
     assert(!tsm.isnan(ax) && !tsm.isnan(bx), "Limits must not be NaN");
@@ -317,7 +317,7 @@ public:
  *                  func(xinitial) <= func(x1) and func(xinitial) <= func(x2)
  *     funcMin      The minimum value of func(x).
  */
-T findMinimum(T,R)(R delegate(T) func, T xlo, T xhi, T xinitial,
+T findMinimum(T,R)(scope R delegate(T) func, T xlo, T xhi, T xinitial,
      out R funcMin)
 in {
     assert(xlo <= xhi);
@@ -327,7 +327,7 @@ in {
 }
 body{
     // Based on the original Algol code by R.P. Brent.
-    const real GOLDENRATIO = 0.3819660112501051; // (3 - sqrt(5))/2 = 1 - 1/phi
+    static immutable real GOLDENRATIO = 0.3819660112501051; // (3 - sqrt(5))/2 = 1 - 1/phi
 
     T stepBeforeLast = 0.0;
     T lastStep;
@@ -341,7 +341,7 @@ body{
     for (;;) {
         ++numiter;
         T xmid = 0.5 * (xlo + xhi);
-        const real SQRTEPSILON = 3e-10L; // sqrt(real.epsilon)
+        static immutable real SQRTEPSILON = 3e-10L; // sqrt(real.epsilon)
         T tol1 = SQRTEPSILON * fabs(bestx);
         T tol2 = 2.0 * tol1;
         if (fabs(bestx - xmid) <= (tol2 - 0.5*(xhi - xlo)) ) {
@@ -420,7 +420,7 @@ unittest {
     int numProblems = 0;
     int numCalls;
 
-    void testFindRoot(real delegate(real) f, real x1, real x2) {
+    void testFindRoot(scope real delegate(real) f, real x1, real x2) {
         numCalls=0;
         ++numProblems;
         assert(!isNaN(x1) && !isNaN(x2));

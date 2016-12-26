@@ -63,29 +63,29 @@ version(TangoNoAsm) {
  * Constants
  */
 
-const real E =          2.7182818284590452354L;  /** e */ // 3.32193 fldl2t 0x1.5BF0A8B1_45769535_5FF5p+1L
-const real LOG2T =      0x1.a934f0979a3715fcp+1; /** $(SUB log, 2)10 */ // 1.4427 fldl2e
-const real LOG2E =      0x1.71547652b82fe178p+0; /** $(SUB log, 2)e */ // 0.30103 fldlg2
-const real LOG2 =       0x1.34413509f79fef32p-2; /** $(SUB log, 10)2 */
-const real LOG10E =     0.43429448190325182765;  /** $(SUB log, 10)e */
-const real LN2 =        0x1.62e42fefa39ef358p-1; /** ln 2 */  // 0.693147 fldln2
-const real LN10 =       2.30258509299404568402;  /** ln 10 */
-const real PI =         0x1.921fb54442d1846ap+1; /** $(_PI) */ // 3.14159 fldpi
-const real PI_2 =       1.57079632679489661923;  /** $(PI) / 2 */
-const real PI_4 =       0.78539816339744830962;  /** $(PI) / 4 */
-const real M_1_PI =     0.31830988618379067154;  /** 1 / $(PI) */
-const real M_2_PI =     0.63661977236758134308;  /** 2 / $(PI) */
-const real M_2_SQRTPI = 1.12837916709551257390;  /** 2 / $(SQRT)$(PI) */
-const real SQRT2 =      1.41421356237309504880;  /** $(SQRT)2 */
-const real SQRT1_2 =    0.70710678118654752440;  /** $(SQRT)$(HALF) */
+static immutable real E =          2.7182818284590452354L;  /** e */ // 3.32193 fldl2t 0x1.5BF0A8B1_45769535_5FF5p+1L
+static immutable real LOG2T =      0x1.a934f0979a3715fcp+1; /** $(SUB log, 2)10 */ // 1.4427 fldl2e
+static immutable real LOG2E =      0x1.71547652b82fe178p+0; /** $(SUB log, 2)e */ // 0.30103 fldlg2
+static immutable real LOG2 =       0x1.34413509f79fef32p-2; /** $(SUB log, 10)2 */
+static immutable real LOG10E =     0.43429448190325182765;  /** $(SUB log, 10)e */
+static immutable real LN2 =        0x1.62e42fefa39ef358p-1; /** ln 2 */  // 0.693147 fldln2
+static immutable real LN10 =       2.30258509299404568402;  /** ln 10 */
+static immutable real PI =         0x1.921fb54442d1846ap+1; /** $(_PI) */ // 3.14159 fldpi
+static immutable real PI_2 =       1.57079632679489661923;  /** $(PI) / 2 */
+static immutable real PI_4 =       0.78539816339744830962;  /** $(PI) / 4 */
+static immutable real M_1_PI =     0.31830988618379067154;  /** 1 / $(PI) */
+static immutable real M_2_PI =     0.63661977236758134308;  /** 2 / $(PI) */
+static immutable real M_2_SQRTPI = 1.12837916709551257390;  /** 2 / $(SQRT)$(PI) */
+static immutable real SQRT2 =      1.41421356237309504880;  /** $(SQRT)2 */
+static immutable real SQRT1_2 =    0.70710678118654752440;  /** $(SQRT)$(HALF) */
 
 //const real SQRTPI  = 1.77245385090551602729816748334114518279754945612238L; /** &radic;&pi; */
 //const real SQRT2PI = 2.50662827463100050242E0L; /** &radic;(2 &pi;) */
 //const real SQRTE   = 1.64872127070012814684865078781416357L; /** &radic;(e) */
 
-const real MAXLOG = 0x1.62e42fefa39ef358p+13L;  /** log(real.max) */
-const real MINLOG = -0x1.6436716d5406e6d8p+13L; /** log(real.min*real.epsilon) */
-const real EULERGAMMA = 0.57721_56649_01532_86060_65120_90082_40243_10421_59335_93992L; /** Euler-Mascheroni constant 0.57721566.. */
+static immutable real MAXLOG = 0x1.62e42fefa39ef358p+13L;  /** log(real.max) */
+static immutable real MINLOG = -0x1.6436716d5406e6d8p+13L; /** log(real.min*real.epsilon) */
+static immutable real EULERGAMMA = 0.57721_56649_01532_86060_65120_90082_40243_10421_59335_93992L; /** Euler-Mascheroni constant 0.57721566.. */
 
 /*
  * Primitives
@@ -1768,8 +1768,8 @@ real hypot(real x, real y)
     // If both are huge, avoid overflow by scaling by 1/sqrt(real.max/2).
     // If both are tiny, avoid underflow by scaling by sqrt(real.min_normal*real.epsilon).
 
-    const real SQRTMIN = 0x8.0p-8195L; // 0.5 * sqrt(min_normal!(real)); // This is a power of 2.
-    const real SQRTMAX = 1.0L / SQRTMIN; // 2^^((max_exp)/2) = nextUp(sqrt(real.max))
+    static immutable real SQRTMIN = 0x8.0p-8195L; // 0.5 * sqrt(min_normal!(real)); // This is a power of 2.
+    static immutable real SQRTMAX = 1.0L / SQRTMIN; // 2^^((max_exp)/2) = nextUp(sqrt(real.max))
 
     static assert(2 * (SQRTMAX / 2) * (SQRTMAX / 2) <= real.max);
 
@@ -1872,8 +1872,8 @@ in
 body
 {
   version (Naked_D_InlineAsm_X86) {
-      const bool Use_D_InlineAsm_X86 = true;
-  } else const bool Use_D_InlineAsm_X86 = false;
+      static immutable bool Use_D_InlineAsm_X86 = true;
+  } else static immutable bool Use_D_InlineAsm_X86 = false;
 
   // BUG (Inherited from Phobos): This code assumes a frame pointer in EBP.
   // This is not in the spec.
@@ -1944,7 +1944,7 @@ body
 unittest
 {
     real x = 3.1;
-    const real[] pp = [56.1L, 32.7L, 6L];
+    static immutable real[] pp = [56.1L, 32.7L, 6L];
 
     assert( poly(x, pp) == (56.1L + (32.7L + 6L * x) * x) );
 

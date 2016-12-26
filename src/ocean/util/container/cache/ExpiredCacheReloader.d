@@ -83,14 +83,14 @@ class ExpiredCacheReloader ( S )
 
          **********************************************************************/
 
-        static typeof(this) opCall ( void[] data )
+        static typeof((&this)) opCall ( void[] data )
         in
         {
-            assert (data.length == typeof(*this).sizeof);
+            assert (data.length == typeof(*(&this)).sizeof);
         }
         body
         {
-            return cast(typeof(this))data.ptr;
+            return cast(typeof((&this)))data.ptr;
         }
     }
 
@@ -322,7 +322,7 @@ class ExpiredCacheReloader ( S )
 
      **************************************************************************/
 
-    abstract protected void getData ( hash_t key, void delegate ( Contiguous!(S) data ) got );
+    abstract protected void getData ( hash_t key, scope void delegate ( Contiguous!(S) data ) got );
 
     /**************************************************************************
 

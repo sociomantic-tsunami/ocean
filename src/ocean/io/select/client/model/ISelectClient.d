@@ -422,7 +422,7 @@ public abstract class ISelectClient : ITimeoutClient, ISelectable, ISelectClient
 
     ***************************************************************************/
 
-    public void fmtInfo ( void delegate ( cstring chunk ) sink )
+    public void fmtInfo ( scope void delegate ( cstring chunk ) sink )
     {
         Format.convert(
             (cstring chunk) {sink(chunk); return chunk.length;},

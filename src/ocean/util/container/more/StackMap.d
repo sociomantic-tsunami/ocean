@@ -188,7 +188,7 @@ class StackMap (K, V, alias Hash = Container.hash,
 
         ***********************************************************************/
 
-        final int opApply (int delegate(ref K key, ref V value) dg)
+        final int opApply (scope int delegate(ref K key, ref V value) dg)
         {
                         K   key;
                         V   value;
@@ -368,9 +368,9 @@ class StackMap (K, V, alias Hash = Container.hash,
 
                 Ref set (K key, V value)
                 {
-                        this.value = value;
-                        this.key = key;
-                        return this;
+                        (&this).value = value;
+                        (&this).key = key;
+                        return (&this);
                 }
 
                 /**************************************************************
@@ -388,13 +388,13 @@ class StackMap (K, V, alias Hash = Container.hash,
 
                            // patch 'prev' to point at me
                            if (prev)
-                               prev.next = this;
+                               prev.next = (&this);
 
                            //patch 'before' to point at me
                            next = before;
-                           before.prev = this;
+                           before.prev = (&this);
                            }
-                        return this;
+                        return (&this);
                 }
 
                 /**************************************************************
@@ -412,13 +412,13 @@ class StackMap (K, V, alias Hash = Container.hash,
 
                            // patch 'next' to point at me
                            if (next)
-                               next.prev = this;
+                               next.prev = (&this);
 
                            //patch 'after' to point at me
                            prev = after;
-                           after.next = this;
+                           after.next = (&this);
                            }
-                        return this;
+                        return (&this);
                 }
 
                 /**************************************************************
@@ -440,7 +440,7 @@ class StackMap (K, V, alias Hash = Container.hash,
 
                         // Murphy's law
                         next = prev = null;
-                        return this;
+                        return (&this);
                 }
         }
 }
@@ -489,7 +489,7 @@ debug (StackMap)
 
                 // setup for benchmark, with a cache of integers
                 auto test = new StackMap!(int, int, Container.hash, Container.reap, Container.Chunk) (1000000);
-                const count = 1_000_000;
+                static immutable count = 1_000_000;
                 StopWatch w;
 
                 // benchmark adding

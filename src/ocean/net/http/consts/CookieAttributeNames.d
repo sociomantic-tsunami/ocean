@@ -44,7 +44,7 @@ struct CookieAttributeNames
     alias .CookieAttributeNameList      NameList;
 }
 
-const CookieAttributeNames CookieAttributeNameStrings =
+static immutable CookieAttributeNames CookieAttributeNameStrings =
 {
     Comment: "comment",
     Domain:  "domain",

@@ -525,7 +525,7 @@ shoe_size = 42
 
 unittest
 {
-    const config_text =
+    static immutable config_text =
 `
 [Section]
 str = I'm a string
@@ -555,7 +555,7 @@ pi = 3.14
 
 unittest
 {
-    const config_text =
+    static immutable config_text =
 `
 [Section]
 str = I'm a mutable string
@@ -577,7 +577,7 @@ str = I'm a mutable string
 
 unittest
 {
-    const config_text =
+    static immutable config_text =
 `
 [SectionArray]
 string_arr = Hello

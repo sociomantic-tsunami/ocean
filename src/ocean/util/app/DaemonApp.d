@@ -80,6 +80,8 @@ public abstract class DaemonApp : Application,
 
     import ocean.util.log.Log;
 
+    protected import ocean.util.app.ext.VersionInfo : VersionInfo;
+
     /***************************************************************************
 
         Command line arguments used by the application.

@@ -569,7 +569,7 @@ unittest
         {
             ++TestTask.started;
 
-            const very_long_loop = 5;
+            static immutable very_long_loop = 5;
 
             for (int i = 0; i < very_long_loop; ++i)
             {
