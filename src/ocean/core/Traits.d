@@ -1233,23 +1233,27 @@ ReturnTypeOf!(Func) delegate (ParameterTupleOf!(Func)) toDg ( Func ) ( Func f )
     return &closure.call;
 }
 
-unittest
+version ( UnitTest )
 {
-    static int foo() { return 42; }
-    static assert (is(typeof(toDg(&foo)) == int delegate()));
-    assert (toDg(&foo)() == 42);
+    int testToDgFoo() { return 42; }
 
-
-    static void bar(int a, int b)
+    void testToDgBar(int a, int b)
     {
         assert (a == 3);
         assert (b == 4);
     }
 
-    toDg(&bar)(3, 4);
+    int testToDgBad(ref int x) { return x; }
+}
 
-    static int bad(ref int x) { return x; }
-    static assert(!is(typeof(toDg(&bad))));
+unittest
+{
+    static assert (is(typeof(toDg(&testToDgFoo)) == int delegate()));
+    assert (toDg(&testToDgFoo)() == 42);
+
+    toDg(&testToDgBar)(3, 4);
+
+    static assert(!is(typeof(toDg(&testToDgBad))));
 }
 
 /*******************************************************************************
