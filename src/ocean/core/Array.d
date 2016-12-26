@@ -132,8 +132,8 @@ unittest
     test(concat_test(dest, staticstr1, staticstr2), "Static array concatenation test failed");
 
     // Check manifest constant array concatenation
-    const conststr1 = "hi ";
-    const conststr2 = "there";
+    static immutable conststr1 = "hi ";
+    static immutable conststr2 = "there";
     test(concat_test(dest, conststr1, conststr2), "Const array concatenation test failed");
 }
 

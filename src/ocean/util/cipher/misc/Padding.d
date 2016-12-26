@@ -104,7 +104,7 @@ in
 }
 body
 {
-    const PKCS5_BLOCK_SIZE = 8;
+    static immutable PKCS5_BLOCK_SIZE = 8;
 
     return padPKCS7(buffer, PKCS5_BLOCK_SIZE);
 }

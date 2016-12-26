@@ -281,7 +281,7 @@ public abstract class IEntitySet
 
     ***************************************************************************/
 
-    public int opApply ( int delegate ( ref Const!(istring), ref Const!(dchar) ) dg )
+    public int opApply ( scope int delegate ( ref Const!(istring), ref Const!(dchar) ) dg )
     {
         int res;
         foreach ( ref entity; this.entities )

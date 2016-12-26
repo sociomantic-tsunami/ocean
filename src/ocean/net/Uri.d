@@ -84,7 +84,7 @@ class Uri : UriView
 
         private static short[istring] genericSchemes;
 
-        private const istring hexDigits = "0123456789abcdef";
+        private static immutable istring hexDigits = "0123456789abcdef";
 
         private static Const!(SchemePort[]) schemePorts =
                 [

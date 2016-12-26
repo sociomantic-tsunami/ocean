@@ -132,7 +132,7 @@ class ZlibStreamDecompressor
 
         // Setup correct window bits for specified encoding.
         // (See zlib.h for a description of how window bits work.)
-        const WINDOWBITS_DEFAULT = 15;
+        static immutable WINDOWBITS_DEFAULT = 15;
         int windowBits = WINDOWBITS_DEFAULT;
 
         switch ( encoding )
@@ -190,7 +190,7 @@ class ZlibStreamDecompressor
 
     ***************************************************************************/
 
-    public bool decodeChunk ( ubyte[] compressed_chunk, void delegate ( ubyte[] decompressed_chunk ) output_dg )
+    public bool decodeChunk ( ubyte[] compressed_chunk, scope void delegate ( ubyte[] decompressed_chunk ) output_dg )
     in
     {
         assert(this.stream_valid, typeof(this).stringof ~ ".decodeChunk: stream not started");

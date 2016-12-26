@@ -96,7 +96,7 @@ public class EpollSelectDispatcher : IEpollSelectDispatcherInfo
 
      **************************************************************************/
 
-    public const uint DefaultMaxEvents = 16;
+    public static immutable uint DefaultMaxEvents = 16;
 
     /**************************************************************************
 
@@ -661,7 +661,7 @@ public class EpollSelectDispatcher : IEpollSelectDispatcherInfo
     /**************************************************************************/
 
     deprecated("cycle hook delegate must return bool")
-    public void eventLoop ( void delegate ( ) select_cycle_hook )
+    public void eventLoop ( scope void delegate ( ) select_cycle_hook )
     {
         this.eventLoop({ select_cycle_hook(); return false; });
     }
@@ -680,7 +680,7 @@ public class EpollSelectDispatcher : IEpollSelectDispatcherInfo
 
      **************************************************************************/
 
-    public void eventLoop ( bool delegate ( ) select_cycle_hook = null )
+    public void eventLoop ( scope bool delegate ( ) select_cycle_hook = null )
     in
     {
         assert (!this.in_event_loop, "Event loop has already been started.");

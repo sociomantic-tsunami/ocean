@@ -27,7 +27,7 @@ import ocean.transition;
  */
 template isStringType( T )
 {
-    const bool isStringType = is( T : char[] )  ||
+    static immutable bool isStringType = is( T : char[] )  ||
                               is( T : wchar[] ) ||
                               is( T : dchar[] ) ||
                               is( T : istring ) ||
@@ -47,7 +47,7 @@ unittest
  */
 template isCharType( T )
 {
-    const bool isCharType =
+    static immutable bool isCharType =
         is( Unqual!(T) == char )
      || is( Unqual!(T) == wchar )
      || is( Unqual!(T) == dchar );
@@ -65,7 +65,7 @@ unittest
  */
 template isSignedIntegerType( T )
 {
-    const bool isSignedIntegerType =
+    static immutable bool isSignedIntegerType =
         is( Unqual!(T) == byte )
      || is( Unqual!(T) == short )
      || is( Unqual!(T) == int )
@@ -85,7 +85,7 @@ unittest
  */
 template isUnsignedIntegerType( T )
 {
-    const bool isUnsignedIntegerType =
+    static immutable bool isUnsignedIntegerType =
         is( Unqual!(T) == ubyte )
      || is( Unqual!(T) == ushort )
      || is( Unqual!(T) == uint )
@@ -104,7 +104,7 @@ unittest
  */
 template isIntegerType( T )
 {
-    const bool isIntegerType = isSignedIntegerType!(T) ||
+    static immutable bool isIntegerType = isSignedIntegerType!(T) ||
                                isUnsignedIntegerType!(T);
 }
 
@@ -120,7 +120,7 @@ unittest
  */
 template isRealType( T )
 {
-    const bool isRealType =
+    static immutable bool isRealType =
         is( Unqual!(T) == float )
      || is( Unqual!(T) == double )
      || is( Unqual!(T) == real );
@@ -139,7 +139,7 @@ unittest
  */
 template isComplexType( T )
 {
-    const bool isComplexType =
+    static immutable bool isComplexType =
         is( Unqual!(T) == cfloat )
      || is( Unqual!(T) == cdouble )
      || is( Unqual!(T) == creal );
@@ -157,7 +157,7 @@ unittest
  */
 template isImaginaryType( T )
 {
-    const bool isImaginaryType =
+    static immutable bool isImaginaryType =
         is( Unqual!(T) == ifloat )
      || is( Unqual!(T) == idouble )
      || is( Unqual!(T) == ireal );
@@ -176,7 +176,7 @@ unittest
  */
 template isFloatingPointType( T )
 {
-    const bool isFloatingPointType = isRealType!(T)    ||
+    static immutable bool isFloatingPointType = isRealType!(T)    ||
                                      isComplexType!(T) ||
                                      isImaginaryType!(T);
 }
@@ -264,12 +264,12 @@ unittest
  */
 template isPointerType(T)
 {
-        const isPointerType = false;
+        static immutable isPointerType = false;
 }
 
 template isPointerType(T : T*)
 {
-        const isPointerType = true;
+        static immutable isPointerType = true;
 }
 
 unittest
@@ -308,7 +308,7 @@ unittest
 template isReferenceType( T )
 {
 
-    const bool isReferenceType = isPointerType!(T)  ||
+    static immutable bool isReferenceType = isPointerType!(T)  ||
                                is( T == class )     ||
                                is( T == interface ) ||
                                is( T == delegate );
@@ -332,7 +332,7 @@ unittest
  */
 template isDynamicArrayType( T )
 {
-    const bool isDynamicArrayType = is( typeof(T.init[0])[] == T );
+    static immutable bool isDynamicArrayType = is( typeof(T.init[0])[] == T );
 }
 
 unittest
@@ -349,12 +349,12 @@ unittest
  */
 template isStaticArrayType( T : T[U], size_t U )
 {
-    const bool isStaticArrayType = true;
+    static immutable bool isStaticArrayType = true;
 }
 
 template isStaticArrayType( T )
 {
-    const bool isStaticArrayType = false;
+    static immutable bool isStaticArrayType = false;
 }
 
 unittest
@@ -370,9 +370,9 @@ unittest
 template isArrayType(T)
 {
     static if (is( T U : U[] ))
-        const bool isArrayType=true;
+        static immutable bool isArrayType=true;
     else
-        const bool isArrayType=false;
+        static immutable bool isArrayType=false;
 }
 
 unittest
@@ -388,7 +388,7 @@ unittest
  */
 template isAssocArrayType( T )
 {
-    const bool isAssocArrayType = is( typeof(T.init.values[0])[typeof(T.init.keys[0])] == T );
+    static immutable bool isAssocArrayType = is( typeof(T.init.values[0])[typeof(T.init.keys[0])] == T );
 }
 
 unittest
@@ -403,7 +403,7 @@ unittest
  */
 template isCallableType( T )
 {
-    const bool isCallableType = is( T == function )             ||
+    static immutable bool isCallableType = is( T == function )             ||
                                 is( typeof(*T) == function )    ||
                                 is( T == delegate )             ||
                                 is( typeof(T.opCall) == function );
@@ -619,9 +619,9 @@ unittest
  */
 template rankOfArray(T) {
     static if(is(T S : S[])) {
-        const uint rankOfArray = 1 + rankOfArray!(S);
+        static immutable uint rankOfArray = 1 + rankOfArray!(S);
     } else {
-        const uint rankOfArray = 0;
+        static immutable uint rankOfArray = 0;
     }
 }
 
@@ -667,11 +667,11 @@ template staticArraySize(T)
     static assert (rankOfArray!(T)==1,"implemented only for 1d arrays...");
     version(D_Version2)
     {
-        const size_t staticArraySize=(T).sizeof / typeof(T.init[0]).sizeof;
+        static immutable size_t staticArraySize=(T).sizeof / typeof(T.init[0]).sizeof;
     }
     else
     {
-        const size_t staticArraySize=(T).sizeof / typeof(T.init).sizeof;
+        static immutable size_t staticArraySize=(T).sizeof / typeof(T.init).sizeof;
     }
 }
 

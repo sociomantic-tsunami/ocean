@@ -212,7 +212,7 @@ class Blowfish : BlockCipher
             0xc0ac29b7u, 0xc97c50ddu, 0x3f84d5b5u, 0xb5470917u, 0x9216d5d9u, 0x8979fb1bu
         ];
 
-        const uint BLOCK_SIZE = 8,
+        static immutable uint BLOCK_SIZE = 8,
                    ROUNDS = 16,
                    SBOX_SIZE = 256,
                    PBOX_SIZE = 18,
@@ -368,7 +368,7 @@ class Blowfish : BlockCipher
 /** Some Blowfish test vectors from Schneier's site. */
 unittest
 {
-    const istring[] test_keys = [
+    static immutable istring[] test_keys = [
         "0000000000000000",
         "ffffffffffffffff",
         "57686f206973204a6f686e2047616c743f", // I don't know, do you?
@@ -378,7 +378,7 @@ unittest
         "fedcba9876543210"
     ];
 
-    const istring[] test_plaintexts = [
+    static immutable istring[] test_plaintexts = [
         "0000000000000000",
         "ffffffffffffffff",
         "fedcba9876543210",
@@ -388,7 +388,7 @@ unittest
         "0123456789abcdef"
     ];
 
-    const istring[] test_ciphertexts = [
+    static immutable istring[] test_ciphertexts = [
         "4ef997456198dd78",
         "51866fd5b85ecb8a",
         "cc91732b8022f684",

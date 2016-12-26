@@ -486,7 +486,7 @@ private void appendDist ( T ) ( Distribution!(T) dist, T[] values )
 *******************************************************************************/
 
 private void testForError ( bool dummy = false )
-                          ( void delegate ( ) dg, bool error, istring msg )
+                          ( scope void delegate ( ) dg, bool error, istring msg )
 {
     bool caught = false;
 

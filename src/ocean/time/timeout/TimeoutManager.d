@@ -420,12 +420,12 @@ abstract class TimeoutManagerBase : ITimeoutManager
 
     ***************************************************************************/
 
-    public size_t checkTimeouts ( bool delegate ( ITimeoutClient client ) dg = null )
+    public size_t checkTimeouts ( scope bool delegate ( ITimeoutClient client ) dg = null )
     {
         return this.checkTimeouts(this.now, dg);
     }
 
-    public size_t checkTimeouts ( ulong now, bool delegate ( ITimeoutClient client ) dg = null )
+    public size_t checkTimeouts ( ulong now, scope bool delegate ( ITimeoutClient client ) dg = null )
     {
         debug ( TimeoutManager )
         {

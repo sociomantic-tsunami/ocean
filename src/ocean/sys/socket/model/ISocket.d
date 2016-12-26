@@ -522,7 +522,7 @@ public abstract class ISocket : InputDevice, IOutputDevice
 
     public int accept ( ISelectable listening_socket, bool nonblocking )
     {
-        const SocketFlags[2] flags = [SocketFlags.None, SocketFlags.SOCK_NONBLOCK];
+        static immutable SocketFlags[2] flags = [SocketFlags.None, SocketFlags.SOCK_NONBLOCK];
 
         return this.accept(listening_socket, flags[nonblocking]);
     }

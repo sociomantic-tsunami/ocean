@@ -433,7 +433,7 @@ deprecated unittest
 
 unittest
 {
-    void test( cstring array, bool delegate( char ) dg, size_t num )
+    void test( cstring array, scope bool delegate( char ) dg, size_t num )
     {
         Buffer!(char) buf;
         auto r = filter( array, dg, buf );

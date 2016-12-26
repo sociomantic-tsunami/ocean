@@ -68,7 +68,7 @@ struct Kiss
         private uint kiss_w = 8;
         private uint kiss_carry = 0;
 
-        private const double M_RAN_INVM32 = 2.32830643653869628906e-010,
+        private enum double M_RAN_INVM32 = 2.32830643653869628906e-010,
                              M_RAN_INVM52 = 2.22044604925031308085e-016;
 
         /**********************************************************************

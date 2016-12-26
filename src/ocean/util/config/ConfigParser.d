@@ -148,11 +148,11 @@ class ConfigParser
 
         ***********************************************************************/
 
-        public int opApply ( int delegate ( ref istring key, ref T val ) dg )
+        public int opApply ( scope int delegate ( ref istring key, ref T val ) dg )
         {
-            if ( this.vars !is null )
+            if ( (&this).vars !is null )
             {
-                foreach ( key, valnode; *this.vars )
+                foreach ( key, valnode; *(&this).vars )
                 {
                     auto val = conv!(T)(valnode.value);
 
@@ -171,9 +171,9 @@ class ConfigParser
 
         ***********************************************************************/
 
-        public int opApply ( int delegate ( ref istring x ) dg )
+        public int opApply ( scope int delegate ( ref istring x ) dg )
         {
-            return this.opApply(
+            return (&this).opApply(
                 (ref istring key, ref istring val)
                 {
                     return dg(key);
@@ -332,7 +332,7 @@ class ConfigParser
 
     ***************************************************************************/
 
-    public int opApply ( int delegate ( ref istring x ) dg )
+    public int opApply ( scope int delegate ( ref istring x ) dg )
     {
         int result = 0;
 
@@ -436,11 +436,11 @@ class ConfigParser
         {
             istring data;
 
-            int opApply ( int delegate ( ref istring x ) dg )
+            int opApply ( scope int delegate ( ref istring x ) dg )
             {
                 int result = 0;
 
-                foreach ( ref line; lines(this.data) )
+                foreach ( ref line; lines((&this).data) )
                 {
                     result = dg(line);
 
@@ -896,7 +896,7 @@ class ConfigParser
 
     private static bool toBool ( cstring property )
     {
-        const istring[2][] BOOL_IDS =
+        static immutable istring[2][] BOOL_IDS =
         [
            ["false",    "true"],
            ["disabled", "enabled"],
@@ -1462,7 +1462,7 @@ three = teen
 
     debug ( ConfigParser )
     {
-        const num_parses = 200;
+        static immutable num_parses = 200;
 
         // Repeated parsing of the same configuration.
 

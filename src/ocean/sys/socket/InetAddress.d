@@ -108,19 +108,19 @@ struct InetAddress ( bool IPv6 = false )
     {
         alias sockaddr_in6 Addr;
 
-        const addrstrlen = INET6_ADDRSTRLEN,
+        enum addrstrlen = INET6_ADDRSTRLEN,
               family     = AF_INET6;
 
-        const Addr addr_init = {sin6_family: family};
+        enum Addr addr_init = {sin6_family: family};
     }
     else
     {
         alias sockaddr_in Addr;
 
-        const addrstrlen = INET_ADDRSTRLEN,
+        enum addrstrlen = INET_ADDRSTRLEN,
               family     = AF_INET;
 
-        const Addr addr_init = {sin_family: family};
+        enum Addr addr_init = {sin_family: family};
     }
 
     /**************************************************************************
@@ -146,11 +146,11 @@ struct InetAddress ( bool IPv6 = false )
     {
         static if (IPv6)
         {
-            return .ntohs(this.addr.sin6_port);
+            return .ntohs((&this).addr.sin6_port);
         }
         else
         {
-            return .ntohs(this.addr.sin_port);
+            return .ntohs((&this).addr.sin_port);
         }
     }
 
@@ -170,12 +170,12 @@ struct InetAddress ( bool IPv6 = false )
     {
         static if (IPv6)
         {
-            this.addr.sin6_port = .htons(p);
+            (&this).addr.sin6_port = .htons(p);
 
         }
         else
         {
-            this.addr.sin_port = .htons(p);
+            (&this).addr.sin_port = .htons(p);
         }
 
         return p;
@@ -197,14 +197,14 @@ struct InetAddress ( bool IPv6 = false )
 
     int inet_pton ( cstring ip_address_str )
     {
-        if (ip_address_str.length < this.addrstrlen)
+        if (ip_address_str.length < (&this).addrstrlen)
         {
-            char[this.addrstrlen] nultermbuf;
+            char[(&this).addrstrlen] nultermbuf;
 
             nultermbuf[0 .. ip_address_str.length] = ip_address_str[];
             nultermbuf[ip_address_str.length]      = '\0';
 
-            return this.inet_pton(nultermbuf.ptr);
+            return (&this).inet_pton(nultermbuf.ptr);
         }
         else
         {
@@ -233,7 +233,7 @@ struct InetAddress ( bool IPv6 = false )
 
     int inet_pton ( in char* ip_address_str )
     {
-        return .inet_pton(this.family, ip_address_str, this.address_n.ptr);
+        return .inet_pton((&this).family, ip_address_str, (&this).address_n.ptr);
     }
 
     /**************************************************************************
@@ -249,14 +249,14 @@ struct InetAddress ( bool IPv6 = false )
     {
         static if (IPv6)
         {
-            this.addr.sin6_addr = this.addr.sin6_addr.init;
+            (&this).addr.sin6_addr = (&this).addr.sin6_addr.init;
         }
         else
         {
-            this.addr.sin_addr.s_addr = htonl(INADDR_ANY);
+            (&this).addr.sin_addr.s_addr = htonl(INADDR_ANY);
         }
 
-        return cast (sockaddr*) &this.addr;
+        return cast (sockaddr*) &(&this).addr;
     }
 
     /**************************************************************************
@@ -281,12 +281,12 @@ struct InetAddress ( bool IPv6 = false )
     mstring inet_ntop ( mstring dst )
     in
     {
-        assert (dst.length >= this.addrstrlen,
+        assert (dst.length >= (&this).addrstrlen,
                 "dst.length expected to be at least addrstrlen");
     }
     body
     {
-        auto address_p = .inet_ntop(this.family, this.address_n.ptr, dst.ptr,
+        auto address_p = .inet_ntop((&this).family, (&this).address_n.ptr, dst.ptr,
             castFrom!(size_t).to!(int)(dst.length));
 
         return address_p? dst.ptr[0 .. strlen(dst.ptr)] : null;
@@ -310,11 +310,11 @@ struct InetAddress ( bool IPv6 = false )
 
     public sockaddr* opCall ( cstring ip_address_str, ushort port = 0 )
     {
-        this.port = port;
+        (&this).port = port;
 
-        if (this.inet_pton(ip_address_str) == 1)
+        if ((&this).inet_pton(ip_address_str) == 1)
         {
-            return cast (sockaddr*) &this.addr;
+            return cast (sockaddr*) &(&this).addr;
         }
         else
         {
@@ -337,9 +337,9 @@ struct InetAddress ( bool IPv6 = false )
 
     public sockaddr* opCall ( ushort port )
     {
-        this.port = port;
+        (&this).port = port;
 
-        return this.setAddressAny();
+        return (&this).setAddressAny();
     }
 
     /**************************************************************************
@@ -356,9 +356,9 @@ struct InetAddress ( bool IPv6 = false )
 
     public sockaddr* opAssign ( Addr addr )
     {
-        this.addr = addr;
+        (&this).addr = addr;
 
-        return cast (sockaddr*) &this.addr;
+        return cast (sockaddr*) &(&this).addr;
     }
 
     /**************************************************************************
@@ -383,9 +383,9 @@ struct InetAddress ( bool IPv6 = false )
     }
     body
     {
-        this.addr = *addr;
+        (&this).addr = *addr;
 
-        return cast (sockaddr*) &this.addr;
+        return cast (sockaddr*) &(&this).addr;
     }
 
     /**************************************************************************
@@ -396,7 +396,7 @@ struct InetAddress ( bool IPv6 = false )
 
     public void clear ( )
     {
-        this.addr = this.addr_init;
+        (&this).addr = (&this).addr_init;
     }
 
     /**************************************************************************
@@ -411,7 +411,7 @@ struct InetAddress ( bool IPv6 = false )
 
     public void[] address_n ( )
     {
-        with (this.addr) static if (IPv6)
+        with ((&this).addr) static if (IPv6)
         {
             return (cast (void*) &sin6_addr)[0 .. sin6_addr.sizeof];
         }
@@ -427,7 +427,7 @@ struct InetAddress ( bool IPv6 = false )
                            GetNameInfoFlags flags = GetNameInfoFlags.None)
     {
         return core.sys.posix.netdb.getnameinfo(
-            cast (sockaddr*) &this.addr, this.addr.sizeof,
+            cast (sockaddr*) &(&this).addr, (&this).addr.sizeof,
             host.ptr, castFrom!(size_t).to!(int)(host.length), serv.ptr,
             castFrom!(size_t).to!(int)(serv.length), flags);
     }

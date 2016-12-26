@@ -618,7 +618,7 @@ deprecated class HttpClient
 
         ***********************************************************************/
 
-        void read (void delegate(void[]) sink, size_t len = size_t.max)
+        void read (scope void delegate(void[]) sink, size_t len = size_t.max)
         {
                 while (true)
                       {

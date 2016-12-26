@@ -93,7 +93,7 @@ public void structConvert ( From, To ) ( ref From from, out To to,
             version (D_Version2)
                 mixin(`enum convFuncName = "convert_" ~ FieldName!(to_index, To);`);
             else
-                const convFuncName = "convert_" ~ FieldName!(to_index, To);
+                static immutable convFuncName = "convert_" ~ FieldName!(to_index, To);
 
             static if ( structHasMember!(convFuncName, To)() )
             {
@@ -496,12 +496,12 @@ unittest
 
         void convert_b ( ref A structa )
         {
-            this.b = cast(short) structa.b;
+            (&this).b = cast(short) structa.b;
         }
 
         void convert_d ( ref A structa)
         {
-            this.d = cast(short) structa.a;
+            (&this).d = cast(short) structa.a;
         }
     }
 
@@ -536,7 +536,7 @@ version(UnitTest)
 
         void convert_x ( ref B src )
         {
-            this.x = cast(int) src.x;
+            (&this).x = cast(int) src.x;
         }
     }
 
@@ -546,12 +546,12 @@ version(UnitTest)
 
         void convert_x ( ref A src )
         {
-            this.x = cast(uint) src.x;
+            (&this).x = cast(uint) src.x;
         }
 
         void convert_x ( ref C src )
         {
-            this.x = cast(uint) src.x;
+            (&this).x = cast(uint) src.x;
         }
     }
 
@@ -561,7 +561,7 @@ version(UnitTest)
 
         void convert_x ( ref B src )
         {
-            this.x = src.x;
+            (&this).x = src.x;
         }
     }
 }

@@ -302,7 +302,7 @@ public abstract class Task : ISuspendable
 
     ***************************************************************************/
 
-    public void registerOnKillHook (void delegate() hook)
+    public void registerOnKillHook (scope void delegate() hook)
     {
         this.kill_hooks ~= hook;
     }
@@ -316,7 +316,7 @@ public abstract class Task : ISuspendable
 
     ***************************************************************************/
 
-    public void unregisterOnKillHook (void delegate() hook)
+    public void unregisterOnKillHook (scope void delegate() hook)
     {
         this.kill_hooks.length = .moveToEnd(this.kill_hooks, hook);
         enableStomping(this.kill_hooks);

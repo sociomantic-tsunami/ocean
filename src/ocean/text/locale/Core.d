@@ -203,7 +203,7 @@ public interface IFormatService {
  */
 public class Culture : IFormatService {
 
-  private const int LCID_INVARIANT = 0x007F;
+  private static immutable int LCID_INVARIANT = 0x007F;
 
   private static Culture[istring] namedCultures;
   private static Culture[int] idCultures;
@@ -1443,10 +1443,10 @@ version (Clone)
  */
 public class DateTimeFormat : IFormatService {
 
-  private const istring rfc1123Pattern_ = "ddd, dd MMM yyyy HH':'mm':'ss 'GMT'";
-  private const istring sortableDateTimePattern_ = "yyyy'-'MM'-'dd'T'HH':'mm':'ss";
-  private const istring universalSortableDateTimePattern_ = "yyyy'-'MM'-'dd' 'HH':'mm':'ss'Z'";
-  private const istring allStandardFormats = [ 'd', 'D', 'f', 'F', 'g', 'G', 'm', 'M', 'r', 'R', 's', 't', 'T', 'u', 'U', 'y', 'Y' ];
+  private static immutable istring rfc1123Pattern_ = "ddd, dd MMM yyyy HH':'mm':'ss 'GMT'";
+  private static immutable istring sortableDateTimePattern_ = "yyyy'-'MM'-'dd'T'HH':'mm':'ss";
+  private static immutable istring universalSortableDateTimePattern_ = "yyyy'-'MM'-'dd' 'HH':'mm':'ss'Z'";
+  private static immutable istring allStandardFormats = [ 'd', 'D', 'f', 'F', 'g', 'G', 'm', 'M', 'r', 'R', 's', 't', 'T', 'u', 'U', 'y', 'Y' ];
 
 
   package bool isReadOnly_;

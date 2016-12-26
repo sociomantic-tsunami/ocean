@@ -332,9 +332,9 @@ deprecated public struct Berkeley
 
         deprecated void open (AddressFamily family, SocketType type, ProtocolType protocol, bool create=true)
         {
-                this.type = type;
-                this.family = family;
-                this.protocol = protocol;
+                (&this).type = type;
+                (&this).family = family;
+                (&this).protocol = protocol;
                 if (create)
                     reopen;
         }
@@ -347,8 +347,8 @@ deprecated public struct Berkeley
 
         deprecated void reopen (socket_t sock = sock.init)
         {
-                if (this.sock != sock.init)
-                    this.detach;
+                if ((&this).sock != sock.init)
+                    (&this).detach;
 
                 if (sock is sock.init)
                    {
@@ -357,7 +357,7 @@ deprecated public struct Berkeley
                        exception ("Unable to create socket: ");
                    }
 
-                this.sock = sock;
+                (&this).sock = sock;
         }
 
         /***********************************************************************
@@ -441,7 +441,7 @@ deprecated public struct Berkeley
         {
                 if(Error == .bind (sock, addr.name, addr.nameLen))
                    exception ("Unable to bind socket: ");
-                return this;
+                return (&this);
         }
 
         /***********************************************************************
@@ -456,11 +456,11 @@ deprecated public struct Berkeley
                       {
                       auto err = lastError;
                       if (err is EINPROGRESS)
-                          return this;
+                          return (&this);
                       }
                    exception ("Unable to connect socket: ");
                    }
-                return this;
+                return (&this);
         }
 
         /***********************************************************************
@@ -473,7 +473,7 @@ deprecated public struct Berkeley
         {
                 if (Error == .listen (sock, backlog))
                     exception ("Unable to listen on socket: ");
-                return this;
+                return (&this);
         }
 
         /***********************************************************************
@@ -512,7 +512,7 @@ deprecated public struct Berkeley
         deprecated Berkeley* shutdown (SocketShutdown how)
         {
                 .shutdown (sock, how);
-                return this;
+                return (&this);
         }
 
         /***********************************************************************
@@ -844,7 +844,7 @@ deprecated public struct Berkeley
         {
                 if(Error == .setsockopt (sock, cast(int)level, cast(int)option, value.ptr, cast(int) value.length))
                    exception ("Unable to set socket option: ");
-                return this;
+                return (&this);
         }
 
         /***********************************************************************
@@ -1524,7 +1524,7 @@ protected:
         }
 
 
-        const ushort PORT_ANY = 0;
+        static immutable ushort PORT_ANY = 0;
 
         /***********************************************************************
 

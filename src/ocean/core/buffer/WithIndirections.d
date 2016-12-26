@@ -186,7 +186,7 @@ template WithIndirectionsBufferImpl ( )
 
     ***************************************************************************/
 
-    int opApply ( int delegate(ref T) dg )
+    int opApply ( scope int delegate(ref T) dg )
     {
         foreach (elem; this.data)
         {
@@ -221,7 +221,7 @@ template WithIndirectionsBufferImpl ( )
 
     ***************************************************************************/
 
-    int opApply ( int delegate(ref size_t, ref T) dg )
+    int opApply ( scope int delegate(ref size_t, ref T) dg )
     {
         foreach (index, elem; this.data)
         {

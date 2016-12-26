@@ -54,7 +54,7 @@ private class SignalFDTest
 
     ***************************************************************************/
 
-    private const max_signal = 32;
+    private static immutable max_signal = 32;
 
 
     /***************************************************************************
@@ -360,7 +360,7 @@ private class SignalFDTest
         // Start the epoll event loop, in order to be notified when the signals
         // have fired
         epoll_event_t[1] fired_events;
-        const int timeout_ms = 100; // just in case
+        static immutable int timeout_ms = 100; // just in case
         auto epoll_res = epoll.wait(fired_events, timeout_ms);
         // FLAKY: call to epoll_wait() may fail or return wrong number of events
         test!("!=")(epoll_res, -1); // epoll_wait() error

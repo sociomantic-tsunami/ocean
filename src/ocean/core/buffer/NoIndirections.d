@@ -217,7 +217,7 @@ template NoIndirectionsBufferImpl ( )
 
     ***************************************************************************/
 
-    int opApply ( int delegate(ref Const!(T)) dg ) /* d1to2fix_inject: const */
+    int opApply ( scope int delegate(ref Const!(T)) dg ) const
     {
         foreach (elem; this.data)
         {
@@ -252,7 +252,7 @@ template NoIndirectionsBufferImpl ( )
 
     ***************************************************************************/
 
-    int opApply ( int delegate(ref size_t, ref Const!(T)) dg ) /* d1to2fix_inject: const */
+    int opApply ( scope int delegate(ref size_t, ref Const!(T)) dg ) const
     {
         foreach (index, elem; this.data)
         {

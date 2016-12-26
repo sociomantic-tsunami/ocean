@@ -193,7 +193,7 @@ public struct Log
 
             private void reset ()
             {
-                foreach (ref field; this.tupleof)
+                foreach (ref field; (&this).tupleof)
                 {
                     field = field.init;
                 }
@@ -213,19 +213,19 @@ public struct Log
                 with (Level) switch (event_level)
                 {
                     case Trace:
-                        this.logged_trace++;
+                        (&this).logged_trace++;
                         break;
                     case Info:
-                        this.logged_info++;
+                        (&this).logged_info++;
                         break;
                     case Warn:
-                        this.logged_warn++;
+                        (&this).logged_warn++;
                         break;
                     case Error:
-                        this.logged_error++;
+                        (&this).logged_error++;
                         break;
                     case Fatal:
-                        this.logged_fatal++;
+                        (&this).logged_fatal++;
                         break;
                     case None:
                         break;
@@ -1199,7 +1199,7 @@ public class Hierarchy : Logger.Context
 
         ***********************************************************************/
 
-        final int opApply (int delegate(ref Logger) dg)
+        final int opApply (scope int delegate(ref Logger) dg)
         {
                 int ret;
 
@@ -1216,7 +1216,7 @@ public class Hierarchy : Logger.Context
 
         ***********************************************************************/
 
-        private Logger inject (cstring label, Logger delegate(cstring name) dg)
+        private Logger inject (cstring label, scope Logger delegate(cstring name) dg)
         {
             // try not to allocate unless you really need to
             char[255] stack_buffer;
@@ -1541,7 +1541,7 @@ public class Appender
 
         interface Layout
         {
-                void format (LogEvent event, size_t delegate(Const!(void)[]) dg);
+                void format (LogEvent event, scope size_t delegate(Const!(void)[]) dg);
         }
 
         /***********************************************************************
@@ -1819,7 +1819,7 @@ public class AppendStream : Appender
 
         final override void append (LogEvent event)
         {
-                const istring Eol = "\n";
+                static immutable istring Eol = "\n";
 
                 layout.format (event, (Const!(void)[] content){return stream_.write(content);});
                 stream_.write (Eol);
@@ -1843,7 +1843,7 @@ public class LayoutTimer : Appender.Layout
 
         ***********************************************************************/
 
-        void format (LogEvent event, size_t delegate(Const!(void)[]) dg)
+        void format (LogEvent event, scope size_t delegate(Const!(void)[]) dg)
         {
                 char[20] tmp = void;
 

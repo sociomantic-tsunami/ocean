@@ -812,7 +812,7 @@ public class AppStatus
 
     public bool getMemoryUsage ( out float mem_allocated, out float mem_free )
     {
-        const float Mb = 1024 * 1024;
+        static immutable float Mb = 1024 * 1024;
         size_t used, free;
         ocean.transition.gc_usage(used, free);
 

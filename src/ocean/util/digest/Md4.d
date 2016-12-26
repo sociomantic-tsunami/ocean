@@ -33,7 +33,7 @@ import ocean.util.digest.MerkleDamgard;
 class Md4 : MerkleDamgard
 {
         protected uint[4]       context;
-        private const ubyte     padChar = 0x80;
+        private static immutable ubyte     padChar = 0x80;
 
         /***********************************************************************
 

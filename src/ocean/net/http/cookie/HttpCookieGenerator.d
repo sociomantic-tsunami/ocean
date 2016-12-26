@@ -282,7 +282,7 @@ class HttpCookieGenerator : ParamSet
 
      **************************************************************************/
 
-    void render ( void delegate ( cstring str ) appendContent )
+    void render ( scope void delegate ( cstring str ) appendContent )
     {
         uint i = 0;
 

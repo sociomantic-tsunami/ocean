@@ -57,9 +57,9 @@ class JsonParser(T, bool AllowNaN = false)
 
                 void reset (Const!(T)[] text)
                 {
-                        this.text = text;
-                        this.ptr = text.ptr;
-                        this.end = ptr + text.length;
+                        (&this).text = text;
+                        (&this).ptr = text.ptr;
+                        (&this).end = ptr + text.length;
                 }
         }
 

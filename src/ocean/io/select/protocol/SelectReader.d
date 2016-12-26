@@ -150,7 +150,7 @@ class SelectReader : IAdvancedSelectClient
 
     ***************************************************************************/
 
-    public void read ( void delegate ( void[] data ) dg )
+    public void read ( scope void delegate ( void[] data ) dg )
     {
         this.reader = dg;
 

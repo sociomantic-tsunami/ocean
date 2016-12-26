@@ -145,7 +145,7 @@ class HashMap (K, V, alias Hash = Container.hash,
 
         ***********************************************************************/
 
-        final int opApply (int delegate(ref K key, ref V value) dg)
+        final int opApply (scope int delegate(ref K key, ref V value) dg)
         {
                 return iterator.opApply (dg);
         }
@@ -155,7 +155,7 @@ class HashMap (K, V, alias Hash = Container.hash,
 
         ***********************************************************************/
 
-        final int opApply (int delegate(ref V value) dg)
+        final int opApply (scope int delegate(ref V value) dg)
         {
                 return iterator.opApply ((ref K k, ref V v) {return dg(v);});
         }
@@ -1081,7 +1081,7 @@ class HashMap (K, V, alias Hash = Container.hash,
 
                 ***************************************************************/
 
-                int opApply (int delegate(ref K key, ref V value) dg)
+                int opApply (scope int delegate(ref K key, ref V value) dg)
                 {
                         int result;
 
@@ -1181,7 +1181,7 @@ debug (HashMap)
                 // use a chunk allocator, and presize the bucket[]
                 auto test = new HashMap!(int, int);//, Container.hash, Container.reap, Container.ChunkGC);
                 test.buckets(1_500_000);//.cache(8000, 1000000);
-                const count = 1_000_000;
+                static immutable count = 1_000_000;
                 StopWatch w;
 
                 GC.collect;
