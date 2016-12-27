@@ -509,7 +509,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        final FilePath root (istring other)
+        final FilePath root (cstring other)
         {
                 auto x = adjust (0, p.folder_, p.folder_, padded (other, ':'));
                 p.folder_ += x;
@@ -525,7 +525,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        final FilePath folder (istring other)
+        final FilePath folder (cstring other)
         {
                 auto x = adjust (p.folder_, p.name_, p.name_ - p.folder_, padded (other));
                 p.suffix_ += x;
@@ -539,7 +539,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        final FilePath name (istring other)
+        final FilePath name (cstring other)
         {
                 auto x = adjust (p.name_, p.suffix_, p.suffix_ - p.name_, other);
                 p.suffix_ += x;
@@ -553,7 +553,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        final FilePath suffix (istring other)
+        final FilePath suffix (cstring other)
         {
                 adjust (p.suffix_, p.end_, p.end_ - p.suffix_, prefixed (other, '.'));
                 return this;
@@ -567,7 +567,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        final FilePath path (istring other)
+        final FilePath path (cstring other)
         {
                 adjust (0, p.name_, p.name_, padded (other));
                 return parse;
@@ -581,7 +581,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        final FilePath file (istring other)
+        final FilePath file (cstring other)
         {
                 adjust (p.name_, p.end_, p.end_ - p.name_, other);
                 return parse;
@@ -628,7 +628,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        final FilePath absolute (istring prefix)
+        final FilePath absolute (cstring prefix)
         {
                 if (! isAbsolute)
                       prepend (padded(prefix));
