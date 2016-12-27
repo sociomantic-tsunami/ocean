@@ -147,18 +147,7 @@ class FormatOutput(T) : OutputFilter
 
         final FormatOutput format (Const!(T)[] fmt, ...)
         {
-            version (DigitalMarsX64)
-            {
-                va_list ap;
-
-                va_start(ap, __va_argsave);
-
-                scope(exit) va_end(ap);
-
-                return format(fmt, _arguments, ap);
-            }
-            else
-                return format(fmt, _arguments, _argptr);
+            return format(fmt, _arguments, _argptr);
         }
 
         /**********************************************************************
@@ -183,18 +172,7 @@ class FormatOutput(T) : OutputFilter
 
         final FormatOutput formatln (Const!(T)[] fmt, ...)
         {
-            version (DigitalMarsX64)
-            {
-                va_list ap;
-
-                va_start(ap, __va_argsave);
-
-                scope(exit) va_end(ap);
-
-                return formatln(fmt, _arguments, ap);
-            }
-            else
-                return formatln(fmt, _arguments, _argptr);
+            return formatln(fmt, _arguments, _argptr);
         }
 
         /**********************************************************************
@@ -230,19 +208,7 @@ class FormatOutput(T) : OutputFilter
                     sink.flush;
                 else
                 {
-
-                    version (DigitalMarsX64)
-                    {
-                        va_list ap;
-
-                        va_start(ap, __va_argsave);
-
-                        scope(exit) va_end(ap);
-
-                        convert (&emit, _arguments, ap, slice[0 .. _arguments.length * 4 - 2]);
-                    }
-                    else
-                        convert (&emit, _arguments, _argptr, slice[0 .. _arguments.length * 4 - 2]);
+                    convert (&emit, _arguments, _argptr, slice[0 .. _arguments.length * 4 - 2]);
                 }
                 return this;
         }
