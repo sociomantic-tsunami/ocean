@@ -183,19 +183,7 @@ public class TerminalOutput ( T ) : FormatOutput!(T)
 
     public typeof(this) format ( Const!(T)[] fmt, ... )
     {
-        version (DigitalMarsX64)
-        {
-            va_list ap;
-
-            va_start(ap, __va_argsave);
-
-            scope(exit) va_end(ap);
-
-            super.format(fmt, _arguments, ap);
-        }
-        else
-            super.format(fmt, _arguments, _argptr);
-
+        super.format(fmt, _arguments, _argptr);
         return this;
     }
 
@@ -223,19 +211,7 @@ public class TerminalOutput ( T ) : FormatOutput!(T)
 
     public typeof(this) formatln ( Const!(T)[] fmt, ... )
     {
-        version (DigitalMarsX64)
-        {
-            va_list ap;
-
-            va_start(ap, __va_argsave);
-
-            scope(exit) va_end(ap);
-
-            super.formatln(fmt, _arguments, ap);
-        }
-        else
-            super.formatln(fmt, _arguments, _argptr);
-
+        super.formatln(fmt, _arguments, _argptr);
         return this;
     }
 

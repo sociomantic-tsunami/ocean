@@ -561,18 +561,7 @@ class Text(T) : TextView!(T)
             return s.length;
         }
 
-        version (DigitalMarsX64)
-        {
-            va_list ap;
-
-            va_start(ap, __va_argsave);
-
-            scope(exit) va_end(ap);
-
-            LayoutT.instance.convert (&emit, _arguments, ap, format);
-        }
-        else
-            LayoutT.instance.convert (&emit, _arguments, _argptr, format);
+        LayoutT.instance.convert (&emit, _arguments, _argptr, format);
 
         return this;
     }
