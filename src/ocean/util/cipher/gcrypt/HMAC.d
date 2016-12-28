@@ -32,12 +32,12 @@ module ocean.util.cipher.gcrypt.HMAC;
 
 import ocean.util.cipher.gcrypt.core.MessageDigestCore;
 import ocean.transition;
+import ocean.util.cipher.gcrypt.c.md;
 
 /******************************************************************************/
 
 public class HMAC: MessageDigestCore
 {
-    import ocean.util.cipher.gcrypt.c.md;
     import ocean.util.cipher.gcrypt.core.Gcrypt: GcryptException;
 
     /***************************************************************************
@@ -124,7 +124,7 @@ unittest
     ];
 
     Immut!(ubyte)[20] key = 0x0b;
-    scope hmacgen = new HMAC(HMAC.gcry_md_algos.GCRY_MD_SHA224);
+    scope hmacgen = new HMAC(gcry_md_algos.GCRY_MD_SHA224);
     test!("==")(
         hmacgen.calculate(
             key,
