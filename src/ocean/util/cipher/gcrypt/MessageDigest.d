@@ -30,6 +30,7 @@ module ocean.util.cipher.gcrypt.MessageDigest;
 
 import ocean.util.cipher.gcrypt.core.MessageDigestCore;
 import ocean.transition;
+import ocean.util.cipher.gcrypt.c.md;
 
 /*******************************************************************************
 
@@ -39,8 +40,6 @@ import ocean.transition;
 
 public class MessageDigest: MessageDigestCore
 {
-    import ocean.util.cipher.gcrypt.c.md;
-
     /***************************************************************************
 
         Constructor.
@@ -106,7 +105,7 @@ unittest
         0xF5, 0x8B, 0x19, 0x52, 0x52, 0x25, 0x25
     ];
 
-    scope md = new MessageDigest(MessageDigest.gcry_md_algos.GCRY_MD_SHA224);
+    scope md = new MessageDigest(gcry_md_algos.GCRY_MD_SHA224);
 
     test!("==")(
         md.calculate(
