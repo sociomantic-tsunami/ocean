@@ -7,8 +7,8 @@ services:
 # a lightweight environment
 language: c
 
-before_install:
-    - docker build -t sociomantic-tsunami/ocean docker
+install:
+    - ./docker/travis-install.sh
 
 script:
-    - docker run -ti --rm -v $PWD:$PWD -w $PWD -u $(id -u) sociomantic-tsunami/ocean docker/travis.sh
+    - ./docker/travis-script.sh
