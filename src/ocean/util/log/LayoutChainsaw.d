@@ -62,7 +62,8 @@ public class LayoutChainsaw : Appender.Layout
                 dg ("]]></log4j:message>\r\n<log4j:properties><log4j:data name=\"application\" value=\"");
                 dg (event.host.label);
                 dg ("\"/><log4j:data name=\"hostname\" value=\"");
-                dg (event.host.address);
+                auto c = cast(Hierarchy) event.host;
+                dg (c !is null ? c.address : "localhost");
                 dg ("\"/></log4j:properties></log4j:event>\r\n");
         }
 }
