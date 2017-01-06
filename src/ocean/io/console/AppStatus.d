@@ -37,44 +37,6 @@
         4. Regular Stdout/Stderr calls should not be used as this would also
            cause the streaming portion to spill over into the static portion.
 
-    Usage Example:
-
-    ---
-
-        const number_of_static_lines = 2;
-
-        AppStatus app_status = new AppStatus("test", Version.revision,
-            Version.build_date, Version.build_author, clock,
-            number_of_static_lines);
-
-        ulong c1, c2, c3, c4;
-
-        app_status.formatStaticLine(0, "{} count1, {} count2", c1, c2);
-        app_status.formatStaticLine(1, "{} count3, {} count4", c3, c4);
-
-        app_status.displayStaticLines();
-
-        app_status.displayStreamingLine("{} count5, {} count6", c5, c6);
-
-    ---
-
-    The colour and boldness of the static/streaming lines can be controlled in
-    the following manner:
-
-    ---
-
-        app_status.bold.red
-            .formatStaticLine(0, "this static line will be in red and bold");
-        app_status.bold(false).green
-            .formatStaticLine(1, "and this one will be in green and not bold");
-
-        app_status.blue.displayStreamingLine("here's a blue streaming line");
-
-    ---
-
-    Tip: look for convenience aliases of other supported colours within the class
-         body below
-
     Copyright:
         Copyright (c) 2009-2016 Sociomantic Labs GmbH.
         All rights reserved.
@@ -1281,3 +1243,35 @@ public class AppStatus
     }
 }
 
+///
+unittest
+{
+    void example ()
+    {
+        const number_of_static_lines = 2;
+        const ms_between_calls = 1000;
+
+        AppStatus app_status = new AppStatus("test",
+            "revision", "build_date", "build_author",
+            number_of_static_lines, ms_between_calls);
+
+        ulong c1, c2, c3, c4, c5, c6;
+
+        app_status.formatStaticLine(0, "{} count1, {} count2", c1, c2);
+        app_status.formatStaticLine(1, "{} count3, {} count4", c3, c4);
+
+        app_status.displayStaticLines();
+
+        app_status.displayStreamingLine("{} count5, {} count6", c5, c6);
+
+        // The colour and boldness of the static/streaming lines can be
+        // controlled in the following manner:
+
+        app_status.bold.red
+            .formatStaticLine(0, "this static line will be in red and bold");
+        app_status.bold(false).green
+            .formatStaticLine(1, "and this one will be in green and not bold");
+
+        app_status.blue.displayStreamingLine("here's a blue streaming line");
+    }
+}
