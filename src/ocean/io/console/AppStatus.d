@@ -591,6 +591,7 @@ public class AppStatus
         assert( index < this.static_lines.length, "adding too many static lines" );
 
         this.static_lines[index].length = 0;
+        enableStomping(this.static_lines[index]);
         Format.vformat(this.static_lines[index], format, _arguments, _argptr);
 
         structConvert!(DisplayProperties)(
@@ -1274,4 +1275,21 @@ unittest
 
         app_status.blue.displayStreamingLine("here's a blue streaming line");
     }
+}
+
+unittest
+{
+    // tests if array stomping assertion triggers during line formatting
+
+    auto number_of_static_lines = 2;
+
+    AppStatus app_status = new AppStatus("test", "version",
+        "build_date", "build_author", number_of_static_lines);
+
+    ulong c1, c2, c3, c4;
+
+    app_status.formatStaticLine(0, "{} count1, {} count2", c1, c2);
+    app_status.formatStaticLine(0, "{} count1, {} count2", c1, c2);
+    app_status.formatStaticLine(1, "{} count3, {} count4", c3, c4);
+    app_status.formatStaticLine(1, "{} count3, {} count4", c3, c4);
 }
