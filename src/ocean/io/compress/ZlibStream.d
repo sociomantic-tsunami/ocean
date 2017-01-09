@@ -30,6 +30,8 @@
                     });
             });
 
+        decompress.end();
+
     ---
 
     Copyright:
@@ -107,6 +109,15 @@ class ZlibStreamDecompressor
 
     /***************************************************************************
 
+        The status of the zlib stream object
+
+    ***************************************************************************/
+
+    private int stream_status;
+
+
+    /***************************************************************************
+
         Destructor. Makes sure the C-allocated stream is destroyed.
 
     ***************************************************************************/
@@ -165,13 +176,33 @@ class ZlibStreamDecompressor
         this.stream.next_in = null;
 
         // Allocate inflate state
-        auto ret = inflateInit2(&this.stream, windowBits);
-        if ( ret != Z_OK )
+        this.stream_status = inflateInit2(&this.stream, windowBits);
+
+        if ( this.stream_status != Z_OK )
         {
-            throw new ZlibException(ret); // TODO: reusable exception instance
+            // TODO: reusable exception instance
+            throw new ZlibException(this.stream_status);
         }
 
         this.stream_valid = true;
+    }
+
+
+    /***************************************************************************
+
+        Ends decompression of a stream. Releases the C-allocated resources.
+
+        Returns:
+            true if decompression completed normally, false if the stream
+            was incomplete
+
+    ***************************************************************************/
+
+    public bool end ( )
+    {
+        this.killStream();
+
+        return this.stream_status == Z_STREAM_END;
     }
 
 
@@ -185,12 +216,10 @@ class ZlibStreamDecompressor
             compressed_chunk = chunk of compressed data from stream
             output_dg = delegate to receive decompressed data chunks
 
-        Returns:
-            true if the chunk was the end of the stream
-
     ***************************************************************************/
 
-    public bool decodeChunk ( ubyte[] compressed_chunk, void delegate ( ubyte[] decompressed_chunk ) output_dg )
+    public void decodeChunk ( ubyte[] compressed_chunk,
+        void delegate ( ubyte[] decompressed_chunk ) output_dg )
     in
     {
         assert(this.stream_valid, typeof(this).stringof ~ ".decodeChunk: stream not started");
@@ -203,42 +232,57 @@ class ZlibStreamDecompressor
         this.stream.avail_in = castFrom!(size_t).to!(uint)(compressed_chunk.length);
         this.stream.next_in = compressed_chunk.ptr;
 
-        int ret;
         do
         {
-            // Set stream output chunk.
-            this.stream.avail_out = buffer.length;
-            this.stream.next_out = buffer.ptr;
-
-            // Decompress.
-            ret = inflate(&this.stream, Z_NO_FLUSH);
-            switch ( ret )
+            if ( this.stream_status == Z_STREAM_END )
             {
-                // Handle errors.
-                case Z_NEED_DICT:
-                    // Whilst not technically an error, this should never happen
-                    // for general-use code, so treat it as an error.
-                case Z_DATA_ERROR:
-                case Z_MEM_ERROR:
-                case Z_STREAM_ERROR:
+                // Z_STREAM_END is not the same as EOF.
+                // Inside a concatenated gzip file, it may be followed by
+                // additional compressed data.
+
+                inflateReset(&this.stream);
+            }
+            do
+            {
+                // Set stream output chunk.
+                this.stream.avail_out = buffer.length;
+                this.stream.next_out = buffer.ptr;
+
+                // Decompress.
+                this.stream_status = inflate(&this.stream, Z_NO_FLUSH);
+
+                // Z_BUF_ERROR is not an error, it indicates that no progress
+                // can be made until more input data is provided. It exists
+                // to distinguish a special case: when the previous call to
+                // inflate() consumed all the input, but coincidentally
+                // happened to completely fill the output buffer, the next
+                // call to inflate() will return Z_BUF_ERROR because no more
+                // data is available.
+
+                if ( this.stream_status != Z_OK
+                    && this.stream_status != Z_STREAM_END
+                    && this.stream_status != Z_BUF_ERROR )
+                {
+                    // Handle errors.
+
                     this.killStream();
-                    throw new ZlibException(ret); // TODO: reusable exception instance
+
+                     // TODO: reusable exception instance
+                    throw new ZlibException(this.stream_status);
+                }
 
                 // Pass decompressed data chunk to output delegate.
-                default:
-                    auto filled_len = buffer.length - this.stream.avail_out;
+
+                auto filled_len =  buffer.length - this.stream.avail_out;
+
+                if ( filled_len > 0 )
+                {
                     output_dg(buffer[0 .. filled_len]);
+                }
             }
+            while ( this.stream.avail_out == 0 );
         }
-        while (ret != Z_STREAM_END && this.stream.avail_in > 0 );
-
-        // Kill stream object if the end was reached.
-        if ( ret == Z_STREAM_END )
-        {
-            this.killStream();
-        }
-
-        return ret == Z_STREAM_END;
+        while ( this.stream.avail_in > 0 );
     }
 
 
