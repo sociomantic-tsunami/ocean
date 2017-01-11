@@ -251,9 +251,9 @@ version(UnitTest)
 
             mstring[] strarr;
 
-            void convert_c(ref Version1 s)
+            static void convert_c(ref Version1 s, ref Version2 dst)
             {
-                this.c = s.a + s.b;
+                dst.c = s.a + s.b;
             }
         }
     }
@@ -464,9 +464,9 @@ struct Test1
 
         alias Version2 StructNext;
 
-        void convert_a(ref Version2 src)
+        static void convert_a(ref Version2 src, ref Version1 dst)
         {
-            this.a = src.a + 1;
+            dst.a = src.a + 1;
         }
 
         int a;
@@ -520,9 +520,9 @@ struct Test2
 
         alias Version1 StructPrevious;
 
-        void convert_a(ref Version1 src)
+        static void convert_a(ref Version1 src, ref Version2 dst)
         {
-            this.a = src.a + 1;
+            dst.a = src.a + 1;
         }
 
         int a = 42;
@@ -625,8 +625,14 @@ struct Test3
             int a;
             int b;
 
-            void convert_b ( ref Version0.Nested0 s ) { this.b = s.a + 1; }
-            void convert_b ( ref Version2.Nested2 s ) { this.b = s.a / 2; }
+            static void convert_b ( ref Version0.Nested0 s, ref Nested1 dst )
+            {
+                dst.b = s.a + 1;
+            }
+            static void convert_b ( ref Version2.Nested2 s, ref Nested1 dst )
+            {
+                dst.b = s.a / 2;
+            }
         }
 
         int a;
@@ -636,14 +642,14 @@ struct Test3
         Nested1[] nested_arr;
         char[][]  string_arr;
 
-        void convert_c ( ref Version0 s )
+        static void convert_c ( ref Version0 s, ref Version1 dst )
         {
-            this.c = s.b - s.a;
+            dst.c = s.b - s.a;
         }
 
-        void convert_c ( ref Version2 s )
+        static void convert_c ( ref Version2 s, ref Version1 dst )
         {
-            this.c = s.d;
+            dst.c = s.d;
         }
 
         void compare ( NamedTest t, Version0 other )
@@ -719,7 +725,10 @@ struct Test3
         {
             int a;
 
-            void convert_a ( ref Version1.Nested1 s ) { this.a = s.b * 2; }
+            static void convert_a ( ref Version1.Nested1 s, ref Nested2 dst )
+            {
+                dst.a = s.b * 2;
+            }
         }
 
         Nested2[] nested_arr;
@@ -730,7 +739,10 @@ struct Test3
 
         char[][] string_arr;
 
-        void convert_d ( ref Version1 s ) { this.d = s.c; }
+        static void convert_d ( ref Version1 s, ref Version2 dst )
+        {
+            dst.d = s.c;
+        }
 
         void compare ( NamedTest t, ref Version0 other )
         {
@@ -922,7 +934,7 @@ struct Test4
         alias Test4.Ver0 StructPrevious;
 
         long b;
-        void convert_b(ref Ver0 rhs) { this.b = 42; }
+        static void convert_b(ref Ver0 rhs, ref Ver1 dst) { dst.b = 42; }
     }
 }
 
