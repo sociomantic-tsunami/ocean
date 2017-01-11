@@ -1599,7 +1599,7 @@ unittest
 
         long i;
         long o;
-        void convert_o ( ref Test1 t ) { this.o = t.i+1; }
+        static void convert_o ( ref Test1 t, ref Test2 dst ) { dst.o = t.i+1; }
 
         bool compare ( Test1* old )
         {
@@ -1632,9 +1632,9 @@ unittest
         int old;
 
         int a_bit_newer;
-        void convert_a_bit_newer ( )
+        static void convert_a_bit_newer ( ref OldStruct, ref NewStruct dst )
         {
-            this.a_bit_newer = old+1;
+            dst.a_bit_newer = dst.old+1;
         }
 
         bool compare ( OldStruct* old )
@@ -1668,16 +1668,16 @@ unittest
 
         int old1;
 
-        void convert_old1 ( ref OldKey o )
+        static void convert_old1 ( ref OldKey o, ref NewKey dst )
         {
-            old1 = o.old2;
+            dst.old1 = o.old2;
         }
 
         int newer;
 
-        void convert_newer ( ref OldKey o )
+        static void convert_newer ( ref OldKey o, ref NewKey dst )
         {
-            newer = o.old2+1;
+            dst.newer = o.old2+1;
         }
 
         bool compare ( OldKey * oldk )
@@ -1699,9 +1699,9 @@ unittest
         int old1;
         int wops;
 
-        void convert_wops ( ref NewKey k )
+        static void convert_wops ( ref NewKey k, ref NewerKey dst )
         {
-            wops = k.old1;
+            dst.wops = k.old1;
         }
 
         bool compare ( NewKey * n )
@@ -1723,9 +1723,9 @@ unittest
         int old;
         long of;
 
-        void convert_of ( ref NewStruct n )
+        static void convert_of ( ref NewStruct n, ref NewerStruct dst )
         {
-            of = n.a_bit_newer;
+            dst.of = n.a_bit_newer;
         }
 
         bool compare ( OldStruct * olds )
@@ -1751,9 +1751,9 @@ unittest
         const StructVersion = 42;
         int hello42;
 
-        void convert_hello42 ( ref StructPrevious p)
+        static void convert_hello42 ( ref StructPrevious p, ref SinglePrevious dst )
         {
-            this.hello42 = p.hello + 42;
+            dst.hello42 = p.hello + 42;
         }
 
         bool compare ( StructPrevious* olds )
