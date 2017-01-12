@@ -66,5 +66,3 @@ public class LayoutChainsaw : Appender.Layout
                 dg ("\"/></log4j:properties></log4j:event>\r\n");
         }
 }
-
-

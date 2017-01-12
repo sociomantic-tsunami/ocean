@@ -969,7 +969,6 @@ public class Logger : ILogger
                     // does the prefix match? Note we append a "." to each
                     // (the root is a parent of everything)
                     return (len is 0 || candidate == name_[0 .. len]);
-
                 }
                 return false;
         }
