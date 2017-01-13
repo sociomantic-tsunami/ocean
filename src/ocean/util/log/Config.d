@@ -388,13 +388,11 @@ unittest
     per log being configured and passes the returned appender to the log's add()
     method.
 
-    Template_Params:
+    Params:
         Source = the type of the config parser
         FileLayout = layout to use for logging to file, defaults to LayoutDate
         ConsoleLayout = layout to use for logging to console, defaults to
                         LayoutSimple
-
-    Params:
         config   = an instance of an class iterator for Config
         m_config = an instance of the MetaConfig class
         new_appender = delegate which returns appender instances to be used in
