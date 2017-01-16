@@ -253,7 +253,7 @@ class ZlibStreamDecompressor
         if ( this.stream_valid )
         {
             inflateEnd(&stream);
-            stream_valid = false;
+            this.stream_valid = false;
         }
     }
 }
