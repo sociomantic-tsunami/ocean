@@ -94,7 +94,7 @@ public void structConvert ( From, To ) ( ref From from, out To to,
             else
                 const convFuncName = "convert_" ~ FieldName!(to_index, To);
 
-            static if ( structHasMember!(convFuncName, To)() )
+            static if (hasConvertFunction!(From, convFuncName, To)())
             {
                 callBestOverload!(From, To, convFuncName)(from, to, requestBuffer);
             }
@@ -393,10 +393,48 @@ version (UnitTest)
     {
         Test!(2) t;
 
-        assert(isOldOverload!(Test!(1), "old", Test!(2))());
-        assert(!isOldOverload!(Test!(1), "should_fail1", Test!(2))());
-        assert(!isOldOverload!(Test!(1), "should_fail2", Test!(2))());
+        static assert(isOldOverload!(Test!(1), "old", Test!(2))());
+        static assert(!isOldOverload!(Test!(1), "should_fail1", Test!(2))());
+        static assert(!isOldOverload!(Test!(1), "should_fail2", Test!(2))());
     }
+}
+
+/*******************************************************************************
+
+    Checks if a convert function of the given name exists for the given structs
+
+    Params:
+        From = struct that we convert from
+        func_name = name of the function we're looking for
+        To = struct we're converting to
+
+    Returns:
+        true if such a function is found
+
+*******************************************************************************/
+
+private bool hasConvertFunction ( From, istring func_name, To ) ( )
+{
+    static if (is (typeof(isOldOverload!(From, func_name, To)())))
+        if (isOldOverload!(From, func_name, To)())
+            return true;
+
+    void function ( ref From, ref To, void[] delegate ( size_t ) ) longest_convert;
+    void function ( ref From, ref To ) long_convert;
+
+    mixin(`
+    static if ( is ( typeof(longest_convert = &To.` ~ func_name ~ `) ))
+    {
+        return true;
+    }
+    else static if ( is ( typeof(long_convert = &To.` ~ func_name ~ `) ))
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }`);
 }
 
 /*******************************************************************************
