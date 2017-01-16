@@ -352,28 +352,31 @@ private void callBestOverloadOld ( From, To, istring function_name )
 
 *******************************************************************************/
 
-private bool isOldOverload ( From, T ) ( T t )
+private bool isOldOverload ( From, istring func_name, To ) ( )
 {
     void delegate ( ref From, void[] delegate ( size_t ) ) longest_convert;
     void delegate ( ref From ) long_convert;
     void delegate ( ) convert;
 
-    static if ( is ( typeof(longest_convert = t) ))
+    To to;
+
+    mixin(`
+    static if ( is ( typeof(longest_convert = &to.` ~ func_name ~ `) ))
     {
         return true;
     }
-    else static if ( is ( typeof(long_convert = t) ))
+    else static if ( is ( typeof(long_convert = &to.` ~ func_name ~ `) ))
     {
         return true;
     }
-    else static if ( is ( typeof(convert = t )  ))
+    else static if ( is ( typeof(convert = &to.` ~ func_name ~ ` )  ))
     {
         return true;
     }
     else
     {
         return false;
-    }
+    }`);
 }
 
 version (UnitTest)
@@ -390,9 +393,9 @@ version (UnitTest)
     {
         Test!(2) t;
 
-        assert(isOldOverload!(Test!(1))(&t.old));
-        assert(!isOldOverload!(Test!(1))(&t.should_fail1));
-        assert(!isOldOverload!(Test!(1))(&t.should_fail2));
+        assert(isOldOverload!(Test!(1), "old", Test!(2))());
+        assert(!isOldOverload!(Test!(1), "should_fail1", Test!(2))());
+        assert(!isOldOverload!(Test!(1), "should_fail2", Test!(2))());
     }
 }
 
@@ -423,8 +426,8 @@ private void callBestOverload ( From, To, istring function_name )
         void function ( ref From, ref To, void[] delegate ( size_t ) ) longest_convert;
         void function ( ref From, ref To ) long_convert;
 
-        static if (is (typeof(isOldOverload!(From)(&to.`~function_name~`))))
-            const is_old = isOldOverload!(From)(&to.`~function_name~`);
+        static if (is (typeof(isOldOverload!(From, function_name, To)())))
+            const is_old = isOldOverload!(From, function_name, To)();
         else
             const is_old = false;
 
