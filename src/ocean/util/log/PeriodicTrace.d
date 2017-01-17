@@ -271,6 +271,7 @@ struct PeriodicTracer
             this.last_update_time = this.now;
 
             this.formatted.length = 0;
+            enableStomping(this.formatted);
             size_t sink ( cstring s )
             {
                 this.formatted ~= s;

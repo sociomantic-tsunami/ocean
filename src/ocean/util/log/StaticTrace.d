@@ -154,6 +154,7 @@ public class StaticSyncPrint
     public typeof(this) format ( cstring fmt, ... )
     {
         formatted.length = 0;
+        enableStomping(this.formatted);
         size_t sink ( cstring s )
         {
             formatted ~= s;
@@ -205,6 +206,7 @@ public class StaticSyncPrint
         else with ( this.output )
         {
             formatted.length = 0;
+            enableStomping(this.formatted);
             Layout!(char).instance()(&sink, "{}", lines - 1);
 
             write(CSI);
