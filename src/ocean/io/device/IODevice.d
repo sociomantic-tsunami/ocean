@@ -261,8 +261,8 @@ abstract class InputDevice : IInputDevice
             dst = destination data buffer
 
         Returns
-            the number of bytes read and stored in dst on success or -1 on
-            error. On error errno is set appropriately.
+            the number of bytes read and stored in dst on success, 0 on end-of-
+            file condition or -1 on error. On error errno is set appropriately.
 
      **************************************************************************/
 
@@ -274,11 +274,38 @@ abstract class InputDevice : IInputDevice
 
 /******************************************************************************
 
-    Input device base class, may be used to conveniently implement an
+    IODevice device base class, may be used to conveniently implement an I/O
+    class that is both an IInputDevice and IOutputDevice.
+
+ ******************************************************************************/
+
+abstract class IODevice : InputDevice, IOutputDevice
+{
+    /**************************************************************************
+
+        Attempts to write src.length bytes, see IOutputDevice.write()
+        documentation.
+
+        Params:
+            src = source data buffer
+
+        Returns
+            the number of bytes written on success or -1 on error. On error
+            errno is set appropriately.
+
+     **************************************************************************/
+
+    abstract public ssize_t write ( Const!(void)[] src );
+}
+
+/******************************************************************************
+
+    Output device base class, may be used to conveniently implement an
     IOutputDevice.
 
  ******************************************************************************/
 
+deprecated ("use IOutputDevice or IODevice instead")
 abstract class OutputDevice : IOutputDevice
 {
     /**************************************************************************
