@@ -198,7 +198,7 @@ class UnicodeFile(T)
 
         final void write (T[] content, bool writeBom)
         {
-                // convert to external representation (may throw an exeption)
+                // convert to external representation (may throw an exception)
                 void[] converted = bom_.encode (content);
 
                 // open file after conversion ~ in case of exceptions

@@ -371,8 +371,8 @@ unittest
                  pre_comp_tm, pre_uncomp_tm, pre_crc_tm;
 
     version (UnitTestVerbose)
-        Stdout.formatln("LzoChunk unittest: loading test data from file "
-                "\"lzotest.dat\"");
+        Stdout.formatln(
+            `LzoChunk unittest: loading test data from file "lzotest.dat\"`);
 
     // FLAKEY: Avoid IO in unittests and specially fixed file names
     File file;
@@ -415,14 +415,14 @@ unittest
     version (UnitTestVerbose)
     {
         Stdout.formatln("LzoChunk unittest results:\n\t"
-                   "uncompressed length: {} {}B\t({} bytes)\n\t"
-                   "compressed length:   {} {}B\t({} bytes)\n\t"
-                   "compression ratio:   {}%\n\t"
-                   "compression time:    {} {}s\t({} µs)\n\t"
-                   "uncompression time:  {} {}s\t({} µs)\n\t"
-                   "\n"
-                   "LzoChunk unittest: Looping for memory leak detection; "
-                   "watch memory usage and press Ctrl+C to quit",
+                 ~ "uncompressed length: {} {}B\t({} bytes)\n\t"
+                 ~ "compressed length:   {} {}B\t({} bytes)\n\t"
+                 ~ "compression ratio:   {}%\n\t"
+                 ~ "compression time:    {} {}s\t({} µs)\n\t"
+                 ~ "uncompression time:  {} {}s\t({} µs)\n\t"
+                 ~ "\n"
+                 ~ "LzoChunk unittest: Looping for memory leak detection; "
+                 ~ "watch memory usage and press Ctrl+C to quit",
                    pre_uncomp_sz.scaled, pre_uncomp_sz.prefix, data.length,
                    pre_comp_sz.scaled, pre_comp_sz.prefix, compressed.length,
                    lrintf((compressed.length * 100.f) / data.length),

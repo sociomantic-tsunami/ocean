@@ -10,7 +10,7 @@
         mstring text;
 
         char* cText = StringC.toCString(text);
-        mstring text = StringD.toDString(cText);
+        mstring text = StringC.toDString(cText);
 
     ---
 

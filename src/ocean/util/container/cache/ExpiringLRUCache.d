@@ -80,8 +80,8 @@ class ExpiringLRUCache(T = void[]) : LRUCache!(T, true), IExpiringCacheInfo
     public this ( size_t max_items, time_t lifetime )
     in
     {
-        assert (lifetime > 0, "cache element lifetime is expected to be at "
-                              "least 1");
+        assert (lifetime > 0,
+                "cache element lifetime is expected to be at least 1");
     }
     body
     {
@@ -300,8 +300,8 @@ class ExpiringLRUCache(T = void[]) : LRUCache!(T, true), IExpiringCacheInfo
                                      bool create = false )
     in
     {
-        assert (this.lifetime > 0, "cache element lifetime is expected to be "
-                                   "at least 1");
+        assert (this.lifetime > 0,
+                "cache element lifetime is expected to be at least 1");
     }
     out (val)
     {

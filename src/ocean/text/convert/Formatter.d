@@ -26,6 +26,7 @@ import ocean.transition;
 import ocean.core.Traits;
 import Integer = ocean.text.convert.Integer_tango;
 import Float = ocean.text.convert.Float;
+import UTF = ocean.text.convert.Utf;
 
 version (UnitTest)
 {
@@ -307,6 +308,10 @@ private void handle (T) (T v, FormatInfo f, Sink sf, ElementSink se)
      * Multiple conditions could be matched by the same type.
      */
 
+    // `typeof(null)` matches way too many things
+    static if (is(T == typeof(null)))
+        se("null", f);
+
     /** D1 + D2 support of typedef
      * Note that another approach would be to handle `struct` at the very
      * last stage and relying on `alias this` for implicit conversions.
@@ -317,7 +322,7 @@ private void handle (T) (T v, FormatInfo f, Sink sf, ElementSink se)
      * but only the means to perform it.
      * This could be solved later with a UDA, but it's at best a workaround.
      */
-    static if (IsTypedef!(T))
+    else static if (IsTypedef!(T))
         handle!(DropTypedef!(T))(v, f, sf, se);
 
     // Cannot print enum member name in D1, so just print the value
@@ -409,20 +414,24 @@ private void handle (T) (T v, FormatInfo f, Sink sf, ElementSink se)
     }
 
     // UTF-8 strings and chars (UTF-16 and UTF-32 unsupported)
-    else static if (is(T : cstring))
+    else static if (is(T : cstring)
+                    || is(T : Const!(wchar)[])
+                    || is(T : Const!(dchar)[]))
     {
         if (f.flags & Flags.Nested) sf(`"`);
-        se(v, f);
+        UTF.toString(v, (cstring val) { return se(val, f); });
         if (f.flags & Flags.Nested) sf(`"`);
     }
-    else static if (is (typeof((&v)[0 .. 1]) : cstring))
+    else static if (is(typeof((&v)[0 .. 1]) : cstring)
+                    || is(typeof((&v)[0 .. 1]) : Const!(wchar)[])
+                    || is(typeof((&v)[0 .. 1]) : Const!(dchar)[]))
     {
-        char[3] b = "'_'";
+        Unqual!(T)[3] b = "'_'";
         b[1] = v;
         if (f.flags & Flags.Nested)
-            sf(b);
+            UTF.toString(b, (cstring val) { return se(val, f); });
         else
-            sf(b[1 .. 2]);
+            UTF.toString(b[1 .. 2], (cstring val) { return se(val, f); });
     }
 
     // Pointers need to be at the top because `(int*).min` compiles
@@ -1093,11 +1102,15 @@ unittest
     assert(format("{}", S2.init) == "{ empty struct }");
     // This used to produce '{unhandled argument type}'
 
-    // Tango's Layout supports UTF-16 and UTF-32 (`wchar` and `dchar`), we don't.
-    // Instead of `assert(format("{}", "42"w) == "42")` we now trigger a
-    // `static assert`
-    version(none) assert(format("{}", "42"w) == "42");
+    // Basic wchar / dchar support
+    assert(format("{}", "42"w) == "42");
+    assert(format("{}", "42"d) == "42");
+    wchar wc = '4';
+    dchar dc = '2';
+    assert(format("{}", wc) == "4");
+    assert(format("{}", dc) == "2");
 
+    assert(format("{,3}", '8') == "  8");
 
     /*
      * Associative array formatting used to be in the form `{key => value, ...}`

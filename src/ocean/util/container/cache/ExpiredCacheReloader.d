@@ -249,7 +249,7 @@ class ExpiredCacheReloader ( S )
         be used to do any adjustments necessary for specific cached type. Does
         nothing by default which is most common case for exsting caches.
 
-        If overriden this method must always modify data in-place
+        If overridden this method must always modify data in-place
 
         Params:
             data = deserialized element data, use `data.ptr` to access it as S*

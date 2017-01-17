@@ -93,7 +93,7 @@ public bool toInteger ( C, T ) ( C[] digits, out T value, uint radix = 0 )
     else
     {
         static assert(false, "toInteger: T must be one of {byte, ubyte, short, "
-                      "ushort, int, uint, long, ulong}, not " ~ T.stringof);
+                    ~ "ushort, int, uint, long, ulong}, not " ~ T.stringof);
     }
 }
 

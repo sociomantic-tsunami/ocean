@@ -30,7 +30,8 @@ import ocean.sys.Common;
 
 import ocean.io.device.Device;
 
-import stdc = ocean.stdc.stringz;
+import ocean.stdc.stringz;
+import core.stdc.string;
 import ocean.stdc.errno;
 
 /*******************************************************************************
@@ -524,7 +525,7 @@ class File : Device, Device.Seek, Device.Truncate
 
             // zero terminate and convert to utf16
             char[512] zero = void;
-            auto name = stdc.toStringz (path, zero);
+            auto name = toStringz (path, zero);
             auto mode = Access[style.access] | Create[style.open];
 
             // always open as a large file

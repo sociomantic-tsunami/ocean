@@ -204,7 +204,7 @@ class EmailSender
             catch ( ProcessException e )
             {
                 Stderr.formatln("Process '{}' ({}) exited with reason {}, "
-                    "status {}", programName, pid, cast(int) result.reason,
+                  ~ "status {}", programName, pid, cast(int) result.reason,
                     result.status);
                 return false;
             }

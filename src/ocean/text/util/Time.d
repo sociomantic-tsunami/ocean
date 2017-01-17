@@ -2,32 +2,6 @@
 
     Functions to format time strings.
 
-    Usage example:
-
-    ---
-
-        import ocean.text.util.Time;
-        import ocean.stdc.time : time_t;
-
-        time_t timestamp = 23897129;
-        char[20] static_str;
-        formatTime(timestamp, static_str);
-
-        // static_str now contains "1970-10-04 14:05:29"
-
-        char[] str;
-        uint seconds = 94523;
-
-        formatDuration(seconds, str);
-
-        // str now contains "1 day, 2 hours, 15 minutes, 23 seconds"
-
-        formatDurationShort(seconds, str);
-
-        // str now contains "1d2h15m23s"
-
-    ---
-
     Copyright:
         Copyright (c) 2009-2016 Sociomantic Labs GmbH.
         All rights reserved.
@@ -49,13 +23,15 @@ module ocean.text.util.Time;
 
 *******************************************************************************/
 
+import core.sys.posix.time : gmtime_r;
+
 import ocean.transition;
 
 import ocean.core.Enforce;
 
 import ocean.core.Array : copy;
 
-import ocean.stdc.time : gmtime, strftime, time_t, tm;
+import ocean.stdc.time : strftime, time_t, tm;
 
 import ocean.text.convert.Format;
 
@@ -63,35 +39,88 @@ import ocean.text.convert.Format;
 
 /*******************************************************************************
 
-    Formats a string with the human-readable form of the specified unix
-    timestamp. The timestamp is formatted as follows:
+    Formats the given UNIX timestamp into the form specified by the format
+    string. If no format string is given, and the length of the destination
+    output buffer has been set to at least 20 characters, then the timestamp
+    will be formatted into the form `1982-09-15 10:37:29`.
 
-        1970-10-04 14:05:29
+    Refer to the manual page of `strftime` for the various conversion
+    specifications that can be used to construct the format string.
+
+    This function should be preferred when formatting the time into a static
+    array.
 
     Params:
-        utc = timestamp to format
+        timestamp = timestamp to format
         output = slice to destination string buffer, must be long enough to
-            contain formatted string (at least 20 characters) -- intended for
-            use with a static array
+            contain the resulting string post-conversion
+        format_string = format string to define how the timestamp should be
+            formatted, must be null-terminated (defaults to "%F %T\0")
+            note that the format string requires an explicit '\0' even if string
+            literals are being passed
 
     Returns:
         slice to the string formatted in 'output', may be an empty slice if the
-        provided buffer is too small
+        provided buffer is too small or if an error occurred
 
 *******************************************************************************/
 
-public mstring formatTime ( time_t utc, mstring output )
+public mstring formatTime ( time_t timestamp, mstring output,
+    cstring format_string = "%F %T\0" )
 in
 {
-    assert(output.length >= 20);
+    assert(!format_string[$ - 1], "Format string must be null-terminated");
 }
 body
 {
     tm time;
-    time = *gmtime(&utc);
+    size_t len;
 
-    const format = "%F %T\0";
-    output.length = strftime(output.ptr, output.length, format.ptr, &time);
+    if ( gmtime_r(&timestamp, &time) )
+    {
+        len = strftime(output.ptr, output.length, format_string.ptr, &time);
+    }
+
+    return output[0 .. len];
+}
+
+
+/*******************************************************************************
+
+    Formats the given UNIX timestamp into the form specified by the format
+    string. If no format string is given, then the timestamp will be formatted
+    into the form `1982-09-15 10:37:29`.
+
+    Refer to the manual page of `strftime` for the various conversion
+    specifications that can be used to construct the format string.
+
+    This function should be preferred when formatting the time into a dynamic
+    array.
+
+    Params:
+        timestamp = timestamp to format
+        output = slice to destination string buffer
+        format_string = format string to define how the timestamp should be
+            formatted, must be null-terminated (defaults to "%F %T\0")
+            note that the format string requires an explicit '\0' even if string
+            literals are being passed
+        max_output_len = maximum length of the resulting string post-conversion
+            (defaults to 50)
+
+    Returns:
+        the formatted string, may be an empty slice if the result exceeds the
+        maximum output length specified or if an error occurred
+
+*******************************************************************************/
+
+public mstring formatTimeRef ( time_t timestamp, ref mstring output,
+    cstring format_string = "%F %T\0", uint max_output_len = 50 )
+{
+    output.length = max_output_len;
+    enableStomping(output);
+
+    output.length = formatTime(timestamp, output, format_string).length;
+    enableStomping(output);
 
     return output;
 }
@@ -278,3 +307,61 @@ public void extractTimePeriods ( ulong s, out uint years, out uint days,
     minutes    = extract(minute_timespan);
 }
 
+
+version ( UnitTest )
+{
+    import ocean.core.Test;
+}
+
+///
+unittest
+{
+    time_t timestamp = 400934249;
+    char[20] static_str;
+    char[50] big_static_str;
+
+    test!("==")(formatTime(timestamp, static_str), "1982-09-15 10:37:29");
+
+    // An empty string is returned if the buffer is not large enough
+    test!("==")(formatTime(timestamp, static_str, "%A, %d %B %Y %T\0"), "");
+
+    test!("==")(formatTime(timestamp, big_static_str, "%A, %d %B %Y %T\0"),
+        "Wednesday, 15 September 1982 10:37:29");
+
+    mstring buf;
+
+    formatTimeRef(timestamp, buf);
+    test!("==")(buf, "1982-09-15 10:37:29");
+
+    formatTimeRef(timestamp, buf, "%A, %d %B %Y %T\0");
+    test!("==")(buf, "Wednesday, 15 September 1982 10:37:29");
+
+    // An empty string is returned if the resulting string is longer than the
+    // maximum length
+    formatTimeRef(timestamp, buf,
+        "%d/%m/%y, but Americans would write that as %D\0");
+    test!("==")(buf, "");
+
+    // A larger maximum length can be set if necessary
+    formatTimeRef(timestamp, buf,
+        "%d/%m/%y, but Americans would write that as %D\0", 100);
+    test!("==")(buf, "15/09/82, but Americans would write that as 09/15/82");
+
+    mstring str;
+    uint seconds = 94523;
+
+    formatDuration(seconds, str);
+    test!("==")(str, "1 day, 2 hours, 15 minutes, 23 seconds");
+
+    formatDurationShort(seconds, str);
+    test!("==")(str, "1d2h15m23s");
+
+    uint years, days, hours, minutes;
+
+    extractTimePeriods(100000000, years, days, hours, minutes, seconds);
+    test!("==")(years, 3);
+    test!("==")(days, 62);
+    test!("==")(hours, 9);
+    test!("==")(minutes, 46);
+    test!("==")(seconds, 40);
+}

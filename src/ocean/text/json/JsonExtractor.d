@@ -844,48 +844,48 @@ struct JsonExtractor
     unittest
     {
         const content =
-        `{`
-            `"id":"8c97472e-098e-4baa-aa63-4a3f2aab10c6",`
-            `"imp":`
-            `[`
-                `{`
-                     `"impid":"7682f6f1-810c-49b0-8388-f91ba4a00c1d",`
-                     `"h":480,`
-                     `"w":640,`
-                     `"btype": [ 1,2,3 ],`
-                     `"battr": [ 3,4,5 ]`
-                `},`
-                `{`
-                    `"Hello": "World!"`
-                `},`
-                `12345`
-            `],`
-            `"site":`
-            `{`
-                `"sid":"1",`
-                `"name":"MySite",`
-                `"pub":"MyPublisher",`
-                `"cat": [ "IAB1", "IAB2" ],`
-                `"page":"http://www.example.com/"`
-            `},`
-            `"bcat": null,`
-            `"user":`
-            `{`
-                `"uid":"45FB778",`
-                `"buyeruid":"100"`
-            `},`
-            `"device":`
-            `{`
-                `"ip":"192.168.0.1",`
-                `"ua":"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/534.30 `
-                     `(KHTML, like Gecko) Chrome/12.0.742.53 Safari/534.30"`
-            `},`
-            `"cud":`
-            `{`
-                `"age":"23",`
-                `"gender":"female"`
-            `}`
-        `}`;
+        `{
+            "id":"8c97472e-098e-4baa-aa63-4a3f2aab10c6",
+            "imp":
+            [
+                {
+                     "impid":"7682f6f1-810c-49b0-8388-f91ba4a00c1d",
+                     "h":480,
+                     "w":640,
+                     "btype": [ 1,2,3 ],
+                     "battr": [ 3,4,5 ]
+                },
+                {
+                    "Hello": "World!"
+                },
+                12345
+            ],
+            "site":
+            {
+                "sid":"1",
+                "name":"MySite",
+                "pub":"MyPublisher",
+                "cat": [ "IAB1", "IAB2" ],
+                "page":"http://www.example.com/"
+            },
+            "bcat": null,
+            "user":
+            {
+                "uid":"45FB778",
+                "buyeruid":"100"
+            },
+            "device":
+            {
+                "ip":"192.168.0.1",
+                "ua":"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/534.30 `
+                   ~ `(KHTML, like Gecko) Chrome/12.0.742.53 Safari/534.30"
+            },
+            "cud":
+            {
+                "age":"23",
+                "gender":"female"
+            }
+        }`;
 
         auto t = new NamedTest("JsonExtractor");
 

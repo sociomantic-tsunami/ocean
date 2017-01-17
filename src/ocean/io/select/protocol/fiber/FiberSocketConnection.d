@@ -678,7 +678,7 @@ public class IFiberSocketConnection : IFiberSelectProtocol
 
     /**************************************************************************
 
-        Disconnecion cleanup handler for a subclass
+        Disconnection cleanup handler for a subclass
 
      **************************************************************************/
 
@@ -688,7 +688,7 @@ public class IFiberSocketConnection : IFiberSelectProtocol
 
     /***************************************************************************
 
-        Called from super.transmitLoop() in two cirumstances:
+        Called from super.transmitLoop() in two circumstances:
             1. Upon the initial call to transmitLoop() in connect(), above.
             2. After an epoll wait, upon receipt of one or more registered
                events.

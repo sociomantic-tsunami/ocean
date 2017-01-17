@@ -539,7 +539,7 @@ class ConfigParser
         {
             throw new ConfigException(
                           Format("Critical Error: Configuration key '{}:{}' "
-                                 "appears not to be of type '{}'",
+                               ~ "appears not to be of type '{}'",
                                  category, key, T.stringof));
         }
 
@@ -1468,7 +1468,7 @@ three = teen
         // Repeated parsing of the same configuration.
 
         Stdout.blue.formatln("Memory analysis of repeated parsing of the same "
-                             "configuration").default_colour;
+                           ~ "configuration").default_colour;
 
         gc_usage(memused1, memfree);
         Stdout.formatln("before parsing  : memused = {}", memused1);
@@ -1477,7 +1477,7 @@ three = teen
 
         gc_usage(memused2, memfree);
         Stdout.formatln("after parse # 1 : memused = {} (additional mem "
-                        "consumed = {})", memused2, (memused2 - memused1));
+                      ~ "consumed = {})", memused2, (memused2 - memused1));
 
         memused1 = memused2;
 
@@ -1488,7 +1488,7 @@ three = teen
 
         gc_usage(memused2, memfree);
         Stdout.formatln("after parse # {} : memused = {} (additional mem "
-                        "consumed = {})", num_parses, memused2,
+                      ~ "consumed = {})", num_parses, memused2,
                         (memused2 - memused1));
         Stdout.formatln("");
     }

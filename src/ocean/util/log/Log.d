@@ -99,37 +99,11 @@ import ocean.text.convert.Format;
 
 import ocean.util.log.model.ILogger;
 
-/*******************************************************************************
+import ocean.core.Vararg;
 
-        Platform issues ...
 
-*******************************************************************************/
-
-version (DigitalMars)
-        {
-        import ocean.core.Vararg;
-        alias void* Arg;
-        alias va_list ArgList;
-
-    version(X86_64)  version = DigitalMarsX64;
-
-        }
-     else
-        {
-        alias void* Arg;
-        alias void* ArgList;
-        }
-
-/*******************************************************************************
-
-        Pull in additional functions from the C library
-
-*******************************************************************************/
-
-extern (C)
-{
-        private int memcmp (Const!(void)*, Const!(void)*, size_t);
-}
+alias void* Arg;
+alias va_list ArgList;
 
 /*******************************************************************************
 
@@ -519,25 +493,6 @@ public class Logger : ILogger
 
         /***********************************************************************
 
-                Context for a hierarchy, used for customizing behaviour
-                of log hierarchies. You can use this to implement dynamic
-                log-levels, based upon filtering or some other mechanism
-
-        ***********************************************************************/
-
-        interface Context
-        {
-                /// return a label for this context
-                istring label ();
-
-                /// first arg is the setting of the logger itself, and
-                /// the second arg is what kind of message we're being
-                /// asked to produce
-                bool enabled (Level setting, Level target);
-        }
-
-        /***********************************************************************
-
         ***********************************************************************/
 
         private Logger          next,
@@ -583,7 +538,7 @@ public class Logger : ILogger
 
         /***********************************************************************
 
-                Is this logger enabed for the specified Level?
+                Is this logger enabled for the specified Level?
 
         ***********************************************************************/
 
@@ -741,7 +696,7 @@ public class Logger : ILogger
         /***********************************************************************
 
                 Set the current level for this logger, and (optionally) all
-                of its descendents.
+                of its descendants.
 
         ***********************************************************************/
 
@@ -838,7 +793,7 @@ public class Logger : ILogger
         /***********************************************************************
 
             Toggles the stats collecting for this logger and optionally
-            for all its descentends.
+            for all its descendants.
 
             Params:
                 value = indicator if the stats collection for this logger
@@ -896,9 +851,9 @@ public class Logger : ILogger
 
         private void append (LogEvent event)
         {
-                // indicator if the event was at least once emmited to the
+                // indicator if the event was at least once emitted to the
                 // appender (to use for global stats)
-                bool event_emmited;
+                bool event_emitted;
 
                 // combine appenders from all ancestors
                 auto links = this;
@@ -919,7 +874,7 @@ public class Logger : ILogger
                                  // append message and update mask
                                  appender.append (event);
                                  masks |= mask;
-                                 event_emmited = true;
+                                 event_emitted = true;
                                  }
                          // process all appenders for this node
                          appender = appender.next;
@@ -930,7 +885,7 @@ public class Logger : ILogger
                 // If the event was emitted to at least one appender, and the
                 // collecting stats for this log is enabled, increment the
                 // stats counters
-                if (this.collect_stats && event_emmited)
+                if (this.collect_stats && event_emitted)
                 {
                     Log.logger_stats.accumulate(event.level);
                 }
@@ -1010,10 +965,12 @@ public class Logger : ILogger
 
                 // possible parent if length is shorter
                 if (len < name_.length)
+                {
                     // does the prefix match? Note we append a "." to each
                     // (the root is a parent of everything)
-                    return (len is 0 ||
-                            memcmp (&candidate[0], &name_[0], len) is 0);
+                    return (len is 0 || candidate == name_[0 .. len]);
+
+                }
                 return false;
         }
 
@@ -1043,7 +1000,7 @@ public class Logger : ILogger
         each logger linked to the others in an ordered group. Ordering
         places shortest names at the head and longest ones at the tail,
         making the job of identifying ancestors easier in an orderly
-        fashion. For example, when propagating levels across descendents
+        fashion. For example, when propagating levels across descendants
         it would be a mistake to propagate to a child before all of its
         ancestors were taken care of.
 
@@ -1052,7 +1009,7 @@ public class Logger : ILogger
 public class Hierarchy : Logger.Context
 {
         private Logger                  root_;
-        private istring                 name_,
+        private istring                 label_,
                                         address_;
         private Logger.Context          context_;
         private Logger[istring]          loggers;
@@ -1064,9 +1021,9 @@ public class Hierarchy : Logger.Context
 
         ***********************************************************************/
 
-        this (istring name)
+        this (istring hlabel)
         {
-                name_ = name;
+                this.label_ = hlabel;
                 address_ = "network";
 
                 // insert a root node; the root has an empty name
@@ -1080,7 +1037,18 @@ public class Hierarchy : Logger.Context
 
         final istring label ()
         {
-                return "";
+                return this.label_;
+        }
+
+        /**********************************************************************
+
+                Set the name of this Hierarchy
+
+        **********************************************************************/
+
+        final void label (istring value)
+        {
+            this.label_ = value;
         }
 
         /**********************************************************************
@@ -1099,9 +1067,10 @@ public class Hierarchy : Logger.Context
 
         **********************************************************************/
 
+        deprecated("Use label instead")
         final istring name ()
         {
-                return name_;
+                return this.label_;
         }
 
         /**********************************************************************
@@ -1110,9 +1079,10 @@ public class Hierarchy : Logger.Context
 
         **********************************************************************/
 
+        deprecated("Use label instead")
         final void name (istring name)
         {
-                name_ = name;
+                this.label_ = name;
         }
 
         /**********************************************************************
@@ -1856,40 +1826,5 @@ public class LayoutTimer : Appender.Layout
                 dg (event.host.context.label);
                 dg ("- ");
                 dg (event.toString);
-        }
-}
-
-
-/*******************************************************************************
-
-*******************************************************************************/
-
-debug (Log)
-{
-        import ocean.io.Console;
-
-        void main()
-        {
-                Log.config (Cerr.stream);
-                auto log = Log.lookup ("fu.bar");
-                log.level = log.Trace;
-                // traditional usage
-                log.trace ("hello {}", "world");
-
-                char[100] buf;
-                log (log.Trace, log.format(buf, "hello {}", "world"));
-
-                // formatted output
-/*                /
-                auto format = Log.format;
-                log.info (format ("blah{}", 1));
-
-                // snapshot
-                auto snap = Log.snapshot (log, Level.Error);
-                snap.format ("arg{}; ", 1);
-                snap.format ("arg{}; ", 2);
-                //log.trace (snap.format ("error! arg{}", 3));
-                snap.flush;
-*/
         }
 }

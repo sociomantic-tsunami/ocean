@@ -182,7 +182,7 @@ class FiberSelectReader : IFiberSelectProtocol
         this.input = cast (IInputDevice) this.conduit;
 
         assert (this.input !is null, typeof (this).stringof ~ ": the conduit of "
-                "the other " ~ typeof (super).stringof ~ " instance must be a "
+                ~ "the other " ~ typeof (super).stringof ~ " instance must be a "
                 ~ IInputDevice.stringof);
     }
 
@@ -252,7 +252,7 @@ class FiberSelectReader : IFiberSelectProtocol
         Invokes consume with the data that are currently available and haven't
         yet been consumed.
         If the amount of data is sufficient, consume must return the number of
-        bytes it consumed. Otherwise if comsume consumed all data and needs more
+        bytes it consumed. Otherwise if consume consumed all data and needs more
         input data to be read from the I/O device, it must return a value
         greater than the number of data bytes passed to it.
 

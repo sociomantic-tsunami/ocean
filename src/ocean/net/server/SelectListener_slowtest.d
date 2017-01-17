@@ -105,7 +105,7 @@ unittest
     }
 
     log.warn("FLAKEY: Failed to perform test of binding to a "
-        "specific port after 10 tries");
+        ~ "specific port after 10 tries");
 }
 
 /*******************************************************************************
@@ -147,7 +147,7 @@ void test_unix (istring path)
         {
             test(false, "Socket file '" ~ local_address.sun_path ~
                 "' could not be unlinked (it may not exist or "
-                "the executalbe lacks permissions).");
+              ~ "the executalbe lacks permissions).");
         }
     }
 }

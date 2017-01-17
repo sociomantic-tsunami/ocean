@@ -188,7 +188,7 @@ private
 
                         debug( ZipFolder )
                             Stderr.formatln("Entry.openOutput: duplicated"
-                                    " temp file {} for {}",
+                                    ~ " temp file {} for {}",
                                     file.tempFile, this.fullname);
                     }
 
@@ -203,7 +203,7 @@ private
 
                     debug( ZipFolder )
                         Stderr.formatln("Entry.openOutput: created"
-                                " temp file {} for {}",
+                                ~ " temp file {} for {}",
                                 file.tempFile, this.fullname);
                 }
 
@@ -1002,7 +1002,7 @@ class ZipFile : VfsFile
             return entry.fileSize;
         else
             error("ZipFile.size: cannot reliably determine size of a "
-                    "non-existent file");
+                  ~ "non-existent file");
 
         assert(false);
     }
@@ -1066,7 +1066,7 @@ else
 {
         if( exists )
             error("ZipFile.create: cannot create already existing file: "
-                    "this folder ain't big enough for the both of 'em");
+                  ~ "this folder ain't big enough for the both of 'em");
 
         // MUTATE
         enforce_mutable;
@@ -1120,7 +1120,7 @@ else
 {
         if( !exists )
             error("ZipFile.remove: cannot remove non-existent file; "
-                    "rather redundant, really");
+                  ~ "rather redundant, really");
 
         // MUTATE
         enforce_mutable;
@@ -1153,7 +1153,7 @@ else
 
         else
             error("ZipFile.input: cannot open non-existent file for input; "
-                    "results would not be very useful");
+                  ~ "results would not be very useful");
 
         assert(false);
     }
@@ -1354,7 +1354,7 @@ else
         // If the folder exists, we can't really create it, now can we?
         if( this.exists )
             error("ZipSubFolderEntry.create: cannot create folder that already "
-                    "exists, and believe me, I *tried*");
+                  ~ "exists, and believe me, I *tried*");
 
         // Ok, I suppose I can do this for ya...
         auto entry = new Entry;
@@ -1630,7 +1630,7 @@ void error(istring msg)
 void mutate_error(istring method)
 {
     error(method ~ ": mutating the contents of a ZipFolder "
-            "is not supported yet; terribly sorry");
+          ~ "is not supported yet; terribly sorry");
 }
 
 bool nz(istring s)
@@ -2107,5 +2107,3 @@ private:
         assert( _position >= 0 );
     }
 }
-
-

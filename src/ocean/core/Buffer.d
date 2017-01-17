@@ -64,6 +64,7 @@ struct Buffer ( T )
     {
         mixin(`
             @disable this(this);
+            @disable void opAssign (Buffer!(T) other);
         `);
     }
 

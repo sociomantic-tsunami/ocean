@@ -146,7 +146,7 @@ class FiberSelectWriter : IFiberSelectProtocol
         this.output = cast (IOutputDevice) this.conduit;
 
         assert (this.output !is null, typeof (this).stringof ~ ": the conduit of "
-                "the other " ~ typeof (super).stringof ~ " instance must be a "
+                ~ "the other " ~ typeof (super).stringof ~ " instance must be a "
                 ~ IOutputDevice.stringof);
     }
 

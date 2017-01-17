@@ -172,7 +172,7 @@ public final class ClientSet : IRegisteredClients
         /***********************************************************************
 
             Estimated maximum number of clients, used by the super class to
-            determine the number of buckest in the set.
+            determine the number of buckets in the set.
 
         ***********************************************************************/
 

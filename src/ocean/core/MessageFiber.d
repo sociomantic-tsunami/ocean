@@ -114,7 +114,7 @@ debug ( MessageFiberDump ) extern(C) void dumpFibers()
         if ( fiber !is null )
         {
             Stderr.formatln("{,12}: State: {}; Token: {,12}; LastSuspend: {} ({}s ago); "
-                "Addr: {}; Suspender: {}",
+                ~ "Addr: {}; Suspender: {}",
                 FirstName(fiber), state_str[fiber.fiber.state],
                 fiber.last.str, fiber.time,
                 fiber.time > 0 ? Clock.now().unix().seconds() - fiber.time : 0,

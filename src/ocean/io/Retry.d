@@ -184,7 +184,7 @@ class Retry
         Note: if max_retries == 0, then no limit to the number of retries is set
 
         Params:
-            max_retries = maxmimum number of times to retry this code block
+            max_retries = maximum number of times to retry this code block
                 before giving up
             dg = code block to execute / retry
 

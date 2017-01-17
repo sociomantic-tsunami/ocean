@@ -170,7 +170,7 @@ public class StatsLog
 
             By default, the name provided to the application framework will be
             used.  If the application framework isn't used, or the name needs
-            to be overriden, set this value to a non-empty string.
+            to be overridden, set this value to a non-empty string.
 
             See this class' documentation for further details.
 
@@ -635,11 +635,13 @@ unittest
 
         public this ()
         {
-            super(null, "Test", null, null);
+            super("Test", null, null);
         }
 
         protected override int run (Arguments args, ConfigParser config)
         {
+            auto epoll = new EpollSelectDispatcher;
+            this.startEventHandling(epoll);
             return 0;
         }
 

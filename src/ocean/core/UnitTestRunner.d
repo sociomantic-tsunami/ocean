@@ -210,8 +210,9 @@ private scope class UnitTestRunner
             {
                 skipped++;
                 if (this.verbose > 2)
-                    Stdout.formatln("{}: {}: skipped (one failed and no "
-                            "--keep-going)", this.prog, m.name);
+                    Stdout.formatln(
+                        "{}: {}: skipped (one failed and no --keep-going)",
+                        this.prog, m.name);
                 this.xmlAddSkipped(m.name);
                 continue;
             }
@@ -285,7 +286,7 @@ private scope class UnitTestRunner
         if (this.summary)
         {
             Stdout.format("{}: {} modules passed, {} failed, "
-                    "{} with errors, {} without unittests",
+                    ~ "{} with errors, {} without unittests",
                     this.prog, passed, failed, errored, no_tests);
             if (!this.keep_going && failed)
                 Stdout.format(", {} skipped", skipped);

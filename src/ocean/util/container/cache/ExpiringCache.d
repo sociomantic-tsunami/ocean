@@ -76,8 +76,8 @@ class ExpiringCache ( size_t ValueSize = 0 ) : Cache!(ValueSize, true),
     public this ( size_t max_items, time_t lifetime )
     in
     {
-        assert (lifetime > 0, "cache element lifetime is expected to be at "
-                              "least 1");
+        assert (lifetime > 0,
+                "cache element lifetime is expected to be at least 1");
     }
     body
     {
@@ -288,8 +288,8 @@ class ExpiringCache ( size_t ValueSize = 0 ) : Cache!(ValueSize, true),
                                            bool create = false )
     in
     {
-        assert (this.lifetime > 0, "cache element lifetime is expected to be "
-                                   "at least 1");
+        assert (this.lifetime > 0,
+                "cache element lifetime is expected to be at least 1");
     }
     out (val)
     {

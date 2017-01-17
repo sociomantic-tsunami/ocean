@@ -449,7 +449,7 @@ else
     what you need but sometimes true globals are necessary - primarily related
     to thread and related tool implementation.
 
-    This small mixin helper prepends __gshared to input declatation when
+    This small mixin helper prepends __gshared to input declaration when
     compiled in D2 mode.
 
 *******************************************************************************/
@@ -682,7 +682,7 @@ unittest
         assert (s_arr == [ S(1), S(2), S(3) ]);
         assert (c_arr <= [ new C(1), new C(2), new C(3) ]);
         assert (c_arr >= [ new C(1), new C(2), new C(3) ]);
-        // Fails because we haven't overriden opEquals...
+        // Fails because we haven't overridden opEquals...
         // assert (c_arr == [ new C(1), new C(2), new C(3) ]);
     }
 }
@@ -872,8 +872,8 @@ cstring getMsg ( Throwable e )
 
         version (D_Version2)
         {
-            // reusable exceptions don't have common base class which makes
-            // impossible to accesss `reused_msg` directly but it is best to
+            // reusable exceptions don't have a common base class which makes it
+            // impossible to access `reused_msg` directly but it is best to
             // ensure at least "traditional" exceptions are formatted correctly
             // before failing
             if (e.msg.length)
@@ -881,7 +881,7 @@ cstring getMsg ( Throwable e )
             else
                 // ReusableExceptionImpl currently implements D2 toString in
                 // the same way as D1 toString which is illegal but can be used
-                // as temporary workaround
+                // as a temporary workaround
                 return e.toString();
         }
         else

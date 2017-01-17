@@ -497,9 +497,10 @@ struct StructSerializer ( bool AllowUnions = false )
         }
         else static if (RecurseIntoStruct)
         {
-            debug ( StructSerializer ) pragma (msg, typeof (*this).stringof  ~ ".transmitArray: "
-                               "array elements of struct type '" ~ T.stringof ~
-                               "' contain subarrays");
+            debug ( StructSerializer )
+                pragma (msg, typeof (*this).stringof  ~ ".transmitArray: "
+                             ~ "array elements of struct type '" ~ T.stringof ~
+                             ~ "' contain subarrays");
 
             foreach (ref element; array)
             {
@@ -738,12 +739,12 @@ struct StructSerializer ( bool AllowUnions = false )
         static if (is (S T == T*))
         {
             pragma (msg, typeof (*this).stringof ~ '.' ~ func ~ " - warning: "
-                    "passing struct pointer argument of type '" ~ (S*).stringof ~
-                    "' (you " "probably want '" ~ (T*).stringof ~ "')");
+                  ~ "passing struct pointer argument of type '" ~ (S*).stringof ~
+                  ~ "' (you probably want '" ~ (T*).stringof ~ "')");
         }
 
         assert (s, typeof (*this).stringof ~ '.' ~ func ~ ": "
-                "pointer of type '" ~ S.stringof ~ "*' is null");
+               ~ "pointer of type '" ~ S.stringof ~ "*' is null");
     }
 
     /***************************************************************************
@@ -796,12 +797,13 @@ struct StructSerializer ( bool AllowUnions = false )
     {
         static assert (AllowUnions || !is (T == union),
                        typeof (*this).stringof ~ ": unions are not supported, sorry "
-                        "(affects " ~ FieldInfo!(T, S, i) ~ ") -- use AllowUnions "
-                        "template flag to enable shallow serialization of unions");
+                      ~ "(affects " ~ FieldInfo!(T, S, i) ~ ") -- use AllowUnions "
+                      ~ "template flag to enable shallow serialization of unions");
 
-        static if (isAssocArrayType!(T)) pragma (msg, typeof (*this).stringof ~
-                                             " - Warning: content of associative array will be discarded "
-                                             "(affects " ~ FieldInfo!(T, S, i) ~ ')');
+        static if (isAssocArrayType!(T))
+            pragma (msg, typeof (*this).stringof ~
+                    ~ " - Warning: content of associative array will be discarded "
+                    ~ "(affects " ~ FieldInfo!(T, S, i) ~ ')');
     }
 
     /***************************************************************************
@@ -823,15 +825,15 @@ struct StructSerializer ( bool AllowUnions = false )
     {
        static if (is (U V == V[]))
        {
-           static assert (!isReferenceType!(V), typeof (*this).stringof ~ ": arrays "
-                          "of reference types are not supported, sorry "
-                          "(affects " ~ FieldInfo!(T, S, i) ~ ')');
+           static assert (!isReferenceType!(V), typeof (*this).stringof
+                          ~ ": arrays of reference types are not supported, "
+                          ~ "sorry (affects " ~ FieldInfo!(T, S, i) ~ ')');
        }
        else
        {
-           static assert (!isReferenceType!(U), typeof (*this).stringof ~ ": arrays "
-                          "of reference types are not supported, sorry "
-                          "(affects " ~ FieldInfo!(T, S, i) ~ ')');
+           static assert (!isReferenceType!(U), typeof (*this).stringof
+                          ~ ": arrays of reference types are not supported, "
+                          ~ "sorry (affects " ~ FieldInfo!(T, S, i) ~ ')');
        }
     }
 

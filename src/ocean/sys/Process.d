@@ -1180,7 +1180,7 @@ class Process
 
                             debug (Process)
                                 Stdout.formatln("Child process '{0}' ({1}) was killed prematurely "
-                                                "with signal {2}",
+                                                ~ "with signal {2}",
                                                 _args[0], _pid, result.status);
                         }
                         else if (WIFSTOPPED(rc))
@@ -1190,7 +1190,7 @@ class Process
 
                             debug (Process)
                                 Stdout.formatln("Child process '{0}' ({1}) was stopped "
-                                                "with signal {2}",
+                                                ~ "with signal {2}",
                                                 _args[0], _pid, result.status);
                         }
                         else if (WIFCONTINUED(rc))
@@ -1200,7 +1200,7 @@ class Process
 
                             debug (Process)
                                 Stdout.formatln("Child process '{0}' ({1}) was continued "
-                                                "with signal {2}",
+                                                ~ "with signal {2}",
                                                 _args[0], _pid, result.status);
                         }
                         else
@@ -1210,7 +1210,7 @@ class Process
 
                             debug (Process)
                                 Stdout.formatln("Child process '{0}' ({1}) failed "
-                                                "with unknown exit status {2}\n",
+                                                ~ "with unknown exit status {2}\n",
                                                 _args[0], _pid, result.status);
                         }
                     }

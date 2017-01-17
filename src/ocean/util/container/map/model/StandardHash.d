@@ -68,7 +68,7 @@ struct StandardHash
         {
             static assert (StandardHash.IsPrimitiveValueType!(E),
                            "only arrays of primitive value types supported, "
-                           "not '" ~ K.stringof ~ '\'');
+                           ~ "not '" ~ K.stringof ~ '\'');
 
             return StandardHash.fnv1a(key);
         }
@@ -77,8 +77,8 @@ struct StandardHash
             static assert (is (K == class) || is (K == interface)
                         || is (K == struct) || is (K == union),
                            "only primitive value types, arrays of such and "
-                           "classes/interfaces/structs/unions implementing "
-                           "toHash() supported, not '" ~ K.stringof ~ '\'');
+                         ~ "classes/interfaces/structs/unions implementing "
+                         ~ "toHash() supported, not '" ~ K.stringof ~ '\'');
 
             return key.toHash();
         }

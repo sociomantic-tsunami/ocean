@@ -362,7 +362,7 @@ template MapIterator ( V, K = hash_t )
             {
                 assert (val.length == vlen,
                         "attempted to change the length of a static array "
-                        "during iteration");
+                      ~ "during iteration");
             }
 
             return dg(i, *key_ptr, val);

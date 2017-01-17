@@ -16,41 +16,18 @@
 
     Empty lines or lines containing only white space are ignored.
 
-    The constructor receives a map (associative array) of handler delegates by
-    supported command. This map determins which commands are supported. For each
-    received line the connection handler does a lookup in this map using the
-    command from the line as the key and, if found, obtaining a handler delegate
-    as the value. If found, it calls the handler delegate, if not, the
-    connection handler sends the string "Command not found\n" to the client.
-
-    A handler delegate is of the type
+    The constructor takes a command handler that must contain a method matching
 
     ```
-        void delegate ( cstring request_args,
-                        void delegate ( cstring response ) send_response )
-    ```
-
-    where `request_args` is the string of request arguments (as explained
-    above), and `send_response` sends the `response` string to the client. Note
-    that the response should end in a '\n' newline character, which is not
-    automatically added.
-
-    For a server that supports one command, "my-cmd", the associative array of
-    handler delegates would be set up as follows:
+        void handle ( cstring command, cstring args,
+                      void delegate ( cstring response ) send_response )
 
     ```
-        void handleMyCmd ( cstring request_args,
-                           void delegate ( cstring response ) send_response )
-        {
-            // Just send a silly response
-            send_response("Hello client, this is the response!\n");
-        }
 
-        auto map_of_handlers = ["my-cmd": &handleMyCmd];
-    ```
-
-    Passing `map_of_handlers` to the `UnixListener` constructor creates a server
-    that supports this one command and responds as shown.
+    where `command` is the name of the command (as explained above), args is
+    everything after the command and `send_response` sends the `response` string
+    to the client. Note that the response should end in a '\n' newline
+    character, which is not automatically added.
 
     Copyright:
         Copyright (c) 2009-2016 Sociomantic Labs GmbH.
@@ -75,9 +52,90 @@ import ocean.net.server.connection.IFiberConnectionHandler;
 
 import ocean.transition;
 
-/******************************************************************************/
+/// Provides basic command handling functionality for unix socket commands.
+public class BasicCommandHandler
+{
+    /// Alias for a command handler response delegate.
+    public alias void delegate ( cstring,  void delegate (cstring) ) Handler;
 
-public class UnixConnectionHandler : IFiberConnectionHandler
+    /// Map of command name to handler response delegate.
+    public Handler[istring] handlers;
+
+    /***************************************************************************
+
+        Constructor
+
+        Params:
+            handlers = Array of command string to handler delegate.
+
+    ***************************************************************************/
+
+    public this ( Handler[istring] handlers )
+    {
+        this.handlers = handlers;
+    }
+
+    /***************************************************************************
+
+        Receive the command from the unix socket and call appropriate handler
+        delegate if registered.
+
+        Params:
+            command = Command received from unix socket.
+            args = Arguments provided (if any).
+            send_response = Delegate to send a response to the unix socket.
+
+    ***************************************************************************/
+
+    public void handle ( cstring command, cstring args,
+        void delegate ( cstring ) send_response )
+    {
+        if (auto handler = command in this.handlers)
+        {
+            (*handler)(args, send_response);
+        }
+        else
+        {
+            send_response("Command not found\n");
+        }
+    }
+}
+
+/// Provides default functionality for handling unix socket commands.
+public class UnixConnectionHandler : UnixSocketConnectionHandler!(BasicCommandHandler)
+{
+    /***************************************************************************
+
+        Constructor.
+
+        Params:
+            finalize_dg  = internal select listener parameter for super class
+            epoll        = epoll select dispatcher to use for I/O
+            handlers     = Array of command to handler delegate.
+            address_path = the path of the server socket address, for logging
+
+    ***************************************************************************/
+
+    public this ( FinalizeDg finalize_dg, EpollSelectDispatcher epoll,
+                  BasicCommandHandler.Handler[istring] handlers,
+                  istring address_path )
+    {
+        super(finalize_dg, epoll, new BasicCommandHandler(handlers),
+            address_path);
+    }
+}
+
+/*******************************************************************************
+
+    Params:
+        CommandHandlerType = The handler type that will process commands
+                             received by the socket. Must contain a
+                             `void handle ( cstring, cstring, void delegate
+                             ( cstring ) )` method.
+
+*******************************************************************************/
+
+public class UnixSocketConnectionHandler ( CommandHandlerType ) : IFiberConnectionHandler
 {
     import ocean.io.select.EpollSelectDispatcher;
     import ocean.io.select.protocol.fiber.FiberSelectReader;
@@ -92,14 +150,11 @@ public class UnixConnectionHandler : IFiberConnectionHandler
 
     /***************************************************************************
 
-        Handler delegate type alias.
+        Responder to process the received commands.
 
     ***************************************************************************/
 
-    public alias void delegate (
-        cstring request_args, void delegate ( cstring response ) send_response
-    ) Handler;
-
+    private CommandHandlerType handler;
 
     /***************************************************************************
 
@@ -128,14 +183,6 @@ public class UnixConnectionHandler : IFiberConnectionHandler
 
     /***************************************************************************
 
-        The map of handler delegates by command.
-
-    ***************************************************************************/
-
-    private Handler[istring] handlers;
-
-    /***************************************************************************
-
         The Unix domain server socket address for logging.
 
     ***************************************************************************/
@@ -161,23 +208,20 @@ public class UnixConnectionHandler : IFiberConnectionHandler
         Params:
             finalize_dg  = internal select listener parameter for super class
             epoll        = epoll select dispatcher to use for I/O
-            handlers     = the map of handler delegates by command, see the
-                           documentation on the top of this module
+            handler      = processes incoming commands.
             address_path = the path of the server socket address, for logging
 
     ***************************************************************************/
 
     public this ( FinalizeDg finalize_dg, EpollSelectDispatcher epoll,
-                  Handler[istring] handlers, istring address_path )
+                  CommandHandlerType handler, istring address_path )
     {
         super(epoll, new UnixSocket, finalize_dg);
-
         auto e = new SocketError(this.socket);
         this.reader = new FiberSelectReader(this.socket, this.fiber, e, e);
         this.writer = new FiberSelectWriter(this.socket, this.fiber, e, e);
-
-        this.handlers = handlers.rehash;
         this.address_path = address_path;
+        this.handler = handler;
     }
 
     /***************************************************************************
@@ -239,17 +283,10 @@ public class UnixConnectionHandler : IFiberConnectionHandler
 
     /***************************************************************************
 
-        Splits `request_ln` into command and arguments, and calls the handler
-        for the command, if there is one in the map of handlers.
-
-        The arguments passed to the handler are
-         1. the white space-trimmed string of command arguments and
-         2. a delegate to write to the client socket.
-
-        See the documentation on top of the module for details and examples.
-        If no handler for the command was found, the string
-        "Command not found\n" is sent to the client. If `request_ln` is empty or
-        contains only white space, nothing is done.
+        Splits `request_ln` into command and arguments. The handler's `handle`
+        method is called with the command, arguments and the send response
+        delegate. If `request_ln` is empty or contains only white space,
+        nothing is done.
 
         Params:
             request_ln = one line of text data read from the socket
@@ -268,14 +305,7 @@ public class UnixConnectionHandler : IFiberConnectionHandler
 
         cstring cmd = split_cmd.trim(split_cmd.next());
 
-        if (auto handler = cmd in this.handlers)
-        {
-            (*handler)(split_cmd.trim(split_cmd.remaining), &this.sendResponse);
-        }
-        else
-        {
-            this.writer.send("Command not found\n");
-        }
+        this.handler.handle(cmd, split_cmd.remaining, &this.sendResponse);
     }
 
     /***************************************************************************

@@ -357,7 +357,7 @@ class TempFile : File
 
         private const JUNK_CHARS =
             "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-            "abcdefghijklmnopqrstuvwxyz0123456789";
+            ~ "abcdefghijklmnopqrstuvwxyz0123456789";
 
        /**********************************************************************
          *

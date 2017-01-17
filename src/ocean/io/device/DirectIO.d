@@ -131,12 +131,12 @@ private template AlignedBufferedStream ( )
         // Throw an error if the buffer is not aligned to BLOCK_SIZE
         if ( !this.isAligned(buffer.ptr) )
             throw new IOException("Buffer is not aligned to BLOCK_SIZE, maybe "
-                    "you should start using posix_memalign(3)");
+                    ~ "you should start using posix_memalign(3)");
         // Throw an error if the buffer length is not a multiple of the
         // BLOCK_SIZE
         if ((buffer.length % BLOCK_SIZE) != 0)
             throw new IOException("Buffer length is not multiple of the "
-                    "BLOCK_SIZE");
+                    ~ "BLOCK_SIZE");
         this.free_index = 0;
     }
 

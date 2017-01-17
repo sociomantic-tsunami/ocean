@@ -892,7 +892,7 @@ unittest
     // One ring to bring them all and in the darkness bind them.
     const istring message =
         "Ash nazg durbatulûk, ash nazg gimbatul, "
-        "ash nazg thrakatulûk, agh burzum-ishi krimpatul.";
+        ~ "ash nazg thrakatulûk, agh burzum-ishi krimpatul.";
 
     static assert( message.length == 90 );
 

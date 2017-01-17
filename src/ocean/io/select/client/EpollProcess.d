@@ -309,8 +309,8 @@ public abstract class EpollProcess
                 // pid has changed state).
                 if ( pid )
                 {
-                    debug ( EpollProcess ) Stdout.formatln("Signal fired in "
-                                                        "epoll: pid = {}", pid);
+                    debug ( EpollProcess )
+                        Stdout.formatln("Signal fired in epoll: pid = {}", pid);
 
                     auto exited_ok = WIFEXITED(status);
                     int exit_code = exited_ok ? WEXITSTATUS(status) : 0;
@@ -318,9 +318,9 @@ public abstract class EpollProcess
                     auto process = pid in this.processes;
                     if ( process )
                     {
-                        debug ( EpollProcess ) Stdout.formatln("pid {} "
-                                                 "finished, ok = {}, code = {}",
-                                                 pid, exited_ok, exit_code);
+                        debug ( EpollProcess )
+                            Stdout.formatln("pid {} finished, ok = {}, code = {}",
+                                            pid, exited_ok, exit_code);
 
                         auto epoll = process.epoll;
 
@@ -746,8 +746,8 @@ public abstract class EpollProcess
 
         if ( this.process_monitor is null )
         {
-            debug ( EpollProcess ) Stdout.formatln("Creating the implicit "
-                                               "singleton process monitor");
+            debug ( EpollProcess )
+                Stdout.formatln("Creating the implicit singleton process monitor");
 
             this.process_monitor = new GlobalProcessMonitor();
         }
@@ -777,16 +777,17 @@ public abstract class EpollProcess
         this.process.argsWithCommand(args_with_command);
         this.process.execute();
 
-        debug ( EpollProcess ) Stdout.formatln("Starting process pid {}, {}",
-                                           this.process.pid, args_with_command);
+        debug ( EpollProcess )
+            Stdout.formatln("Starting process pid {}, {}",
+                            this.process.pid, args_with_command);
 
         this.epoll.register(this.stdout_handler);
         this.epoll.register(this.stderr_handler);
 
         this.state = State.Running;
 
-        assert(this.process_monitor !is null, "Implicit singleton process "
-                                              "monitor not initialised");
+        assert(this.process_monitor !is null,
+               "Implicit singleton process monitor not initialised");
         this.process_monitor.add(this);
     }
 
@@ -998,8 +999,8 @@ public abstract class EpollProcess
         {
             this.state = State.None;
 
-            debug ( EpollProcess ) Stdout.formatln("Streams finalised & "
-                                                   "process exited");
+            debug ( EpollProcess )
+                Stdout.formatln("Streams finalised & process exited");
             this.finished(this.exited_ok, this.exit_code);
         }
     }
@@ -1012,8 +1013,8 @@ public abstract class EpollProcess
     ***************************************************************************/
 
 
-    deprecated ("This class has no effect. All instances of this class should "
-        "be removed") public static class ProcessMonitor
+    deprecated ("This class has no effect. All instances of this class should be removed")
+    public static class ProcessMonitor
     {
         /***********************************************************************
 

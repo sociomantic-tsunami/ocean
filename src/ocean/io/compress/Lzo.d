@@ -392,17 +392,18 @@ unittest
     pre_uncomp_tm.dec(uncomp_us, -2);
     pre_crc_tm.dec(crc_us, -2);
 
-    version (UnitTestVerbose) Stdout.formatln("LZO unittest results:\n\t"
-                   "uncompressed length: {} {}B\t({} bytes)\n\t"
-                   "compressed length:   {} {}B\t({} bytes)\n\t"
-                   "compression ratio:   {}%\n\t"
-                   "compression time:    {} {}s\t({} µs)\n\t"
-                   "uncompression time:  {} {}s\t({} µs)\n\t"
-                   "CRC-32 time:         {} {}s\t({} µs)\n\t"
-                   "CRC-32 (uncompr'd):  0x{:X8}\n"
-                   "\n"
-                   "LZO unittest: Looping for memory leak detection; "
-                   "watch memory usage and press Ctrl+C to quit",
+    version (UnitTestVerbose)
+        Stdout.formatln("LZO unittest results:\n\t"
+                 ~ "uncompressed length: {} {}B\t({} bytes)\n\t"
+                 ~ "compressed length:   {} {}B\t({} bytes)\n\t"
+                 ~ "compression ratio:   {}%\n\t"
+                 ~ "compression time:    {} {}s\t({} µs)\n\t"
+                 ~ "uncompression time:  {} {}s\t({} µs)\n\t"
+                 ~ "CRC-32 time:         {} {}s\t({} µs)\n\t"
+                 ~ "CRC-32 (uncompr'd):  0x{:X8}\n"
+                 ~ "\n"
+                 ~ "LZO unittest: Looping for memory leak detection; "
+                 ~ "watch memory usage and press Ctrl+C to quit",
                    pre_uncomp_sz.scaled, pre_uncomp_sz.prefix, uncompressed.length,
                    pre_comp_sz.scaled, pre_comp_sz.prefix, compressed.length,
                    lrintf((compressed.length * 100.f) / uncompressed.length),

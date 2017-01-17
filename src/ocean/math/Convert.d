@@ -68,7 +68,7 @@ public bool roundToInt ( T )( T input, out int output )
     else
     {
         static assert (is(T == real), "roundToInt(): Input argument expected to"
-            " be of type float, double or real, not \"" ~ T.stringof ~ "\"");
+          ~ " be of type float, double or real, not \"" ~ T.stringof ~ "\"");
         auto tmp = lroundl(input);
     }
 
@@ -107,7 +107,7 @@ public bool roundToLong ( T )( T input, out long output )
     else
     {
         static assert (is(T == real), "roundToLong(): Input argument expected to"
-            " be of type float, double or real, not \"" ~ T.stringof ~ "\"");
+          ~ " be of type float, double or real, not \"" ~ T.stringof ~ "\"");
         output = lroundl(input);
     }
 

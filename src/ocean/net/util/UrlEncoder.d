@@ -264,9 +264,9 @@ unittest
     }
 
     scope encoder = new EncodeNonUnreserved("For example, the octet "
-    "corresponding to the tilde (\"~\") character is often encoded as "
-    "\"%7E\" by older URI processing implementations; the \"%7E\" can be "
-    "replaced by \"~\" without chänging its interpretation.");
+    ~ "corresponding to the tilde (\"~\") character is often encoded as "
+    ~ "\"%7E\" by older URI processing implementations; the \"%7E\" can be "
+    ~ "replaced by \"~\" without chänging its interpretation.");
 
     const istring[] chunks =
     [

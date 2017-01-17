@@ -364,9 +364,9 @@ unittest
     doTest("HelloWörld!", "HelloWörl+", 10, "+");
 
     doTest("Designstarker Couchtisch in hochwertiger Holznachbildung. Mit "
-        "praktischem Ablagebogen in Kernnussbaumfarben oder Schwarz. "
-        "Winkelfüße mit Alukante. B", "Designstarker Couchtisch in hochwertiger"
-        " Holznachbildung. Mit praktischem Ablagebogen...", 90);
+      ~ "praktischem Ablagebogen in Kernnussbaumfarben oder Schwarz. "
+      ~ "Winkelfüße mit Alukante. B", "Designstarker Couchtisch in hochwertiger"
+      ~ " Holznachbildung. Mit praktischem Ablagebogen...", 90);
 }
 
 
@@ -671,13 +671,13 @@ unittest
 
     // Andrew's tests
 
-    t.test!("==")("This should be the longest string of all the unit tests.\n"
-        "We do this so that the buffer never needs expanding again.\n"
-        "This way we can check for unnecessary allocations.".truncateAtN(
-            160, buffer),
+    t.test!("==")(("This should be the longest string of all the unit tests.\n"
+      ~ "We do this so that the buffer never needs expanding again.\n"
+      ~ "This way we can check for unnecessary allocations.")
+        .truncateAtN(160, buffer),
         "This should be the longest string of all the unit tests.\n"
-        "We do this so that the buffer never needs expanding again.\n"
-        "This way we can check for unnecessary…"
+      ~ "We do this so that the buffer never needs expanding again.\n"
+      ~ "This way we can check for unnecessary…"
     );
 
     typeof(buffer.ptr) orig_ptr = buffer.ptr;

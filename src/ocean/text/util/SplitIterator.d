@@ -172,13 +172,13 @@ unittest
 
     split.collapse = true;
 
-    foreach (str; ["123""ab""123"     "cd""123""efg""123",
-                   "123""ab""123""123""cd""123""efg""123",
-                   "123""ab""123""123""cd""123""efg",
-                        "ab""123""123""cd""123""efg",
+    foreach (str; ["123" ~ "ab" ~ "123" ~ "cd" ~ "123" ~ "efg" ~ "123",
+                   "123" ~ "ab" ~ "123" ~ "123" ~ "cd" ~ "123" ~ "efg" ~ "123",
+                   "123" ~ "ab" ~ "123" ~ "123" ~ "cd" ~ "123" ~ "efg",
+                   "ab" ~ "123" ~ "123" ~ "cd" ~ "123" ~ "efg",
 
-                   "123""123""ab""123""123""cd""123""efg",
-                   "ab""123""123""cd""123""efg""123""123"])
+                   "123" ~ "123" ~ "ab" ~ "123" ~ "123"~ "cd" ~ "123" ~ "efg",
+                   "ab" ~ "123" ~ "123" ~ "cd" ~ "123" ~ "efg" ~ "123" ~ "123"])
     {
         foreach (element; split.reset(str))
         {
@@ -192,7 +192,7 @@ unittest
 
     split.collapse = false;
 
-    foreach (element; split.reset("ab""123""cd""123""efg"))
+    foreach (element; split.reset("ab" ~ "123" ~ "cd" ~ "123" ~ "efg"))
     {
         istring[] elements = ["ab", "cd", "efg"];
 
@@ -201,7 +201,7 @@ unittest
         assert (element == elements[split.n - 1]);
     }
 
-    foreach (element; split.reset("123""ab""123""cd""123""efg""123"))
+    foreach (element; split.reset("123" ~ "ab"~ "123" ~ "cd" ~ "123" ~ "efg" ~ "123"))
     {
         istring[] elements = ["", "ab", "cd", "efg", ""];
 
@@ -210,7 +210,7 @@ unittest
         assert (element == elements[split.n - 1]);
     }
 
-    split.reset("ab""123""cd""123""efg");
+    split.reset("ab" ~ "123" ~ "cd" ~ "123" ~ "efg");
 
     assert (split.next == "ab");
     assert (split.next == "cd");
@@ -654,7 +654,7 @@ abstract class ISplitIterator
 
                         assert (next <= this.content.length,
                                 typeof (this).stringof ~ ": iteration delegate "
-                                "set the position out of range");
+                                ~ "set the position out of range");
 
                         this.remaining_ = this.content[next .. $];
                     }

@@ -361,7 +361,7 @@ class BucketInfo
 
         assert (this.buckets[this.bucket_list_indices[bucket_index]].length,
                 "attempted to update an empty bucket info: use create()/put() "
-                "instead");
+                ~ "instead");
 
         debug (BucketInfo) this.print("upd ", bucket_index);
     }

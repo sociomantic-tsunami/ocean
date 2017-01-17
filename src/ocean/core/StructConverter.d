@@ -333,10 +333,10 @@ private void callBestOverload ( From, To, istring function_name )
               "Function ` ~
              To.stringof ~ `.` ~ function_name ~
              ` (" ~ convFuncTypeString ~ ") doesn't `
-             `have any of the accepted types `
-             `'void delegate ( ref "~From.stringof~", void[] delegate ( size_t ) )' or `
-             `'void delegate ( ref "~From.stringof~" )' or `
-             `'void delegate ( )'" );
+           ~ `have any of the accepted types `
+           ~ `'void delegate ( ref "~From.stringof~", void[] delegate ( size_t ) )' or `
+           ~ `'void delegate ( ref "~From.stringof~" )' or `
+           ~ `'void delegate ( )'" );
         }`);
 
 }

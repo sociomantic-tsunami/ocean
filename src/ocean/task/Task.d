@@ -363,7 +363,7 @@ public abstract class Task : ISuspendable
     /**************************************************************************
 
         Method that will be run by scheduler when task finishes. Must be
-        overriden by specific task class to reset reusable resources.
+        overridden by specific task class to reset reusable resources.
 
         It is public so that both scheduler can access it and derivatives can
         override it. No one but scheduler must call ths method.
@@ -374,7 +374,7 @@ public abstract class Task : ISuspendable
 
     /**************************************************************************
 
-        Method that must be overriden in actual application/library task
+        Method that must be overridden in actual application/library task
         classes to provide entry point.
 
     **************************************************************************/

@@ -313,7 +313,7 @@ public abstract class Map ( V, K ) : BucketSet!(V.sizeof, K)
     {
         static if (is (typeof (V.init) == V))
         {
-            pragma (msg, "DMD bug 7752 is fixed, please remove the workaround "
+            pragma (msg, "DMD bug 7752 is fixed, please remove the workaround ",
                          "in ", __FILE__, ":", __LINE__.stringof);
         }
 

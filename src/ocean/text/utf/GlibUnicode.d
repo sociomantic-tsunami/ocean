@@ -280,11 +280,11 @@ struct GlibUnicode
 
     static char[] toUtf8 ( Char ) ( Char c )
     {
-        static if (Char.sizeof == wchar.sizeof) pragma (msg, typeof (*this).stringof ~
-                                                        ".toUtf8: Only Basic Multilingual "
-                                                        "Plane supported with type '" ~
-                                                        Char.stringof ~ "'; use 'dchar' "
-                                                        "for full Unicode support");
+        static if (Char.sizeof == wchar.sizeof)
+            pragma (msg, typeof (*this).stringof
+                    ~ ".toUtf8: Only Basic Multilingual Plane supported with "
+                    ~ "type '" ~ Char.stringof ~ "'; use 'dchar' "
+                    ~ "for full Unicode support");
 
         char[6] tmp;
 
@@ -309,11 +309,11 @@ struct GlibUnicode
 
     static Char toUtf32 ( Char ) ( char[] c )
     {
-        static if (Char.sizeof == wchar.sizeof) pragma (msg, typeof (*this).stringof ~
-                                                ".toUtf8: Only Basic Multilingual "
-                                                "Plane supported with type '" ~
-                                                Char.stringof ~ "'; use 'dchar' "
-                                                "for full Unicode support");
+        static if (Char.sizeof == wchar.sizeof)
+            pragma (msg, typeof (*this).stringof
+                    ~ ".toUtf8: Only Basic Multilingual Plane supported with "
+                    ~ "type '" ~ Char.stringof ~ "'; use 'dchar' "
+                    ~ "for full Unicode support");
 
         return result = g_utf8_get_char_validated(c.ptr, c.length);
     }

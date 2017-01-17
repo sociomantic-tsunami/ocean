@@ -82,7 +82,7 @@ public class FiberPool : ObjectPool!(WorkerFiber)
 
     /**************************************************************************
 
-        This method should never be called, it is only overriden to conform
+        This method should never be called, it is only overridden to conform
         to base class API. Other modules in `ocean.task` package only
         used other `get` overload.
 

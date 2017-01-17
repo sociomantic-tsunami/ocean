@@ -815,22 +815,23 @@ unittest
     us_try_read_start -= us_stop;
     us_stop           -= us_start;
 
-    version (UnitTestVerbose)  Stderr.formatln("LzoHeader unittest results:\n\t"
-                   "start():        1000 headers generated within {} ms\n\t"
-                   "stop():         1000 headers generated within {} ms\n\t"
-                   "tryReadStart(): 1000 headers checked   within {} ms\n\t"
-                   "readStart():    1000 headers checked   within {} ms\n\t"
-                   "\n\t"
-                   "write(): 10 chunks of  4 kB each written within {} ms\n\t"
-                   "write(): 10 chunks of 64 kB each written within {} ms\n\t"
-                   "write(): 10 chunks of  1 MB each written within {} ms\n\t"
-                   "\n\t"
-                   "read():  10 chunks of  4 kB each read    within {} ms\n\t"
-                   "read():  10 chunks of 64 kB each read    within {} ms\n\t"
-                   "read():  10 chunks of  1 MB each read    within {} ms\n"
-                   "\n"
-                   "LzoHeader unittest: Looping for memory leak detection; "
-                   "watch memory usage and press Ctrl+C to quit",
+    version (UnitTestVerbose)
+        Stderr.formatln("LzoHeader unittest results:\n\t"
+                 ~ "start():        1000 headers generated within {} ms\n\t"
+                 ~ "stop():         1000 headers generated within {} ms\n\t"
+                 ~ "tryReadStart(): 1000 headers checked   within {} ms\n\t"
+                 ~ "readStart():    1000 headers checked   within {} ms\n\t"
+                 ~ "\n\t"
+                 ~ "write(): 10 chunks of  4 kB each written within {} ms\n\t"
+                 ~ "write(): 10 chunks of 64 kB each written within {} ms\n\t"
+                 ~ "write(): 10 chunks of  1 MB each written within {} ms\n\t"
+                 ~ "\n\t"
+                 ~ "read():  10 chunks of  4 kB each read    within {} ms\n\t"
+                 ~ "read():  10 chunks of 64 kB each read    within {} ms\n\t"
+                 ~ "read():  10 chunks of  1 MB each read    within {} ms\n"
+                 ~ "\n"
+                 ~ "LzoHeader unittest: Looping for memory leak detection; "
+                 ~ "watch memory usage and press Ctrl+C to quit",
                    us_start          / 1000.f,
                    us_stop           / 1000.f,
                    us_try_read_start / 1000.f,

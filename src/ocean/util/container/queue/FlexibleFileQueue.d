@@ -752,7 +752,7 @@ unittest
     if (test_dir.length == 0)
     {
         Stderr.formatln("{}:{}: Can't create temporary directory "
-                "for unittest, skipping...", __FILE__, __LINE__);
+              ~ "for unittest, skipping...", __FILE__, __LINE__);
         return;
     }
     scope (exit) rmdir(test_dir.ptr);

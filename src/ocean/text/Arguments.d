@@ -2302,6 +2302,8 @@ public class Arguments
 
             Restricts parameters of this argument to be in the given set.
 
+            Allocates copy of `options`
+
             Params:
                 options = array containing the set of acceptable parameters
 
@@ -2310,9 +2312,9 @@ public class Arguments
 
         ***********************************************************************/
 
-        public Argument restrict ( Const!(istring)[] options ... )
+        public Argument restrict ( Const!(istring)[] options... )
         {
-            this.options = options;
+            this.options = options.dup;
 
             return this;
         }

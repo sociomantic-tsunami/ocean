@@ -1238,7 +1238,7 @@ class MapSerializer
         else if ( fh_actual.versionNumber != fh_expected.versionNumber )
         {
             throw new Exception("Version of file header "
-                                " does not match our version, aborting!");
+                              ~ " does not match our version, aborting!");
         }
         else static if ( is ( typeof ( fh_expected.hash ) ) )
         if ( fh_actual.hash != fh_expected.hash )
@@ -1545,8 +1545,8 @@ version ( UnitTest )
         serializer.buffered_input.input(array);
         serializer.loadInternal!(KNew, VNew)(serializer.buffered_input, &checker);
 
-        t.test(amount_loaded == map.length, "Amount of loaded "
-                  "items unequal amount of written items!");
+        t.test(amount_loaded == map.length,
+               "Amount of loaded items unequal amount of written items!");
     }
 }
 

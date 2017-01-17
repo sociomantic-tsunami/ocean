@@ -34,6 +34,7 @@ public  import ocean.io.device.Conduit;
 class Device : Conduit, ISelectable
 {
         import core.stdc.errno;
+        import core.sys.posix.sys.types: off_t;
 
         /// expose superclass definition also
         public alias Conduit.error error;
@@ -154,6 +155,65 @@ class Device : Conduit, ISelectable
                         auto written = posix.write (handle, src.ptr, src.length);
                         if (written is -1)
                             error(errno, "write");
+                        return written;
+                }
+
+                /***************************************************************
+
+                        Read a chunk of bytes from the file from the given
+                        offset, into the provided array. Returns the number of
+                        bytes read, or Eof where there is no further data.
+
+                        Params:
+                            dst = destination buffer to fill
+                            offset = offset to start reading from
+
+                        Returns:
+                            number of bytes read or Eof if there's no further
+                            data
+
+                        Throws:
+                            File.IOException on failure
+
+                ***************************************************************/
+
+                public size_t pread (void[] dst, off_t offset)
+                {
+                        auto read = posix.pread (handle, dst.ptr, dst.length,
+                                offset);
+
+                        if (read is -1)
+                            error(errno, "pread");
+                        else
+                           if (read is 0 && dst.length > 0)
+                               return Eof;
+                        return read;
+                }
+
+                /***************************************************************
+
+                        Write a chunk of bytes to the file starting from the
+                        given offset, from the provided array. Returns the
+                        number of bytes written
+
+                        Params:
+                            src = source buffer to write data from
+                            offset = offset to start writing from
+
+                        Returns:
+                            number of bytes written
+
+                        Throws:
+                            File.IOException on failure
+
+                ***************************************************************/
+
+                public size_t write (Const!(void)[] src, off_t offset)
+                {
+                        auto written = posix.pwrite (handle, src.ptr, src.length,
+                                offset);
+                        if (written is -1)
+                            error(errno, "pwrite");
                         return written;
                 }
         }

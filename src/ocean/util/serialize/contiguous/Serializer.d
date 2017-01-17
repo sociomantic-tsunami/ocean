@@ -301,7 +301,7 @@ struct Serializer
                     static assert (!ContainsDynamicArray!(T),
                                    T.stringof ~ " " ~ s.tupleof[i].stringof ~
                                    " - unions containing dynamic arrays are is not "
-                                   "allowed, sorry");
+                                   ~ "allowed, sorry");
                 }
             }
         }

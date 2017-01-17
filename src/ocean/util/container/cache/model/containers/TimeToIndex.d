@@ -62,7 +62,7 @@ class TimeToIndex: EBTree128!()
 
         static assert(typeof(*this).sizeof % 16 == 0,
                       typeof(*this).stringof ~ ".sizeof must be an integer "
-                      "multiple of 16, not " ~ typeof(*this).sizeof.stringof);
+                    ~ "multiple of 16, not " ~ typeof(*(&this)).sizeof.stringof);
     }
 
     /**************************************************************************/

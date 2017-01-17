@@ -50,7 +50,7 @@ module ocean.text.util.StringEncode;
 
 import ocean.transition;
 
-import ocean.text.util.c.iconv;
+import core.sys.posix.iconv;
 
 import ocean.stdc.errno;
 
@@ -144,7 +144,7 @@ public class StringEncode ( istring fromcode, istring tocode ) : StringEncoder
 
     ***************************************************************************/
 
-    private ConversionDescriptor cd;
+    private iconv_t cd;
 
 
     /***************************************************************************
@@ -235,7 +235,8 @@ public class StringEncode ( istring fromcode, istring tocode ) : StringEncoder
         do
         {
             // Attempt the conversion
-            result = iconv(this.cd, &inptr, &inbytesleft, &outptr, &outbytesleft);
+            // FIXME: remove cast with https://github.com/dlang/druntime/pull/1742
+            result = iconv(this.cd, cast(char**) &inptr, &inbytesleft, &outptr, &outbytesleft);
 
             // If it wasn't E2BIG, we're finished
             too_big = (result < 0 && errno() == E2BIG);

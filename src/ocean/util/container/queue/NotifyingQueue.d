@@ -303,8 +303,8 @@ class NotifyingByteQueue : ISuspendable, IQueueInfo
     {
         debug foreach ( waiting_notifier; this.notifiers[] )
         {
-            assert (waiting_notifier !is notifier, "RequestQueue.ready: "
-                                          "notifier already registered");
+            assert (waiting_notifier !is notifier,
+                    "RequestQueue.ready: notifier already registered");
         }
     }
     body

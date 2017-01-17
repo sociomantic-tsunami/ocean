@@ -166,7 +166,7 @@ public struct IncrementalAverage
             return 0;
 
         assert(this.count_ > correction_factor, "Correction factor is same "
-               "size or bigger than the number of elements added.");
+               ~ "size or bigger than the number of elements added.");
 
         return this.mean_of_square / (this.count_ - correction_factor);
     }

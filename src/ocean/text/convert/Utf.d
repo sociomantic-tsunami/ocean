@@ -70,6 +70,118 @@ Const!(char)[]  toString (Const!(char)[] src, char[] dst=null, size_t* ate=null)
 Const!(wchar)[] toString (Const!(wchar)[] src, wchar[] dst, size_t* ate=null) {return src;}
 Const!(dchar)[] toString (Const!(dchar)[] src, dchar[] dst, size_t* ate=null) {return src;}
 
+
+/*******************************************************************************
+
+  Encode a string of characters into an UTF-8 string, providing one character
+  at a time to the delegate.
+
+  This allow to shift the allocation strategy on the user, which might have
+  more information about the kind of data passed to this function.
+
+  Parameters:
+    input = UTF-8, UTF-16 or UTF-32 encoded string to encode to UTF-8
+    dg    = Output delegate to pass the result to
+
+  Note:
+    Unlike the other `toString` variant, UTF-16 -> UTF-8 doesn't support
+    surrogate pairs and will call `onUnicodeError`.
+
+*******************************************************************************/
+
+public void toString (Const!(char)[] input, size_t delegate(cstring) dg)
+{
+    dg(input);
+}
+
+// Need to use assert to not create circular dependency
+unittest
+{
+    const istring original = "Hello \u262F \u0842 \uEFFF";
+    cstring r;
+    toString(original, (cstring x) { r ~= x; return x.length; });
+    assert(original == r);
+}
+
+/// Ditto
+public void toString (Const!(wchar)[] input, size_t delegate(cstring) dg)
+{
+    char[4] buff;
+    foreach (size_t idx, wchar c; input)
+    {
+        if (c < 0x80)
+            dg((cast(Const!(char)*) &c)[0 .. 1]);
+        else if (c < 0x0800)
+        {
+            buff[0] = cast(char)(0xc0 | ((c >> 6) & 0x3f));
+            buff[1] = cast(char)(0x80 | (c & 0x3f));
+            dg(buff[0 .. 2]);
+        }
+        else if (c < 0xd800 || c > 0xdfff)
+        {
+            buff[0] = cast(char)(0xe0 | ((c >> 12) & 0x3f));
+            buff[1] = cast(char)(0x80 | ((c >> 6)  & 0x3f));
+            buff[2] = cast(char)(0x80 | (c & 0x3f));
+            dg(buff[0 .. 3]);
+        }
+        else
+            onUnicodeError("Unicode.toString : Surrogate pair not supported");
+    }
+}
+
+// Need to use assert to not create circular dependency
+unittest
+{
+    const wchar[] original = "Hello \u262F \u1666 \uEFFF"w;
+    cstring r;
+    toString(original, (cstring x) { r ~= x; return x.length; });
+    assert("Hello \u262F \u1666 \uEFFF" == r);
+}
+
+/// Ditto
+public void toString (Const!(dchar)[] input, size_t delegate(cstring) dg)
+{
+    char[4] buff;
+    foreach (size_t idx, dchar c; input)
+    {
+        if (c < 0x80)
+            dg((cast(Const!(char)*) &c)[0 .. 1]);
+        else if (c < 0x0800)
+        {
+            buff[0] = cast(char)(0xc0 | ((c >> 6) & 0x3f));
+            buff[1] = cast(char)(0x80 | (c & 0x3f));
+            dg(buff[0 .. 2]);
+        }
+        else if (c < 0x10000)
+        {
+            buff[0] = cast(char)(0xe0 | ((c >> 12) & 0x3f));
+            buff[1] = cast(char)(0x80 | ((c >> 6)  & 0x3f));
+            buff[2] = cast(char)(0x80 | (c & 0x3f));
+            dg(buff[0 .. 3]);
+        }
+        else if (c < 0x110000)
+        {
+            buff[0] = cast(char)(0xf0 | ((c >> 18) & 0x3f));
+            buff[1] = cast(char)(0x80 | ((c >> 12) & 0x3f));
+            buff[2] = cast(char)(0x80 | ((c >> 6)  & 0x3f));
+            buff[3] = cast(char)(0x80 | (c & 0x3f));
+            dg(buff);
+        }
+        else
+            onUnicodeError("Unicode.toString : invalid dchar", idx);
+    }
+}
+
+// Need to use assert to not create circular dependency
+unittest
+{
+    const dchar[] original = "Hello \u262F \u0842 \uE420"d;
+    cstring r;
+    toString(original, (cstring x) { r ~= x; return x.length; });
+    assert("Hello \u262F \u0842 \uE420" == r);
+}
+
+
 /*******************************************************************************
 
     Encode Utf8 up to a maximum of 4 bytes long (five & six byte

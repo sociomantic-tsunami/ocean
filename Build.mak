@@ -17,6 +17,7 @@ endif
 
 # Remove deprecated modules from testing:
 TEST_FILTER_OUT += \
+	$C/src/ocean/text/util/c/iconv.d \
 	$C/src/ocean/core/Array_tango.d \
 	$C/src/ocean/net/device/Datagram.d \
 	$C/src/ocean/net/device/Multicast.d \

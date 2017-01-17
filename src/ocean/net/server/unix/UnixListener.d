@@ -27,11 +27,54 @@ import ocean.io.select.EpollSelectDispatcher;
 
 import ocean.transition;
 
-/******************************************************************************/
+/// Provides default functionality for handling unix socket commands.
+public class UnixListener : UnixSocketListener!( BasicCommandHandler )
+{
+    /// Provide basic command handling functionality.
+    public BasicCommandHandler handler;
 
-class UnixListener: SelectListener!(
-    UnixConnectionHandler, EpollSelectDispatcher,
-    UnixConnectionHandler.Handler[istring], // handlers
+    /***********************************************************************
+
+        Constructor to create the basic command handler directly from
+        an array of handlers.
+
+        Params:
+            address_path = the file path i.e. addreBasicCommandHandlerss of the Unix domain
+                            server socket
+            epoll        = the `EpollSelectDispatcher` instance to use for
+                            I/O (connection handler parameter)
+            handlers     = Array of command to handler delegate.
+
+        Throws:
+        `Exception` if
+            - `path` is too long; `path.length` must be less than
+            `UNIX_PATH_MAX`,
+            - an error occurred creating or binding the server socket.
+
+    ***********************************************************************/
+
+    public this ( istring address_path, EpollSelectDispatcher epoll,
+                  BasicCommandHandler.Handler[istring] handlers )
+    {
+        this.handler = new BasicCommandHandler(handlers);
+        super(address_path, epoll, this.handler);
+    }
+}
+
+/*******************************************************************************
+
+    Params:
+        CommandHandlerType = The request handler to use when processing commands.
+                             The type is passed as the template argument of
+                             UnixConnectionHandler and is assumed to have a
+                             callable member `void handle ( cstring, cstring,
+                             void delegate ( cstring ))`.
+
+*******************************************************************************/
+
+public class UnixSocketListener ( CommandHandlerType ) : SelectListener!(
+    UnixSocketConnectionHandler!(CommandHandlerType), EpollSelectDispatcher,
+    CommandHandlerType,
     istring // address_path
 )
 {
@@ -68,8 +111,7 @@ class UnixListener: SelectListener!(
                            socket
             epoll        = the `EpollSelectDispatcher` instance to use for I/O
                            (connection handler parameter)
-            handlers     = the map of request handlers by command, see
-                           `UnixConnectionHandler` for details
+            handler      = Command handler.
 
         Throws:
             `Exception` if
@@ -80,7 +122,7 @@ class UnixListener: SelectListener!(
     ***************************************************************************/
 
     public this ( istring address_path, EpollSelectDispatcher epoll,
-                  UnixConnectionHandler.Handler[istring] handlers )
+                  CommandHandlerType handler )
     {
         enforce(address_path.length < sockaddr_un.sun_path.length,
                 "Unix socket path too long: " ~ address_path);
@@ -104,7 +146,7 @@ class UnixListener: SelectListener!(
                 this.address_pathnul;
 
             super(cast(sockaddr*)&address, new UnixSocket,
-                  epoll, handlers, address_path);
+                  epoll, handler, address_path);
 
             log.info("Listening on \"{}\"", address_path);
         }

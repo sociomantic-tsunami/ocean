@@ -171,8 +171,8 @@ class ConfigExt : IApplicationExtension, IArgumentsExtExtension
 
         args("override-config").aliased('O').params(1,int.max).smush()
             .help("override a configuration value "
-                  "(example: -O 'category.key = value', need a space between "
-                  "-O and the option now because of a Tango bug)");
+                ~ "(example: -O 'category.key = value', need a space between "
+                ~ "-O and the option now because of a Tango bug)");
     }
 
 
@@ -373,7 +373,7 @@ class ConfigExt : IApplicationExtension, IArgumentsExtExtension
 
     /***************************************************************************
 
-        Parses an overriden config.
+        Parses an overridden config.
 
         Category, key and value are filled with slices to the original opt
         string, so if you need to store them you probably want to dup() them.
@@ -384,7 +384,7 @@ class ConfigExt : IApplicationExtension, IArgumentsExtExtension
         interpreted as category="cate.gory", key="key" and value="value".
 
         Params:
-            opt = the overriden config as specified on the command-line
+            opt = the overridden config as specified on the command-line
             category = buffer to be filled with the parsed category
             key = buffer to be filled with the parsed key
             value = buffer to be filled with the parsed value

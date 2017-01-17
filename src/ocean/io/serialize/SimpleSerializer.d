@@ -275,7 +275,7 @@ static:
             {
                 static assert ( is(Stream : InputStream),
                     "stream must be either InputStream or OutputStream, "
-                    "not '" ~ Stream.stringof ~ '\'' );
+                    ~ "not '" ~ Stream.stringof ~ '\'' );
 
                 size_t length;
                 transmitted += transmit(stream, length);
@@ -379,7 +379,7 @@ static:
     {
         static assert ( !(is(Stream : InputStream) && is(Stream : OutputStream)),
                         "stream is '" ~ Stream.stringof ~  "; please cast it "
-                        "either to InputStream or OutputStream" );
+                        ~ "either to InputStream or OutputStream" );
 
         size_t transmitted = 0;
 
@@ -395,7 +395,7 @@ static:
             {
                 static assert ( is(Stream : InputStream),
                                 "stream must be either InputStream or OutputStream, "
-                                "not '" ~ Stream.stringof ~ '\'' );
+                                ~ "not '" ~ Stream.stringof ~ '\'' );
 
                 size_t ret = stream.read(data[transmitted .. $]);
 

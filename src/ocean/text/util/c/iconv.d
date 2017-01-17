@@ -19,17 +19,22 @@
 
 *******************************************************************************/
 
-module ocean.text.util.c.iconv;
+deprecated module ocean.text.util.c.iconv;
 
 import ocean.transition;
 
 extern (C)
 {
+
+    deprecated("Use core.sys.posix.iconv.iconv_t instead")
 	mixin(Typedef!(void*, "ConversionDescriptor"));
 
+    deprecated("Use core.sys.posix.iconv.iconv_open instead")
 	ConversionDescriptor iconv_open ( in char* tocode, in char* fromcode );
 
+    deprecated("Use core.sys.posix.iconv.iconv instead")
 	ptrdiff_t iconv ( ConversionDescriptor cd, Const!(char)** inbuf, size_t* inbytesleft, char** outbuf, size_t* outbytesleft );
 
+    deprecated("Use core.sys.posix.iconv.iconv_close instead")
 	int iconv_close (ConversionDescriptor cd);
 }

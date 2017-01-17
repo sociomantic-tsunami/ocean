@@ -35,6 +35,11 @@ module ocean.util.cipher.gcrypt.core.Gcrypt;
 import ocean.util.cipher.gcrypt.c.gcrypt;
 import ocean.transition;
 
+version (UnitTest)
+{
+    import ocean.core.Test;
+}
+
 
 /*******************************************************************************
 
@@ -352,8 +357,6 @@ private class GcryptBase ( Algorithm algorithm, Mode mode )
 
     version ( UnitTest )
     {
-        import ocean.core.Test;
-
         /***********************************************************************
 
             Helper function to generate a void[] of the specified length, filled
@@ -672,8 +675,7 @@ public class GcryptWithIV ( Algorithm algorithm, Mode mode )
         }
         crypt.encrypt(buf2, iv2);
 
-        test!("!=")(buf, buf2, "This template is only compatible with algorithm/mode "
-            "combinations that require IVs. Use GcryptNoIV.");
+        test!("!=")(buf, buf2);
     }
 }
 
@@ -809,7 +811,6 @@ public class GcryptNoIV ( Algorithm algorithm, Mode mode )
         buf2 ~= original;
         crypt.encrypt(buf2);
 
-        test!("==")(buf, buf2, "This template is only compatible with algorithm/mode "
-            "combinations that don't require IVs. Use GcryptWithIV.");
+        test!("==")(buf, buf2);
     }
 }

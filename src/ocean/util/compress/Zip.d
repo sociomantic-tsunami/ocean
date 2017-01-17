@@ -1564,13 +1564,13 @@ private:
     static void incons(istring name)
     {
         thisT("inconsistent headers for file \""~name~"\"; "
-                "archive is likely corrupted");
+              ~ "archive is likely corrupted");
     }
 
     static void missingdir()
     {
         thisT("could not locate central archive directory; "
-                "file is corrupt or possibly not a Zip archive");
+              ~ "file is corrupt or possibly not a Zip archive");
     }
 
     static void toomanyentries()
