@@ -54,7 +54,7 @@ class HttpCookieGenerator : ParamSet
 
      **************************************************************************/
 
-    public mstring domain, path;
+    public cstring domain, path;
 
     /**************************************************************************
 

@@ -139,7 +139,7 @@ public struct SignalSet
 
     ***************************************************************************/
 
-    public void remove ( int[] signals )
+    public void remove ( in int[] signals )
     {
         foreach ( signal; signals )
         {
@@ -161,7 +161,7 @@ public struct SignalSet
 
     ***************************************************************************/
 
-    public void add ( int[] signals )
+    public void add ( in int[] signals )
     {
         foreach ( signal; signals )
         {
