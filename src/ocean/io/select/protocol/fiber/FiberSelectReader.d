@@ -314,16 +314,7 @@ class FiberSelectReader : IFiberSelectProtocol
 
     public typeof (this) read ( T ) ( ref T value )
     {
-        while ( this.available < T.sizeof )
-        {
-            this.receive();
-        }
-
-        value = *cast(T*)this.data[this.consumed .. this.consumed + T.sizeof].ptr;
-
-        this.consumed += T.sizeof;
-
-        return this;
+        return this.readRaw((cast(ubyte*)&value)[0 .. value.sizeof]);
     }
 
     /**************************************************************************
@@ -350,19 +341,35 @@ class FiberSelectReader : IFiberSelectProtocol
 
     public typeof (this) readRaw ( ubyte[] data_out )
     {
-        this.warning_e.enforce(
-            data_out.length <= this.default_buffer_size,
-            "Requested array length longer than internal buffer"
-        );
+        auto available_data = this.data[this.consumed .. this.available];
 
-        while ( this.available < data_out.length )
+        if (available_data.length >= data_out.length)
         {
-            this.receive();
+            // Enough data are already in the buffer: Copy them into data_out
+            // and return.
+            data_out[] = cast(ubyte[])available_data[0 .. data_out.length];
+            this.consumed += data_out.length;
+            if (this.consumed == this.available)
+                this.reset();
         }
+        else
+        {
+            this.warning_e.enforce(
+                data_out.length <= this.data.length,
+                "Requested array length longer than internal buffer"
+            );
+            // Not enough data in the buffer: First copy all buffered data to
+            // data_out.
+            data_out[0 .. available_data.length] = cast(ubyte[])available_data;
+            data_out = data_out[available_data.length .. $];
+            this.reset();
 
-        data_out[] = cast(ubyte[]) this.data[this.consumed .. this.consumed + data_out.length];
-
-        this.consumed += data_out.length;
+            // Read the remaining data.
+            while (this.available < data_out.length)
+                this.receive();
+            data_out[] = cast(ubyte[])
+                this.data[0 .. this.consumed = data_out.length];
+        }
 
         return this;
     }
@@ -548,3 +555,95 @@ class FiberSelectReader : IFiberSelectProtocol
     }
 }
 
+/******************************************************************************/
+
+version (UnitTest)
+{
+    import ocean.io.select.client.model.ISelectClient;
+    import ocean.io.select.fiber.SelectFiber;
+    import ocean.stdc.posix.stdlib;
+    import ocean.core.Test;
+    import ocean.transition;
+}
+
+unittest
+{
+    static class UnSelectFiber: SelectFiber
+    {
+        this ( ) { super(null, {assert(false);}); }
+        override:
+        Message start      (Message)                { assert(false); }
+        Message suspend    (Token, Object, Message) { assert(false); }
+        Message resume     (Token, Object, Message) { assert(false); }
+        void    kill       (istring, long)          { assert(false); }
+        bool    register   (ISelectClient)          { assert(false); }
+        bool    unregister ()                       { assert(false); }
+    }
+
+    // All numeric constants related to buffer sizes and amounts of data below
+    // are tuned to test the internals of readRaw().
+
+    static class Input: IInputDevice
+    {
+        /// Input data for `read()`.
+        void[] data;
+
+        /// Copies `data[0 .. n]` into `dst[0 .. n]` where `n` is the minimum of
+        /// `data.length`, `dst.length` and 15, and advances
+        /// `data = data[n .. $]`. Returns `n`.
+        ssize_t read ( void[] dst )
+        {
+            if (dst.length > this.data.length)
+                dst = dst[0 .. this.data.length];
+            if (dst.length > 15)
+                dst = dst[0 .. 15];
+
+            dst[] = this.data[0 .. dst.length];
+            this.data = this.data[dst.length .. $];
+            return dst.length;
+        }
+
+        Handle fileHandle ( ) { return cast(Handle)4711; } /// Interface method
+    }
+
+    static class TestFiberSelectReader: FiberSelectReader
+    {
+        this ( IInputDevice input, SelectFiber fiber )
+        {
+            auto e = new IOError(input);
+            super(input, fiber, e, e, 50);
+        }
+
+        override protected void transmitLoop ( )
+        {
+            while (this.transmit(Event.init)) {}
+        }
+    }
+
+    // The test starts here.
+
+    scope input  = new Input,
+          fiber  = new UnSelectFiber,
+          reader = new TestFiberSelectReader(input, fiber);
+
+    ubyte[60] input_data, output_data;
+
+    ushort[3] xsubi;
+    xsubi[0] = 0x330E; // see jrand48() documentation
+    foreach (ref n; cast(uint[])input_data)
+        n = cast(uint)jrand48(xsubi);
+
+    input.data = input_data;
+
+    reader.readRaw(output_data[0 .. 10]);
+    test!("==")(input_data[0 .. 10], output_data[0 .. 10]);
+
+    reader.readRaw(output_data[10 .. 50]);
+    test!("==")(input_data[10 .. 50], output_data[10 .. 50]);
+
+    reader.readRaw(output_data[50 .. 57]);
+    test!("==")(input_data[50 .. 57], output_data[50 .. 57]);
+
+    reader.readRaw(output_data[57 .. $]);
+    test!("==")(input_data[57 .. $], output_data[57 .. $]);
+}
