@@ -33,7 +33,7 @@ import ocean.stdc.posix.sys.types: ssize_t;
 
 import ocean.io.device.Conduit: ISelectable;
 
-import ocean.io.device.IODevice: InputDevice, IOutputDevice;
+import ocean.io.device.IODevice: IODevice;
 
 import ocean.sys.socket.InetAddress;
 
@@ -64,7 +64,7 @@ public enum SocketFlags
 
  ******************************************************************************/
 
-public abstract class ISocket : InputDevice, IOutputDevice
+public abstract class ISocket : IODevice
 {
     /**************************************************************************
 
@@ -864,7 +864,7 @@ public abstract class ISocket : InputDevice, IOutputDevice
 
      **************************************************************************/
 
-    public ssize_t write ( Const!(void)[] src )
+    override public ssize_t write ( Const!(void)[] src )
     {
         return this.send(src, 0);
     }
