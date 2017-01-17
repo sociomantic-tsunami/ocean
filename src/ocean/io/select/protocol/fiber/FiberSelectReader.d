@@ -320,8 +320,6 @@ class FiberSelectReader : IFiberSelectProtocol
     /**************************************************************************
 
         Reads data.length bytes from the socket and writes them to the array.
-        Can't read more than the internal buffer can hold and will throw if
-        the request would exceeds it.
 
         Will only return once enough data is available and the array could
         be filled.
@@ -496,6 +494,7 @@ class FiberSelectReader : IFiberSelectProtocol
     }
     body
     {
+
         .errno = 0;
 
         input.ssize_t n = this.input.read(this.data[this.available .. $]);
