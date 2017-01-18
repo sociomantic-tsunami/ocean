@@ -100,6 +100,7 @@ import ocean.text.util.StringSearch;
 import ocean.util.log.Log;
 import ocean.util.log.InsertConsole;
 import ocean.util.log.AppendStderrStdout;
+import ocean.util.log.model.ILogger;
 
 // Log layouts
 import ocean.util.log.layout.LayoutMessageOnly;
@@ -107,6 +108,7 @@ import ocean.util.log.layout.LayoutStatsLog;
 import ocean.util.log.layout.LayoutSimple;
 import ocean.util.log.LayoutDate;
 import ocean.util.log.LayoutChainsaw;
+
 
 
 /*******************************************************************************
@@ -509,51 +511,82 @@ private void configureLoggers
             console_enabled = settings.console();
             syslog_enabled = settings.syslog();
         }
-
-        size_t buffer_size = m_config.buffer_size;
-        if ( settings.buffer_size )
-        {
-            buffer_size = settings.buffer_size;
-        }
-
-        if ( buffer_size > 0 )
-        {
-            log.buffer(new mstring(buffer_size));
-        }
-
-        log.clear();
-
-        // if console/file/syslog is specifically set, don't inherit other
-        // appenders (unless we have been specifically asked to be additive)
-        log.additive = settings.additive ||
-            !(settings.console.set || settings.file.set || settings.syslog.set);
-
-        if ( settings.file.set )
-        {
-            Layout file_log_layout = (settings.file_layout.length)
-                                         ? newLayout(settings.file_layout)
-                                         : new FileLayout;
-            log.add(file_appender(settings.file(), file_log_layout));
-        }
-
-        if ( syslog_enabled )
-        {
-            log.add(new AppendSysLog);
-        }
-
-        if ( console_enabled )
-        {
-            Layout console_log_layout = (settings.console_layout.length)
-                                            ? newLayout(settings.console_layout)
-                                            : new ConsoleLayout;
-
-            log.add(console_appender(console_log_layout));
-        }
-
-        log.collectStats(settings.collect_stats, settings.propagate);
-
-        setupLoggerLevel(log, name, settings);
+        configureLogger!(FileLayout, ConsoleLayout)
+            (log, settings, name,
+             file_appender, console_appender,
+             console_enabled, syslog_enabled, m_config.buffer_size);
     }
+}
+
+
+/*******************************************************************************
+
+    Sets up logging configuration. Calls the provided file_appender delegate once
+    per log being configured and passes the returned appender to the log's add()
+    method.
+
+    Params:
+        FileLayout = layout to use for logging to file, defaults to LayoutDate
+        ConsoleLayout = layout to use for logging to console, defaults to
+                        LayoutSimple
+        LoggerT  = Type of logger to configure
+
+        log      = Logger to configure
+        settings = an instance of an class iterator for Config
+        name     = name of this logger
+        file_appender = delegate which returns appender instances to write to
+                        a file
+        console_appender = Delegate which returns an Appender suitable to use
+                           as console appender. Might not be called if console
+                           writing is disabled.
+        console_enabled = `true` if a console appender should be added (by
+                          calling `console_enabled`).
+        syslog_enabled  = `true` if a syslog appender should be added.
+
+*******************************************************************************/
+
+public void configureLogger
+    (FileLayout = LayoutDate, ConsoleLayout = LayoutSimple,
+     LoggerT : ILogger = Logger)
+    (LoggerT log, Config settings, istring name,
+     Appender delegate ( istring file, Layout layout ) file_appender,
+     Appender delegate (Layout) console_appender,
+     bool console_enabled, bool syslog_enabled, size_t buffer_size)
+{
+    if (settings.buffer_size)
+        buffer_size = settings.buffer_size;
+
+    if (buffer_size > 0)
+        log.buffer(new mstring(buffer_size));
+
+    log.clear();
+
+    // if console/file/syslog is specifically set, don't inherit other
+    // appenders (unless we have been specifically asked to be additive)
+    log.additive = settings.additive ||
+        !(settings.console.set || settings.file.set || settings.syslog.set);
+
+    if (settings.file.set)
+    {
+        Layout file_log_layout = (settings.file_layout.length)
+            ? newLayout(settings.file_layout)
+            : new FileLayout;
+        log.add(file_appender(settings.file(), file_log_layout));
+    }
+
+    if (syslog_enabled)
+        log.add(new AppendSysLog);
+
+    if (console_enabled)
+    {
+        Layout console_log_layout = (settings.console_layout.length)
+            ? newLayout(settings.console_layout)
+            : new ConsoleLayout;
+        log.add(console_appender(console_log_layout));
+    }
+
+    log.collectStats(settings.collect_stats, settings.propagate);
+    setupLoggerLevel(log, name, settings);
 }
 
 version (UnitTest)
