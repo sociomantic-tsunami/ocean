@@ -208,7 +208,7 @@ class Device : Conduit, ISelectable
 
                 ***************************************************************/
 
-                public size_t write (Const!(void)[] src, off_t offset)
+                public size_t pwrite (Const!(void)[] src, off_t offset)
                 {
                         auto written = posix.pwrite (handle, src.ptr, src.length,
                                 offset);
