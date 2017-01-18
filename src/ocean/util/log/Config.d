@@ -410,8 +410,51 @@ public void configureLoggers ( Source = ConfigParser, FileLayout = LayoutDate,
     Appender delegate ( istring file, Layout layout ) file_appender,
     bool loose = false, bool use_insert_appender = false )
 {
+    // DMD1 cannot infer the common type between both return, we have to work
+    // around it...
+    static Appender console_appender_fn (bool insert_appender, Layout layout)
+    {
+        if (insert_appender)
+            return new InsertConsole(layout);
+        else
+            return new AppendStderrStdout(Level.Warn, layout);
+    }
+
     enable_loose_parsing(loose);
 
+    configureLoggers!(Source, FileLayout, ConsoleLayout)
+        (config, m_config, file_appender,
+         (Layout l) { return console_appender_fn(use_insert_appender, l); });
+}
+
+/*******************************************************************************
+
+    Sets up logging configuration. Calls the provided file_appender delegate once
+    per log being configured and passes the returned appender to the log's add()
+    method.
+
+    Params:
+        Source = the type of the config parser
+        FileLayout = layout to use for logging to file, defaults to LayoutDate
+        ConsoleLayout = layout to use for logging to console, defaults to
+                        LayoutSimple
+
+        config   = an instance of an class iterator for Config
+        m_config = an instance of the MetaConfig class
+        file_appender = delegate which returns appender instances to write to
+                        a file
+        console_appender = Delegate which returns an Appender suitable to use
+                           as console appender. Might not be called if console
+                           writing is disabled.
+
+*******************************************************************************/
+
+private void configureLoggers
+    (Source = ConfigParser, FileLayout = LayoutDate, ConsoleLayout = LayoutSimple)
+    (ClassIterator!(Config, Source) config, MetaConfig m_config,
+     Appender delegate (istring file, Layout layout) file_appender,
+     Appender delegate (Layout) console_appender)
+{
     // It is important to ensure that parent loggers are configured before child
     // loggers. This is because parent loggers will override the settings of
     // child loggers when the 'propagate' property is enabled, thus preventing
@@ -504,14 +547,7 @@ public void configureLoggers ( Source = ConfigParser, FileLayout = LayoutDate,
                                             ? newLayout(settings.console_layout)
                                             : new ConsoleLayout;
 
-            if ( use_insert_appender )
-            {
-                log.add(new InsertConsole(console_log_layout));
-            }
-            else
-            {
-                log.add(new AppendStderrStdout(Level.Warn, console_log_layout));
-            }
+            log.add(console_appender(console_log_layout));
         }
 
         log.collectStats(settings.collect_stats, settings.propagate);
