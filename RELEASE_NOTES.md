@@ -14,10 +14,10 @@ version that users might find interesting.
 
 ## Dependencies
 
-Dependency                | Version
---------------------------|---------
-makd                      | v1.3.x
-tango runtime (for D1)    | v1.5.1
+Dependency                   | Version
+-----------------------------|---------
+makd                         | v1.3.x
+libtangort-dmd-dev (for D1)  | v1.6.0
 
 
 ## Deprecations
