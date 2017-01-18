@@ -132,7 +132,13 @@ class Device : Conduit, ISelectable
 
                 override size_t read (void[] dst)
                 {
-                        auto read = posix.read (handle, dst.ptr, dst.length);
+                        ssize_t read;
+
+                        do
+                        {
+                            read = posix.read (handle, dst.ptr, dst.length);
+                        }
+                        while (read == -1 && errno == EINTR);
 
                         if (read is -1)
                             error(errno, "read");
@@ -152,7 +158,14 @@ class Device : Conduit, ISelectable
 
                 override size_t write (Const!(void)[] src)
                 {
-                        auto written = posix.write (handle, src.ptr, src.length);
+                        ssize_t written;
+
+                        do
+                        {
+                            written = posix.write (handle, src.ptr, src.length);
+                        }
+                        while (written == -1 && errno == EINTR);
+
                         if (written is -1)
                             error(errno, "write");
                         return written;
@@ -179,8 +192,14 @@ class Device : Conduit, ISelectable
 
                 public size_t pread (void[] dst, off_t offset)
                 {
-                        auto read = posix.pread (handle, dst.ptr, dst.length,
+                        ssize_t read;
+
+                        do
+                        {
+                            read = posix.pread (handle, dst.ptr, dst.length,
                                 offset);
+                        }
+                        while (read == -1 && errno == EINTR);
 
                         if (read is -1)
                             error(errno, "pread");
@@ -210,8 +229,15 @@ class Device : Conduit, ISelectable
 
                 public size_t pwrite (Const!(void)[] src, off_t offset)
                 {
-                        auto written = posix.pwrite (handle, src.ptr, src.length,
-                                offset);
+                        ssize_t written;
+
+                        do
+                        {
+                            written = posix.pwrite (handle, src.ptr, src.length,
+                                    offset);
+                        }
+                        while (written == -1 && errno == EINTR);
+
                         if (written is -1)
                             error(errno, "pwrite");
                         return written;
