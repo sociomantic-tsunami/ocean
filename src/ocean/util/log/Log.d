@@ -500,7 +500,7 @@ public class Logger : ILogger
         private Logger          next,
                                 parent;
 
-        private Hierarchy       host_;
+        private HierarchyT!(Logger) host_;
         private istring         name_;
         private Level           level_;
         private bool            additive_;
@@ -529,7 +529,7 @@ public class Logger : ILogger
 
         ***********************************************************************/
 
-        private this (Hierarchy host, istring name)
+        private this (HierarchyT!(Logger) host, istring name)
         {
                 this.host_ = host;
                 this.level_ = Level.Trace;
@@ -1012,13 +1012,16 @@ public class Logger : ILogger
 
 *******************************************************************************/
 
-public class Hierarchy : Logger.Context
+public alias HierarchyT!(Logger) Hierarchy;
+
+/// Ditto
+package class HierarchyT (LoggerT) : Logger.Context
 {
-    private Logger              root_;
+    private LoggerT             root_;
     private istring             label_,
                                 address_;
-    private Logger.Context      context_;
-    private Logger[istring]     loggers;
+    private ILogger.Context     context_;
+    private LoggerT[istring]    loggers;
 
 
     /***************************************************************************
@@ -1033,7 +1036,7 @@ public class Hierarchy : Logger.Context
         this.address_ = "network";
 
         // insert a root node; the root has an empty name
-        this.root_ = new Logger(this, "");
+        this.root_ = new LoggerT(this, "");
         this.context_ = this;
     }
 
@@ -1126,7 +1129,7 @@ public class Hierarchy : Logger.Context
 
     ***************************************************************************/
 
-    final Logger.Context context ()
+    final ILogger.Context context ()
     {
         return this.context_;
     }
@@ -1141,7 +1144,7 @@ public class Hierarchy : Logger.Context
 
     ***************************************************************************/
 
-    final void context (Logger.Context context)
+    final void context (ILogger.Context context)
     {
         this.context_ = context;
     }
@@ -1152,21 +1155,21 @@ public class Hierarchy : Logger.Context
 
     ***************************************************************************/
 
-    final Logger root ()
+    final LoggerT root ()
     {
         return this.root_;
     }
 
     /***************************************************************************
 
-        Return the instance of a Logger with the provided label.
+        Return the instance of a LoggerT with the provided label.
         If the instance does not exist, it is created at this time.
 
         Note that an empty label is considered illegal, and will be ignored.
 
     ***************************************************************************/
 
-    final Logger lookup (cstring label)
+    final LoggerT lookup (cstring label)
     {
         if (!label.length)
             return null;
@@ -1183,7 +1186,7 @@ public class Hierarchy : Logger.Context
 
     ***************************************************************************/
 
-    final int opApply (int delegate(ref Logger) dg)
+    final int opApply (int delegate(ref LoggerT) dg)
     {
         int ret;
 
@@ -1195,12 +1198,12 @@ public class Hierarchy : Logger.Context
 
     /***************************************************************************
 
-        Return the instance of a Logger with the provided label.
+        Return the instance of a LoggerT with the provided label.
         If the instance does not exist, it is created at this time.
 
     ***************************************************************************/
 
-    private Logger inject (cstring label, Logger delegate(cstring name) dg)
+    private LoggerT inject (cstring label, LoggerT delegate(cstring name) dg)
     {
         // try not to allocate unless you really need to
         char[255] stack_buffer;
@@ -1251,10 +1254,10 @@ public class Hierarchy : Logger.Context
 
     ***************************************************************************/
 
-    private void insert (Logger l)
+    private void insert (LoggerT l)
     {
-        Logger prev,
-               curr = this.root;
+        LoggerT prev,
+                curr = this.root;
 
         while (curr)
         {
@@ -1291,7 +1294,7 @@ public class Hierarchy : Logger.Context
 
     ***************************************************************************/
 
-    private void update (Logger changed, bool force = false)
+    private void update (LoggerT changed, bool force = false)
     {
         foreach (logger; this)
             this.propagate(logger, changed, force);
@@ -1329,7 +1332,7 @@ public class Hierarchy : Logger.Context
 
     ***************************************************************************/
 
-    private void propagate (Logger logger, Logger changed, bool force = false)
+    private void propagate (LoggerT logger, LoggerT changed, bool force = false)
     {
         // is the changed instance a better match for our parent?
         if (logger.isCloserAncestor(changed))
