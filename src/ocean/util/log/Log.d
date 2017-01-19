@@ -553,6 +553,7 @@ public class Logger : ILogger
 
         ***********************************************************************/
 
+        deprecated("Use logger.enabled(Logger.Level.Trace) instead")
         final bool trace ()
         {
                 return enabled (Level.Trace);
@@ -575,6 +576,7 @@ public class Logger : ILogger
 
         ***********************************************************************/
 
+        deprecated("Use logger.enabled(Logger.Level.Info) instead")
         final bool info ()
         {
                 return enabled (Level.Info);
@@ -597,6 +599,7 @@ public class Logger : ILogger
 
         ***********************************************************************/
 
+        deprecated("Use logger.enabled(Logger.Level.Warn) instead")
         final bool warn ()
         {
                 return enabled (Level.Warn);
@@ -619,6 +622,7 @@ public class Logger : ILogger
 
         ***********************************************************************/
 
+        deprecated("Use logger.enabled(Logger.Level.Error) instead")
         final bool error ()
         {
                 return enabled (Level.Error);
@@ -641,6 +645,7 @@ public class Logger : ILogger
 
         ***********************************************************************/
 
+        deprecated("Use logger.enabled(Logger.Level.Fatal) instead")
         final bool fatal ()
         {
                 return enabled (Level.Fatal);
