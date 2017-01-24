@@ -444,6 +444,7 @@ class File : Device, Device.Seek, Device.Truncate
                         dst=new ubyte[](len);
                     } else {
                         dst.length = len;
+                        enableStomping(dst);
                     }
                 }
 
