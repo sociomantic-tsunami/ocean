@@ -352,15 +352,30 @@ class FiberSelectReader : IFiberSelectProtocol
         }
         else
         {
-            this.warning_e.enforce(
-                data_out.length <= this.data.length,
-                "Requested array length longer than internal buffer"
-            );
             // Not enough data in the buffer: First copy all buffered data to
             // data_out.
             data_out[0 .. available_data.length] = cast(ubyte[])available_data;
             data_out = data_out[available_data.length .. $];
             this.reset();
+            if (data_out.length > this.data.length)
+            {
+                // Read straight into data_out, circumventing the internal
+                // buffer, as long as the amount of data left to read is greater
+                // than the buffer size.
+                auto this_data = this.data;
+                this.data = data_out;
+                try
+                {
+                    while ((this.data.length - this.available) > this_data.length)
+                        this.receive();
+                    data_out = cast(ubyte[])this.data[this.available .. $];
+                }
+                finally
+                {
+                    this.data = this_data;
+                    this.reset();
+                }
+            }
 
             // Read the remaining data.
             while (this.available < data_out.length)
@@ -625,7 +640,7 @@ unittest
           fiber  = new UnSelectFiber,
           reader = new TestFiberSelectReader(input, fiber);
 
-    ubyte[60] input_data, output_data;
+    ubyte[100] input_data, output_data;
 
     ushort[3] xsubi;
     xsubi[0] = 0x330E; // see jrand48() documentation
@@ -637,12 +652,9 @@ unittest
     reader.readRaw(output_data[0 .. 10]);
     test!("==")(input_data[0 .. 10], output_data[0 .. 10]);
 
-    reader.readRaw(output_data[10 .. 50]);
-    test!("==")(input_data[10 .. 50], output_data[10 .. 50]);
+    reader.readRaw(output_data[10 .. $ - 3]);
+    test!("==")(input_data[10 .. $ - 3], output_data[10 .. $ - 3]);
 
-    reader.readRaw(output_data[50 .. 57]);
-    test!("==")(input_data[50 .. 57], output_data[50 .. 57]);
-
-    reader.readRaw(output_data[57 .. $]);
-    test!("==")(input_data[57 .. $], output_data[57 .. $]);
+    reader.readRaw(output_data[$ - 3 .. $]);
+    test!("==")(input_data[$ - 3 .. $], output_data[$ - 3 .. $]);
 }
