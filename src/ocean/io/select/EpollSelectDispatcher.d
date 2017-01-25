@@ -579,7 +579,7 @@ public class EpollSelectDispatcher : IEpollSelectDispatcherInfo
 
      **************************************************************************/
 
-    private bool modify ( ISelectClient client )
+    public bool modify ( ISelectClient client )
     {
         if (!this.epoll.ctl(epoll.CtlOp.EPOLL_CTL_MOD, client.fileHandle,
             client.events, client))
