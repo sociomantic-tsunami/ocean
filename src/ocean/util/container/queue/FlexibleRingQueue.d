@@ -33,7 +33,7 @@ import ocean.util.container.mem.MemManager;
 
 import ocean.io.model.IConduit: InputStream, OutputStream;
 
-import ocean.io.serialize.SimpleSerializer;
+import ocean.io.serialize.SimpleStreamSerializer;
 
 import ocean.text.util.ClassName;
 
@@ -429,10 +429,10 @@ class FlexibleByteRingQueue : IRingQueue!(IByteQueue)
 
         this.save((void[] meta, void[] head, void[] tail = null)
         {
-            bytes += SimpleSerializer.writeData(output, meta);
-            bytes += SimpleSerializer.write(output, head.length + tail.length);
-            if (head.length) bytes += SimpleSerializer.writeData(output, head);
-            if (tail.length) bytes += SimpleSerializer.writeData(output, tail);
+            bytes += SimpleStreamSerializer.writeData(output, meta);
+            bytes += SimpleStreamSerializer.write(output, head.length + tail.length);
+            if (head.length) bytes += SimpleStreamSerializer.writeData(output, head);
+            if (tail.length) bytes += SimpleStreamSerializer.writeData(output, tail);
         });
 
         return bytes;
@@ -535,13 +535,13 @@ class FlexibleByteRingQueue : IRingQueue!(IByteQueue)
 
         this.load((void[] meta, void[] data)
         {
-            bytes += SimpleSerializer.readData(input, meta);
+            bytes += SimpleStreamSerializer.readData(input, meta);
 
             size_t data_length;
-            bytes += SimpleSerializer.read(input, data_length);
+            bytes += SimpleStreamSerializer.read(input, data_length);
             enforce!(ValidationError)(data_length <= data.length,
                 "Size of loaded data exceeds queue capacity");
-            bytes += SimpleSerializer.readData(input, data[0 .. data_length]);
+            bytes += SimpleStreamSerializer.readData(input, data[0 .. data_length]);
             return data_length;
         });
 

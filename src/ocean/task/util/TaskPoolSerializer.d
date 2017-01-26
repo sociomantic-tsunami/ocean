@@ -43,7 +43,7 @@ public class TaskPoolSerializer
     import ocean.io.device.File;
     import ocean.io.model.IConduit;
     import ocean.io.FilePath;
-    import ocean.io.serialize.SimpleSerializer;
+    import ocean.io.serialize.SimpleStreamSerializer;
     import ocean.task.Task;
 
     /***************************************************************************
@@ -112,7 +112,7 @@ public class TaskPoolSerializer
                       void delegate ( ref void[] )));
 
         size_t num_busy = task_pool.num_busy;
-        SimpleSerializerArrays.write(stream, num_busy);
+        SimpleStreamSerializerArrays.write(stream, num_busy);
 
         scope pool_itr = task_pool.new BusyItemsIterator;
         foreach ( raw_task; pool_itr )
@@ -124,7 +124,7 @@ public class TaskPoolSerializer
             assert(task);
             task.serialize(this.serialize_buffer);
 
-            SimpleSerializerArrays.write(stream, this.serialize_buffer);
+            SimpleStreamSerializerArrays.write(stream, this.serialize_buffer);
         }
 
         return num_busy;
@@ -182,13 +182,13 @@ public class TaskPoolSerializer
 
         size_t total_items;
 
-        SimpleSerializerArrays.read(stream, total_items);
+        SimpleStreamSerializerArrays.read(stream, total_items);
 
         size_t len, tasks_loaded;
 
         while ( tasks_loaded < total_items )
         {
-            SimpleSerializerArrays.read(stream, this.serialize_buffer);
+            SimpleStreamSerializerArrays.read(stream, this.serialize_buffer);
             task_pool.restore(this.serialize_buffer);
             ++tasks_loaded;
         }

@@ -26,7 +26,7 @@ module ocean.io.serialize.StructSerializer;
 
 import ocean.transition;
 
-import ocean.io.serialize.SimpleSerializer;
+import ocean.io.serialize.SimpleStreamSerializer;
 
 import ocean.core.Exception;
 
@@ -105,7 +105,7 @@ struct StructSerializer ( bool AllowUnions = false )
 
     size_t dump ( S ) ( S* s, OutputStream output )
     {
-        return dump(s, (void[] data) {SimpleSerializer.transmit(output, data);});
+        return dump(s, (void[] data) {SimpleStreamSerializer.transmit(output, data);});
     }
 
     /***************************************************************************
@@ -150,7 +150,7 @@ struct StructSerializer ( bool AllowUnions = false )
 
     size_t load ( S ) ( S* s, InputStream input )
     {
-        return load(s, (void[] data) {SimpleSerializer.transmit(input, data);});
+        return load(s, (void[] data) {SimpleStreamSerializer.transmit(input, data);});
     }
 
     /***************************************************************************

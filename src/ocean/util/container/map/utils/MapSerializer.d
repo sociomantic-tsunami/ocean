@@ -34,7 +34,7 @@ module ocean.util.container.map.utils.MapSerializer;
 import ocean.transition;
 
 import ocean.io.digest.Fnv1,
-       ocean.io.serialize.SimpleSerializer,
+       ocean.io.serialize.SimpleStreamSerializer,
        ocean.io.serialize.TypeId,
        ocean.util.container.map.Map,
        ocean.core.Traits : ContainsDynamicArray;
@@ -791,14 +791,14 @@ class MapSerializer
 
         FileHeader!(K,V, HeaderVersion) fh;
 
-        SimpleSerializer.write(buffered, fh);
+        SimpleStreamSerializer.write(buffered, fh);
         // Write dummy value first
-        SimpleSerializer.write(buffered, nr_rec);
+        SimpleStreamSerializer.write(buffered, nr_rec);
 
         void addKeyVal ( ref K key, ref V val )
         {
-            SimpleSerializerArrays.write!(K)(buffered, key);
-            SimpleSerializerArrays.write!(V)(buffered, val);
+            SimpleStreamSerializerArrays.write!(K)(buffered, key);
+            SimpleStreamSerializerArrays.write!(V)(buffered, val);
             nr_rec++;
         }
 
@@ -808,7 +808,7 @@ class MapSerializer
 
             // Write actual length now
             buffered.seek(fh.sizeof);
-            SimpleSerializer.write(buffered, nr_rec);
+            SimpleStreamSerializer.write(buffered, nr_rec);
 
             buffered.flush();
         }
@@ -974,7 +974,7 @@ class MapSerializer
         buffered.compress();
         buffered.populate();
 
-        SimpleSerializer.read(buffered, fh_actual);
+        SimpleStreamSerializer.read(buffered, fh_actual);
 
         if ( fh_actual.marker != fh_expected.marker )
         {
@@ -1052,7 +1052,7 @@ class MapSerializer
             buffered.compress();
             buffered.populate();
         }
-        SimpleSerializerArrays.read(buffered, nr_rec);
+        SimpleStreamSerializerArrays.read(buffered, nr_rec);
 
         for ( ulong i=0; i < nr_rec;i++ )
         {
@@ -1067,13 +1067,13 @@ class MapSerializer
 
             if ( raw_load )
             {
-                SimpleSerializer.read!(K)(buffered, key);
-                SimpleSerializer.read!(V)(buffered, value);
+                SimpleStreamSerializer.read!(K)(buffered, key);
+                SimpleStreamSerializer.read!(V)(buffered, value);
             }
             else
             {
-                SimpleSerializerArrays.read!(K)(buffered, key);
-                SimpleSerializerArrays.read!(V)(buffered, value);
+                SimpleStreamSerializerArrays.read!(K)(buffered, key);
+                SimpleStreamSerializerArrays.read!(V)(buffered, value);
             }
 
             putter(key, value);
@@ -1229,7 +1229,7 @@ class MapSerializer
         buffered.compress();
         buffered.populate();
 
-        SimpleSerializer.read(buffered, fh_actual);
+        SimpleStreamSerializer.read(buffered, fh_actual);
 
         if ( fh_actual.marker != fh_expected.marker )
         {
@@ -1267,7 +1267,7 @@ class MapSerializer
             buffered.compress();
             buffered.populate();
         }
-        SimpleSerializerArrays.read(buffered, nr_rec);
+        SimpleStreamSerializerArrays.read(buffered, nr_rec);
 
         for ( ulong i=0; i < nr_rec;i++ )
         {
@@ -1280,8 +1280,8 @@ class MapSerializer
                 buffered.populate();
             }
 
-            SimpleSerializer.read!(K)(buffered, key);
-            SimpleSerializer.read!(V)(buffered, value);
+            SimpleStreamSerializer.read!(K)(buffered, key);
+            SimpleStreamSerializer.read!(V)(buffered, value);
             putter(key, value);
         }
     }
@@ -1370,14 +1370,14 @@ version ( UnitTest )
 
         MapSerializer.FileHeader!(K,V,2) fh;
 
-        SimpleSerializer.write(buffered, fh);
+        SimpleStreamSerializer.write(buffered, fh);
         // Write dummy value for now
-        SimpleSerializer.write(buffered, nr_rec);
+        SimpleStreamSerializer.write(buffered, nr_rec);
 
         void addKeyVal ( ref K key, ref V val )
         {
-            SimpleSerializer.write!(K)(buffered, key);
-            SimpleSerializer.write!(V)(buffered, val);
+            SimpleStreamSerializer.write!(K)(buffered, key);
+            SimpleStreamSerializer.write!(V)(buffered, val);
             nr_rec++;
         }
 
@@ -1387,7 +1387,7 @@ version ( UnitTest )
 
             // Write actual length now
             buffered.seek(fh.sizeof);
-            SimpleSerializer.write(buffered, nr_rec);
+            SimpleStreamSerializer.write(buffered, nr_rec);
 
             buffered.flush();
         }
