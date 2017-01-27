@@ -657,6 +657,7 @@ unittest
             }
             Treasure loot;
             this.stats_ext.stats_log.add(loot);
+            this.stats_ext.stats_log.flush();
         }
     }
 
