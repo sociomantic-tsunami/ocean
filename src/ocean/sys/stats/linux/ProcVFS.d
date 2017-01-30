@@ -588,6 +588,21 @@ public ProcMemInfo getProcMemInfo ()
 
 /*******************************************************************************
 
+    Returns:
+        size of machine's RAM in bytes, as reported in /proc/meminfo
+
+    Throws:
+        ErrnoException on failure to parse this file.
+
+*******************************************************************************/
+
+public ulong getTotalMemoryInBytes ()
+{
+    return getProcMemInfo().MemTotal;
+}
+
+/*******************************************************************************
+
     Initializes .exception object if necessary and throws it, carrying the
     last errno.
 
