@@ -20,6 +20,7 @@ import ocean.transition;
 import ocean.sys.ErrnoException;
 import core.sys.posix.sys.resource;
 import core.stdc.errno;
+import core.sys.posix.unistd;
 
 /*******************************************************************************
 
@@ -150,6 +151,23 @@ public rlimit maximumProcessAddressSpace ()
 
 /*******************************************************************************
 
+    Gets the number of clock ticks per second.
+
+    Returns:
+        number of clock ticks per second.
+
+    Throws:
+        Reusable ErrnoException instance on error.
+
+*******************************************************************************/
+
+public long getClockTicksPerSecond ()
+{
+    return getSysconf(_SC_CLK_TCK);
+}
+
+/*******************************************************************************
+
     Wrapper around getrlimit, checking the return code and
     throwing an exception if failed.
 
@@ -181,4 +199,39 @@ private rlimit getLimit (int limit_type)
     }
 
     return ret;
+}
+
+/*******************************************************************************
+
+    Wrapper around sysconf(3) call. Converts the error code to the
+    exception.
+
+    Params:
+        name = name of the variable to query
+
+    Returns:
+        value of the system resource identified by name
+
+    Throws:
+        Reusable ErrnoException if failed.
+
+*******************************************************************************/
+
+private long getSysconf (int name)
+{
+    auto value = sysconf(name);
+
+    if (value == -1)
+    {
+        auto saved_errno = .errno;
+
+        if (.exception is null)
+        {
+            .exception = new ErrnoException();
+        }
+
+        throw .exception.set(saved_errno, "sysconf");
+    }
+
+    return value;
 }
