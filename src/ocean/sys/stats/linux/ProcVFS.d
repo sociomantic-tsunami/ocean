@@ -30,6 +30,19 @@ import ocean.text.convert.Integer;
 import ocean.core.Buffer;
 import ocean.core.Enforce;
 
+version (UnitTest)
+{
+    import ocean.core.Test;
+}
+
+/*******************************************************************************
+
+    Reusable procvfs_exception instance.
+
+*******************************************************************************/
+
+private ErrnoException procvfs_exception;
+
 /*******************************************************************************
 
     Buffer for processing files.
@@ -232,4 +245,174 @@ public ProcStat getProcStat (cstring path)
 public ProcStat getProcSelfStat ()
 {
     return getProcStat("/proc/self/stat");
+}
+
+/*******************************************************************************
+
+    Structure representing data found in /proc/uptime.
+
+    Contains the uptime of the system and the amount of time spent in idle
+    process, both in seconds.
+
+*******************************************************************************/
+
+public struct ProcUptime
+{
+    /***************************************************************************
+
+        Helper struct containing whole and fractional part of the second.
+
+    ***************************************************************************/
+
+    public struct Time
+    {
+        import ocean.math.Math: abs;
+
+        /// Whole part of seconds
+        public long seconds;
+        /// Fractional part of the second
+        public long cents;
+
+        /***********************************************************************
+
+            Returns:
+                Floating point representation of the Time struct
+
+        ***********************************************************************/
+
+        public double as_double ()
+        {
+            return seconds + cents / 100.0;
+        }
+
+
+        /***********************************************************************
+
+            Params:
+                rhs = Time value to subtract
+
+            Returns:
+                current time subtracted by rhs
+
+        ***********************************************************************/
+
+        Time opSub(Time rhs)
+        {
+            Time res_time;
+
+            auto t = (this.seconds * 100 + this.cents) -
+                (rhs.seconds * 100 + rhs.cents);
+
+            res_time.seconds = t / 100;
+            res_time.cents = abs(t) % 100;
+    
+            return res_time;
+        }
+
+        unittest
+        {
+            auto t1 = Time(2, 0);
+            auto t2 = Time(1, 0);
+            test!("==")(t1 - t2, Time(1, 0));
+
+            t1 = Time(2, 0);
+            t2 = Time(2, 0);
+            test!("==")(t1 - t2, Time(0, 0));
+
+            t1 = Time(1, 0);
+            t2 = Time(2, 0);
+            test!("==")(t1 - t2, Time(-1, 0));
+
+            t1 = Time(2, 50);
+            t2 = Time(2, 30);
+            test!("==")(t1 - t2, Time(0, 20));
+
+            t1 = Time(2, 30);
+            t2 = Time(1, 50);
+            test!("==")(t1 - t2, Time(0, 80));
+
+            t1 = Time(2, 50);
+            t2 = Time(1, 50);
+            test!("==")(t1 - t2, Time(1, 0));
+
+            t1 = Time(1, 30);
+            t2 = Time(2, 50);
+            test!("==")(t1 - t2, Time(-1, 20));
+
+        }
+    }
+
+    /// Uptime time
+    public Time uptime;
+
+    /// Idle time
+    public Time idle;
+}
+
+unittest
+{
+    auto t = ProcUptime.Time(1, 50);
+    test!("==")(t.as_double(), 1.5);
+    t.cents = 25;
+    test!("==")(t.as_double(), 1.25);
+    t.cents = 0;
+    test!("==")(t.as_double, 1.0);
+}
+
+/*******************************************************************************
+
+    Parses and returns data found in /proc/uptime.
+
+    Returns:
+        ProcUptime instance representing /proc/uptime
+
+    Throws:
+        ErrnoException on failure to parse this file.
+
+*******************************************************************************/
+
+public ProcUptime getProcUptime ()
+{
+    auto f = fopen("/proc/uptime".ptr, "r".ptr);
+
+    if (!f)
+    {
+        throwException("fopen");
+    }
+
+    scope (exit) fclose(f);
+
+    ProcUptime t;
+    if (fscanf(f, "%lld.%lld %lld.%lld\n".ptr,
+                &t.uptime.seconds,
+                &t.uptime.cents,
+                &t.idle.seconds,
+                &t.idle.cents) != 4)
+    {
+        throwException("fscanf");
+    }
+
+    return t;
+}
+
+/*******************************************************************************
+
+    Initializes .exception object if necessary and throws it, carrying the
+    last errno.
+
+    Params:
+        name = name of the method that failed
+
+*******************************************************************************/
+
+private void throwException( istring name )
+{
+    auto saved_errno = .errno;
+
+    if (.procvfs_exception is null)
+    {
+        .procvfs_exception = new ErrnoException();
+    }
+
+    throw .procvfs_exception.set(saved_errno, name);
 }
