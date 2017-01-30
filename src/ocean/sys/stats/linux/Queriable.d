@@ -168,6 +168,23 @@ public long getClockTicksPerSecond ()
 
 /*******************************************************************************
 
+    Gets the page size in bytes
+
+    Returns:
+        Gets the page size in bytes
+
+    Throws:
+        Reusable ErrnoException instance on error.
+
+*******************************************************************************/
+
+public long getPageSize ()
+{
+    return getSysconf(_SC_PAGESIZE);
+}
+
+/*******************************************************************************
+
     Wrapper around getrlimit, checking the return code and
     throwing an exception if failed.
 
