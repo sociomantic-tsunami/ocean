@@ -17,6 +17,13 @@
 module ocean.task.ThrottledTaskPool;
 
 import ocean.task.TaskPool;
+import ocean.task.Task;
+import ocean.task.Scheduler;
+import ocean.text.convert.Format;
+
+import ocean.io.model.ISuspendableThrottler;
+import ocean.util.container.pool.model.IPoolInfo;
+import ocean.util.container.pool.model.ILimitable;
 
 import ocean.transition;
 
@@ -31,10 +38,6 @@ public class ThrottledTaskPool ( TaskT ) : TaskPool!(TaskT)
 {
     import ocean.core.Traits;
     import ocean.core.Enforce;
-    import ocean.io.model.ISuspendableThrottler;
-    import ocean.task.Task;
-    import ocean.task.Scheduler;
-    import ocean.text.convert.Format;
 
     debug (TaskScheduler)
     {
@@ -82,94 +85,18 @@ public class ThrottledTaskPool ( TaskT ) : TaskPool!(TaskT)
 
     /***************************************************************************
 
-        Default throttler implementation used if no external one is supplied
-        via constructor. It throttles on amount of busy tasks in internal
-        task pool.
+        Constructor
+
+        If this constructor is used, one must call `useThrottler` method before
+        actually using the pool itself. Typical use case for that is deriving
+        from the default `PoolThrottler` class (defined in this module) which
+        requires reference to the pool as its constructor argument.
 
     ***************************************************************************/
 
-    private class PoolThrottler : ISuspendableThrottler
+    public this ( )
     {
-        /***********************************************************************
-
-          When amount of total queued tasks is >= this value, the input
-          will be suspended.
-
-        ***********************************************************************/
-
-        private size_t suspend_point;
-
-        /***********************************************************************
-
-          When amount of total queued tasks is <= this value, the input
-          will be resumed.
-
-        ***********************************************************************/
-
-        private size_t resume_point;
-
-        /***********************************************************************
-
-            Constructor
-
-            Params:
-                suspend_point = when number of busy tasks reaches this count,
-                    processing will get suspended
-                resume_point = when number of busy tasks reaches this count,
-                    processing will get resumed
-
-        ***********************************************************************/
-
-        public this ( size_t suspend_point, size_t resume_point )
-        {
-            assert(suspend_point > resume_point);
-            assert(suspend_point < this.outer.limit());
-
-            this.suspend_point = suspend_point;
-            this.resume_point = resume_point;
-        }
-
-        /***********************************************************************
-
-            Check if the total number of active tasks has reached the desired
-            limit to suspend.
-
-        ***********************************************************************/
-
-        override protected bool suspend ( )
-        {
-            auto stats = theScheduler.getStats();
-            auto total = stats.task_queue_total;
-            auto used = stats.task_queue_busy;
-
-            debug_trace("Throttler.suspend({}) : used = {}, total = {}, " ~
-                "pool.busy = {}, pool.limit = {}", this.suspend_point, used,
-                total, this.outer.num_busy(), this.outer.limit());
-
-            return used >= this.suspend_point
-                || (this.outer.num_busy() >= this.outer.limit() - 1);
-        }
-
-        /***********************************************************************
-
-            Check if the total number of active tasks is below the desired
-            limit to resume.
-
-        ***********************************************************************/
-
-        override protected bool resume ( )
-        {
-            auto stats = theScheduler.getStats();
-            auto total = stats.task_queue_total;
-            auto used = stats.task_queue_busy;
-
-            debug_trace("Throttler.resume({}) : used = {}, total = {}, " ~
-                "pool.busy = {}, pool.limit = {}", this.resume_point, used,
-                total, this.outer.num_busy(), this.outer.limit());
-
-            return used <= this.resume_point
-                && (this.outer.num_busy() < this.outer.limit());
-        }
+        this.throttler = null;
     }
 
     /***************************************************************************
@@ -213,7 +140,21 @@ public class ThrottledTaskPool ( TaskT ) : TaskPool!(TaskT)
                 "larger or equal to task queue size {}",
             suspend_point, total));
 
-        this.throttler = new PoolThrottler(suspend_point, resume_point);
+        this.throttler = new PoolThrottler(this, suspend_point, resume_point);
+    }
+
+    /***************************************************************************
+
+        Sets or replaces current throttler instance
+
+        Params:
+            throttler = throttler to use
+
+    ***************************************************************************/
+
+    public void useThrottler ( ISuspendableThrottler throttler )
+    {
+        this.throttler = throttler;
     }
 
     /***************************************************************************
@@ -234,6 +175,8 @@ public class ThrottledTaskPool ( TaskT ) : TaskPool!(TaskT)
 
     override public bool start ( ParameterTupleOf!(TaskT.copyArguments) args )
     {
+        assert (this.throttler !is null);
+
         if (this.num_busy() >= this.limit())
             return false;
 
@@ -283,6 +226,8 @@ public class ThrottledTaskPool ( TaskT ) : TaskPool!(TaskT)
 
         override public bool restore ( void[] serialized )
         {
+            assert (this.throttler !is null);
+
             if (this.num_busy() >= this.limit())
                 return false;
 
@@ -312,23 +257,131 @@ public class ThrottledTaskPool ( TaskT ) : TaskPool!(TaskT)
             return true;
         }
     }
+}
 
+/*******************************************************************************
+
+    Default throttler implementation used if no external one is supplied
+    via constructor. It throttles on amount of busy tasks in internal
+    task pool.
+
+*******************************************************************************/
+
+public class PoolThrottler : ISuspendableThrottler
+{
     /***************************************************************************
 
-        Debug trace output when builing with the TaskScheduler debug flag.
-
-        Params:
-            format = Format for variadic argument output.
-            args = Variadic arguments for output.
+        Reference to the throttled pool
 
     ***************************************************************************/
 
-    private void debug_trace ( T... ) ( cstring format, T args )
+    protected IPoolInfo pool;
+
+    /***************************************************************************
+
+      When amount of total queued tasks is >= this value, the input
+      will be suspended.
+
+    ***************************************************************************/
+
+    protected size_t suspend_point;
+
+    /***************************************************************************
+
+      When amount of total queued tasks is <= this value, the input
+      will be resumed.
+
+    ***************************************************************************/
+
+    protected size_t resume_point;
+
+    /***************************************************************************
+
+        Constructor
+
+        Params:
+            pool = pool to base throttling decision on
+            suspend_point = when number of busy tasks reaches this count,
+                processing will get suspended
+            resume_point = when number of busy tasks reaches this count,
+                processing will get resumed
+
+    ***************************************************************************/
+
+    public this ( IPoolInfo pool, size_t suspend_point, size_t resume_point )
     {
-        debug ( TaskScheduler )
-        {
-            Stdout.formatln( "[{}] " ~ format, typeof(this).stringof, args )
-                .flush();
-        }
+        assert(suspend_point > resume_point);
+        assert(suspend_point < pool.limit());
+
+        this.pool = pool;
+        this.suspend_point = suspend_point;
+        this.resume_point = resume_point;
+    }
+
+    /***************************************************************************
+
+        Check if the total number of active tasks has reached the desired
+        limit to suspend.
+
+        Checks both amount of unused tasks in this pool and amount of unused
+        tasks in global scheduler queue.
+
+    ***************************************************************************/
+
+    override protected bool suspend ( )
+    {
+        auto stats = theScheduler.getStats();
+        auto total = stats.task_queue_total;
+        auto used = stats.task_queue_busy;
+
+        debug_trace("Throttler.suspend({}) : used = {}, total = {}, " ~
+            "pool.busy = {}, pool.limit = {}", this.suspend_point, used,
+            total, this.pool.num_busy(), this.pool.limit());
+
+        return used >= this.suspend_point
+            || (this.pool.num_busy() >= this.pool.limit() - 1);
+    }
+
+    /***************************************************************************
+
+        Check if the total number of active tasks is below the desired
+        limit to resume.
+
+        Checks both amount of unused tasks in this pool and amount of unused
+        tasks in global scheduler queue.
+
+    ***************************************************************************/
+
+    override protected bool resume ( )
+    {
+        auto stats = theScheduler.getStats();
+        auto total = stats.task_queue_total;
+        auto used = stats.task_queue_busy;
+
+        debug_trace("Throttler.resume({}) : used = {}, total = {}, " ~
+            "pool.busy = {}, pool.limit = {}", this.resume_point, used,
+            total, this.pool.num_busy(), this.pool.limit());
+
+        return used <= this.resume_point
+            && (this.pool.num_busy() < this.pool.limit());
+    }
+}
+
+/*******************************************************************************
+
+    Debug trace output when builing with the TaskScheduler debug flag.
+
+    Params:
+        format = Format for variadic argument output.
+        args = Variadic arguments for output.
+
+*******************************************************************************/
+
+private void debug_trace ( T... ) ( cstring format, T args )
+{
+    debug ( TaskScheduler )
+    {
+        Stdout.formatln( "[ocean.task.ThrottledTaskPool] " ~ format, args )
+            .flush();
     }
 }
