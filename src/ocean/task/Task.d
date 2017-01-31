@@ -221,7 +221,8 @@ public abstract class Task : ISuspendable
 
     public this ( )
     {
-        debug_trace("<{}> has been created", cast(void*) this);
+        debug_trace("'{}' <{}> has been created", this.classinfo.name,
+            cast(void*) this);
     }
 
     /**************************************************************************
