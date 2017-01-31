@@ -163,13 +163,15 @@ public abstract class Task : ISuspendable
 
     /**************************************************************************
 
-        List of hooks that needs to be fired in case Task is killed in order
-        for other parts of the system to be able to tell that this task is
-        killed, in case they will reference it.
+        List of hooks that needs to be fired after Task has been terminated.
+
+        Delegates will be called both if task terminates routinely and if
+        it terminates dues to unhandled exception / gets killed.
 
     **************************************************************************/
 
-    private void delegate()[] kill_hooks;
+    /* package(ocean.task) */
+    public void delegate()[] termination_hooks;
 
     /**************************************************************************
 
@@ -295,31 +297,45 @@ public abstract class Task : ISuspendable
 
     /***************************************************************************
 
-        Registers a kill hook that will be executed when the Task is killed.
+        Registers a termination hook that will be executed when the Task is
+        killed.
 
         Params:
-            hook = delegate to be called when the task is killed
+            hook = delegate to be called after the task terminates
 
     ***************************************************************************/
 
+    public void terminationHook (void delegate() hook)
+    {
+        this.termination_hooks ~= hook;
+    }
+
+    deprecated("Use terminationHook(hook) instead")
     public void registerOnKillHook (void delegate() hook)
     {
-        this.kill_hooks ~= hook;
+        this.terminationHook(hook);
     }
 
     /***************************************************************************
 
-        Unregisters a kill hook that would be executed when the Task is killed.
+        Unregisters a termination hook that would be executed when the Task is
+        killed.
 
         Params:
-            hook = delegate that would be called when the task is killed
+            hook = delegate that would be called when the task terminates
 
     ***************************************************************************/
 
+    public void removeTerminationHook (void delegate() hook)
+    {
+        this.termination_hooks.length = .moveToEnd(this.termination_hooks, hook);
+        enableStomping(this.termination_hooks);
+    }
+
+    deprecated("Use removeTerminationHook(hook) instead")
     public void unregisterOnKillHook (void delegate() hook)
     {
-        this.kill_hooks.length = .moveToEnd(this.kill_hooks, hook);
-        enableStomping(this.kill_hooks);
+        this.removeTerminationHook(hook);
     }
 
     /***************************************************************************
@@ -347,12 +363,6 @@ public abstract class Task : ISuspendable
 
         Task.kill_exception.file = file;
         Task.kill_exception.line = line;
-
-        // Perform additional callbacks on killing the Task
-        foreach (hook; this.kill_hooks)
-        {
-            hook();
-        }
 
         if (this is Task.getThis())
             throw Task.kill_exception;
@@ -410,14 +420,6 @@ public abstract class Task : ISuspendable
                 cast(void*) this, getMsg(e), e.file, e.line);
             this.fiber.yieldAndThrow(e);
             return;
-        }
-        finally
-        {
-            // This really belongs to this.recycle, however, that would
-            // impose a breaking change meaning that all users overriding
-            // this should call `super.recycle()`
-            this.kill_hooks.length = 0;
-            enableStomping(this.kill_hooks);
         }
 
         debug_trace("<{}> termination (end of main function)", cast(void*) this);
