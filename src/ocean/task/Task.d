@@ -34,6 +34,7 @@ static import core.thread;
 import ocean.transition;
 import ocean.core.array.Mutation : moveToEnd;
 import ocean.core.Test;
+import ocean.core.Buffer;
 import ocean.io.select.EpollSelectDispatcher;
 import ocean.io.model.ISuspendable;
 import ocean.task.internal.TaskExtensionMixins;
@@ -171,7 +172,7 @@ public abstract class Task : ISuspendable
     **************************************************************************/
 
     /* package(ocean.task) */
-    public void delegate()[] termination_hooks;
+    public Buffer!(void delegate()) termination_hooks;
 
     /**************************************************************************
 
@@ -328,8 +329,7 @@ public abstract class Task : ISuspendable
 
     public void removeTerminationHook (void delegate() hook)
     {
-        this.termination_hooks.length = .moveToEnd(this.termination_hooks, hook);
-        enableStomping(this.termination_hooks);
+        this.termination_hooks.length = .moveToEnd(this.termination_hooks[], hook);
     }
 
     deprecated("Use removeTerminationHook(hook) instead")

@@ -480,9 +480,8 @@ final class Scheduler
             debug_trace("Calling {} termination_hooks for task <{}>",
                 task.termination_hooks.length, cast(void*) task);
 
-            auto hooks = task.termination_hooks;
-            task.termination_hooks.length = 0;
-            enableStomping(task.termination_hooks);
+            auto hooks = task.termination_hooks[];
+            task.termination_hooks.reset();
 
             foreach (hook; hooks)
             {
