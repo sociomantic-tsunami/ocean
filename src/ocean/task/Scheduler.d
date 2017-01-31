@@ -474,6 +474,26 @@ final class Scheduler
         // task instance itself)
         debug_trace("Recycling task <{}>", cast(void*) task);
         task.recycle();
+
+        if (task.termination_hooks.length)
+        {
+            debug_trace("Calling {} termination_hooks for task <{}>",
+                task.termination_hooks.length, cast(void*) task);
+
+            auto hooks = task.termination_hooks;
+            task.termination_hooks.length = 0;
+            enableStomping(task.termination_hooks);
+
+            foreach (hook; hooks)
+            {
+                hook();
+                assert(
+                    task.termination_hooks.length == 0,
+                    "Adding new hooks while running existing ones is not" ~
+                        "supported"
+                );
+            }
+        }
     }
 
     /***************************************************************************
