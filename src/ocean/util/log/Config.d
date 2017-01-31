@@ -353,6 +353,7 @@ static this ( )
 
 *******************************************************************************/
 
+deprecated("Use configureOldLogger and call ocean.util.config.ConfigFiller : enable_loose_parsing yourself")
 public void configureLoggers ( Source = ConfigParser, FileLayout = LayoutDate,
                                ConsoleLayout = LayoutSimple )
                              ( ClassIterator!(Config, Source) config,
@@ -374,7 +375,7 @@ public void configureLoggers ( Source = ConfigParser, FileLayout = LayoutDate,
 
 *******************************************************************************/
 
-unittest
+deprecated unittest
 {
     void f ( )
     {
@@ -405,6 +406,7 @@ unittest
 
 *******************************************************************************/
 
+deprecated("Use configureOldLoggers and call ocean.util.config.ConfigFiller : enable_loose_parsing yourself")
 public void configureLoggers ( Source = ConfigParser, FileLayout = LayoutDate,
     ConsoleLayout = LayoutSimple )
     ( ClassIterator!(Config, Source) config, MetaConfig m_config,
@@ -423,10 +425,58 @@ public void configureLoggers ( Source = ConfigParser, FileLayout = LayoutDate,
 
     enable_loose_parsing(loose);
 
-    configureLoggers!(Source, FileLayout, ConsoleLayout)
-        (config, m_config, file_appender,
+    configureLoggers!(Logger, Source, FileLayout, ConsoleLayout)
+        (config, m_config,
+         (cstring n) { return !n.length ? Log.root : Log.lookup(n); },
+         file_appender,
          (Layout l) { return console_appender_fn(use_insert_appender, l); });
 }
+
+
+/*******************************************************************************
+
+    Sets up logging configuration for `ocean.util.log.Log`
+
+    Calls the provided `file_appender` delegate once per log being configured
+    and passes the returned `Appender` to the `Logger.add` method.
+
+    Params:
+        config   = an instance of an class iterator for Config
+        m_config = an instance of the MetaConfig class
+        file_appender = delegate which returns appender instances to write to
+                        a file
+        use_insert_appender = true if the InsertConsole appender should be used
+                              (needed when using the AppStatus module)
+
+*******************************************************************************/
+
+public void configureOldLoggers (
+    ClassIterator!(Config, ConfigParser) config, MetaConfig m_config,
+    Appender delegate ( istring file, Layout layout ) file_appender,
+    bool use_insert_appender = false)
+{
+    // DMD1 cannot infer the common type between both return, we have to work
+    // around it...
+    static Appender console_appender_fn (bool insert_appender, Layout l)
+    {
+        if (insert_appender)
+            return new InsertConsole(l);
+        else
+            return new AppendStderrStdout(Level.Warn, l);
+    }
+
+    // The type needs to be spelt out loud because DMD2 is clever enough
+    // to see it's a function and not a delegate, but not clever enough
+    // to understand we want a delegate in the end...
+    scope Logger delegate(cstring) lookup
+                     = (cstring n) { return !n.length ? Log.root : Log.lookup(n); };
+    scope Appender delegate(Layout) appender_dg = (Layout l)
+                       { return console_appender_fn(use_insert_appender, l); };
+
+    configureLoggers!(Logger, ConfigParser, LayoutDate, LayoutSimple)
+        (config, m_config, lookup, file_appender, appender_dg);
+}
+
 
 /*******************************************************************************
 
@@ -435,6 +485,7 @@ public void configureLoggers ( Source = ConfigParser, FileLayout = LayoutDate,
     method.
 
     Params:
+        LoggerT = Type of the logger to configure
         Source = the type of the config parser
         FileLayout = layout to use for logging to file, defaults to LayoutDate
         ConsoleLayout = layout to use for logging to console, defaults to
@@ -442,6 +493,8 @@ public void configureLoggers ( Source = ConfigParser, FileLayout = LayoutDate,
 
         config   = an instance of an class iterator for Config
         m_config = an instance of the MetaConfig class
+        lookup   = Delegate that maps a name to a logger.
+                   An empty name should return the root logger.
         file_appender = delegate which returns appender instances to write to
                         a file
         console_appender = Delegate which returns an Appender suitable to use
@@ -451,8 +504,10 @@ public void configureLoggers ( Source = ConfigParser, FileLayout = LayoutDate,
 *******************************************************************************/
 
 private void configureLoggers
-    (Source = ConfigParser, FileLayout = LayoutDate, ConsoleLayout = LayoutSimple)
+    (LoggerT : ILogger, Source = ConfigParser,
+     FileLayout = LayoutDate, ConsoleLayout = LayoutSimple)
     (ClassIterator!(Config, Source) config, MetaConfig m_config,
+     LoggerT delegate (cstring name) lookup,
      Appender delegate (istring file, Layout layout) file_appender,
      Appender delegate (Layout) console_appender)
 {
@@ -494,24 +549,22 @@ private void configureLoggers
     {
         bool console_enabled = false;
         bool syslog_enabled = false;
-        Logger log;
 
         config.fill(name, settings);
 
         if (root_name == name)
         {
-            log = Log.root;
+            name = null;
             console_enabled = settings.console(true);
             syslog_enabled = settings.syslog(false);
         }
         else
         {
-            log = Log.lookup(name);
             console_enabled = settings.console();
             syslog_enabled = settings.syslog();
         }
-        configureLogger!(FileLayout, ConsoleLayout)
-            (log, settings, name,
+        configureLogger!(FileLayout, ConsoleLayout, LoggerT)
+            (lookup(name), settings, name,
              file_appender, console_appender,
              console_enabled, syslog_enabled, m_config.buffer_size);
     }
@@ -662,7 +715,7 @@ file = dummy
     auto log_config = iterate!(Config)("LOG", config_parser);
     auto dummy_meta_config = new MetaConfig();
 
-    configureLoggers(log_config, dummy_meta_config, &appender);
+    configureOldLoggers(log_config, dummy_meta_config, &appender);
 
     auto log_D = Log.lookup("A.B.C.D");
 
@@ -688,7 +741,7 @@ file = dummy
 
 *******************************************************************************/
 
-unittest
+deprecated unittest
 {
     void f ( )
     {
