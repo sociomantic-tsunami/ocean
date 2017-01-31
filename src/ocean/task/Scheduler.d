@@ -402,6 +402,27 @@ final class Scheduler
 
     /***************************************************************************
 
+        Schedules the argument and suspends calling task until the argument
+        finishes.
+
+        Params:
+            task = task to schedule and wait for
+
+    ***************************************************************************/
+
+    public void await ( Task task )
+    {
+        auto context = Task.getThis();
+        assert (context !is null);
+        assert (context !is task);
+
+        task.terminationHook({ context.resume(); });
+        this.schedule(task);
+        context.suspend();
+    }
+
+    /***************************************************************************
+
         Starts pseudo-infinite event loop. Event loop will keep running as long
         as there is at least one event registered.
 
