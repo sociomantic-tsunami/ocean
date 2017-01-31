@@ -83,3 +83,35 @@ unittest
 
     test!("==")(caught, 9);
 }
+
+unittest
+{
+    static class SubTask : Task
+    {
+        int result;
+
+        override void run ( )
+        {
+            result = 41;
+            .wait(1);
+            result = 42;
+        }
+    }
+
+    static class MainTask : Task
+    {
+        override void run ( )
+        {
+            auto task1 = new SubTask;
+            auto task2 = new SubTask;
+            theScheduler.await(task1);
+            theScheduler.await(task2);
+            test!("==")(task1.result, 42);
+            test!("==")(task2.result, 42);
+        }
+    }
+
+    initScheduler(SchedulerConfiguration.init);
+    theScheduler.schedule(new MainTask);
+    theScheduler.eventLoop();
+}
