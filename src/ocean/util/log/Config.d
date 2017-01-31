@@ -335,13 +335,12 @@ static this ( )
     Sets up logging configuration. Creates an AppendSysLog appender for each
     log.
 
-    Template_Params:
+    Params:
         Source = the type of the config parser
         FileLayout = layout to use for logging to file, defaults to LayoutDate
         ConsoleLayout = layout to use for logging to console, defaults to
                         LayoutSimple
 
-    Params:
         config   = an instance of an class iterator for Config
         m_config = an instance of the MetaConfig class
         loose = if true, configuration files will be parsed in a more relaxed
@@ -491,7 +490,7 @@ private void configureLoggers
 
     Config settings;
 
-    foreach(name; logger_names)
+    foreach (name; logger_names)
     {
         bool console_enabled = false;
         bool syslog_enabled = false;
@@ -499,7 +498,7 @@ private void configureLoggers
 
         config.fill(name, settings);
 
-        if ( root_name == name )
+        if (root_name == name)
         {
             log = Log.root;
             console_enabled = settings.console(true);
@@ -715,13 +714,13 @@ unittest
 
 public void setupLoggerLevel ( Logger log, istring name, Config config )
 {
-    with (config) if ( level.length > 0 )
+    with (config) if (level.length > 0)
     {
         StringSearch!() s;
 
         level = s.strEnsureLower(level);
 
-        switch ( level )
+        switch (level)
         {
             case "trace":
             case "debug":
