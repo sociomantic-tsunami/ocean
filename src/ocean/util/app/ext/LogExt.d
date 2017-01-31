@@ -55,6 +55,7 @@ import ocean.util.log.Log;
 
 class LogExt : IConfigExtExtension
 {
+    import ocean.util.config.ConfigFiller;
 
     /***************************************************************************
 
@@ -143,8 +144,10 @@ class LogExt : IConfigExtExtension
             return new AppendStream(stream, true, layout);
         }
 
-        LogUtil.configureLoggers(log_config, log_meta_config, &appender,
-            conf_ext.loose_config_parsing, this.use_insert_appender);
+        enable_loose_parsing(conf_ext.loose_config_parsing);
+
+        LogUtil.configureOldLoggers(log_config, log_meta_config, &appender,
+            this.use_insert_appender);
 
         foreach (ext; this.extensions)
         {
