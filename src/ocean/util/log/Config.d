@@ -97,11 +97,12 @@ import ocean.util.log.AppendSysLog;
 import ocean.stdc.string;
 import ocean.text.util.StringSearch;
 
-import ocean.util.log.Appender;
-import ocean.util.log.Event;
-import ocean.util.log.Log;
+import OldLog = ocean.util.log.Log;
+import NewLog = ocean.util.log.Logger;
 import ocean.util.log.InsertConsole;
+import ocean.util.log.Appender;
 import ocean.util.log.AppendStderrStdout;
+import ocean.util.log.Event;
 import ocean.util.log.model.ILogger;
 
 // Log layouts
@@ -351,18 +352,63 @@ public void configureOldLoggers (
         if (insert_appender)
             return new InsertConsole(l);
         else
-            return new AppendStderrStdout(Level.Warn, l);
+            return new AppendStderrStdout(ILogger.Level.Warn, l);
     }
 
     // The type needs to be spelt out loud because DMD2 is clever enough
     // to see it's a function and not a delegate, but not clever enough
     // to understand we want a delegate in the end...
-    scope Logger delegate(cstring) lookup
-                     = (cstring n) { return !n.length ? Log.root : Log.lookup(n); };
+    scope OldLog.Logger delegate(cstring) lookup
+                     = (cstring n) { return !n.length ? OldLog.Log.root : OldLog.Log.lookup(n); };
     scope Appender delegate(Layout) appender_dg = (Layout l)
                        { return console_appender_fn(use_insert_appender, l); };
 
-    configureLoggers!(Logger, ConfigParser, LayoutDate, LayoutSimple)
+    configureLoggers!(OldLog.Logger, ConfigParser, LayoutDate, LayoutSimple)
+        (config, m_config, lookup, file_appender, appender_dg);
+}
+
+
+/*******************************************************************************
+
+    Sets up logging configuration for `ocean.util.log.Logger`
+
+    Calls the provided `file_appender` delegate once per log being configured and
+    passes the returned appender to the log's add() method.
+
+    Params:
+        config   = an instance of an class iterator for Config
+        m_config = an instance of the MetaConfig class
+        file_appender = delegate which returns appender instances to write to
+                        a file
+        use_insert_appender = true if the InsertConsole appender should be used
+                              (needed when using the AppStatus module)
+
+*******************************************************************************/
+
+public void configureNewLoggers (
+    ClassIterator!(Config, ConfigParser) config, MetaConfig m_config,
+    Appender delegate ( istring file, Layout layout ) file_appender,
+    bool use_insert_appender = false)
+{
+    // DMD1 cannot infer the common type between both return, we have to work
+    // around it...
+    static Appender console_appender_fn (bool insert_appender, Layout layout)
+    {
+        if (insert_appender)
+            return new InsertConsole(layout);
+        else
+            return new AppendStderrStdout(ILogger.Level.Warn, layout);
+    }
+
+    // The type needs to be spelt out loud because DMD2 is clever enough
+    // to see it's a function and not a delegate, but not clever enough
+    // to understand we want a delegate in the end...
+    scope NewLog.Logger delegate(cstring) lookup
+                     = (cstring n) { return !n.length ? NewLog.Log.root : NewLog.Log.lookup(n); };
+    scope Appender delegate(Layout) appender_dg = (Layout l)
+                       { return console_appender_fn(use_insert_appender, l); };
+
+    configureLoggers!(NewLog.Logger, ConfigParser, LayoutDate, LayoutSimple)
         (config, m_config, lookup, file_appender, appender_dg);
 }
 
@@ -606,7 +652,7 @@ file = dummy
 
     configureOldLoggers(log_config, dummy_meta_config, &appender);
 
-    auto log_D = Log.lookup("A.B.C.D");
+    auto log_D = OldLog.Log.lookup("A.B.C.D");
 
     log_D.trace("trace log (shouldn't be sent to appender)");
     test!("==")(temp_appender.latest_log_msg, "");
@@ -629,6 +675,7 @@ file = dummy
     Sets up the level configuration of a logger.
 
     Params:
+        LoggerT = Type of logger to configure
         log = logger to configure
         name = name of logger
         config = config settings for the logger
@@ -638,7 +685,8 @@ file = dummy
 
 *******************************************************************************/
 
-public void setupLoggerLevel ( Logger log, istring name, Config config )
+public void setupLoggerLevel (LoggerT : ILogger)
+    ( LoggerT log, istring name, Config config )
 {
     with (config) if (level.length > 0)
     {
@@ -650,29 +698,29 @@ public void setupLoggerLevel ( Logger log, istring name, Config config )
         {
             case "trace":
             case "debug":
-                log.level(Level.Trace, propagate);
+                log.level(ILogger.Level.Trace, propagate);
                 break;
 
             case "info":
-                log.level(Level.Info, propagate);
+                log.level(ILogger.Level.Info, propagate);
                 break;
 
             case "warn":
-                log.level(Level.Warn, propagate);
+                log.level(ILogger.Level.Warn, propagate);
                 break;
 
             case "error":
-                log.level(Level.Error, propagate);
+                log.level(ILogger.Level.Error, propagate);
                 break;
 
             case "fatal":
-                log.level(Level.Fatal, propagate);
+                log.level(ILogger.Level.Fatal, propagate);
                 break;
 
             case "none":
             case "off":
             case "disabled":
-                log.level(Level.None, propagate);
+                log.level(ILogger.Level.None, propagate);
                 break;
 
             default:

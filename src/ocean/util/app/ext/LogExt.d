@@ -150,6 +150,9 @@ class LogExt : IConfigExtExtension
         LogUtil.configureOldLoggers(log_config, log_meta_config, &appender,
             this.use_insert_appender);
 
+        LogUtil.configureNewLoggers(log_config, log_meta_config, &appender,
+            this.use_insert_appender);
+
         foreach (ext; this.extensions)
         {
             ext.postConfigureLoggers(app, config, conf_ext.loose_config_parsing,
