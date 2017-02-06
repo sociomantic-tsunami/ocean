@@ -8,7 +8,7 @@ services:
 language: c
 
 install:
-    - ./docker/travis-install.sh
+    - ci/travis-install.sh
 
 script:
-    - ./docker/travis-script.sh
+    - ci/travis-script.sh
