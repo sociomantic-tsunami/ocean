@@ -59,6 +59,9 @@ version (UnitTest)
 
 public void wait ( uint micro_seconds )
 {
+    if (micro_seconds == 0)
+        return;
+
     auto task = Task.getThis();
     assert (task !is null);
 
