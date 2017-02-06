@@ -1,0 +1,32 @@
+From 7c408bafa7bdcc9d1e62ab1bc449275bd7c4ac33 Mon Sep 17 00:00:00 2001
+From: Dicebot <public@dicebot.lv>
+Date: Sat, 29 Oct 2016 16:15:19 +0300
+Subject: [PATCH 12/17] Provide stomping prevention stats
+
+Uses simple `extern(C)` counter so that it can be both linked
+in apps without importing anything and trivially available in gdb.
+---
+ src/rt/lifetime.d | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/src/rt/lifetime.d b/src/rt/lifetime.d
+index 665a937e..6fc14857 100644
+--- a/src/rt/lifetime.d
++++ b/src/rt/lifetime.d
+@@ -236,8 +236,13 @@ export extern(C) void stomping_prevention_trigger ( ) pure nothrow
+     debug(CheckStompingPrevention) stomping_prevention_trigger_nonpure();
+ }
+ 
++extern(C) shared long stomping_prevention_counter;
++
+ void stomping_prevention_trigger_nonpure ( ) nothrow
+ {
++    import core.atomic;
++    atomicOp!"+="(stomping_prevention_counter, 1);
++
+     import core.stdc.stdlib : getenv;
+     import core.stdc.string : strcmp;
+ 
+-- 
+2.11.0
+

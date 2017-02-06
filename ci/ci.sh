@@ -12,7 +12,12 @@ if_d() {
 
 for DVER in 1 2
 do
-    export DVER BUILD_DIR_NAME=build-d$DVER F=production
+    if test $DVER = 1; then
+        DC=dmd1
+    else
+        DC=dmd-transitional
+    fi
+    export DVER DC BUILD_DIR_NAME=build-d$DVER F=production
 
     xmlfile="$BUILD_DIR_NAME/$F/tmp/unittests.xml"
 
