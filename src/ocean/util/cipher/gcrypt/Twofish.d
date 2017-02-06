@@ -78,13 +78,9 @@ unittest
 }
 
 
-/*******************************************************************************
-
-    Instantiate the class to run the unittests in the template.
-
-*******************************************************************************/
-
+// Test that only keys of the provided length are allowed
 unittest
 {
-    new Twofish(Twofish.generateKey());
+    auto key = cast(Immut!(ubyte)[])"a key of 32 bytesa key of32bytes";
+    Twofish.testFixedKeyLength(key);
 }

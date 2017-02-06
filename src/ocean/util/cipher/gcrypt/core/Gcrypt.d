@@ -416,28 +416,39 @@ private class GcryptBase ( Algorithm algorithm, Mode mode )
             }
             return str;
         }
-    }
 
-    /***************************************************************************
+        /***********************************************************************
 
-        Test that only keys of the correct length are acceptable.
+            Tests that the algorithm accepts a key of the correct length and
+            rejects keys of invalid lengths.
 
-    ***************************************************************************/
+            Some algorithms have possible key length (e.g. 128 or 256 bits),
+            while other algorithms have ranges of key length (e.g. Blowfish
+            allows for keys from 32 to 448 bits).
+            For algorithms with a fixed key length, it is recommended to call
+            this function from an unittest.
 
-    unittest
-    {
-        auto key = generateKey();
+            Params:
+                key = Key to use for test.
+                      This function will ensure that a larger and smaller key
+                      (by 1) triggers an error, while the provided key doesn't.
+                      Make sure to pass a key which is not weak (e.g. a default
+                      initialized slice), as gcrypt errors on them.
 
-        // Too short should fail
-        testThrown!(GcryptException)(new typeof(this)(key[0 .. $-1]));
+        ***********************************************************************/
 
-        // Too long should fail
-        key.length = key.length + 1;
-        testThrown!(GcryptException)(new typeof(this)(key));
-        key.length = key.length - 1;
+        public static void testFixedKeyLength (Const!(ubyte)[] key)
+        {
+            // Too short should fail
+            testThrown!(GcryptException)(new typeof(this)(key[0 .. $-1]));
 
-        // The correct length should succeed
-        new typeof(this)(key);
+            // Too long should fail
+            key.length = key.length + 1;
+            testThrown!(GcryptException)(new typeof(this)(key));
+            key.length = key.length - 1;
+
+            scope works = new typeof(this)(key);
+        }
     }
 }
 
