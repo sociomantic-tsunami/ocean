@@ -1,5 +1,5 @@
 FROM ubuntu:trusty
-COPY *.sh ./
+COPY docker/ ./
 RUN ./base.sh
 RUN ./ebtree.sh v6.0.socio6
 RUN ./dmd.sh 2.070.2-0
