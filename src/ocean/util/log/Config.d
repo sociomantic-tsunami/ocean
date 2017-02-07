@@ -384,7 +384,7 @@ unittest
 
 /*******************************************************************************
 
-    Sets up logging configuration. Calls the provided new_appender delegate once
+    Sets up logging configuration. Calls the provided file_appender delegate once
     per log being configured and passes the returned appender to the log's add()
     method.
 
@@ -395,8 +395,8 @@ unittest
                         LayoutSimple
         config   = an instance of an class iterator for Config
         m_config = an instance of the MetaConfig class
-        new_appender = delegate which returns appender instances to be used in
-            the loggers created in this function
+        file_appender = delegate which returns appender instances to write to
+                        a file
         loose = if true, configuration files will be parsed in a more relaxed
                 manner
         use_insert_appender = true if the InsertConsole appender should be used
@@ -407,7 +407,7 @@ unittest
 public void configureLoggers ( Source = ConfigParser, FileLayout = LayoutDate,
     ConsoleLayout = LayoutSimple )
     ( ClassIterator!(Config, Source) config, MetaConfig m_config,
-    Appender delegate ( istring file, Layout layout ) new_appender,
+    Appender delegate ( istring file, Layout layout ) file_appender,
     bool loose = false, bool use_insert_appender = false )
 {
     enable_loose_parsing(loose);
@@ -490,7 +490,7 @@ public void configureLoggers ( Source = ConfigParser, FileLayout = LayoutDate,
             Layout file_log_layout = (settings.file_layout.length)
                                          ? newLayout(settings.file_layout)
                                          : new FileLayout;
-            log.add(new_appender(settings.file(), file_log_layout));
+            log.add(file_appender(settings.file(), file_log_layout));
         }
 
         if ( syslog_enabled )
@@ -624,9 +624,9 @@ unittest
 {
     void f ( )
     {
-        Appender delegate ( istring file, Layout layout ) new_appender;
+        Appender delegate ( istring file, Layout layout ) file_appender;
         configureLoggers!()(ClassIterator!(Config, ConfigParser).init,
-            MetaConfig.init, new_appender);
+            MetaConfig.init, file_appender);
     }
 }
 
