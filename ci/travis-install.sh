@@ -7,7 +7,7 @@ img=$(ci/travis-image-name.sh)
 docker pull "$img" || true
 
 # If it was built before, the build will use the cache
-docker build -t "$img" .
+docker build --pull -t "$img" .
 
 # And pushing will also be very fast (done only if there are valid credentials)
 set +x # No peeking of password!
