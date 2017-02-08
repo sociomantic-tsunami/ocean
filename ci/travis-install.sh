@@ -13,7 +13,7 @@ docker build --pull -t "$img" .
 set +x # No peeking of password!
 if test -n "$DOCKER_PASSWORD"
 then
-    docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
+    docker login -u"$DOCKER_USERNAME" -p"$DOCKER_PASSWORD"
     set -x
     docker push "$img"
 fi
