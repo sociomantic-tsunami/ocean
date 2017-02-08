@@ -1,3 +1,7 @@
+.. image:: https://travis-ci.org/sociomantic-tsunami/ocean.svg?branch=v2.4.x
+  :alt: Build status
+  :target: https://travis-ci.org/sociomantic-tsunami/ocean
+
 Description
 ===========
 
@@ -37,12 +41,17 @@ contributions.
 D2 Compatibility
 ----------------
 
-For now Ocean is only intended to work with D 2.070.x, but even that is not
-possible at the moment because of some changes needed in the upstream compiler
-that are still pending. Because of this a patched *transitional* compiler is
-needed.  The patces needed to compile the ``dmd-transitional`` compiler are
-located in `docker/dmd-transitional/patches
+By default all development in Ocean is done in D1, but using a subset that is
+almost D2 comptaible (and with the help of d1to2fix_, it can be fully converted
+to D2).
+
+That said, for now Ocean is only intended to work with D 2.070.x, but even that
+is not possible at the moment because of some changes needed in the upstream
+compiler that are still pending. Because of this a patched *transitional*
+compiler is needed.  The patces needed to compile the ``dmd-transitional``
+compiler are located in `docker/dmd-transitional/patches
 <https://github.com/sociomantic-tsunami/ocean/tree/v2.4.x/docker/dmd-transitional/patches>`_.
+
 We are working with upstream to get this issue sorted out as soon as possible.
 To track progress or read more details, please subscribe to `issue #9
 <https://github.com/sociomantic-tsunami/ocean/issues/9>`_.
