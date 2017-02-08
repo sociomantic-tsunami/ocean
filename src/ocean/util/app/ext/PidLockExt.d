@@ -174,7 +174,7 @@ class PidLockExt : IConfigExtExtension, IApplicationExtension
     private bool tryLockPidFile ( )
     {
         this.lock_fd = this.enforcePosix!(open)(StringC.toCString(this.pidlock_path),
-                O_RDWR | O_CREAT, S_IRUSR | S_IWUSR);
+                O_RDWR | O_CREAT, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
 
         // TODO these will be available in tango v1.6.0
         const F_SETLK = 6;
