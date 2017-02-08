@@ -34,6 +34,23 @@ That said, we welcome pull requests and issues, we'll see how to deal with this
 duality when the time comes, but we are definitely willing to accept
 contributions.
 
+D2 Compatibility
+----------------
+
+For now Ocean is only intended to work with D 2.070.x, but even that is not
+possible at the moment because of some changes needed in the upstream compiler
+that are still pending. Because of this a patched *transitional* compiler is
+needed.  The patces needed to compile the ``dmd-transitional`` compiler are
+located in `docker/dmd-transitional/patches
+<https://github.com/sociomantic-tsunami/ocean/tree/v2.4.x/docker/dmd-transitional/patches>`_.
+We are working with upstream to get this issue sorted out as soon as possible.
+To track progress or read more details, please subscribe to `issue #9
+<https://github.com/sociomantic-tsunami/ocean/issues/9>`_.
+
+Also, as far as D2 upstream get serious about hassle-free upgrading to new
+compiler versions, expect Ocean to lag behind latest upstream releases for
+a few versions.
+
 
 Build / Use
 ===========
@@ -88,18 +105,9 @@ section for instructions), then just type::
 
   make d2conv
 
+To run the tests using D2 you can use::
 
-D2 Compatibility
-----------------
-
-The resulting code should work at least in upstream vanilla DMD v2.70.x, with
-the exception of a few modules that depends on the old Tango runtime function
-``gc_usage()``. There is a dummy implementation returning all zeros just to at
-least allow compiling stuff, but until `#1591
-<https://github.com/dlang/druntime/pull/1591>`_ is merged into druntime, these
-functions will remain slighty broken, and the tests (``make DVER=2`` after
-``make d2conv``) will fail too.
-
+  make DVER=2
 
 
 Support Guarantees
