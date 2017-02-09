@@ -25,6 +25,7 @@ module ocean.util.container.queue.FlexibleFileQueue;
 
 
 import ocean.transition;
+import ocean.core.Buffer;
 import ocean.util.container.queue.FlexibleRingQueue;
 import ocean.util.container.queue.model.IByteQueue;
 import ocean.util.container.queue.model.IQueueInfo;
@@ -66,7 +67,7 @@ public class FlexibleFileQueue : IByteQueue
 
     ***************************************************************************/
 
-    private ubyte[] slice_push_buffer;
+    private Buffer!(ubyte) slice_push_buffer;
 
     /***************************************************************************
 
@@ -302,7 +303,7 @@ public class FlexibleFileQueue : IByteQueue
 
         this.slice_push_buffer.length = size;
 
-        return this.slice_push_buffer;
+        return this.slice_push_buffer[];
     }
 
 
@@ -543,7 +544,7 @@ public class FlexibleFileQueue : IByteQueue
             if (!this.files_open)
                 this.openExternal();
 
-            this.filePush(this.slice_push_buffer);
+            this.filePush(this.slice_push_buffer[]);
             this.slice_push_buffer.length = 0;
         }
     }
