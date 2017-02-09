@@ -48,10 +48,13 @@
 module ocean.io.serialize.SimpleSerializer;
 
 
-import ocean.io.serialize.SimpleStreamSerializer;
+import StreamSerializer = ocean.io.serialize.SimpleStreamSerializer;
 
 
 deprecated("Use ocean.io.serialize.SimpleStreamSerializer.SimpleStreamSerializer.")
-public alias SimpleStreamSerializer SimpleSerializer;
+public alias StreamSerializer.SimpleStreamSerializer SimpleSerializer;
 deprecated("Use ocean.io.serialize.SimpleStreamSerializer.SimpleStreamSerializerArrays.")
-public alias SimpleStreamSerializerArrays SimpleSerializerArrays;
+public alias StreamSerializer.SimpleStreamSerializerArrays SimpleSerializerArrays;
+
+deprecated("Use ocean.io.serialize.SimpleStreamSerializer.EofException.")
+public alias StreamSerializer.EofException EofException;
