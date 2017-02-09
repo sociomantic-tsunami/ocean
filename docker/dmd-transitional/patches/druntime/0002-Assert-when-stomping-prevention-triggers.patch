@@ -1,0 +1,142 @@
+From 05a93182132a6b837e74fc2e059f5be188ae799d Mon Sep 17 00:00:00 2001
+From: Mihails Strasuns <mihails.strasuns.contractor@sociomantic.com>
+Date: Sun, 6 Sep 2015 05:38:41 +0300
+Subject: [PATCH 02/17] Assert when stomping prevention triggers
+
+Also removes `-release` from release flags and adds `-g` to be able
+to break in gdb on trigger function and get nice backtrace
+
+Default behaviour can be enabled by setting env var "ALLOW_STOMPING" to 1
+
+Conflicts:
+	posix.mak
+	src/rt/lifetime.d
+---
+ posix.mak         |  4 ++--
+ src/rt/lifetime.d | 44 ++++++++++++++++++++++++++++++++++++++++----
+ 2 files changed, 42 insertions(+), 6 deletions(-)
+
+diff --git a/posix.mak b/posix.mak
+index 7175f0f3..2794db5e 100644
+--- a/posix.mak
++++ b/posix.mak
+@@ -53,10 +53,10 @@ endif
+ # Set DFLAGS
+ UDFLAGS:=-conf= -Isrc -Iimport -w -dip25 $(MODEL_FLAG) $(OPTIONAL_PIC)
+ ifeq ($(BUILD),debug)
+-	UDFLAGS += -g -debug
++	UDFLAGS += -g -debug -debug=CheckStompingPrevention
+ 	DFLAGS:=$(UDFLAGS)
+ else
+-	UDFLAGS += -O -release
++	UDFLAGS += -O -g -debug=CheckStompingPrevention
+ 	DFLAGS:=$(UDFLAGS) -inline # unittests don't compile with -inline
+ endif
+ 
+diff --git a/src/rt/lifetime.d b/src/rt/lifetime.d
+index d28edf8c..56382e06 100644
+--- a/src/rt/lifetime.d
++++ b/src/rt/lifetime.d
+@@ -17,7 +17,7 @@ import core.stdc.string;
+ import core.stdc.stdarg;
+ import core.bitop;
+ import core.memory;
+-debug(PRINTF) import core.stdc.stdio;
++debug import core.stdc.stdio;
+ static import rt.tlsgc;
+ 
+ alias BlkInfo = GC.BlkInfo;
+@@ -230,6 +230,21 @@ size_t structTypeInfoSize(const TypeInfo ti) pure nothrow @nogc
+ private class ArrayAllocLengthLock
+ {}
+ 
++// break on this to debug stomping prevention allocations
++export extern(C) void stomping_prevention_trigger ( ) pure nothrow
++{
++    debug(CheckStompingPrevention) stomping_prevention_trigger_nonpure();
++}
++
++void stomping_prevention_trigger_nonpure ( ) nothrow
++{
++    import core.stdc.stdlib : getenv;
++    import core.stdc.string : strcmp;
++    char* flag = getenv("ALLOW_STOMPING_PREVENTION".ptr);
++    if (flag && (strcmp(flag, "1") == 0))
++        return;
++    assert(false, "Stomping prevention has been triggerred");
++}
+ 
+ /**
+   Set the allocated length of the array block.  This is called
+@@ -282,14 +297,21 @@ bool __setArrayAllocLength(ref BlkInfo info, size_t newlength, bool isshared, co
+         {
+             if(isshared)
+             {
+-                return cas(cast(shared)length, cast(ubyte)oldlength, cast(ubyte)newlength);
++                bool same_length = cas(cast(shared)length, cast(ubyte)oldlength,
++                    cast(ubyte)newlength);
++                if (!same_length)
++                    stomping_prevention_trigger();
++                return same_length;
+             }
+             else
+             {
+                 if(*length == cast(ubyte)oldlength)
+                     *length = cast(ubyte)newlength;
+                 else
++                {
++                    stomping_prevention_trigger();
+                     return false;
++                }
+             }
+         }
+         else
+@@ -313,14 +335,21 @@ bool __setArrayAllocLength(ref BlkInfo info, size_t newlength, bool isshared, co
+         {
+             if(isshared)
+             {
+-                return cas(cast(shared)length, cast(ushort)oldlength, cast(ushort)newlength);
++                bool same_length = cas(cast(shared)length, cast(ushort)oldlength,
++                    cast(ushort)newlength);
++                if (!same_length)
++                    stomping_prevention_trigger();
++                return same_length;
+             }
+             else
+             {
+                 if(*length == oldlength)
+                     *length = cast(ushort)newlength;
+                 else
++                {
++                    stomping_prevention_trigger();
+                     return false;
++                }
+             }
+         }
+         else
+@@ -344,14 +373,21 @@ bool __setArrayAllocLength(ref BlkInfo info, size_t newlength, bool isshared, co
+         {
+             if(isshared)
+             {
+-                return cas(cast(shared)length, cast(size_t)oldlength, cast(size_t)newlength);
++                bool same_length = cas(cast(shared)length, cast(size_t)oldlength,
++                    cast(size_t)newlength);
++                if (!same_length)
++                    stomping_prevention_trigger();
++                return same_length;
+             }
+             else
+             {
+                 if(*length == oldlength)
+                     *length = newlength;
+                 else
++                {
++                    stomping_prevention_trigger();
+                     return false;
++                }
+             }
+         }
+         else
+-- 
+2.11.0
+

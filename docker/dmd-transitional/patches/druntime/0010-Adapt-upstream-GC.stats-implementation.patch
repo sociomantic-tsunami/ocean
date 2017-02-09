@@ -1,0 +1,297 @@
+From 5e231189661c4f2c75244fd87a26fb8245598e96 Mon Sep 17 00:00:00 2001
+From: Dicebot <public@dicebot.lv>
+Date: Sat, 9 Jul 2016 23:59:29 +0300
+Subject: [PATCH 10/17] Adapt upstream GC.stats implementation
+
+Picks changes from https://github.com/dlang/druntime/pull/1610
+but preserving old gc_usage API for compatibility.
+---
+ mak/SRCS          |  1 -
+ src/core/memory.d | 20 ++++++++++++++++
+ src/gc/gc.d       | 68 +++++++++++++++++++------------------------------------
+ src/gc/proxy.d    | 29 ++++++++----------------
+ src/gc/stats.d    | 27 ----------------------
+ 5 files changed, 53 insertions(+), 92 deletions(-)
+ delete mode 100644 src/gc/stats.d
+
+diff --git a/mak/SRCS b/mak/SRCS
+index 9a54c8c4..49fb7e1d 100644
+--- a/mak/SRCS
++++ b/mak/SRCS
+@@ -240,7 +240,6 @@ SRCS=\
+ 	src\gc\os.d \
+ 	src\gc\pooltable.d \
+ 	src\gc\proxy.d \
+-	src\gc\stats.d \
+ 	\
+ 	src\rt\aApply.d \
+ 	src\rt\aApplyR.d \
+diff --git a/src/core/memory.d b/src/core/memory.d
+index e027a644..490847e0 100644
+--- a/src/core/memory.d
++++ b/src/core/memory.d
+@@ -140,6 +140,7 @@ private
+     }
+ 
+     extern (C) BlkInfo_ gc_query( void* p ) pure nothrow;
++    extern (C) GC.Stats gc_stats ( ) nothrow @nogc;
+ 
+     extern (C) void gc_addRoot( in void* p ) nothrow;
+     extern (C) void gc_addRange( in void* p, size_t sz, const TypeInfo ti = null ) nothrow @nogc;
+@@ -158,6 +159,17 @@ struct GC
+ {
+     @disable this();
+ 
++    /**
++     * Aggregation of GC stats to be exposed via public API
++     */
++    static struct Stats
++    {
++        /// number of used bytes on the GC heap (might only get updated after a collection)
++        size_t usedSize;
++        /// number of free bytes on the GC heap (might only get updated after a collection)
++        size_t freeSize;
++    }
++
+     /**
+      * Enables automatic garbage collection behavior if collections have
+      * previously been suspended by a call to disable.  This function is
+@@ -659,6 +671,14 @@ struct GC
+         return gc_query( p );
+     }
+ 
++    /**
++     * Returns runtime stats for currently active GC implementation
++     * See `core.memory.GC.Stats` for list of available metrics.
++     */
++    static Stats stats() nothrow
++    {
++        return gc_stats();
++    }
+ 
+     /**
+      * Adds an internal root pointing to the GC memory block referenced by p.
+diff --git a/src/gc/gc.d b/src/gc/gc.d
+index 955560cf..f810b650 100644
+--- a/src/gc/gc.d
++++ b/src/gc/gc.d
+@@ -39,7 +39,6 @@ version = STACKGROWSDOWN;       // growing the stack means subtracting from the
+ /***************************************************/
+ 
+ import gc.bits;
+-import gc.stats;
+ import gc.os;
+ import gc.config;
+ 
+@@ -50,6 +49,7 @@ import core.stdc.string : memcpy, memset, memmove;
+ import core.bitop;
+ import core.sync.mutex;
+ import core.thread;
++
+ static import core.memory;
+ private alias BlkAttr = core.memory.GC.BlkAttr;
+ private alias BlkInfo = core.memory.GC.BlkInfo;
+@@ -1256,8 +1256,8 @@ struct GC
+             GCStats stats;
+ 
+             getStats(stats);
+-            debug(PRINTF) printf("poolsize = %zx, usedsize = %zx, freelistsize = %zx\n",
+-                    stats.poolsize, stats.usedsize, stats.freelistsize);
++            debug(PRINTF) printf("heapSize = %zx, freeSize = %zx\n",
++                stats.heapSize, stats.freeSize);
+         }
+ 
+         gcx.log_collect();
+@@ -1291,64 +1291,42 @@ struct GC
+     }
+ 
+ 
+-    /**
+-     * Retrieve statistics about garbage collection.
+-     * Useful for debugging and tuning.
+-     */
+-    void getStats(out GCStats stats) nothrow
++    core.memory.GC.Stats stats() nothrow
+     {
++        typeof(return) ret;
+         gcLock.lock();
+-        getStatsNoSync(stats);
++        getStatsNoSync(ret);
+         gcLock.unlock();
++        return ret;
+     }
+ 
+ 
+     //
+     //
+     //
+-    private void getStatsNoSync(out GCStats stats) nothrow
++    private void getStatsNoSync(out core.memory.GC.Stats stats) nothrow
+     {
+-        size_t psize = 0;
+-        size_t usize = 0;
+-        size_t flsize = 0;
+-
+-        size_t n;
+-        size_t bsize = 0;
+-
+-        //debug(PRINTF) printf("getStats()\n");
+-        memset(&stats, 0, GCStats.sizeof);
+-
+-        for (n = 0; n < gcx.npools; n++)
+-        {   Pool *pool = gcx.pooltable[n];
+-
+-            psize += pool.npages * PAGESIZE;
+-            for (size_t j = 0; j < pool.npages; j++)
+-            {
+-                Bins bin = cast(Bins)pool.pagetable[j];
+-                if (bin == B_FREE)
+-                    stats.freeblocks++;
+-                else if (bin == B_PAGE)
+-                    stats.pageblocks++;
+-                else if (bin < B_PAGE)
+-                    bsize += PAGESIZE;
+-            }
+-        }
+-
+-        for (n = 0; n < B_PAGE; n++)
++        foreach (pool; gcx.pooltable[0 .. gcx.npools])
+         {
+-            //debug(PRINTF) printf("bin %d\n", n);
+-            for (List *list = gcx.bucket[n]; list; list = list.next)
++            foreach (bin; pool.pagetable[0 .. pool.npages])
+             {
+-                //debug(PRINTF) printf("\tlist %p\n", list);
+-                flsize += binsize[n];
++                if (bin == B_FREE)
++                    stats.freeSize += PAGESIZE;
++                else
++                    stats.usedSize += PAGESIZE;
+             }
+         }
+ 
+-        usize = bsize - flsize;
++        size_t freeListSize;
++        foreach (n; 0 .. B_PAGE)
++        {
++            immutable sz = binsize[n];
++            for (List *list = gcx.bucket[n]; list; list = list.next)
++                freeListSize += sz;
++        }
+ 
+-        stats.poolsize = psize;
+-        stats.usedsize = bsize - flsize;
+-        stats.freelistsize = flsize;
++        stats.usedSize -= freeListSize;
++        stats.freeSize += freeListSize;
+     }
+ }
+ 
+diff --git a/src/gc/proxy.d b/src/gc/proxy.d
+index 35177845..c433d4dd 100644
+--- a/src/gc/proxy.d
++++ b/src/gc/proxy.d
+@@ -14,9 +14,10 @@
+ module gc.proxy;
+ 
+ import gc.gc;
+-import gc.stats;
+ import core.stdc.stdlib;
+ 
++static import core.memory;
++
+ private
+ {
+     __gshared GC _gc;
+@@ -53,6 +54,7 @@ private
+             size_t  function(void*) gc_sizeOf;
+ 
+             BlkInfo function(void*) gc_query;
++            core.memory.GC.Stats function() gc_stats;
+ 
+             void function(void*) gc_addRoot;
+             void function(void*, size_t, const TypeInfo ti) gc_addRange;
+@@ -91,6 +93,7 @@ private
+         pthis.gc_sizeOf = &gc_sizeOf;
+ 
+         pthis.gc_query = &gc_query;
++        pthis.gc_stats = &gc_stats;
+ 
+         pthis.gc_addRoot = &gc_addRoot;
+         pthis.gc_addRange = &gc_addRange;
+@@ -260,20 +263,11 @@ extern (C)
+         return proxy.gc_query( p );
+     }
+ 
+-    // NOTE: This routine is experimental. The stats or function name may change
+-    //       before it is made officially available.
+-    GCStats gc_stats() nothrow
++    core.memory.GC.Stats gc_stats() nothrow
+     {
+         if( proxy is null )
+-        {
+-            GCStats stats = void;
+-            _gc.getStats( stats );
+-            return stats;
+-        }
+-        // TODO: Add proxy support for this once the layout of GCStats is
+-        //       finalized.
+-        //return proxy.gc_stats();
+-        return GCStats.init;
++            return _gc.stats();
++        return proxy.gc_stats();
+     }
+ 
+     void gc_addRoot( void* p ) nothrow
+@@ -313,12 +307,9 @@ extern (C)
+ 
+     void gc_usage (size_t* used, size_t* free) nothrow
+     {
+-        GCStats stats;
+-        _gc.getStats(stats);
+-        if (used !is null)
+-            *used = stats.usedsize;
+-        if (free !is null)
+-            *free = stats.freeblocks;
++        auto stats = proxy.gc_stats();
++        *used = stats.usedSize;
++        *free = stats.freeSize;
+     }
+ 
+     Proxy* gc_getProxy() nothrow
+diff --git a/src/gc/stats.d b/src/gc/stats.d
+deleted file mode 100644
+index 2d6a01a3..00000000
+--- a/src/gc/stats.d
++++ /dev/null
+@@ -1,27 +0,0 @@
+-/**
+- * Contains a struct for storing GC statistics.
+- *
+- * Copyright: Copyright Digital Mars 2005 - 2013.
+- * License:   $(WEB www.boost.org/LICENSE_1_0.txt, Boost License 1.0).
+- * Authors:   Walter Bright, Sean Kelly
+- */
+-
+-/*          Copyright Digital Mars 2005 - 2013.
+- * Distributed under the Boost Software License, Version 1.0.
+- *    (See accompanying file LICENSE or copy at
+- *          http://www.boost.org/LICENSE_1_0.txt)
+- */
+-module gc.stats;
+-
+-
+-/**
+- *
+- */
+-struct GCStats
+-{
+-    size_t poolsize;        // total size of pool
+-    size_t usedsize;        // bytes allocated
+-    size_t freeblocks;      // number of blocks marked FREE
+-    size_t freelistsize;    // total of memory on free lists
+-    size_t pageblocks;      // number of blocks marked PAGE
+-}
+-- 
+2.11.0
+

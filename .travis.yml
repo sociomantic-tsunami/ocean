@@ -1,0 +1,14 @@
+sudo: required
+
+services:
+    - docker
+
+# D is still in beta and we don't even use it's features, so we just pick
+# a lightweight environment
+language: c
+
+install:
+    - ci/travis-install.sh
+
+script:
+    - ci/travis-script.sh

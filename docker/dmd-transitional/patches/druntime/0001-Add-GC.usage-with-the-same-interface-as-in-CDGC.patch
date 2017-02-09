@@ -1,0 +1,89 @@
+From a622ab99e4abc0a5a182530affc4d8f096bda321 Mon Sep 17 00:00:00 2001
+From: Mathias Lang <mathias.lang@sociomantic.com>
+Date: Fri, 24 Jul 2015 17:57:13 +0200
+Subject: [PATCH 01/17] Add GC.usage with the same interface as in CDGC
+
+Fixes sociomantic/druntime#10
+---
+ src/core/memory.d | 20 ++++++++++++++++++++
+ src/gc/proxy.d    | 14 ++++++++++++++
+ 2 files changed, 34 insertions(+)
+
+diff --git a/src/core/memory.d b/src/core/memory.d
+index c222831a..e027a644 100644
+--- a/src/core/memory.d
++++ b/src/core/memory.d
+@@ -130,6 +130,8 @@ private
+     extern (C) void*   gc_addrOf( void* p ) pure nothrow;
+     extern (C) size_t  gc_sizeOf( void* p ) pure nothrow;
+ 
++    extern (C) void gc_usage(size_t* used, size_t* free) nothrow;
++
+     struct BlkInfo_
+     {
+         void*  base;
+@@ -786,4 +788,22 @@ struct GC
+     {
+         gc_runFinalizers( segment );
+     }
++
++    /**
++     * Writes the number of bytes used by the GC in `used`
++     * and the number of blocks free in `free`.
++     *
++     * If null pointer are passed, nothing is written.
++     * Note: The two metrics have different units.
++     *
++     * Params:
++     *  used = Pointer to a size_t where the number of bytes
++     *          used will be written
++     *  free = Pointer to a size_t where the number of blocks
++     *          (not bytes) free will be written.
++     */
++    static void usage( out size_t used, out size_t free) nothrow
++    {
++        gc_usage(&used, &free);
++    }
+ }
+diff --git a/src/gc/proxy.d b/src/gc/proxy.d
+index e8d96cdc..35177845 100644
+--- a/src/gc/proxy.d
++++ b/src/gc/proxy.d
+@@ -60,6 +60,8 @@ private
+             void function(void*) gc_removeRoot;
+             void function(void*) gc_removeRange;
+             void function(in void[]) gc_runFinalizers;
++
++            void function(size_t*, size_t*) gc_usage;
+         }
+     }
+ 
+@@ -96,6 +98,8 @@ private
+         pthis.gc_removeRoot = &gc_removeRoot;
+         pthis.gc_removeRange = &gc_removeRange;
+         pthis.gc_runFinalizers = &gc_runFinalizers;
++
++        pthis.gc_usage = &gc_usage;
+     }
+ }
+ 
+@@ -307,6 +311,16 @@ extern (C)
+         return proxy.gc_runFinalizers( segment );
+     }
+ 
++    void gc_usage (size_t* used, size_t* free) nothrow
++    {
++        GCStats stats;
++        _gc.getStats(stats);
++        if (used !is null)
++            *used = stats.usedsize;
++        if (free !is null)
++            *free = stats.freeblocks;
++    }
++
+     Proxy* gc_getProxy() nothrow
+     {
+         return &pthis;
+-- 
+2.11.0
+
