@@ -273,16 +273,25 @@ class TaskSelectTransceiver
 
     /***************************************************************************
 
-        Removes any remaining data from I/O buffers. Sends any pending output
-        data immediately if possible.
+        Removes any remaining data from I/O buffers, sends any pending output
+        data immediately if possible, and removes the epoll registration of the
+        I/O device, if any.
 
-        This method does not throw.
+        You need to call this method if you close and then reopen or otherwise
+        reassign the I/O device's file descriptor *without* suspending and
+        resuming or terminating and restarting the task in between. You may call
+        this method at any time between the last time you read from the old and
+        the first time you read from the new device.
+
+        This method does not throw. It is safe to call it if the I/O device is
+        not (yet or any more) usable.
 
     ***************************************************************************/
 
     public void reset ( )
     {
         this.buffered_reader.reset();
+        this.select_client.unregister();
 
         if (this.tcp_cork_status == tcp_cork_status.Enabled)
             this.setTcpCork(false, false);
