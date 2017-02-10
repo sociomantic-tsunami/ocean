@@ -208,9 +208,26 @@ class TaskSelectClient: ISelectClient
 
         Unregisters the I/O device.
 
-       Returns:
-            0 if everything worked as expected or `ENOENT` if the client was
-            already unregistered.
+        You need to call this method if you close and then reopen or otherwise
+        reassign the I/O device's file descriptor *without* suspending and
+        resuming or terminating and restarting the task in between. You may call
+        this method at any time, even if the I/O device is not (yet or any more)
+        usable, in which case it will not throw.
+
+        Calling `unregister` is needed if the file descriptor is closed and
+        reopened because when closing the OS unregisters it from epoll behind
+        this instance's back. However,
+          - suspending or terminating the task has the same effect as calling
+            `unregister` and
+          - if the file descriptor is not going to be closed then unregistering
+            is harmless, as `ioWait` this will re-register it on the next call.
+
+        Returns:
+            0 if everything worked as expected or
+             - `ENOENT` if the client was already unregistered or
+             - `EBADF` if the I/O device file descriptor does not refer to a
+               useable device (i.e. it was closed already or not opened yet).
+            In any case the I/O device is not registered with epoll.
 
         Throws:
             `EpollException` on error.
