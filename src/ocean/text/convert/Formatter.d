@@ -309,7 +309,7 @@ private void handle (T) (T v, FormatInfo f, Sink sf, ElementSink se)
      */
 
     // `typeof(null)` matches way too many things
-    static if (is(T == typeof(null)))
+    static if (IsTypeofNull!(T))
         se("null", f);
 
     /** D1 + D2 support of typedef
@@ -485,6 +485,37 @@ private void handle (T) (T v, FormatInfo f, Sink sf, ElementSink se)
     else
         static assert (0, "Type unsupported by ocean.text.convert.Formatter: "
                        ~ T.stringof);
+}
+
+
+/*******************************************************************************
+
+        Helper template to detect `typeof(null)`.
+
+        In D2, `typeof(null)` is a special type, as it has conversion rules like
+        not other type. In D1, it is just `void*`.
+        Since D2 version will match many cases in `handle` because it converts
+        to many different type, we need to single it out, however we cannot
+        just check for `is(T == typeof(null))` as it would mean `== void*` in D1
+
+        Params:
+            T   = Type to check
+
+*******************************************************************************/
+
+private template IsTypeofNull (T)
+{
+    version (D_Version2)
+    {
+        static if (is(T == typeof(null)))
+            public const bool IsTypeofNull = true;
+        else
+            public const bool IsTypeofNull = false;
+    }
+    else
+    {
+        public const bool IsTypeofNull = false;
+    }
 }
 
 
@@ -1288,4 +1319,23 @@ unittest
     assert(format("{:f2}", ad) == "42.00", format("{:f2}", ad));
     assert(format("{}", as) == "{ value: 42 }");
     assert(format("{}", ac) == "42");
+}
+
+// Check that `IsTypeofNull` does its job
+unittest
+{
+    int i;
+    scope Object o = new Object;
+    scope void* ptr = cast(void*)o;
+
+    istring expected = format("{}", ptr);
+    istring null_str = format("{}", null);
+    // Sanity check
+    assert(expected != null_str);
+
+    // Address of a pointer to the stack - can't test the value,
+    // so just make sure it's a stack-ish pointer
+    istring stack_ptr = format("{}", &i);
+    assert(expected.length == stack_ptr.length);
+    assert(expected[0 .. $ - 2] == stack_ptr[0 .. $ - 2]);
 }
