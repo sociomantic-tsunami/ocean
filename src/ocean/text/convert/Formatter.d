@@ -329,6 +329,28 @@ private void handle (T) (T v, FormatInfo f, Sink sf, ElementSink se)
     else static if (is (T V == enum))
              handle!(V)(v, f, sf, se);
 
+    // Delegate / Function pointers
+    else static if (is(T == delegate))
+    {
+        sf(T.stringof ~ ": { funcptr: ");
+        writePointer(v.funcptr, f, se);
+        sf(", ptr: ");
+        writePointer(v.ptr, f, se);
+        sf(" }");
+    }
+    else static if (is(T U == return))
+    {
+        sf(T.stringof ~ ": ");
+        writePointer(v, f, se);
+    }
+
+    // Pointers need to be at the top because `(int*).min` compiles
+    // and hence would match the integer rules
+    // In addition, thanks to automatic dereferencing,
+    // the check `v.toString()` would pass for an `Object` and an `Object*`.
+    else static if (is (T P == P*))
+        writePointer(v, f, se);
+
     // toString hook: Give priority to the non-allocating one
     // Note: sink `toString` overload should take a `scope` delegate
     else static if (is(typeof(v.toString(sf))))
@@ -356,21 +378,6 @@ private void handle (T) (T v, FormatInfo f, Sink sf, ElementSink se)
         }
         sf(v.tupleof.length ? " }" : "{ empty struct }");
         f.flags = old;
-    }
-
-    // Delegate / Function pointers
-    else static if (is(T == delegate))
-    {
-        sf(T.stringof ~ ": { funcptr: ");
-        writePointer(v.funcptr, f, se);
-        sf(", ptr: ");
-        writePointer(v.ptr, f, se);
-        sf(" }");
-    }
-    else static if (is(T U == return))
-    {
-        sf(T.stringof ~ ": ");
-        writePointer(v, f, se);
     }
 
     // Bool
@@ -433,11 +440,6 @@ private void handle (T) (T v, FormatInfo f, Sink sf, ElementSink se)
         else
             UTF.toString(b[1 .. 2], (cstring val) { return se(val, f); });
     }
-
-    // Pointers need to be at the top because `(int*).min` compiles
-    // and hence would match the integer rules
-    else static if (is (T P == P*))
-        writePointer(v, f, se);
 
     // Signed integer
     else static if (is(typeof(T.min)) && T.min < 0)
@@ -1335,7 +1337,12 @@ unittest
 
     // Address of a pointer to the stack - can't test the value,
     // so just make sure it's a stack-ish pointer
+    // We do so by testing the address  / 100
     istring stack_ptr = format("{}", &i);
     assert(expected.length == stack_ptr.length);
-    assert(expected[0 .. $ - 2] == stack_ptr[0 .. $ - 2]);
+    assert(expected[0 .. $ - 3] == stack_ptr[0 .. $ - 3]);
+
+    stack_ptr = format("{}", &o);
+    assert(expected.length == stack_ptr.length);
+    assert(expected[0 .. $ - 3] == stack_ptr[0 .. $ - 3]);
 }
