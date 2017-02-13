@@ -435,6 +435,27 @@ unittest
                 assert(data is null);
             }
         }
+
+        // Test clear().
+        with (expiring_cache)
+        {
+            t = 5;
+
+            assert(length == 0);
+
+            *createRaw(1) = data1;
+            assert(length == 1);
+            assert(exists(1));
+
+            *createRaw(2) = data2;
+            assert(length == 2);
+            assert(exists(2));
+
+            clear();
+            assert(length == 0);
+            assert(!exists(1));
+            assert(!exists(2));
+        }
     }
 
 }

@@ -343,6 +343,18 @@ class CachingStructLoader ( S )
     {
         return this.load(key).ptr;
     }
+
+
+    /**************************************************************************
+
+        Remove all object from the cache.
+
+     **************************************************************************/
+
+    public void clear ( )
+    {
+        this.cache_.clear();
+    }
 }
 
 unittest
