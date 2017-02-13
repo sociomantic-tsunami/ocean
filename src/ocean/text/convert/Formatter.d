@@ -1326,23 +1326,49 @@ unittest
 // Check that `IsTypeofNull` does its job
 unittest
 {
-    int i;
-    scope Object o = new Object;
-    scope void* ptr = cast(void*)o;
+    static bool test (bool fatal, istring expected, istring actual)
+    {
+        if (expected == actual)
+            return false;
+        assert(!fatal, "Expected '" ~ expected ~ "' but got: " ~ actual);
+        return true;
+    }
 
-    istring expected = format("{}", ptr);
-    istring null_str = format("{}", null);
-    // Sanity check
-    assert(expected != null_str);
+    // The logic here is a bit complicated, because we don't know
+    // where in the stack we are. We could start at address
+    // 0x0000_7000_0000 so growing down we'd go at address
+    // 0x0000_6XXX_XXXX, which obviously would be problematic.
+    // However we know that our stack frame is 68 / 72 (depends
+    // on alignment), and our pointers are 16 bytes appart,
+    // so retrying once should cover all cases.
+    static void doTest (bool fatal)
+    {
+        scope Object o = new Object;
+        scope void* ptr = cast(void*)o;
 
-    // Address of a pointer to the stack - can't test the value,
-    // so just make sure it's a stack-ish pointer
-    // We do so by testing the address  / 100
-    istring stack_ptr = format("{}", &i);
-    assert(expected.length == stack_ptr.length);
-    assert(expected[0 .. $ - 3] == stack_ptr[0 .. $ - 3]);
+        istring expected = format("{}", ptr);
+        istring stack_ptr = format("{}", &expected);
+        istring null_str = format("{}", null);
 
-    stack_ptr = format("{}", &o);
-    assert(expected.length == stack_ptr.length);
-    assert(expected[0 .. $ - 3] == stack_ptr[0 .. $ - 3]);
+        bool has_error;
+        // Sanity check
+        assert(expected != null_str);
+
+        // Address of a pointer to the stack - can't test the value,
+        // so just make sure it's a stack-ish pointer
+        // We do so by testing the address  / 100
+
+        assert(expected.length == stack_ptr.length, "Length mismatch");
+        has_error = test(fatal, expected[0 .. $ - 2], stack_ptr[0 .. $ - 2]);
+
+        stack_ptr = format("{}", &o);
+        assert(expected.length == stack_ptr.length, "Length mismatch");
+        if (!has_error)
+            has_error = test(fatal, expected[0 .. $ - 2], stack_ptr[0 .. $ - 2]);
+
+        if (has_error)
+            doTest(true);
+    }
+
+    doTest(false);
 }
