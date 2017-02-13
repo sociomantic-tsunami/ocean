@@ -1251,6 +1251,14 @@ unittest
 
             clear();
             assert(length == 0);
+            assert(!exists(1));
+            assert(get(1, time) is null);
+            assert(!exists(2));
+            assert(get(2, time) is null);
+            assert(!exists(3));
+            assert(get(3, time) is null);
+            assert(!exists(4));
+            assert(get(4, time) is null);
 
             {
                 bool replaced = put(1, time, Data(23));
@@ -1338,6 +1346,9 @@ unittest
 
             dynamic_cache.clear;
             assert(dynamic_cache.length == 0);
+            assert(dynamic_cache.getRaw(1) is null);
+            assert(dynamic_cache.getRaw(2) is null);
+            assert(dynamic_cache.getRaw(3) is null);
 
             *dynamic_cache.createRaw(1) = data1;
             assert(dynamic_cache.length == 1);
@@ -1385,6 +1396,9 @@ unittest
 
             dynamic_cache.clear;
             assert(dynamic_cache.length == 0);
+            assert(!dynamic_cache.exists(1));
+            assert(!dynamic_cache.exists(2));
+            assert(!dynamic_cache.exists(3));
 
             dynamic_cache.putRaw(1, data1);
             assert(dynamic_cache.length == 1);

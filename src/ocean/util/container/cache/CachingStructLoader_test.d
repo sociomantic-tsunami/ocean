@@ -232,3 +232,40 @@ unittest
     auto result2 = 43 in cache;
     test!("is")(result, result2);
 }
+
+// Test clear function
+unittest
+{
+    reset();
+
+    cache.add_empty = false; // Searching a non existing value will not add
+                             // any null value in the TestCache.source.
+
+    {
+        auto result = 44 in cache;
+        test!("is")(result, null);
+    }
+
+    {
+        cache.addToSource(44, Trivial(44));
+        auto result = 44 in cache;
+        test!("!is")(result, null);
+        test!("==")(result.field, 44);
+    }
+
+    // Remove the item from the TestCache.source. This means that the item
+    // does not exist in the external storage, but it exists in the cache.
+    cache.source.remove(44);
+    {
+        auto result = 44 in cache;
+        test!("!is")(result, null);
+        test!("==")(result.field, 44);
+    }
+
+    // Now, clean the cache. The object should not exist anywhere.
+    cache.clear();
+    {
+        auto result = 44 in cache;
+        test!("is")(result, null);
+    }
+}
