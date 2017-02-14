@@ -161,7 +161,7 @@ enum HttpResponseCode
         BadGateway                   = 502,
         ServiceUnavailable           = 503,
         GatewayTimeout               = 504,
-        VersionNotSupported          = 505,
+        VersionNotSupported          = 505
 }
 
 /*******************************************************************************
