@@ -52,7 +52,7 @@ class HttpServerException : Exception
 
 class HttpException : HttpServerException
 {
-    public StatusCode status;
+    public HttpResponseCode status;
 
     public override typeof (this) set ( cstring msg, istring file = __FILE__,
                                         long line = __LINE__ )
@@ -64,7 +64,7 @@ class HttpException : HttpServerException
     public typeof (this) set (HttpResponseCode code, istring file = __FILE__,
                               typeof(__LINE__) line = __LINE__)
     {
-        this.status = cast(StatusCode) code;
+        this.status = code;
         return this.set(this.status_phrase, file, line);
     }
 
@@ -116,26 +116,26 @@ class HttpException : HttpServerException
     {
         auto e = new HttpException();
 
-        e.enforce(true, StatusCode.OK);
+        e.enforce(true, HttpResponseCode.OK);
 
         try
         {
-            e.enforce(false, StatusCode.OK, "Invalid resource");
+            e.enforce(false, HttpResponseCode.OK, "Invalid resource");
         }
         catch (Exception)
         {
-            test!("==")(e.status, StatusCode.OK);
+            test!("==")(e.status, HttpResponseCode.OK);
             test!("==")(getMsg(e), "Ok Invalid resource");
         }
 
         try
         {
             auto path = "/path/with/errors";
-            e.enforce(false, StatusCode.NotFound, "Unable to locate URI path:", path);
+            e.enforce(false, HttpResponseCode.NotFound, "Unable to locate URI path:", path);
         }
-        catch (Exception)
+        catch
         {
-            test!("==")(e.status, StatusCode.NotFound);
+            test!("==")(e.status, HttpResponseCode.NotFound);
             test!("==")(getMsg(e), "Not Found Unable to locate URI path: /path/with/errors");
         }
     }
