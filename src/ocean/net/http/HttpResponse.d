@@ -274,8 +274,9 @@ class HttpResponse : HttpHeader
                 return false;
 
             case HttpResponseCode.NoContent:
-                super.set("Content-Length", "0");
-                // TODO: David, do we need to assert that the return value of set() == true?
+                bool b = super.set("Content-Length", "0");
+                assert(b);
+
                 return false;
 
             case HttpResponseCode.NotModified:
