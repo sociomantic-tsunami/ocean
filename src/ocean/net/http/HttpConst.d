@@ -122,9 +122,10 @@ struct HttpHeader
 
 enum HttpResponseCode
 {
+        OK                           = 200,
+
         Continue                     = 100,
         SwitchingProtocols           = 101,
-        OK                           = 200,
         Created                      = 201,
         Accepted                     = 202,
         NonAuthoritativeInformation  = 203,
@@ -163,6 +164,8 @@ enum HttpResponseCode
         GatewayTimeout               = 504,
         VersionNotSupported          = 505
 }
+
+static assert(HttpResponseCode.init == HttpResponseCode.OK);
 
 /*******************************************************************************
 

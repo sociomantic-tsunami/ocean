@@ -33,7 +33,8 @@ import ocean.net.http.HttpConst: HttpHeader, HttpResponseCode;
 
  ******************************************************************************/
 
-mixin(Typedef!(HttpResponseCode, "StatusCode", HttpResponseCode.OK));
+mixin(`deprecated("Use HttpResponseCode instead")` ~
+    Typedef!(HttpResponseCode, "StatusCode", HttpResponseCode.OK));
 
 /******************************************************************************
 

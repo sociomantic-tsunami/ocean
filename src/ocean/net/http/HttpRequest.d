@@ -52,8 +52,7 @@ import ocean.transition;
 import ocean.net.http.message.HttpHeader;
 
 import ocean.net.http.message.HttpHeaderParser,
-       ocean.net.http.consts.HttpMethod,
-       ocean.net.http.consts.StatusCodes: StatusCode;
+       ocean.net.http.consts.HttpMethod;
 
 import ocean.net.http.consts.HttpVersion: HttpVersionIds;
 
@@ -437,7 +436,7 @@ class HttpRequest : HttpHeader
     {
         this.method = HttpMethodNames[this.method_name];
 
-        enforce(this.http_exception.set(StatusCode.BadRequest)
+        enforce(this.http_exception.set(HttpResponseCode.BadRequest)
                 .append(" : invalid HTTP method"),
                 this.method);
 
@@ -449,19 +448,19 @@ class HttpRequest : HttpHeader
 
             if (HttpVersionIds.validSyntax(this.parser.start_line_tokens[2]))
             {
-                throw this.http_exception.set(StatusCode.VersionNotSupported);
+                throw this.http_exception.set(HttpResponseCode.VersionNotSupported);
             }
             else
             {
-                throw this.http_exception.set(StatusCode.BadRequest)
+                throw this.http_exception.set(HttpResponseCode.BadRequest)
                     .append(" : invalid HTTP version");
             }
         }
 
-        enforce(this.http_exception.set(StatusCode.BadRequest)
+        enforce(this.http_exception.set(HttpResponseCode.BadRequest)
                 .append(" : no uri in request"),
                 this.parser.start_line_tokens[1].length);
-        enforce(this.http_exception.set(StatusCode.RequestURITooLarge),
+        enforce(this.http_exception.set(HttpResponseCode.RequestURITooLarge),
                 this.parser.start_line_tokens[1].length <= this.max_uri_length);
 
         this._uri.parse(this.parser.start_line_tokens[1]);
