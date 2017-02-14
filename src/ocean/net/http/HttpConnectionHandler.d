@@ -32,7 +32,7 @@ import ocean.net.http.HttpRequest,
        ocean.net.http.HttpResponse,
        ocean.net.http.HttpException;
 
-import ocean.net.http.consts.StatusCodes: StatusCode;
+import ocean.net.http.HttpConst: HttpResponseCode;
 import ocean.net.http.consts.HttpMethod: HttpMethod;
 import ocean.net.http.consts.HeaderFieldNames;
 
@@ -53,7 +53,7 @@ abstract class HttpConnectionHandler : IFiberConnectionHandler
 
      **************************************************************************/
 
-    protected alias .StatusCode                         StatusCode;
+    protected alias .HttpResponseCode                   HttpResponseCode;
     protected alias .HttpRequest                        HttpRequest;
     protected alias .HttpResponse                       HttpResponse;
     protected alias .HttpMethod                         HttpMethod;
@@ -96,7 +96,7 @@ abstract class HttpConnectionHandler : IFiberConnectionHandler
 
      **************************************************************************/
 
-    protected StatusCode default_exception_status_code = StatusCode.InternalServerError;
+    protected auto default_exception_status_code = HttpResponseCode.InternalServerError;
 
     /**************************************************************************
 
@@ -208,7 +208,7 @@ abstract class HttpConnectionHandler : IFiberConnectionHandler
         {
             do try try
             {
-                StatusCode status = StatusCode.OK;
+                HttpResponseCode status;
 
                 cstring response_msg_body;
 
@@ -292,7 +292,7 @@ abstract class HttpConnectionHandler : IFiberConnectionHandler
 
      **************************************************************************/
 
-    abstract protected StatusCode handleRequest ( out cstring response_msg_body );
+    abstract protected HttpResponseCode handleRequest ( out cstring response_msg_body );
 
     /***************************************************************************
 
@@ -333,7 +333,7 @@ abstract class HttpConnectionHandler : IFiberConnectionHandler
              return this.request.finished? consumed : data.length + 1;
         });
 
-        enforce(this.http_exception.set(StatusCode.NotImplemented),
+        enforce(this.http_exception.set(HttpResponseCode.NotImplemented),
                 this.request.method in this.supported_methods);
     }
 
@@ -354,7 +354,7 @@ abstract class HttpConnectionHandler : IFiberConnectionHandler
 
      **************************************************************************/
 
-    private void sendResponse ( StatusCode status, cstring response_msg_body, bool keep_alive )
+    private void sendResponse ( HttpResponseCode status, cstring response_msg_body, bool keep_alive )
     {
         with (this.response)
         {

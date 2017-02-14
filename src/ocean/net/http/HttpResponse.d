@@ -52,7 +52,7 @@ import ocean.net.http.HttpConst : HttpResponseCode;
 
 import ocean.net.http.message.HttpHeader;
 
-import ocean.net.http.consts.StatusCodes: StatusCode, StatusPhrases;
+import ocean.net.http.consts.StatusCodes: StatusPhrases;
 import ocean.net.http.consts.HttpVersion: HttpVersion, HttpVersionIds;
 
 import ocean.net.http.time.HttpTimeFormatter;
@@ -137,7 +137,7 @@ class HttpResponse : HttpHeader
 
     public cstring render ( cstring msg_body = null, bool head = false )
     {
-        return this.render(StatusCode.init, msg_body);
+        return this.render(HttpResponseCode.init, msg_body);
     }
 
     /**************************************************************************
@@ -166,7 +166,7 @@ class HttpResponse : HttpHeader
 
      **************************************************************************/
 
-    public cstring render ( StatusCode status, cstring msg_body = null,
+    public cstring render ( HttpResponseCode status, cstring msg_body = null,
         bool head = false )
     in
     {
@@ -259,9 +259,8 @@ class HttpResponse : HttpHeader
 
      **************************************************************************/
 
-    private bool setContentLength ( StatusCode status, cstring msg_body )
+    private bool setContentLength ( HttpResponseCode code, cstring msg_body )
     {
-        HttpResponseCode code = status;
         switch (code)
         {
             default:
@@ -296,7 +295,7 @@ class HttpResponse : HttpHeader
 
      **************************************************************************/
 
-    private cstring setStatusLine ( StatusCode status )
+    private cstring setStatusLine ( HttpResponseCode status )
     in
     {
         assert (this.http_version_, "HTTP version undefined");
