@@ -27,6 +27,12 @@ import ocean.util.container.cache.Cache;
 
 import ocean.stdc.time: time_t;
 
+version (UnitTest)
+{
+    import ocean.core.Test;
+}
+
+
 /*******************************************************************************
 
     Data cache class template with element life time limitation. Stores items of
@@ -399,40 +405,40 @@ unittest
 
         with (expiring_cache)
         {
-            assert(length == 0);
+            test!("==")(length, 0);
 
             *createRaw(1) = data1;
-            assert(length == 1);
-            assert(exists(1));
+            test!("==")(length, 1);
+            test(exists(1));
             {
                 Value* data = getRaw(1);
-                assert(data !is null);
-                assert((*data)[] == data1);
+                test!("!is")(data, null);
+                test!("==")((*data)[], data1);
             }
 
-            assert(t <= 5);
+            test!("<=")(t, 5);
             t = 5;
 
             *createRaw(2) = data2;
-            assert(length == 2);
-            assert(exists(2));
+            test!("==")(length, 2);
+            test(exists(2));
             {
                 Value* data = getRaw(2);
-                assert(data !is null);
-                assert((*data)[] == data2);
+                test!("!is")(data, null);
+                test!("==")((*data)[], data2);
             }
 
-            assert(t <= 10);
+            test!("<=")(t, 10);
             t = 10;
 
-            assert(!exists(1));
+            test(!exists(1));
 
-            assert(t <= 17);
+            test!("<=")(t, 17);
             t = 17;
 
             {
                 Value* data = getRaw(2);
-                assert(data is null);
+                test!("is")(data, null);
             }
         }
 
@@ -441,20 +447,20 @@ unittest
         {
             t = 5;
 
-            assert(length == 0);
+            test!("==")(length, 0);
 
             *createRaw(1) = data1;
-            assert(length == 1);
-            assert(exists(1));
+            test!("==")(length, 1);
+            test(exists(1));
 
             *createRaw(2) = data2;
-            assert(length == 2);
-            assert(exists(2));
+            test!("==")(length, 2);
+            test(exists(2));
 
             clear();
-            assert(length == 0);
-            assert(!exists(1));
-            assert(!exists(2));
+            test!("==")(length, 0);
+            test(!exists(1));
+            test(!exists(2));
         }
     }
 

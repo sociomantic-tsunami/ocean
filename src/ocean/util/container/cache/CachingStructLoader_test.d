@@ -29,9 +29,13 @@ import ocean.util.serialize.contiguous.package_;
 import ocean.io.select.EpollSelectDispatcher,
        ocean.io.select.client.TimerEvent;
 
-import ocean.core.Test;
-
 import ocean.stdc.posix.time;
+
+version (UnitTest)
+{
+    import ocean.core.Test;
+}
+
 
 /******************************************************************************
 

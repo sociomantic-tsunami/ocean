@@ -223,6 +223,11 @@ debug (CacheTimes)
     import ocean.stdc.posix.time: ctime_r;
 }
 
+version (UnitTest)
+{
+    import ocean.core.Test;
+}
+
 
 /*******************************************************************************
 
@@ -1043,7 +1048,7 @@ unittest
             override time_t now ( ) {return ++t;}
         };
 
-        assert (capacity == cache.max_length,
+        test!("==")(capacity, cache.max_length,
                 "Max length of cache does not equal configured capacity!");
 
         foreach (record; records[0 .. cache.max_length])
@@ -1067,7 +1072,7 @@ unittest
         }
         while (!n_existing || n_existing == n_overflow);
 
-        assert (n_existing > 0 && n_existing < n_overflow, "n_existing has unexpected value");
+        test (n_existing > 0 && n_existing < n_overflow, "n_existing has unexpected value");
 
         // Get the shuffled records from the cache and verify them. Record the
         // keys of the first n_overflow existing records which will get the
@@ -1085,8 +1090,8 @@ unittest
 
                 if (record.val < cache.max_length)
                 {
-                    assert (v !is null);
-                    assert (*v == record.val);
+                    test!("!is") (v, null);
+                    test!("==") (*v, record.val);
 
                     if (i < n_overflow)
                     {
@@ -1095,14 +1100,14 @@ unittest
                 }
                 else
                 {
-                    assert (v is null);
+                    test!("is") (v, null);
                 }
             }
 
-            assert (i == n_overflow);
+            test!("==") (i, n_overflow);
         }
 
-        assert (t == cache.max_length * 2);
+        test!("==") (t, cache.max_length * 2);
 
         // Put the first n_overflow shuffled records so that the cache will
         // overflow.
@@ -1116,7 +1121,7 @@ unittest
             cache.put(record.key, record.val);
         }
 
-        assert (t == cache.max_length * 2 + n_overflow);
+        test!("==") (t, cache.max_length * 2 + n_overflow);
 
         // Verify the records.
 
@@ -1124,11 +1129,11 @@ unittest
         {
             auto v = cache.get(record.key);
 
-            assert (v !is null);
-            assert (*v == 4711 + i);
+            test!("!is") (v, null);
+            test!("==") (*v, 4711 + i);
         }
 
-        assert (t == cache.max_length * 2 + n_overflow * 2);
+        test!("==") (t, cache.max_length * 2 + n_overflow * 2);
 
         // oldest_keys[n_existing .. $] should have been removed from the
         // cache due to cache overflow.
@@ -1137,12 +1142,12 @@ unittest
         {
             auto v = cache.get(key);
 
-            assert (v is null);
+            test!("is") (v, null);
         }
 
         // cache.get should not have evaluated the lazy ++t.
 
-        assert (t == cache.max_length * 2 + n_overflow * 2);
+        test!("==") (t, cache.max_length * 2 + n_overflow * 2);
 
         // Verify that all other records still exist in the cache.
 
@@ -1155,16 +1160,16 @@ unittest
 
                 if (v !is null)
                 {
-                    assert (*v == record.val);
+                    test!("==") (*v, record.val);
 
                     n++;
                 }
             }
 
-            assert (n == cache.max_length - n_overflow);
+            test!("==") (n, cache.max_length - n_overflow);
         }
 
-        assert (t == cache.max_length * 3 + n_overflow);
+        test!("==") (t, cache.max_length * 3 + n_overflow);
     }}
     else
     {
@@ -1177,119 +1182,119 @@ unittest
 
         with (static_cache)
         {
-            assert(length == 0);
+            test!("==")(length, 0);
 
             {
                 bool replaced = put(1, time, Data(23));
 
-                assert(!replaced);
+                test(!replaced);
 
-                assert(length == 1);
-                assert(exists(1));
+                test!("==")(length, 1);
+                test(exists(1));
 
                 Data* item = get(1, time);
-                assert(item);
-                assert(item.x == 23);
+                test!("!is")(item, null);
+                test!("==")(item.x, 23);
             }
 
             {
                 bool replaced = put(2, time + 1, Data(24));
 
-                assert(!replaced);
+                test(!replaced);
 
-                assert(length == 2);
-                assert(exists(2));
+                test!("==")(length, 2);
+                test(exists(2));
 
                 Data* item = get(2, time + 1);
-                assert(item);
-                assert(item.x == 24);
+                test!("!is")(item, null);
+                test!("==")(item.x, 24);
             }
 
             {
                 bool replaced = put(2, time + 1, Data(25));
 
-                assert(replaced);
+                test(replaced);
 
-                assert(length == 2);
-                assert(exists(2));
+                test!("==")(length, 2);
+                test(exists(2));
 
                 Data* item = get(2, time + 1);
-                assert(item);
-                assert(item.x == 25);
+                test!("!is")(item, null);
+                test!("==")(item.x, 25);
             }
 
             {
                 bool replaced = put(3, time + 2, Data(26));
 
-                assert(!replaced);
+                test(!replaced);
 
-                assert(length == 2);
-                assert(!exists(1));
-                assert(exists(2));
-                assert(exists(3));
+                test!("==")(length, 2);
+                test(!exists(1));
+                test(exists(2));
+                test(exists(3));
 
                 Data* item = get(3, time + 2);
-                assert(item);
-                assert(item.x == 26);
+                test!("!is")(item);
+                test!("==")(item.x, 26);
             }
 
             {
                 bool replaced = put(4, time + 3, Data(27));
 
-                assert(!replaced);
+                test(!replaced);
 
-                assert(length == 2);
-                assert(!exists(1));
-                assert(!exists(2));
-                assert(exists(3));
-                assert(exists(4));
+                test!("==")(length, 2);
+                test(!exists(1));
+                test(!exists(2));
+                test(exists(3));
+                test(exists(4));
 
                 Data* item = get(4, time + 3);
-                assert(item);
-                assert(item.x == 27);
+                test!("!is")(item);
+                test!("==")(item.x, 27);
             }
 
             clear();
-            assert(length == 0);
-            assert(!exists(1));
-            assert(get(1, time) is null);
-            assert(!exists(2));
-            assert(get(2, time) is null);
-            assert(!exists(3));
-            assert(get(3, time) is null);
-            assert(!exists(4));
-            assert(get(4, time) is null);
+            test!("==")(length, 0);
+            test(!exists(1));
+            test!("is")(get(1, time), null);
+            test(!exists(2));
+            test!("is")(get(2, time), null);
+            test(!exists(3));
+            test!("is")(get(3, time), null);
+            test(!exists(4));
+            test!("is")(get(4, time), null);
 
             {
                 bool replaced = put(1, time, Data(23));
 
-                assert(!replaced);
+                test(!replaced);
 
-                assert(length == 1);
-                assert(exists(1));
+                test!("==")(length, 1);
+                test(exists(1));
 
                 Data* item = get(1, time);
-                assert(item);
-                assert(item.x == 23);
+                test!("!is")(item);
+                test!("==")(item.x, 23);
             }
 
             {
                 bool replaced = put(2, time + 1, Data(24));
 
-                assert(!replaced);
+                test(!replaced);
 
-                assert(length == 2);
-                assert(exists(2));
+                test!("==")(length, 2);
+                test(exists(2));
 
                 Data* item = get(2, time + 1);
-                assert(item);
-                assert(item.x == 24);
+                test!("!is")(item);
+                test!("==")(item.x, 24);
             }
 
             remove(1);
-            assert(length == 1);
-            assert(!exists(1));
-            assert(exists(2));
+            test!("==")(length, 1);
+            test(!exists(1));
+            test(exists(2));
         }
     }
 
@@ -1308,112 +1313,112 @@ unittest
             time_t now_sec ( ) {return ++time;}
         };
 
-        assert(dynamic_cache.length == 0);
+        test!("==")(dynamic_cache.length, 0);
 
         version (all)
         {
             *dynamic_cache.createRaw(1) = data1;
             {
                 auto val = dynamic_cache.getRaw(1);
-                assert(val !is null);
-                assert((*val)[] == data1);
+                test!("!is")(val, null);
+                test!("==")((*val)[], data1);
             }
 
             *dynamic_cache.createRaw(2) = data2;
             {
                 auto val = dynamic_cache.getRaw(1);
-                assert(val !is null);
-                assert((*val)[] == data1);
+                test!("!is")(val, null);
+                test!("==")((*val)[], data1);
             }
             {
                 auto val = dynamic_cache.getRaw(2);
-                assert(val !is null);
-                assert((*val)[] == data2);
+                test!("!is")(val, null);
+                test!("==")((*val)[], data2);
             }
 
             *dynamic_cache.createRaw(3) = data3;
-            assert(dynamic_cache.getRaw(1) is null);
+            test!("is")(dynamic_cache.getRaw(1), null);
             {
                 auto val = dynamic_cache.getRaw(2);
-                assert(val !is null);
-                assert((*val)[] == data2);
+                test!("!is")(val, null);
+                test!("==")((*val)[], data2);
             }
             {
                 auto val = dynamic_cache.getRaw(3);
-                assert(val !is null);
-                assert((*val)[] == data3);
+                test!("!is")(val, null);
+                test!("==")((*val)[], data3);
             }
 
             dynamic_cache.clear;
-            assert(dynamic_cache.length == 0);
-            assert(dynamic_cache.getRaw(1) is null);
-            assert(dynamic_cache.getRaw(2) is null);
-            assert(dynamic_cache.getRaw(3) is null);
+            test!("==")(dynamic_cache.length, 0);
+            test!("is")(dynamic_cache.getRaw(1), null);
+            test!("is")(dynamic_cache.getRaw(2), null);
+            test!("is")(dynamic_cache.getRaw(3), null);
 
             *dynamic_cache.createRaw(1) = data1;
-            assert(dynamic_cache.length == 1);
+            test!("==")(dynamic_cache.length, 1);
             {
                 auto val = dynamic_cache.getRaw(1);
-                assert(val !is null);
-                assert((*val)[] == data1);
+                test!("!is")(val, null);
+                test!("==")((*val)[], data1);
             }
 
             *dynamic_cache.createRaw(2) = data2;
-            assert(dynamic_cache.length == 2);
+            test!("==")(dynamic_cache.length, 2);
             {
                 auto val = dynamic_cache.getRaw(2);
-                assert(val !is null);
-                assert((*val)[] == data2);
+                test!("!is")(val, null);
+                test!("==")((*val)[], data2);
             }
 
             dynamic_cache.remove(1);
-            assert(dynamic_cache.length == 1);
-            assert(dynamic_cache.getRaw(1) is null);
+            test!("==")(dynamic_cache.length, 1);
+            test!("is")(dynamic_cache.getRaw(1), null);
             {
                 auto val = dynamic_cache.getRaw(2);
-                assert(val !is null);
-                assert((*val)[] == data2);
+                test!("!is")(val, null);
+                test!("==")((*val)[], data2);
             }
         }
         else
         {
             dynamic_cache.putRaw(1, data1);
-            assert(dynamic_cache.exists(1));
-            assert((*dynamic_cache.getRaw(1))[] == data1);
+            test(dynamic_cache.exists(1));
+            test!("==")((*dynamic_cache.getRaw(1))[], data1);
 
             dynamic_cache.putRaw(2, data2);
-            assert(dynamic_cache.exists(1));
-            assert(dynamic_cache.exists(2));
-            assert((*dynamic_cache.getRaw(1))[] == data1);
-            assert((*dynamic_cache.getRaw(2))[] == data2);
+            test(dynamic_cache.exists(1));
+            test(dynamic_cache.exists(2));
+            test!("==")((*dynamic_cache.getRaw(1))[], data1);
+            test!("==")((*dynamic_cache.getRaw(2))[], data2);
 
             dynamic_cache.putRaw(3, data3);
-            assert(!dynamic_cache.exists(1));
-            assert(dynamic_cache.exists(2));
-            assert(dynamic_cache.exists(3));
-            assert((*dynamic_cache.getRaw(2))[] == data2);
-            assert((*dynamic_cache.getRaw(3))[] == data3);
+            test(!dynamic_cache.exists(1));
+            test(dynamic_cache.exists(2));
+            test(dynamic_cache.exists(3));
+            test!("==")((*dynamic_cache.getRaw(2))[], data2);
+            test!("==")((*dynamic_cache.getRaw(3))[], data3);
 
             dynamic_cache.clear;
-            assert(dynamic_cache.length == 0);
-            assert(!dynamic_cache.exists(1));
-            assert(!dynamic_cache.exists(2));
-            assert(!dynamic_cache.exists(3));
+            test!("==")(dynamic_cache.length, 0);
+            test(!dynamic_cache.exists(1));
+            test(!dynamic_cache.exists(2));
+            test(!dynamic_cache.exists(3));
 
             dynamic_cache.putRaw(1, data1);
-            assert(dynamic_cache.length == 1);
-            assert(dynamic_cache.exists(1));
-            assert((*dynamic_cache.getRaw(1))[] == data1);
+            test!("==")(dynamic_cache.length, 1);
+            test(dynamic_cache.exists(1));
+            test!("==")((*dynamic_cache.getRaw(1))[], data1);
 
             dynamic_cache.putRaw(2, data2);
-            assert(dynamic_cache.length == 2);
-            assert(dynamic_cache.exists(2));
-            assert((*dynamic_cache.getRaw(2))[] == data2);
+            test!("==")(dynamic_cache.length, 2);
+            test(dynamic_cache.exists(2));
+            test!("==")((*dynamic_cache.getRaw(2))[], data2);
 
             dynamic_cache.remove(1);
-            assert(dynamic_cache.length == 1);
-            assert(!dynamic_cache.exists(1));
-            assert(dynamic_cache.exists(2));
+            test!("==")(dynamic_cache.length, 1);
+            test(!dynamic_cache.exists(1));
+            test(dynamic_cache.exists(2));
         }
     }
 }
