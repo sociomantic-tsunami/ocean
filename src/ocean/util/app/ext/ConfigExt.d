@@ -289,12 +289,11 @@ class ConfigExt : IApplicationExtension, IArgumentsExtExtension
             ext.preParseConfig(app, this.config);
         }
 
-        auto config_files = this.default_configs;
         auto args_ext = (cast(Application)app).getExtension!(ArgumentsExt);
-        if (args_ext !is null)
-        {
-            config_files ~= args_ext.args("config").assigned;
-        }
+        // If an ArgumentExt is present, `.assigned` returns the user's
+        // input or the default
+        auto config_files = (args_ext !is null)
+            ? args_ext.args("config").assigned.dup : this.default_configs;
 
         foreach (e; this.extensions)
         {
