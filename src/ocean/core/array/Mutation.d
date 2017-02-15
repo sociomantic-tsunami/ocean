@@ -1760,7 +1760,8 @@ unittest
 
     Params:
         array = array with elements to shuffle
-        rand  = random number generator, will be invoked array.length - 1 times
+        rand  = random number generator whose generated numbers must have range
+                ]-1..0] or [0..1[, will be invoked array.length - 1 times
 
     Returns:
         shuffled array
