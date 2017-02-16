@@ -1324,6 +1324,7 @@ unittest
 }
 
 // Check that `IsTypeofNull` does its job
+version(none)
 unittest
 {
     static bool test (bool fatal, istring expected, istring actual)
