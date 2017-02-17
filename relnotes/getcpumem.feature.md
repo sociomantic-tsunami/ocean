@@ -11,3 +11,9 @@
   6. Percentage of the total memory available consumed by the process
 
   This struct is intended to be passed straight to the stats logger.
+
+* `ocean.util.app.DaemonApp`
+
+  DaemonApp is now capable of collecting and reporting CPU & memory usage
+  directly to stats.log. To use this feature, call `DaemonApp.reportSystemStats`
+  periodically inside `onStatsTimer`.
