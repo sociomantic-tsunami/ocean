@@ -64,6 +64,7 @@ public abstract class DaemonApp : Application,
     import ocean.io.select.EpollSelectDispatcher;
     import ocean.text.Arguments : Arguments;
     import ocean.task.Scheduler;
+    import ocean.sys.Stats;
 
     import ocean.util.app.ext.ArgumentsExt;
     import ocean.util.app.ext.ConfigExt;
@@ -191,6 +192,14 @@ public abstract class DaemonApp : Application,
     ***************************************************************************/
 
     public UnixSocketExt unix_socket_ext;
+
+    /***************************************************************************
+
+        Cpu and memory collector instance.
+
+    ***************************************************************************/
+
+    private CpuMemoryStats system_stats;
 
     /***************************************************************************
 
@@ -385,6 +394,8 @@ public abstract class DaemonApp : Application,
         this.unix_socket_ext = new UnixSocketExt();
         this.config_ext.registerExtension(this.unix_socket_ext);
         this.registerExtension(this.unix_socket_ext);
+
+        this.system_stats = new CpuMemoryStats();
     }
 
     /***************************************************************************
@@ -551,6 +562,18 @@ public abstract class DaemonApp : Application,
     {
         this.onStatsTimer();
         return true;
+    }
+
+    /***************************************************************************
+
+        Collects CPU and memory stats and reports it to stats log. Should be
+        called periodically (inside onStatsTimer).
+
+    ***************************************************************************/
+
+    protected void reportSystemStats ( )
+    {
+        this.stats_ext.stats_log.add(this.system_stats.log());
     }
 
     /***************************************************************************
@@ -743,6 +766,7 @@ unittest
         // Handle stats output.
         override protected void onStatsTimer ( )
         {
+            this.reportSystemStats();
             struct Treasure
             {
                 int copper, silver, gold;
