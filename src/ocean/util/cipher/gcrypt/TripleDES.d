@@ -78,13 +78,9 @@ unittest
 }
 
 
-/*******************************************************************************
-
-    Instantiate the class to run the unittests in the template.
-
-*******************************************************************************/
-
+// Test that only 24-bytes keys are allowed
 unittest
 {
-    new TripleDES(TripleDES.generateKey());
+    auto key = cast(Immut!(ubyte)[])"a key of 24 bytesa key o";
+    TripleDES.testFixedKeyLength(key);
 }
