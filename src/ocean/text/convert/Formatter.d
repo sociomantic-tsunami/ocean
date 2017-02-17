@@ -1323,53 +1323,24 @@ unittest
     assert(format("{}", ac) == "42");
 }
 
-// Check that `IsTypeofNull` does its job
-version(none)
+// Check that `IsTypeofNull` does its job,
+// and that pointers to objects are not dereferenced
 unittest
 {
-    static bool test (bool fatal, istring expected, istring actual)
-    {
-        if (expected == actual)
-            return false;
-        assert(!fatal, "Expected '" ~ expected ~ "' but got: " ~ actual);
-        return true;
-    }
+    // Since `Object* o; istring s = o.toString();`
+    // compiles, the test for `toString` used to pass
+    // on pointers to object, which is wrong.
+    // Fixed in sociomantic/ocean#1605
+    Object* o = cast(Object*) 0xDEADBEEF_DEADBEEF;
+    void* ptr = cast(void*) 0xDEADBEEF_DEADBEEF;
 
-    // The logic here is a bit complicated, because we don't know
-    // where in the stack we are. We could start at address
-    // 0x0000_7000_0000 so growing down we'd go at address
-    // 0x0000_6XXX_XXXX, which obviously would be problematic.
-    // However we know that our stack frame is 68 / 72 (depends
-    // on alignment), and our pointers are 16 bytes appart,
-    // so retrying once should cover all cases.
-    static void doTest (bool fatal)
-    {
-        scope Object o = new Object;
-        scope void* ptr = cast(void*)o;
+    const istring expected = "0XDEADBEEFDEADBEEF";
+    istring object_str = format("{}", o);
+    istring ptr_str = format("{}", ptr);
+    istring null_str = format("{}", null);
 
-        istring expected = format("{}", ptr);
-        istring stack_ptr = format("{}", &expected);
-        istring null_str = format("{}", null);
-
-        bool has_error;
-        // Sanity check
-        assert(expected != null_str);
-
-        // Address of a pointer to the stack - can't test the value,
-        // so just make sure it's a stack-ish pointer
-        // We do so by testing the address  / 100
-
-        assert(expected.length == stack_ptr.length, "Length mismatch");
-        has_error = test(fatal, expected[0 .. $ - 2], stack_ptr[0 .. $ - 2]);
-
-        stack_ptr = format("{}", &o);
-        assert(expected.length == stack_ptr.length, "Length mismatch");
-        if (!has_error)
-            has_error = test(fatal, expected[0 .. $ - 2], stack_ptr[0 .. $ - 2]);
-
-        if (has_error)
-            doTest(true);
-    }
-
-    doTest(false);
+    assert(ptr_str != null_str);
+    assert(object_str != null_str);
+    assert(ptr_str == expected);
+    assert(object_str == expected);
 }
