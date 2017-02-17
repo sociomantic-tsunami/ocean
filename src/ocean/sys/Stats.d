@@ -27,7 +27,7 @@ import ocean.sys.stats.linux.Queriable;
 
 ***************************************************************************/
 
-public static struct OpenFileStats
+public struct OpenFileStats
 {
     /// Limit for the number of open fds.
     long open_fds_limit;
