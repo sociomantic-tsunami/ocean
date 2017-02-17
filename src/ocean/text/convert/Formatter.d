@@ -309,7 +309,7 @@ private void handle (T) (T v, FormatInfo f, Sink sf, ElementSink se)
      */
 
     // `typeof(null)` matches way too many things
-    static if (is(T == typeof(null)))
+    static if (IsTypeofNull!(T))
         se("null", f);
 
     /** D1 + D2 support of typedef
@@ -328,6 +328,28 @@ private void handle (T) (T v, FormatInfo f, Sink sf, ElementSink se)
     // Cannot print enum member name in D1, so just print the value
     else static if (is (T V == enum))
              handle!(V)(v, f, sf, se);
+
+    // Delegate / Function pointers
+    else static if (is(T == delegate))
+    {
+        sf(T.stringof ~ ": { funcptr: ");
+        writePointer(v.funcptr, f, se);
+        sf(", ptr: ");
+        writePointer(v.ptr, f, se);
+        sf(" }");
+    }
+    else static if (is(T U == return))
+    {
+        sf(T.stringof ~ ": ");
+        writePointer(v, f, se);
+    }
+
+    // Pointers need to be at the top because `(int*).min` compiles
+    // and hence would match the integer rules
+    // In addition, thanks to automatic dereferencing,
+    // the check `v.toString()` would pass for an `Object` and an `Object*`.
+    else static if (is (T P == P*))
+        writePointer(v, f, se);
 
     // toString hook: Give priority to the non-allocating one
     // Note: sink `toString` overload should take a `scope` delegate
@@ -356,21 +378,6 @@ private void handle (T) (T v, FormatInfo f, Sink sf, ElementSink se)
         }
         sf(v.tupleof.length ? " }" : "{ empty struct }");
         f.flags = old;
-    }
-
-    // Delegate / Function pointers
-    else static if (is(T == delegate))
-    {
-        sf(T.stringof ~ ": { funcptr: ");
-        writePointer(v.funcptr, f, se);
-        sf(", ptr: ");
-        writePointer(v.ptr, f, se);
-        sf(" }");
-    }
-    else static if (is(T U == return))
-    {
-        sf(T.stringof ~ ": ");
-        writePointer(v, f, se);
     }
 
     // Bool
@@ -434,11 +441,6 @@ private void handle (T) (T v, FormatInfo f, Sink sf, ElementSink se)
             UTF.toString(b[1 .. 2], (cstring val) { return se(val, f); });
     }
 
-    // Pointers need to be at the top because `(int*).min` compiles
-    // and hence would match the integer rules
-    else static if (is (T P == P*))
-        writePointer(v, f, se);
-
     // Signed integer
     else static if (is(typeof(T.min)) && T.min < 0)
     {
@@ -485,6 +487,37 @@ private void handle (T) (T v, FormatInfo f, Sink sf, ElementSink se)
     else
         static assert (0, "Type unsupported by ocean.text.convert.Formatter: "
                        ~ T.stringof);
+}
+
+
+/*******************************************************************************
+
+        Helper template to detect `typeof(null)`.
+
+        In D2, `typeof(null)` is a special type, as it has conversion rules like
+        not other type. In D1, it is just `void*`.
+        Since D2 version will match many cases in `handle` because it converts
+        to many different type, we need to single it out, however we cannot
+        just check for `is(T == typeof(null))` as it would mean `== void*` in D1
+
+        Params:
+            T   = Type to check
+
+*******************************************************************************/
+
+private template IsTypeofNull (T)
+{
+    version (D_Version2)
+    {
+        static if (is(T == typeof(null)))
+            public const bool IsTypeofNull = true;
+        else
+            public const bool IsTypeofNull = false;
+    }
+    else
+    {
+        public const bool IsTypeofNull = false;
+    }
 }
 
 
@@ -1288,4 +1321,26 @@ unittest
     assert(format("{:f2}", ad) == "42.00", format("{:f2}", ad));
     assert(format("{}", as) == "{ value: 42 }");
     assert(format("{}", ac) == "42");
+}
+
+// Check that `IsTypeofNull` does its job,
+// and that pointers to objects are not dereferenced
+unittest
+{
+    // Since `Object* o; istring s = o.toString();`
+    // compiles, the test for `toString` used to pass
+    // on pointers to object, which is wrong.
+    // Fixed in sociomantic/ocean#1605
+    Object* o = cast(Object*) 0xDEADBEEF_DEADBEEF;
+    void* ptr = cast(void*) 0xDEADBEEF_DEADBEEF;
+
+    const istring expected = "0XDEADBEEFDEADBEEF";
+    istring object_str = format("{}", o);
+    istring ptr_str = format("{}", ptr);
+    istring null_str = format("{}", null);
+
+    assert(ptr_str != null_str);
+    assert(object_str != null_str);
+    assert(ptr_str == expected);
+    assert(object_str == expected);
 }
