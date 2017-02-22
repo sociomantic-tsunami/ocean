@@ -19,6 +19,12 @@
   `TaskSelectTransceiver.write` automatically enables output buffering through
   TCP Cork. In this case calling `TaskSelectTransceiver.flush` flushes the
   output data buffer and writes all pending output data immediately.
+
+  The `connect` function is a utility function to `connect` a socket that is
+  managed by a `TaskSelectTransceiver`. It delegates the actual `connect(2)`
+  call to the user, then evaluates `errno`. If `errno` indicates that
+  establishing the connection is in progress it suspends the task to wait for
+  its completion.
   
 * `ocean.io.select.protocol.task.TaskSelectClient`
 

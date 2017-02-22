@@ -609,6 +609,116 @@ class TaskSelectTransceiver
     }
 }
 
+import ocean.stdc.errno;
+import ocean.core.Enforce;
+import ocean.text.util.ClassName;
+
+/*******************************************************************************
+
+    Utility function to `connect` a socket that is managed by a
+    `TaskSelectTransceiver`.
+
+    Calls `socket_connect` once. If it returns `false`, evaluates `errno` and
+    waits for establishing the connection to complete if needed, suspending the
+    task.
+
+    When calling `socket_connect` the I/O device which was passed to the
+    constructor of `tst` is passed to it via the `socket` parameter.
+    `socket_connect` should call the POSIX `connect` function, passing
+    `socket.fileHandle`, and return `true` on success or `false` on failure,
+    corresponding to `connect` returning 0 or -1, respectively.
+
+    If `socket_connect` returns `true` then this method does nothing but
+    returning 0. Otherwise, if `socket_connect` returns `false` then it does one
+    of the following actions depending on `errno`:
+     - `EINPROGRESS`, `EALREADY`, `EINTR`: Wait for establishing the connection
+       to complete, then return `errno`.
+     - `EISCONN`, 0: Return `errno` (and do nothing else).
+     - All other codes: Throw `IOError`.
+
+    The `Socket` type must to be chosen so that the I/O device passed to the
+    constructor can be cast to it.
+
+    Params:
+        tst            = the `TaskSelectTransceiver` instance that manages the
+                         socket to connect
+        socket_connect = calls POSIX `connect`
+
+    Returns:
+        - 0 if `socket_connect` returned `true`,
+        - or the initial `errno` code otherwise, if the socket is now
+          connected.
+
+    Throws:
+        `IOError` if `socket_connect` returned `false` and `errno` indicated
+         that the socket connection cannot be established.
+
+*******************************************************************************/
+
+public int connect ( Socket: IODevice ) ( TaskSelectTransceiver tst,
+    bool delegate ( Socket socket ) socket_connect )
+{
+    auto socket = cast(Socket)tst.iodev;
+    assert(socket, "connect: Unable to cast the I/O " ~
+        "device from " ~ classname(tst.iodev) ~ " to " ~ Socket.stringof);
+    return connect_(tst, socket_connect(socket));
+}
+
+/*******************************************************************************
+
+    Implements the logic described for `connect`.
+
+    Params:
+        tst            = the `TaskSelectTransceiver` instance that manages the
+                         socket to connect
+        socket_connect = calls POSIX `connect`
+
+    Returns:
+        See `connect`.
+
+    Throws:
+        See `connect`.
+
+******************************************************************************/
+
+private int connect_ ( TaskSelectTransceiver tst, lazy bool socket_connect )
+{
+    errno = 0;
+    if (socket_connect)
+        return 0;
+
+    auto errnum = errno;
+
+    switch (errnum)
+    {
+        case EINPROGRESS,
+             EALREADY,
+             EINTR: // TODO: Might never be reported, see note below.
+            tst.ioWait(tst.Event.EPOLLOUT);
+            goto case;
+
+        case EISCONN, 0:
+            return errnum;
+
+        default:
+            tst.error_e.checkDeviceError("error establishing connection");
+            enforce(tst.error_e, false, "error establishing connection");
+            assert(false);
+    }
+
+    /* The POSIX specification says about connect() failing with EINTR:
+
+        "If connect() is interrupted by a signal that is caught while blocked
+        waiting to establish a connection, connect() shall fail and set errno to
+        EINTR, but the connection request shall not be aborted, and the
+        connection shall be established asynchronously."
+
+    It remains unclear whether a nonblocking connect() can also fail with EINTR
+    or not. Assuming that, if it is possible, it has the same meaning as for
+    blocking connect(), we handle EINTR in the same way as EINPROGRESS.
+    TODO: Remove handling of EINTR or this note when this is clarified. */
+}
+
 version (UnitTest)
 {
     import ocean.io.device.IODevice;
@@ -669,6 +779,54 @@ unittest
                 int x;
                 this.tst.readValue(x);
             }
+        }
+    }
+}
+
+version (UnitTest)
+{
+    import ocean.sys.socket.IPSocket;
+}
+
+/// Example of connecting a TCP/IP socket.
+unittest
+{
+    static class ConnectIOTaskDemo: Task
+    {
+        TaskSelectTransceiver tst;
+
+        this ( )
+        {
+            // Create a TCP/IP socket, throwing SocketError on failure.
+            auto socket = new IPSocket!();
+            auto e = new SocketError(socket);
+            // The `true` parameter makes the socket non-blocking.
+            e.enforce(socket.tcpSocket(true) >= 0, "", "socket");
+
+            this.tst = new TaskSelectTransceiver(
+                socket, new IOWarning(socket), e
+            );
+        }
+
+        override void run ( )
+        {
+            connect(this.tst,
+                (IPSocket!() socket)
+                {
+                    // Call `connect` to initiate establishing the connection.
+                    // Return `true` if `connect` returns 0 (i.e. succeeded) or
+                    // false otherwise.
+                    // `connect` will likely return -1 (i.e. fail) and set
+                    // `errno = EINPROGRESS`. `this.tst.connect` will then block
+                    // this task until establishing the socket connection has
+                    // completed.
+                    IPSocket!().InetAddress address;
+                    return !socket.connect(address("127.0.0.1", 4711));
+                }
+            );
+            // Now the socket is connected, and `this.tst` is ready for reading
+            // and writing, as shown in the documented unit test for sending/
+            // receiving above.
         }
     }
 }
