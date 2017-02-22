@@ -97,6 +97,8 @@ import ocean.util.log.AppendSysLog;
 import ocean.stdc.string;
 import ocean.text.util.StringSearch;
 
+import ocean.util.log.Appender;
+import ocean.util.log.Event;
 import ocean.util.log.Log;
 import ocean.util.log.InsertConsole;
 import ocean.util.log.AppendStderrStdout;

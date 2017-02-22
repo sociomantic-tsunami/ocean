@@ -17,7 +17,8 @@ module ocean.util.log.CounterAppender;
 
 import ocean.transition;
 
-import ocean.util.log.Log;
+import ocean.util.log.Appender;
+import ocean.util.log.Event;
 
 /*******************************************************************************
 

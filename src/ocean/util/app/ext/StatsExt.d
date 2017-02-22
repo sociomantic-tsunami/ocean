@@ -53,14 +53,13 @@ import ocean.util.app.ext.ConfigExt;
 import ocean.util.app.ext.ReopenableFilesExt;
 
 import ocean.util.config.ConfigParser;
+import ocean.util.log.Appender;
+import ocean.util.log.Log;
 import ocean.util.log.Stats;
 import ConfigFiller = ocean.util.config.ConfigFiller;
 
 import ocean.transition;
 import ocean.io.device.File;
-
-import ocean.util.log.Log;
-
 
 
 /*******************************************************************************

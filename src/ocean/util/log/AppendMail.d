@@ -18,9 +18,8 @@
 deprecated module ocean.util.log.AppendMail;
 
 import ocean.transition;
-
-import ocean.util.log.Log;
-
+import ocean.util.log.Appender;
+import ocean.util.log.LogEvent;
 import ocean.io.stream.Buffered;
 
 import ocean.net.device.Socket,

@@ -56,6 +56,7 @@ import ocean.stdc.time : time_t;
 import ocean.sys.ErrnoException;
 import ocean.text.convert.Layout: StringLayout;
 import ocean.util.log.layout.LayoutStatsLog;
+import ocean.util.log.Appender;
 import ocean.util.log.Log;
 
 

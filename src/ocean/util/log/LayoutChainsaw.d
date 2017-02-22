@@ -21,6 +21,8 @@ import ocean.transition;
 
 import ocean.core.Thread;
 
+import ocean.util.log.Appender;
+import ocean.util.log.Event;
 import ocean.util.log.Log;
 
 /*******************************************************************************

@@ -27,7 +27,8 @@ import ocean.text.Util;
 import ocean.time.Clock,
         ocean.time.WallClock;
 
-import ocean.util.log.Log;
+import ocean.util.log.Appender;
+import ocean.util.log.Event;
 
 import  Integer = ocean.text.convert.Integer_tango;
 
