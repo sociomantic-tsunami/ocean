@@ -24,6 +24,7 @@ TEST_FILTER_OUT += \
 	$C/src/ocean/net/http/HttpClient.d \
 	$C/src/ocean/net/http/HttpGet.d \
 	$C/src/ocean/net/http/HttpPost.d \
+	$C/src/ocean/text/xml/DocTester.d \
 	$C/src/ocean/util/log/AppendMail.d \
 	$C/src/ocean/util/log/AppendSocket.d \
 	$C/src/ocean/util/config/ClassFiller.d \
