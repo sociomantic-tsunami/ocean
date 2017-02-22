@@ -376,17 +376,8 @@ class TaskSelectTransceiver
                     {
                         case EWOULDBLOCK:
                     }
-                    Event events = this.select_client.ioWait(wait_event);
-                    enforce(this.warning_e, !(events & events.EPOLLHUP), "connection hung up");
-
-                    if (!(events & events.EPOLLERR))
-                        break;
-                    else
-                    {
-                        this.error_e.checkDeviceError("epoll reported I/O device error");
-                        enforce(this.error_e, false, "epoll reported I/O device error");
-                    }
-                    assert(false);
+                    this.ioWait(wait_event);
+                    break;
 
                 default:
                     this.error_e.checkDeviceError("I/O error");
@@ -401,6 +392,41 @@ class TaskSelectTransceiver
         }
 
         return n;
+    }
+
+    /***************************************************************************
+
+        Suspends the current task until epoll reports any of the events in
+        `wait_event` for the I/O device or the I/O device times out.
+
+        Params:
+            events_expected = the events to wait for (`EPOLLHUP` and `EPOLLERR`
+                              are always implicitly added)
+
+        Returns:
+            the events reported by epoll.
+
+        Throws:
+            - `IOWarning` on `EPOLLHUP`,
+            - `IOError` on `EPOLLERR`,
+            - `EpollException` if registering with epoll failed,
+            - `TimeoutException` on timeout waiting for I/O events.
+
+    ***************************************************************************/
+
+    private Event ioWait ( Event wait_event )
+    {
+        Event events = this.select_client.ioWait(wait_event);
+        enforce(this.warning_e, !(events & events.EPOLLHUP), "connection hung up");
+
+        if (events & events.EPOLLERR)
+        {
+            this.error_e.checkDeviceError("epoll reported I/O device error");
+            enforce(this.error_e, false, "epoll reported I/O device error");
+            assert(false);
+        }
+        else
+            return events;
     }
 
     /***************************************************************************
