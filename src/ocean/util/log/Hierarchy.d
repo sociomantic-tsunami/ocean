@@ -302,7 +302,7 @@ package class HierarchyT (LoggerT) : ILogger.Context
 
     ***************************************************************************/
 
-    private void propagateValue (istring property, T)
+    package void propagateValue (istring property, T)
         (istring parent_name, T value)
     {
         foreach (log; this)

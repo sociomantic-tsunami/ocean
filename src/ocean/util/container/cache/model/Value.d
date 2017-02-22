@@ -132,11 +132,11 @@ template Value ( size_t ValueSize )
             }
         }
 
-        private alias Value* ValueRef;
+        public alias Value* ValueRef;
     }
     else
     {
-        private alias ubyte[ValueSize] Value;
-        private alias void[]           ValueRef;
+        public alias ubyte[ValueSize] Value;
+        public alias void[]           ValueRef;
     }
 }

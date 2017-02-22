@@ -301,7 +301,7 @@ public abstract class BucketSet ( size_t V, K = hash_t ) : IBucketSet
 
     **************************************************************************/
 
-    protected alias .Bucket!(V, K) Bucket;
+    public alias .Bucket!(V, K) Bucket;
 
 
     /***************************************************************************
