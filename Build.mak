@@ -27,6 +27,7 @@ TEST_FILTER_OUT += \
 	$C/src/ocean/text/xml/DocTester.d \
 	$C/src/ocean/util/log/AppendMail.d \
 	$C/src/ocean/util/log/AppendSocket.d \
+	$C/src/ocean/util/log/ConfigProps.d \
 	$C/src/ocean/util/config/ClassFiller.d \
 	$C/src/ocean/util/container/HashMap.d \
 	$C/src/ocean/util/container/more/CacheMap.d \

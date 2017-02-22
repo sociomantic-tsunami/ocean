@@ -17,7 +17,7 @@
 
 *******************************************************************************/
 
-module ocean.util.log.ConfigProps;
+deprecated module ocean.util.log.ConfigProps;
 
 import ocean.transition;
 
@@ -37,7 +37,7 @@ import ocean.io.stream.Map,
 
 *******************************************************************************/
 
-struct ConfigProps
+deprecated struct ConfigProps
 {
         /***********************************************************************
 
