@@ -6,12 +6,9 @@
 
 *******************************************************************************/
 
-module test.loggerstats.main;
-
 import ocean.util.log.Log;
 import ocean.core.Test;
 import ocean.io.device.File;
-
 
 /*******************************************************************************
 

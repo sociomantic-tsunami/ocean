@@ -6,8 +6,6 @@
 
 *******************************************************************************/
 
-module test.signalext.main;
-
 import ocean.transition;
 
 import core.sys.posix.signal;
