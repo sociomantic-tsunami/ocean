@@ -44,9 +44,6 @@ import ocean.util.log.Log;
 import ocean.stdc.posix.signal;
 
 
-debug import ocean.core.Thread;
-
-
 /*******************************************************************************
 
     An appender for the tango logger which writes the output _above_ the
