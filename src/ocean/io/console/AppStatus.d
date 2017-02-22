@@ -75,6 +75,7 @@ import ocean.io.Stdout;
 
 import ocean.text.convert.Layout;
 
+import ocean.util.log.Event;
 import ocean.util.log.InsertConsole;
 
 import ocean.util.log.layout.LayoutMessageOnly;

@@ -23,7 +23,9 @@ module ocean.util.log.AppendStderrStdout;
 *******************************************************************************/
 
 import ocean.transition;
-import ocean.util.log.Log;
+import ocean.util.log.Appender;
+import ocean.util.log.Event;
+import ocean.util.log.model.ILogger;
 
 /*******************************************************************************
 
@@ -58,7 +60,7 @@ public class AppendStderrStdout : Appender
 
     ***********************************************************************/
 
-    private Level first_stderr_level;
+    private ILogger.Level first_stderr_level;
 
     /***********************************************************************
 
@@ -71,7 +73,8 @@ public class AppendStderrStdout : Appender
 
     ************************************************************************/
 
-    public this (Level first_stderr_level = Level.Warn, Appender.Layout how = null)
+    public this (ILogger.Level first_stderr_level = ILogger.Level.Warn,
+                 Appender.Layout how = null)
     {
         mask_ = register(name);
         this.first_stderr_level = first_stderr_level;

@@ -18,8 +18,8 @@
 module ocean.util.log.AppendFile;
 
 import ocean.transition;
-
-import ocean.util.log.Log;
+import ocean.util.log.Appender;
+import ocean.util.log.Event;
 
 import ocean.io.device.File;
 

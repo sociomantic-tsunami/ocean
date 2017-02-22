@@ -21,8 +21,11 @@ module ocean.util.log.AppendSysLog;
 
 *******************************************************************************/
 
-import ocean.util.log.Log;
 import ocean.transition;
+import ocean.util.log.Appender;
+import ocean.util.log.Event;
+import ocean.util.log.model.ILogger;
+
 
 /*******************************************************************************
 
@@ -230,7 +233,7 @@ public class AppendSysLog : Appender
     }
     body
     {
-        with ( Level ) switch ( event.level )
+        with (ILogger.Level) switch (event.level)
         {
             case Trace:
                 return Priority.LOG_DEBUG;

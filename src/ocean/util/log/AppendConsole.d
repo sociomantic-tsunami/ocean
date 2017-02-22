@@ -23,7 +23,7 @@ import ocean.io.Console;
 
 import ocean.io.model.IConduit;
 
-import ocean.util.log.Log;
+import ocean.util.log.Appender;
 
 /*******************************************************************************
 
