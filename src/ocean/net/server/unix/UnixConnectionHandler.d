@@ -52,6 +52,17 @@ import ocean.net.server.connection.IFiberConnectionHandler;
 
 import ocean.transition;
 
+import ocean.io.select.EpollSelectDispatcher;
+import ocean.io.select.protocol.fiber.FiberSelectReader;
+import ocean.io.select.protocol.fiber.FiberSelectWriter;
+
+import ocean.sys.socket.UnixSocket;
+import ocean.io.select.protocol.generic.ErrnoIOException : SocketError;
+
+import ocean.util.log.Log;
+import ocean.text.util.SplitIterator: ChrSplitIterator;
+import ocean.core.array.Mutation : copy;
+
 /// Provides basic command handling functionality for unix socket commands.
 public class BasicCommandHandler
 {
@@ -137,16 +148,6 @@ public class UnixConnectionHandler : UnixSocketConnectionHandler!(BasicCommandHa
 
 public class UnixSocketConnectionHandler ( CommandHandlerType ) : IFiberConnectionHandler
 {
-    import ocean.io.select.EpollSelectDispatcher;
-    import ocean.io.select.protocol.fiber.FiberSelectReader;
-    import ocean.io.select.protocol.fiber.FiberSelectWriter;
-    import ocean.io.select.protocol.generic.ErrnoIOException : SocketError;
-    import ocean.sys.socket.UnixSocket;
-
-    import ocean.text.util.SplitIterator: ChrSplitIterator;
-    import ocean.core.Array: copy;
-
-    import ocean.util.log.Log;
 
     /***************************************************************************
 
