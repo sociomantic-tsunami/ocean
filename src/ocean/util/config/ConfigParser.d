@@ -41,7 +41,7 @@ import ocean.text.convert.Integer_tango: toLong;
 
 import ocean.text.convert.Float: toFloat;
 
-import ocean.text.convert.Format;
+import ocean.text.convert.Formatter;
 
 import ocean.text.Util: locate, trim, delimit, lines;
 
@@ -526,7 +526,7 @@ class ConfigParser
     {
         enforce!(ConfigException)(
             exists(category, key),
-            Format("Critical Error: No configuration key '{}:{}' found",
+            format("Critical Error: No configuration key '{}:{}' found",
                    category, key)
         );
         try
@@ -538,7 +538,7 @@ class ConfigParser
         catch ( IllegalArgumentException )
         {
             throw new ConfigException(
-                          Format("Critical Error: Configuration key '{}:{}' "
+                          format("Critical Error: Configuration key '{}:{}' "
                                ~ "appears not to be of type '{}'",
                                  category, key, T.stringof));
         }
@@ -1240,7 +1240,7 @@ unittest
                                     typeof(__LINE__) line_num = __LINE__ )
     {
         parsedConfigSanityCheck(config, expected,
-                                Format("{} (line: {})", test_name, line_num));
+                                format("{} (line: {})", test_name, line_num));
     }
 
     scope Config = new ConfigParser();

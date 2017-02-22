@@ -49,7 +49,7 @@ import ocean.text.util.ClassName;
 
 debug import ocean.io.Stdout;
 
-import ocean.text.convert.Format;
+import ocean.text.convert.Formatter;
 
 /******************************************************************************
 
@@ -424,7 +424,7 @@ public abstract class ISelectClient : ITimeoutClient, ISelectable, ISelectClient
 
     public void fmtInfo ( void delegate ( cstring chunk ) sink )
     {
-        Format.convert(
+        sformat(
             (cstring chunk) {sink(chunk); return chunk.length;},
             "{} fd={} events=", this.id, this.fileHandle
         );

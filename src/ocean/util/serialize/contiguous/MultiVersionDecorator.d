@@ -47,7 +47,7 @@ version (UnitTest)
 
     import ocean.core.Array;
     import ocean.core.Test;
-    import ocean.text.convert.Format;
+    import ocean.text.convert.Formatter;
 }
 
 
@@ -805,7 +805,7 @@ Dst testConv(Src, Dst)(Src src, size_t limit = 10)
         if (e.classinfo == TestException.classinfo)
             throw e;
 
-        test.msg = Format(
+        test.msg = format(
             "Unhandled exception of type {} from {}:{} - '{}'",
             e.classinfo.name,
             e.file,
@@ -863,7 +863,7 @@ Dst testConvMemory(Src, Dst)(Src src, size_t limit = 10)
             if (e.classinfo == TestException.classinfo)
                 throw e;
 
-            test.msg = Format(
+            test.msg = format(
                 "Unhandled exception of type {} from {}:{} - '{}'",
                 e.classinfo.name,
                 e.file,

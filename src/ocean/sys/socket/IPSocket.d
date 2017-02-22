@@ -41,7 +41,7 @@ import ocean.core.TypeConvert;
 
 import ocean.sys.socket.model.ISocket;
 
-import ocean.text.convert.Format;
+import ocean.text.convert.Formatter;
 
 deprecated("MSG_NOSIGNAL deprecated, please use the one in "
         "ocean.sys.socket.model.ISocket instead")
@@ -783,7 +783,7 @@ class IPSocket ( bool IPv6 = false ) : IIPSocket
         this.getpeername(in_address.addr);
         size_t ip_address_len = in_address.inet_ntop(ip_address_).length;
 
-        Format.format(buf, "fd={}, remote={}:{}, ioerr={}",
+        sformat(buf, "fd={}, remote={}:{}, ioerr={}",
             this.fileHandle, ip_address_[0 .. ip_address_len],
             in_address.port, io_error);
     }

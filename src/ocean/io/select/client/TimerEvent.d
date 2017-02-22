@@ -381,7 +381,7 @@ abstract class ITimerEvent : ISelectClient, ISelectable
     debug
     {
         import ocean.core.Array : copy;
-        import ocean.text.convert.Format;
+        import ocean.text.convert.Formatter;
 
         private mstring time_buffer;
 
@@ -390,7 +390,7 @@ abstract class ITimerEvent : ISelectClient, ISelectable
             this.time_buffer.copy(super.id());
             auto time = this.time();
 
-            Format.format(this.time_buffer, ": {}s {}ns",
+            sformat(this.time_buffer, ": {}s {}ns",
                 time.it_value.tv_sec, time.it_value.tv_nsec);
             return this.time_buffer;
         }

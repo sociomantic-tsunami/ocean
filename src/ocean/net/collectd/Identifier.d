@@ -37,7 +37,7 @@ module ocean.net.collectd.Identifier;
 
 import ocean.transition;
 import ocean.core.Exception_tango; // IllegalArgumentException
-import ocean.text.convert.Format;
+import ocean.text.convert.Formatter;
 import ocean.text.util.StringSearch; // locateChar
 
 version (UnitTest)
@@ -160,7 +160,7 @@ public struct Identifier
         if (auto msg = Identifier.create(line, ret))
         {
             // Because the ctor doesn't expose it...
-            auto e = new IllegalArgumentException(Format("{}: {}", line, msg));
+            auto e = new IllegalArgumentException(format("{}: {}", line, msg));
             e.file = __FILE__;
             e.line = __LINE__;
             throw e;
@@ -369,7 +369,7 @@ public struct Identifier
         auto pi = this.plugin_instance.length ? "-" : null;
         auto ti = this.type_instance.length ? "-" : null;
 
-        return Format("{}/{}{}{}/{}{}{}", this.host,
+        return format("{}/{}{}{}/{}{}{}", this.host,
                       this.plugin, pi, this.plugin_instance,
                       this.type, ti, this.type_instance);
     }

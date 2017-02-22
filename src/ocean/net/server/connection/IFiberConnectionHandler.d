@@ -39,7 +39,7 @@ import ocean.util.container.pool.model.IResettable;
 
 import ocean.sys.Epoll : epoll_event_t;
 
-import ocean.text.convert.Format;
+import ocean.text.convert.Formatter;
 
 debug ( ConnectionHandler ) import ocean.io.Stdout : Stderr;
 
@@ -211,11 +211,11 @@ abstract class IFiberConnectionHandlerBase : IConnectionHandler
                 }
             }
 
-            Format.format(buf, ", id={}", id);
+            sformat(buf, ", id={}", id);
         }
         else
         {
-            Format.format(buf, ", events={}", events);
+            sformat(buf, ", events={}", events);
         }
     }
 

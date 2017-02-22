@@ -38,7 +38,7 @@ import ocean.util.serialize.contiguous.Deserializer,
        ocean.util.serialize.contiguous.Contiguous,
        ocean.util.serialize.contiguous.model.LoadCopyMixin;
 
-import ocean.text.convert.Format,
+import ocean.text.convert.Formatter,
        ocean.stdc.string : memmove;
 
 /*******************************************************************************
@@ -586,7 +586,7 @@ deprecated Dst testConv(Src, Dst)(Src src)
         if (e.classinfo == TestException.classinfo)
             throw e;
 
-        test.msg = Format(
+        test.msg = format(
             "Unhandled exception of type {} from {}:{} - '{}'",
             e.classinfo.name,
             e.file,
@@ -644,7 +644,7 @@ deprecated Dst testConvMemory(Src, Dst)(Src src)
             if (e.classinfo == TestException.classinfo)
                 throw e;
 
-            test.msg = Format(
+            test.msg = format(
                 "Unhandled exception of type {} from {}:{} - '{}'",
                 e.classinfo.name,
                 e.file,

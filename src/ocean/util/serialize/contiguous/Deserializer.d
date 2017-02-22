@@ -30,7 +30,7 @@ import ocean.util.serialize.model.Traits;
 import ocean.core.Enforce;
 import ocean.core.Traits;
 
-import ocean.text.convert.Format;
+import ocean.text.convert.Formatter;
 
 debug (DeserializationTrace) import ocean.io.Stdout_tango;
 
@@ -77,7 +77,7 @@ class DeserializationException : Exception
     {
         enforceImpl(
             this, len <= max,
-            Format("Error deserializing '{}' : length {} exceeds limit {}",
+            format("Error deserializing '{}' : length {} exceeds limit {}",
                 S.stringof, len, max),
             file, line
         );
@@ -106,7 +106,7 @@ class DeserializationException : Exception
     {
         enforceImpl(
             this, len >= required,
-            Format("Error deserializing '{}' : input data length {} < required {}",
+            format("Error deserializing '{}' : input data length {} < required {}",
                 S.stringof, len, required),
             file, line
         );

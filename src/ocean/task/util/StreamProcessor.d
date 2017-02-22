@@ -37,7 +37,7 @@ import ocean.task.Scheduler;
 
 import ocean.core.Traits;
 import ocean.core.Enforce;
-import ocean.text.convert.Format;
+import ocean.text.convert.Formatter;
 import ocean.io.model.ISuspendable;
 import ocean.io.model.ISuspendableThrottler;
 
@@ -183,7 +183,7 @@ class StreamProcessor ( TaskT : Task )
             enforce(
                 this.throttler_failure_e,
                 throttler_config.suspend_point < total,
-                Format(
+                format(
                     "Trying to configure StreamProcessor with suspend point ({}) " ~
                         "larger or equal to task queue size {}",
                     throttler_config.suspend_point, total
@@ -197,7 +197,7 @@ class StreamProcessor ( TaskT : Task )
             enforce(
                 this.throttler_failure_e,
                 throttler_config.resume_point < total,
-                Format(
+                format(
                     "Trying to configure StreamProcessor with resume point ({}) " ~
                         "larger or equal to task queue size {}",
                     throttler_config.resume_point, total
@@ -264,7 +264,7 @@ class StreamProcessor ( TaskT : Task )
             enforce(
                 this.throttler_failure_e,
                 suspend_point < total,
-                Format(
+                format(
                     "Trying to configure StreamProcessor with suspend point ({}) " ~
                         "larger or equal to task queue size {}",
                     suspend_point, total
@@ -278,7 +278,7 @@ class StreamProcessor ( TaskT : Task )
             enforce(
                 this.throttler_failure_e,
                 resume_point < total,
-                Format(
+                format(
                     "Trying to configure StreamProcessor with resume point ({}) " ~
                         "larger or equal to task queue size {}",
                     resume_point, total
@@ -289,7 +289,7 @@ class StreamProcessor ( TaskT : Task )
         enforce(
             this.throttler_failure_e,
             max_tasks < total,
-            Format(
+            format(
                 "Trying to configure StreamProcessor task pool size ({}) " ~
                     " larger than max total task queue size {}",
                 max_tasks, total
