@@ -582,7 +582,7 @@ private scope class UnitTestRunner
     private cstring convert ( T ) ( T val, cstring fmt = "{}" )
     {
         this.buf.length = 0;
-
+        enableStomping(this.buf);
         return sformat(this.buf, fmt, val);
     }
 
