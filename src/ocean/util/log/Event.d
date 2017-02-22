@@ -30,7 +30,7 @@ import ocean.util.log.model.ILogger;
 import ocean.util.log.Log;
 
 ///
-package struct LogEvent
+public struct LogEvent
 {
     private cstring         msg_, name_;
     private Time            time_;
