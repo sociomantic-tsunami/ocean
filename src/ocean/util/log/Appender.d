@@ -71,13 +71,9 @@ public class Appender
     /// Create an Appender and default its layout to LayoutTimer.
     this ()
     {
+        if (generic is null)
+            generic = new LayoutTimer;
         layout_ = generic;
-    }
-
-    /// Create an Appender and default its layout to LayoutTimer.
-    static this ()
-    {
-        generic = new LayoutTimer;
     }
 
     /// Return the current Level setting
@@ -133,6 +129,7 @@ public class Appender
 
     void layout (Layout how)
     {
+        assert(generic !is null);
         layout_ = how ? how : generic;
     }
 
