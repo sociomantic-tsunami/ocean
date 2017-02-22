@@ -1398,7 +1398,7 @@ private struct DelimFruct(T)
 
 ******************************************************************************/
 
-private struct PatternFruct(T)
+public struct PatternFruct(T)
 {
         private T[] src, sub;
         private Const!(Unqual!(T))[] pattern;

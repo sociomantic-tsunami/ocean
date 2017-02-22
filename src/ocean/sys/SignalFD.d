@@ -181,7 +181,7 @@ public class SignalFD : ISelectable
 
     ***************************************************************************/
 
-    private static class SignalErrnoException : ErrnoException { }
+    public static class SignalErrnoException : ErrnoException { }
 
 
     /***************************************************************************

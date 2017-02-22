@@ -92,7 +92,7 @@ class TaskPool ( TaskT : Task ) : ObjectPool!(Task)
 
     ***************************************************************************/
 
-    private class OwnedTask : TaskT
+    protected class OwnedTask : TaskT
     {
         /***********************************************************************
 

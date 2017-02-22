@@ -112,7 +112,7 @@ class Device : Conduit, ISelectable
 
                 ***************************************************************/
 
-                protected void reopen (Handle handle)
+                public void reopen (Handle handle)
                 {
                         this.handle = handle;
                 }
