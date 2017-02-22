@@ -38,7 +38,7 @@ import ocean.core.array.DefaultPredicates;
 version (UnitTest)
 {
     import ocean.core.Test;
-    import ocean.text.convert.Format;
+    import ocean.text.convert.Formatter;
 }
 
 /*******************************************************************************
@@ -270,7 +270,7 @@ unittest
         char element, size_t num, int line = __LINE__ )
     {
         auto array = _array.dup;
-        auto t = new NamedTest(Format("moveToEnd.testOne:{}", line));
+        auto t = new NamedTest(format("moveToEnd.testOne:{}", line));
         t.test!("==")(moveToEnd(array, element), num);
         foreach (pos, cur; array)
             t.test(pos < num ? cur != element : cur == element);
@@ -357,7 +357,7 @@ unittest
         bool delegate(char) dg, size_t num, int line = __LINE__ )
     {
         auto array = _array.dup;
-        auto t = new NamedTest(Format("removeIf.testOne:{}", line));
+        auto t = new NamedTest(format("removeIf.testOne:{}", line));
         t.test!("==")(removeIf( array, dg ), num);
         foreach (pos, cur; array)
             t.test(pos < num ? !dg( cur ) : dg( cur ));
@@ -457,7 +457,7 @@ unittest
         cstring expected, int line = __LINE__ )
     {
         auto array = _array.dup;
-        auto t = new NamedTest(Format("distinct.testOne:{}", line));
+        auto t = new NamedTest(format("distinct.testOne:{}", line));
         t.test!("==")(distinct(array), expected.length);
         t.test!("==")(array[0 .. expected.length], expected);
     }
@@ -552,7 +552,7 @@ unittest
         bool delegate(char) dg, size_t num, int line = __LINE__ )
     {
         auto array = _array.dup;
-        auto t = new NamedTest(Format("partition.testOne:{}", line));
+        auto t = new NamedTest(format("partition.testOne:{}", line));
         t.test!("==")(partition(array, dg), num);
         for ( size_t pos = 0; pos < array.length; ++pos )
             t.test( pos < num ? dg( array[pos] ) : !dg( array[pos] ) );
@@ -755,7 +755,7 @@ unittest
     static void testOne ( cstring _array, int line = __LINE__ )
     {
         auto array = _array.dup;
-        auto t = new NamedTest(Format("sort.testOne:{}", line));
+        auto t = new NamedTest(format("sort.testOne:{}", line));
         sort( array );
         for ( ptrdiff_t i = 0; i + 1 < array.length; ++ i )
             t.test!(">=")(array[i+1], array[i]);

@@ -31,7 +31,7 @@ import ocean.transition;
 
 version ( UnitTest )
 {
-    import ocean.text.convert.Format;
+    import ocean.text.convert.Formatter;
     import ocean.core.Test;
 }
 
@@ -115,7 +115,7 @@ public struct Range ( T )
             // useful for test!("==")
             public istring toString ()
             {
-                return Format.convert("<{}|{}>", this.value, cast(char)('A' + this.owner_index));
+                return format("<{}|{}>", this.value, cast(char)('A' + this.owner_index));
             }
         }
     }
@@ -224,7 +224,7 @@ public struct Range ( T )
     {
         public istring toString()
         {
-            auto msg = Format.convert("{}({}, {}", This.stringof, this.min_, this.max_);
+            auto msg = format("{}({}, {}", This.stringof, this.min_, this.max_);
 
             if (this.is_empty)
             {

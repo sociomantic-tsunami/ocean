@@ -19,7 +19,7 @@ module ocean.task.ThrottledTaskPool;
 import ocean.task.TaskPool;
 import ocean.task.Task;
 import ocean.task.Scheduler;
-import ocean.text.convert.Format;
+import ocean.text.convert.Formatter;
 
 import ocean.io.model.ISuspendableThrottler;
 import ocean.util.container.pool.model.IPoolInfo;
@@ -130,12 +130,12 @@ public class ThrottledTaskPool ( TaskT ) : TaskPool!(TaskT)
     {
         auto total = theScheduler.getStats().task_queue_total;
 
-        enforce(suspend_point < total, Format(
+        enforce(suspend_point < total, format(
             "Trying to configure ThrottledTaskPool with suspend point ({}) " ~
                 "larger or equal to task queue size {}",
             suspend_point, total));
 
-        enforce(resume_point < total, Format(
+        enforce(resume_point < total, format(
             "Trying to configure ThrottledTaskPool with suspend point ({}) " ~
                 "larger or equal to task queue size {}",
             suspend_point, total));

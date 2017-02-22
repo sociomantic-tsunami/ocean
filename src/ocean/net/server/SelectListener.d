@@ -38,7 +38,7 @@ import ocean.net.server.connpool.ISelectListenerPoolInfo;
 
 import ocean.util.container.pool.model.IPoolInfo;
 
-import ocean.text.convert.Format;
+import ocean.text.convert.Formatter;
 
 import ocean.stdc.errno:            errno;
 
@@ -563,7 +563,7 @@ public class SelectListener ( T : IConnectionHandler, Args ... ) : ISelectListen
         foreach ( i, conn; conns )
         {
             this.connection_log_buf.length = 0;
-            Format.format(this.connection_log_buf, "{}: ", i);
+            sformat(this.connection_log_buf, "{}: ", i);
 
             conn.formatInfo(this.connection_log_buf);
 
