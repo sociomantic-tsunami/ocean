@@ -32,8 +32,6 @@ import ocean.io.select.protocol.generic.ErrnoIOException: SocketError;
 
 import ocean.io.device.IODevice: IInputDevice, IOutputDevice;
 
-import ocean.text.convert.Format;
-
 import ocean.io.model.IConduit: ISelectable;
 
 debug ( ConnectionHandler ) import ocean.io.Stdout : Stderr;
