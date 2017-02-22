@@ -51,10 +51,13 @@ public abstract class DaemonApp : Application,
         IArgumentsExtExtension, IConfigExtExtension, ILogExtExtension,
         ISignalExtExtension
 {
-    import ocean.util.config.ConfigParser : ConfigParser;
+    static import ocean.text.Arguments;
+    public alias ocean.text.Arguments.Arguments Arguments;
+    static import ocean.util.config.ConfigParser;
+    public alias ocean.util.config.ConfigParser.ConfigParser ConfigParser;
+
     import ocean.util.log.Stats;
     import ocean.io.select.EpollSelectDispatcher;
-    import ocean.text.Arguments : Arguments;
     import ocean.task.Scheduler;
     import ocean.sys.Stats;
 
