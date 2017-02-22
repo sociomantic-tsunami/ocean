@@ -261,7 +261,7 @@ template ConvertMethod(Serializer, Deserializer)
 
     ***************************************************************************/
 
-    private DeserializerReturnType!(Deserializer, S) convert(S, Source)
+    public DeserializerReturnType!(Deserializer, S) convert(S, Source)
         (ref void[] buffer)
     {
         scope(exit)
