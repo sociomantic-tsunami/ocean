@@ -15,7 +15,7 @@
 
 *******************************************************************************/
 
-module ocean.text.xml.DocTester;
+deprecated module ocean.text.xml.DocTester;
 
 import ocean.core.Exception_tango;
 
@@ -31,7 +31,7 @@ import ocean.text.convert.Format;
 
 *******************************************************************************/
 
-protected class DocTester(T)
+deprecated protected class DocTester(T)
 {
         private alias Document!(T) Doc;         /// the typed document
         private alias Doc.Node     Node;        /// generic document node
