@@ -34,6 +34,8 @@ import ocean.io.device.IODevice: IInputDevice, IOutputDevice;
 
 import ocean.io.model.IConduit: ISelectable;
 
+import ocean.sys.socket.model.ISocket;
+
 debug ( ConnectionHandler ) import ocean.io.Stdout : Stderr;
 
 
@@ -46,8 +48,6 @@ debug ( ConnectionHandler ) import ocean.io.Stdout : Stderr;
 abstract class IConnectionHandler : IConnectionHandlerInfo,
     IAdvancedSelectClient.IErrorReporter
 {
-    protected import ocean.sys.socket.model.ISocket;
-
     /***************************************************************************
 
         Object pool index.

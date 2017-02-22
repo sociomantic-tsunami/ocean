@@ -52,12 +52,13 @@ import ocean.transition;
 
 import ocean.stdc.posix.sys.socket: sockaddr;
 
-import ocean.stdc.posix.netinet.in_:
+import core.sys.posix.netinet.in_ :
            sockaddr_in,  AF_INET,  INET_ADDRSTRLEN,  INADDR_ANY,
            sockaddr_in6, AF_INET6, INET6_ADDRSTRLEN;
 
+import core.sys.posix.netdb;
 
-import ocean.stdc.posix.arpa.inet: inet_ntop, inet_pton, ntohs, htons, htonl;
+import core.sys.posix.arpa.inet: inet_ntop, inet_pton, ntohs, htons, htonl;
 
 import core.stdc.string: strlen;
 
@@ -88,8 +89,6 @@ public enum GetNameInfoFlags : int
 
 struct InetAddress ( bool IPv6 = false )
 {
-    import core.sys.posix.netdb;
-
     /**************************************************************************
 
         Constants and aliases.

@@ -29,6 +29,7 @@ module ocean.util.app.ext.UnixSocketExt;
 import ocean.transition;
 
 import ocean.core.Enforce;
+import ocean.io.select.EpollSelectDispatcher;
 import ocean.util.app.model.IApplication;
 import ocean.util.app.model.IApplicationExtension;
 import ocean.util.app.ext.model.IConfigExtExtension;
@@ -38,7 +39,6 @@ public class UnixSocketExt : IApplicationExtension, IConfigExtExtension
 {
     import ocean.core.Buffer;
     import ocean.core.array.Transformation: split;
-    import ocean.io.select.EpollSelectDispatcher;
     import ocean.net.server.unix.UnixListener;
     import ocean.util.config.ConfigParser;
 

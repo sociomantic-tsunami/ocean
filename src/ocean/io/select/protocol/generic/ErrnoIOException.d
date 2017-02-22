@@ -137,6 +137,7 @@ class IOError : IOWarning
 
 class SocketError : IOError
 {
+    import ocean.sys.socket.model.ISocket : ISelectable;
     import ocean.sys.socket.model.ISocket;
 
     /**************************************************************************
