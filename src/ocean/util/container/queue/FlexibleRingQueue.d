@@ -873,7 +873,7 @@ unittest
 
     assert(queue.push(cast(ubyte[])"Element 1"));
     assert(queue.pop() == cast(ubyte[])"Element 1");
-    assert(queue.items == 0);
+    assert(queue.get_items == 0);
     assert(!queue.free_space == 0);
     assert(queue.is_empty);
     assert(queue.used_space() == 0);
@@ -902,8 +902,8 @@ unittest
     middle.push(cast(ubyte[])"3");
     middle.push(cast(ubyte[])"4");
     assert(middle.pop == cast(ubyte[])"1");
-    assert(middle.read_from == 1 + FlexibleByteRingQueue.Header.sizeof);
-    assert(middle.write_to == (1+FlexibleByteRingQueue.Header.sizeof)*4);
+    assert(middle.get_read_from == 1 + FlexibleByteRingQueue.Header.sizeof);
+    assert(middle.get_write_to == (1+FlexibleByteRingQueue.Header.sizeof)*4);
     assert(middle.free_space() == (1+FlexibleByteRingQueue.Header.sizeof)*2);
 
     assert(middle.push(cast(ubyte[])"5"));
@@ -961,7 +961,7 @@ unittest
 
     assert(queue.push(cast(ubyte[])"Element 1"));
     assert(queue.pop() == cast(ubyte[])"Element 1");
-    assert(queue.items == 0);
+    assert(queue.get_items == 0);
     assert(!queue.free_space == 0);
     assert(queue.is_empty);
     assert(queue.used_space() == 0);
@@ -996,8 +996,8 @@ unittest
     middle.push(cast(ubyte[])"3");
     middle.push(cast(ubyte[])"4");
     assert(middle.pop == cast(ubyte[])"1");
-    assert(middle.read_from == 1 + FlexibleByteRingQueue.Header.sizeof);
-    assert(middle.write_to == (1+FlexibleByteRingQueue.Header.sizeof)*4);
+    assert(middle.get_read_from == 1 + FlexibleByteRingQueue.Header.sizeof);
+    assert(middle.get_write_to == (1+FlexibleByteRingQueue.Header.sizeof)*4);
     assert(middle.free_space() == (1+FlexibleByteRingQueue.Header.sizeof)*2);
 
     // Save and restore the queue status in the middle of a test.
@@ -1070,7 +1070,7 @@ unittest
 
                 // Save and restore the queue status after wrapping around.
 
-                if (q.write_to <= q.read_from) switch (save)
+                if (q.get_write_to <= q.get_read_from) switch (save)
                 {
                     case save.Dont: break;
 
@@ -1156,17 +1156,17 @@ unittest
     {
         scope queue = new FlexibleByteRingQueue((1+FlexibleByteRingQueue.Header.sizeof)*3);
 
-        assert(queue.read_from == 0);
-        assert(queue.write_to == 0);
+        assert(queue.get_read_from == 0);
+        assert(queue.get_write_to == 0);
         // [___] r=0 w=0
         assert(queue.push(cast(ubyte[])"1"));
 
-        assert(queue.read_from == 0);
-        assert(queue.write_to == 1+FlexibleByteRingQueue.Header.sizeof);
-        assert(queue.items == 1);
-        assert((cast(FlexibleByteRingQueue.Header*) queue.data.ptr).length == 1);
+        assert(queue.get_read_from == 0);
+        assert(queue.get_write_to == 1+FlexibleByteRingQueue.Header.sizeof);
+        assert(queue.get_items == 1);
+        assert((cast(FlexibleByteRingQueue.Header*) queue.get_data.ptr).length == 1);
 
-        assert(queue.data[FlexibleByteRingQueue.Header.sizeof ..
+        assert(queue.get_data[FlexibleByteRingQueue.Header.sizeof ..
                           1+FlexibleByteRingQueue.Header.sizeof] ==
                               cast(ubyte[]) "1");
 
@@ -1187,12 +1187,12 @@ unittest
 
         // [__#] r=10 w=15
         assert(queue.free_space() == (1+FlexibleByteRingQueue.Header.sizeof)*2);
-        assert(queue.write_to == queue.data.length);
+        assert(queue.get_write_to == queue.get_data.length);
         assert(queue.push(cast(ubyte[])"1"));
 
         // [#_#] r=10 w=5
         assert(queue.free_space() == 1+FlexibleByteRingQueue.Header.sizeof);
-        assert(queue.write_to == queue.pushSize("2".length));
+        assert(queue.get_write_to == queue.pushSize("2".length));
         assert(queue.push(cast(ubyte[])"2"));
        // Stdout.formatln("gap is {}, free is {}, write is {}", queue.gap, queue.free_space(),queue.write_to);
 
@@ -1250,9 +1250,9 @@ unittest
     auto test_push = cast(ubyte[])"123456789.....16";
 
     // Make sure the bugs conditions are present
-    test!(">")(q.read_from, q.write_to);
-    test!("<")(q.read_from, q.gap);
-    test!(">")(q.pushSize(test_push.length) + q.write_to, q.data.length);
+    test!(">")(q.get_read_from, q.get_write_to);
+    test!("<")(q.get_read_from, q.gap);
+    test!(">")(q.pushSize(test_push.length) + q.get_write_to, q.get_data.length);
 
     // Do the actual test
     test(!q.push(test_push));

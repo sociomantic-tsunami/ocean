@@ -45,6 +45,11 @@ public abstract class IRingQueue ( IBaseQueue ) : IBaseQueue
 
     protected ubyte[] data;
 
+    version (UnitTest)
+    public ubyte[] get_data ()
+    {
+        return this.data;
+    }
 
     /***************************************************************************
 
@@ -54,7 +59,19 @@ public abstract class IRingQueue ( IBaseQueue ) : IBaseQueue
 
     protected size_t write_to = 0;
 
+    version (UnitTest)
+    public size_t get_write_to ()
+    {
+        return this.write_to;
+    }
+
     protected size_t read_from = 0;
+
+    version (UnitTest)
+    public size_t get_read_from ()
+    {
+        return this.read_from;
+    }
 
 
     /***************************************************************************
@@ -65,6 +82,11 @@ public abstract class IRingQueue ( IBaseQueue ) : IBaseQueue
 
     protected uint items = 0;
 
+    version (UnitTest)
+    public size_t get_items ()
+    {
+        return this.items;
+    }
 
     /***************************************************************************
 
