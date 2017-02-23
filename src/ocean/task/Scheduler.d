@@ -30,6 +30,7 @@ import core.thread;
 
 import ocean.transition;
 import ocean.core.Enforce;
+import ocean.core.array.Mutation : reverse;
 import ocean.io.select.EpollSelectDispatcher;
 import ocean.util.container.queue.FixedRingQueue;
 
@@ -480,7 +481,7 @@ final class Scheduler
             debug_trace("Calling {} termination_hooks for task <{}>",
                 task.termination_hooks.length, cast(void*) task);
 
-            auto hooks = task.termination_hooks[];
+            auto hooks = reverse(task.termination_hooks[]);
             task.termination_hooks.reset();
 
             foreach (hook; hooks)
@@ -658,6 +659,37 @@ unittest
 
     // cleanup remaining state before proceeding to other tests
     theScheduler.eventLoop();
+}
+
+unittest
+{
+    initScheduler(SchedulerConfiguration.init);
+
+    class DummyTask : Task
+    {
+        override public void run ( ) { theScheduler.processEvents(); }
+    }
+
+    int result;
+    auto task = new DummyTask;
+
+    // use dummy dg to pre-allocate memory in hook array
+    void delegate() dummy = { };
+
+    task.terminationHook(dummy);
+    task.terminationHook(dummy);
+    task.removeTerminationHook(dummy);
+
+    // test with real delegates, make sure closure is not allocated in D2
+    testNoAlloc({
+        task.terminationHook({ result = 1; });
+        task.terminationHook({ result = 2; });
+    }());
+
+    theScheduler.schedule(task);
+    theScheduler.eventLoop();
+
+    test!("==")(result, 1);
 }
 
 /*******************************************************************************
