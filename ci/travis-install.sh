@@ -11,7 +11,7 @@ docker build --pull -t "$img" .
 
 # And pushing will also be very fast (done only if there are valid credentials)
 set +x # No peeking of password!
-if test -n "$DOCKER_PASSWORD"
+if test -n "$DOCKER_PASSWORD" -a -z "$TRAVIS_TAG" # Don't push tags
 then
     docker login -u"$DOCKER_USERNAME" -p"$DOCKER_PASSWORD"
     set -x
