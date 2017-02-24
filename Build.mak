@@ -59,7 +59,12 @@ TEST_FILTER_OUT += \
 	$C/src/ocean/sys/linux/tcp.d \
 	$C/src/ocean/sys/linux/termios.d \
 	$C/src/ocean/sys/linux/timerfd.d \
-	$C/src/ocean/sys/linux/tipc.d
+	$C/src/ocean/sys/linux/tipc.d \
+	$C/src/ocean/sys/linux/consts/errno.d \
+	$C/src/ocean/sys/linux/consts/fcntl.d \
+	$C/src/ocean/sys/linux/consts/socket.d \
+	$C/src/ocean/sys/linux/consts/sysctl.d \
+	$C/src/ocean/sys/linux/consts/unistd.d \
 
 # This is an integration test that depends on Collectd -- Don't run it
 TEST_FILTER_OUT += $C/test/collectd/main.d

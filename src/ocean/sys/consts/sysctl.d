@@ -12,6 +12,3 @@
 *******************************************************************************/
 
 module ocean.sys.consts.sysctl;
-
-public import ocean.sys.linux.consts.sysctl;
-

@@ -10,4 +10,4 @@
 *******************************************************************************/
 
 
-module ocean.sys.linux.consts.sysctl;
+deprecated module ocean.sys.linux.consts.sysctl;

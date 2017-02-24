@@ -113,7 +113,7 @@ import ocean.stdc.posix.unistd : read, close;
 
 import ocean.stdc.errno : EAGAIN, EWOULDBLOCK, errno;
 
-import ocean.sys.linux.consts.fcntl : O_NONBLOCK;
+import core.sys.posix.fcntl : O_NONBLOCK;
 
 import ocean.core.Array : contains;
 

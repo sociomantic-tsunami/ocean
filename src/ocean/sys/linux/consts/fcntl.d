@@ -10,6 +10,7 @@
 *******************************************************************************/
 
 
-module ocean.sys.linux.consts.fcntl;
+deprecated module ocean.sys.linux.consts.fcntl;
+pragma(msg, "Please use core.sys.posix.fcntl");
 
 public import core.sys.posix.fcntl;

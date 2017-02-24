@@ -100,7 +100,7 @@ import ocean.stdc.posix.sys.un;
 import ocean.stdc.time; // time
 import ocean.stdc.posix.sys.types; // time_t
 import ocean.sys.ErrnoException;
-import ocean.sys.linux.consts.socket;  // SOCK_DGRAM
+import core.sys.posix.sys.socket;  // SOCK_DGRAM
 import ocean.sys.socket.UnixSocket;
 import ocean.text.Util;
 import Float = ocean.text.convert.Float;
