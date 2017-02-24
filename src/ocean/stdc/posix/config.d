@@ -12,6 +12,7 @@
 *******************************************************************************/
 
 
-module ocean.stdc.posix.config;
+deprecated module ocean.stdc.posix.config;
+pragma(msg, "Please use core.sys.posix.config instead.");
 
 public import core.sys.posix.config;

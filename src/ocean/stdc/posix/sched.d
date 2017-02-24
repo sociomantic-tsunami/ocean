@@ -12,6 +12,7 @@
 *******************************************************************************/
 
 
-module ocean.stdc.posix.sched;
+deprecated module ocean.stdc.posix.sched;
+pragma(msg, "Please use core.sys.posix.sched instead.");
 
 public import core.sys.posix.sched;

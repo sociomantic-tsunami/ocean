@@ -57,9 +57,9 @@ import ocean.transition;
 *******************************************************************************/
 
 import ocean.stdc.string: strdup, strlen, strncmp;
-import ocean.stdc.posix.unistd: unlink;
-import ocean.stdc.posix.libgen: basename;
-import ocean.stdc.posix.sys.time: gettimeofday, timeval, timersub;
+import core.sys.posix.unistd: unlink;
+import core.sys.posix.libgen: basename;
+import core.sys.posix.sys.time: gettimeofday, timeval, timersub;
 import ocean.core.Runtime: Runtime;
 import ocean.core.Exception_tango : AssertException;
 import ocean.io.Stdout_tango: Stdout, Stderr;

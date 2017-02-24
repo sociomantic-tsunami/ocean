@@ -834,7 +834,7 @@ unittest
 version (UnitTest)
 {
     import ocean.stdc.posix.fcntl: O_NONBLOCK;
-    import ocean.stdc.posix.unistd: write, close;
+    import core.sys.posix.unistd: write, close;
     import ocean.sys.ErrnoException;
     import ocean.task.Scheduler;
     import ocean.core.Test;

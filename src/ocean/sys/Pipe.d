@@ -24,7 +24,7 @@ import ocean.core.Exception_tango;
 
 version (Posix)
 {
-    import ocean.stdc.posix.unistd;
+    import core.sys.posix.unistd;
 }
 
 debug (PipeConduit)

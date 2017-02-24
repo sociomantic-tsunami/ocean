@@ -41,7 +41,7 @@ import ocean.io.model.IConduit;
 import ocean.util.log.Appender;
 import ocean.util.log.Event;
 
-import ocean.stdc.posix.signal;
+import core.sys.posix.signal;
 
 
 /*******************************************************************************

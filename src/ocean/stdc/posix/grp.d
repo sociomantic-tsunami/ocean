@@ -12,6 +12,7 @@
 *******************************************************************************/
 
 
-module ocean.stdc.posix.grp;
+deprecated module ocean.stdc.posix.grp;
+pragma(msg, "Please use core.sys.posix.grp instead.");
 
 public import core.sys.posix.grp;

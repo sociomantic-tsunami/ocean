@@ -86,7 +86,26 @@ TEST_FILTER_OUT += \
 	$C/src/ocean/stdc/stdlib.d \
 	$C/src/ocean/stdc/tgmath.d \
 	$C/src/ocean/stdc/time.d \
-	$C/src/ocean/stdc/wctype.d
+	$C/src/ocean/stdc/wctype.d \
+	$C/src/ocean/stdc/posix/config.d \
+	$C/src/ocean/stdc/posix/dirent.d \
+	$C/src/ocean/stdc/posix/dlfcn.d \
+	$C/src/ocean/stdc/posix/grp.d \
+	$C/src/ocean/stdc/posix/inttypes.d \
+	$C/src/ocean/stdc/posix/libgen.d \
+	$C/src/ocean/stdc/posix/poll.d \
+	$C/src/ocean/stdc/posix/pthread.d \
+	$C/src/ocean/stdc/posix/pwd.d \
+	$C/src/ocean/stdc/posix/sched.d \
+	$C/src/ocean/stdc/posix/semaphore.d \
+	$C/src/ocean/stdc/posix/setjmp.d \
+	$C/src/ocean/stdc/posix/signal.d \
+	$C/src/ocean/stdc/posix/stdio.d \
+	$C/src/ocean/stdc/posix/termios.d \
+	$C/src/ocean/stdc/posix/time.d \
+	$C/src/ocean/stdc/posix/ucontext.d \
+	$C/src/ocean/stdc/posix/unistd.d \
+	$C/src/ocean/stdc/posix/utime.d
 
 
 # This is an integration test that depends on Collectd -- Don't run it

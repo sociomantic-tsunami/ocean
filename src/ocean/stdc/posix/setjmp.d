@@ -12,6 +12,7 @@
 *******************************************************************************/
 
 
-module ocean.stdc.posix.setjmp;
+deprecated module ocean.stdc.posix.setjmp;
+pragma(msg, "Please use core.sys.posix.setjmp instead.");
 
 public import core.sys.posix.setjmp;

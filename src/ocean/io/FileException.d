@@ -112,7 +112,7 @@ class FileException : ErrnoException
 
 version (UnitTest)
 {
-    import ocean.stdc.posix.stdio;
+    import core.sys.posix.stdio;
     import ocean.core.Test;
 }
 

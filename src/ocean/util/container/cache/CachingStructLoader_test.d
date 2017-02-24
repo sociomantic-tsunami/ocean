@@ -29,7 +29,7 @@ import ocean.util.serialize.contiguous.package_;
 import ocean.io.select.EpollSelectDispatcher,
        ocean.io.select.client.TimerEvent;
 
-import ocean.stdc.posix.time;
+import core.sys.posix.time;
 
 version (UnitTest)
 {

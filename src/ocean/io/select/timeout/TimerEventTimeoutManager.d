@@ -48,7 +48,7 @@ import ocean.io.select.client.TimerEvent;
 
 import ocean.io.select.client.model.ISelectClient;
 
-import ocean.stdc.posix.time: time_t, timespec;
+import core.sys.posix.time: time_t, timespec;
 
 debug
 {

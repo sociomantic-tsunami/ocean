@@ -12,6 +12,7 @@
 *******************************************************************************/
 
 
-module ocean.stdc.posix.semaphore;
+deprecated module ocean.stdc.posix.semaphore;
+pragma(msg, "Please use core.sys.posix.semaphore instead.");
 
 public import core.sys.posix.semaphore;

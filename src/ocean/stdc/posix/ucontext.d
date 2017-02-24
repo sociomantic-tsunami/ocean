@@ -12,6 +12,7 @@
 *******************************************************************************/
 
 
-module ocean.stdc.posix.ucontext;
+deprecated module ocean.stdc.posix.ucontext;
+pragma(msg, "Please use core.sys.posix.ucontext instead.");
 
 public import core.sys.posix.ucontext;

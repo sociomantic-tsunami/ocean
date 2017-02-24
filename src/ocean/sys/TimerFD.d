@@ -29,11 +29,11 @@ import ocean.core.Traits;
 
 import ocean.io.model.IConduit: ISelectable;
 
-import ocean.stdc.posix.time: time_t, timespec, itimerspec, CLOCK_REALTIME;
+import core.sys.posix.time: time_t, timespec, itimerspec, CLOCK_REALTIME;
 
 import ocean.stdc.posix.sys.types: ssize_t;
 
-import ocean.stdc.posix.unistd: read, close;
+import core.sys.posix.unistd: read, close;
 
 import core.stdc.errno: EAGAIN, EWOULDBLOCK, errno;
 

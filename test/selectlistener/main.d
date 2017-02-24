@@ -31,7 +31,7 @@ import ocean.io.select.EpollSelectDispatcher;
 import core.stdc.errno: ECONNREFUSED;
 import ocean.stdc.posix.sys.types : pid_t;
 import ocean.stdc.posix.sys.wait: waitpid;
-import ocean.stdc.posix.unistd: fork, unlink;
+import core.sys.posix.unistd: fork, unlink;
 import ocean.time.timeout.TimeoutManager;
 import ocean.sys.socket.UnixSocket;
 import ocean.stdc.posix.sys.un;

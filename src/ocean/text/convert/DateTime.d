@@ -29,7 +29,7 @@ import core.stdc.stdio : sscanf;
 
 import ocean.stdc.posix.sys.stat;
 
-import ocean.stdc.posix.time;
+import core.sys.posix.time;
 
 import ocean.text.Unicode;
 

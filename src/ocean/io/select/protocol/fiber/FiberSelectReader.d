@@ -575,7 +575,7 @@ version (UnitTest)
 {
     import ocean.io.select.client.model.ISelectClient;
     import ocean.io.select.fiber.SelectFiber;
-    import ocean.stdc.posix.stdlib;
+    import core.sys.posix.stdlib;
     import ocean.core.Test;
     import ocean.transition;
 }

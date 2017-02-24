@@ -36,8 +36,8 @@ import ocean.io.Path : standard, native;
 version (Posix)
         {
         import ocean.stdc.string;
-        import ocean.stdc.posix.unistd,
-                       ocean.stdc.posix.sys.statvfs;
+        import core.sys.posix.unistd,
+                       core.sys.posix.sys.statvfs;
 
         import ocean.io.device.File;
         import Integer = ocean.text.convert.Integer_tango;

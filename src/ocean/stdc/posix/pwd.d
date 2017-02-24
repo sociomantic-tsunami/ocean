@@ -12,6 +12,7 @@
 *******************************************************************************/
 
 
-module ocean.stdc.posix.pwd;
+deprecated module ocean.stdc.posix.pwd;
+pragma(msg, "Please use core.sys.posix.pwd instead.");
 
 public import core.sys.posix.pwd;

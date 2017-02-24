@@ -54,7 +54,7 @@ else
     }
 }
 
-import ocean.stdc.posix.stdlib;
+import core.sys.posix.stdlib;
 import ocean.stdc.string;
 
 /*******************************************************************************
@@ -217,7 +217,7 @@ struct Environment
                         tmp [path.length] = 0;
                         tmp[0..path.length] = path;
 
-                        if (ocean.stdc.posix.unistd.chdir (tmp.ptr))
+                        if (core.sys.posix.unistd.chdir (tmp.ptr))
                             exception ("Failed to set current directory");
                 }
 
@@ -231,7 +231,7 @@ struct Environment
                 {
                         char[512] tmp = void;
 
-                        char *s = ocean.stdc.posix.unistd.getcwd (tmp.ptr, tmp.length);
+                        char *s = core.sys.posix.unistd.getcwd (tmp.ptr, tmp.length);
                         if (s is null)
                             exception ("Failed to get current directory");
 

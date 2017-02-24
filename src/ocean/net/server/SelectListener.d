@@ -75,7 +75,7 @@ abstract class ISelectListener : ISelectClient
     import ocean.stdc.posix.sys.socket: accept, SOL_SOCKET, SO_ERROR,
                                         SO_REUSEADDR, sockaddr;
     import ocean.stdc.posix.netinet.in_: SOCK_STREAM;
-    import ocean.stdc.posix.unistd:     close;
+    import core.sys.posix.unistd:     close;
 
     /**************************************************************************
 

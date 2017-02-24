@@ -27,7 +27,7 @@ import ocean.stdc.posix.sys.socket;
 
 import ocean.stdc.posix.netinet.in_: AF_INET, AF_INET6, IPPROTO_TCP;
 
-import ocean.stdc.posix.unistd: close;
+import core.sys.posix.unistd: close;
 
 import ocean.stdc.posix.sys.types: ssize_t;
 

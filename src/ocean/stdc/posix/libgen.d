@@ -15,9 +15,7 @@
  * Standards: The Open Group Base Specifications Issue 6, IEEE Std 1003.1, 2004 Edition
  *
  */
-module ocean.stdc.posix.libgen;
+deprecated module ocean.stdc.posix.libgen;
+pragma(msg, "Please use core.sys.posix.libgen instead.");
 
-extern (C):
-
-char* basename(char*);
-char* dirname(char*);
+public import core.sys.posix.libgen;

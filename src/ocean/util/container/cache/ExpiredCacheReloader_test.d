@@ -30,7 +30,7 @@ import ocean.io.select.EpollSelectDispatcher,
 
 import ocean.core.Test;
 
-import ocean.stdc.posix.time;
+import core.sys.posix.time;
 
 /******************************************************************************
 

@@ -23,7 +23,7 @@ module ocean.time.MicrosecondsClock;
 
 import ocean.time.Time;
 import ocean.stdc.posix.sys.time: timeval, gettimeofday;
-import ocean.stdc.posix.time: gmtime_r, localtime_r;
+import core.sys.posix.time: gmtime_r, localtime_r;
 import core.stdc.time: tm, time_t;
 import ocean.core.TypeConvert;
 

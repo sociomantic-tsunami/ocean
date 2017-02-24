@@ -209,7 +209,7 @@ public abstract class DaemonApp : Application,
 
     public static struct OptionalSettings
     {
-        import ocean.stdc.posix.signal : SIGHUP;
+        import core.sys.posix.signal : SIGHUP;
 
         /***********************************************************************
 
@@ -687,7 +687,7 @@ unittest
 
     class MyApp : DaemonApp
     {
-        import ocean.stdc.posix.signal: SIGINT, SIGTERM;
+        import core.sys.posix.signal: SIGINT, SIGTERM;
 
         import ocean.io.select.EpollSelectDispatcher;
 

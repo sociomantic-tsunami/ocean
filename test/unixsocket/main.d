@@ -30,7 +30,7 @@ import ocean.transition;
 import ocean.stdc.posix.sys.socket;
 import ocean.stdc.posix.sys.un;
 import ocean.stdc.posix.sys.wait;
-import ocean.stdc.posix.unistd;
+import core.sys.posix.unistd;
 import ocean.stdc.posix.stdlib : mkdtemp;
 import core.stdc.stdio;
 import ocean.math.Math;

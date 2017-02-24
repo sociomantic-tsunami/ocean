@@ -121,7 +121,7 @@ import core.stdc.errno;
 
 import ocean.util.log.Log;
 
-import ocean.stdc.posix.signal : SIGCHLD;
+import core.sys.posix.signal : SIGCHLD;
 
 
 

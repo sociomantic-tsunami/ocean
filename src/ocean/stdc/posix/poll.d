@@ -12,6 +12,7 @@
 *******************************************************************************/
 
 
-module ocean.stdc.posix.poll;
+deprecated module ocean.stdc.posix.poll;
+pragma(msg, "Please use core.sys.posix.poll instead.");
 
 public import core.sys.posix.poll;

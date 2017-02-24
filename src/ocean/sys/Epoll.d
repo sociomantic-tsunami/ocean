@@ -22,7 +22,7 @@ module ocean.sys.Epoll;
  *****************************************************************************/
 
 import ocean.transition;
-import ocean.stdc.posix.unistd: close;
+import core.sys.posix.unistd: close;
 
 /*****************************************************************************
 

@@ -31,10 +31,10 @@ import ocean.sys.SignalMask;
 import ocean.transition;
 import ocean.core.Array : contains;
 
-import ocean.stdc.posix.signal : kill, pid_t, sigaction, sigaction_t,
+import core.sys.posix.signal : kill, pid_t, sigaction, sigaction_t,
     SIGHUP, SIGINT, SIGQUIT, SIGILL, SIGABRT, SIGBUS;
-import ocean.stdc.posix.stdlib : exit;
-import ocean.stdc.posix.unistd : fork;
+import core.sys.posix.stdlib : exit;
+import core.sys.posix.unistd : fork;
 import ocean.stdc.posix.sys.wait : waitpid;
 
 
