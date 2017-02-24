@@ -44,7 +44,7 @@ import ocean.stdc.posix.netinet.in_: sa_family_t, in_port_t, sockaddr_in, sockad
 
 import ocean.stdc.errno;
 
-import consts = ocean.sys.linux.consts.socket;
+import consts = core.sys.posix.sys.socket;
 
 import ocean.stdc.string: strlen;
 

@@ -10,7 +10,8 @@
 *******************************************************************************/
 
 
-module ocean.sys.linux.consts.errno;
+deprecated module ocean.sys.linux.consts.errno;
+pragma(msg, "Please use core.stdc.errno");
 
 public import core.stdc.errno;
 

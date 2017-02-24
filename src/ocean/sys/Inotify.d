@@ -29,7 +29,7 @@ import ocean.text.util.StringC;
 import ocean.sys.ErrnoException;
 
 import core.sys.linux.sys.inotify;
-import ocean.sys.linux.consts.fcntl;
+import core.sys.posix.fcntl;
 
 import ocean.io.model.IConduit: ISelectable;
 

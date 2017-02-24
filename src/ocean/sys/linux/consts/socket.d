@@ -10,6 +10,7 @@
 *******************************************************************************/
 
 
-module ocean.sys.linux.consts.socket;
+deprecated module ocean.sys.linux.consts.socket;
+pragma(msg, "Please use core.sys.posix.sys.socket");
 
 public import core.sys.posix.sys.socket;
