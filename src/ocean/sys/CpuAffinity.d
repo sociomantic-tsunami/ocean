@@ -68,7 +68,7 @@ private extern ( C )
 public struct CpuAffinity
 {
     import ocean.sys.ErrnoException;
-    import ocean.stdc.errno: EINVAL;
+    import core.stdc.errno: EINVAL;
 
 static:
 

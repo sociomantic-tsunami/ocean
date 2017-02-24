@@ -97,7 +97,7 @@ import ocean.core.Enforce;
 import ocean.core.Exception;
 import ocean.core.Traits;
 import ocean.stdc.posix.sys.un;
-import ocean.stdc.time; // time
+import core.stdc.time; // time
 import ocean.stdc.posix.sys.types; // time_t
 import ocean.sys.ErrnoException;
 import core.sys.posix.sys.socket;  // SOCK_DGRAM

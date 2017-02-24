@@ -12,6 +12,7 @@
 *******************************************************************************/
 
 
-module ocean.stdc.stdarg;
+deprecated module ocean.stdc.stdarg;
+pragma(msg, "Please use core.stdc.stdarg instead.");
 
 public import core.stdc.stdarg;

@@ -32,8 +32,8 @@ module ocean.util.container.MallocArray;
 *******************************************************************************/
 
 import ocean.core.Exception_tango; // onOutOfMemoryError;
-import ocean.stdc.stdlib; // malloc, free, realloc;
-import ocean.stdc.string; // memmove;
+import core.stdc.stdlib; // malloc, free, realloc;
+import core.stdc.string; // memmove;
 
 
 /*******************************************************************************

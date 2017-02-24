@@ -35,7 +35,7 @@ import ocean.io.model.IConduit: ISelectable;
 
 import ocean.stdc.posix.sys.types: ssize_t;
 import ocean.stdc.posix.unistd: read, close;
-import ocean.stdc.errno: EAGAIN, EWOULDBLOCK, errno;
+import core.stdc.errno: EAGAIN, EWOULDBLOCK, errno;
 
 
 

@@ -30,7 +30,7 @@ import ocean.transition;
 import ocean.core.Array: concat, copy;
 
 import ocean.stdc.string: strlen, memchr, strcspn;
-import ocean.stdc.ctype: isspace;
+import core.stdc.ctype: isspace;
 
 import ocean.stdc.posix.sys.types: ssize_t;
 

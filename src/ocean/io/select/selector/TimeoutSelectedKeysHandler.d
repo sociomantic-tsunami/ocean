@@ -34,7 +34,7 @@ import ocean.time.timeout.model.ITimeoutManager,
 
 import ocean.util.container.AppendBuffer: AppendBuffer;
 
-import ocean.stdc.stdlib: bsearch, qsort;
+import core.stdc.stdlib: bsearch, qsort;
 
 debug (ISelectClient) import ocean.io.Stdout;
 

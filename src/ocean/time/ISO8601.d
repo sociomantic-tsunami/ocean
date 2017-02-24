@@ -918,7 +918,7 @@ int ms    (FullDate d) { return d.val.time.millis;  }
 
 // Unit tests
 
-debug (Tango_ISO8601_Valgrind) import ocean.stdc.stdlib : malloc, free;
+debug (Tango_ISO8601_Valgrind) import core.stdc.stdlib : malloc, free;
 
 unittest {
     FullDate fd;

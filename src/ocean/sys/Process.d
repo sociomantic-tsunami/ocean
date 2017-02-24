@@ -26,13 +26,13 @@ import ocean.core.Exception_tango;
 import ocean.text.Util;
 import Integer = ocean.text.convert.Integer_tango;
 
-import ocean.stdc.stdlib;
-import ocean.stdc.string;
+import core.stdc.stdlib;
+import core.stdc.string;
 import ocean.stdc.stringz;
 
 version (Posix)
 {
-    import ocean.stdc.errno;
+    import core.stdc.errno;
     import ocean.stdc.posix.fcntl;
     import ocean.stdc.posix.unistd;
     import ocean.stdc.posix.sys.wait;

@@ -25,7 +25,7 @@ import ocean.util.container.cache.model.IExpiringCacheInfo;
 
 import ocean.util.container.cache.Cache;
 
-import ocean.stdc.time: time_t;
+import core.stdc.time: time_t;
 
 version (UnitTest)
 {
@@ -370,7 +370,7 @@ class ExpiringCache ( size_t ValueSize = 0 ) : Cache!(ValueSize, true),
 /******************************************************************************/
 
 import ocean.stdc.posix.stdlib: srand48, mrand48, drand48;
-import ocean.stdc.time: time;
+import core.stdc.time: time;
 
 extern (C) int getpid();
 

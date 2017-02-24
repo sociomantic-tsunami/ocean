@@ -31,8 +31,8 @@ import ocean.transition;
 version (Posix) import ocean.stdc.string: strncasecmp;
 
 import ocean.stdc.string: memmove;
-import ocean.stdc.stdio;
-import ocean.stdc.stdlib;
+import core.stdc.stdio;
+import core.stdc.stdlib;
 
 /******************************************************************************
 

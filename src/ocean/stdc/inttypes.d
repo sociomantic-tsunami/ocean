@@ -15,6 +15,7 @@
  * Standards: ISO/IEC 9899:1999 (E)
  *
  */
-module ocean.stdc.inttypes;
+deprecated module ocean.stdc.inttypes;
+pragma(msg, "Please use core.stdc.inttypes instead.");
 
 public import core.stdc.inttypes;

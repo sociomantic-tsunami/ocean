@@ -12,6 +12,7 @@
 *******************************************************************************/
 
 
-module ocean.stdc.signal;
+deprecated module ocean.stdc.signal;
+pragma(msg, "Please use core.stdc.signal instead.");
 
 public import core.stdc.signal;

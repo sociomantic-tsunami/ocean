@@ -23,7 +23,7 @@ module ocean.net.util.UrlEncoder;
  **************************************************************************/
 
 import ocean.transition;
-import ocean.stdc.ctype: isgraph;
+import core.stdc.ctype: isgraph;
 
 
 /******************************************************************************

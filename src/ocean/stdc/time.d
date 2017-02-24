@@ -12,6 +12,7 @@
 *******************************************************************************/
 
 
-module ocean.stdc.time;
+deprecated module ocean.stdc.time;
+pragma(msg, "Please use core.stdc.time instead.");
 
 public import core.stdc.time;

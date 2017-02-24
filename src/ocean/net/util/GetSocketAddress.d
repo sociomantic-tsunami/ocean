@@ -42,7 +42,7 @@ import ocean.stdc.posix.arpa.inet: ntohs, inet_ntop, INET_ADDRSTRLEN, INET6_ADDR
 
 import ocean.stdc.posix.netinet.in_: sa_family_t, in_port_t, sockaddr_in, sockaddr_in6, in_addr, in6_addr;
 
-import ocean.stdc.errno;
+import core.stdc.errno;
 
 import consts = core.sys.posix.sys.socket;
 
@@ -332,7 +332,7 @@ class GetSocketAddress
 version (UnitTest)
 {
     import ocean.core.Test;
-    import ocean.stdc.errno: EBADF;
+    import core.stdc.errno: EBADF;
 }
 
 unittest

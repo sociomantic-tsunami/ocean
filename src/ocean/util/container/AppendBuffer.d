@@ -30,7 +30,7 @@ module ocean.util.container.AppendBuffer;
 
 import ocean.transition;
 
-import ocean.stdc.stdlib: malloc, realloc, free;
+import core.stdc.stdlib: malloc, realloc, free;
 
 import ocean.core.Exception_tango: onOutOfMemoryError;
 

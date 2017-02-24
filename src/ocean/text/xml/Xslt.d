@@ -44,7 +44,7 @@ import ocean.core.Array;
 import ocean.text.xml.c.LibXml2,
        ocean.text.xml.c.LibXslt;
 
-import ocean.stdc.stdio,
+import core.stdc.stdio,
        ocean.stdc.stdlib;
 
 import ocean.stdc.stdarg;

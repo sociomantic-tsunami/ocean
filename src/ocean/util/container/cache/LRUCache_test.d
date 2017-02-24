@@ -32,8 +32,8 @@ version (UnitTest)
     import ocean.io.Stdout_tango;
     import ocean.stdc.posix.stdlib: srand48, mrand48, drand48;
     import ocean.stdc.posix.unistd: getpid;
-    import ocean.stdc.stdio : printf;
-    import ocean.stdc.time: time_t, time;
+    import core.stdc.stdio : printf;
+    import core.stdc.time: time_t, time;
     import ocean.time.StopWatch;
 }
 

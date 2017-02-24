@@ -61,8 +61,8 @@ import ocean.transition;
 debug
 {
     import ocean.io.Stdout_tango;
-    import ocean.stdc.time: time_t, ctime;
-    import ocean.stdc.string: strlen;
+    import core.stdc.time: time_t, ctime;
+    import core.stdc.string: strlen;
 }
 
 /*******************************************************************************

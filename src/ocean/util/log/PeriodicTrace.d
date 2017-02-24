@@ -84,7 +84,7 @@ import ocean.util.log.StaticTrace;
 
 import ocean.io.Stdout;
 
-import ocean.stdc.stdarg;
+import core.stdc.stdarg;
 
 import ocean.text.convert.Layout_tango;
 

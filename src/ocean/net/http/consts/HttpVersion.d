@@ -22,7 +22,7 @@ module ocean.net.http.consts.HttpVersion;
  ******************************************************************************/
 
 import ocean.transition;
-import ocean.stdc.ctype: isdigit;
+import core.stdc.ctype: isdigit;
 
 
 /******************************************************************************

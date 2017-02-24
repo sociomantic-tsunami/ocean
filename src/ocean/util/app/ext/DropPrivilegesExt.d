@@ -22,11 +22,11 @@ import ocean.util.app.ext.model.IConfigExtExtension;
 import ocean.transition;
 import ocean.stdc.posix.unistd : setuid, setgid;
 import ocean.stdc.posix.pwd;
-import ocean.stdc.string;
+import core.stdc.string;
 import ocean.stdc.stringz;
 import ocean.stdc.posix.grp;
 import ocean.stdc.posix.unistd;
-import ocean.stdc.errno;
+import core.stdc.errno;
 
 /*******************************************************************************
 

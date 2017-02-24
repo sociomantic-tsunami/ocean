@@ -12,6 +12,7 @@
 *******************************************************************************/
 
 
-module ocean.stdc.wctype;
+deprecated module ocean.stdc.wctype;
+pragma(msg, "Please use core.stdc.wctype instead.");
 
 public import core.stdc.wctype;

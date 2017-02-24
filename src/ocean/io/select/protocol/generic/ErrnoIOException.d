@@ -27,7 +27,7 @@ import ocean.sys.ErrnoException;
 
 import ocean.io.model.IConduit: ISelectable;
 
-import ocean.stdc.errno: errno;
+import core.stdc.errno: errno;
 
 /******************************************************************************
 

@@ -54,13 +54,13 @@ version (X86_64){
 version (Naked_D_InlineAsm_X86) {
     // Don't include this extra dependency unless we need to.
     version (UnitTest) {
-        static import ocean.stdc.math;
+        static import core.stdc.math;
     }
 } else {
     // Needed for cos(), sin(), tan() on GNU.
-    static import ocean.stdc.math;
+    static import core.stdc.math;
 }
-static import tsm = ocean.stdc.math;
+static import tsm = core.stdc.math;
 
 // Standard Tango NaN payloads.
 // NOTE: These values may change in future Tango releases
@@ -639,7 +639,7 @@ real ldexp(real n, int exp) /* intrinsic */
     }
     else
     {
-        return ocean.stdc.math.ldexpl(n, exp);
+        return core.stdc.math.ldexpl(n, exp);
     }
 }
 
@@ -697,7 +697,7 @@ int ilogb(real x)
             }
             return e - 0x3FFF;
         } else {
-        return ocean.stdc.math.ilogbl(x);
+        return core.stdc.math.ilogbl(x);
     }
 }
 
@@ -707,8 +707,8 @@ version (X86)
     const int FP_ILOGBNAN      = -int.max-1;
     const int FP_ILOGBINFINITY = -int.max-1;
 } else {
-    alias ocean.stdc.math.FP_ILOGB0   FP_ILOGB0;
-    alias ocean.stdc.math.FP_ILOGBNAN FP_ILOGBNAN;
+    alias core.stdc.math.FP_ILOGB0   FP_ILOGB0;
+    alias core.stdc.math.FP_ILOGBNAN FP_ILOGBNAN;
     const int FP_ILOGBINFINITY = int.max;
 }
 
@@ -749,7 +749,7 @@ real logb(real x)
             fstp ST(0); // drop significand
         }
     } else {
-        return ocean.stdc.math.logbl(x);
+        return core.stdc.math.logbl(x);
     }
 }
 
@@ -786,7 +786,7 @@ real scalbn(real x, int n)
         }
     } else {
         // NOTE: Not implemented in DMD
-        return ocean.stdc.math.scalbnl(x, n);
+        return core.stdc.math.scalbnl(x, n);
     }
 }
 
@@ -835,7 +835,7 @@ real fabs(real x) /* intrinsic */
     }
     else
     {
-        return ocean.stdc.math.fabsl(x);
+        return core.stdc.math.fabsl(x);
     }
 }
 
@@ -873,13 +873,13 @@ creal expi(real y)
     }
     else
     {
-        return ocean.stdc.math.cosl(y) + ocean.stdc.math.sinl(y)*1i;
+        return core.stdc.math.cosl(y) + core.stdc.math.sinl(y)*1i;
     }
 }
 
 unittest
 {
-    assert(expi(1.3e5L) == ocean.stdc.math.cosl(1.3e5L) + ocean.stdc.math.sinl(1.3e5L) * 1i);
+    assert(expi(1.3e5L) == core.stdc.math.cosl(1.3e5L) + core.stdc.math.sinl(1.3e5L) * 1i);
     assert(expi(0.0L) == 1L + 0.0Li);
 }
 

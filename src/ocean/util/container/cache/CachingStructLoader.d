@@ -29,7 +29,7 @@ import CacheValue = ocean.util.container.cache.model.Value;
 
 import ocean.util.serialize.contiguous.package_;
 
-import ocean.stdc.time: time_t, time;
+import core.stdc.time: time_t, time;
 
 /*******************************************************************************
 

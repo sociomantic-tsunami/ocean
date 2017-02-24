@@ -12,6 +12,7 @@
 *******************************************************************************/
 
 
-module ocean.stdc.config;
+deprecated module ocean.stdc.config;
+pragma(msg, "Please use core.stdc.config instead.");
 
 public import core.stdc.config;

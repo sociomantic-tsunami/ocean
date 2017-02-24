@@ -12,6 +12,7 @@
 *******************************************************************************/
 
 
-module ocean.stdc.stdlib;
+deprecated module ocean.stdc.stdlib;
+pragma(msg, "Please use core.stdc.stdlib instead.");
 
 public import core.stdc.stdlib;

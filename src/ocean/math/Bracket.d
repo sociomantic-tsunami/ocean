@@ -16,7 +16,7 @@
 module ocean.math.Bracket;
 import ocean.transition;
 
-static import tsm = ocean.stdc.math;
+static import tsm = core.stdc.math;
 import ocean.math.Math;
 import ocean.math.IEEE;
 

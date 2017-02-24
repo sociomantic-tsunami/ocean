@@ -32,7 +32,7 @@ import ocean.io.device.Device;
 
 import ocean.stdc.stringz;
 import core.stdc.string;
-import ocean.stdc.errno;
+import core.stdc.errno;
 
 /*******************************************************************************
 

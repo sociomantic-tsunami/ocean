@@ -40,9 +40,9 @@ import ocean.stdc.posix.sys.wait;
 
 import ocean.stdc.posix.signal;
 
-import ocean.stdc.errno;
+import core.stdc.errno;
 
-import ocean.stdc.string;
+import core.stdc.string;
 
 
 

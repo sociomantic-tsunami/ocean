@@ -67,7 +67,27 @@ TEST_FILTER_OUT += \
 	$C/src/ocean/sys/linux/consts/unistd.d \
 	$C/src/ocean/sys/consts/sysctl.d \
 	$C/src/ocean/sys/consts/errno.d \
-	$C/src/ocean/sys/consts/unistd.d
+	$C/src/ocean/sys/consts/unistd.d \
+	$C/src/ocean/stdc/complex.d \
+	$C/src/ocean/stdc/config.d \
+	$C/src/ocean/stdc/ctype.d \
+	$C/src/ocean/stdc/errno.d \
+	$C/src/ocean/stdc/fenv.d \
+	$C/src/ocean/stdc/gnu/string.d \
+	$C/src/ocean/stdc/inttypes.d \
+	$C/src/ocean/stdc/limits.d \
+	$C/src/ocean/stdc/locale.d \
+	$C/src/ocean/stdc/math.d \
+	$C/src/ocean/stdc/signal.d \
+	$C/src/ocean/stdc/stdarg.d \
+	$C/src/ocean/stdc/stddef.d \
+	$C/src/ocean/stdc/stdint.d \
+	$C/src/ocean/stdc/stdio.d \
+	$C/src/ocean/stdc/stdlib.d \
+	$C/src/ocean/stdc/tgmath.d \
+	$C/src/ocean/stdc/time.d \
+	$C/src/ocean/stdc/wctype.d
+
 
 # This is an integration test that depends on Collectd -- Don't run it
 TEST_FILTER_OUT += $C/test/collectd/main.d

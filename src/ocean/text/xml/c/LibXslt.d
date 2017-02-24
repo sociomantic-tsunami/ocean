@@ -31,7 +31,7 @@ import ocean.transition;
 
 import ocean.text.xml.c.LibXml2;
 
-import ocean.stdc.stdio;
+import core.stdc.stdio;
 
 
 

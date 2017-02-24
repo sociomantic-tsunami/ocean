@@ -34,7 +34,7 @@ import ocean.net.http.consts.CookieAttributeNames;
 
 import ocean.net.http.time.HttpTimeFormatter;
 
-import ocean.stdc.time: time_t;
+import core.stdc.time: time_t;
 
 /******************************************************************************/
 

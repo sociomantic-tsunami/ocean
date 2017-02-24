@@ -21,7 +21,7 @@ module ocean.util.digest.Digest;
 
 import ocean.transition;
 
-import ocean.stdc.stdlib : alloca;
+import core.stdc.stdlib : alloca;
 
 /*******************************************************************************
 

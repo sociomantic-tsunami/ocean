@@ -22,7 +22,7 @@
 deprecated module ocean.util.container.more.CacheMap;
 pragma(msg, "`ocean.util.container.more.CacheMap` is deprecated. No replacement exists");
 
-import ocean.stdc.stdlib;
+import core.stdc.stdlib;
 
 import ocean.util.container.HashMap;
 

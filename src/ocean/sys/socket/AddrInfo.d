@@ -30,9 +30,9 @@ import ocean.stdc.posix.netinet.in_: sockaddr, socklen_t,
 
 import ocean.stdc.posix.arpa.inet: inet_ntop, inet_pton, ntohs, htons, htonl;
 
-import ocean.stdc.errno: errno, EAFNOSUPPORT;
+import core.stdc.errno: errno, EAFNOSUPPORT;
 
-import ocean.stdc.string: strlen;
+import core.stdc.string: strlen;
 
 import ocean.core.Array: concat;
 

@@ -52,7 +52,7 @@ import ocean.stdc.posix.time: time_t, timespec;
 
 debug
 {
-    import ocean.stdc.time: ctime;
+    import core.stdc.time: ctime;
     import ocean.io.Stdout_tango;
 }
 

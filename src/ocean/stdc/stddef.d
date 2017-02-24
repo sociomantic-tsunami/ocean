@@ -12,6 +12,7 @@
 *******************************************************************************/
 
 
-module ocean.stdc.stddef;
+deprecated module ocean.stdc.stddef;
+pragma(msg, "Please use core.stdc.stddef instead.");
 
 public import core.stdc.stddef;

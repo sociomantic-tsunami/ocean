@@ -1287,7 +1287,7 @@ version (UnitTest)
 {
     import ocean.math.random.engines.KISS;
     import ocean.math.random.engines.CMWC;
-    import ocean.stdc.stdio:printf;
+    import core.stdc.stdio:printf;
 
     /// very simple statistal test, mean within maxOffset, and maximum/minimum at least minmax/maxmin
     bool checkMean(T)(T[] a, real maxmin, real minmax, real expectedMean, real maxOffset,bool alwaysPrint=false,bool checkB=false){

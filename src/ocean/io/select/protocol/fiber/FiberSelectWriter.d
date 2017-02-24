@@ -33,7 +33,7 @@ import ocean.io.select.client.model.ISelectClient;
 
 import ocean.io.device.IODevice: IOutputDevice;
 
-import ocean.stdc.errno: errno, EAGAIN, EWOULDBLOCK, EINTR;
+import core.stdc.errno: errno, EAGAIN, EWOULDBLOCK, EINTR;
 
 import ocean.stdc.posix.sys.socket: setsockopt;
 

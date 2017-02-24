@@ -12,6 +12,7 @@
 *******************************************************************************/
 
 
-module ocean.stdc.limits;
+deprecated module ocean.stdc.limits;
+pragma(msg, "Please use core.stdc.limits instead.");
 
 public import core.stdc.limits;

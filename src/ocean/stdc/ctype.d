@@ -12,6 +12,7 @@
 *******************************************************************************/
 
 
-module ocean.stdc.ctype;
+deprecated module ocean.stdc.ctype;
+pragma(msg, "Please use core.stdc.ctype instead.");
 
 public import core.stdc.ctype;

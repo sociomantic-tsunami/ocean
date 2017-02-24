@@ -25,11 +25,11 @@ version (Posix)
 
     import ocean.core.Exception_tango;
     import ocean.text.locale.Data;
-    import ocean.stdc.ctype;
+    import core.stdc.ctype;
     import ocean.stdc.posix.stdlib;
-    import ocean.stdc.string;
+    import core.stdc.string;
     import ocean.stdc.stringz;
-    import ocean.stdc.locale;
+    import core.stdc.locale;
 
     /*private extern(C) char* setlocale(int type, char* locale);
       private extern(C) void putenv(char*);

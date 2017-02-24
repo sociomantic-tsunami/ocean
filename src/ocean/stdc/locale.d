@@ -12,6 +12,7 @@
 *******************************************************************************/
 
 
-module ocean.stdc.locale;
+deprecated module ocean.stdc.locale;
+pragma(msg, "Please use core.stdc.locale instead.");
 
 public import core.stdc.locale;

@@ -29,7 +29,7 @@ import ocean.core.Enforce;
 import ocean.core.Traits;
 import ocean.math.IEEE;
 import ocean.math.Math;
-import ocean.stdc.time;
+import core.stdc.time;
 
 
 /*******************************************************************************

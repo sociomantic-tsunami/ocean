@@ -31,7 +31,7 @@ class TaskSelectTransceiver
     import ocean.io.select.protocol.task.internal.BufferedReader;
     import ocean.io.device.IODevice: IODevice;
 
-    import ocean.stdc.errno: errno, EAGAIN, EWOULDBLOCK, EINTR;
+    import core.stdc.errno: errno, EAGAIN, EWOULDBLOCK, EINTR;
     import ocean.stdc.posix.sys.uio: iovec, readv;
     import ocean.stdc.posix.sys.socket: setsockopt;
     import ocean.stdc.posix.netinet.in_: IPPROTO_TCP;
@@ -609,7 +609,7 @@ class TaskSelectTransceiver
     }
 }
 
-import ocean.stdc.errno;
+import core.stdc.errno;
 import ocean.core.Enforce;
 import ocean.text.util.ClassName;
 

@@ -23,8 +23,8 @@ module ocean.sys.GetIfAddrs;
 
 import ocean.transition;
 
-import ocean.stdc.errno;
-import ocean.stdc.string;
+import core.stdc.errno;
+import core.stdc.string;
 import ocean.stdc.posix.arpa.inet;
 import ocean.stdc.posix.netinet.in_: sockaddr_in, sockaddr_in6;
 import ocean.stdc.posix.sys.socket;

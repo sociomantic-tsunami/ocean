@@ -21,8 +21,8 @@ module ocean.util.container.Container;
 
 import core.memory;
 
-import ocean.stdc.stdlib;
-import ocean.stdc.string;
+import core.stdc.stdlib;
+import core.stdc.string;
 
 /*******************************************************************************
 

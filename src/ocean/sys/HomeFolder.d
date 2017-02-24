@@ -31,9 +31,9 @@ import ocean.sys.Environment;
 version (Posix)
 {
     import ocean.core.Exception_tango;
-    import ocean.stdc.stdlib;
-    import ocean.stdc.posix.pwd;
-    import ocean.stdc.errno;
+    import core.stdc.stdlib;
+    import core.sys.posix.pwd;
+    import core.stdc.errno;
 
     private extern (C) size_t strlen (in char *);
 }
@@ -179,17 +179,17 @@ version (Posix)
         int extra_memory_size = 5 * 1024;
         void* extra_memory;
 
-        scope (exit) if(extra_memory) ocean.stdc.stdlib.free(extra_memory);
+        scope (exit) if(extra_memory) core.stdc.stdlib.free(extra_memory);
 
         while (1)
         {
-            extra_memory = ocean.stdc.stdlib.malloc(extra_memory_size);
+            extra_memory = core.stdc.stdlib.malloc(extra_memory_size);
             if (extra_memory is null)
                 throw new OutOfMemoryException("Not enough memory for user lookup in tilde expansion.", __LINE__);
 
             // Obtain info from database.
             passwd *verify;
-            ocean.stdc.errno.errno(0);
+            core.stdc.errno.errno(0);
             if (getpwnam_r(username.ptr, &result, cast(char*)extra_memory, extra_memory_size,
                 &verify) == 0)
             {
@@ -204,11 +204,11 @@ version (Posix)
                 return path;
             }
 
-            if (ocean.stdc.errno.errno() != ERANGE)
+            if (core.stdc.errno.errno() != ERANGE)
                 throw new OutOfMemoryException("Not enough memory for user lookup in tilde expansion.", __LINE__);
 
             // extra_memory isn't large enough
-            ocean.stdc.stdlib.free(extra_memory);
+            core.stdc.stdlib.free(extra_memory);
             extra_memory_size *= 2;
         }
     }

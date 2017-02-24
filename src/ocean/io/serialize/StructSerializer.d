@@ -963,7 +963,7 @@ version (UnitTest)
 
     ***************************************************************************/
 
-    import ocean.stdc.time;
+    import core.stdc.time;
     import ocean.util.Convert : to;
     import ocean.time.StopWatch;
     import core.memory;
