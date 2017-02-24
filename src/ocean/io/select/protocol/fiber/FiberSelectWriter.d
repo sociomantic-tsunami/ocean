@@ -39,7 +39,7 @@ import ocean.stdc.posix.sys.socket: setsockopt;
 
 import ocean.stdc.posix.netinet.in_: IPPROTO_TCP;
 
-import ocean.sys.linux.tcp: TCP_CORK;
+import core.sys.linux.sys.netinet.tcp: TCP_CORK;
 
 debug (Raw) import ocean.io.Stdout_tango: Stderr;
 

@@ -49,7 +49,17 @@ TEST_FILTER_OUT += \
 	$C/src/ocean/io/serialize/XmlStructSerializer.d \
 	$C/src/ocean/util/container/HashMap.d \
 	$C/src/ocean/util/container/more/CacheMap.d \
-	$C/src/ocean/util/container/more/StackMap.d
+	$C/src/ocean/util/container/more/StackMap.d \
+	$C/src/ocean/sys/linux/epoll.d \
+	$C/src/ocean/sys/linux/ifaddrs.d \
+	$C/src/ocean/sys/linux/inotify.d \
+	$C/src/ocean/sys/linux/ioctl.d \
+	$C/src/ocean/sys/linux/sched.d \
+	$C/src/ocean/sys/linux/signalfd.d \
+	$C/src/ocean/sys/linux/tcp.d \
+	$C/src/ocean/sys/linux/termios.d \
+	$C/src/ocean/sys/linux/timerfd.d \
+	$C/src/ocean/sys/linux/tipc.d
 
 # This is an integration test that depends on Collectd -- Don't run it
 TEST_FILTER_OUT += $C/test/collectd/main.d
