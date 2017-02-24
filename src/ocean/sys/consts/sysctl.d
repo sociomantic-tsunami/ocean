@@ -11,4 +11,4 @@
 
 *******************************************************************************/
 
-module ocean.sys.consts.sysctl;
+deprecated module ocean.sys.consts.sysctl;
