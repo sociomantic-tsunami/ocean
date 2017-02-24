@@ -59,9 +59,9 @@ import ocean.time.timeout.model.ITimeoutManager;
 
 import ocean.sys.Epoll;
 
-import ocean.stdc.stdlib: bsearch, qsort;
+import core.stdc.stdlib: bsearch, qsort;
 
-import ocean.stdc.errno: errno, EINTR, ENOENT, EEXIST, ENOMEM, EINVAL;
+import core.stdc.errno: errno, EINTR, ENOENT, EEXIST, ENOMEM, EINVAL;
 
 debug ( ISelectClient ) import ocean.io.Stdout;
 

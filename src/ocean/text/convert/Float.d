@@ -33,7 +33,7 @@ module ocean.text.convert.Float;
 import ocean.transition;
 
 import ocean.core.Exception_tango;
-static import tsm = ocean.stdc.math;
+static import tsm = core.stdc.math;
 static import Integer = ocean.text.convert.Integer_tango;
 
 /******************************************************************************

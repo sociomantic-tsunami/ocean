@@ -526,7 +526,7 @@ public class StringStructSerializer ( Char )
 version(UnitTest)
 {
     import ocean.core.Test;
-    import ocean.stdc.time;
+    import core.stdc.time;
 }
 
 unittest

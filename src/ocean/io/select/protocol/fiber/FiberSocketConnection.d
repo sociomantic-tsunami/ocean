@@ -43,7 +43,7 @@ import ocean.io.select.protocol.generic.ErrnoIOException: SocketError;
 
 import ocean.stdc.posix.sys.socket: SOL_SOCKET, IPPROTO_TCP, SO_KEEPALIVE;
 
-import ocean.stdc.errno: errno, EINPROGRESS, EINTR, EALREADY, EISCONN;
+import core.stdc.errno: errno, EINPROGRESS, EINTR, EALREADY, EISCONN;
 
 debug ( EpollTiming ) import ocean.time.StopWatch;
 debug ( ISelectClient )

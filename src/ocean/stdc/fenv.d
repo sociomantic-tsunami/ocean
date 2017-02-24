@@ -12,6 +12,7 @@
 *******************************************************************************/
 
 
-module ocean.stdc.fenv;
+deprecated module ocean.stdc.fenv;
+pragma(msg, "Please use core.stdc.fenv instead.");
 
 public import core.stdc.fenv;

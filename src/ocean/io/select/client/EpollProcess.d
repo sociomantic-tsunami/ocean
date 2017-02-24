@@ -117,7 +117,7 @@ import ocean.sys.Process;
 
 debug import ocean.io.Stdout;
 
-import ocean.stdc.errno;
+import core.stdc.errno;
 
 import ocean.util.log.Log;
 

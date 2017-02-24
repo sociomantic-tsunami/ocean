@@ -22,7 +22,7 @@ module ocean.sys.ErrnoException;
 *******************************************************************************/
 
 import ocean.transition;
-import ocean.stdc.errno;
+import core.stdc.errno;
 
 version (UnitTest)
 {

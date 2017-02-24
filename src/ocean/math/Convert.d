@@ -36,9 +36,9 @@ module ocean.math.Convert;
 
 *******************************************************************************/
 
-import ocean.stdc.fenv;
+import core.stdc.fenv;
 
-import ocean.stdc.math;
+import core.stdc.math;
 
 /*******************************************************************************
 

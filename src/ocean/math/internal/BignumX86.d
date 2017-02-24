@@ -1260,7 +1260,7 @@ void multibyteSquare(BigDigit[] result, BigDigit [] x)
 }
 
 version(TangoPerformanceTest) {
-import ocean.stdc.stdio;
+import core.stdc.stdio;
 int clock() { asm { push EBX; xor EAX, EAX; cpuid; pop EBX; rdtsc; } }
 
 uint [2200] X1;

@@ -236,7 +236,7 @@ else
 
 deprecated private extern (C)
 {
-        import ocean.stdc.errno;
+        import core.stdc.errno;
 
         mixin(Typedef!(int, "socket_t", -1));
 
@@ -1798,7 +1798,7 @@ unittest
 
 deprecated public class SocketSet
 {
-        import ocean.stdc.config;
+        import core.stdc.config;
 
         struct timeval
         {

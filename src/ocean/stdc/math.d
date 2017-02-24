@@ -12,6 +12,7 @@
 *******************************************************************************/
 
 
-module ocean.stdc.math;
+deprecated module ocean.stdc.math;
+pragma(msg, "Please use core.stdc.math instead.");
 
 public import core.stdc.math;

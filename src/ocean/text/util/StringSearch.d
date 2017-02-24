@@ -25,9 +25,9 @@ module ocean.text.util.StringSearch;
 
 import ocean.transition;
 
-import c_stddef = ocean.stdc.stddef: wchar_t;
-import c_wctype = ocean.stdc.wctype;
-import c_ctype  = ocean.stdc.ctype;
+import c_stddef = core.stdc.stddef: wchar_t;
+import c_wctype = core.stdc.wctype;
+import c_ctype  = core.stdc.ctype;
 import c_string = ocean.stdc.string;
 
 import ocean.math.Math:   min;

@@ -40,7 +40,7 @@ import ocean.util.container.pool.model.IPoolInfo;
 
 import ocean.text.convert.Formatter;
 
-import ocean.stdc.errno:            errno;
+import core.stdc.errno:            errno;
 
 import ocean.sys.socket.model.ISocket;
 

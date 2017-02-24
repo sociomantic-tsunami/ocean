@@ -28,8 +28,8 @@ module ocean.core.array.Mutation;
 
 import ocean.transition;
 
-import ocean.stdc.string; // memmove, memset
-import ocean.stdc.math; // fabs;
+import core.stdc.string; // memmove, memset
+import core.stdc.math; // fabs;
 
 import ocean.core.Traits;
 import ocean.core.Buffer;

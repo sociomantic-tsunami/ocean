@@ -52,7 +52,7 @@ import ocean.transition;
 
 import core.sys.posix.iconv;
 
-import ocean.stdc.errno;
+import core.stdc.errno;
 
 /******************************************************************************
 

@@ -26,9 +26,9 @@ module ocean.net.http.time.HttpTimeFormatter;
  ******************************************************************************/
 
 import ocean.transition;
-import ocean.stdc.time:       time_t, tm, time;
+import core.stdc.time:       time_t, tm, time;
 import ocean.stdc.posix.time: gmtime_r, localtime_r;
-import ocean.stdc.stdlib:     lldiv;
+import core.stdc.stdlib:     lldiv;
 
 /******************************************************************************/
 

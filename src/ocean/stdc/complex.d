@@ -12,6 +12,7 @@
 *******************************************************************************/
 
 
-module ocean.stdc.complex;
+deprecated module ocean.stdc.complex;
+pragma(msg, "Please use core.stdc.complex instead.");
 
 public import core.stdc.complex;

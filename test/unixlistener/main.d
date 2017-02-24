@@ -29,7 +29,7 @@ import ocean.core.Test;
 import ocean.core.Enforce;
 import ocean.core.Time;
 import ocean.io.select.EpollSelectDispatcher;
-import ocean.stdc.errno: ECONNREFUSED;
+import core.stdc.errno: ECONNREFUSED;
 import ocean.stdc.posix.sys.un;
 import ocean.sys.socket.UnixSocket;
 import ocean.net.server.unix.UnixListener;

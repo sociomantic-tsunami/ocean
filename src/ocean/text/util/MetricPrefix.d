@@ -24,7 +24,7 @@ module ocean.text.util.MetricPrefix;
 
 *******************************************************************************/
 
-import ocean.stdc.math;
+import core.stdc.math;
 
 
 

@@ -19,7 +19,7 @@ module ocean.net.http.HttpCookies;
 
 import ocean.transition;
 
-import ocean.stdc.ctype;
+import core.stdc.ctype;
 
 import ocean.io.device.Array;
 

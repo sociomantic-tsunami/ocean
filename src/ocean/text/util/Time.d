@@ -31,7 +31,7 @@ import ocean.core.Enforce;
 
 import ocean.core.Array : copy;
 
-import ocean.stdc.time : strftime, time_t, tm;
+import core.stdc.time : strftime, time_t, tm;
 
 import ocean.text.convert.Format;
 

@@ -12,6 +12,7 @@
 *******************************************************************************/
 
 
-module ocean.stdc.stdint;
+deprecated module ocean.stdc.stdint;
+pragma(msg, "Please use core.stdc.stdint instead.");
 
 public import core.stdc.stdint;

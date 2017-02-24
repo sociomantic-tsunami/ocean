@@ -104,7 +104,7 @@ import ocean.util.container.cache.model.containers.TimeToIndex;
 import ocean.util.container.cache.model.containers.KeyToNode;
 
 import core.memory;
-import ocean.stdc.time: time_t, time;
+import core.stdc.time: time_t, time;
 
 /*******************************************************************************
 

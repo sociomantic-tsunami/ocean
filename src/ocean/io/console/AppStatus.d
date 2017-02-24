@@ -80,15 +80,15 @@ import ocean.util.log.InsertConsole;
 
 import ocean.util.log.layout.LayoutMessageOnly;
 
-import ocean.stdc.math: lroundf;
+import core.stdc.math: lroundf;
 
 import core.memory;
 
-import ocean.stdc.stdarg;
+import core.stdc.stdarg;
 
-import ocean.stdc.stdlib: div;
+import core.stdc.stdlib: div;
 
-import ocean.stdc.time: clock_t, clock, tm, time_t, time;
+import core.stdc.time: clock_t, clock, tm, time_t, time;
 
 import ocean.text.convert.Format;
 

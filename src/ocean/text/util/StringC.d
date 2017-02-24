@@ -40,7 +40,7 @@ module ocean.text.util.StringC;
 import ocean.transition;
 
 import ocean.stdc.string: strlen, wcslen;
-import ocean.stdc.stddef: wchar_t;
+import core.stdc.stddef: wchar_t;
 
 
 /*******************************************************************************

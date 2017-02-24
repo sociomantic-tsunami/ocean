@@ -47,8 +47,8 @@ import C = ocean.io.console.readline.c.readline;
 import ocean.core.Array : copy;
 import ocean.text.util.StringC;
 
-import ocean.stdc.string: strlen;
-import ocean.stdc.stdlib : free;
+import core.stdc.string: strlen;
+import core.stdc.stdlib : free;
 
 import ocean.transition;
 

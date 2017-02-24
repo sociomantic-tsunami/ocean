@@ -47,7 +47,7 @@ module ocean.math.Math;
 
 import ocean.transition;
 
-static import ocean.stdc.math;
+static import core.stdc.math;
 import ocean.math.IEEE;
 
 
@@ -291,7 +291,7 @@ real cos(real x) /* intrinsic */
     }
     else
     {
-        return ocean.stdc.math.cosl(x);
+        return core.stdc.math.cosl(x);
     }
 }
 
@@ -324,7 +324,7 @@ real sin(real x) /* intrinsic */
     }
     else
     {
-        return ocean.stdc.math.sinl(x);
+        return core.stdc.math.sinl(x);
     }
 }
 
@@ -525,7 +525,7 @@ unittest
  */
 real acos(real x)
 {
-    return ocean.stdc.math.acosl(x);
+    return core.stdc.math.acosl(x);
 }
 
 unittest {
@@ -549,7 +549,7 @@ unittest {
  */
 real asin(real x)
 {
-    return ocean.stdc.math.asinl(x);
+    return core.stdc.math.asinl(x);
 }
 
 unittest {
@@ -572,7 +572,7 @@ unittest {
  */
 real atan(real x)
 {
-    return ocean.stdc.math.atanl(x);
+    return core.stdc.math.atanl(x);
 }
 
 unittest
@@ -604,7 +604,7 @@ unittest
  */
 real atan2(real y, real x)
 {
-    return ocean.stdc.math.atan2l(y,x);
+    return core.stdc.math.atan2l(y,x);
 }
 
 unittest
@@ -903,7 +903,7 @@ float sqrt(float x) /* intrinsic */
     }
     else
     {
-        return ocean.stdc.math.sqrtf(x);
+        return core.stdc.math.sqrtf(x);
     }
 }
 
@@ -919,7 +919,7 @@ double sqrt(double x) /* intrinsic */ /// ditto
     }
     else
     {
-        return ocean.stdc.math.sqrt(x);
+        return core.stdc.math.sqrt(x);
     }
 }
 
@@ -935,7 +935,7 @@ real sqrt(real x) /* intrinsic */ /// ditto
     }
     else
     {
-        return ocean.stdc.math.sqrtl(x);
+        return core.stdc.math.sqrtl(x);
     }
 }
 
@@ -986,7 +986,7 @@ unittest {
  */
 real cbrt(real x)
 {
-    return ocean.stdc.math.cbrtl(x);
+    return core.stdc.math.cbrtl(x);
 }
 
 
@@ -1014,7 +1014,7 @@ real exp(real x) {
    // and exp2 are so similar).
     return exp2(LOG2E*x);
     } else {
-        return ocean.stdc.math.expl(x);
+        return core.stdc.math.expl(x);
     }
 }
 
@@ -1181,7 +1181,7 @@ L_largenegative:
             ret;
         }
     } else {
-        return ocean.stdc.math.expm1l(x);
+        return core.stdc.math.expm1l(x);
     }
 }
 
@@ -1368,7 +1368,7 @@ L_was_nan:
             ret;
         }
     } else {
-        return ocean.stdc.math.exp2l(x);
+        return core.stdc.math.exp2l(x);
     }
 }
 
@@ -1403,7 +1403,7 @@ unittest {
  */
 real log(real x)
 {
-    return ocean.stdc.math.logl(x);
+    return core.stdc.math.logl(x);
 }
 
 unittest {
@@ -1427,7 +1427,7 @@ unittest {
  */
 real log1p(real x)
 {
-    return ocean.stdc.math.log1pl(x);
+    return core.stdc.math.log1pl(x);
 }
 
 unittest {
@@ -1448,7 +1448,7 @@ unittest {
  */
 real log2(real x)
 {
-    return ocean.stdc.math.log2l(x);
+    return core.stdc.math.log2l(x);
 }
 
 unittest {
@@ -1468,7 +1468,7 @@ unittest {
  */
 real log10(real x)
 {
-    return ocean.stdc.math.log10l(x);
+    return core.stdc.math.log10l(x);
 }
 
 unittest {
@@ -1727,7 +1727,7 @@ real pow(real x, real y)
     }
     }
 
-    return ocean.stdc.math.powl(x, y);
+    return core.stdc.math.powl(x, y);
 }
 
 unittest
@@ -1968,7 +1968,7 @@ package {
  */
 real floor(real x)
 {
-    return ocean.stdc.math.floorl(x);
+    return core.stdc.math.floorl(x);
 }
 
 unittest {
@@ -1981,7 +1981,7 @@ unittest {
  */
 real ceil(real x)
 {
-    return ocean.stdc.math.ceill(x);
+    return core.stdc.math.ceill(x);
 }
 
 unittest {
@@ -1995,7 +1995,7 @@ unittest {
  */
 real round(real x)
 {
-    return ocean.stdc.math.roundl(x);
+    return core.stdc.math.roundl(x);
 }
 
 unittest {
@@ -2009,7 +2009,7 @@ unittest {
  */
 real trunc(real x)
 {
-    return ocean.stdc.math.truncl(x);
+    return core.stdc.math.truncl(x);
 }
 
 unittest {
@@ -2039,7 +2039,7 @@ int rndint(real x)
     }
     else
     {
-        return cast(int) ocean.stdc.math.lrintl(x);
+        return cast(int) core.stdc.math.lrintl(x);
     }
 }
 
@@ -2058,7 +2058,7 @@ long rndlong(real x)
     }
     else
     {
-        return ocean.stdc.math.llrintl(x);
+        return core.stdc.math.llrintl(x);
     }
 }
 

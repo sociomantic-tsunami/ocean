@@ -18,7 +18,7 @@ module ocean.stdc.gnu.string;
 version (GLIBC):
 
 
-import ocean.stdc.stddef: wchar_t;
+import core.stdc.stddef: wchar_t;
 
 
 extern (C):

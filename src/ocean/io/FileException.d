@@ -24,7 +24,7 @@ module ocean.io.FileException;
 import ocean.transition;
 
 import ocean.sys.ErrnoException;
-import ocean.stdc.errno;
+import core.stdc.errno;
 
 /**************************************************************************
 
@@ -35,7 +35,7 @@ import ocean.stdc.errno;
 
 class FileException : ErrnoException
 {
-    import ocean.stdc.stdio: FILE, ferror, feof, clearerr;
+    import core.stdc.stdio: FILE, ferror, feof, clearerr;
 
     /// Make ErrnoException's enforce available
     public alias ErrnoException.enforce enforce;

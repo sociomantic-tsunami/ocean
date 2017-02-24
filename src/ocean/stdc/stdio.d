@@ -15,6 +15,7 @@
  * Standards: ISO/IEC 9899:1999 (E)
  *
  */
-module ocean.stdc.stdio;
+deprecated module ocean.stdc.stdio;
+pragma(msg, "Please use core.stdc.stdio instead.");
 
 public import core.stdc.stdio;

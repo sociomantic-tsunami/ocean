@@ -12,6 +12,7 @@
 *******************************************************************************/
 
 
-module ocean.stdc.tgmath;
+deprecated module ocean.stdc.tgmath;
+pragma(msg, "Please use core.stdc.tgmath instead.");
 
 public import core.stdc.tgmath;

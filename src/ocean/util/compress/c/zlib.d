@@ -33,7 +33,7 @@ const uint  ZLIB_VERNUM  = 0x1230;
 
 private
 {
-    import ocean.stdc.config : c_long, c_ulong;
+    import core.stdc.config : c_long, c_ulong;
 
     version( Posix )
     {

@@ -12,6 +12,7 @@
 *******************************************************************************/
 
 
-module ocean.stdc.errno;
+deprecated module ocean.stdc.errno;
+pragma(msg, "Please use core.stdc.errno instead.");
 
 public import core.stdc.errno;

@@ -137,8 +137,8 @@ import ocean.transition;
 
 public class BucketElementMallocAllocator (Bucket) : IAllocator
 {
-    import ocean.stdc.stdio : fputs, stderr;
-    import ocean.stdc.stdlib : malloc, free, abort;
+    import core.stdc.stdio : fputs, stderr;
+    import core.stdc.stdlib : malloc, free, abort;
 
     /***************************************************************************
 

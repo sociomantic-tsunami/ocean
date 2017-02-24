@@ -25,7 +25,7 @@ module ocean.text.convert.DateTime;
 
 import ocean.transition;
 
-import ocean.stdc.stdio : sscanf;
+import core.stdc.stdio : sscanf;
 
 import ocean.stdc.posix.sys.stat;
 

@@ -35,5 +35,5 @@ version (X86)
 }
 else
 {
-    public import ocean.stdc.stdarg;
+    public import core.stdc.stdarg;
 }

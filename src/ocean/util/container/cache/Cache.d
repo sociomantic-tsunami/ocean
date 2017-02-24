@@ -209,7 +209,7 @@ module ocean.util.container.cache.Cache;
 import ocean.util.container.cache.model.ICache;
 import ocean.util.container.cache.model.ITrackCreateTimesCache;
 import ocean.util.container.cache.model.Value;
-import ocean.stdc.time: time_t;
+import core.stdc.time: time_t;
 import ocean.core.Test;
 
 import core.memory;
@@ -219,8 +219,8 @@ debug import ocean.io.Stdout;
 debug (CacheTimes)
 {
     import ocean.core.Array: concat;
-    import ocean.stdc.stdio: FILE, fopen, fclose, fprintf, perror;
-    import ocean.stdc.posix.time: ctime_r;
+    import core.stdc.stdio: FILE, fopen, fclose, fprintf, perror;
+    import core.stdc.posix.time: ctime_r;
 }
 
 version (UnitTest)
@@ -994,7 +994,7 @@ version (UnitTest)
 {
     import ocean.stdc.posix.stdlib: srand48, mrand48, drand48;
     import ocean.stdc.posix.unistd: getpid;
-    import ocean.stdc.time: time;
+    import core.stdc.time: time;
     import ocean.io.Stdout_tango;
     import ocean.core.Array: shuffle;
 }

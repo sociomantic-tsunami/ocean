@@ -52,7 +52,7 @@ import ocean.core.TypeConvert;
 import ocean.io.select.EpollSelectDispatcher;
 import ocean.io.select.client.TimerEvent;
 import ocean.net.collectd.Collectd;
-import ocean.stdc.time : time_t;
+import core.stdc.time : time_t;
 import ocean.sys.ErrnoException;
 import ocean.text.convert.Layout: StringLayout;
 import ocean.util.log.layout.LayoutStatsLog;

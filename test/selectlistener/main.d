@@ -28,7 +28,7 @@ import Ocean = ocean.core.Test;
 import ocean.core.Thread;
 import ocean.core.Time: seconds;
 import ocean.io.select.EpollSelectDispatcher;
-import ocean.stdc.errno: ECONNREFUSED;
+import core.stdc.errno: ECONNREFUSED;
 import ocean.stdc.posix.sys.types : pid_t;
 import ocean.stdc.posix.sys.wait: waitpid;
 import ocean.stdc.posix.unistd: fork, unlink;

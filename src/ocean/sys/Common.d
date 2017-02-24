@@ -49,8 +49,8 @@ version (solaris)
 
 version (Posix)
         {
-        import ocean.stdc.errno;
-        import ocean.stdc.string;
+        import core.stdc.errno;
+        import core.stdc.string;
         }
 else
    {

@@ -70,7 +70,7 @@ import ocean.io.model.IFile : FileConst, FileInfo;
 
 public  import ocean.core.Exception_tango : IOException, IllegalArgumentException;
 
-import ocean.stdc.string : memmove;
+import core.stdc.string : memmove;
 
 
 /*******************************************************************************
@@ -81,10 +81,10 @@ import ocean.stdc.string : memmove;
 
 version (Posix)
         {
-        import ocean.stdc.stdio;
-        import ocean.stdc.string;
-        import ocean.stdc.posix.utime;
-        import ocean.stdc.posix.dirent;
+        import core.stdc.stdio;
+        import core.stdc.string;
+        import core.sys.posix.utime;
+        import core.sys.posix.dirent;
         }
 
 
@@ -442,7 +442,7 @@ package struct FS
 
                 static bool remove (cstring name)
                 {
-                        return ocean.stdc.stdio.remove(name.ptr) != -1;
+                        return core.stdc.stdio.remove(name.ptr) != -1;
                 }
 
                 /***************************************************************
@@ -453,7 +453,7 @@ package struct FS
 
                 static void rename (cstring src, cstring dst)
                 {
-                        if (ocean.stdc.stdio.rename (src.ptr, dst.ptr) is -1)
+                        if (core.stdc.stdio.rename (src.ptr, dst.ptr) is -1)
                             exception (src);
                 }
 
@@ -518,13 +518,13 @@ package struct FS
                         mstring          prefix;
                         mstring          sfnbuf;
 
-                        dir = ocean.stdc.posix.dirent.opendir (folder.ptr);
+                        dir = core.sys.posix.dirent.opendir (folder.ptr);
                         if (! dir)
                               return ret;
 
                         scope (exit)
                         {
-                            ocean.stdc.posix.dirent.closedir (dir);
+                            core.sys.posix.dirent.closedir (dir);
                             delete sfnbuf;
 
                             // only delete when we dupped it
@@ -552,7 +552,7 @@ package struct FS
                               if (pentry is null)
                                   break;
 
-                              auto len = ocean.stdc.string.strlen (entry.d_name.ptr);
+                              auto len = core.stdc.string.strlen (entry.d_name.ptr);
                               auto str = entry.d_name.ptr [0 .. len];
                               ++len;  // include the null
 

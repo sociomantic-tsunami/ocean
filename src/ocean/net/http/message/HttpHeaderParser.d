@@ -787,7 +787,7 @@ class HttpHeaderParser : IHttpHeaderParser
 
 //version = OceanPerformanceTest;
 
-import ocean.stdc.time: time;
+import core.stdc.time: time;
 import ocean.stdc.posix.stdlib: srand48, drand48;
 
 version (OceanPerformanceTest)

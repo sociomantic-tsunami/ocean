@@ -649,7 +649,7 @@ import ocean.text.util.MetricPrefix;
 
 debug (GcDisabled) import ocean.core.Memory;
 
-import ocean.stdc.signal: signal, SIGINT;
+import core.stdc.signal: signal, SIGINT;
 
 /******************************************************************************
 

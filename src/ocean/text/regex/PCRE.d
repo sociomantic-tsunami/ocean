@@ -61,7 +61,7 @@ import ocean.text.util.StringC;
 import ocean.text.regex.c.pcre;
 import ocean.core.TypeConvert;
 
-import ocean.stdc.stdlib : free;
+import core.stdc.stdlib : free;
 import ocean.text.convert.Formatter;
 
 
