@@ -65,6 +65,7 @@ TEST_FILTER_OUT += \
 	$C/src/ocean/sys/linux/consts/socket.d \
 	$C/src/ocean/sys/linux/consts/sysctl.d \
 	$C/src/ocean/sys/linux/consts/unistd.d \
+	$C/src/ocean/sys/consts/sysctl.d
 
 # This is an integration test that depends on Collectd -- Don't run it
 TEST_FILTER_OUT += $C/test/collectd/main.d
