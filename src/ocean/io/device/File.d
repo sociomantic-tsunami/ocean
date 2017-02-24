@@ -529,8 +529,7 @@ class File : Device, Device.Seek, Device.Truncate
             auto name = toStringz (path, zero);
             auto mode = Access[style.access] | Create[style.open];
 
-            // always open as a large file
-            handle = posix.open (name, mode | O_LARGEFILE | addflags, access);
+            handle = posix.open (name, mode | addflags, access);
             if (handle is -1)
                 return false;
 
