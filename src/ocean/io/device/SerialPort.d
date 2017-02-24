@@ -29,6 +29,14 @@ import ocean.sys.linux.termios;
 
 /*******************************************************************************
 
+    B57600 baud rate value.
+
+*******************************************************************************/
+
+private const B57600 = Octal!("001001");
+
+/*******************************************************************************
+
         Enables applications to use a serial port (aka COM-port, ttyS).
         Usage is similar to that of File:
         ---
