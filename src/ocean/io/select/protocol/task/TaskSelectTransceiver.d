@@ -35,7 +35,7 @@ class TaskSelectTransceiver
     import ocean.stdc.posix.sys.uio: iovec, readv;
     import ocean.stdc.posix.sys.socket: setsockopt;
     import ocean.stdc.posix.netinet.in_: IPPROTO_TCP;
-    import ocean.sys.linux.tcp: TCP_CORK;
+    import core.sys.linux.sys.netinet.tcp: TCP_CORK;
 
     import ocean.sys.Epoll: epoll_event_t;
     alias epoll_event_t.Event Event;

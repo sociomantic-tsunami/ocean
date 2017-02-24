@@ -13,17 +13,16 @@
 
 module ocean.sys.linux.linux;
 
-
 version (linux) {
-    public import ocean.stdc.time;
-    public import ocean.stdc.posix.dlfcn;
-    public import ocean.stdc.posix.fcntl;
-    public import ocean.stdc.posix.poll;
-    public import ocean.stdc.posix.pwd;
-    public import ocean.stdc.posix.time;
-    public import ocean.stdc.posix.unistd;
-    public import ocean.stdc.posix.sys.select;
-    public import ocean.stdc.posix.sys.stat;
-    public import ocean.stdc.posix.sys.types;
-    public import ocean.sys.linux.epoll;
+    public import core.stdc.time;
+    public import core.sys.posix.dlfcn;
+    public import core.sys.posix.fcntl;
+    public import core.sys.posix.poll;
+    public import core.sys.posix.pwd;
+    public import core.sys.posix.time;
+    public import core.sys.posix.unistd;
+    public import core.sys.posix.sys.select;
+    public import core.sys.posix.sys.stat;
+    public import core.sys.posix.sys.types;
+    public import core.sys.linux.epoll;
 }

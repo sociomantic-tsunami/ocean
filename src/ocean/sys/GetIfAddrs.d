@@ -28,7 +28,7 @@ import ocean.stdc.string;
 import ocean.stdc.posix.arpa.inet;
 import ocean.stdc.posix.netinet.in_: sockaddr_in, sockaddr_in6;
 import ocean.stdc.posix.sys.socket;
-import ocean.sys.linux.ifaddrs;
+import core.sys.linux.ifaddrs;
 import ocean.sys.linux.consts.socket: AF_INET, AF_INET6;
 
 import ocean.core.Test;

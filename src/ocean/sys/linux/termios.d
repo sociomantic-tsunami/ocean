@@ -11,7 +11,8 @@
 
 *******************************************************************************/
 
-module ocean.sys.linux.termios;
+deprecated module ocean.sys.linux.termios;
+pragma(msg, "Please use core.sys.linux.termios or core.sys.posix.termios");
 
 public import core.sys.linux.termios;
 public import core.sys.posix.termios;
