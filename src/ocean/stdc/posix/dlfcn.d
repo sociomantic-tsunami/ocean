@@ -12,6 +12,7 @@
 *******************************************************************************/
 
 
-module ocean.stdc.posix.dlfcn;
+deprecated module ocean.stdc.posix.dlfcn;
+pragma(msg, "Please use core.sys.posix.dlfcn instead.");
 
 public import core.sys.posix.dlfcn;

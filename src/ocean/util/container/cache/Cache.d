@@ -220,7 +220,7 @@ debug (CacheTimes)
 {
     import ocean.core.Array: concat;
     import core.stdc.stdio: FILE, fopen, fclose, fprintf, perror;
-    import core.stdc.posix.time: ctime_r;
+    import core.sys.posix.time: ctime_r;
 }
 
 version (UnitTest)
@@ -992,8 +992,8 @@ class Cache ( T, bool TrackCreateTimes = false ) : Cache!(T.sizeof, TrackCreateT
 
 version (UnitTest)
 {
-    import ocean.stdc.posix.stdlib: srand48, mrand48, drand48;
-    import ocean.stdc.posix.unistd: getpid;
+    import core.sys.posix.stdlib: srand48, mrand48, drand48;
+    import core.sys.posix.unistd: getpid;
     import core.stdc.time: time;
     import ocean.io.Stdout_tango;
     import ocean.core.Array: shuffle;

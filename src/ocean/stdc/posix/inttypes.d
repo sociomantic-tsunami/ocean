@@ -12,6 +12,7 @@
 *******************************************************************************/
 
 
-module ocean.stdc.posix.inttypes;
+deprecated module ocean.stdc.posix.inttypes;
+pragma(msg, "Please use core.sys.posix.inttypes instead.");
 
 public import core.sys.posix.inttypes;

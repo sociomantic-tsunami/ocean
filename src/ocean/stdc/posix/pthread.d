@@ -12,6 +12,7 @@
 *******************************************************************************/
 
 
-module ocean.stdc.posix.pthread;
+deprecated module ocean.stdc.posix.pthread;
+pragma(msg, "Please use core.sys.posix.pthread instead.");
 
 public import core.sys.posix.pthread;

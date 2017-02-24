@@ -369,7 +369,7 @@ class ExpiringCache ( size_t ValueSize = 0 ) : Cache!(ValueSize, true),
 
 /******************************************************************************/
 
-import ocean.stdc.posix.stdlib: srand48, mrand48, drand48;
+import core.sys.posix.stdlib: srand48, mrand48, drand48;
 import core.stdc.time: time;
 
 extern (C) int getpid();

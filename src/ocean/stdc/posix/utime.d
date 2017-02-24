@@ -12,6 +12,7 @@
 *******************************************************************************/
 
 
-module ocean.stdc.posix.utime;
+deprecated module ocean.stdc.posix.utime;
+pragma(msg, "Please use core.sys.posix.utime instead.");
 
 public import core.sys.posix.utime;

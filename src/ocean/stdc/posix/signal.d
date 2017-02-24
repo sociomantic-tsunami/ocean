@@ -12,6 +12,7 @@
 *******************************************************************************/
 
 
-module ocean.stdc.posix.signal;
+deprecated module ocean.stdc.posix.signal;
+pragma(msg, "Please use core.sys.posix.signal instead.");
 
 public import core.sys.posix.signal;

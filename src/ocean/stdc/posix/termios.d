@@ -12,6 +12,7 @@
 *******************************************************************************/
 
 
-module ocean.stdc.posix.termios;
+deprecated module ocean.stdc.posix.termios;
+pragma(msg, "Please use core.sys.posix.termios instead.");
 
 public import core.sys.posix.termios;

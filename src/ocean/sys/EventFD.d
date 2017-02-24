@@ -92,7 +92,7 @@ import ocean.io.model.IConduit;
 
 import ocean.stdc.posix.sys.types: ssize_t;
 
-import ocean.stdc.posix.unistd: read, write, close;
+import core.sys.posix.unistd: read, write, close;
 
 
 

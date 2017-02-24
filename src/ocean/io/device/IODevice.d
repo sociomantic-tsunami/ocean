@@ -30,7 +30,7 @@ import ocean.transition;
 
 import ocean.io.model.IConduit: ISelectable;
 
-import ocean.stdc.posix.unistd: read, write;
+import core.sys.posix.unistd: read, write;
 import ocean.stdc.posix.sys.types: ssize_t;
 
 /******************************************************************************

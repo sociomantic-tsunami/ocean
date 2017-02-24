@@ -110,12 +110,12 @@ version( Win32 )
 
 else version( Posix )
 {
-    import ocean.stdc.posix.pwd : getpwnam;
-    import ocean.stdc.posix.unistd : access, getuid, lseek, unlink, W_OK;
+    import core.sys.posix.pwd : getpwnam;
+    import core.sys.posix.unistd : access, getuid, lseek, unlink, W_OK;
     import ocean.stdc.posix.sys.types : off_t;
     import ocean.stdc.posix.sys.stat : stat, stat_t;
     import ocean.stdc.posix.fcntl : O_NOFOLLOW;
-    import ocean.stdc.posix.stdlib : getenv;
+    import core.sys.posix.stdlib : getenv;
     import ocean.stdc.string : strlen;
 }
 

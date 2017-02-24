@@ -12,6 +12,7 @@
 *******************************************************************************/
 
 
-module ocean.stdc.posix.time;
+deprecated module ocean.stdc.posix.time;
+pragma(msg, "Please use core.sys.posix.time instead.");
 
 public import core.sys.posix.time;

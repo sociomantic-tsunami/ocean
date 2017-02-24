@@ -12,6 +12,7 @@
 *******************************************************************************/
 
 
-module ocean.stdc.posix.dirent;
+deprecated module ocean.stdc.posix.dirent;
+pragma(msg, "Please use core.sys.posix.dirent instead.");
 
 public import core.sys.posix.dirent;

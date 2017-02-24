@@ -24,7 +24,7 @@ module ocean.io.Terminal;
 
 import ocean.transition;
 
-import ocean.stdc.posix.signal;
+import core.sys.posix.signal;
 
 debug(Term) import ocean.io.Stdout_tango;
 

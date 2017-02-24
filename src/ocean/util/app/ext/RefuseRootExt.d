@@ -24,7 +24,7 @@ module ocean.util.app.ext.RefuseRootExt;
 
 import ocean.transition;
 import ocean.util.app.ext.model.IArgumentsExtExtension;
-import ocean.stdc.posix.unistd;
+import core.sys.posix.unistd;
 
 
 /*******************************************************************************

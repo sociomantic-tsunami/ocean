@@ -12,6 +12,7 @@
 *******************************************************************************/
 
 
-module ocean.stdc.posix.stdio;
+deprecated module ocean.stdc.posix.stdio;
+pragma(msg, "Please use core.sys.posix.stdio instead.");
 
 public import core.sys.posix.stdio;

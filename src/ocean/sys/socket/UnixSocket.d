@@ -30,7 +30,7 @@ import ocean.sys.socket.model.ISocket;
 import ocean.net.device.LocalSocket;
 import ocean.stdc.posix.sys.socket;
 import ocean.stdc.posix.sys.un: UNIX_PATH_MAX;
-import ocean.stdc.posix.unistd;
+import core.sys.posix.unistd;
 import ocean.text.convert.Formatter;
 
 import ocean.stdc.posix.sys.un;

@@ -31,7 +31,7 @@ import ocean.core.Traits;
 import ocean.transition;
 import ocean.io.model.IConduit: ISelectable;
 
-import ocean.stdc.posix.time: time_t, timespec, itimerspec;
+import core.sys.posix.time: time_t, timespec, itimerspec;
 
 /*******************************************************************************
 
@@ -401,7 +401,7 @@ abstract class ITimerEvent : ISelectClient, ISelectable
 version ( UnitTest )
 {
     import ocean.core.Test;
-    import ocean.stdc.posix.time;
+    import core.sys.posix.time;
 
     extern ( C )
     {

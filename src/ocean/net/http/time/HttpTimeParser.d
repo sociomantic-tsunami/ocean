@@ -29,7 +29,7 @@ import TimeStamp = ocean.text.convert.TimeStamp: rfc1123, rfc850, asctime;
 import ocean.time.Time: Date, TimeOfDay;
 
 import core.stdc.time: time_t, tm;
-import ocean.stdc.posix.time: timegm;
+import core.sys.posix.time: timegm;
 
 /******************************************************************************
 

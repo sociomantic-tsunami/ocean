@@ -34,7 +34,7 @@ module ocean.sys.SignalMask;
 
 version ( Posix )
 {
-    import ocean.stdc.posix.signal;
+    import core.sys.posix.signal;
 }
 else
 {

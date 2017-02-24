@@ -35,7 +35,7 @@ import ocean.util.app.ext.SignalExt;
 
 import ocean.util.app.ext.model.ISignalExtExtension;
 
-import ocean.stdc.posix.signal : SIGHUP;
+import core.sys.posix.signal : SIGHUP;
 
 import ocean.io.device.File;
 

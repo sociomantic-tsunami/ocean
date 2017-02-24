@@ -34,7 +34,7 @@ version (Posix)
 {
     import core.stdc.errno;
     import ocean.stdc.posix.fcntl;
-    import ocean.stdc.posix.unistd;
+    import core.sys.posix.unistd;
     import ocean.stdc.posix.sys.wait;
 
     version (darwin)

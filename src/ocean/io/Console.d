@@ -29,7 +29,7 @@ import ocean.io.device.Device,
 
 version (Posix)
 {
-    import ocean.stdc.posix.unistd: isatty;
+    import core.sys.posix.unistd: isatty;
 }
 
 /*******************************************************************************

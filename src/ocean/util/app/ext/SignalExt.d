@@ -18,7 +18,7 @@
         import ocean.util.app.Application;
         import ocean.util.app.ext.SignalExt;
         import ocean.io.select.EpollSelectDispatcher;
-        import ocean.stdc.posix.signal : SIGINT, SIGTERM;
+        import core.sys.posix.signal : SIGINT, SIGTERM;
 
         // Example application class which does two things:
         // 1. Owns an instance of SignalExtension and registers some signals

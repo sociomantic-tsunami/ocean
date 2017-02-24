@@ -12,6 +12,7 @@
 *******************************************************************************/
 
 
-module ocean.stdc.posix.unistd;
+deprecated module ocean.stdc.posix.unistd;
+pragma(msg, "Please use core.sys.posix.unistd instead.");
 
 public import core.sys.posix.unistd;
