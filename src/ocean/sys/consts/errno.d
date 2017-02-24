@@ -11,6 +11,7 @@
 
 *******************************************************************************/
 
-module ocean.sys.consts.errno;
+deprecated module ocean.sys.consts.errno;
+pragma(msg, "Please use core.stdc.errno instead.");
 
 public import core.stdc.errno;
