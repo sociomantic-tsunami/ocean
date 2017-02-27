@@ -399,7 +399,7 @@ public abstract class Task : ISuspendable
 
     **************************************************************************/
 
-    package void entryPoint ( )
+    package final void entryPoint ( )
     {
         debug_trace("<{}> start of main function", cast(void*) this);
 
