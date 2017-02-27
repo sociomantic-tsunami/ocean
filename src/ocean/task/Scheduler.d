@@ -510,10 +510,6 @@ final class Scheduler
         task.assignTo(fiber);
         // execute the task
         bool had_exception = task.entryPoint();
-        // allow task to recycle any shared resources it may have (or recycle
-        // task instance itself)
-        debug_trace("Recycling task <{}>", cast(void*) task);
-        task.recycle();
 
         if (task.termination_hooks.length)
         {
@@ -533,6 +529,11 @@ final class Scheduler
                 );
             }
         }
+
+        // allow task to recycle any shared resources it may have (or recycle
+        // task instance itself)
+        debug_trace("Recycling task <{}>", cast(void*) task);
+        task.recycle();
 
         // in case task was resumed after unhandled exception, delay further
         // execution for one cycle to avoid situation where exception handler
