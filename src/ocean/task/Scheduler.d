@@ -791,6 +791,13 @@ public void initScheduler ( SchedulerConfiguration config,
         assert (is_scheduler_unused());
 
     _scheduler = new Scheduler(config, epoll);
+
+    version(UnitTest)
+    {
+        _scheduler.exception_handler = (Task t, Exception e) {
+            throw e;
+        };
+    }
 }
 
 /*******************************************************************************
