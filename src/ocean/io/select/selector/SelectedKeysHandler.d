@@ -104,14 +104,18 @@ class SelectedKeysHandler: ISelectedKeysHandler
 
         Params:
             selected_set = the result list of epoll_wait()
+            unhandled_exception_hook = if not null, will be called each time
+                event call results in unhandled exception. May both rethrow
+                and consume exception instance after processing it.
 
     ***************************************************************************/
 
-    override public void opCall ( epoll_event_t[] selected_set )
+    override public void opCall ( epoll_event_t[] selected_set,
+        void delegate (Exception) unhandled_exception_hook )
     {
         foreach (key; selected_set)
         {
-            this.handleSelectedKey(key);
+            this.handleSelectedKey(key, unhandled_exception_hook);
         }
     }
 
@@ -125,10 +129,14 @@ class SelectedKeysHandler: ISelectedKeysHandler
         Params:
             key = an epoll key which contains a client to be handled and the
                   reported event
+            unhandled_exception_hook = if not null, will be called each time
+                event call results in unhandled exception. May both rethrow
+                and consume exception instance after processing it.
 
      **************************************************************************/
 
-    final protected void handleSelectedKey ( epoll_event_t key )
+    final protected void handleSelectedKey ( epoll_event_t key,
+        void delegate (Exception) unhandled_exception_hook )
     {
         ISelectClient client = cast (ISelectClient) key.data.ptr;
 
@@ -157,6 +165,11 @@ class SelectedKeysHandler: ISelectedKeysHandler
 
                 this.clientError(client, key.events, e);
                 error = true;
+
+                if (unhandled_exception_hook !is null)
+                {
+                    unhandled_exception_hook(e);
+                }
             }
 
             if (unregister_key)

@@ -208,6 +208,10 @@ final class Scheduler
         Called each time task terminates with an exception when being run in
         context of the scheduler or the event loop.
 
+        NB: task reference may be null when delegate is called if exception was
+        caught in EpollSelectDispatcher context which doesn't know anything
+        about tasks.
+
     ***************************************************************************/
 
     public void delegate ( Task, Exception ) exception_handler;
@@ -411,7 +415,12 @@ final class Scheduler
     {
         do
         {
-            this.epoll.eventLoop(&this.select_cycle_hook);
+            this.epoll.eventLoop(
+                &this.select_cycle_hook,
+                this.exception_handler is null ? null : (Exception e) {
+                        this.exception_handler(null, e);
+                    }
+            );
             debug_trace("end of scheduler internal event loop cycle ({} worker " ~
                 "fibers still suspended)", this.fiber_pool.num_busy());
 
