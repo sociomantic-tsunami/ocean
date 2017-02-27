@@ -101,10 +101,14 @@ class TimeoutSelectedKeysHandler: SelectedKeysHandler
 
         Params:
             selected_set = the result list of epoll_wait()
+            unhandled_exception_hook = if not null, will be called each time
+                event call results in unhandled exception. May both rethrow
+                and consume exception instance after processing it.
 
     ***************************************************************************/
 
-    public override void opCall ( epoll_event_t[] selected_set )
+    public override void opCall ( epoll_event_t[] selected_set,
+        void delegate (Exception) unhandled_exception_hook )
     {
         if (this.timeout_manager.us_left < timeout_manager.us_left.max)
         {
@@ -145,7 +149,7 @@ class TimeoutSelectedKeysHandler: SelectedKeysHandler
                     if (!bsearch(cast (void*) client, timed_out_clients.ptr,
                                  timed_out_clients.length, timed_out_clients[0].sizeof, &cmpPtr!(true)))
                     {
-                        this.handleSelectedKey(key);
+                        this.handleSelectedKey(key, unhandled_exception_hook);
                     }
                 }
 
@@ -169,7 +173,7 @@ class TimeoutSelectedKeysHandler: SelectedKeysHandler
              */
         }
 
-        super.opCall(selected_set);
+        super.opCall(selected_set, unhandled_exception_hook);
     }
 
     /***************************************************************************

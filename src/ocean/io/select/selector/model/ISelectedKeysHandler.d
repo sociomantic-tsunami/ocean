@@ -33,8 +33,10 @@ interface ISelectedKeysHandler
 
         Params:
             selected_set = the result list of epoll_wait()
+            unhandled_exception_hook = delegate to call for client exceptions
 
     ***************************************************************************/
 
-    void opCall ( epoll_event_t[] selected_set );
+    void opCall ( epoll_event_t[] selected_set,
+        void delegate (Exception) unhandled_exception_hook );
 }

@@ -137,6 +137,14 @@ public class EpollSelectDispatcher : IEpollSelectDispatcherInfo
 
     /***************************************************************************
 
+        Optional hook to be called on unhandled exceptions from events
+
+    ***************************************************************************/
+
+    private void delegate (Exception) unhandled_exception_hook;
+
+    /***************************************************************************
+
         Timeout manager instance; null disables the timeout feature.
 
      **************************************************************************/
@@ -677,10 +685,14 @@ public class EpollSelectDispatcher : IEpollSelectDispatcherInfo
                 cycle finished before waiting for more events. Also called
                 once before the first select. If returns `true`, epoll will
                 return immediately if there are no active events.
+            unhandled_exception_hook = if not null, will be called each time
+                select cycle results in unhandled exception. May either rethrow
+                or consume (ignore) exception instance after processing it.
 
      **************************************************************************/
 
-    public void eventLoop ( bool delegate ( ) select_cycle_hook = null )
+    public void eventLoop ( bool delegate ( ) select_cycle_hook = null,
+        void delegate (Exception) unhandled_exception_hook  = null )
     in
     {
         assert (!this.in_event_loop, "Event loop has already been started.");
@@ -690,6 +702,8 @@ public class EpollSelectDispatcher : IEpollSelectDispatcherInfo
         this.in_event_loop = true;
         scope ( exit ) this.in_event_loop = false;
 
+        this.unhandled_exception_hook = unhandled_exception_hook;
+
         bool caller_work_pending = false;
 
         if (select_cycle_hook !is null)
@@ -697,7 +711,18 @@ public class EpollSelectDispatcher : IEpollSelectDispatcherInfo
 
         while ( this.registered_clients.length && !this.shutdown_triggered )
         {
-            this.select(caller_work_pending);
+            try
+            {
+                this.select(caller_work_pending);
+            }
+            catch (Exception e)
+            {
+                if (unhandled_exception_hook !is null)
+                    unhandled_exception_hook(e);
+                else
+                    throw e;              
+            }
+
             if (select_cycle_hook !is null)
                 caller_work_pending = select_cycle_hook();
         }
@@ -772,7 +797,7 @@ public class EpollSelectDispatcher : IEpollSelectDispatcherInfo
 
                 auto selected_set = events[0 .. n];
 
-                this.handle(selected_set);
+                this.handle(selected_set, this.unhandled_exception_hook);
 
                 return n;
             }
