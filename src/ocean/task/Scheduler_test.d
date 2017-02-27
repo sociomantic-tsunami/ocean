@@ -19,6 +19,7 @@ import ocean.task.Scheduler;
 import ocean.task.Task;
 import ocean.task.util.Timer;
 import ocean.core.Test;
+import ocean.core.Enforce;
 
 unittest
 {
@@ -30,7 +31,7 @@ unittest
 
         override public void run ( )
         {
-            throw new Exception("unhandled");
+            enforce(false, "scheduler");
         }
     }
 
@@ -41,7 +42,7 @@ unittest
         override public void run ( )
         {
             theScheduler.processEvents();
-            throw new Exception("unhandled");
+            enforce(false, "scheduler");
         }
     }
 
@@ -52,7 +53,7 @@ unittest
         override public void run ( )
         {
             .wait(1);
-            throw new Exception("unhandled");
+            enforce(false, "epoll");
         }
     }
  
@@ -63,16 +64,22 @@ unittest
     int caught = 0;
     theScheduler.exception_handler = (Task t, Exception e) {
         test(e !is null);
-        test!("==")(e.msg, "unhandled");
+        if (t is null)
+            test!("==")(e.msg, "epoll");
+        else
+            test!("==")(e.msg, "scheduler");
         caught++;
-        if (t !is null)
-            t.resume(); // NB: will only work if ThrowingTask3 is the last
+        Task.continueAfterThrow();
     };
 
-    theScheduler.schedule(new ThrowingTask1);
-    theScheduler.schedule(new ThrowingTask2);
-    theScheduler.schedule(new ThrowingTask3);
+    for (int i = 0; i < 3; ++i)
+    {
+        theScheduler.schedule(new ThrowingTask1);
+        theScheduler.schedule(new ThrowingTask2);
+        theScheduler.schedule(new ThrowingTask3);
+    }
+
     theScheduler.eventLoop();
 
-    test!("==")(caught, 3);
+    test!("==")(caught, 9);
 }

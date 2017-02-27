@@ -208,9 +208,9 @@ final class Scheduler
         Called each time task terminates with an exception when being run in
         context of the scheduler or the event loop.
 
-        NB: task reference may be null when delegate is called if exception was
-        caught in EpollSelectDispatcher context which doesn't know anything
-        about tasks.
+        NB: the task reference will be null when the delegate is called from the
+        EpollSelectDispatcher context (i.e. if task threw after resuming from
+        an event callback)
 
     ***************************************************************************/
 
@@ -456,7 +456,6 @@ final class Scheduler
     public void processEvents ( istring file = __FILE__, int line = __LINE__ )
     {
         auto task = Task.getThis();
-
         if (this.shutting_down)
             task.kill();
 
@@ -467,6 +466,7 @@ final class Scheduler
             file,
             line
         );
+
         debug_trace("task <{}> will be resumed after processing pending events",
             cast(void*) task);
         task.suspend();
@@ -484,11 +484,11 @@ final class Scheduler
 
     ***************************************************************************/
 
-    private static void runTask ( WorkerFiber fiber, Task task )
+    private void runTask ( WorkerFiber fiber, Task task )
     {
         task.assignTo(fiber);
         // execute the task
-        task.entryPoint();
+        bool had_exception = task.entryPoint();
         // allow task to recycle any shared resources it may have (or recycle
         // task instance itself)
         debug_trace("Recycling task <{}>", cast(void*) task);
@@ -512,6 +512,12 @@ final class Scheduler
                 );
             }
         }
+
+        // in case task was resumed after unhandled exception, delay further
+        // execution for one cycle to avoid situation where exception handler
+        // calls `Task.continueAfterThrow()` and that throws again
+        if (had_exception)
+            this.processEvents();
     }
 
     /***************************************************************************

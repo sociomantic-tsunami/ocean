@@ -148,6 +148,18 @@ public abstract class Task : ISuspendable
 
     private static TaskKillException kill_exception;
 
+    /**************************************************************************
+
+        When unhandled exception occurs in a task, it gets rethrown in the
+        caller context, suspending that task right before cleanup routines
+        (because those may deallocate exception instance). To be able to find
+        such suspended task quickly and resume after handling the exception,
+        reference to it is stored in static thread-local variable.
+
+    **************************************************************************/
+
+    package static Task task_pending_cleanup;
+
     static this ( )
     {
         Task.kill_exception = new TaskKillException;
@@ -215,6 +227,28 @@ public abstract class Task : ISuspendable
 
     /**************************************************************************
 
+        Must be called after handling exception rethrown from the task in cases
+        when it doesn't result in immediate program termination. Not calling
+        this method may result in worker fiber leaks.
+
+        Returns:
+            'true' if pending task was resumed, 'false' otherwise
+
+    **************************************************************************/
+
+    public static bool continueAfterThrow ( )
+    {
+        if (Task.task_pending_cleanup is null)
+            return false;
+        else
+        {
+            Task.task_pending_cleanup.resume();
+            return true;
+        }
+    }
+
+    /**************************************************************************
+
         Constructor. Used only to insert debug trace message.
 
     **************************************************************************/
@@ -244,7 +278,10 @@ public abstract class Task : ISuspendable
         this.fiber = fiber;
         this.fiber.active_task = this;
         if (fiber.state == fiber.state.TERM)
-            this.fiber.reset(&this.entryPoint);
+        {
+            // cast to ignore return value
+            this.fiber.reset(cast(void delegate()) &this.entryPoint);
+        }
     }
 
     /**************************************************************************
@@ -398,9 +435,13 @@ public abstract class Task : ISuspendable
         entry point and ensures any uncaught exception propagates to the
         context that has started this task.
 
+        Returns:
+            'true' if the task terminated with unhandled exception, 'false'
+            otherwise
+
     **************************************************************************/
 
-    package final void entryPoint ( )
+    package final bool entryPoint ( )
     {
         debug_trace("<{}> start of main function", cast(void*) this);
 
@@ -413,17 +454,21 @@ public abstract class Task : ISuspendable
         catch (TaskKillException)
         {
             debug_trace("<{}> termination (killed)", cast(void*) this);
-            return;
+            return false;
         }
         catch (Exception e)
         {
             debug_trace("<{}> termination (uncaught exception): {} ({}:{})",
                 cast(void*) this, getMsg(e), e.file, e.line);
+            assert (Task.task_pending_cleanup is null);
+            Task.task_pending_cleanup = this;
             this.fiber.yieldAndThrow(e);
-            return;
+            Task.task_pending_cleanup = null;
+            return true;
         }
 
         debug_trace("<{}> termination (end of main function)", cast(void*) this);
+        return false;
     }
 }
 
