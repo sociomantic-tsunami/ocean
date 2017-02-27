@@ -56,13 +56,17 @@ unittest
         }
     }
  
-    initScheduler(SchedulerConfiguration.init);
+    SchedulerConfiguration config;
+    config.worker_fiber_limit = 1; // make sure tasks run 1 by 1
+    initScheduler(config);
 
     int caught = 0;
     theScheduler.exception_handler = (Task t, Exception e) {
         test(e !is null);
         test!("==")(e.msg, "unhandled");
         caught++;
+        if (t !is null)
+            t.resume(); // NB: will only work if ThrowingTask3 is the last
     };
 
     theScheduler.schedule(new ThrowingTask1);
