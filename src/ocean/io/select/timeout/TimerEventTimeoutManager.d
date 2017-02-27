@@ -112,16 +112,7 @@ class TimerEventTimeoutManager : TimeoutManager
         {
             debug ( TimeoutManager ) Stderr("******** " ~ typeof (this.outer).stringof ~ " expired\n").flush();
 
-            try
-            {
-                this.outer.checkTimeouts();
-            }
-            catch ( Exception e )
-            {
-                log.error("Exception caught in TimerEventTimeoutManager event handler: {} @ {}:{}",
-                    getMsg(e), e.file, e.line);
-                throw e;
-            }
+            this.outer.checkTimeouts();
             return true;
         }
     }
