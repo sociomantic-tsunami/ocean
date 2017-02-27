@@ -205,6 +205,15 @@ final class Scheduler
 
     /***************************************************************************
 
+        Called each time task terminates with an exception when being run in
+        context of the scheduler or the event loop.
+
+    ***************************************************************************/
+
+    public void delegate ( Task, Exception ) exception_handler;
+
+    /***************************************************************************
+
         Temporary storage used to pass currently used worker into the
         fiber function so that it can make copy of it on stack and handle the
         recycling in the end of fiber function.
@@ -383,7 +392,7 @@ final class Scheduler
                 cast(void*) task, cast(void*) fiber);
             fiber.reset(&this.worker_fiber_method);
             task.assignTo(fiber);
-            task.resume();
+            this.resumeTask(task);
         }
     }
 
@@ -564,10 +573,35 @@ final class Scheduler
             if (this.shutting_down)
                 task.kill();
             else
-                task.resume();
+                this.resumeTask(task);
         }
 
         return this.suspended_tasks.length > 0;
+    }
+
+    /***************************************************************************
+
+        Helper method which combines recurring pattern of resuming some task
+        and handling potential exceptions.
+
+        Params:
+            task = task to resume
+
+    ***************************************************************************/
+
+    private void resumeTask ( Task task )
+    {
+        try
+        {
+            task.resume();
+        }
+        catch (Exception e)
+        {
+            if (this.exception_handler !is null)
+                this.exception_handler(task, e);
+            else
+                throw e;
+        }
     }
 }
 
