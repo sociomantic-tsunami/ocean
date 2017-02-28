@@ -91,6 +91,8 @@ public class UnixSocketListener ( CommandHandlerType ) : SelectListener!(
 
     import ocean.util.log.Log;
 
+    import core.sys.posix.sys.stat: umask;
+
     /***************************************************************************
 
         '\0'-terminated socket address path
@@ -144,6 +146,12 @@ public class UnixSocketListener ( CommandHandlerType ) : SelectListener!(
             address.sun_family = AF_UNIX;
             address.sun_path[0 .. this.address_pathnul.length] =
                 this.address_pathnul;
+
+            // The socket should be opened with rw-rw-r-- permissions,
+            // so the owner and group could connect to it by default.
+            auto old_umask = umask(Octal!("002"));
+            scope (exit)
+                umask(old_umask);
 
             super(cast(sockaddr*)&address, new UnixSocket,
                   epoll, handler, address_path);
