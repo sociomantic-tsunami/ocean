@@ -107,6 +107,11 @@ unittest
     {
         override void run ( )
         {
+            // suspend once because `await` safeguards against being run
+            // before the scheduler starts
+            theScheduler.processEvents();
+
+            // block on result of other tasks:
             auto r1 = theScheduler.awaitResult(new SubTask);
             auto r2 = theScheduler.awaitResult(new SubTask);
             test!("==")(r1, 42);

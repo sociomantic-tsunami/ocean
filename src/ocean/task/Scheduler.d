@@ -386,20 +386,7 @@ final class Scheduler
 
         if (this.fiber_pool.num_busy() >= this.fiber_pool.limit())
         {
-            if (!this.queued_tasks.push(task))
-            {
-                debug_trace("trying to schedule a task with all worker " ~
-                    "fibers busy and task queue full");
-                if (this.task_queue_full_cb !is null)
-                    this.task_queue_full_cb(task, this.queued_tasks);
-                else
-                    enforce(this.queue_full_e, false);
-            }
-            else
-            {
-                debug_trace("delayed scheduling of task '{}' because all" ~
-                    " worker fibers are busy", cast(void*) task);
-            }
+            this.queue(task);
         }
         else
         {
@@ -414,11 +401,46 @@ final class Scheduler
 
     /***************************************************************************
 
+        Method used to queue the task for later execution.
+
+        Will always put the task into the queue, even if there are idle worker
+        fibers. This method is mostly useful when implementing advanced library
+        facilities to ensure that no immediate execution takes place.
+
+        Will result in starting the task in the next event loop cycle at the
+        earliest.
+
+        Params:
+            task = derivative from `ocean.task.Task` defining some application
+                task to execute
+
+        Throws:
+            TaskQueueFullException if task queue is at full capacity
+
+    ***************************************************************************/
+
+    public void queue ( Task task )
+    {
+        if (!this.queued_tasks.push(task))
+        {
+            debug_trace("trying to queue a task while task queue is full");
+            if (this.task_queue_full_cb !is null)
+                this.task_queue_full_cb(task, this.queued_tasks);
+            else
+                enforce(this.queue_full_e, false);
+        }
+        else
+        {
+            debug_trace("task '{}' queued for delayed execution", cast(void*) task);
+        }
+    }
+
+    /***************************************************************************
+
         Schedules the argument and suspends calling task until the argument
         finishes.
 
-        This method must not be called outside of the task before the scheduler
-        event loop was started.
+        This method must not be called outside of a task.
 
         Params:
             task = task to schedule and wait for
@@ -430,16 +452,18 @@ final class Scheduler
 
     public void await ( Task task, void delegate (Task) finished_dg = null )
     {
-        assert (this.state == State.Running || Task.getThis() !is null);
+        assert (this.state == State.Running && Task.getThis() !is null);
 
         auto context = Task.getThis();
         assert (context !is null);
         assert (context !is task);
 
-        task.terminationHook({ context.resume(); });
+        task.terminationHook(&context.resume);
         if (finished_dg !is null)
             task.terminationHook({ finished_dg(task); });
-        this.schedule(task);
+        // force async scheduling to avoid checking if this context needs
+        // suspend/resume and do it unconditionally
+        this.queue(task);
         context.suspend();
     }
 
@@ -563,7 +587,7 @@ final class Scheduler
         // handles corner case which is likely to only happen in synthetic
         // tests - when there are no/few events and tasks keep calling
         // `processEvents` in a loop
-        while (this.suspended_tasks.length);
+        while (this.suspended_tasks.length || this.queued_tasks.length);
 
         // cleans up any stalled worker fibers left after deregistration
         // of all events.
@@ -727,7 +751,21 @@ final class Scheduler
                 this.resumeTask(task);
         }
 
-        return this.suspended_tasks.length > 0;
+        // if there are tasks in the queue AND free worker fibers, process some
+
+        bool queued = false;
+
+        while (this.fiber_pool.num_busy() < this.fiber_pool.limit()
+            && this.queued_tasks.length)
+        {
+            queued = true;
+            Task task;
+            auto success = this.queued_tasks.pop(task);
+            assert(success);
+            this.schedule(task);
+        }
+
+        return this.suspended_tasks.length > 0 || queued;
     }
 
     /***************************************************************************
