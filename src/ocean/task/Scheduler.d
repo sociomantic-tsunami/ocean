@@ -112,12 +112,23 @@ final class Scheduler
 {
     /***************************************************************************
 
-        Set when shutdown sequence is initiated and normal mode of operations
-        has to be prevented.
+        Tracks scheduler internal state to safeguard against harmful operations
 
     ***************************************************************************/
 
-    private bool shutting_down = false;
+    private enum State
+    {
+        /// Initial configured state
+        Initial,
+        /// Set when `eventLoop` method starts
+        Running,
+        /// Set when shutdown sequence is initiated and normal mode of operations
+        /// has to be prevented.
+        Shutdown
+    }
+
+    /// ditto
+    private State state = State.Initial;
 
     /***************************************************************************
 
@@ -308,7 +319,7 @@ final class Scheduler
             " discardead, {} suspended tasks will be killed",
             this.queued_tasks.length(), this.suspended_tasks.length());
 
-        this.shutting_down = true;
+        this.state = State.Shutdown;
         this.queued_tasks.clear();
 
         Task task;
@@ -366,7 +377,7 @@ final class Scheduler
 
     public void schedule ( Task task )
     {
-        if (this.shutting_down)
+        if (this.state == State.Shutdown)
         {
             auto caller_task = Task.getThis();
             if (caller_task !is null)
@@ -406,6 +417,9 @@ final class Scheduler
         Schedules the argument and suspends calling task until the argument
         finishes.
 
+        This method must not be called outside of the task before the scheduler
+        event loop was started.
+
         Params:
             task = task to schedule and wait for
             finished_dg = optional delegate called after task finishes but
@@ -416,6 +430,8 @@ final class Scheduler
 
     public void await ( Task task, void delegate (Task) finished_dg = null )
     {
+        assert (this.state == State.Running || Task.getThis() !is null);
+
         auto context = Task.getThis();
         assert (context !is null);
         assert (context !is task);
@@ -529,6 +545,9 @@ final class Scheduler
 
     public void eventLoop ( )
     {
+        assert (this.state != State.Shutdown);
+        this.state = State.Running;
+
         do
         {
             this.epoll.eventLoop(
@@ -572,7 +591,7 @@ final class Scheduler
     public void processEvents ( istring file = __FILE__, int line = __LINE__ )
     {
         auto task = Task.getThis();
-        if (this.shutting_down)
+        if (this.state == State.Shutdown)
             task.kill();
 
         enforceImpl(
@@ -658,7 +677,7 @@ final class Scheduler
 
         runTask(fiber, task);
 
-        while (this.queued_tasks.pop(task) && !this.shutting_down)
+        while (this.queued_tasks.pop(task) && this.state != State.Shutdown)
         {
             // there are some scheduled tasks in the queue. it is best for
             // latency and performance to start one of those immediately in
@@ -702,7 +721,7 @@ final class Scheduler
         {
             Task task;
             enforce(this.sanity_e, this.suspended_tasks.pop(task));
-            if (this.shutting_down)
+            if (this.state == State.Shutdown)
                 task.kill();
             else
                 this.resumeTask(task);
