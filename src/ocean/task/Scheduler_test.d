@@ -96,18 +96,21 @@ unittest
             .wait(1);
             result = 42;
         }
+
+        override void recycle ( )
+        {
+            result = 43;
+        }
     }
 
     static class MainTask : Task
     {
         override void run ( )
         {
-            auto task1 = new SubTask;
-            auto task2 = new SubTask;
-            theScheduler.await(task1);
-            theScheduler.await(task2);
-            test!("==")(task1.result, 42);
-            test!("==")(task2.result, 42);
+            auto r1 = theScheduler.awaitResult(new SubTask);
+            auto r2 = theScheduler.awaitResult(new SubTask);
+            test!("==")(r1, 42);
+            test!("==")(r2, 42);
         }
     }
 

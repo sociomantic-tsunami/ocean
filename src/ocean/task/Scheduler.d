@@ -30,6 +30,7 @@ import core.thread;
 
 import ocean.transition;
 import ocean.core.Enforce;
+import ocean.core.Traits;
 import ocean.core.array.Mutation : reverse;
 import ocean.io.select.EpollSelectDispatcher;
 import ocean.util.container.queue.FixedRingQueue;
@@ -407,19 +408,113 @@ final class Scheduler
 
         Params:
             task = task to schedule and wait for
+            finished_dg = optional delegate called after task finishes but
+                before it gets recycled, can be used to copy some data into
+                caller fiber context
 
     ***************************************************************************/
 
-    public void await ( Task task )
+    public void await ( Task task, void delegate (Task) finished_dg = null )
     {
         auto context = Task.getThis();
         assert (context !is null);
         assert (context !is task);
 
         task.terminationHook({ context.resume(); });
+        if (finished_dg !is null)
+            task.terminationHook({ finished_dg(task); });
         this.schedule(task);
         context.suspend();
     }
+
+    ///
+    unittest
+    {
+        void example ( )
+        {
+            static class ExampleTask : Task
+            {
+                mstring data;
+
+                override void run ( )
+                {
+                    // do things that may result in suspending ...
+                    data = "abcd".dup;
+                }
+
+                override void recycle ( )
+                {
+                    this.data = null;
+                }
+            }
+
+            mstring data;
+
+            theScheduler.await(
+                new ExampleTask,
+                (Task t) {
+                    // copy required data before tasks gets recycled
+                    auto task = cast(ExampleTask) t;
+                    data = task.data.dup;
+                }
+            );
+
+            test!("==")(data, "abcd");
+        }
+    }
+
+    /***************************************************************************
+
+        Convenience shortcut on top of `await` to await for a task and return
+        some value type as a result.
+
+        Params:
+            task = any task that defines `result` public field  of type with no
+                indirections
+
+        Returns:
+            content of `result` field of the task read right after that task
+            finishes
+
+    ***************************************************************************/
+
+    public typeof(TaskT.result) awaitResult ( TaskT : Task ) ( TaskT task )
+    {
+        static assert (
+            !hasIndirections!(typeof(task.result)),
+            "'awaitResult' can only work with result types with no indirection"
+        );
+        typeof(task.result) result;
+        this.await(task, (Task t) { result = (cast(TaskT) t).result; });
+        return result;
+    }
+
+    ///
+    unittest
+    {
+        void example ( )
+        {
+            static class ExampleTask : Task
+            {
+                int result;
+
+                override void run ( )
+                {
+                    // do things that may result in suspending ...
+                    this.result = 42;
+                }
+
+                override void recycle ( )
+                {
+                    this.result = 43;
+                }
+            }
+
+            auto data = theScheduler.awaitResult(new ExampleTask);
+            test!("==")(data, 42);
+        }
+    }
+
 
     /***************************************************************************
 
