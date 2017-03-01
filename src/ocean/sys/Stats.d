@@ -22,10 +22,10 @@ import ocean.sys.stats.linux.Queriable;
 import ocean.util.log.Log;
 
 /// Logger for logging errors
-private Logger log;
+private Logger stats_module_logger;
 static this ()
 {
-    log = Log.lookup("ocean.sys.Stats");
+    stats_module_logger = Log.lookup("ocean.sys.Stats");
 }
 
 /***************************************************************************
@@ -162,7 +162,7 @@ public class CpuMemoryStats
         }
         catch (Exception e)
         {
-            .log.error("Couldn't get stats for the process: {}@{}:{}",
+            .stats_module_logger.error("Couldn't get stats for the process: {}@{}:{}",
                 getMsg(e), e.file, e.line);
 
             return stats;
