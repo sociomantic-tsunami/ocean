@@ -1191,7 +1191,6 @@ class ConfigParser
 version ( UnitTest )
 {
     import ocean.core.Test;
-    import core.memory;
 }
 
 unittest
@@ -1461,37 +1460,23 @@ three = teen
 
     testNoAlloc(Config.parseString(str2));
 
-    debug ( ConfigParser )
+    // Test to ensure that a few hundred additional parses of the same
+    // configuration does not allocate at all.
+
+    size_t mem_used1, mem_free1;
+    gc_usage(mem_used1, mem_free1);
+
+    const num_parses = 200;
+    for (int i; i < num_parses; i++)
     {
-        const num_parses = 200;
-
-        // Repeated parsing of the same configuration.
-
-        Stdout.blue.formatln("Memory analysis of repeated parsing of the same "
-                           ~ "configuration").default_colour;
-
-        gc_usage(memused1, memfree);
-        Stdout.formatln("before parsing  : memused = {}", memused1);
-
-        Config.parseString(str1);
-
-        gc_usage(memused2, memfree);
-        Stdout.formatln("after parse # 1 : memused = {} (additional mem "
-                      ~ "consumed = {})", memused2, (memused2 - memused1));
-
-        memused1 = memused2;
-
-        for (int i = 2; i < num_parses; ++i)
-        {
-            Config.parseString(str1);
-        }
-
-        gc_usage(memused2, memfree);
-        Stdout.formatln("after parse # {} : memused = {} (additional mem "
-                      ~ "consumed = {})", num_parses, memused2,
-                        (memused2 - memused1));
-        Stdout.formatln("");
+        Config.parseString(str2);
     }
+
+    size_t mem_used2, mem_free2;
+    gc_usage(mem_used2, mem_free2);
+
+    test!("==")(mem_used1, mem_used2);
+    test!("==")(mem_free1, mem_free2);
 
     Config.clearParsingContext();
 }
