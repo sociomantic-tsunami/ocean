@@ -312,19 +312,6 @@ private void handle (T) (T v, FormatInfo f, Sink sf, ElementSink se)
     static if (IsTypeofNull!(T))
         se("null", f);
 
-    /** D1 + D2 support of typedef
-     * Note that another approach would be to handle `struct` at the very
-     * last stage and relying on `alias this` for implicit conversions.
-     * However this is not a reliable approach, as having an `alias this`
-     * doesn't mean that it will be a typedef, and a user might want the struct
-     * to be printed instead of the first matching `alias this`.
-     * In fact, there is no way to semantically express subtyping,
-     * but only the means to perform it.
-     * This could be solved later with a UDA, but it's at best a workaround.
-     */
-    else static if (IsTypedef!(T))
-        handle!(DropTypedef!(T))(v, f, sf, se);
-
     // Cannot print enum member name in D1, so just print the value
     else static if (is (T V == enum))
              handle!(V)(v, f, sf, se);
@@ -346,10 +333,24 @@ private void handle (T) (T v, FormatInfo f, Sink sf, ElementSink se)
 
     // Pointers need to be at the top because `(int*).min` compiles
     // and hence would match the integer rules
-    // In addition, thanks to automatic dereferencing,
-    // the check `v.toString()` would pass for an `Object` and an `Object*`.
+    // In addition, thanks to automatic dereferencing, checks such as
+    // `v.toString()` and `T.IsTypedef` pass when `typeof(v)` is an `Object*`,
+    // and when `T` is a pointer to a typedef.
     else static if (is (T P == P*))
         writePointer(v, f, se);
+
+    /** D1 + D2 support of typedef
+     * Note that another approach would be to handle `struct` at the very
+     * last stage and relying on `alias this` for implicit conversions.
+     * However this is not a reliable approach, as having an `alias this`
+     * doesn't mean that it will be a typedef, and a user might want the struct
+     * to be printed instead of the first matching `alias this`.
+     * In fact, there is no way to semantically express subtyping,
+     * but only the means to perform it.
+     * This could be solved later with a UDA, but it's at best a workaround.
+     */
+    else static if (IsTypedef!(T))
+        handle!(DropTypedef!(T))(v, f, sf, se);
 
     // toString hook: Give priority to the non-allocating one
     // Note: sink `toString` overload should take a `scope` delegate
@@ -1343,4 +1344,20 @@ unittest
     assert(object_str != null_str);
     assert(ptr_str == expected);
     assert(object_str == expected);
+}
+
+// Check for pointers to Typedef
+unittest
+{
+    mixin(Typedef!(ulong, "Typedefed"));
+    mixin(Typedef!(Typedefed*, "TypedefedPtr"));
+
+    Typedefed* t1 =   cast(Typedefed*)   0xDEADBEEF_00000000;
+    version (D_Version2)
+        TypedefedPtr t2 = cast(Typedefed*)   0xDEADBEEF_DEADBEEF;
+    else
+        TypedefedPtr t2 = cast(TypedefedPtr) 0xDEADBEEF_DEADBEEF;
+
+    assert(format("{}", t1) == "0XDEADBEEF00000000");
+    assert(format("{}", t2) == "0XDEADBEEFDEADBEEF");
 }
