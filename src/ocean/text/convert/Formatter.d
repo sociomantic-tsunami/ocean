@@ -462,8 +462,8 @@ private void handle (T) (T v, FormatInfo f, Sink sf, ElementSink se)
     // Arrays (dynamic and static)
     else static if (is (T A : A[]))
     {
-        static if (is(A == void))
-            handle!(ubyte[])(cast(ubyte[]) v, f, sf, se);
+        static if (is(Unqual!(A) == void))
+            handle!(Const!(ubyte)[])(cast(Const!(ubyte)[]) v, f, sf, se);
         else
         {
             sf("[");
@@ -1289,6 +1289,10 @@ unittest
     ubyte[5] arr = [42, 43, 44, 45, 92];
     void[] varr = arr;
     assert(format("{}", varr) == "[42, 43, 44, 45, 92]");
+
+    const ubyte[5] carr = [42, 43, 44, 45, 92];
+    auto cvarr = carr; // Immutable, cannot be marked `const` in D1
+    assert(format("{}", cvarr) == "[42, 43, 44, 45, 92]");
 
     // Function ptr / delegates
     auto func = cast(int function(char[], char, int)) 0x4444_1111_2222_3333;
