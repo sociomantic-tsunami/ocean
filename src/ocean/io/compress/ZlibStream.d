@@ -61,7 +61,7 @@ module ocean.io.compress.ZlibStream;
 
 import ocean.util.compress.c.zlib;
 
-import ocean.io.stream.Zlib : ZlibException, ZlibInput;
+import ocean.io.stream.Zlib_internal : ZlibException, ZlibInput;
 
 import ocean.core.TypeConvert;
 
