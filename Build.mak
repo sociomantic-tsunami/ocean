@@ -105,7 +105,8 @@ TEST_FILTER_OUT += \
 	$C/src/ocean/stdc/posix/time.d \
 	$C/src/ocean/stdc/posix/ucontext.d \
 	$C/src/ocean/stdc/posix/unistd.d \
-	$C/src/ocean/stdc/posix/utime.d
+	$C/src/ocean/stdc/posix/utime.d \
+	$C/src/ocean/io/stream/Zlib.d
 
 
 # This is an integration test that depends on Collectd -- Don't run it

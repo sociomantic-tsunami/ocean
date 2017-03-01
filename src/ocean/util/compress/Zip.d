@@ -38,7 +38,7 @@ import ocean.io.device.Array : Array;
 import ocean.io.device.File : File;
 import ocean.io.FilePath_tango : FilePath, PathView;
 import ocean.io.device.FileMap : FileMap;
-import ocean.io.stream.Zlib : ZlibInput, ZlibOutput;
+import ocean.io.stream.Zlib_internal : ZlibInput, ZlibOutput;
 import ocean.util.digest.Crc32 : Crc32;
 import ocean.io.model.IConduit : IConduit, InputStream, OutputStream;
 import ocean.io.stream.Digester : DigestInput;
