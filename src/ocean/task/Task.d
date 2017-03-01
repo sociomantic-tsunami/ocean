@@ -376,7 +376,7 @@ public abstract class Task : ISuspendable
         overridden by specific task class to reset reusable resources.
 
         It is public so that both scheduler can access it and derivatives can
-        override it. No one but scheduler must call ths method.
+        override it. No one but scheduler must call this method.
 
     **************************************************************************/
 
