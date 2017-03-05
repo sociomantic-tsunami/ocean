@@ -91,7 +91,7 @@ import ocean.sys.Common;
 
 import ocean.time.Clock;
 
-import ocean.core.Exception_tango;
+import ocean.core.ExceptionDefinitions;
 
 import ocean.io.model.IConduit;
 

@@ -45,7 +45,7 @@ import ocean.text.util.SplitIterator: ISplitIterator;
 
 import core.stdc.ctype:  tolower;
 
-import ocean.core.Exception_tango: ArrayBoundsException;
+import ocean.core.ExceptionDefinitions: ArrayBoundsException;
 
 /******************************************************************************
 

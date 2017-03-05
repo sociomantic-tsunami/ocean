@@ -21,7 +21,7 @@ import ocean.transition;
 
 import ocean.time.WallClock;
 
-import ocean.core.Exception_tango;
+import ocean.core.ExceptionDefinitions;
 
 import ocean.text.locale.Core;
 

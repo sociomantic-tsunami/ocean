@@ -25,7 +25,7 @@ import ocean.sys.Common;
 
 import ocean.io.FilePath_tango;
 
-import ocean.core.Exception_tango;
+import ocean.core.ExceptionDefinitions;
 
 import ocean.io.Path : standard, native;
 

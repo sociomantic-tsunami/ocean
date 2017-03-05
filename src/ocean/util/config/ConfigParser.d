@@ -47,7 +47,7 @@ import ocean.text.Util: locate, trim, delimit, lines;
 
 import ocean.text.convert.Utf;
 
-import ocean.core.Exception_tango;
+import ocean.core.ExceptionDefinitions;
 
 import ocean.core.Traits : DynamicArrayType;
 

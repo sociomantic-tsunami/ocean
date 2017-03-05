@@ -44,7 +44,7 @@ module ocean.text.utf.UtfUtil;
 
 import ocean.transition;
 
-import ocean.core.Exception_tango: onUnicodeError;
+import ocean.core.ExceptionDefinitions: onUnicodeError;
 
 import ocean.stdc.string: memrchr;
 

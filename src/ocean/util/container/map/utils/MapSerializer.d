@@ -41,7 +41,7 @@ import ocean.io.digest.Fnv1,
 import ocean.core.Array : copy;
 import ocean.core.Exception;
 
-import ocean.core.Exception_tango    : IOException;
+import ocean.core.ExceptionDefinitions    : IOException;
 import ocean.io.model.IConduit : IOStream;
 
 import ocean.core.Traits,

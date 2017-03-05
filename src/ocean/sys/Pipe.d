@@ -20,7 +20,7 @@ import ocean.transition;
 import ocean.sys.Common;
 import ocean.io.device.Device;
 
-import ocean.core.Exception_tango;
+import ocean.core.ExceptionDefinitions;
 
 version (Posix)
 {

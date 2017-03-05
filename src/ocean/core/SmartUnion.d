@@ -38,7 +38,7 @@
 module ocean.core.SmartUnion;
 
 import ocean.transition;
-import ocean.core.Exception_tango;
+import ocean.core.ExceptionDefinitions;
 import ocean.core.Test;
 import ocean.core.Traits;
 

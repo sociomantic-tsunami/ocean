@@ -33,7 +33,7 @@ module ocean.text.convert.Layout_tango;
 
 import ocean.transition;
 
-import ocean.core.Exception_tango;
+import ocean.core.ExceptionDefinitions;
 import ocean.core.RuntimeTraits;
 
 import ocean.time.Time;

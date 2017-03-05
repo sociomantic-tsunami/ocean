@@ -17,7 +17,7 @@
 
 module ocean.net.http.HttpStack;
 
-import ocean.core.Exception_tango;
+import ocean.core.ExceptionDefinitions;
 
 import ocean.transition;
 

@@ -21,7 +21,7 @@ import ocean.transition;
 
 import ocean.io.vfs.model.Vfs;
 
-import ocean.core.Exception_tango;
+import ocean.core.ExceptionDefinitions;
 
 import ocean.io.vfs.VirtualFolder;
 

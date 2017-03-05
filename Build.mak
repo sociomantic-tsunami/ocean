@@ -17,7 +17,8 @@ endif
 
 # Remove deprecated modules from testing:
 TEST_FILTER_OUT += \
-	$C/src/ocean/io/Stdout_tango.d
+	$C/src/ocean/io/Stdout_tango.d \
+	$C/src/ocean/core/Exception_tango.d
 
 # integration test which is disabled by default because it depends on Collectd
 TEST_FILTER_OUT += \

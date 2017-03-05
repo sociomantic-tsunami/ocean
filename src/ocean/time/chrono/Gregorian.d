@@ -23,7 +23,7 @@ import ocean.transition;
 
 import ocean.time.chrono.Calendar;
 
-import ocean.core.Exception_tango;
+import ocean.core.ExceptionDefinitions;
 
 /**
  * $(ANCHOR _Gregorian)

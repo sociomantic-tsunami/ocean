@@ -19,8 +19,8 @@ module ocean.io.device.Conduit;
 
 import ocean.transition;
 
-import ocean.core.Thread,
-       ocean.core.Exception_tango;
+import ocean.core.Thread;
+import ocean.core.ExceptionDefinitions;
 
 public  import ocean.io.model.IConduit;
 

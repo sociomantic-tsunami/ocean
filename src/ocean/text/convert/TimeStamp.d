@@ -39,7 +39,7 @@ import ocean.transition;
 
 import ocean.time.Time;
 
-import ocean.core.Exception_tango;
+import ocean.core.ExceptionDefinitions;
 
 import Util = ocean.text.Util;
 

@@ -29,7 +29,7 @@ module ocean.util.container.cache.model.containers.ArrayPool;
 
 import core.stdc.stdlib: malloc, free;
 
-import ocean.core.Exception_tango: onOutOfMemoryError;
+import ocean.core.ExceptionDefinitions: onOutOfMemoryError;
 
 /******************************************************************************/
 

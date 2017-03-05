@@ -35,7 +35,7 @@ import ocean.io.Stdout : Stderr;
 
 import ocean.transition;
 import ocean.text.Util : join, locate, locatePrior, trim;
-import ocean.core.Exception_tango : IOException;
+import ocean.core.ExceptionDefinitions : IOException;
 
 
 

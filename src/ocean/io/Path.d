@@ -68,7 +68,7 @@ public  import ocean.time.Time : Time, TimeSpan;
 
 import ocean.io.model.IFile : FileConst, FileInfo;
 
-public  import ocean.core.Exception_tango : IOException, IllegalArgumentException;
+public  import ocean.core.ExceptionDefinitions : IOException, IllegalArgumentException;
 
 import core.stdc.string : memmove;
 

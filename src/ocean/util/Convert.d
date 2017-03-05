@@ -22,7 +22,7 @@ module ocean.util.Convert;
 
 import ocean.transition;
 
-import ocean.core.Exception_tango;
+import ocean.core.ExceptionDefinitions;
 import ocean.core.Traits;
 import ocean.core.Tuple : Tuple;
 

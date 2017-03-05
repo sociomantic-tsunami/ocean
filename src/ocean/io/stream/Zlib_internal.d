@@ -35,7 +35,7 @@ import ocean.util.compress.c.zlib;
 
 import ocean.stdc.stringz : fromStringz;
 
-import ocean.core.Exception_tango : IOException;
+import ocean.core.ExceptionDefinitions : IOException;
 
 import ocean.io.device.Conduit : InputFilter, OutputFilter;
 
