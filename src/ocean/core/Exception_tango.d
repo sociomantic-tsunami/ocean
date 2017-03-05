@@ -18,24 +18,6 @@ module ocean.core.Exception_tango;
 
 import ocean.transition;
 
-version = SocketSpecifics;              // TODO: remove this before v1.0
-
-
-private
-{
-    alias void  function( istring file, size_t line, istring msg = null ) assertHandlerType;
-
-    version(D_Version2)
-    {
-        mixin("__gshared assertHandlerType assertHandler   = null;");
-    }
-    else
-    {
-        assertHandlerType assertHandler   = null;
-    }
-}
-
-
 ////////////////////////////////////////////////////////////////////////////////
 /*
 - Exception
