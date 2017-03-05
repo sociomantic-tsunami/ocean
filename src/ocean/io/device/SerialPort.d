@@ -24,7 +24,7 @@ import ocean.core.ExceptionDefinitions,
                 ocean.stdc.stringz,
                 ocean.sys.Common;
 
-import ocean.io.FilePath_tango;
+import ocean.io.FilePath;
 import core.sys.linux.termios;
 import core.sys.posix.termios;
 
