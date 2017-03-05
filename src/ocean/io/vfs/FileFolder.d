@@ -23,7 +23,7 @@ import ocean.io.device.File;
 
 import Path = ocean.io.Path;
 
-import ocean.core.Exception_tango;
+import ocean.core.ExceptionDefinitions;
 
 public import ocean.io.vfs.model.Vfs;
 

@@ -25,7 +25,7 @@ module ocean.util.container.mem.MemManager;
 
 import ocean.core.Enforce;
 
-import ocean.core.Exception_tango : onOutOfMemoryError;
+import ocean.core.ExceptionDefinitions : onOutOfMemoryError;
 
 import core.stdc.stdlib : malloc, free;
 

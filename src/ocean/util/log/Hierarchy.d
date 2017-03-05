@@ -24,7 +24,7 @@
 module ocean.util.log.Hierarchy;
 
 import ocean.transition;
-import ocean.core.Exception_tango;
+import ocean.core.ExceptionDefinitions;
 import ocean.util.log.model.ILogger;
 
 

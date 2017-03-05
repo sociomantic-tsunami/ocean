@@ -57,7 +57,7 @@
 module ocean.util.log.Logger;
 
 import ocean.transition;
-import ocean.core.Exception_tango;
+import ocean.core.ExceptionDefinitions;
 import ocean.io.model.IConduit;
 import ocean.sys.Common;
 import ocean.text.convert.Formatter;

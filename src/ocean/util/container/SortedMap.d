@@ -27,7 +27,7 @@ import ocean.util.container.model.IContainer;
 
 import ocean.transition;
 
-import ocean.core.Exception_tango : NoSuchElementException;
+import ocean.core.ExceptionDefinitions : NoSuchElementException;
 
 /*******************************************************************************
 

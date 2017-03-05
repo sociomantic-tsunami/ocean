@@ -23,7 +23,7 @@ version (Posix)
 {
     alias ocean.text.locale.Posix nativeMethods;
 
-    import ocean.core.Exception_tango;
+    import ocean.core.ExceptionDefinitions;
     import ocean.text.locale.Data;
     import core.stdc.ctype;
     import core.sys.posix.stdlib;

@@ -21,7 +21,7 @@ import ocean.transition;
 
 //import std.string;
 
-import ocean.core.Exception_tango;
+import ocean.core.ExceptionDefinitions;
 
 import ocean.io.model.IFile;
 

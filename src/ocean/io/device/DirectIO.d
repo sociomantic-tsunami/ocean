@@ -73,7 +73,7 @@ import core.memory;
 
 import ocean.io.model.IConduit;
 import ocean.io.device.File;
-import ocean.core.Exception_tango: IOException;
+import ocean.core.ExceptionDefinitions: IOException;
 import ocean.stdc.posix.fcntl : O_DIRECT; // Linux only
 
 /*******************************************************************************

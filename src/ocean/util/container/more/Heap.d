@@ -17,7 +17,7 @@
 
 module ocean.util.container.more.Heap;
 
-import ocean.core.Exception_tango;
+import ocean.core.ExceptionDefinitions;
 
 bool minHeapCompare(T)(T a, T b) {return a <= b;}
 bool maxHeapCompare(T)(T a, T b) {return a >= b;}

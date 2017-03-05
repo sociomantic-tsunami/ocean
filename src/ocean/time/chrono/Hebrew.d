@@ -19,7 +19,7 @@
 
 module ocean.time.chrono.Hebrew;
 
-import ocean.core.Exception_tango;
+import ocean.core.ExceptionDefinitions;
 
 import ocean.time.chrono.Calendar;
 

@@ -21,7 +21,7 @@
 module ocean.util.log.Appender;
 
 import ocean.transition;
-import ocean.core.Exception_tango;
+import ocean.core.ExceptionDefinitions;
 import ocean.io.model.IConduit;
 import ocean.util.log.Event;
 import ocean.util.log.model.ILogger;

@@ -46,7 +46,7 @@ module ocean.util.log.Stats;
 
 import ocean.transition;
 import ocean.core.Enforce;
-import ocean.core.Exception_tango;
+import ocean.core.ExceptionDefinitions;
 import ocean.core.Traits : FieldName;
 import ocean.core.TypeConvert;
 import ocean.io.select.EpollSelectDispatcher;
