@@ -25,7 +25,7 @@ import ocean.transition;
 
 import ocean.sys.Environment;
 
-import ocean.io.FilePath_tango;
+import ocean.io.FilePath;
 
 import PathUtil = ocean.io.Path: normalize;
 

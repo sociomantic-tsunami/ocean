@@ -23,7 +23,7 @@ import ocean.transition;
 
 import Path = ocean.io.Path;
 import ocean.io.device.File : File;
-import ocean.io.FilePath_tango : FilePath;
+import ocean.io.FilePath;
 import ocean.io.device.TempFile : TempFile;
 import ocean.util.compress.Zip : ZipReader, ZipBlockReader,
        ZipWriter, ZipBlockWriter, ZipEntry, ZipEntryInfo, Method;
