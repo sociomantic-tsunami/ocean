@@ -111,7 +111,7 @@ module ocean.text.locale.Core;
 
 import ocean.transition;
 
-import ocean.core.Exception_tango;
+import ocean.core.ExceptionDefinitions;
 
 import ocean.text.locale.Data;
 

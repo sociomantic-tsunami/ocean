@@ -22,7 +22,7 @@ import ocean.io.model.IFile;
 import ocean.io.Console;
 import ocean.sys.Common;
 import ocean.sys.Pipe;
-import ocean.core.Exception_tango;
+import ocean.core.ExceptionDefinitions;
 import ocean.text.Util;
 import Integer = ocean.text.convert.Integer_tango;
 

@@ -41,7 +41,7 @@ import ocean.transition;
 public import ocean.time.Time;
 public import ocean.time.chrono.Gregorian;
 
-import ocean.core.Exception_tango : IllegalArgumentException;
+import ocean.core.ExceptionDefinitions : IllegalArgumentException;
 import ocean.math.Math : min;
 
 private alias Time DT;

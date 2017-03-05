@@ -21,7 +21,7 @@ import ocean.transition;
 
 import ocean.text.Util : indexOf;
 
-import ocean.core.Exception_tango : XmlException;
+import ocean.core.ExceptionDefinitions : XmlException;
 
 import Integer = ocean.text.convert.Integer_tango;
 

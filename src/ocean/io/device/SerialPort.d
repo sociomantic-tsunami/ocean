@@ -19,7 +19,7 @@ import ocean.transition;
 
 import ocean.core.Array : sort;
 
-import ocean.core.Exception_tango,
+import ocean.core.ExceptionDefinitions,
                 ocean.io.device.Device,
                 ocean.stdc.stringz,
                 ocean.sys.Common;

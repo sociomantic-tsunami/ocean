@@ -19,7 +19,7 @@
 
 module ocean.time.chrono.GregorianBased;
 
-import ocean.core.Exception_tango;
+import ocean.core.ExceptionDefinitions;
 
 import ocean.time.Time;
 

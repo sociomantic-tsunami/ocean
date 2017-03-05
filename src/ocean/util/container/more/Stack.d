@@ -17,7 +17,7 @@
 
 module ocean.util.container.more.Stack;
 
-import ocean.core.Exception_tango : ArrayBoundsException;
+import ocean.core.ExceptionDefinitions : ArrayBoundsException;
 
 /******************************************************************************
 

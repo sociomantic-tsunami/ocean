@@ -32,7 +32,7 @@ import ocean.transition;
 
 import core.stdc.stdlib: malloc, realloc, free;
 
-import ocean.core.Exception_tango: onOutOfMemoryError;
+import ocean.core.ExceptionDefinitions: onOutOfMemoryError;
 
 import ocean.core.Traits;
 

@@ -67,7 +67,7 @@ import ocean.io.serialize.StructSerializer;
 
 import ocean.core.Traits;
 
-import ocean.core.Exception_tango;
+import ocean.core.ExceptionDefinitions;
 
 import ocean.math.Math : pow;
 

@@ -22,7 +22,7 @@ module ocean.util.uuid.Uuid;
 
 import ocean.transition;
 
-import ocean.core.Exception_tango;
+import ocean.core.ExceptionDefinitions;
 import Integer = ocean.text.convert.Integer_tango;
 
 private union UuidData

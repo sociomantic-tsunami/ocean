@@ -14,7 +14,7 @@ module ocean.text.locale.Data;
 
 import ocean.transition;
 
-import ocean.core.Exception_tango;
+import ocean.core.ExceptionDefinitions;
 
 package void error(mstring msg) {
      throw new LocaleException (idup(msg));

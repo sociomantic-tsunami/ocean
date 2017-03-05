@@ -139,7 +139,7 @@ import core.sys.posix.sys.types;
 
 class File : Device, Device.Seek, Device.Truncate
 {
-        import TangoException = ocean.core.Exception_tango;
+        static import ocean.core.ExceptionDefinitions;
 
         public alias Device.read  read;
         public alias Device.write write;
@@ -150,7 +150,7 @@ class File : Device, Device.Seek, Device.Truncate
 
         ***********************************************************************/
 
-        public static class IOException: TangoException.IOException
+        public static class IOException: ocean.core.ExceptionDefinitions.IOException
         {
             import ocean.core.Exception: ReusableExceptionImplementation;
 

@@ -30,7 +30,7 @@ import ocean.sys.Environment;
 
 version (Posix)
 {
-    import ocean.core.Exception_tango;
+    import ocean.core.ExceptionDefinitions;
     import core.stdc.stdlib;
     import core.sys.posix.pwd;
     import core.stdc.errno;

@@ -35,7 +35,7 @@ import ocean.io.select.fiber.SelectFiber;
 
 import ocean.io.select.EpollSelectDispatcher;
 
-import ocean.core.Exception_tango: IOException;
+import ocean.core.ExceptionDefinitions: IOException;
 
 
 /******************************************************************************

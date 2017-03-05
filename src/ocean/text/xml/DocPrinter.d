@@ -23,7 +23,7 @@ import ocean.io.model.IConduit;
 
 import ocean.text.xml.Document;
 
-import ocean.core.Exception_tango : XmlException;
+import ocean.core.ExceptionDefinitions : XmlException;
 
 version (UnitTest)
 {

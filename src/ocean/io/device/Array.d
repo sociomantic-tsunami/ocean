@@ -21,7 +21,7 @@ module ocean.io.device.Array;
 
 import ocean.transition;
 
-import ocean.core.Exception_tango;
+import ocean.core.ExceptionDefinitions;
 
 import ocean.io.device.Conduit;
 
