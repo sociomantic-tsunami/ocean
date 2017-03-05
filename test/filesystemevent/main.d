@@ -18,7 +18,7 @@ import ocean.io.select.EpollSelectDispatcher;
 
 import ocean.io.model.IConduit: ISelectable;
 
-import ocean.io.FilePath_tango;
+import ocean.io.FilePath;
 
 import ocean.core.Test;
 

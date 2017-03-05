@@ -36,7 +36,7 @@ TODO
 import ocean.core.ByteSwap : ByteSwap;
 import ocean.io.device.Array : Array;
 import ocean.io.device.File : File;
-import ocean.io.FilePath_tango : FilePath, PathView;
+import ocean.io.FilePath : FilePath, PathView;
 import ocean.io.device.FileMap : FileMap;
 import ocean.io.stream.Zlib_internal : ZlibInput, ZlibOutput;
 import ocean.util.digest.Crc32 : Crc32;
