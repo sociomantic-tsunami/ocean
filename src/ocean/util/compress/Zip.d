@@ -49,7 +49,7 @@ import ocean.time.chrono.Gregorian : Gregorian;
 import Path = ocean.io.Path;
 import Integer = ocean.text.convert.Integer_tango;
 
-debug(Zip) import ocean.io.Stdout_tango : Stderr;
+debug(Zip) import ocean.io.Stdout : Stderr;
 
 //////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////

@@ -10,7 +10,7 @@
     ---
 
         import ocean.io.device.ProgressFile;
-        import ocean.io.Stdout_tango;
+        import ocean.io.Stdout;
 
         // Delegate called when data is read/written
         void progress ( size_t bytes, ulong total_bytes )

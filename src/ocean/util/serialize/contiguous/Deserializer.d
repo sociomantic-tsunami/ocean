@@ -32,7 +32,7 @@ import ocean.core.Traits;
 
 import ocean.text.convert.Formatter;
 
-debug (DeserializationTrace) import ocean.io.Stdout_tango;
+debug (DeserializationTrace) import ocean.io.Stdout;
 
 /*******************************************************************************
 

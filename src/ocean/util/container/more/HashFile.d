@@ -308,7 +308,7 @@ debug (HashFile)
         extern(C) int printf (char*, ...);
 
         import ocean.io.Path;
-        import ocean.io.Stdout_tango;
+        import ocean.io.Stdout;
         import ocean.text.convert.Integer_tango;
 
         void main()

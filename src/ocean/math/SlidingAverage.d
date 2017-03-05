@@ -288,7 +288,7 @@ unittest
     import ocean.io.select.EpollSelectDispatcher;
     import ocean.io.select.client.TimerEvent;
 
-    import ocean.io.Stdout_tango;
+    import ocean.io.Stdout;
 
     void main ()
     {

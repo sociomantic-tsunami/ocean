@@ -40,7 +40,7 @@ import ocean.io.model.ISuspendable,
 
 import ocean.core.Array : contains;
 
-debug import ocean.io.Stdout_tango;
+debug import ocean.io.Stdout;
 
 
 /*******************************************************************************

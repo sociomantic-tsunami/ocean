@@ -97,13 +97,15 @@
 
 *******************************************************************************/
 
-module ocean.io.Stdout_tango;
+deprecated module ocean.io.Stdout_tango;
 
 import ocean.io.Console;
 
 import ocean.io.stream.Format;
 
 import ocean.text.convert.Layout_tango;
+
+deprecated("Module ocean.io.Stdout_tango is deprecated, use ocean.io.Stdout instead"):
 
 /*******************************************************************************
 

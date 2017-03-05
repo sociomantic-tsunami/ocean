@@ -35,7 +35,7 @@ import ocean.time.Time : Time;
 
 debug( ZipFolder )
 {
-    import ocean.io.Stdout_tango : Stderr;
+    import ocean.io.Stdout : Stderr;
 }
 
 // This disables code that is causing heap corruption in Tango 0.99.3

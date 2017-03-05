@@ -318,7 +318,7 @@ struct Stack (V, int Size = 0)
 
 debug (Stack)
 {
-        import ocean.io.Stdout_tango;
+        import ocean.io.Stdout;
 
         void main()
         {

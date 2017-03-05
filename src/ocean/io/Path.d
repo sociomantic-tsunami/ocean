@@ -1787,7 +1787,7 @@ unittest
 
 debug (Path)
 {
-        import ocean.io.Stdout_tango;
+        import ocean.io.Stdout;
 
         void main()
         {

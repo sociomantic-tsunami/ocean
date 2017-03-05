@@ -471,7 +471,7 @@ class TempFile : File
 version( TempFile_SelfTest ):
 
 import ocean.io.Console : Cin;
-import ocean.io.Stdout_tango : Stdout;
+import ocean.io.Stdout : Stdout;
 
 void main()
 {
