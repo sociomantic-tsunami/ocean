@@ -611,7 +611,8 @@ module ocean.text.Arguments;
 
 import ocean.transition;
 
-import ocean.io.Stdout_tango;
+import ocean.io.Stdout;
+import ocean.io.stream.Format : FormatOutput;
 import ocean.math.Math;
 import ocean.text.Util;
 import ocean.text.convert.Formatter;
@@ -1194,7 +1195,7 @@ public class Arguments
 
     ***************************************************************************/
 
-    public void displayHelp ( typeof(Stderr) output = Stderr )
+    public void displayHelp ( FormatOutput!(char) output = Stderr )
     {
         if ( this.short_desc.length > 0 )
         {
@@ -1242,7 +1243,7 @@ public class Arguments
 
     ***************************************************************************/
 
-    public void displayErrors ( typeof(Stderr) output = Stderr )
+    public void displayErrors ( FormatOutput!(char) output = Stderr )
     {
         output(this.errors(&output.layout.sprint));
     }

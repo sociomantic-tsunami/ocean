@@ -34,7 +34,7 @@ import core.stdc.ctype: isspace;
 
 import ocean.stdc.posix.sys.types: ssize_t;
 
-import ocean.io.Stdout_tango;
+import ocean.io.Stdout;
 import ocean.text.Search: SearchFruct, search;
 
 /******************************************************************************

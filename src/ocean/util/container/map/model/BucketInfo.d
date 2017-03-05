@@ -23,7 +23,7 @@ module ocean.util.container.map.model.BucketInfo;
 *******************************************************************************/
 
 import ocean.transition;
-debug (BucketInfo) import ocean.io.Stdout_tango;
+debug (BucketInfo) import ocean.io.Stdout;
 
 /*******************************************************************************/
 

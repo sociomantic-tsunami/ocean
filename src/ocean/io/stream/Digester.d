@@ -161,7 +161,7 @@ class DigestOutput : OutputFilter, InputFilter.Mutator
 
 debug (DigestStream)
 {
-        import ocean.io.Stdout_tango;
+        import ocean.io.Stdout;
         import ocean.io.device.Array;
         import ocean.util.digest.Md5;
         import ocean.io.stream.FileStream;

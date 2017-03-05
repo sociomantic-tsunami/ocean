@@ -181,7 +181,7 @@ public interface IFormatService {
  * $(BR)$(BR)Instances of $(LINK2 #DateTimeFormat, DateTimeFormat) and $(LINK2 #NumberFormat, NumberFormat) cannot be created for neutral cultures.
  * Examples:
  * ---
- * import ocean.io.Stdout_tango, ocean.text.locale.Core;
+ * import ocean.io.Stdout, ocean.text.locale.Core;
  *
  * void main() {
  *   Culture culture = new Culture("it-IT");

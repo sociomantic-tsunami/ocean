@@ -708,7 +708,7 @@ class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
 
 debug (Array)
 {
-        import ocean.io.Stdout_tango;
+        import ocean.io.Stdout;
 
         void main()
         {

@@ -1074,7 +1074,7 @@ class LinkedList (V, alias Reap = Container.reap,
 
 debug (LinkedList)
 {
-        import ocean.io.Stdout_tango;
+        import ocean.io.Stdout;
         import ocean.core.Thread;
         import ocean.time.StopWatch;
 

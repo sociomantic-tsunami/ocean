@@ -62,7 +62,7 @@ import core.sys.posix.libgen: basename;
 import core.sys.posix.sys.time: gettimeofday, timeval, timersub;
 import ocean.core.Runtime: Runtime;
 import ocean.core.Exception_tango : AssertException;
-import ocean.io.Stdout_tango: Stdout, Stderr;
+import ocean.io.Stdout: Stdout, Stderr;
 import ocean.io.stream.Format: FormatOutput;
 import ocean.io.stream.TextFile: TextFileOutput;
 import ocean.text.xml.Document: Document;

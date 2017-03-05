@@ -59,7 +59,7 @@ version (Posix)
 
 debug (Process)
 {
-    import ocean.io.Stdout_tango;
+    import ocean.io.Stdout;
 }
 
 

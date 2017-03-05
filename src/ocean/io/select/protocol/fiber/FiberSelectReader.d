@@ -33,7 +33,7 @@ import ocean.io.device.IODevice: IInputDevice;
 
 import core.stdc.errno: errno, EAGAIN, EWOULDBLOCK, EINTR;
 
-debug (Raw) import ocean.io.Stdout_tango: Stderr;
+debug (Raw) import ocean.io.Stdout: Stderr;
 
 
 /******************************************************************************/

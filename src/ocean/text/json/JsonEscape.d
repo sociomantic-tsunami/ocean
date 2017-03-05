@@ -274,7 +274,7 @@ void escape(T, TC) (T[] src, void delegate(TC[]) emit)
 
 debug (JsonEscape)
 {
-        import ocean.io.Stdout_tango;
+        import ocean.io.Stdout;
 
         void main()
         {

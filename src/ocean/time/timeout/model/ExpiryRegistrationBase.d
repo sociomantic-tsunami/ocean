@@ -30,8 +30,6 @@ import ocean.transition;
 import ocean.time.timeout.model.IExpiryRegistration,
        ocean.time.timeout.model.ITimeoutClient;
 
-debug import ocean.io.Stdout_tango;
-
 /*******************************************************************************
 
     The EBTree import and aliases should be in the TimeoutManager module and are

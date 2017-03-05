@@ -195,7 +195,7 @@ struct FileSystem
 
 debug (FileSystem)
 {
-        import ocean.io.Stdout_tango;
+        import ocean.io.Stdout;
 
         static void foo (FilePath path)
         {

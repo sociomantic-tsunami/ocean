@@ -29,7 +29,7 @@ version (Posix)
 
 debug (PipeConduit)
 {
-    import ocean.io.Stdout_tango;
+    import ocean.io.Stdout;
 }
 
 private enum {DefaultBufferSize = 8 * 1024}

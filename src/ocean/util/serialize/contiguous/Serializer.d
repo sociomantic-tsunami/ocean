@@ -31,7 +31,7 @@ import ocean.core.Traits : ContainsDynamicArray;
 
 import ocean.core.Test;
 
-debug(SerializationTrace) import ocean.io.Stdout_tango;
+debug(SerializationTrace) import ocean.io.Stdout;
 
 /******************************************************************************
 

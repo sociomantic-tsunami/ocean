@@ -909,7 +909,7 @@ unittest
 
 debug (Time)
 {
-        import ocean.io.Stdout_tango;
+        import ocean.io.Stdout;
         import ocean.time.Clock;
         import ocean.time.chrono.Gregorian;
 

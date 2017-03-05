@@ -114,7 +114,7 @@ class DataFileOutput : DataOutput
 
 debug (DataFile)
 {
-        import ocean.io.Stdout_tango;
+        import ocean.io.Stdout;
 
         void main()
         {

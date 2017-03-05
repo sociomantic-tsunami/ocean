@@ -123,7 +123,7 @@ public struct StopWatch
 
 debug (StopWatch)
 {
-        import ocean.io.Stdout_tango;
+        import ocean.io.Stdout;
 
         void main()
         {

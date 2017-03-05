@@ -16,10 +16,12 @@ override DFLAGS += -de
 endif
 
 # Remove deprecated modules from testing:
-TEST_FILTER_OUT +=
+TEST_FILTER_OUT += \
+	$C/src/ocean/io/Stdout_tango.d
 
-# This is an integration test that depends on Collectd -- Don't run it
-TEST_FILTER_OUT += $C/test/collectd/main.d
+# integration test which is disabled by default because it depends on Collectd
+TEST_FILTER_OUT += \
+	$C/test/collectd/main.d 
 
 $O/test-filesystemevent: override LDFLAGS += -lrt
 
