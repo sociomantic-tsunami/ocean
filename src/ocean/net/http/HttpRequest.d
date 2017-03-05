@@ -503,7 +503,7 @@ class HttpRequest : HttpHeader
 
 version (OceanPerformanceTest)
 {
-    import ocean.io.Stdout_tango;
+    import ocean.io.Stdout;
     import ocean.core.internal.gcInterface: gc_disable, gc_enable;
 }
 

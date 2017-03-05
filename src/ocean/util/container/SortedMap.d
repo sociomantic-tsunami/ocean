@@ -1036,7 +1036,7 @@ class SortedMap (K, V, alias Reap = Container.reap,
 
 debug (SortedMap)
 {
-        import ocean.io.Stdout_tango;
+        import ocean.io.Stdout;
         import ocean.core.Thread;
         import ocean.time.StopWatch;
         import ocean.math.random.Kiss;

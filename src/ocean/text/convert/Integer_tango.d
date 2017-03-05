@@ -908,7 +908,7 @@ unittest
 
 debug (Integer)
 {
-    import ocean.io.Stdout_tango;
+    import ocean.io.Stdout;
 
     void main()
     {

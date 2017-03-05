@@ -298,7 +298,7 @@ struct Twister
 
 debug (Twister)
 {
-        import ocean.io.Stdout_tango;
+        import ocean.io.Stdout;
         import ocean.time.StopWatch;
 
         void main()

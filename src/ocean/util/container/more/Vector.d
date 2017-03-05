@@ -306,7 +306,7 @@ struct Vector (V, int Size = 0)
 
 debug (Vector)
 {
-        import ocean.io.Stdout_tango;
+        import ocean.io.Stdout;
 
         void main()
         {

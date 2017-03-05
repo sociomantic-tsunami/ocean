@@ -802,7 +802,7 @@ class HashSet (V, alias Hash = Container.hash,
 
 debug (HashSet)
 {
-        import ocean.io.Stdout_tango;
+        import ocean.io.Stdout;
         import ocean.core.Thread;
         import ocean.time.StopWatch;
 

@@ -29,7 +29,7 @@ version (UnitTest)
 
     import core.memory;
     import ocean.math.random.Random;
-    import ocean.io.Stdout_tango;
+    import ocean.io.Stdout;
     import core.sys.posix.stdlib: srand48, mrand48, drand48;
     import core.sys.posix.unistd: getpid;
     import core.stdc.stdio : printf;

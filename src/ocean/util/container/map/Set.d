@@ -70,7 +70,7 @@ version (UnitTestVerbose) import ocean.io.Stdout;
 
 version ( UnitTestVerbose )
 {
-    import ocean.io.Stdout_tango;
+    import ocean.io.Stdout;
 }
 
 /*******************************************************************************

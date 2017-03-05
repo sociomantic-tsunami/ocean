@@ -45,7 +45,7 @@
     ---
 
         import ocean.core.SmartEnum;
-        import ocean.io.Stdout_tango;
+        import ocean.io.Stdout;
 
         alias SmartEnumValue!(int) Code;
 

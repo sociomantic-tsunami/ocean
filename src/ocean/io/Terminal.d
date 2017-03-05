@@ -26,7 +26,7 @@ import ocean.transition;
 
 import core.sys.posix.signal;
 
-debug(Term) import ocean.io.Stdout_tango;
+debug(Term) import ocean.io.Stdout;
 
 
 private

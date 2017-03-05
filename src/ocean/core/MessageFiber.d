@@ -74,7 +74,7 @@ import ocean.io.digest.Fnv1;
 
 debug ( MessageFiber )
 {
-    import ocean.io.Stdout_tango;
+    import ocean.io.Stdout;
     debug = MessageFiberToken;
 }
 
@@ -83,7 +83,7 @@ debug ( MessageFiberDump )
     import ocean.time.Clock;
     import ocean.core.Array;
     import ocean.core.Memory;
-    import ocean.io.Stdout_tango;
+    import ocean.io.Stdout;
     debug = MessageFiberToken;
 }
 

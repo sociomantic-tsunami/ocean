@@ -792,7 +792,7 @@ import core.sys.posix.stdlib: srand48, drand48;
 
 version (OceanPerformanceTest)
 {
-    import ocean.io.Stdout_tango;
+    import ocean.io.Stdout;
     import ocean.core.internal.gcInterface: gc_disable, gc_enable;
 }
 

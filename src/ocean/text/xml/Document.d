@@ -2119,7 +2119,7 @@ interface IXmlPrinter(T)
 
 debug (Document)
 {
-        import ocean.io.Stdout_tango;
+        import ocean.io.Stdout;
         import ocean.text.xml.DocPrinter;
 
         void main()

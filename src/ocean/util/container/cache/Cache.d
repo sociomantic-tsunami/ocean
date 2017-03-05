@@ -995,7 +995,7 @@ version (UnitTest)
     import core.sys.posix.stdlib: srand48, mrand48, drand48;
     import core.sys.posix.unistd: getpid;
     import core.stdc.time: time;
-    import ocean.io.Stdout_tango;
+    import ocean.io.Stdout;
     import ocean.core.Array: shuffle;
 }
 
