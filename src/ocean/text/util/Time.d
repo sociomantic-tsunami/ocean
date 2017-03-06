@@ -143,6 +143,7 @@ public mstring formatTimeRef ( time_t timestamp, ref mstring output,
 public mstring formatDuration ( ulong s, ref mstring output )
 {
     output.length = 0;
+    enableStomping(output);
 
     bool comma = false;
 
@@ -208,6 +209,7 @@ public mstring formatDuration ( ulong s, ref mstring output )
 public mstring formatDurationShort ( ulong s, ref mstring output )
 {
     output.length = 0;
+    enableStomping(output);
 
     /***************************************************************************
 
