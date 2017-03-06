@@ -22,7 +22,6 @@ import ocean.sys.ErrnoException;
 import core.sys.posix.stdio;
 import core.stdc.errno;
 import ocean.core.Traits;
-import ocean.core.Traits_tango;
 import ocean.core.Tuple;
 import ocean.io.device.File;
 import ocean.text.Search;
