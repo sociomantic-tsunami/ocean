@@ -15,7 +15,7 @@
 
 ******************************************************************************/
 
-module ocean.text.locale.Convert;
+deprecated module ocean.text.locale.Convert;
 
 import ocean.transition;
 

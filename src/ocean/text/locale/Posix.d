@@ -15,7 +15,7 @@
 
  ******************************************************************************/
 
-module ocean.text.locale.Posix;
+deprecated module ocean.text.locale.Posix;
 
 import ocean.transition;
 

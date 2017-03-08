@@ -15,7 +15,7 @@
 
 ******************************************************************************/
 
-module ocean.text.locale.Parse;
+deprecated module ocean.text.locale.Parse;
 
 import ocean.transition;
 

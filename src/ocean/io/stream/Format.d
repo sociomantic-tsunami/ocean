@@ -82,17 +82,6 @@ version(DigitalMars)
         print.formatln ("hello {}", "world");
         ---
 
-        The format() method supports the range of formatting options
-        exposed by ocean.text.convert.Layout and extensions thereof;
-        including the full I18N extensions where configured in that
-        manner. To create a French instance of FormatOutput:
-        ---
-        import ocean.text.locale.Locale;
-
-        auto locale = new Locale (Culture.getCulture ("fr-FR"));
-        auto print = new FormatOutput!(char) (locale, ...);
-        ---
-
         Note that FormatOutput is *not* intended to be thread-safe.
 
 *******************************************************************************/

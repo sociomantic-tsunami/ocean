@@ -10,7 +10,7 @@
 *******************************************************************************/
 
 
-module ocean.text.locale.Data;
+deprecated module ocean.text.locale.Data;
 
 import ocean.transition;
 

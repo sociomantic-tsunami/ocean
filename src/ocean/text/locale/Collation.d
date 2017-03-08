@@ -15,7 +15,7 @@
 
 ******************************************************************************/
 
-module ocean.text.locale.Collation;
+deprecated module ocean.text.locale.Collation;
 
 import ocean.text.locale.Core;
 

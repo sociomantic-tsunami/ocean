@@ -47,22 +47,6 @@
     Stdout.formatln ("hello {}", "world");
     ---
 
-    The format() method of both Stderr and Stdout support the range
-    of formatting options provided by ocean.text.convert.Layout and
-    extensions thereof; including the full I18N extensions where it
-    has been configured in that manner. To enable a French Stdout,
-    do the following:
-    ---
-    import ocean.text.locale.Locale;
-
-    Stdout.layout = new Locale (Culture.getCulture ("fr-FR"));
-    ---
-
-    Note that Stdout is a shared entity, so every usage of it will
-    be affected by the above example. For applications supporting
-    multiple regions, create multiple Locale instances instead and
-    cache them in an appropriate manner.
-
     Stdout.layout can also be used for formatting without outputting
     to the console such as in the following example:
     ---
