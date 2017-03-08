@@ -87,45 +87,7 @@ public class MessageDigest: MessageDigestCore
         gcry_md_reset(this.md);
         return this.calculate_(input_data);
     }
-
-    /***************************************************************************
-
-        Calculates the hash a.k.a. message digest from the input data.
-
-        Discards the result of a previous hash calculation, invalidating and
-        overwriting a previously returned result.
-
-        The length of the returned hash is the return value of
-        `gcry_md_get_algo_dlen(algorithm)` for the algorithm passed to the
-        constructor of this class.
-
-        Params:
-            input_data = data to hash; the elements will be concatenated
-
-        Returns:
-            the resuting hash.
-
-    ***************************************************************************/
-
-    deprecated ("use calculate instead")
-    public ubyte[] hash ( Const!(void)[][] input_data ... )
-    {
-        gcry_md_reset(this.md);
-        return this.hash_(input_data);
-    }
 }
-
-/*******************************************************************************
-
-    Deprecated alias of the `HMAC` class, which has been moved to
-    `ocean.util.cipher.gcrypt.HMAC`.
-
-*******************************************************************************/
-
-import HMACModule = ocean.util.cipher.gcrypt.HMAC;
-
-deprecated("Use ocean.util.cipher.gcrypt.HMAC instead")
-alias HMACModule.HMAC HMAC;
 
 /******************************************************************************/
 

@@ -666,14 +666,6 @@ public class EpollSelectDispatcher : IEpollSelectDispatcherInfo
         this.shutdown_event.trigger();
     }
 
-    /**************************************************************************/
-
-    deprecated("cycle hook delegate must return bool")
-    public void eventLoop ( void delegate ( ) select_cycle_hook )
-    {
-        this.eventLoop({ select_cycle_hook(); return false; });
-    }
-
     /***************************************************************************
 
         While there are clients registered, repeatedly waits for registered

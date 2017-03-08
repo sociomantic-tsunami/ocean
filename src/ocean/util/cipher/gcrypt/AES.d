@@ -33,9 +33,6 @@ import ocean.transition;
 
 *******************************************************************************/
 
-deprecated("Use the equivalent AES128 instead")
-public alias GcryptNoIV!(Algorithm.GCRY_CIPHER_AES, Mode.GCRY_CIPHER_MODE_ECB) AES;
-
 public alias GcryptNoIV!(Algorithm.GCRY_CIPHER_AES, Mode.GCRY_CIPHER_MODE_ECB) AES128;
 
 /// Usage example of AES with 128-bit keys

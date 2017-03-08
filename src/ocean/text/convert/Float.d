@@ -495,453 +495,177 @@ version (float_internal)
 
 /******************************************************************************
 
-  David Gay's extended conversions between string and floating-point
-  numeric representations. Use these where you need extended accuracy
-  for convertions.
-
-  Note that this class requires the attendent file dtoa.c be compiled
-  and linked to the application
+  Convert a formatted string of digits to a floating-point number.
+  Good for general use, but use David Gay's dtoa package if serious
+  rounding adjustments should be applied.
 
  ******************************************************************************/
 
-version (float_dtoa)
+NumType parse(T) (in T[] src, uint* ate=null)
 {
-    private extern(C)
+    T           c;
+    Const!(T)*  p;
+    int         exp;
+    bool        sign;
+    uint        radix;
+    NumType     value = 0.0;
+
+    static bool match (Const!(T)* aa, in T[] bb)
     {
-        // these should be linked in via dtoa.c
-        double strtod (char* s00, char** se);
-        char*  dtoa (double d, int mode, int ndigits, int* decpt, int* sign, char** rve);
+        foreach (b; bb)
+        {
+            T a = *aa++;
+            if (a >= 'A' && a <= 'Z')
+                a += 'a' - 'A';
+            if (a != b)
+                return false;
+        }
+        return true;
     }
 
-    /**********************************************************************
+    // remove leading space, and sign
+    p = src.ptr + Integer.trim (src, sign, radix);
 
-      Convert a formatted string of digits to a floating-
-      point number.
+    // bail out if the string is empty
+    if (src.length == 0 || p > &src[$-1])
+        return NumType.nan;
+    c = *p;
 
-     **********************************************************************/
-
-    deprecated("version = float_dtoa is deprecated")
-    NumType parse (char[] src, uint* ate=null)
+    // handle non-decimal representations
+    if (radix != 10)
     {
-        char* end;
-
-        auto value = strtod (src.ptr, &end);
-        assert (end <= src.ptr + src.length);
-        if (ate)
-            *ate = end - src.ptr;
-        return value;
+        long v = Integer.parse (src, radix, ate);
+        return cast(NumType) v;
     }
 
-    /**********************************************************************
+    // set begin and end checks
+    auto begin = p;
+    auto end = src.ptr + src.length;
 
-      Convert a formatted string of digits to a floating-
-      point number.
-
-     **********************************************************************/
-
-    deprecated("version = float_dtoa is deprecated")
-    NumType parse (wchar[] src, uint* ate=null)
+    // read leading digits; note that leading
+    // zeros are simply multiplied away
+    while (c >= '0' && c <= '9' && p < end)
     {
-        // cheesy hack to avoid pre-parsing :: max digits == 100
-        char[100] tmp = void;
-        auto p = tmp.ptr;
-        auto e = p + tmp.length;
-        foreach (c; src)
-        {
-            if (p < e && (c & 0x80) == 0)
-                *p++ = c;
-            else
-                break;
-        }
-
-        return parse (tmp[0..p-tmp.ptr], ate);
+        value = value * 10 + (c - '0');
+        c = *++p;
     }
 
-    /**********************************************************************
+    // gobble up the point
+    if (c is '.' && p < end)
+        c = *++p;
 
-      Convert a formatted string of digits to a floating-
-      point number.
-
-     **********************************************************************/
-
-    deprecated("version = float_dtoa is deprecated")
-    NumType parse (dchar[] src, uint* ate=null)
+    // read fractional digits; note that we accumulate
+    // all digits ... very long numbers impact accuracy
+    // to a degree, but perhaps not as much as one might
+    // expect. A prior version limited the digit count,
+    // but did not show marked improvement. For maximum
+    // accuracy when reading and writing, use David Gay's
+    // dtoa package instead
+    while (c >= '0' && c <= '9' && p < end)
     {
-        // cheesy hack to avoid pre-parsing :: max digits == 100
-        char[100] tmp = void;
-        auto p = tmp.ptr;
-        auto e = p + tmp.length;
-        foreach (c; src)
-        {
-            if (p < e && (c & 0x80) == 0)
-                *p++ = c;
-            else
-                break;
-        }
-        return parse (tmp[0..p-tmp.ptr], ate);
+        value = value * 10 + (c - '0');
+        c = *++p;
+        --exp;
     }
-}
-else
-{
-    /******************************************************************************
 
-      Convert a formatted string of digits to a floating-point number.
-      Good for general use, but use David Gay's dtoa package if serious
-      rounding adjustments should be applied.
-
-     ******************************************************************************/
-
-    NumType parse(T) (in T[] src, uint* ate=null)
+    // did we get something?
+    if (p > begin)
     {
-        T           c;
-        Const!(T)*  p;
-        int         exp;
-        bool        sign;
-        uint        radix;
-        NumType     value = 0.0;
-
-        static bool match (Const!(T)* aa, in T[] bb)
+        // parse base10 exponent?
+        if ((c is 'e' || c is 'E') && p < end )
         {
-            foreach (b; bb)
-            {
-                T a = *aa++;
-                if (a >= 'A' && a <= 'Z')
-                    a += 'a' - 'A';
-                if (a != b)
-                    return false;
-            }
-            return true;
+            uint eaten;
+            exp += Integer.parse (src[(++p-src.ptr) .. $], 0, &eaten);
+            p += eaten;
         }
 
-        // remove leading space, and sign
-        p = src.ptr + Integer.trim (src, sign, radix);
-
-        // bail out if the string is empty
-        if (src.length == 0 || p > &src[$-1])
-            return NumType.nan;
-        c = *p;
-
-        // handle non-decimal representations
-        if (radix != 10)
-        {
-            long v = Integer.parse (src, radix, ate);
-            return cast(NumType) v;
-        }
-
-        // set begin and end checks
-        auto begin = p;
-        auto end = src.ptr + src.length;
-
-        // read leading digits; note that leading
-        // zeros are simply multiplied away
-        while (c >= '0' && c <= '9' && p < end)
-        {
-            value = value * 10 + (c - '0');
-            c = *++p;
-        }
-
-        // gobble up the point
-        if (c is '.' && p < end)
-            c = *++p;
-
-        // read fractional digits; note that we accumulate
-        // all digits ... very long numbers impact accuracy
-        // to a degree, but perhaps not as much as one might
-        // expect. A prior version limited the digit count,
-        // but did not show marked improvement. For maximum
-        // accuracy when reading and writing, use David Gay's
-        // dtoa package instead
-        while (c >= '0' && c <= '9' && p < end)
-        {
-            value = value * 10 + (c - '0');
-            c = *++p;
-            --exp;
-        }
-
-        // did we get something?
-        if (p > begin)
-        {
-            // parse base10 exponent?
-            if ((c is 'e' || c is 'E') && p < end )
-            {
-                uint eaten;
-                exp += Integer.parse (src[(++p-src.ptr) .. $], 0, &eaten);
-                p += eaten;
-            }
-
-            // adjust mantissa; note that the exponent has
-            // already been adjusted for fractional digits
-            if (exp < 0)
-                value /= pow10 (-exp);
-            else
-                value *= pow10 (exp);
-        }
+        // adjust mantissa; note that the exponent has
+        // already been adjusted for fractional digits
+        if (exp < 0)
+            value /= pow10 (-exp);
         else
-        {
-            if (end - p >= 3)
-            {
-                switch (*p)
-                {
-                    case 'I': case 'i':
-                        if (match (p+1, "nf"))
-                        {
-                            value = value.infinity;
-                            p += 3;
-                            if (end - p >= 5 && match (p, "inity"))
-                                p += 5;
-                        }
-                        break;
-
-                    case 'N': case 'n':
-                        if (match (p+1, "an"))
-                        {
-                            value = value.nan;
-                            p += 3;
-                        }
-                        break;
-                    default:
-                        break;
-                }
-            }
-        }
-
-        // set parse length, and return value
-        if (ate)
-        {
-            ptrdiff_t diff = p - src.ptr;
-            assert (diff >= 0 && diff <= uint.max);
-            *ate = cast(uint) diff;
-        }
-
-        if (sign)
-            value = -value;
-        return value;
+            value *= pow10 (exp);
     }
-
-    /******************************************************************************
-
-      Internal function to convert an exponent specifier to a floating
-      point value.
-
-     ******************************************************************************/
-
-    private NumType pow10 (uint exp)
+    else
     {
-        static NumType[] Powers = [
-            1.0e1L,
-            1.0e2L,
-            1.0e4L,
-            1.0e8L,
-            1.0e16L,
-            1.0e32L,
-            1.0e64L,
-            1.0e128L,
-            1.0e256L,
-            1.0e512L,
-            1.0e1024L,
-            1.0e2048L,
-            1.0e4096L,
-            1.0e8192L,
-        ];
-
-        if (exp >= 16384)
-            throw new IllegalArgumentException ("Float.pow10 :: exponent too large");
-
-        NumType mult = 1.0;
-        foreach (NumType power; Powers)
+        if (end - p >= 3)
         {
-            if (exp & 1)
-                mult *= power;
-            if ((exp >>= 1) == 0)
-                break;
-        }
-        return mult;
-    }
-}
-
-version (float_old)
-{
-    /******************************************************************************
-
-      Convert a float to a string. This produces pretty good results
-      for the most part, though one should use David Gay's dtoa package
-      for best accuracy.
-
-      Note that the approach first normalizes a base10 mantissa, then
-      pulls digits from the left side whilst emitting them (rightward)
-      to the output.
-
-      The e parameter controls the number of exponent places emitted,
-      and can thus control where the output switches to the scientific
-      notation. For example, setting e=2 for 0.01 or 10.0 would result
-      in normal output. Whereas setting e=1 would result in both those
-      values being rendered in scientific notation instead. Setting e
-      to 0 forces that notation on for everything.
-
-TODO: this should be replaced, as it is not sufficiently accurate
-
-     ******************************************************************************/
-
-    deprecated("version = float_old is deprecated")
-    T[] format(T) (T[] dst, NumType x, uint decimals=Dec, int e=Exp, bool pad=Pad)
-    {
-        static T[] inf = "-inf";
-        static T[] nan = "-nan";
-
-        // strip digits from the left of a normalized base-10 number
-        static int toDigit (ref NumType v, ref int count)
-        {
-            int digit;
-
-            // Don't exceed max digits storable in a real
-            // (-1 because the last digit is not always storable)
-            if (--count <= 0)
-                digit = 0;
-            else
+            switch (*p)
             {
-                // remove leading digit, and bump
-                digit = cast(int) v;
-                v = (v - digit) * 10.0;
-            }
-            return digit + '0';
-        }
-
-        // extract the sign
-        bool sign = negative (x);
-        if (sign)
-            x = -x;
-
-        if (x !<>= x)
-            return sign ? nan : nan[1..$];
-
-        if (x is x.infinity)
-            return sign ? inf : inf[1..$];
-
-        // assume no exponent
-        int exp = 0;
-        int abs = 0;
-
-        // don't scale if zero
-        if (x > 0.0)
-        {
-            // extract base10 exponent
-            exp = cast(int) log10l (x);
-
-            // round up a bit
-            auto d = decimals;
-            if (exp < 0)
-                d -= exp;
-            x += 0.5 / pow10 (d);
-
-            // normalize base10 mantissa (0 < m < 10)
-            abs = exp = cast(int) log10l (x);
-            if (exp > 0)
-                x /= pow10 (exp);
-            else
-                abs = -exp;
-
-            // switch to exponent display as necessary
-            if (abs >= e)
-                e = 0;
-        }
-
-        T* p = dst.ptr;
-        int count = NumType.dig;
-
-        // emit sign
-        if (sign)
-            *p++ = '-';
-
-        // are we doing +/-exp format?
-        if (e == 0)
-        {
-            assert (dst.length > decimals + 7);
-
-            if (exp < 0)
-                x *= pow10 (abs+1);
-
-            // emit first digit, and decimal point
-            *p++ = cast(T) toDigit (x, count);
-            if (decimals)
-            {
-                *p++ = '.';
-
-                // emit rest of mantissa
-                while (decimals-- > 0)
-                    *p++ = cast(T) toDigit (x, count);
-
-                if (pad is false)
-                {
-                    while (*(p-1) is '0')
-                        --p;
-                    if (*(p-1) is '.')
-                        --p;
-                }
-            }
-
-            // emit exponent, if non zero
-            if (abs)
-            {
-                *p++ = 'e';
-                *p++ = (exp < 0) ? '-' : '+';
-                if (abs >= 1000)
-                {
-                    *p++ = cast(T)((abs/1000) + '0');
-                    abs %= 1000;
-                    *p++ = cast(T)((abs/100) + '0');
-                    abs %= 100;
-                }
-                else
-                    if (abs >= 100)
+                case 'I': case 'i':
+                    if (match (p+1, "nf"))
                     {
-                        *p++ = cast(T)((abs/100) + '0');
-                        abs %= 100;
+                        value = value.infinity;
+                        p += 3;
+                        if (end - p >= 5 && match (p, "inity"))
+                            p += 5;
                     }
-                *p++ = cast(T)((abs/10) + '0');
-                *p++ = cast(T)((abs%10) + '0');
+                    break;
+
+                case 'N': case 'n':
+                    if (match (p+1, "an"))
+                    {
+                        value = value.nan;
+                        p += 3;
+                    }
+                    break;
+                default:
+                    break;
             }
         }
-        else
-        {
-            assert (dst.length >= (((exp < 0) ? 0 : exp) + decimals + 1));
-
-            // if fraction only, emit a leading zero
-            if (exp < 0)
-            {
-                x *= pow10 (abs);
-                *p++ = '0';
-            }
-            else
-                // emit all digits to the left of point
-                for (; exp >= 0; --exp)
-                    *p++ = cast(T )toDigit (x, count);
-
-            // emit point
-            if (decimals)
-            {
-                *p++ = '.';
-
-                // emit leading fractional zeros?
-                for (++exp; exp < 0 && decimals > 0; --decimals, ++exp)
-                    *p++ = '0';
-
-                // output remaining digits, if any. Trailing
-                // zeros are also returned from toDigit()
-                while (decimals-- > 0)
-                    *p++ = cast(T) toDigit (x, count);
-
-                if (pad is false)
-                {
-                    while (*(p-1) is '0')
-                        --p;
-                    if (*(p-1) is '.')
-                        --p;
-                }
-            }
-        }
-
-        return dst [0..(p - dst.ptr)];
     }
+
+    // set parse length, and return value
+    if (ate)
+    {
+        ptrdiff_t diff = p - src.ptr;
+        assert (diff >= 0 && diff <= uint.max);
+        *ate = cast(uint) diff;
+    }
+
+    if (sign)
+        value = -value;
+    return value;
+}
+
+/******************************************************************************
+
+  Internal function to convert an exponent specifier to a floating
+  point value.
+
+ ******************************************************************************/
+
+private NumType pow10 (uint exp)
+{
+    static NumType[] Powers = [
+        1.0e1L,
+        1.0e2L,
+        1.0e4L,
+        1.0e8L,
+        1.0e16L,
+        1.0e32L,
+        1.0e64L,
+        1.0e128L,
+        1.0e256L,
+        1.0e512L,
+        1.0e1024L,
+        1.0e2048L,
+        1.0e4096L,
+        1.0e8192L,
+    ];
+
+    if (exp >= 16384)
+        throw new IllegalArgumentException ("Float.pow10 :: exponent too large");
+
+    NumType mult = 1.0;
+    foreach (NumType power; Powers)
+    {
+        if (exp & 1)
+            mult *= power;
+        if ((exp >>= 1) == 0)
+            break;
+    }
+    return mult;
 }
 
 /******************************************************************************

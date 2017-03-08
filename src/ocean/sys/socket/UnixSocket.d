@@ -27,7 +27,6 @@ import ocean.transition;
 import ocean.core.Enforce;
 import ocean.sys.socket.model.ISocket;
 
-import ocean.net.device.LocalSocket;
 import ocean.stdc.posix.sys.socket;
 import ocean.stdc.posix.sys.un: UNIX_PATH_MAX;
 import core.sys.posix.unistd;
@@ -132,33 +131,6 @@ public class UnixSocket : ISocket
         return super.bind(cast(sockaddr*)address);
     }
 
-
-    /***************************************************************************
-
-        Assigns a local address to this socket.
-        socket() must have been called previously.
-
-        address = The LocalAddress instance to use. Must be non-null.
-
-        Returns:
-            0 on success or -1 on failure.
-            On failure errno is set appropriately.
-            See the ISocket bind() implementation for details.
-
-    ***************************************************************************/
-
-    deprecated("Please pass pointer to sockaddr_un instead.")
-    public int bind ( LocalAddress address )
-    in
-    {
-        assert(address !is null);
-    }
-    body
-    {
-        return this.bind(cast(sockaddr_un*)address.name());
-    }
-
-
     /***************************************************************************
 
         Connects this socket the specified address and port.
@@ -177,27 +149,6 @@ public class UnixSocket : ISocket
         // note: cast due to that connect accepts generic `sockaddr*` pointer`
         return super.connect(cast(sockaddr*)address);
     }
-
-    /***************************************************************************
-
-        Connects this socket the specified address and port.
-        socket() must have been called previously.
-
-        address = The LocalAddress instance to use. Must be non-null.
-
-    ***************************************************************************/
-
-    deprecated("Please pass pointer to sockaddr_un instead")
-    public int connect ( LocalAddress address )
-    in
-    {
-        assert(address !is null);
-    }
-    body
-    {
-        return this.connect(cast(sockaddr_un*)address.name());
-    }
-
 
     /**************************************************************************
 

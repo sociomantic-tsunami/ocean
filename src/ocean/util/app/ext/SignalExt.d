@@ -182,22 +182,6 @@ public class SignalExt : IApplicationExtension
 
     /***************************************************************************
 
-        SignalEvent getter, for registering with epoll.
-
-        Returns:
-            internal SignalEvent member
-
-    ***************************************************************************/
-
-    deprecated("Please use SignalExt.selectClient() instead.")
-    public SignalEvent event ( )
-    {
-        return this.event_;
-    }
-
-
-    /***************************************************************************
-
         ISelectClient getter, for registering with epoll.
 
         Returns:

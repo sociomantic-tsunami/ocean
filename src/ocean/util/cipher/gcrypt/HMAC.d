@@ -104,58 +104,6 @@ public class HMAC: MessageDigestCore
 
         return this.calculate_(input_data);
     }
-
-    /***************************************************************************
-
-        Calculates the HMAC from the authentication key and the input data.
-
-        Discards the result of a previous hash calculation, invalidating and
-        overwriting a previously returned result.
-
-        An error can be caused only by the parameters passed to the constructor.
-        If this method does not throw, it is safe to assume it will never throw
-        for the same set of constructor parameters.
-
-        `key_and_input_data[0]` is expected to be the authentication key. If
-        `key_and_input_data.length == 0` then an empty key and no data are used.
-
-        The length of the returned hash is the return value of
-        `gcry_md_get_algo_dlen(algorithm)` for the algorithm passed to the
-        constructor of this class.
-
-        Params:
-            hmac_and_input_data = the first element is the HMAC key, the
-                following the data to hash, which will be concatenated
-
-        Returns:
-            the resuting HMAC.
-
-        Throws:
-            `GcryptException` on error.
-
-    ***************************************************************************/
-
-    deprecated ("use calculate instead")
-    public ubyte[] hash ( Const!(void)[][] key_and_input_data ... )
-    {
-        gcry_md_reset(this.md);
-
-        if (key_and_input_data.length)
-        {
-            GcryptException.throwNewIfGcryptError(
-                gcry_md_setkey(
-                    this.md,
-                    key_and_input_data[0].ptr, key_and_input_data[0].length
-                )
-            );
-
-            return this.hash_(key_and_input_data[1 .. $]);
-        }
-        else
-        {
-            return this.hash_(null);
-        }
-    }
 }
 
 /******************************************************************************/
