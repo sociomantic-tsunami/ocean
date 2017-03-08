@@ -300,7 +300,6 @@ unittest
     test!("==")(mapping[], [2L, 34L, 16L, 24L]);
 }
 
-// deprecated ("Must use Buffer as a buffer argument")
 U[] map ( T, MapFunc, U = ReturnTypeOf!(MapFunc) )
     ( in T[] array, MapFunc func, U[] pseudo_buff = null )
 {
@@ -308,7 +307,7 @@ U[] map ( T, MapFunc, U = ReturnTypeOf!(MapFunc) )
     return map(array, func, tmp_buffer);
 }
 
-deprecated unittest
+unittest
 {
     auto arr = map([1, 17, 8, 12][], (int i) { return i * 2L; });
     test(arr == [2L, 34L, 16L, 24L]);
@@ -417,7 +416,6 @@ unittest
         (char c) { return c == 'a'; }, result), "aaaa");
 }
 
-// deprecated ("Must use Buffer as a buffer argument")
 T[] filter ( T, Pred )
     ( in T[] array, Pred pred, T[] pseudo_buf = null )
 {
@@ -425,7 +423,7 @@ T[] filter ( T, Pred )
     return filter(array, pred, buffer)[];
 }
 
-deprecated unittest
+unittest
 {
     test!("==")(filter("aabbaab",
         (char c) { return c == 'a'; }), "aaaa");
@@ -491,13 +489,12 @@ unittest
     test!("==")(result[], "aaaaaa"[]);
 }
 
-// deprecated ("Must use Buffer as a buffer argument")
 public T[] remove ( T ) ( in T[] source, in T[] match, ref T[] result )
 {
     return remove(source, match, *cast(Buffer!(T)*) &result);
 }
 
-deprecated unittest
+unittest
 {
     mstring result;
     remove("aaabbbaaa"[], "bbb"[], result);
@@ -566,21 +563,20 @@ unittest
     test!("==")(result[], [ "abc", "def", "" ]);
 }
 
-// deprecated ("Must use Buffer as a buffer argument")
 public T3[][] split ( T1, T2, T3 ) ( T1[] src, T2[] pattern, ref T3[][] result )
 {
     auto buffer = cast(Buffer!(T3[])*) &result;
     return split(src, pattern, *buffer)[];
 }
 
-deprecated unittest
+unittest
 {
     istring[] result;
     split("aaa..bbb..ccc", "..", result);
     test!("==")(result, [ "aaa", "bbb", "ccc" ]);
 }
 
-deprecated unittest
+unittest
 {
     mstring[] result;
     split("aaa.bbb.".dup, ".", result);
@@ -636,7 +632,6 @@ unittest
     test!("==")(result[], "some stoops");
 }
 
-// deprecated ("Must use Buffer as a buffer argument")
 public T[] substitute ( T ) ( in T[] source, in T[] match,
     in T[] replacement, ref T[] result )
 {
@@ -644,7 +639,7 @@ public T[] substitute ( T ) ( in T[] source, in T[] match,
         * cast(Buffer!(char)*) &result);
 }
 
-deprecated unittest
+unittest
 {
     mstring result;
     substitute("some string", "ring", "oops", result);

@@ -59,11 +59,6 @@ struct Attribute(Ch = char) {
  * instructions, and/or subelements) will appear, in order, between
  * the startElement event and the corresponding endElement event.</p>
  *
- * <p>This interface is similar to the now-deprecated SAX 1.0
- * DocumentHandler interface, but it adds support for Namespaces
- * and for reporting skipped entities (in non-validating XML
- * processors).</p>
- *
  * <p>Implementors should note that there is also a
  * <code>ContentHandler</code> class in the <code>java.net</code>
  * package; that means that it's probably a bad idea to do</p>
@@ -2035,11 +2030,6 @@ public class XMLFilterImpl(Ch = char) : SaxHandler, XMLFilter, EntityResolver, E
  * {@link #parse parse} methods must not return until parsing
  * is complete, and readers must wait for an event-handler callback
  * to return before reporting the next event.</p>
- *
- * <p>This interface replaces the (now deprecated) SAX 1.0 {@link
- * org.xml.sax.Parser Parser} interface.  The XMLReader interface
- * contains two important enhancements over the old Parser
- * interface (as well as some minor ones):</p>
  *
  * <ol>
  * <li>it adds a standard way to query and set features and

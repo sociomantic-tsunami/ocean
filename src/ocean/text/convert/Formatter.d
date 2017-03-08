@@ -1128,7 +1128,7 @@ unittest
     // This is handled as a pointer, not as an integer literal
     assert(format("{}", null) == "null");
 
-    // Imaginary and complex numbers aren't supported anymore (deprecated in D2)
+    // Imaginary and complex numbers aren't supported in D2
     // assert(format("{0:f}", 1.23f*1i) == "1.23*1i");
     // See the original Tango's code for more examples
 

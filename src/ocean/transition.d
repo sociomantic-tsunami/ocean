@@ -254,9 +254,9 @@ unittest
 
 /*******************************************************************************
 
-    Replacement for `typedef` which is completely deprecated. It generates
-    usual `typedef` when built with D1 compiler and wrapper struct with
-    `alias this` when built with D2 compiler.
+    Replacement for `typedef` which is not available as a keyword in D2. It
+    generates usual `typedef` when built with D1 compiler and wrapper struct
+    with `alias this` when built with D2 compiler.
 
     Used as mixin(Typedef!(hash_t, "MyHash"))
 
@@ -400,9 +400,9 @@ void enableStomping(T)(ref T[] array)
 
 /*******************************************************************************
 
-    Helper template that can be used instead of deprecated octal literals. In
-    some cases preserving octal notation is really important for readability and
-    those can't be simply replace with decimal/hex ones.
+    Helper template that can be used instead of octal literals. In some cases
+    preserving octal notation is really important for readability and those
+    can't be simply replace with decimal/hex ones.
 
     Template_Params:
         literal = octal number literal as string
@@ -672,7 +672,7 @@ unittest
     version (D_Version2) { }
     else
     {
-        // built-in sort is deprecated and importing ocean.core.Array
+        // built-in sort is not available in D2 and importing ocean.core.Array
         // introduces module cycle
         auto s_arr = [ S(2), S(3), S(1) ];
         auto c_arr = [ new C(2), new C(3), new C(1) ];
