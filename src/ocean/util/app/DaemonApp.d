@@ -22,16 +22,8 @@
 
     However, some extensions (namely, the SignalExt and TimerExt) require an
     epoll instance for their internal event handling. For this reason, an epoll
-    instance must be passed to the DaemonApp. This may be done in one of two
-    ways:
-
-      1. An epoll instance may be passed to the startEventHandling method. (This
-         is more convenient for some application workflows, where the epoll
-         instance does not exist until after config parsing has occurred.)
-      2. An epoll instance may be passed to the constructor. (deprecated)
-
-    Note that you must choose one or the other approach. It is an error to pass
-    an epoll instance *both* to the constructor and to startEventHandling.
+    instance must be passed to the DaemonApp. To do so, pass an epoll instance
+    to the startEventHandling method.
 
     Copyright:
         Copyright (c) 2009-2016 Sociomantic Labs GmbH.

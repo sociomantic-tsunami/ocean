@@ -471,7 +471,7 @@ private void callBestOverload ( From, To, istring function_name )
 
         static if (is_old)
         {
-            // None matched, try deprecated signatures
+            // None matched, try legacy signatures
             callBestOverloadOld!(From, To, function_name)(from, to, requestBuffer);
         }
         else static if ( is ( typeof(longest_convert = &To.`~function_name~`)) )

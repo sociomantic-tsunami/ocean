@@ -827,7 +827,6 @@ public DE[] append ( DE, T... ) ( ref Buffer!(DE) dest, T arrays )
     return dest[];
 }
 
-// deprecated("Must use Buffer argument")
 public DE[] append ( DE, T... ) ( ref DE[] dest, T arrays )
 {
     return append( *(cast(Buffer!(DE)*) &dest), arrays);
@@ -878,13 +877,12 @@ unittest
 }
 
 
-// deprecated("Must use Buffer argument")
 public DE[] concat ( DE, T... ) ( ref DE[] dest, T arrays )
 {
     return concat(*(cast(Buffer!(DE)*) &dest), arrays);
 }
 
-deprecated unittest
+unittest
 {
     mstring dest;
     concat(dest, "hello "[], "world"[]);
@@ -938,13 +936,12 @@ unittest
     //test!("==")(dest[], src);
 }
 
-// deprecated("Must use Buffer argument")
 public T[] copy ( T, T2 ) ( ref T[] dest, T2[] src )
 {
     return copy(*(cast(Buffer!(T)*) &dest), src);
 }
 
-deprecated unittest
+unittest
 {
     mstring dest;
     cstring src = "hello";
@@ -991,13 +988,12 @@ unittest
     test!("==")(dst[], "cccb");
 }
 
-// deprecated("Must use Buffer argument")
 public T[] copyExtend ( T, T2 ) ( ref T[] dest, T2[] src )
 {
     return copyExtend(*(cast(Buffer!(T)*) &dest), src);
 }
 
-deprecated unittest
+unittest
 {
     auto dst = "aa".dup;
     copyExtend(dst, "bbbb");
@@ -1051,14 +1047,13 @@ unittest
 }
 
 
-// deprecated ("Must use Buffer as a buffer argument")
 public void appendCopy ( T, T2 ) ( ref T[][] dest, T2[] src )
 {
     appendCopy(*(cast(Buffer!(T)[]*) &dest), src);
 }
 
 ///
-deprecated unittest
+unittest
 {
     mstring[] dest;
     cstring src = "hello";
@@ -1103,13 +1098,12 @@ unittest
     test!("==")(elem, 'g');
 }
 
-// deprecated ("Must use Buffer as a buffer argument")
 public bool pop ( T ) ( ref T[] array, out T popped )
 {
     return pop (* cast(Buffer!(T)*) &array, popped);
 }
 
-deprecated unittest
+unittest
 {
     auto buffer = "something".dup;
     char elem;
@@ -1174,14 +1168,13 @@ unittest
     test!("==")(arr[], "somng"[]);
 }
 
-// deprecated ("Must use Buffer as a buffer argument")
 public T[] removeShift ( T ) ( ref T[] buffer, size_t index,
     size_t remove_elems = 1 )
 {
     return removeShift(*cast(Buffer!(T)*) &buffer, index, remove_elems);
 }
 
-deprecated unittest
+unittest
 {
     mstring arr = "something".dup;
     removeShift(arr, 3, 4);
@@ -1242,7 +1235,6 @@ unittest
     test!("==")(arr[], "somemething");
 }
 
-// deprecated ("Must use Buffer as a buffer argument")
 public T[] insertShift ( T ) ( ref T[] buffer, size_t index,
     size_t insert_elems = 1)
 {
