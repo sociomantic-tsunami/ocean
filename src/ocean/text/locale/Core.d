@@ -107,7 +107,7 @@
  * )
  */
 
-module ocean.text.locale.Core;
+deprecated module ocean.text.locale.Core;
 
 import ocean.transition;
 

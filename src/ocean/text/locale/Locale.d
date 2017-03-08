@@ -40,7 +40,7 @@
 
 ******************************************************************************/
 
-module ocean.text.locale.Locale;
+deprecated module ocean.text.locale.Locale;
 
 public import ocean.text.locale.Core : Culture;
 
