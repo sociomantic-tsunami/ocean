@@ -165,16 +165,9 @@ public abstract class IAggregatePool ( T ) : IPool, IFreeList!(ItemType_!(T))
         static assert (!is (typeof (&(T.object_pool_index))), T.stringof ~ ".object_pool_index must be a dynamic member");
 
         static assert (
-            is(I == size_t) || is(I == uint),
+            is(I == size_t),
             T.stringof ~ ".object_pool_index must be size_t, not " ~ I.stringof
         );
-
-        static if (is(I == uint))
-        {
-            pragma (msg, "Consider changing the type of " ~ T.stringof
-                ~ ".object_pool_index from uint to size_t for improved 64-bit "
-                ~ "correctness and easier D2 migration");
-        }
 
         // WORKAROUND: because of DMD1 bug placing this condition in static assert
         // directly causes it to fail even if condition is in fact true. Using
@@ -565,11 +558,7 @@ public abstract class IAggregatePool ( T ) : IPool, IFreeList!(ItemType_!(T))
 
     protected override void setItemIndex ( Item item, size_t n )
     {
-        // For slower and smoother transition initially assumes index still
-        // contains at most uint.max value while using size_t in API. Later
-        // `uint object_pool_index` will become deprecated and this cast removed
-        assert (n < uint.max);
-        this.fromItem(item).object_pool_index = cast(uint) n;
+        this.fromItem(item).object_pool_index = n;
     }
 
     /**************************************************************************
