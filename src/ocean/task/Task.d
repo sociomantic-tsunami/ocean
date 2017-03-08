@@ -349,12 +349,6 @@ public abstract class Task : ISuspendable
         this.termination_hooks ~= hook;
     }
 
-    deprecated("Use terminationHook(hook) instead")
-    public void registerOnKillHook (void delegate() hook)
-    {
-        this.terminationHook(hook);
-    }
-
     /***************************************************************************
 
         Unregisters a termination hook that would be executed when the Task is
@@ -368,12 +362,6 @@ public abstract class Task : ISuspendable
     public void removeTerminationHook (void delegate() hook)
     {
         this.termination_hooks.length = .moveToEnd(this.termination_hooks[], hook);
-    }
-
-    deprecated("Use removeTerminationHook(hook) instead")
-    public void unregisterOnKillHook (void delegate() hook)
-    {
-        this.removeTerminationHook(hook);
     }
 
     /***************************************************************************

@@ -90,30 +90,6 @@ package class HierarchyT (LoggerT) : ILogger.Context
 
     /***************************************************************************
 
-        Return the name of this Hierarchy
-
-    ***************************************************************************/
-
-    deprecated("Use label instead")
-    final istring name ()
-    {
-        return this.label_;
-    }
-
-    /***************************************************************************
-
-        Set the name of this Hierarchy
-
-    ***************************************************************************/
-
-    deprecated("Use label instead")
-    final void name (istring name)
-    {
-        this.label_ = name;
-    }
-
-    /***************************************************************************
-
         Return the address of this Hierarchy.
         This is typically attached when sending events to remote monitors.
 

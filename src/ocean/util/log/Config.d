@@ -334,109 +334,6 @@ static this ( )
 
 /*******************************************************************************
 
-    Sets up logging configuration. Creates an AppendSysLog appender for each
-    log.
-
-    Params:
-        Source = the type of the config parser
-        FileLayout = layout to use for logging to file, defaults to LayoutDate
-        ConsoleLayout = layout to use for logging to console, defaults to
-                        LayoutSimple
-
-        config   = an instance of an class iterator for Config
-        m_config = an instance of the MetaConfig class
-        loose = if true, configuration files will be parsed in a more relaxed
-                manner
-        use_insert_appender = true if the InsertConsole appender should be used
-                              (needed when using the AppStatus module)
-
-    Throws:
-        Exception if the config for a logger specifies an invalid level
-
-*******************************************************************************/
-
-deprecated("Use configureOldLogger and call ocean.util.config.ConfigFiller : enable_loose_parsing yourself")
-public void configureLoggers ( Source = ConfigParser, FileLayout = LayoutDate,
-                               ConsoleLayout = LayoutSimple )
-                             ( ClassIterator!(Config, Source) config,
-                               MetaConfig m_config, bool loose = false,
-                               bool use_insert_appender = false )
-{
-    Appender newAppender ( istring file, Appender.Layout layout )
-    {
-        return new AppendFile(file, layout);
-    }
-
-    configureLoggers!(Source, FileLayout, ConsoleLayout)
-        (config, m_config, &newAppender, loose, use_insert_appender);
-}
-
-/*******************************************************************************
-
-    Instantiate the template to make sure it compiles but doesn't test it.
-
-*******************************************************************************/
-
-deprecated unittest
-{
-    void f ( )
-    {
-        configureLoggers!()(ClassIterator!(Config, ConfigParser).init,
-            MetaConfig.init);
-    }
-}
-
-/*******************************************************************************
-
-    Sets up logging configuration. Calls the provided file_appender delegate once
-    per log being configured and passes the returned appender to the log's add()
-    method.
-
-    Params:
-        Source = the type of the config parser
-        FileLayout = layout to use for logging to file, defaults to LayoutDate
-        ConsoleLayout = layout to use for logging to console, defaults to
-                        LayoutSimple
-        config   = an instance of an class iterator for Config
-        m_config = an instance of the MetaConfig class
-        file_appender = delegate which returns appender instances to write to
-                        a file
-        loose = if true, configuration files will be parsed in a more relaxed
-                manner
-        use_insert_appender = true if the InsertConsole appender should be used
-                              (needed when using the AppStatus module)
-
-*******************************************************************************/
-
-deprecated("Use configureOldLoggers and call ocean.util.config.ConfigFiller : enable_loose_parsing yourself")
-public void configureLoggers ( Source = ConfigParser, FileLayout = LayoutDate,
-    ConsoleLayout = LayoutSimple )
-    ( ClassIterator!(Config, Source) config, MetaConfig m_config,
-    Appender delegate ( istring file, Layout layout ) file_appender,
-    bool loose = false, bool use_insert_appender = false )
-{
-    // DMD1 cannot infer the common type between both return, we have to work
-    // around it...
-    static Appender console_appender_fn (bool insert_appender, Layout layout)
-    {
-        if (insert_appender)
-            return new InsertConsole(layout);
-        else
-            return new AppendStderrStdout(Level.Warn, layout);
-    }
-
-    enable_loose_parsing(loose);
-
-    configureLoggers!(Logger, Source, FileLayout, ConsoleLayout)
-        (config, m_config,
-         (cstring n) { return !n.length ? Log.root : Log.lookup(n); },
-         file_appender,
-         (Layout l) { return console_appender_fn(use_insert_appender, l); });
-}
-
-
-/*******************************************************************************
-
     Sets up logging configuration for `ocean.util.log.Log`
 
     Calls the provided `file_appender` delegate once per log being configured
@@ -735,22 +632,6 @@ file = dummy
 
     log_D.fatal("fatal log");
     test!("==")(temp_appender.latest_log_msg, "fatal log");
-}
-
-/*******************************************************************************
-
-    Instantiate the template to make sure it compiles but doesn't test it.
-
-*******************************************************************************/
-
-deprecated unittest
-{
-    void f ( )
-    {
-        Appender delegate ( istring file, Layout layout ) file_appender;
-        configureLoggers!()(ClassIterator!(Config, ConfigParser).init,
-            MetaConfig.init, file_appender);
-    }
 }
 
 /*******************************************************************************

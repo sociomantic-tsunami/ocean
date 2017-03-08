@@ -116,31 +116,4 @@ abstract class MessageDigestCore
 
         return gcry_md_read_slice(this.md);
     }
-
-    /***************************************************************************
-
-        Calculates the hash a.k.a. message digest from the input data.
-
-        The length of the returned hash is the return value of
-        `gcry_md_get_algo_dlen(algorithm)` for the algorithm passed to the
-        constructor of this class.
-
-        Params:
-            input_data = data to hash; the elements will be concatenated
-
-        Returns:
-            the resuting hash.
-
-    ***************************************************************************/
-
-    deprecated("use calculate_ instead")
-    protected ubyte[] hash_ ( Const!(void)[][] input_data )
-    {
-        foreach (chunk; input_data)
-        {
-            gcry_md_write(this.md, chunk.ptr, chunk.length);
-        }
-
-        return gcry_md_read_slice(this.md);
-    }
 }
