@@ -226,31 +226,7 @@ size_t moveToEnd ( T, Pred = DefaultPredicates.IsEqual!(T) )
 }
 
 /// ditto
-deprecated ("Use `moveToEnd()` instead")
-size_t remove ( T, Pred = DefaultPredicates.IsEqual!(T) )
-    ( T[] array, in T element, Pred pred = Pred.init )
-{
-    return moveToEnd(array, element, pred);
-}
-
-///
-unittest
-{
-    auto array = "abbcc".dup;
-    test!("==")(moveToEnd(array, 'b'), 3);
-    test!("==")(array, "accbb");
-}
-
-/// ditto
 size_t moveToEnd ( T, Pred = DefaultPredicates.IsEqual!(T) )
-    ( ref Buffer!(T) array, in T element, Pred pred = Pred.init )
-{
-    return moveToEnd(array[0..array.length], element, pred);
-}
-
-/// ditto
-deprecated ("Use `moveToEnd()` instead")
-size_t remove ( T, Pred = DefaultPredicates.IsEqual!(T) )
     ( ref Buffer!(T) array, in T element, Pred pred = Pred.init )
 {
     return moveToEnd(array[0..array.length], element, pred);

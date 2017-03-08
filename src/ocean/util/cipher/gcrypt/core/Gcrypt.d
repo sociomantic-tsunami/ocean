@@ -189,15 +189,6 @@ public class GcryptException : Exception
 
 /*******************************************************************************
 
-    Alias to preserve old, deprecated Gcrypt template name.
-
-*******************************************************************************/
-
-deprecated("Use GcryptNoIV or GcryptWithIV instead")
-public alias GcryptWithIV Gcrypt;
-
-/*******************************************************************************
-
     Gcrypt algorithm base class template.
 
     Template_Params:

@@ -297,33 +297,3 @@ abstract class IODevice : InputDevice, IOutputDevice
 
     abstract public ssize_t write ( Const!(void)[] src );
 }
-
-/******************************************************************************
-
-    Output device base class, may be used to conveniently implement an
-    IOutputDevice.
-
- ******************************************************************************/
-
-deprecated ("use IOutputDevice or IODevice instead")
-abstract class OutputDevice : IOutputDevice
-{
-    /**************************************************************************
-
-        Attempts to write src.length bytes, see IOutputDevice.write()
-        documentation.
-
-        Params:
-            src = source data buffer
-
-        Returns
-            the number of bytes written on success or -1 on error. On error
-            errno is set appropriately.
-
-     **************************************************************************/
-
-    public ssize_t write ( Const!(void)[] src )
-    {
-        return .write(this.fileHandle(), src.ptr, src.length);
-    }
-}

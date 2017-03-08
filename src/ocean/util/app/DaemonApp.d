@@ -294,39 +294,6 @@ public abstract class DaemonApp : Application,
         This constructor only sets up the internal state of the class, but does
         not call any extension or user code.
 
-        Note: when calling this constructor, which accepts an epoll instance,
-        you must not pass the epoll instance again to startEventHandling.
-
-        Params:
-            epoll = epoll instance, required by timer and signal extensions
-            name = Name of the application (to show in the help message)
-            desc = Short description of what the program does (should be
-                         one line only, preferably less than 80 characters)
-            ver = application's version information
-            settings = optional settings (see OptionalSettings, above)
-
-    ***************************************************************************/
-
-    deprecated("Use the other ctor and pass your epoll instance to "
-        "startEventHandling instead. After making this change, be careful not to "
-        "use the timer_ext member until after calling startEventHandling.")
-    public this ( EpollSelectDispatcher epoll, istring name, istring desc,
-        VersionInfo ver, OptionalSettings settings = OptionalSettings.init )
-    {
-        this(name, desc, ver, settings);
-
-        this.epoll = epoll;
-
-        // Create and register timer extension
-        this.timer_ext = new TimerExt(this.epoll);
-        this.registerExtension(this.timer_ext);
-    }
-
-    /***************************************************************************
-
-        This constructor only sets up the internal state of the class, but does
-        not call any extension or user code.
-
         Note: when calling this constructor, which does not accept an epoll
         instance, you must pass the epoll instance to startEventHandling
         instead.
@@ -396,38 +363,6 @@ public abstract class DaemonApp : Application,
         this.registerExtension(this.unix_socket_ext);
 
         this.system_stats = new CpuMemoryStats();
-    }
-
-    /***************************************************************************
-
-        This method must be called in order for signal and timer event handling
-        to start being processed. As it registers clients (the stats timer and
-        signal handler) with epoll which will always reregister themselves after
-        firing, you should call this method when you are about to start your
-        application's main event loop.
-
-        Note that, as this method constructs the timer extension, it may only be
-        used once this method has been called.
-
-    ***************************************************************************/
-
-    deprecated("Pass your epoll instance to the other startEventHandling overload "
-        "and stop passing it to the ctor. After making this change, be careful "
-        "not to use the timer_ext member until after calling startEventHandling.")
-    public void startEventHandling ( )
-    {
-        assert(this.epoll !is null,
-            "Either pass epoll to the ctor or startEventHandling, not both");
-        assert(this.timer_ext !is null);
-
-        // Register stats timer with epoll
-        this.timer_ext.register(&this.statsTimer, this.stats_ext.config.interval);
-
-        // Register signal event handler with epoll
-        this.epoll.register(this.signal_ext.selectClient());
-
-        /// Initialize the unix socket with epoll.
-        this.unix_socket_ext.initializeSocket(this.epoll);
     }
 
     /***************************************************************************

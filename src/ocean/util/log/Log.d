@@ -105,18 +105,6 @@ import AP = ocean.util.log.Appender;
 import EV = ocean.util.log.Event;
 import ocean.util.log.Hierarchy;
 
-deprecated("Import ocean.util.log.Appender")
-public alias AP.Appender Appender;
-deprecated("Import ocean.util.log.Appender")
-public alias AP.AppendNull AppendNull;
-deprecated("Import ocean.util.log.Appender")
-public alias AP.AppendStream AppendStream;
-deprecated("Import ocean.util.log.Appender")
-public alias AP.LayoutTimer LayoutTimer;
-
-deprecated("Import ocean.util.log.Event")
-public alias EV.LogEvent LogEvent;
-
 alias void* Arg;
 alias va_list ArgList;
 
@@ -564,18 +552,6 @@ public class Logger : ILogger
 
         /***********************************************************************
 
-                Is trace enabled?
-
-        ***********************************************************************/
-
-        deprecated("Use logger.enabled(Logger.Level.Trace) instead")
-        final bool trace ()
-        {
-                return enabled (Level.Trace);
-        }
-
-        /***********************************************************************
-
                 Append a trace message
 
         ***********************************************************************/
@@ -583,18 +559,6 @@ public class Logger : ILogger
         final void trace (cstring fmt, ...)
         {
             format (Level.Trace, fmt, _arguments, _argptr);
-        }
-
-        /***********************************************************************
-
-                Is info enabled?
-
-        ***********************************************************************/
-
-        deprecated("Use logger.enabled(Logger.Level.Info) instead")
-        final bool info ()
-        {
-                return enabled (Level.Info);
         }
 
         /***********************************************************************
@@ -610,18 +574,6 @@ public class Logger : ILogger
 
         /***********************************************************************
 
-                Is warn enabled?
-
-        ***********************************************************************/
-
-        deprecated("Use logger.enabled(Logger.Level.Warn) instead")
-        final bool warn ()
-        {
-                return enabled (Level.Warn);
-        }
-
-        /***********************************************************************
-
                 Append a warning message
 
         ***********************************************************************/
@@ -633,18 +585,6 @@ public class Logger : ILogger
 
         /***********************************************************************
 
-                Is error enabled?
-
-        ***********************************************************************/
-
-        deprecated("Use logger.enabled(Logger.Level.Error) instead")
-        final bool error ()
-        {
-                return enabled (Level.Error);
-        }
-
-        /***********************************************************************
-
                 Append an error message
 
         ***********************************************************************/
@@ -652,18 +592,6 @@ public class Logger : ILogger
         final void error (cstring fmt, ...)
         {
             format (Level.Error, fmt, _arguments, _argptr);
-        }
-
-        /***********************************************************************
-
-                Is fatal enabled?
-
-        ***********************************************************************/
-
-        deprecated("Use logger.enabled(Logger.Level.Fatal) instead")
-        final bool fatal ()
-        {
-                return enabled (Level.Fatal);
         }
 
         /***********************************************************************
