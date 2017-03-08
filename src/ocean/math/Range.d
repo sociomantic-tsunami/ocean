@@ -786,9 +786,6 @@ public struct Range ( T )
 
         It is assumed that the array is already sorted.
 
-        This method can be used as a replacement for the now-deprecated
-        opEquals ( This[] )
-
         Params:
             ranges = a sorted array of This!T
 
