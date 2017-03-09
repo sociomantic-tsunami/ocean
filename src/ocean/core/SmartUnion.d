@@ -228,6 +228,8 @@ private struct SmartUnionIntern ( U )
 
     Template_Params:
         i   = U member start index
+        len = number of members in U
+        U = aggregate to iterate over
 
     Evaluates to:
         a ',' separated list of the names of the members of U
