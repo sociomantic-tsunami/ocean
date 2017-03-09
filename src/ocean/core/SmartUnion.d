@@ -100,7 +100,6 @@ struct SmartUnion ( U )
     private alias typeof(*this) Type;
 }
 
-///
 unittest
 {
     SmartUnion!(U1) u1;
