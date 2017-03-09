@@ -3,27 +3,6 @@
     Template for a union that knows its active field and uses contracts to
     assert that always the active field is read.
 
-    Usage:
-    ---
-        import $(TITLE);
-                union MyUnion
-        {
-            int    x;
-            char[] y;
-        }
-                void main ( )
-        {
-            SmartUnion!(MyUnion) u;
-                    u.Active a;             // u.Active is defined as
-                                    // enum u.Active {none, x, y}
-            a = u.active;           // a is now a.none
-                    int b = u.x;            // error, u.x has not yet been set
-            u.x   = 35;
-                    a = u.active;           // a is now a.x
-                    char[] c = u.y          // error, u.y is not the active member
-        }
-    ---
-
     Copyright:
         Copyright (c) 2009-2016 Sociomantic Labs GmbH.
         All rights reserved.
@@ -98,6 +77,28 @@ struct SmartUnion ( U )
     mixin (AllMethods!(U, "", 0));
 
     private alias typeof(*this) Type;
+}
+
+///
+unittest
+{
+    union MyUnion
+    {
+        int x;
+        mstring y;
+    }
+
+    void main ( )
+    {
+        SmartUnion!(MyUnion) u;
+        u.Active a;             // u.Active is defined as
+                                // `enum u.Active {none, x, y}`
+        a = u.active;           // a is now a.none
+        int b = u.x;            // error, u.x has not yet been set
+        u.x   = 35;
+        a = u.active;           // a is now a.x
+        mstring c = u.y;        // error, u.y is not the active member
+    }
 }
 
 unittest
