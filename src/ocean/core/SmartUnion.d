@@ -124,26 +124,32 @@ unittest
 
     u1.a(42);
     test!("==")(u1.a, 42);
+    test!("==")(u1.active, u1.Active.a);
     testThrown!(Exception)(u1.b(), false);
 
     u2.a(new C1());
     test!("==")(u2.a.v, uint.init);
+    test!("==")(u2.active, u2.Active.a);
     testThrown!(Exception)(u2.b(), false);
 
     u3.a(S1(42));
     test!("==")(u3.a, S1(42));
+    test!("==")(u3.active, u3.Active.a);
     testThrown!(Exception)(u3.b(), false);
 
     u1.b("Hello world".dup);
     test!("==")(u1.b, "Hello world"[]);
+    test!("==")(u1.active, u1.Active.b);
     testThrown!(Exception)(u1.a(), false);
 
     u2.b(S1.init);
     test!("==")(u2.b, S1.init);
+    test!("==")(u2.active, u2.Active.b);
     testThrown!(Exception)(u2.a(), false);
 
     u3.b(21);
     test!("==")(u3.b, 21);
+    test!("==")(u3.active, u3.Active.b);
     testThrown!(Exception)(u3.a(), false);
 
 }
