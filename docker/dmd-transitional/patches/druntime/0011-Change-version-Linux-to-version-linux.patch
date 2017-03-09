@@ -1,0 +1,39 @@
+From 72f753acf691b80717616777b4ffa57849ad3abb Mon Sep 17 00:00:00 2001
+From: Nemanja Boric <nemanja.boric@sociomantic.com>
+Date: Fri, 24 Feb 2017 16:12:35 +0100
+Subject: [PATCH 11/13] Change version(Linux) to version(linux)
+
+---
+ src/core/sys/linux/sched.d           | 2 +-
+ src/core/sys/linux/sys/netinet/tcp.d | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/core/sys/linux/sched.d b/src/core/sys/linux/sched.d
+index 6dc6e33..52938b5 100644
+--- a/src/core/sys/linux/sched.d
++++ b/src/core/sys/linux/sched.d
+@@ -18,7 +18,7 @@ import core.sys.posix.sched;
+ import core.sys.posix.config;
+ import core.sys.posix.sys.types;
+ 
+-version (Linux):
++version (linux):
+ extern (C):
+ @nogc:
+ nothrow:
+diff --git a/src/core/sys/linux/sys/netinet/tcp.d b/src/core/sys/linux/sys/netinet/tcp.d
+index b4acdd2..67458f6 100644
+--- a/src/core/sys/linux/sys/netinet/tcp.d
++++ b/src/core/sys/linux/sys/netinet/tcp.d
+@@ -43,7 +43,7 @@ module core.sys.linux.sys.netinet.tcp;
+ * @(#)tcp.h 8.1 (Berkeley) 6/10/93
+ */
+ 
+-version (Linux):
++version (linux):
+ 
+ /// User-settable options (used with setsockopt).
+ enum
+-- 
+2.7.4
+

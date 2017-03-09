@@ -1,26 +1,29 @@
-From 05a93182132a6b837e74fc2e059f5be188ae799d Mon Sep 17 00:00:00 2001
+From 9c40b4a69b772e2771d54f685c0a5f7a4a5193c5 Mon Sep 17 00:00:00 2001
 From: Mihails Strasuns <mihails.strasuns.contractor@sociomantic.com>
 Date: Sun, 6 Sep 2015 05:38:41 +0300
-Subject: [PATCH 02/17] Assert when stomping prevention triggers
+Subject: [PATCH 02/13] Stomping control implementation
 
-Also removes `-release` from release flags and adds `-g` to be able
-to break in gdb on trigger function and get nice backtrace
-
-Default behaviour can be enabled by setting env var "ALLOW_STOMPING" to 1
-
-Conflicts:
-	posix.mak
-	src/rt/lifetime.d
 ---
- posix.mak         |  4 ++--
- src/rt/lifetime.d | 44 ++++++++++++++++++++++++++++++++++++++++----
- 2 files changed, 42 insertions(+), 6 deletions(-)
+ posix.mak         |  8 ++++--
+ src/rt/lifetime.d | 80 ++++++++++++++++++++++++++++++++++++++++++++++++++++---
+ 2 files changed, 82 insertions(+), 6 deletions(-)
 
 diff --git a/posix.mak b/posix.mak
-index 7175f0f3..2794db5e 100644
+index 7175f0f..12dca19 100644
 --- a/posix.mak
 +++ b/posix.mak
-@@ -53,10 +53,10 @@ endif
+@@ -3,6 +3,10 @@
+ #    pkg_add -r gmake
+ # and then run as gmake rather than make.
+ 
++# Don't assert on stomping prevention during tests or any other internal targets
++# See https://github.com/sociomantic/druntime/pull/14 for details
++export ASSERT_ON_STOMPING_PREVENTION=0
++
+ QUIET:=@
+ 
+ include osmodel.mak
+@@ -53,10 +57,10 @@ endif
  # Set DFLAGS
  UDFLAGS:=-conf= -Isrc -Iimport -w -dip25 $(MODEL_FLAG) $(OPTIONAL_PIC)
  ifeq ($(BUILD),debug)
@@ -29,12 +32,12 @@ index 7175f0f3..2794db5e 100644
  	DFLAGS:=$(UDFLAGS)
  else
 -	UDFLAGS += -O -release
-+	UDFLAGS += -O -g -debug=CheckStompingPrevention
++	UDFLAGS += -O -release -g -debug=CheckStompingPrevention
  	DFLAGS:=$(UDFLAGS) -inline # unittests don't compile with -inline
  endif
  
 diff --git a/src/rt/lifetime.d b/src/rt/lifetime.d
-index d28edf8c..56382e06 100644
+index d28edf8..24c6d90 100644
 --- a/src/rt/lifetime.d
 +++ b/src/rt/lifetime.d
 @@ -17,7 +17,7 @@ import core.stdc.string;
@@ -46,7 +49,7 @@ index d28edf8c..56382e06 100644
  static import rt.tlsgc;
  
  alias BlkInfo = GC.BlkInfo;
-@@ -230,6 +230,21 @@ size_t structTypeInfoSize(const TypeInfo ti) pure nothrow @nogc
+@@ -230,6 +230,57 @@ size_t structTypeInfoSize(const TypeInfo ti) pure nothrow @nogc
  private class ArrayAllocLengthLock
  {}
  
@@ -56,19 +59,55 @@ index d28edf8c..56382e06 100644
 +    debug(CheckStompingPrevention) stomping_prevention_trigger_nonpure();
 +}
 +
++extern(C) shared long stomping_prevention_counter;
++
 +void stomping_prevention_trigger_nonpure ( ) nothrow
 +{
++    import core.atomic;
++    atomicOp!"+="(stomping_prevention_counter, 1);
++
 +    import core.stdc.stdlib : getenv;
++    import core.stdc.stdio : fflush, stdout, printf;
 +    import core.stdc.string : strcmp;
-+    char* flag = getenv("ALLOW_STOMPING_PREVENTION".ptr);
-+    if (flag && (strcmp(flag, "1") == 0))
-+        return;
-+    assert(false, "Stomping prevention has been triggerred");
++
++    const failure = new Exception("Stoming prevention has been triggerred");
++
++    try
++    {
++        char* flag = getenv("ASSERT_ON_STOMPING_PREVENTION".ptr);
++
++        if (flag)
++        {
++            if (strcmp(flag, "1") == 0)
++                throw failure;
++        }
++        else
++        {
++            flag = getenv("ALLOW_STOMPING_PREVENTION".ptr);
++            if (flag && strcmp(flag, "0") == 0)
++                throw failure;
++        }
++    }
++    catch (Exception e)
++    {
++        try
++        {
++            auto msg = e.toString();
++            printf("\n%*s\n", msg.length, msg.ptr);
++        }
++        catch (Exception)
++        {
++            printf("\nStoming prevention has been triggerred\n");
++        }
++
++        fflush(stdout);
++        abort();
++    }
 +}
  
  /**
    Set the allocated length of the array block.  This is called
-@@ -282,14 +297,21 @@ bool __setArrayAllocLength(ref BlkInfo info, size_t newlength, bool isshared, co
+@@ -282,14 +333,21 @@ bool __setArrayAllocLength(ref BlkInfo info, size_t newlength, bool isshared, co
          {
              if(isshared)
              {
@@ -91,7 +130,7 @@ index d28edf8c..56382e06 100644
              }
          }
          else
-@@ -313,14 +335,21 @@ bool __setArrayAllocLength(ref BlkInfo info, size_t newlength, bool isshared, co
+@@ -313,14 +371,21 @@ bool __setArrayAllocLength(ref BlkInfo info, size_t newlength, bool isshared, co
          {
              if(isshared)
              {
@@ -114,7 +153,7 @@ index d28edf8c..56382e06 100644
              }
          }
          else
-@@ -344,14 +373,21 @@ bool __setArrayAllocLength(ref BlkInfo info, size_t newlength, bool isshared, co
+@@ -344,14 +409,21 @@ bool __setArrayAllocLength(ref BlkInfo info, size_t newlength, bool isshared, co
          {
              if(isshared)
              {
@@ -138,5 +177,5 @@ index d28edf8c..56382e06 100644
          }
          else
 -- 
-2.11.0
+2.7.4
 

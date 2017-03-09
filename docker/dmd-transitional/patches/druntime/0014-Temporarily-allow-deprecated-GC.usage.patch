@@ -1,0 +1,32 @@
+From b30e2cb68f42b52ea5d9a2bd594124c27b8c1733 Mon Sep 17 00:00:00 2001
+From: Mihails Strasuns <mihails.strasuns.contractor@sociomantic.com>
+Date: Tue, 28 Feb 2017 15:28:15 +0100
+Subject: [PATCH 14/14] Temporarily allow deprecated GC.usage
+
+Matches old API in D1 runtime
+---
+ src/core/memory.d | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/src/core/memory.d b/src/core/memory.d
+index 9996a74..aaa7566 100644
+--- a/src/core/memory.d
++++ b/src/core/memory.d
+@@ -678,6 +678,14 @@ struct GC
+         return gc_stats();
+     }
+ 
++    deprecated("Use ocean.transition.gc_usage")
++    static void usage ( out size_t used, out size_t free )
++    {
++        auto tmp = GC.stats();
++        used = tmp.usedSize;
++        free = tmp.freeSize;
++    }
++
+     /**
+      * Adds an internal root pointing to the GC memory block referenced by p.
+      * As a result, the block referenced by p itself and any blocks accessible
+-- 
+2.7.4
+

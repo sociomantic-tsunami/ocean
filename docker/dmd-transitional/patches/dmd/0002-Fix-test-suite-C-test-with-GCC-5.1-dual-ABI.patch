@@ -1,7 +1,7 @@
-From c9ecaca238e714be96728ab6eca60836c57c6df4 Mon Sep 17 00:00:00 2001
+From 4bfbd40d2ab605b79ac977116f769261dd8790f4 Mon Sep 17 00:00:00 2001
 From: Vladimir Panteleev <git@thecybershadow.net>
 Date: Tue, 19 Apr 2016 06:01:02 +0000
-Subject: [PATCH] Fix test suite C++ test with GCC 5.1 dual ABI
+Subject: [PATCH 2/3] Fix test suite C++ test with GCC 5.1 dual ABI
 
 GCC 5.1 introduced new implementations of std::string and std::list:
 
@@ -77,5 +77,5 @@ index 758ed4f94..2b3bf66b6 100644
  #include <stdio.h>
  #include <assert.h>
 -- 
-2.11.0
+2.11.1
 

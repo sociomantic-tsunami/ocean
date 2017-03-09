@@ -1,0 +1,123 @@
+From 30543347349e9ef75499437fd0085b374962dfe0 Mon Sep 17 00:00:00 2001
+From: Leandro Lucarella <leandro.lucarella@sociomantic.com>
+Date: Fri, 25 Nov 2016 17:07:36 -0300
+Subject: [PATCH 13/13] linux/time: Add timer manipulation macros
+
+---
+ mak/COPY                      |  1 +
+ src/core/sys/linux/sys/time.d | 68 +++++++++++++++++++++++++++++++++++++++++++
+ src/core/sys/posix/sys/time.d | 11 +++++++
+ 3 files changed, 80 insertions(+)
+ create mode 100644 src/core/sys/linux/sys/time.d
+
+diff --git a/mak/COPY b/mak/COPY
+index e57bbb1..4fe11f2 100644
+--- a/mak/COPY
++++ b/mak/COPY
+@@ -79,6 +79,7 @@ COPY=\
+ 	$(IMPDIR)\core\sys\linux\sys\socket.d \
+ 	$(IMPDIR)\core\sys\linux\sys\sysinfo.d \
+ 	$(IMPDIR)\core\sys\linux\sys\xattr.d \
++	$(IMPDIR)\core\sys\linux\sys\time.d \
+ 	\
+ 	$(IMPDIR)\core\sys\osx\execinfo.d \
+ 	$(IMPDIR)\core\sys\osx\pthread.d \
+diff --git a/src/core/sys/linux/sys/time.d b/src/core/sys/linux/sys/time.d
+new file mode 100644
+index 0000000..cc13442
+--- /dev/null
++++ b/src/core/sys/linux/sys/time.d
+@@ -0,0 +1,68 @@
++/**
++ * D header file for POSIX.
++ *
++ * Copyright: Copyright Sociomantic Labs GmbH.
++ * License:   $(WEB www.boost.org/LICENSE_1_0.txt, Boost License 1.0).
++ * Authors:   Leandro Lucarella
++ */
++
++/*          Copyright Sociomantic Labs GmbH.
++ * Distributed under the Boost Software License, Version 1.0.
++ *    (See accompanying file LICENSE or copy at
++ *          http://www.boost.org/LICENSE_1_0.txt)
++ */
++module core.sys.linux.sys.time;
++
++private import core.sys.linux.config;
++public import core.sys.posix.sys.time;  // timeval
++
++version (linux):
++
++/* macros provided to operate on timeval structures
++ * they are extern(D) because they are not really C symbols, just macros
++ */
++extern (D) pure @safe @nogc nothrow {
++
++    void timeradd(const timeval* a, const timeval* b,
++            timeval* result)
++    {
++        result.tv_sec = a.tv_sec + b.tv_sec;
++        result.tv_usec = a.tv_usec + b.tv_usec;
++        if (result.tv_usec >= 1_000_000)
++        {
++            ++result.tv_sec;
++            result.tv_usec -= 1_000_000;
++        }
++    }
++
++    void timersub(const timeval* a, const timeval* b,
++            timeval *result)
++    {
++        result.tv_sec = a.tv_sec - b.tv_sec;
++        result.tv_usec = a.tv_usec - b.tv_usec;
++        if (result.tv_usec < 0) {
++            --result.tv_sec;
++            result.tv_usec += 1_000_000;
++        }
++    }
++
++    void timerclear(timeval* tvp)
++    {
++        (tvp.tv_sec = tvp.tv_usec = 0);
++    }
++
++    int timerisset(timeval* tvp)
++    {
++        return cast(int) (tvp.tv_sec || tvp.tv_usec);
++    }
++
++    int timercmp(string CMP)(const timeval* a, const timeval* b)
++    {
++        return cast(int)
++               mixin("((a.tv_sec == b.tv_sec) ?" ~
++                     "(a.tv_usec" ~ CMP ~ "b.tv_usec) :" ~
++                     "(a.tv_sec"  ~ CMP ~ "b.tv_sec))");
++    }
++
++}
++
+diff --git a/src/core/sys/posix/sys/time.d b/src/core/sys/posix/sys/time.d
+index dbeb58a..33793da 100644
+--- a/src/core/sys/posix/sys/time.d
++++ b/src/core/sys/posix/sys/time.d
+@@ -18,6 +18,17 @@ private import core.sys.posix.config;
+ public import core.sys.posix.sys.types;  // for time_t, suseconds_t
+ public import core.sys.posix.sys.select; // for fd_set, FD_CLR() FD_ISSET() FD_SET() FD_ZERO() FD_SETSIZE, select()
+ 
++version (OSX)
++    version = Darwin;
++else version (iOS)
++    version = Darwin;
++else version (TVOS)
++    version = Darwin;
++else version (WatchOS)
++    version = Darwin;
++
++version (linux) public import core.sys.linux.sys.time;
++
+ version (Posix):
+ extern (C) nothrow @nogc:
+ 
+-- 
+2.7.4
+
