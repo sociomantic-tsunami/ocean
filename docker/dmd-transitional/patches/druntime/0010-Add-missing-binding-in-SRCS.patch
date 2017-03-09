@@ -1,0 +1,76 @@
+From dde162b9fb202c58767335bca22623f5b6118e6c Mon Sep 17 00:00:00 2001
+From: Mathias Lang <mathias.lang@sociomantic.com>
+Date: Mon, 6 Feb 2017 17:20:57 +0100
+Subject: [PATCH 10/13] Add missing binding in SRCS
+
+The following files were not part of `mak/SRCS`, and thus were not compiled it:
+- src\core\sys\posix\sys\ipc.d
+- src\core\sys\posix\sys\mman.d
+- src\core\sys\posix\sys\shm.d
+- src\core\sys\posix\sys\statvfs.d
+- src\core\sys\posix\sys\time.d
+- src\core\sys\posix\sys\types.d
+- src\core\sys\posix\sys\uio.d
+- src\core\sys\posix\sys\un.d
+
+Since they are C bindings, it was unnoticed for a long time,
+as most operations won't require the rare symbols this module defined.
+However for things such as static array declarations,
+the `__init` of the struct will be required, which triggers a linker error.
+
+This issue is harder to reproduce with upstream's compiler because improvements to the backend
+led to the test case changing behavior (not requiring the symbol), but it can still be triggered
+using an older version of the compiler with any of those files.
+---
+ mak/SRCS | 27 ++++++++++++++++++++++-----
+ 1 file changed, 22 insertions(+), 5 deletions(-)
+
+diff --git a/mak/SRCS b/mak/SRCS
+index 49fb7e1..95c84f7 100644
+--- a/mak/SRCS
++++ b/mak/SRCS
+@@ -50,19 +50,36 @@ SRCS=\
+ 	\
+ 	src\core\sys\linux\stdio.d \
+ 	src\core\sys\linux\tipc.d \
++	src\core\sys\linux\sys\inotify.d \
++	src\core\sys\linux\sys\mman.d \
++	src\core\sys\linux\sys\signalfd.d \
++	src\core\sys\linux\sys\socket.d \
++	src\core\sys\linux\sys\sysinfo.d \
++	src\core\sys\linux\sys\time.d \
++	src\core\sys\linux\sys\xattr.d \
++	src\core\sys\linux\sys\netinet\tcp.d \
+ 	\
+-	src\core\sys\posix\signal.d \
+ 	src\core\sys\posix\dirent.d \
++	src\core\sys\posix\signal.d \
++	src\core\sys\posix\netdb.d \
++	src\core\sys\posix\netinet\in_.d \
++	src\core\sys\posix\arpa\inet.d \
++    \
++	src\core\sys\posix\sys\ioctl.d \
++	src\core\sys\posix\sys\ipc.d \
++	src\core\sys\posix\sys\mman.d \
+ 	src\core\sys\posix\sys\resource.d \
+ 	src\core\sys\posix\sys\select.d \
++	src\core\sys\posix\sys\shm.d \
+ 	src\core\sys\posix\sys\socket.d \
+ 	src\core\sys\posix\sys\stat.d \
++	src\core\sys\posix\sys\statvfs.d \
++	src\core\sys\posix\sys\time.d \
++	src\core\sys\posix\sys\types.d \
++	src\core\sys\posix\sys\uio.d \
++	src\core\sys\posix\sys\un.d \
+ 	src\core\sys\posix\sys\wait.d \
+-	src\core\sys\posix\netdb.d \
+-	src\core\sys\posix\sys\ioctl.d \
+ 	src\core\sys\posix\sys\utsname.d \
+-	src\core\sys\posix\netinet\in_.d \
+-	src\core\sys\posix\arpa\inet.d \
+ 	\
+ 	src\core\sys\solaris\sys\priocntl.d \
+ 	src\core\sys\solaris\sys\types.d \
+-- 
+2.7.4
+

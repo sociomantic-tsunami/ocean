@@ -1,7 +1,7 @@
-From a8c781cf567eb53aafbbfb0aef7ddd91ef2ec215 Mon Sep 17 00:00:00 2001
+From c0683250de3246634c04c2bb412e751e8b89a297 Mon Sep 17 00:00:00 2001
 From: Vladimir Panteleev <git@thecybershadow.net>
 Date: Tue, 19 Apr 2016 02:28:07 +0000
-Subject: [PATCH] Fix grep dependency on locale for DDoc tests
+Subject: [PATCH 3/3] Fix grep dependency on locale for DDoc tests
 
 By default, grep attempts to detect whether an input file is binary,
 and if so, in the case of a match it simply prints "Binary file foo
@@ -34,5 +34,5 @@ index 79dcf7af4..01c901bb3 100755
  if [ $? -ne 0 ]; then
      exit 1;
 -- 
-2.11.0
+2.11.1
 

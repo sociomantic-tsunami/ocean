@@ -1,0 +1,25 @@
+From 7363c6f533f1edd0e5489affa3cb1f1d0c64e3be Mon Sep 17 00:00:00 2001
+From: Tomer Filiba <tomer@weka.io>
+Date: Tue, 21 Feb 2017 18:15:24 +0200
+Subject: [PATCH 12/13] Fix wrong version name in core.sys.linux.ifaddrs
+
+---
+ src/core/sys/linux/ifaddrs.d | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/core/sys/linux/ifaddrs.d b/src/core/sys/linux/ifaddrs.d
+index 1fc5e88..bfdd59b 100644
+--- a/src/core/sys/linux/ifaddrs.d
++++ b/src/core/sys/linux/ifaddrs.d
+@@ -18,7 +18,7 @@ module core.sys.linux.ifaddrs;
+ 
+ import core.sys.posix.sys.socket;
+ 
+-version (Linux):
++version (linux):
+ extern (C):
+ nothrow:
+ @nogc:
+-- 
+2.7.4
+

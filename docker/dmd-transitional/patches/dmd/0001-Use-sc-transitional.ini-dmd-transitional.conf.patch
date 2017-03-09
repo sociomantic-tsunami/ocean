@@ -1,10 +1,9 @@
-From 75205d25b405623a0b2f0a3446fdd15fba9ac6d5 Mon Sep 17 00:00:00 2001
+From 6437bf29e14a3c758d2236d6abdf5125b2250b73 Mon Sep 17 00:00:00 2001
 From: Mihails Strasuns <mihails.strasuns.contractor@sociomantic.com>
 Date: Tue, 9 Feb 2016 20:37:37 +0200
-Subject: [PATCH] Use sc-transitional.ini/dmd-transitional.conf
+Subject: [PATCH 1/3] Use sc-transitional.ini/dmd-transitional.conf
 
-Contrary to 53aea6baccd4ce7fa6db62afe3788604b9484614 it doesn't
-look for plain dmd.conf as fallback
+Looks for dmd configuration under different name from upstream compiler
 ---
  src/mars.d | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
@@ -27,6 +26,6 @@ index 22e1bcbf7..d5d728154 100644
          }
          else
          {
--- 
-2.11.0
+--
+2.11.1
 

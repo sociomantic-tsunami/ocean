@@ -1,7 +1,7 @@
-From 3a8fa711c3e9df980f5bcfb23c42b0b9165ac2cd Mon Sep 17 00:00:00 2001
+From 9185a581a06e32b520dee02c471c08a9681d7853 Mon Sep 17 00:00:00 2001
 From: Nemanja Boric <nemanja.boric@sociomantic.com>
 Date: Tue, 29 Nov 2016 10:37:13 +0100
-Subject: [PATCH 16/17] Add Linux-specific sched_setaffinity and
+Subject: [PATCH 08/13] Add Linux-specific sched_setaffinity and
  sched_getaffinity
 
 ---
@@ -13,7 +13,7 @@ Subject: [PATCH 16/17] Add Linux-specific sched_setaffinity and
  create mode 100644 src/core/sys/linux/sched.d
 
 diff --git a/mak/COPY b/mak/COPY
-index bdf04bc1..e38c3204 100644
+index bdf04bc..e38c320 100644
 --- a/mak/COPY
 +++ b/mak/COPY
 @@ -65,6 +65,7 @@ COPY=\
@@ -26,7 +26,7 @@ index bdf04bc1..e38c3204 100644
  	$(IMPDIR)\core\sys\linux\timerfd.d \
 diff --git a/src/core/sys/linux/sched.d b/src/core/sys/linux/sched.d
 new file mode 100644
-index 00000000..6dc6e336
+index 0000000..6dc6e33
 --- /dev/null
 +++ b/src/core/sys/linux/sched.d
 @@ -0,0 +1,80 @@
@@ -111,7 +111,7 @@ index 00000000..6dc6e336
 +int sched_getaffinity(pid_t pid, size_t cpusetsize, cpu_set_t *mask);
 +
 diff --git a/win32.mak b/win32.mak
-index bce4469e..fa250e4a 100644
+index bce4469..fa250e4 100644
 --- a/win32.mak
 +++ b/win32.mak
 @@ -397,6 +397,9 @@ $(IMPDIR)\core\sys\linux\ifaddrs.d : src\core\sys\linux\ifaddrs.d
@@ -125,7 +125,7 @@ index bce4469e..fa250e4a 100644
  	copy $** $@
  
 diff --git a/win64.mak b/win64.mak
-index c2ea1a80..ed201b8f 100644
+index c2ea1a8..ed201b8 100644
 --- a/win64.mak
 +++ b/win64.mak
 @@ -405,6 +405,9 @@ $(IMPDIR)\core\sys\linux\fcntl.d : src\core\sys\linux\fcntl.d
@@ -139,5 +139,5 @@ index c2ea1a80..ed201b8f 100644
  	copy $** $@
  
 -- 
-2.11.0
+2.7.4
 
