@@ -87,13 +87,21 @@ class FileException : ErrnoException
             }
         }
 
-        if (handle !is null && !ok)
+        if ( !ok )
         {
-            if (feof(handle) != 0)
+            if ( handle !is null && feof(handle) != 0 )
             {
                 // not really an errno
                 throw this.ReusableImpl
                     .set("Reading past end of file", file, line)
+                    .append(" (failed operation on '")
+                    .append(filename)
+                    .append("')");
+            }
+            else
+            {
+                throw this.ReusableImpl
+                    .set("File operation failed, without an error", file, line)
                     .append(" (failed operation on '")
                     .append(filename)
                     .append("')");

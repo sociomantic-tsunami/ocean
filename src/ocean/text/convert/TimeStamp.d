@@ -125,7 +125,7 @@ dchar[] toString32 (Time time)
 
  ******************************************************************************/
 
-T[] format(T, U=Time) (T[] output, U t)
+Const!(T)[] format(T, U=Time) (T[] output, U t)
 {return format!(T)(output, cast(Time) t);}
 
 Const!(T)[] format(T) (T[] output, Time t)
@@ -169,12 +169,12 @@ Const!(T)[] format(T) (T[] output, Time t)
 
  ******************************************************************************/
 
-T[] format8601(T, U=Time) (T[] output, U t)
+Const!(T)[] format8601(T, U=Time) (T[] output, U t)
 {return format!(T)(output, cast(Time) t);}
 
-T[] format8601(T) (T[] output, Time t)
+Const!(T)[] format8601(T) (T[] output, Time t)
 {
-    T[] convert (T[] tmp, long i)
+    Const!(T)[] convert (T[] tmp, long i)
     {
         return Integer.formatter!(T) (tmp, i, 'u', 0, 8);
     }
