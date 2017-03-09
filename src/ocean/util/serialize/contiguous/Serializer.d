@@ -112,6 +112,9 @@ struct Serializer
         }
         else
         {
+            foreach (i, T; typeof(S.tupleof))
+                alias ensureValueTypeMember!(S, i) evt;
+
             return data[0 .. src.sizeof];
         }
     }
@@ -175,6 +178,9 @@ struct Serializer
         }
         else
         {
+            foreach (i, T; typeof(S.tupleof))
+                alias ensureValueTypeMember!(S, i) evt;
+
             return input.sizeof;
         }
     }
@@ -279,7 +285,7 @@ struct Serializer
                 {
                     // Dump dynamic array.
 
-                    len += This.countArraySize(field);
+                    len += This.countArraySize!(S, i)(field);
                 }
                 else static if (is (T Base : Base[]))
                 {
@@ -292,8 +298,12 @@ struct Serializer
 
                         foreach (element; s.tupleof[i])
                         {
-                            len += This.countArraySize(field);
+                            len += This.countArraySize!(S, i)(field);
                         }
+                    }
+                    else
+                    {
+                        alias ensureValueTypeMember!(S, i, Base) evt;
                     }
                 }
                 else
@@ -301,6 +311,11 @@ struct Serializer
                     alias ensureValueTypeMember!(S, i) evt;
                 }
             }
+        }
+        else
+        {
+            foreach (i, T; typeof(S.tupleof))
+                alias ensureValueTypeMember!(S, i) evt;
         }
 
         return len;
@@ -321,7 +336,7 @@ struct Serializer
 
     ***************************************************************************/
 
-    private static size_t countArraySize ( T ) ( T[] array )
+    private static size_t countArraySize ( S, size_t i, T ) ( T[] array )
     out (size)
     {
         debug (SerializationTrace)
@@ -345,7 +360,7 @@ struct Serializer
 
             foreach (element; array)
             {
-                len += This.countArraySize(element);
+                len += This.countArraySize!(S, i)(element);
             }
         }
         else
@@ -360,6 +375,10 @@ struct Serializer
                 {
                     len += This.countElementSize(element);
                 }
+            }
+            else
+            {
+                alias ensureValueTypeMember!(S, i, T) evt;
             }
         }
 
@@ -473,8 +492,7 @@ struct Serializer
                 {
                     // Dump dynamic array.
 
-                    data = This.dumpArray(s.tupleof[i], data);
-
+                    data = This.dumpArray!(S, i)(s.tupleof[i], data);
                     s.tupleof[i] = null;
                 }
                 else static if (is (T Base : Base[]))
@@ -492,7 +510,13 @@ struct Serializer
                                 s.tupleof[i].length);
                         }
 
-                        data = This.dumpStaticArray(s.tupleof[i][], data);
+                        data = This.dumpStaticArray!(S, i)(s.tupleof[i][], data);
+                    }
+                    else
+                    {
+                        // The field is a static array not containing dynamic
+                        // arrays so the array elements should be values.
+                        alias ensureValueTypeMember!(S, i, Base) evt;
                     }
                 }
                 else
@@ -500,6 +524,11 @@ struct Serializer
                     alias ensureValueTypeMember!(S, i) evt;
                 }
             }
+        }
+        else
+        {
+            foreach (i, T; typeof(S.tupleof))
+                alias ensureValueTypeMember!(S, i) evt;
         }
 
         return data;
@@ -521,7 +550,7 @@ struct Serializer
 
     ***************************************************************************/
 
-    private static void[] dumpArray ( T ) ( T[] array, void[] data )
+    private static void[] dumpArray ( S, size_t i, T ) ( T[] array, void[] data )
     out (result)
     {
         debug (SerializationTrace)
@@ -551,7 +580,7 @@ struct Serializer
                     // array is a dynamic array of dynamic arrays:
                     // Recurse into subarrays.
 
-                    data = This.dumpArray(element, data);
+                    data = This.dumpArray!(S, i)(element, data);
                 }
             }
             else
@@ -579,6 +608,10 @@ struct Serializer
 
                     data = This.dumpArrayElements(dst, data);
                 }
+                else
+                {
+                    alias ensureValueTypeMember!(S, i, T) evt;
+                }
             }
         }
 
@@ -603,7 +636,7 @@ struct Serializer
 
     **************************************************************************/
 
-    private static void[] dumpStaticArray ( T ) ( T[] array, void[] data )
+    private static void[] dumpStaticArray ( S, size_t i, T ) ( T[] array, void[] data )
     {
         foreach (ref element; array)
         {
@@ -613,12 +646,12 @@ struct Serializer
                 static if (is(T == Base[]))
                 {
                     // element is a dynamic array
-                    data = This.dumpArray(element, data);
+                    data = This.dumpArray!(S, i)(element, data);
                 }
                 else
                 {
                     // element is a static array
-                    data = This.dumpStaticArray(element, data);
+                    data = This.dumpStaticArray!(S, i)(element, data);
                 }
             }
             else
