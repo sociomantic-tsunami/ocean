@@ -17,17 +17,6 @@
 
 module ocean.time.StopWatch;
 
-import ocean.core.Exception_tango;
-
-/*******************************************************************************
-
-*******************************************************************************/
-
-version (Posix)
-{
-        import ocean.stdc.posix.sys.time;
-}
-
 /*******************************************************************************
 
         Timer for measuring small intervals, such as the duration of a
@@ -60,6 +49,9 @@ version (Posix)
 
 public struct StopWatch
 {
+        import ocean.stdc.posix.sys.time;
+        import ocean.core.Exception_tango: PlatformException;
+
         private ulong  started;
         private static double multiplier = 1.0 / 1_000_000.0;
 
@@ -93,8 +85,7 @@ public struct StopWatch
 
         ulong microsec ()
         {
-                version (Posix)
-                         return (timer - started);
+                 return (timer - started);
         }
 
         /***********************************************************************
@@ -105,14 +96,11 @@ public struct StopWatch
 
         private static ulong timer ()
         {
-                version (Posix)
-                {
-                        timeval tv;
-                        if (gettimeofday (&tv, null))
-                            throw new PlatformException ("Timer :: linux timer is not available");
+                timeval tv;
+                if (gettimeofday (&tv, null))
+                    throw new PlatformException ("Timer :: linux timer is not available");
 
-                        return (cast(ulong) tv.tv_sec * 1_000_000) + tv.tv_usec;
-                }
+                return (cast(ulong) tv.tv_sec * 1_000_000) + tv.tv_usec;
         }
 }
 
