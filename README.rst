@@ -1,7 +1,3 @@
-.. image:: https://travis-ci.org/sociomantic-tsunami/ocean.svg?branch=v2.x.x
-  :alt: Build status
-  :target: https://travis-ci.org/sociomantic-tsunami/ocean
-
 Description
 ===========
 
