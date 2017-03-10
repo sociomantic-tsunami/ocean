@@ -67,13 +67,7 @@ int run_client( istring socket_path)
     auto socket_fd = client.socket();
     enforce(socket_fd >= 0, "socket() call failed!");
 
-    int connect_result = ECONNREFUSED;
-    for (int i = 0; i < 5 && connect_result == ECONNREFUSED; i++)
-    {
-        Thread.sleep(seconds(0.5));
-        connect_result = client.connect(&local_address);
-    }
-    enforce(connect_result == 0, "connect() call failed after 5 tries!");
+    auto connect_result = client.connect(&local_address);
 
     istring str1 = "HELLO, ... !\n";
 
@@ -89,42 +83,6 @@ int run_client( istring socket_path)
     read_buffer.length = read_bytes;
 
     Ocean.test(read_buffer == str1);
-
-    return 0;
-}
-
-/*******************************************************************************
-
-    Runs the server. The server is a simple echo server. It serves just
-    one request and then it exits.
-
-    Params:
-        socket_path = the unix socket path.
-
-    Returns:
-        0 on success
-
-    Throws:
-        an exception if something goes wrong
-
-*******************************************************************************/
-
-int run_server( istring socket_path)
-{
-    auto timeout_mgr = new TimeoutManager;
-    auto epoll = new EpollSelectDispatcher(timeout_mgr);
-
-    unlink(socket_path.ptr);
-    auto local_address = sockaddr_un.create(socket_path);
-    auto unix_socket   = new UnixSocket;
-    auto unix_server   = new UnixServer(cast(sockaddr*)&local_address,
-            unix_socket, epoll);
-    epoll.register(unix_server);
-
-    epoll.eventLoop();
-
-    enforce((socket_path[0] == '\0') || (unlink(socket_path.ptr) == 0),
-        "Can't remove socket file.");
 
     return 0;
 }
@@ -148,6 +106,18 @@ int run_server( istring socket_path)
 
 void run_test ( istring socket_path )
 {
+    auto timeout_mgr = new TimeoutManager;
+    auto epoll = new EpollSelectDispatcher(timeout_mgr);
+
+    unlink(socket_path.ptr);
+    auto local_address = sockaddr_un.create(socket_path);
+    auto unix_socket   = new UnixSocket;
+    auto unix_server   = new UnixServer(cast(sockaddr*)&local_address,
+            unix_socket, epoll);
+    epoll.register(unix_server);
+
+    // UnixServer should already bind and listen at this point,
+    // so it is safe to connect from the client
     pid_t pid = fork();
 
     enforce(pid != -1);
@@ -158,9 +128,10 @@ void run_test ( istring socket_path )
         return;
     }
 
-    //Parent.
+    epoll.eventLoop();
 
-    enforce(run_server(socket_path) == 0, "Server exit status should be 0");
+    enforce((socket_path[0] == '\0') || (unlink(socket_path.ptr) == 0),
+        "Can't remove socket file.");
 
     int status;
     waitpid(pid, &status, 0);
