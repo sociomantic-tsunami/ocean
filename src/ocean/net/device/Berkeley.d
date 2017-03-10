@@ -1992,7 +1992,7 @@ deprecated public class SocketSet
         /***********************************************************************
 
                 SocketSet's are updated to include only those sockets which an
-                event occured.
+                event occurred.
 
                 Returns the number of events, 0 on timeout, or -1 on error
 

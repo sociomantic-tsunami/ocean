@@ -2,7 +2,14 @@
 
     Sample unix socket server, which is based on fiber select listener.
 
-    Copyright:      Copyright (c) 2016 sociomantic labs. All rights reserved
+    Copyright:
+        Copyright (c) 2016-2017 sociomantic labs GmbH.
+        All rights reserved.
+
+    License:
+        Boost Software License Version 1.0. See LICENSE_BOOST.txt for details.
+        Alternatively, this file may be distributed under the terms of the Tango
+        3-Clause BSD License (see LICENSE_BSD.txt for details).
 
 *******************************************************************************/
 
@@ -35,7 +42,7 @@ public alias SelectListener!(UnixConnectionHandler, EpollSelectDispatcher) UnixS
 
 /*******************************************************************************
 
-    The conection handler is based on IFiberConnectionHandler
+    The connection handler is based on IFiberConnectionHandler
 
 *******************************************************************************/
 
@@ -52,7 +59,7 @@ private class UnixConnectionHandler: IFiberConnectionHandler
 
     /***************************************************************************
 
-        Shutdowns the server when ore request is served.
+        Shuts down the server when one request is served.
 
     ***************************************************************************/
 

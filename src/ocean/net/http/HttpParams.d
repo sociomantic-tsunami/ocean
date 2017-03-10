@@ -52,7 +52,7 @@ class HttpParams : HttpTokens, HttpParamsView
         /**********************************************************************
 
                 Construct parameters by telling the HttpStack that
-                name/value pairs are seperated by a '=' character.
+                name/value pairs are separated by a '=' character.
 
         **********************************************************************/
 

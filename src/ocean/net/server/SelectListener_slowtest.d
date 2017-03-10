@@ -127,7 +127,7 @@ class DummyConHandlerUnix : IConnectionHandler
 void test_unix (istring path)
 {
     // The following test will fail:
-    // 1) during the socket creation if the socket file can not be creater.
+    // 1) during the socket creation if the socket file can not be created.
     // 2) during the socket termination, if the socket file can not be deleted.
 
     auto local_address = sockaddr_un.create(path);
@@ -147,7 +147,7 @@ void test_unix (istring path)
         {
             test(false, "Socket file '" ~ local_address.sun_path ~
                 "' could not be unlinked (it may not exist or "
-              ~ "the executalbe lacks permissions).");
+              ~ "the executable lacks permissions).");
         }
     }
 }

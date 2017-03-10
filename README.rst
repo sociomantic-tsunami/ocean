@@ -1,7 +1,3 @@
-.. image:: https://travis-ci.org/sociomantic-tsunami/ocean.svg?branch=v2.x.x
-  :alt: Build status
-  :target: https://travis-ci.org/sociomantic-tsunami/ocean
-
 Description
 ===========
 
@@ -21,25 +17,8 @@ Ocean began life as an extension of `Tango
 eventually merged into Ocean.
 
 
-Preview Release
-===============
-
-As an important note, we want to emphasize this is a *preview* release, in the
-sense that the main development of this library will still be conducted
-internally at Sociomantic in a private repository, and we'll only synchronize
-it when we do new releases. This is because we are still lacking the needed
-infrastructure to do all the development in the wild (most notably automatic
-testing).
-
-We want to switch to a completely public development model, but when this will
-happen is still uncertain (although we hope soon).
-
-That said, we welcome pull requests and issues, we'll see how to deal with this
-duality when the time comes, but we are definitely willing to accept
-contributions.
-
 D2 Compatibility
-----------------
+================
 
 By default all development in Ocean is done in D1, but using a subset that is
 almost D2 comptaible (and with the help of d1to2fix_, it can be fully converted

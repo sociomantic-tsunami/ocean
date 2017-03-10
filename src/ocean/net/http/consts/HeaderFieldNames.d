@@ -84,7 +84,7 @@ struct HeaderFieldNames
 
     /**************************************************************************
 
-        Request specific header fields in addition to the Genereal fields
+        Request specific header fields in addition to the General fields
         @see http://www.w3.org/Protocols/rfc2616/rfc2616-sec5.html#sec5.3
 
      **************************************************************************/
