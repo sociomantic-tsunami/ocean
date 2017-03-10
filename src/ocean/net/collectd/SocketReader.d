@@ -244,7 +244,7 @@ package struct SocketReader (size_t MAX_FIELD_SIZE = 512, size_t FIELDS = 16)
 
     /***************************************************************************
 
-        Find the next occurence of 'tok' in the string in a non-linear way
+        Find the next occurrence of 'tok' in the string in a non-linear way
 
         Params:
             tok = a token (character) to search from, starting from start_idx
@@ -302,7 +302,7 @@ package struct SocketReader (size_t MAX_FIELD_SIZE = 512, size_t FIELDS = 16)
 
         Internal buffer in which the current line will be copied in the event
         of a line being non-linear (starts at the end of the buffer and
-        continue at the beggining).
+        continue at the beginning).
 
     ***************************************************************************/
 

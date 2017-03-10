@@ -199,7 +199,7 @@ class HttpResponse : HttpHeader
     /**************************************************************************
 
         Called by render() when a subclass may use append to add its response
-        eader lines.
+        header lines.
 
         Example:
 
@@ -432,7 +432,8 @@ class HttpResponse : HttpHeader
                     name = header field name
 
                 In:
-                    No other instance for the outer instance may currenty exist.
+                    No other instance for the outer instance may currently
+                    exist.
 
              ******************************************************************/
 
@@ -452,7 +453,7 @@ class HttpResponse : HttpHeader
                 Appends str to the header field value.
 
                 Params:
-                    chunk = header field valu chunk
+                    chunk = header field value chunk
 
              ******************************************************************/
 
@@ -463,7 +464,7 @@ class HttpResponse : HttpHeader
 
             /******************************************************************
 
-                Denstructor; closes a response message header line by appending
+                Destructor; closes a response message header line by appending
                 "\r\n" to the response message content.
 
              ******************************************************************/

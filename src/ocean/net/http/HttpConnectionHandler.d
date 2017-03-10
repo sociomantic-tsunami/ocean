@@ -101,7 +101,7 @@ abstract class HttpConnectionHandler : IFiberConnectionHandler
     /**************************************************************************
 
         Supported HTTP methods, set in the constructor (only checked for element
-        existence; the actal value is irrelevant)
+        existence; the actual value is irrelevant)
 
      **************************************************************************/
 
@@ -317,7 +317,7 @@ abstract class HttpConnectionHandler : IFiberConnectionHandler
               invalid, of range or not supported (unsupported HTTP version or
               method, for example),
             - HeaderParameterException if a required header parameter is missing
-              or has an invalid value (a malformated number, for example),
+              or has an invalid value (a misformatted number, for example),
             - IOWarning  when a socket read/write operation results in an
               end-of-flow or hung-up condition,
             - IOError when an error event is triggered for a socket.

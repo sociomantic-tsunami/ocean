@@ -204,7 +204,7 @@ abstract class ISelectListener : ISelectClient
         Called from SelectDispatcher during event loop.
 
         Params:
-             event = identifier of I/O event that just occured on the device
+             event = identifier of I/O event that just occurred on the device
 
         Returns:
             true if the handler should be called again on next event occurrence
@@ -427,7 +427,7 @@ public class SelectListener ( T : IConnectionHandler, Args ... ) : ISelectListen
         Creates the server socket and registers it for incoming connections.
 
         Params:
-            address    = the addres of the socket
+            address    = the address of the socket
             socket     = the server socket
             dispatcher = SelectDispatcher instance to use
             args       = additional T constructor arguments, might be empty

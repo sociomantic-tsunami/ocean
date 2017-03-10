@@ -1,7 +1,5 @@
 /*******************************************************************************
 
-    Copyright:      Copyright (c) 2015 sociomantic labs. All rights reserved
-
     Test-suite for UnixSockets.
 
     The tests involve unix sockets and forking
@@ -10,6 +8,15 @@
     FLAKY: the unittests in this module are very flaky, as they rely on making
     various system calls (fork(), waitpid(), epoll_wait(), epoll_ctl(), etc)
     which could, under certain environmental conditions, fail.
+
+    Copyright:
+        Copyright (c) 2015-2017 sociomantic labs GmbH.
+        All rights reserved.
+
+    License:
+        Boost Software License Version 1.0. See LICENSE_BOOST.txt for details.
+        Alternatively, this file may be distributed under the terms of the Tango
+        3-Clause BSD License (see LICENSE_BSD.txt for details).
 
 *******************************************************************************/
 
@@ -57,17 +64,8 @@ int runClient ( sockaddr_un* socket_address )
 
     auto connect_result = client.connect(socket_address);
 
-    // Try to connect at most 5 times, do a simple backoff if the connection
-    // fails to increase the time linearly (the sum of all retries is ~1.5s)
-    int i;
-    for (i = 1; i <= 5 && connect_result == ECONNREFUSED; i++)
-    {
-        Thread.sleep(seconds(0.1 * i));
-        connect_result = client.connect(socket_address);
-    }
-
-    enforce(i <= 5 && connect_result == 0,
-            "connect() call failed after 5 retries!");
+    enforce(connect_result == 0,
+            "connect() call failed");
 
     // send some data
     client.write(CLIENT_STRING);
@@ -113,16 +111,6 @@ int main ( )
 
     auto socket_address = sockaddr_un.create(socket_path);
 
-    pid_t pid = fork();
-
-    enforce(pid != -1);
-
-    if (pid == 0)  // client
-    {
-        in_child = true;
-        return runClient(&socket_address);
-    }
-
     auto server = new UnixSocket();
 
     // close the socket
@@ -134,17 +122,31 @@ int main ( )
     auto bind_result = server.bind(&socket_address);
     enforce(bind_result == 0, "bind() call failed!");
 
+    int backlog = 10;
+
+    auto listen_result = server.listen(backlog);
+    enforce(listen_result == 0, "listen() call failed!");
+
+    // Since the process already called bind and listen,
+    // it is safe to connect from a child process.
+    // NOTE: even though child process inherits the listening socket,
+    // unless it `accept`s, no connect() attempts will be redirected to it
+    pid_t pid = fork();
+
+    enforce(pid != -1);
+
+    if (pid == 0)  // client
+    {
+        in_child = true;
+        return runClient(&socket_address);
+    }
+
     scope (exit)
     {
         auto r = unlink(socket_path.ptr);
         assert(r == 0, "Couldn't remove the socket file " ~ socket_path ~
                 ": " ~ StringC.toDString(strerror(errno)));
     }
-
-    int backlog = 10;
-
-    auto listen_result = server.listen(backlog);
-    enforce(listen_result == 0, "listen() call failed!");
 
     int connection_fd;
 

@@ -58,7 +58,7 @@ public struct Identifier
 
         Hostname
 
-        If null, infered from a call to hostname. This call will only take
+        If null, inferred from a call to hostname. This call will only take
         place once, at application startup, so it won't have any
         performance impact on running applications.
         It is recommended to use null.
@@ -83,7 +83,7 @@ public struct Identifier
 
         Types are defined in the file 'types.db'.
         Each type correspond to a set of values, with a particular meaning.
-        For example, the type that would be used to log repeated invokation
+        For example, the type that would be used to log repeated invocation
         of the 'df' command line utility would be a data type consisting of
         two fields, 'used' and 'free'.
 
@@ -96,7 +96,7 @@ public struct Identifier
 
         Application instance
 
-        It is recommanded to use fixed number, such as [ 1, 2, 3, 4 ] if
+        It is recommended to use fixed numbers, such as [ 1, 2, 3, 4 ] if
         you have, for example 4 instances of the application running
         on the same 'host'.
         You can also use names for an instance, however, the identifier should

@@ -36,7 +36,7 @@ import TimeStamp = ocean.text.convert.TimeStamp;
 
 /******************************************************************************
 
-        Struct used to expose freachable HttpToken instances.
+        Struct used to expose reachable HttpToken instances.
 
 ******************************************************************************/
 
@@ -78,7 +78,7 @@ class HttpTokens
                 and an indication of whether said delimiter should be
                 considered part of the left side (effectively the name).
 
-                The latter is useful with headers, since the seperating
+                The latter is useful with headers, since the separating
                 ':' character should really be considered part of the
                 name for purposes of subsequent token matching.
 
@@ -422,7 +422,7 @@ class HttpTokens
                 Return a char[] representing the output. An empty array
                 is returned if output was not configured. This perhaps
                 could just return our 'output' buffer content, but that
-                would not reflect deletes, or seperators. Better to do
+                would not reflect deletes, or separators. Better to do
                 it like this instead, for a small cost.
 
         **********************************************************************/

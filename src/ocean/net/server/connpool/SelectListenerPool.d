@@ -130,7 +130,8 @@ public class SelectListenerPool ( T, Args ... ) :
         IPoolInfo method, wrapper to super class implementation.
 
         Returns:
-            true if the number of items in the pool is limited or fase otherwise
+            true if the number of items in the pool is limited or false
+            otherwise
 
     ***************************************************************************/
 

@@ -33,9 +33,9 @@ import ocean.transition;
 
 struct UriDelim
 {
-    const istring QUERY      = `?`; // seperates uri path & query parameter
-    const istring FRAGMENT   = `#`; // seperates uri path & fragment
+    const istring QUERY      = `?`; // separates uri path & query parameter
+    const istring FRAGMENT   = `#`; // separates uri path & fragment
     const istring QUERY_URL  = `/`; // separates url path elements
-    const istring PARAM      = `&`; // seperates key/value pairs
+    const istring PARAM      = `&`; // separates key/value pairs
     const istring KEY_VALUE  = `=`; // separate key and value
 }

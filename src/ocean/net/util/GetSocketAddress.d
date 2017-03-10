@@ -58,7 +58,7 @@ class GetSocketAddress
 {
     /**************************************************************************
 
-        Containt the address and accessor methods.
+        Contains the address and accessor methods.
 
      **************************************************************************/
 
@@ -344,7 +344,7 @@ unittest
         /*
          * Call getsockname() with a mock conduit that returns a -1 file
          * descriptor. It is guaranteed to fail with EBADF in this case, which
-         * the trown expection should reflect.
+         * the thrown exception should reflect.
          */
         (new GetSocketAddress).local(new class ISelectable
         {
