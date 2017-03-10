@@ -95,7 +95,7 @@ public struct StopWatch
 
         double stop ()
         {
-                return multiplier * (timer - started);
+                return multiplier * this.microsec;
         }
 
         /***********************************************************************
@@ -106,7 +106,7 @@ public struct StopWatch
 
         ulong microsec ()
         {
-                 return (timer - started);
+                 return (timer >= started)? (timer - started) : 0;
         }
 
         /***********************************************************************
