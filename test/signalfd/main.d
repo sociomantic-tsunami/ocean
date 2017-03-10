@@ -1,13 +1,20 @@
 /*******************************************************************************
 
-    Copyright:      Copyright (c) 2014 sociomantic labs. All rights reserved
-
     Unittests for SignalFD. The tests involve signals (obviously) and forking
     processes, so are placed in this slowtest module.
 
     FLAKY: the unittests in this module are very flaky, as they rely on making
     various system calls (fork(), waitpid(), epoll_wait(), epoll_ctl(), etc)
     which could, under certain environmental conditions, fail.
+
+    Copyright:
+        Copyright (c) 2014-2017 sociomantic labs GmbH.
+        All rights reserved.
+
+    License:
+        Boost Software License Version 1.0. See LICENSE_BOOST.txt for details.
+        Alternatively, this file may be distributed under the terms of the Tango
+        3-Clause BSD License (see LICENSE_BSD.txt for details).
 
 *******************************************************************************/
 

@@ -3,7 +3,7 @@
     Test suite for the unix socket listener.
 
     Copyright:
-        Copyright (c) 2009-2016 Sociomantic Labs GmbH.
+        Copyright (c) 2009-2017 sociomantic labs GmbH.
         All rights reserved.
 
     License:
