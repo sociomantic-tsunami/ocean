@@ -53,7 +53,7 @@ public struct StopWatch
         import ocean.core.Exception_tango: PlatformException;
 
         private ulong  started;
-        private static double multiplier = 1.0 / 1_000_000.0;
+        private const double multiplier = 1.0 / 1_000_000.0;
 
         /***********************************************************************
 
