@@ -17,6 +17,19 @@
 
 module ocean.time.StopWatch;
 
+// CLOCK_MONOTONIC and clock_gettime will be added to core.sys.posix.time in
+// tangort v1.7.0, see tangort issue #6.
+import core.sys.posix.time; // clockid_t, timespec
+extern (C) private
+{
+    enum: clockid_t
+    {
+        CLOCK_MONOTONIC = 1
+    }
+
+    int clock_gettime(clockid_t clk_id, timespec* t);
+}
+
 /*******************************************************************************
 
         Timer for measuring small intervals, such as the duration of a
@@ -38,10 +51,6 @@ module ocean.time.StopWatch;
         capable timer hardware (there no implicit granularity to the
         measurable intervals, except the limits of fp representation)
 
-        StopWatch is accurate to the extent of what the underlying OS
-        supports. On linux systems, this accuracy is typically 1 us at
-        best. Win32 is generally more precise.
-
         There is some minor overhead in using StopWatch, so take that into
         account
 
@@ -49,7 +58,9 @@ module ocean.time.StopWatch;
 
 public struct StopWatch
 {
-        import ocean.stdc.posix.sys.time;
+         // TODO: From tangort v1.7.0 import clock_gettime and CLOCK_MONOTONIC.
+        import core.sys.posix.time: timespec;
+
         import ocean.core.Exception_tango: PlatformException;
 
         private ulong  started;
@@ -96,11 +107,11 @@ public struct StopWatch
 
         private static ulong timer ()
         {
-                timeval tv;
-                if (gettimeofday (&tv, null))
-                    throw new PlatformException ("Timer :: linux timer is not available");
+                timespec t;
+                if (clock_gettime(CLOCK_MONOTONIC, &t))
+                    throw new PlatformException ("Timer :: CLOCK_MONOTONIC is not available");
 
-                return (cast(ulong) tv.tv_sec * 1_000_000) + tv.tv_usec;
+                return t.tv_sec * 1_000_000UL + t.tv_nsec / 1_000UL;
         }
 }
 
