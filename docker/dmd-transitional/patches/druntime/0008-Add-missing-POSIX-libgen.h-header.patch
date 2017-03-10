@@ -1,7 +1,7 @@
-From 9a2501e8f24f2625895e9eb5eda339a33117da7c Mon Sep 17 00:00:00 2001
+From c2d2375bd89869c6f67dffb79d0ad0ff2c96cca3 Mon Sep 17 00:00:00 2001
 From: Leandro Lucarella <leandro.lucarella@sociomantic.com>
 Date: Thu, 24 Nov 2016 20:05:48 -0300
-Subject: [PATCH 09/13] Add missing POSIX <libgen.h> header
+Subject: [PATCH 08/12] Add missing POSIX <libgen.h> header
 
 ---
  mak/COPY                    |  1 +
@@ -12,10 +12,10 @@ Subject: [PATCH 09/13] Add missing POSIX <libgen.h> header
  create mode 100644 src/core/sys/posix/libgen.d
 
 diff --git a/mak/COPY b/mak/COPY
-index e38c320..e57bbb1 100644
+index 4943369..221615e 100644
 --- a/mak/COPY
 +++ b/mak/COPY
-@@ -102,6 +102,7 @@ COPY=\
+@@ -106,6 +106,7 @@ COPY=\
  	$(IMPDIR)\core\sys\posix\grp.d \
  	$(IMPDIR)\core\sys\posix\iconv.d \
  	$(IMPDIR)\core\sys\posix\inttypes.d \
@@ -52,10 +52,10 @@ index 0000000..6770cd8
 +char* basename(char*);
 +char* dirname(char*);
 diff --git a/win32.mak b/win32.mak
-index fa250e4..f54c6ba 100644
+index 13c47d9..57b1403 100644
 --- a/win32.mak
 +++ b/win32.mak
-@@ -493,6 +493,9 @@ $(IMPDIR)\core\sys\posix\iconv.d : src\core\sys\posix\iconv.d
+@@ -502,6 +502,9 @@ $(IMPDIR)\core\sys\posix\iconv.d : src\core\sys\posix\iconv.d
  $(IMPDIR)\core\sys\posix\inttypes.d : src\core\sys\posix\inttypes.d
  	copy $** $@
  
@@ -66,10 +66,10 @@ index fa250e4..f54c6ba 100644
  	copy $** $@
  
 diff --git a/win64.mak b/win64.mak
-index ed201b8..3ef7f10 100644
+index b6875a4..bbe1790 100644
 --- a/win64.mak
 +++ b/win64.mak
-@@ -501,6 +501,9 @@ $(IMPDIR)\core\sys\posix\iconv.d : src\core\sys\posix\iconv.d
+@@ -510,6 +510,9 @@ $(IMPDIR)\core\sys\posix\iconv.d : src\core\sys\posix\iconv.d
  $(IMPDIR)\core\sys\posix\inttypes.d : src\core\sys\posix\inttypes.d
  	copy $** $@
  

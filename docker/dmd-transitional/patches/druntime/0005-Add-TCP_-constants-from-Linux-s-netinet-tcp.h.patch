@@ -1,7 +1,7 @@
-From 4f8383f237c08345c81ab4c2d6a7a819aaa7c6d4 Mon Sep 17 00:00:00 2001
+From 3c01c208216a1ef26945ce1a3371528ab2fa53e7 Mon Sep 17 00:00:00 2001
 From: Nemanja Boric <nemanja.boric@sociomantic.com>
 Date: Mon, 28 Nov 2016 18:44:19 +0100
-Subject: [PATCH 06/13] Add TCP_* constants from Linux's netinet/tcp.h
+Subject: [PATCH 05/12] Add TCP_* constants from Linux's netinet/tcp.h
 
 ---
  mak/COPY                             |  1 +
@@ -12,10 +12,10 @@ Subject: [PATCH 06/13] Add TCP_* constants from Linux's netinet/tcp.h
  create mode 100644 src/core/sys/linux/sys/netinet/tcp.d
 
 diff --git a/mak/COPY b/mak/COPY
-index 440ba55..922131b 100644
+index eea9396..8ba38ab 100644
 --- a/mak/COPY
 +++ b/mak/COPY
-@@ -73,6 +73,7 @@ COPY=\
+@@ -77,6 +77,7 @@ COPY=\
  	\
  	$(IMPDIR)\core\sys\linux\sys\inotify.d \
  	$(IMPDIR)\core\sys\linux\sys\mman.d \
@@ -109,10 +109,10 @@ index 0000000..b4acdd2
 +     TCP_SAVED_SYN          = 28, /// Get SYN headers recorded for connection.
 +}
 diff --git a/win32.mak b/win32.mak
-index 320d0a6..6ad666f 100644
+index 5191441..81412d0 100644
 --- a/win32.mak
 +++ b/win32.mak
-@@ -418,6 +418,9 @@ $(IMPDIR)\core\sys\linux\sys\inotify.d : src\core\sys\linux\sys\inotify.d
+@@ -427,6 +427,9 @@ $(IMPDIR)\core\sys\linux\sys\inotify.d : src\core\sys\linux\sys\inotify.d
  $(IMPDIR)\core\sys\linux\sys\mman.d : src\core\sys\linux\sys\mman.d
  	copy $** $@
  
@@ -123,10 +123,10 @@ index 320d0a6..6ad666f 100644
  	copy $** $@
  
 diff --git a/win64.mak b/win64.mak
-index bcc1ee9..1f09673 100644
+index a505930..86cfe02 100644
 --- a/win64.mak
 +++ b/win64.mak
-@@ -426,6 +426,9 @@ $(IMPDIR)\core\sys\linux\sys\inotify.d : src\core\sys\linux\sys\inotify.d
+@@ -435,6 +435,9 @@ $(IMPDIR)\core\sys\linux\sys\inotify.d : src\core\sys\linux\sys\inotify.d
  $(IMPDIR)\core\sys\linux\sys\mman.d : src\core\sys\linux\sys\mman.d
  	copy $** $@
  

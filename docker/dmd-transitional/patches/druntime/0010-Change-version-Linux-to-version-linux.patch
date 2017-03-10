@@ -1,7 +1,7 @@
-From 72f753acf691b80717616777b4ffa57849ad3abb Mon Sep 17 00:00:00 2001
+From c1bf97873d4c32dfc86ab4c30806a163db754452 Mon Sep 17 00:00:00 2001
 From: Nemanja Boric <nemanja.boric@sociomantic.com>
 Date: Fri, 24 Feb 2017 16:12:35 +0100
-Subject: [PATCH 11/13] Change version(Linux) to version(linux)
+Subject: [PATCH 10/12] Change version(Linux) to version(linux)
 
 ---
  src/core/sys/linux/sched.d           | 2 +-

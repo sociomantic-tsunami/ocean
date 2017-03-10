@@ -5,7 +5,7 @@ Dependency                   | Version
 -----------------------------|-----------
 makd                         | v1.3.x
 libtangort-dmd-dev (for D1)  | v1.6.0
-dmd-transitional   (for D2)  | 2.070.2.s9
+dmd-transitional   (for D2)  | 2.070.2.s10 or 2.071.2.s1
 
 New Release Notes Procedure (from v2.6.0)
 =========================================

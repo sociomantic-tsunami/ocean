@@ -1,7 +1,7 @@
-From 30543347349e9ef75499437fd0085b374962dfe0 Mon Sep 17 00:00:00 2001
+From bcfe51bc8e7cdf70ba31d5baa9eda0e7c0b13b05 Mon Sep 17 00:00:00 2001
 From: Leandro Lucarella <leandro.lucarella@sociomantic.com>
 Date: Fri, 25 Nov 2016 17:07:36 -0300
-Subject: [PATCH 13/13] linux/time: Add timer manipulation macros
+Subject: [PATCH 12/12] linux/time: Add timer manipulation macros
 
 ---
  mak/COPY                      |  1 +
@@ -11,10 +11,10 @@ Subject: [PATCH 13/13] linux/time: Add timer manipulation macros
  create mode 100644 src/core/sys/linux/sys/time.d
 
 diff --git a/mak/COPY b/mak/COPY
-index e57bbb1..4fe11f2 100644
+index 221615e..089c678 100644
 --- a/mak/COPY
 +++ b/mak/COPY
-@@ -79,6 +79,7 @@ COPY=\
+@@ -83,6 +83,7 @@ COPY=\
  	$(IMPDIR)\core\sys\linux\sys\socket.d \
  	$(IMPDIR)\core\sys\linux\sys\sysinfo.d \
  	$(IMPDIR)\core\sys\linux\sys\xattr.d \

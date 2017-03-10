@@ -1,7 +1,7 @@
-From e03d84e9d45be9041d8c29496b7b13f0506ec562 Mon Sep 17 00:00:00 2001
+From 6cf372151ac3004d221b8f8efa1a34cac411223c Mon Sep 17 00:00:00 2001
 From: Nemanja Boric <nemanja.boric@sociomantic.com>
 Date: Thu, 24 Nov 2016 13:48:53 +0100
-Subject: [PATCH 07/13] Add bindings for POSIX iconv
+Subject: [PATCH 06/12] Add bindings for POSIX iconv
 
 ---
  mak/COPY                   |  1 +
@@ -12,10 +12,10 @@ Subject: [PATCH 07/13] Add bindings for POSIX iconv
  create mode 100644 src/core/sys/posix/iconv.d
 
 diff --git a/mak/COPY b/mak/COPY
-index 922131b..bdf04bc 100644
+index 8ba38ab..409ff2b 100644
 --- a/mak/COPY
 +++ b/mak/COPY
-@@ -99,6 +99,7 @@ COPY=\
+@@ -103,6 +103,7 @@ COPY=\
  	$(IMPDIR)\core\sys\posix\dlfcn.d \
  	$(IMPDIR)\core\sys\posix\fcntl.d \
  	$(IMPDIR)\core\sys\posix\grp.d \
@@ -74,10 +74,10 @@ index 0000000..816f646
 +/// Free resources allocated for descriptor CD for code conversion.
 +int iconv_close (iconv_t cd);
 diff --git a/win32.mak b/win32.mak
-index 6ad666f..bce4469 100644
+index 81412d0..c3d598c 100644
 --- a/win32.mak
 +++ b/win32.mak
-@@ -484,6 +484,9 @@ $(IMPDIR)\core\sys\posix\fcntl.d : src\core\sys\posix\fcntl.d
+@@ -493,6 +493,9 @@ $(IMPDIR)\core\sys\posix\fcntl.d : src\core\sys\posix\fcntl.d
  $(IMPDIR)\core\sys\posix\grp.d : src\core\sys\posix\grp.d
  	copy $** $@
  
@@ -88,10 +88,10 @@ index 6ad666f..bce4469 100644
  	copy $** $@
  
 diff --git a/win64.mak b/win64.mak
-index 1f09673..c2ea1a8 100644
+index 86cfe02..b9d4a64 100644
 --- a/win64.mak
 +++ b/win64.mak
-@@ -492,6 +492,9 @@ $(IMPDIR)\core\sys\posix\fcntl.d : src\core\sys\posix\fcntl.d
+@@ -501,6 +501,9 @@ $(IMPDIR)\core\sys\posix\fcntl.d : src\core\sys\posix\fcntl.d
  $(IMPDIR)\core\sys\posix\grp.d : src\core\sys\posix\grp.d
  	copy $** $@
  
