@@ -8,7 +8,7 @@
     to, and run it.
 
     Copyright:
-        Copyright (c) 2015-2016 Sociomantic Labs GmbH.
+        Copyright (c) 2015-2017 sociomantic labs GmbH.
         All rights reserved.
 
     License:
