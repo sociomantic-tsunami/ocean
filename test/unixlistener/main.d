@@ -60,13 +60,8 @@ void writeToClient( cstring socket_path, cstring command )
     auto socket_fd = client.socket();
     enforce(socket_fd >= 0, "socket() call failed!");
 
-    int connect_result = ECONNREFUSED;
-    for (int i = 0; i < 5 && connect_result == ECONNREFUSED; i++)
-    {
-        Thread.sleep(seconds(0.5));
-        connect_result = client.connect(&local_address);
-    }
-    enforce(connect_result == 0, "connect() call failed after 5 tries!");
+    auto connect_result = client.connect(&local_address);
+    enforce(connect_result == 0, "connect() call failed.");
 
     client.write(command);
 }
