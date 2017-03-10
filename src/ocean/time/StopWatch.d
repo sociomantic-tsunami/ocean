@@ -43,13 +43,23 @@ extern (C) private
         // ...
 
         double i = elapsed.stop;
+        ulong us = elapsed.microsec;
         ---
 
-        The measured interval is in units of seconds, using floating-
-        point to represent fractions. This approach is more flexible
-        than integer arithmetic since it migrates trivially to more
-        capable timer hardware (there no implicit granularity to the
-        measurable intervals, except the limits of fp representation)
+        The measured interval is either an integer value in units of
+        microseconds -- returned by `microsec` -- or a floating-point value in
+        units of seconds with fractions -- returned by `stop`.
+        The integer value has always a precision of 1µs and is recommended if
+        you want to compare it with reference values such as checking if it's
+        below or above 1ms (e.g. `elapsed.microsec <= 1000`).
+        Although floating-point representation seems often more convenient, bear
+        in mind that
+          - The precision is relative to the value (i.e. the greater the values
+            the lower the absolute precision).
+          - Comparing fractions can yield unexpected results due to rounding and
+            because decimal fractions have no exact binary floating-point
+            representation. To avoid surprises like this using the integer
+            represenation of time spans is in general recommended.
 
         There is some minor overhead in using StopWatch, so take that into
         account
