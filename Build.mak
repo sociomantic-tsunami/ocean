@@ -26,6 +26,11 @@ TEST_FILTER_OUT += \
 TEST_FILTER_OUT += \
 	$C/test/collectd/main.d 
 
+# integration test which is temporarily disabled due to flakiness
+# to be fixed and re-enabled
+TEST_FILTER_OUT += \
+	$C/test/signalfd/main.d 
+
 $O/test-filesystemevent: override LDFLAGS += -lrt
 
 $O/test-selectlistener: override LDFLAGS += -lebtree

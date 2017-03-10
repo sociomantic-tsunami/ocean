@@ -55,8 +55,8 @@ import ocean.core.ExceptionDefinitions: ArrayBoundsException;
     @see http://www.gtk.org/api/2.6/glib/glib-String-Utility-Functions.html#g-ascii-strncasecmp
 
     Params:
-        s1 = string to compare each of the first n characters aganst those in s2
-        s2 = string to compare each of the first n characters aganst those in s1
+        s1 = string to compare each of the first n characters against those in s2
+        s2 = string to compare each of the first n characters against those in s1
         n  = number of characters to compare
 
     Returns:

@@ -46,7 +46,7 @@ struct HttpTimeFormatter
 
         Callback function to obtain the wall clock time. By default (null) the
         system time is queried using time() of the C stdlib.
-        An application may set its own time function, if desried.
+        An application may set its own time function, if desired.
 
      **************************************************************************/
 

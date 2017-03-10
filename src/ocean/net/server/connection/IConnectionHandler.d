@@ -288,8 +288,8 @@ abstract class IConnectionHandler : IConnectionHandlerInfo,
 
         Called by the select listener right after the client connection has been
         assigned.
-        If ths method throws an exception, error() and finalize() will be called
-        by the select listener.
+        If this method throws an exception, error() and finalize() will be
+        called by the select listener.
 
     ***************************************************************************/
 

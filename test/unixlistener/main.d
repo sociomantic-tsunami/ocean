@@ -3,7 +3,7 @@
     Test suite for the unix socket listener.
 
     Copyright:
-        Copyright (c) 2009-2016 Sociomantic Labs GmbH.
+        Copyright (c) 2009-2017 sociomantic labs GmbH.
         All rights reserved.
 
     License:
@@ -51,13 +51,8 @@ void writeToClient( cstring socket_path, cstring command )
     auto socket_fd = client.socket();
     enforce(socket_fd >= 0, "socket() call failed!");
 
-    int connect_result = ECONNREFUSED;
-    for (int i = 0; i < 5 && connect_result == ECONNREFUSED; i++)
-    {
-        Thread.sleep(seconds(0.5));
-        connect_result = client.connect(&local_address);
-    }
-    enforce(connect_result == 0, "connect() call failed after 5 tries!");
+    auto connect_result = client.connect(&local_address);
+    enforce(connect_result == 0, "connect() call failed.");
 
     client.write(command);
 }
@@ -110,7 +105,7 @@ int main ( )
     // Spin the server
     epoll.eventLoop();
 
-    // This will be reached only if "shutdown" command was succesfull.
+    // This will be reached only if "shutdown" command was successful.
     test!("==")(expected_value, 3);
 
     return 0;

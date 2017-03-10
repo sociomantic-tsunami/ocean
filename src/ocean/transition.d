@@ -263,7 +263,7 @@ unittest
     D2 version has `IsTypedef` member alias defined so that any struct type
     can be quickly checked if it originates from typedef via
     `is(typeof(S.IsTypedef))`. This is a hack reserved for backwards
-    compatibility in libaries and should be never relied upon in user code.
+    compatibility in libraries and should be never relied upon in user code.
 
     Template Parameters:
         T       = type to typedef
@@ -805,7 +805,7 @@ else
     D2 it's the actual type of the aggregate. It doesn't change anything for
     classes which are reference types, but for struct and unions, it yields
     a pointer instead of the actual type.
-    d1tod2fix does the convertion automatically for `structs`, but there are
+    d1tod2fix does the conversion automatically for `structs`, but there are
     places where manual intervention is needed (e.g. `mixin template`s).
 
 *******************************************************************************/

@@ -31,7 +31,7 @@ import ocean.net.http.HttpTokens;
 
 /******************************************************************************
 
-        Exposes freachable HttpHeader instances
+        Exposes reachable HttpHeader instances
 
 ******************************************************************************/
 
@@ -100,11 +100,11 @@ class HttpHeadersView : HttpTokens
 
                 Control whether headers are duplicated or not. Default
                 behaviour is aliasing instead of copying, avoiding any
-                allocatation overhead. However, the default won't preserve
+                allocation overhead. However, the default won't preserve
                 those headers once additional content has been read.
 
                 To retain headers across arbitrary buffering, you should
-                set this option true
+                set this option to true
 
         ***********************************************************************/
 

@@ -37,7 +37,7 @@ extern (C) private
 {
     /**************************************************************************
 
-        Determines the numeric value of a character as a hexidecimal digit.
+        Determines the numeric value of a character as a hexadecimal digit.
 
         @see http://developer.gnome.org/glib/stable/glib-String-Utility-Functions.html#g-ascii-xdigit-value
 
@@ -179,7 +179,7 @@ class UrlDecoder
     /***************************************************************************
 
         Extracts a single character from the specified position in the passed
-        string, which is expected to be the index of a character preceeded by a
+        string, which is expected to be the index of a character preceded by a
         '%'.
         source[pos .. $] is scanned to see if they represent an encoded
         character in either the RFC 2396 escape format (%XX) or the non-standard
@@ -437,7 +437,7 @@ class UrlDecoder
         number, into its corresponding UTF-8 character sequence.
 
         Params:
-            hex      = character code in hexadeximal representation (ASCII)
+            hex      = character code in hexadecimal representation (ASCII)
             utf8_buf = destination buffer for the UTF-8 sequence of the
                        character; the length must be at least 6; may contain
                        tailing junk if the sequence is actually shorter
