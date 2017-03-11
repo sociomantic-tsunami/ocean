@@ -902,39 +902,3 @@ unittest
     assert (tod.seconds is 3);
     assert (tod.millis is 4);
 }
-
-/*******************************************************************************
-
-*******************************************************************************/
-
-debug (Time)
-{
-        import ocean.io.Stdout_tango;
-        import ocean.time.Clock;
-        import ocean.time.chrono.Gregorian;
-
-        Time foo()
-        {
-                auto d = Time(10);
-                auto e = TimeSpan(20);
-
-                return d + e;
-        }
-
-        void main()
-        {
-                auto c = foo();
-                Stdout (c.ticks).newline;
-
-
-                auto t = TimeSpan(1);
-                auto h = t.hours;
-                auto m = t.time.minutes;
-
-                auto now = Clock.now;
-                auto time = now.time;
-                auto date = Gregorian.generic.toDate (now);
-                now = Gregorian.generic.toTime (date, time);
-        }
-}
-
