@@ -189,6 +189,22 @@ struct DateTimeLocale
         return res.get;
     }
 
+    /// Ditto
+    public void format (size_t delegate(cstring) output, Time dateTime,
+                        cstring layout)
+    {
+        // default to general format
+        if (layout.length is 0)
+            layout = "G";
+
+        // might be one of our shortcuts
+        if (layout.length is 1)
+            layout = expandKnownFormat (layout);
+
+        return formatCustom(output, dateTime, layout);
+    }
+
+
     /**********************************************************************
 
      **********************************************************************/

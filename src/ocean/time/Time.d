@@ -21,6 +21,14 @@
 module ocean.time.Time;
 
 import ocean.transition;
+import ocean.text.convert.DateTime_tango;
+
+version (UnitTest)
+{
+    import ocean.core.Test;
+    import ocean.text.convert.Formatter;
+}
+
 
 /******************************************************************************
 
@@ -695,6 +703,14 @@ struct Time
         {
                 return TimeSpan(ticks_ - epoch1970.ticks_);
         }
+
+    /// Support for `ocean.text.convert.Formatter`: Print the string in a
+    /// user-friendly way
+    public void toString (size_t delegate(cstring) sink)
+    {
+        // Layout defaults to 'G'
+        DateTimeDefault.format(sink, *this, "");
+    }
 }
 
 
@@ -901,4 +917,11 @@ unittest
     assert (tod.minutes is 2);
     assert (tod.seconds is 3);
     assert (tod.millis is 4);
+}
+
+unittest
+{
+    test!("==")(format("{}", Time.epoch1970), "01/01/70 00:00:00");
+    test!("==")(format("{}", Time.epoch1970 + TimeSpan.fromDays(5)),
+                "01/06/70 00:00:00");
 }
