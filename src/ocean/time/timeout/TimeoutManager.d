@@ -75,6 +75,15 @@ class TimeoutManager : TimeoutManagerBase
 {
     /***************************************************************************
 
+        Default expected number of elements in expiry registration to
+        ISelectClient map.
+
+    ***************************************************************************/
+
+    private const default_expected_no_elements = 1024;
+
+    /***************************************************************************
+
         Expiry registration class for an object that can time out.
 
     ***************************************************************************/
@@ -121,9 +130,24 @@ class TimeoutManager : TimeoutManagerBase
 
     ***************************************************************************/
 
-    public this ( size_t n = 1024, IAllocator allocator = null )
+    public this ( size_t n = default_expected_no_elements, IAllocator allocator = null )
     {
         super(n, allocator);
+    }
+
+    /***************************************************************************
+
+        Constructor.
+
+        Params:
+            allocator = use this bucket element allocator for the expiry
+                registration to ISelectClient map.
+
+    ***************************************************************************/
+
+    public this ( IAllocator allocator )
+    {
+        super(default_expected_no_elements, allocator);
     }
 
     /***************************************************************************

@@ -276,11 +276,17 @@ public class TimerSet ( EventData ) : TimerEventTimeoutManager
                 (see `schedule()` / `stopTimeout()`)
             max_events = limit on the number of events which can be managed by
                 the scheduler at one time. (0 = no limit)
+            allocator = use this bucket element allocator for the expiry
+                registration to ISelectClient map. If it is null the default map
+                allocator (BucketElementGCAllocator) is used.
 
     ***************************************************************************/
 
-    public this ( EpollSelectDispatcher epoll = null, uint max_events = 0 )
+    public this ( EpollSelectDispatcher epoll = null, uint max_events = 0,
+        IAllocator allocator = null )
     {
+        super(allocator);
+
         this.epoll = epoll;
 
         this.events = new ObjectPool!(Event);

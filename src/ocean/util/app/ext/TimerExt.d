@@ -107,6 +107,8 @@ public class TimerExt : IApplicationExtension
 
     import ocean.io.select.EpollSelectDispatcher;
     import ocean.io.select.client.TimerSet;
+    import BucketElementFreeList = ocean.util.container.map.model.BucketElementFreeList;
+    import ocean.time.timeout.TimeoutManager;
 
     /***************************************************************************
 
@@ -168,7 +170,8 @@ public class TimerExt : IApplicationExtension
 
     public this ( EpollSelectDispatcher epoll )
     {
-        this.timer_set = new TimerSet!(EventData)(epoll);
+        this.timer_set = new TimerSet!(EventData)(epoll, 0,
+                BucketElementFreeList.instantiateAllocator!(TimeoutManagerBase.ExpiryToClient));
     }
 
     /***************************************************************************
