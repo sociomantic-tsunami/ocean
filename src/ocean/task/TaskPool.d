@@ -33,12 +33,14 @@ import ocean.transition;
 import ocean.task.Task;
 import ocean.task.Scheduler;
 
+import ocean.core.Enforce;
 import ocean.core.Traits;
 import ocean.util.container.pool.ObjectPool;
 
 version (UnitTest)
 {
     import ocean.core.Test;
+    import ocean.task.util.Timer;
 }
 
 /*******************************************************************************
@@ -151,6 +153,45 @@ class TaskPool ( TaskT : Task ) : ObjectPool!(Task)
         }
 
         return true;
+    }
+
+    /***************************************************************************
+
+        Suspends the current task until all running tasks in the pool have
+        finished executing.
+
+        Note: care should be taken to ensure that the current task (i.e. the one
+        to be suspended) is not itself a task from the pool. If that is the
+        case, the current task will never be resumed, and this function will
+        never return.
+
+    ***************************************************************************/
+
+    public void awaitRunningTasks ()
+    {
+        if (!this.num_busy())
+            return;
+
+        auto current_task = Task.getThis();
+        enforce(current_task !is null,
+            "Current task is null in TaskPool.awaitRunningTasks");
+
+        scope tasks_iterator = this.new BusyItemsIterator;
+        int count;
+
+        foreach (task; tasks_iterator)
+        {
+            ++count;
+
+            task.terminationHook({
+                --count;
+                if (count == 0)
+                    current_task.resume();
+            });
+        }
+
+        if (count > 0)
+            current_task.suspend();
     }
 
     static if( hasMethod!(TaskT, "deserialize", void delegate(void[])) )
@@ -273,4 +314,50 @@ unittest
     theScheduler.eventLoop();
     test!("==")(RecycleTask.recycle_count, 2,
         "RecycleTask.recycle was not called the correct number of times");
+}
+
+unittest
+{
+    // Test for waiting until all running tasks of a task pool finish executing.
+
+    static class AwaitTask : Task
+    {
+        static int value;
+
+        public void copyArguments ( )
+        {
+        }
+
+        override public void run ( )
+        {
+            .wait(1); // so that the task gets suspended
+            value++;
+        }
+    }
+
+    class MainTask : Task
+    {
+        TaskPool!(AwaitTask) my_task_pool;
+
+        public this ( )
+        {
+            this.my_task_pool = new TaskPool!(AwaitTask);
+        }
+
+        override protected void run ( )
+        {
+            const NUM_START_CALLS = 6;
+
+            for (uint i; i < NUM_START_CALLS; i++)
+                this.my_task_pool.start();
+
+            this.my_task_pool.awaitRunningTasks();
+
+            test!("==")(AwaitTask.value, NUM_START_CALLS);
+        }
+    }
+
+    initScheduler(SchedulerConfiguration.init);
+    theScheduler.schedule(new MainTask);
+    theScheduler.eventLoop();
 }
