@@ -68,6 +68,19 @@ struct SmartUnion ( U )
 
     Active active ( ) { return this._.active; }
 
+    /***************************************************************************
+
+        Returns:
+            name of the currently active member or "none" if no member has yet
+            been set.
+
+    ***************************************************************************/
+
+    public istring active_name ( )
+    {
+        return this._.active_names[this._.active];
+    }
+
     /**************************************************************************
 
         Member getter/setter method definitions string mixin
@@ -91,12 +104,16 @@ unittest
     void main ( )
     {
         SmartUnion!(MyUnion) u;
+        istring name;
         u.Active a;             // u.Active is defined as
                                 // `enum u.Active {none, x, y}`
+
         a = u.active;           // a is now a.none
+        name = u.active_name;   // name is now "none"
         int b = u.x;            // error, u.x has not yet been set
         u.x   = 35;
         a = u.active;           // a is now a.x
+        name = u.active_name;   // name is now "x"
         mstring c = u.y;        // error, u.y is not the active member
     }
 }
@@ -115,6 +132,10 @@ unittest
     test!("==")(u2.active, 0);
     test!("==")(u3.active, 0);
 
+    test!("==")(u1.active_name, "none");
+    test!("==")(u2.active_name, "none");
+    test!("==")(u3.active_name, "none");
+
     testThrown!(Exception)(u1.a(), false);
     testThrown!(Exception)(u1.b(), false);
     testThrown!(Exception)(u2.a(), false);
@@ -125,31 +146,37 @@ unittest
     u1.a(42);
     test!("==")(u1.a, 42);
     test!("==")(u1.active, u1.Active.a);
+    test!("==")(u1.active_name, "a");
     testThrown!(Exception)(u1.b(), false);
 
     u2.a(new C1());
     test!("==")(u2.a.v, uint.init);
     test!("==")(u2.active, u2.Active.a);
+    test!("==")(u2.active_name, "a");
     testThrown!(Exception)(u2.b(), false);
 
     u3.a(S1(42));
     test!("==")(u3.a, S1(42));
     test!("==")(u3.active, u3.Active.a);
+    test!("==")(u3.active_name, "a");
     testThrown!(Exception)(u3.b(), false);
 
     u1.b("Hello world".dup);
     test!("==")(u1.b, "Hello world"[]);
     test!("==")(u1.active, u1.Active.b);
+    test!("==")(u1.active_name, "b");
     testThrown!(Exception)(u1.a(), false);
 
     u2.b(S1.init);
     test!("==")(u2.b, S1.init);
     test!("==")(u2.active, u2.Active.b);
+    test!("==")(u2.active_name, "b");
     testThrown!(Exception)(u2.a(), false);
 
     u3.b(21);
     test!("==")(u3.b, 21);
     test!("==")(u3.active, u3.Active.b);
+    test!("==")(u3.active_name, "b");
     testThrown!(Exception)(u3.a(), false);
 
 }
@@ -226,6 +253,34 @@ private struct SmartUnionIntern ( U )
      **************************************************************************/
 
     Active active;
+
+    /***************************************************************************
+
+        List of active state names
+
+    ***************************************************************************/
+
+    const istring[] active_names = member_string_list();
+
+    /***************************************************************************
+
+        CTFE function to generate the list of active state names for union U.
+
+        Returns:
+            a list containing the names of each of the active states of the
+            smart-union (i.e. the names of the fields of U)
+
+    ***************************************************************************/
+
+    static private istring[] member_string_list ( )
+    {
+        istring[] names = ["none"[]];
+        foreach ( i, F; typeof(U.init.tupleof) )
+        {
+            names ~= FieldName!(i, U);
+        }
+        return names;
+    }
 }
 
 /*******************************************************************************
@@ -253,7 +308,6 @@ private template MemberList ( uint i, size_t len, U )
         const MemberList = "," ~ FieldName!(i, U) ~ MemberList!(i + 1, len, U);
     }
 }
-
 
 /*******************************************************************************
 
