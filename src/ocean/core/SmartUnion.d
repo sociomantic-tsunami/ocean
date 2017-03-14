@@ -212,6 +212,83 @@ version (UnitTest)
     }
 }
 
+
+/*******************************************************************************
+
+    Calls the specified callable with the active field of the provided
+    smart-union. If no field is active, does nothing.
+
+    Note: declared at module-scope (rather than nested inside the SmartUnion
+    template) to work around limitations of template alias parameters. (Doing it
+    like this allows it to be called with a local name.)
+
+    Params:
+        Callable = alias for the thing to be called with the active member of
+            the provided smart-union
+        SU = type of smart-union to operate on
+        smart_union = smart-union instance whose active field should be passed
+            to Callable
+
+*******************************************************************************/
+
+public void callWithActive ( alias Callable, SU ) ( SU smart_union )
+{
+    static assert(is(TemplateInstanceArgs!(SmartUnion, SU)));
+    alias typeof(smart_union._.u) U;
+
+    if ( !smart_union._.active )
+        return;
+
+    auto active_i = smart_union._.active - 1;
+    assert(active_i < U.tupleof.length);
+
+    // "static foreach", unrolls into the equivalent of a switch
+    foreach ( i, ref field; smart_union._.u.tupleof )
+    {
+        if ( i == active_i )
+        {
+            Callable(field);
+            break;
+        }
+    }
+}
+
+///
+version (D_Version2) unittest
+{
+    // This example is D2 only because it requires a function template,
+    // `print`, and D1 doesn't allow defining a function template at the scope
+    // of a function, including a `unittest`. In D1 this example works if
+    // `print`, is defined outside of function scope.
+
+    union TestUnion
+    {
+        int a;
+        float b;
+    }
+    alias SmartUnion!(TestUnion) TestSmartUnion;
+
+    static struct ActiveUnionFieldPrinter
+    {
+        static void print ( T ) ( T t )
+        {
+            Stdout.formatln("{}", t);
+        }
+
+        void printActiveUnionField ( )
+        {
+            TestSmartUnion su;
+            su.a = 23;
+            callWithActive!(print)(su);
+        }
+    }
+}
+
+version ( UnitTest )
+{
+    import ocean.io.Stdout;
+}
+
 /******************************************************************************
 
     Holds the actual union U instance and Active enumerator value and provides
