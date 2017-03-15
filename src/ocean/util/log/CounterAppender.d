@@ -26,6 +26,7 @@ import ocean.util.log.Event;
 
 *******************************************************************************/
 
+deprecated ("Please use Log.Stats.total() instead")
 public class CounterAppender : Appender
 {
         private Mask mask_;
