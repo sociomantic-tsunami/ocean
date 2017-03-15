@@ -110,9 +110,11 @@ Maintained Major Branches
 ====== ==================== ===============
 Major  Initial release date Supported until
 ====== ==================== ===============
-v2.x.x v2.0.0_: 30/06/2016  TBD
+v2.x.x v2.0.0_: 30/06/2016  10/09/2017
+v3.x.x v3.0.0_: 10/03/2017  TBD
 ====== ==================== ===============
 .. _v2.0.0: https://github.com/sociomantic-tsunami/ocean/releases/tag/v2.0.0
+.. _v3.0.0: https://github.com/sociomantic-tsunami/ocean/releases/tag/v3.0.0
 
 Releases
 ========
