@@ -59,5 +59,6 @@ void main ( )
         test!("==")(stats.logged_warn, 1);
         test!("==")(stats.logged_info, 0);
         test!("==")(stats.logged_trace, 0);
+        test!("==")(stats.total, 5);
     }
 }
