@@ -54,7 +54,7 @@ class DirectorySandbox
 
     ***************************************************************************/
 
-    public static DirectorySandbox create (in cstring[] subdirectories,
+    public static DirectorySandbox create (in cstring[] subdirectories = null,
             mstring path_template = "/tmp/Dunittest-XXXXXXXX".dup)
     {
         auto sandbox = new DirectorySandbox;
