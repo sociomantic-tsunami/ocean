@@ -88,6 +88,18 @@ class DirectorySandbox
 
     /***************************************************************************
 
+        Returns:
+            path of the sandbox
+
+    ***************************************************************************/
+
+    public cstring path ()
+    {
+        return this.sandbox_path;
+    }
+
+    /***************************************************************************
+
         Changes the directory to the old directory and removes the
         sandbox directory.
 
