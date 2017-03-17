@@ -27,12 +27,16 @@ module ocean.io.select.client.FileSystemEvent;
 *******************************************************************************/
 
 import ocean.sys.Inotify;
+import core.stdc.string;
 import core.sys.linux.sys.inotify;
 
 import core.sys.posix.unistd;
 
 import ocean.io.select.EpollSelectDispatcher;
 import ocean.io.select.client.model.ISelectClient: ISelectClient;
+import ocean.core.Buffer;
+import ocean.core.SmartUnion;
+import ocean.transition;
 
 
 /*******************************************************************************
@@ -76,13 +80,75 @@ enum FileEventsEnum : uint
 
 class FileSystemEvent : ISelectClient
 {
+    import ocean.core.Buffer;
+
     /***************************************************************************
 
         Alias for event handler delegate.
 
     ***************************************************************************/
 
+    // TODO: this is deprecated. Remove in the next major
     public alias void delegate ( char[] path, uint event ) Handler;
+
+
+    /***************************************************************************
+
+        Structure carrying only path and event.
+
+    ***************************************************************************/
+
+    public struct FileEvent
+    {
+        cstring path;
+        uint event;
+    }
+
+
+    /***************************************************************************
+
+        Structure carrying path, name and event, representing event that happened
+        on a file in a watched directory.
+
+    ***************************************************************************/
+
+    public struct DirectoryFileEvent
+    {
+        cstring path;
+        cstring name;
+        uint event;
+    }
+
+
+    /***************************************************************************
+
+        Union of possible events that could happen.
+
+    ***************************************************************************/
+
+    public union EventUnion
+    {
+        FileEvent file_event;
+        DirectoryFileEvent directory_file_event;
+    }
+
+
+    /***************************************************************************
+
+        SmartUnion alias for the possible events that could happen.
+
+    ***************************************************************************/
+
+    public alias SmartUnion!(EventUnion) RaisedEvent;
+
+
+    /***************************************************************************
+
+        Alias for the notifier delegate that receives the event as a smart union.
+
+    ***************************************************************************/
+
+    public alias void delegate ( RaisedEvent ) Notifier;
 
 
     /***************************************************************************
@@ -101,7 +167,19 @@ class FileSystemEvent : ISelectClient
 
     ***************************************************************************/
 
+    // TODO: this is deprecated. Remove in the next major
     private Handler handler;
+
+
+    /***************************************************************************
+
+        Event notifier delegate, specified in the constructor and called whenever
+        a watched file system event fires, passing the SmartUnion describing the
+        event.
+
+    ***************************************************************************/
+
+    private Notifier notifier;
 
 
     /***************************************************************************
@@ -129,10 +207,40 @@ class FileSystemEvent : ISelectClient
 
     ***********************************************************************/
 
+    deprecated ("Please use this(Notifier) instead")
     public this ( Handler handler )
     {
-        this.fd = new Inotify;
+        this();
         this.handler = handler;
+    }
+
+
+    /***********************************************************************
+
+        Constructor. Creates a custom event and hooks it up to the provided
+        event notifier which in addition accepts the name field.
+
+        Params:
+            notifier = event notifier
+
+    ***********************************************************************/
+
+    public this ( Notifier notifier )
+    {
+        this();
+        this.notifier = notifier;
+    }
+
+
+    /***************************************************************************
+
+        Constructor. Initializes a custom event.
+
+    ***************************************************************************/
+
+    private this ()
+    {
+        this.fd = new Inotify;
     }
 
 
@@ -145,9 +253,25 @@ class FileSystemEvent : ISelectClient
 
     ***********************************************************************/
 
+    deprecated ("Please use setNotifier(Notifier) instead")
     public void setHandler ( Handler handler )
     {
         this.handler = handler;
+    }
+
+
+    /***********************************************************************
+
+        Replace the notifier delegate
+
+        Params:
+            notifier = event notifier
+
+    ***********************************************************************/
+
+    public void setNotifier ( Notifier notifier )
+    {
+        this.notifier = notifier;
     }
 
 
@@ -264,7 +388,27 @@ class FileSystemEvent : ISelectClient
             auto path = ev.wd in this.watched_files;
             assert(path !is null);
 
-            this.handler( *path , ev.mask);
+            if (this.handler)
+                this.handler(*path , ev.mask);
+
+            if (this.notifier)
+            {
+                RaisedEvent event_info;
+
+                if (ev.len > 0)
+                {
+                    auto name_ptr = cast(char*)&ev.name;
+                    auto name = name_ptr[0..strlen(name_ptr)];
+                    event_info.directory_file_event = DirectoryFileEvent(*path,
+                            name, ev.mask);
+                }
+                else
+                {
+                    event_info.file_event = FileEvent(*path, ev.mask);
+                }
+
+                this.notifier(event_info);
+            }
         }
 
         return true;
