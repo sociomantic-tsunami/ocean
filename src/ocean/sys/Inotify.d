@@ -105,7 +105,7 @@ public class Inotify : ISelectable
 
         ***********************************************************************/
 
-        public int opApply ( int delegate ( ref inotify_event ) dg )
+        public int opApply ( int delegate ( ref inotify_event* ) dg )
         {
             //255 is the default max filename length in linux)
             char[inotify_event.sizeof + 255 + 1] buffer_temp;
@@ -121,7 +121,7 @@ public class Inotify : ISelectable
                 for ( uint i; i < read_bytes; i += inotify_event.sizeof + i_event.len  )
                 {
                     i_event = cast(inotify_event*) &buffer[i];
-                    result = dg(*i_event);
+                    result = dg(i_event);
 
                     if (result)
                     {
