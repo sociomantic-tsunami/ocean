@@ -89,10 +89,10 @@ struct BitArray
                 enableStomping(buf);
 
                 ptr = buf.ptr;
-                if( newdim & 31 )
+                if( auto pad_bits = (newlen & 31) )
                 {
                     // Set any pad bits to 0
-                    ptr[newdim - 1] &= ~(~0 << (newdim & 31));
+                    ptr[newdim - 1] &= ~(~0 << pad_bits);
                 }
             }
             len = newlen;
