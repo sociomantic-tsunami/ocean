@@ -35,3 +35,12 @@
     Note that the previous example is kept short for simplicity. `makeLayout` gets the raw name,
     and as such may make the comparison as loose as wanted
     (by lowercasing, removing `"layout"` prefix/suffix, etc...).
+
+* `ocean.util.app.LogExt : LogExt`
+
+    This class has a new constructor, which accepts a delegate with the same signature as `makeLayout`
+    previously described, and will pass it to `configureOldLoggers` accordingly.
+
+* `ocean.util.app.DaemonApp : DaemonApp.OptionalSettings`
+
+    This struct gained a new member, `make_layout`, which is passed to `LogExt` and ultimately `configureOldLoggers`.

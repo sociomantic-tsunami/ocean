@@ -79,6 +79,10 @@ class LogExt : IConfigExtExtension
     public bool use_insert_appender;
 
 
+    /// If set, will be used by `makeLayout` to map a name to a `Layout`
+    private Appender.Layout delegate (cstring name) layout_maker;
+
+
     /***************************************************************************
 
         Constructor.
@@ -89,11 +93,33 @@ class LogExt : IConfigExtExtension
 
     ***************************************************************************/
 
-    this ( bool use_insert_appender = false )
+    this ( bool use_insert_appender )
     {
-        this.use_insert_appender = use_insert_appender;
+        this(null, use_insert_appender);
     }
 
+
+    /***************************************************************************
+
+        Constructor.
+
+        Params:
+            make_layout         = A delegate that instantiates an
+                                  `Appender.Layout` from a name. If null,
+                                  defaults to `ocean.util.Config: newLayout`.
+            use_insert_appender = true if the InsertConsole appender should be
+                                  used (needed when using the AppStatus module)
+
+    ***************************************************************************/
+
+    public this ( Appender.Layout delegate (cstring name) make_layout = null,
+                  bool use_insert_appender = false )
+    {
+        this.layout_maker = make_layout is null ? &this.makeLayoutDefault
+            : make_layout;
+
+        this.use_insert_appender = use_insert_appender;
+    }
 
     /***************************************************************************
 
@@ -148,7 +174,7 @@ class LogExt : IConfigExtExtension
         enable_loose_parsing(conf_ext.loose_config_parsing);
 
         LogUtil.configureOldLoggers(log_config, log_meta_config, &appender,
-            this.use_insert_appender);
+            this.layout_maker, this.use_insert_appender);
 
         foreach (ext; this.extensions)
         {
@@ -198,5 +224,27 @@ class LogExt : IConfigExtExtension
     {
         // Unused
         return files;
+    }
+
+
+    /***************************************************************************
+
+        Default for layout_maker. DMD complains because `LogUtil.newLayout`
+        is a function, not a delegate.
+
+        Params:
+            name = name of the Layout to instantiate.
+
+        Throws:
+            `Exception` if it cannot match the name
+
+        Returns:
+            A new Layout instance matching name
+
+    ***************************************************************************/
+
+    private Appender.Layout makeLayoutDefault ( cstring name )
+    {
+        return LogUtil.newLayout(name);
     }
 }

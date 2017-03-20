@@ -218,6 +218,7 @@ public abstract class DaemonApp : Application,
 
     public static struct OptionalSettings
     {
+        import ocean.util.log.Appender;
         import core.sys.posix.signal : SIGHUP;
 
         /***********************************************************************
@@ -287,6 +288,9 @@ public abstract class DaemonApp : Application,
         ***********************************************************************/
 
         int reopen_signal = SIGHUP;
+
+        /// Delegate for LogExt that instantiates a `Appender.Layout` from a name
+        Appender.Layout delegate (cstring name) make_layout;
     }
 
     /***************************************************************************
@@ -363,7 +367,8 @@ public abstract class DaemonApp : Application,
         this.args_ext.registerExtension(this.config_ext);
 
         // Create and register log extension
-        this.log_ext = new LogExt(settings.use_insert_appender);
+        this.log_ext = new LogExt(settings.make_layout,
+                                  settings.use_insert_appender);
         this.config_ext.registerExtension(this.log_ext);
 
         // Create and register version extension
