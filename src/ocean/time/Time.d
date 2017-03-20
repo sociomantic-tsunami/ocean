@@ -23,7 +23,10 @@ module ocean.time.Time;
 import ocean.transition;
 import ocean.text.convert.DateTime_tango;
 
-version (UnitTest)
+// This causes circular references because `Test` imports `Layout_tango`
+// which imports this. Enable again when `Test` switches to the Formatter.
+// Formatter imports `Test` through `Traits`, so we cannot use `assert` either
+version (none) version (UnitTest)
 {
     import ocean.core.Test;
     import ocean.text.convert.Formatter;
@@ -919,7 +922,8 @@ unittest
     assert (tod.millis is 4);
 }
 
-unittest
+// See `version (UnitTest)` comment
+version (none) unittest
 {
     test!("==")(format("{}", Time.epoch1970), "01/01/70 00:00:00");
     test!("==")(format("{}", Time.epoch1970 + TimeSpan.fromDays(5)),
