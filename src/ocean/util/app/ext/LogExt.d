@@ -17,6 +17,9 @@ module ocean.util.app.ext.LogExt;
 
 import ocean.core.TypeConvert;
 import ocean.io.device.File;
+import ocean.stdc.string;
+import ocean.text.convert.Formatter;
+import ocean.text.util.SplitIterator;
 import ocean.transition;
 import ocean.util.app.Application;
 import ocean.util.app.ext.ConfigExt;
@@ -28,6 +31,8 @@ import ConfigFiller = ocean.util.config.ConfigFiller;
 import ocean.util.config.ConfigParser;
 import ocean.util.log.Appender;
 import LogUtil = ocean.util.log.Config;
+import ocean.util.log.Logger;
+import ocean.util.log.model.ILogger;
 
 
 /*******************************************************************************
@@ -232,6 +237,146 @@ class LogExt : IConfigExtExtension
     private Appender.Layout makeLayoutDefault ( cstring name )
     {
         return LogUtil.newLayout(name);
+    }
+
+    /***************************************************************************
+
+        Support for dynamic configuration of `Logger` through `UnixSocketExt`
+
+        Entry point (handler) which is passed to `UnixSocketExt`.
+        From there, forwards to `unixSocketCommand`.
+
+        Params:
+            args = Arguments passed via the unix socket, split on space
+            send = Delegate to use to answer
+
+    ***************************************************************************/
+
+    public void unixSocketHandler ( cstring[] args, UnixSocketSink send )
+    {
+        if (!args.length || args[0] == "help")
+            return sendUsage(send);
+
+        if (args[0] == "set")
+        {
+            // Need at least: 'set', 'LoggerName', 'k=v'
+            if (args.length < 3)
+                return sendUsage(send);
+
+            auto logger = icmp(args[1], "root") ? Log.root : Log.lookup(args[1]);
+            // We do not want to half-reconfigure a logger, it should be all or
+            // nothing, which is why we have this recursive logic instead of
+            // a loop.
+            if (this.unixSocketCommand(send, logger.additive(), logger,
+                                       args[2 .. $]))
+                return send("OK\n");
+            else
+                return send("Error happened while processing command 'set'\n");
+        }
+
+        send("Invalid command: ");
+        send(args[0]);
+        send("\n\n");
+        return sendUsage(send);
+    }
+
+    /// Type of sink for the UnixSocketHandler
+    private alias void delegate (cstring msg) UnixSocketSink;
+
+    /// Perform a case-insensitive string comparison
+    private static bool icmp (cstring a, cstring b)
+    {
+        return a.length == b.length && !strncasecmp(a.ptr, b.ptr, a.length);
+    }
+
+    /***************************************************************************
+
+        Write usage information to the provided delegate
+
+        Params:
+            send = Delegate to write the usage information to
+
+    ***************************************************************************/
+
+    private static void sendUsage ( UnixSocketSink send )
+    {
+        send(`SetLogger is a command to change the configuration of a logger
+The modification is temporary and will not be in effect after restart
+
+Usage: SetLogger help
+       SetLogger set Name [ARGS...]
+
+    - help  = Print this usage message;
+    - set   = Set the provided arguments for logger 'Name', keep existing values intact
+
+Arguments to 'set' are key-value pairs, e.g. 'level=trace' or 'file=log/newfile.log'.
+Note that the order in which arguments are processed is not guaranteed,
+except for 'additive' which will affect subsequent arguments.
+As a result, if 'additive' is provided, it should be before 'level',
+or it won't be taken into account.
+`);
+    }
+
+
+    /***************************************************************************
+
+        Reconfigure a logger according to the commands
+
+        Recurses to ensure all modifications happen, or none at all.
+
+        Params:
+            send      = Delegate to use to respond to the user
+            propagate = Whether the user want the modification to propagate to
+                        child loggers. By default, use the `additive` property
+                        of the Logger (which is `true` by default).
+            logger    = Logger to reconfigure
+            remaining = Remaining arguments to process
+
+        Returns:
+            Whether reconfiguring succeeded (`true`) or not (`false`).
+
+    ***************************************************************************/
+
+    private bool unixSocketCommand ( UnixSocketSink send, bool additive,
+                                     Logger logger, in cstring[] remaining )
+    {
+        if (!remaining.length)
+            return true;
+
+        scope it = new ChrSplitIterator('=');
+        it.reset(remaining[0]);
+        cstring opt = it.next();
+        cstring value = it.remaining();
+
+        if (icmp(opt, "additive"))
+        {
+            if (icmp(value, "true") || icmp(value, "1"))
+                additive = true;
+            else if (icmp(value, "false") || icmp(value, "0"))
+                additive = false;
+            else
+            {
+                sformat(send, "Error: '{}' is not a recognized boolean value. "
+                        ~ "Use 'true', 'false', '1' or '0'\n", value);
+                return false;
+            }
+
+            return this.unixSocketCommand(send, additive, logger, remaining[1 .. $]);
+        }
+
+        if (icmp(opt, "level"))
+        {
+            auto lvl = ILogger.convert(value, logger.level());
+            if (this.unixSocketCommand(send, additive, logger, remaining[1 .. $]))
+            {
+                logger.level(lvl, additive);
+                return true;
+            }
+            return false;
+        }
+
+        sformat(send, "Changing property {} is not implemented\n", opt);
+        return false;
     }
 }
 

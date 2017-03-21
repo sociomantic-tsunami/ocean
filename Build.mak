@@ -67,6 +67,8 @@ $O/test-unixlistener: override LDFLAGS += -lebtree
 
 $O/test-loggerstats: override LDFLAGS += -lebtree
 
+$O/test-logger_unixsocketext: override LDFLAGS += -lebtree
+
 $O/test-signalext: override LDFLAGS += -lebtree
 
 $O/test-sysstats: override LDFLAGS += -lebtree

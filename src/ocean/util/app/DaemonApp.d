@@ -381,9 +381,11 @@ public abstract class DaemonApp : Application,
         this.config_ext.registerExtension(this.pidlock_ext);
         this.registerExtension(this.pidlock_ext);
 
+        // Unix socket extension and default commands
         this.unix_socket_ext = new UnixSocketExt();
         this.config_ext.registerExtension(this.unix_socket_ext);
         this.registerExtension(this.unix_socket_ext);
+        this.unix_socket_ext.addHandler("SetLogger", &this.log_ext.unixSocketHandler);
 
         // Create and register repoenable files extension
         this.reopenable_files_ext = new ReopenableFilesExt();
