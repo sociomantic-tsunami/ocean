@@ -1115,3 +1115,47 @@ struct BitArray
         assert( c == a );
     }
 }
+
+version (UnitTest)
+{
+    import ocean.core.Test : NamedTest;
+}
+
+unittest
+{
+    auto t = new NamedTest("Copy the bits from another array");
+
+    const num_bits = 80;
+
+    // Creates a BitArray and sets the bits only for even position.
+    BitArray src_bit_array;
+    src_bit_array.length = num_bits;
+
+    foreach (pos, ref bool_value; src_bit_array)
+    {
+        if (pos % 2 == 0)
+            bool_value = true;
+    }
+
+    BitArray dst_bit_array;
+    dst_bit_array.length = src_bit_array.length;
+
+    // test self-verification
+    t.test!("==")(dst_bit_array.length, num_bits);
+    foreach (pos, bit_value; dst_bit_array)
+        t.test!("==")(bit_value, false);
+
+    dst_bit_array[] = src_bit_array; // performs the copy
+
+    foreach (pos, bit_value; dst_bit_array)
+    {
+        if (pos % 2 == 0)
+            t.test!("==")(bit_value, true);
+        else
+            t.test!("==")(bit_value, false);
+    }
+
+    // Ensures both arrays do not share the same memory storage
+    src_bit_array[0] = false;
+    t.test!("==")(dst_bit_array[0], true);
+}
