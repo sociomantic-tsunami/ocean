@@ -89,7 +89,9 @@ class StringC
     {
         if (str.length && !!str[$ - 1])
         {
+            enableStomping(str);
             str ~= StringC.Term;
+            enableStomping(str);
         }
 
         return str.ptr;
