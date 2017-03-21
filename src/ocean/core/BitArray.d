@@ -186,13 +186,8 @@ struct BitArray
     }
     body
     {
-        size_t mDim=len/32;
-        ptr[0..mDim] = rhs.ptr[0..mDim];
-        int rest=cast(int)(len & cast(size_t)31u);
-        if (rest){
-            uint mask=(~0u)<<rest;
-            ptr[mDim]=(rhs.ptr[mDim] & (~mask))|(ptr[mDim] & mask);
-        }
+        auto dimension = this.dim();
+        this.ptr[0..dimension] = rhs.ptr[0..dimension];
         return *this;
     }
 
