@@ -475,7 +475,7 @@ class File : Device, Device.Seek, Device.Truncate
 
         ***********************************************************************/
 
-        static void append (cstring path, void[] content)
+        static void append (cstring path, Const!(void)[] content)
         {
                 scope file = new File (path, WriteAppending);
                 file.write (content);
