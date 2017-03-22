@@ -21,6 +21,17 @@
 module ocean.time.Time;
 
 import ocean.transition;
+import ocean.text.convert.DateTime_tango;
+
+// This causes circular references because `Test` imports `Layout_tango`
+// which imports this. Enable again when `Test` switches to the Formatter.
+// Formatter imports `Test` through `Traits`, so we cannot use `assert` either
+version (none) version (UnitTest)
+{
+    import ocean.core.Test;
+    import ocean.text.convert.Formatter;
+}
+
 
 /******************************************************************************
 
@@ -695,6 +706,14 @@ struct Time
         {
                 return TimeSpan(ticks_ - epoch1970.ticks_);
         }
+
+    /// Support for `ocean.text.convert.Formatter`: Print the string in a
+    /// user-friendly way
+    public void toString (size_t delegate(cstring) sink)
+    {
+        // Layout defaults to 'G'
+        DateTimeDefault.format(sink, *this, "");
+    }
 }
 
 
@@ -903,38 +922,10 @@ unittest
     assert (tod.millis is 4);
 }
 
-/*******************************************************************************
-
-*******************************************************************************/
-
-debug (Time)
+// See `version (UnitTest)` comment
+version (none) unittest
 {
-        import ocean.io.Stdout_tango;
-        import ocean.time.Clock;
-        import ocean.time.chrono.Gregorian;
-
-        Time foo()
-        {
-                auto d = Time(10);
-                auto e = TimeSpan(20);
-
-                return d + e;
-        }
-
-        void main()
-        {
-                auto c = foo();
-                Stdout (c.ticks).newline;
-
-
-                auto t = TimeSpan(1);
-                auto h = t.hours;
-                auto m = t.time.minutes;
-
-                auto now = Clock.now;
-                auto time = now.time;
-                auto date = Gregorian.generic.toDate (now);
-                now = Gregorian.generic.toTime (date, time);
-        }
+    test!("==")(format("{}", Time.epoch1970), "01/01/70 00:00:00");
+    test!("==")(format("{}", Time.epoch1970 + TimeSpan.fromDays(5)),
+                "01/06/70 00:00:00");
 }
-
