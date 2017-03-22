@@ -25,7 +25,7 @@ export VERSION=$(git describe --dirty | cut -c2- |
 make -C src -f posix.mak
 
 # Make package using MakD
-git clone -b v1.7.x --single-branch --depth 50 \
+git clone -b v1.9.0 --single-branch --depth 50 \
         https://github.com/sociomantic-tsunami/makd.git
 
 mkdir -p pkg

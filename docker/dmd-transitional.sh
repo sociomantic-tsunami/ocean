@@ -42,7 +42,7 @@ cd -
 #make -r -C phobos -f posix.mak MODEL=64 RELEASE=1
 
 # Make package using MakD
-git clone -b v1.7.x --single-branch --depth 50 \
+git clone -b v1.9.0 --single-branch --depth 50 \
         https://github.com/sociomantic-tsunami/makd.git
 
 cat <<EOT > dmd.conf
