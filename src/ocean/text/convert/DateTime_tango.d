@@ -184,8 +184,26 @@ struct DateTimeLocale
             layout = expandKnownFormat (layout);
 
         auto res=Result(output);
-        return formatCustom (res, dateTime, layout);
+        scope sink = (cstring v) { res ~= v; return v.length; };
+        this.formatCustom(sink, dateTime, layout);
+        return res.get;
     }
+
+    /// Ditto
+    public void format (size_t delegate(cstring) output, Time dateTime,
+                        cstring layout)
+    {
+        // default to general format
+        if (layout.length is 0)
+            layout = "G";
+
+        // might be one of our shortcuts
+        if (layout.length is 1)
+            layout = expandKnownFormat (layout);
+
+        return formatCustom(output, dateTime, layout);
+    }
+
 
     /**********************************************************************
 
@@ -590,7 +608,8 @@ struct DateTimeLocale
 
      **********************************************************************/
 
-    private char[] formatCustom (ref Result result, Time dateTime, cstring format)
+    private void formatCustom (size_t delegate(cstring) sink, Time dateTime,
+                               cstring format)
     {
         uint            len,
                         doy,
@@ -617,9 +636,9 @@ struct DateTimeLocale
                 case 'd':
                     len = parseRepeat (format, index, c);
                     if (len <= 2)
-                        result ~= formatInt (tmp, day, len);
+                        sink(formatInt(tmp, day, len));
                     else
-                        result ~= formatDayOfWeek (cast(Calendar.DayOfWeek) dow, len);
+                        sink(formatDayOfWeek (cast(Calendar.DayOfWeek) dow, len));
                     break;
 
                     // millis
@@ -628,16 +647,16 @@ struct DateTimeLocale
                     auto num = Integer.itoa (tmp, time.millis);
                     if(len > num.length)
                     {
-                        result ~= num;
+                        sink(num);
 
                         // append '0's
                         static char[8] zeros = '0';
                         auto zc = len - num.length;
                         zc = (zc > zeros.length) ? zeros.length : zc;
-                        result ~= zeros[0..zc];
+                        sink(zeros[0..zc]);
                     }
                     else
-                        result ~= num[0..len];
+                        sink(num[0..len]);
                     break;
 
                     // millis, no trailing zeros
@@ -650,16 +669,16 @@ struct DateTimeLocale
                     while(idx && num[idx-1] is '0')
                         --idx;
 
-                    result ~= num[0..idx];
+                    sink(num[0..idx]);
                     break;
 
                     // month
                 case 'M':
                     len = parseRepeat (format, index, c);
                     if (len <= 2)
-                        result ~= formatInt (tmp, month, len);
+                        sink(formatInt(tmp, month, len));
                     else
-                        result ~= formatMonth (month, len);
+                        sink(formatMonth(month, len));
                     break;
 
                     // year
@@ -668,13 +687,13 @@ struct DateTimeLocale
 
                     // Two-digit years for Japanese
                     if (calendar.id is Calendar.JAPAN)
-                        result ~= formatInt (tmp, year, 2);
+                        sink(formatInt(tmp, year, 2));
                     else
                     {
                         if (len <= 2)
-                            result ~= formatInt (tmp, year % 100, len);
+                            sink(formatInt(tmp, year % 100, len));
                         else
-                            result ~= formatInt (tmp, year, len);
+                            sink(formatInt(tmp, year, len));
                     }
                     break;
 
@@ -684,25 +703,25 @@ struct DateTimeLocale
                     int hour = time.hours % 12;
                     if (hour is 0)
                         hour = 12;
-                    result ~= formatInt (tmp, hour, len);
+                    sink(formatInt(tmp, hour, len));
                     break;
 
                     // hour (24-hour clock)
                 case 'H':
                     len = parseRepeat (format, index, c);
-                    result ~= formatInt (tmp, time.hours, len);
+                    sink(formatInt(tmp, time.hours, len));
                     break;
 
                     // minute
                 case 'm':
                     len = parseRepeat (format, index, c);
-                    result ~= formatInt (tmp, time.minutes, len);
+                    sink(formatInt(tmp, time.minutes, len));
                     break;
 
                     // second
                 case 's':
                     len = parseRepeat (format, index, c);
-                    result ~= formatInt (tmp, time.seconds, len);
+                    sink(formatInt (tmp, time.seconds, len));
                     break;
 
                     // AM/PM
@@ -713,16 +732,16 @@ struct DateTimeLocale
                         if (time.hours < 12)
                         {
                             if (amDesignator.length != 0)
-                                result ~= amDesignator[0];
+                                sink((&amDesignator[0])[0 .. 1]);
                         }
                         else
                         {
                             if (pmDesignator.length != 0)
-                                result ~= pmDesignator[0];
+                                sink((&pmDesignator[0])[0 .. 1]);
                         }
                     }
                     else
-                        result ~= (time.hours < 12) ? amDesignator : pmDesignator;
+                        sink((time.hours < 12) ? amDesignator : pmDesignator);
                     break;
 
                     // timezone offset
@@ -732,52 +751,51 @@ struct DateTimeLocale
                     if (minutes < 0)
                     {
                         minutes = -minutes;
-                        result ~= '-';
+                        sink("-");
                     }
                     else
-                        result ~= '+';
+                        sink("+");
                     int hours = minutes / 60;
                     minutes %= 60;
 
                     if (len is 1)
-                        result ~= formatInt (tmp, hours, 1);
+                        sink(formatInt(tmp, hours, 1));
                     else
                         if (len is 2)
-                            result ~= formatInt (tmp, hours, 2);
+                            sink(formatInt (tmp, hours, 2));
                         else
                         {
-                            result ~= formatInt (tmp, hours, 2);
-                            result ~= formatInt (tmp, minutes, 2);
+                            sink(formatInt(tmp, hours, 2));
+                            sink(formatInt(tmp, minutes, 2));
                         }
                     break;
 
                     // time separator
                 case ':':
                     len = 1;
-                    result ~= timeSeparator;
+                    sink(timeSeparator);
                     break;
 
                     // date separator
                 case '/':
                     len = 1;
-                    result ~= dateSeparator;
+                    sink(dateSeparator);
                     break;
 
                     // string literal
                 case '\"':
                 case '\'':
-                    len = parseQuote (result, format, index);
+                    len = parseQuote(sink, format, index);
                     break;
 
                     // other
                 default:
                     len = 1;
-                    result ~= c;
+                    sink((&c)[0 .. 1]);
                     break;
             }
             index += len;
         }
-        return result.get;
     }
 
     /**********************************************************************
@@ -844,7 +862,8 @@ struct DateTimeLocale
 
      **********************************************************************/
 
-    private static int parseQuote (ref Result result, cstring format, int pos)
+    private static int parseQuote (size_t delegate(cstring) sink,
+                                   cstring format, int pos)
     {
         int start = pos;
         char chQuote = format[pos++];
@@ -861,10 +880,13 @@ struct DateTimeLocale
                 if (c is '\\')
                 { // escaped
                     if (pos < format.length)
-                        result ~= format[pos++];
+                    {
+                        sink(format[pos .. pos + 1]);
+                        ++pos;
+                    }
                 }
                 else
-                    result ~= c;
+                    sink((&c)[0 .. 1]);
         }
         return pos - start;
     }
