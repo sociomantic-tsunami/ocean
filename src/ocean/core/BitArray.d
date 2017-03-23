@@ -165,8 +165,7 @@ struct BitArray
      * copy.
      *
      * Params:
-     *  rhs = A BitArray with at least the same number of bits as this bit
-     *  array.
+     *  rhs = A BitArray with the same number of bits as this bit array.
      *
      * Returns:
      *  A shallow copy of this array.
