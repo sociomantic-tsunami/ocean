@@ -452,7 +452,7 @@ final class Scheduler
 
     public void await ( Task task, void delegate (Task) finished_dg = null )
     {
-        assert (this.state == State.Running && Task.getThis() !is null);
+        assert (Task.getThis() !is null);
 
         auto context = Task.getThis();
         assert (context !is null);
