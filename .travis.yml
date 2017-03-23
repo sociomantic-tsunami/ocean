@@ -7,8 +7,5 @@ services:
 # a lightweight environment
 language: c
 
-install:
-    - ci/travis-install.sh
-
 script:
-    - ci/travis-script.sh
+    - ci/docker-run.sh
