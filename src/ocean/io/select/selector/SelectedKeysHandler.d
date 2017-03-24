@@ -166,7 +166,8 @@ class SelectedKeysHandler: ISelectedKeysHandler
                 this.clientError(client, key.events, e);
                 error = true;
 
-                if (unhandled_exception_hook !is null)
+                if (   unhandled_exception_hook !is null
+                    && cast(EpollException)e is null)
                 {
                     unhandled_exception_hook(e);
                 }
