@@ -89,12 +89,14 @@ struct BitArray
                 enableStomping(buf);
 
                 ptr = buf.ptr;
-                if( auto pad_bits = (newlen & 31) )
-                {
-                    // Set any pad bits to 0
-                    ptr[newdim - 1] &= ~(~0 << pad_bits);
-                }
             }
+
+            if( auto pad_bits = (newlen & 31) )
+            {
+                // Set any pad bits to 0
+                ptr[newdim - 1] &= ~(~0 << pad_bits);
+            }
+
             len = newlen;
         }
     }
@@ -1179,4 +1181,18 @@ unittest
         else
             t.test!("==")(bit, false);
     }
+
+    // Checks the bits are reset to zero resizing the BitArray without changing
+    // its dimension (the BitArray is large enough to hold the new length).
+    bit_array = [true, true, true, true];
+
+    bit_array.length = 2;
+    t.test!("==")(bit_array[0], true);
+    t.test!("==")(bit_array[1], true);
+
+    bit_array.length = 4;
+    t.test!("==")(bit_array[0], true);
+    t.test!("==")(bit_array[1], true);
+    t.test!("==")(bit_array[2], false);
+    t.test!("==")(bit_array[3], false);
 }
