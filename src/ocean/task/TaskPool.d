@@ -176,11 +176,14 @@ class TaskPool ( TaskT : Task ) : ObjectPool!(Task)
         enforce(current_task !is null,
             "Current task is null in TaskPool.awaitRunningTasks");
 
-        scope tasks_iterator = this.new BusyItemsIterator;
+        scope tasks_iterator = this.new AllItemsIterator;
         int count;
 
         foreach (task; tasks_iterator)
         {
+            if (!this.isBusy(this.toItem(task)))
+                continue;
+
             ++count;
 
             task.terminationHook({
