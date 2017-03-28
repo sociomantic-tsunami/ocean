@@ -204,32 +204,32 @@ public abstract class IAggregatePool ( T ) : IPool, IFreeList!(ItemType_!(T))
 
     public alias IPool.Item Item;
 
-    /**************************************************************************
+    /***************************************************************************
 
         List of items (objects) in pool for safe iteration. items is copied into
         this array on safe iterator instantiation.
 
-     **************************************************************************/
+    ***************************************************************************/
 
     protected Item[] iteration_items;
 
-    /**************************************************************************
+    /***************************************************************************
 
         true if a safe iterator instance exists currently, used for assertions
         to ensure that only a single safe iterator can exist at a time (as it
         uses the single buffer, iteration_items, above).
 
-     **************************************************************************/
+    ***************************************************************************/
 
     protected bool safe_iterator_open = false;
 
-    /**************************************************************************
+    /***************************************************************************
 
         Count of unsafe iterator instances which exist currently, used for
         assertions to ensure that while an unsafe iterator exists the object
         pool may not be modified.
 
-     **************************************************************************/
+    ***************************************************************************/
 
     protected size_t unsafe_iterators_open = 0;
 
@@ -319,7 +319,7 @@ public abstract class IAggregatePool ( T ) : IPool, IFreeList!(ItemType_!(T))
             return this.get(new T);
         }
 
-        /**********************************************************************
+        /***********************************************************************
 
             Ensures that the pool contains at least the specified number of
             items. Useful to pre-allocate a pool of a certain size.
@@ -330,7 +330,7 @@ public abstract class IAggregatePool ( T ) : IPool, IFreeList!(ItemType_!(T))
             Returns:
                 this
 
-         **********************************************************************/
+        ***********************************************************************/
 
         public typeof(this) fill ( size_t num )
         {
@@ -382,7 +382,7 @@ public abstract class IAggregatePool ( T ) : IPool, IFreeList!(ItemType_!(T))
         return this;
     }
 
-    /**************************************************************************
+    /***************************************************************************
 
         Recycles all items in the pool.
 
@@ -391,7 +391,7 @@ public abstract class IAggregatePool ( T ) : IPool, IFreeList!(ItemType_!(T))
         Returns:
             this instance
 
-     **************************************************************************/
+    ***************************************************************************/
 
     override public typeof(this) clear ( )
     {
@@ -401,7 +401,7 @@ public abstract class IAggregatePool ( T ) : IPool, IFreeList!(ItemType_!(T))
         return this;
     }
 
-    /**************************************************************************
+    /***************************************************************************
 
         Sets the limit of number of items in pool or disables limitation for
         limit = unlimited.
@@ -419,7 +419,7 @@ public abstract class IAggregatePool ( T ) : IPool, IFreeList!(ItemType_!(T))
             LimitExceededException if the number of busy pool items exceeds
             the desired limit.
 
-     **************************************************************************/
+    ***************************************************************************/
 
     override public size_t setLimit ( size_t limit )
     {
@@ -429,7 +429,7 @@ public abstract class IAggregatePool ( T ) : IPool, IFreeList!(ItemType_!(T))
         return super.setLimit(limit);
     }
 
-    /**************************************************************************
+    /***************************************************************************
 
         Obtains the n-th pool item. n must be less than the value returned by
         length().
@@ -444,7 +444,7 @@ public abstract class IAggregatePool ( T ) : IPool, IFreeList!(ItemType_!(T))
         Returns:
             n-th pool item
 
-    **************************************************************************/
+    ***************************************************************************/
 
     public ItemType opIndex ( size_t n )
     /+out (obj)
@@ -456,7 +456,7 @@ public abstract class IAggregatePool ( T ) : IPool, IFreeList!(ItemType_!(T))
         return this.fromItem(super.opIndex_(n));
     }
 
-    /**************************************************************************
+    /***************************************************************************
 
         Takes an idle item from the pool or creates a new one if all item are
         busy or the pool is empty.
@@ -473,7 +473,7 @@ public abstract class IAggregatePool ( T ) : IPool, IFreeList!(ItemType_!(T))
             LimitExceededException if limitation is enabled and all pool items
             are busy
 
-    **************************************************************************/
+    ***************************************************************************/
 
     override protected Item get_ ( lazy Item new_item )
     {
@@ -500,7 +500,7 @@ public abstract class IAggregatePool ( T ) : IPool, IFreeList!(ItemType_!(T))
         super.recycle_(item_in);
     }
 
-    /**************************************************************************
+    /***************************************************************************
 
         Returns the member of the item union that is used by this instance.
 
@@ -510,7 +510,7 @@ public abstract class IAggregatePool ( T ) : IPool, IFreeList!(ItemType_!(T))
         Returns:
             the member of the item union that is used by this instance.
 
-     **************************************************************************/
+    ***************************************************************************/
 
     protected static ItemType fromItem ( Item item )
     {
@@ -524,7 +524,7 @@ public abstract class IAggregatePool ( T ) : IPool, IFreeList!(ItemType_!(T))
         }
     }
 
-    /**************************************************************************
+    /***************************************************************************
 
         Sets the member of the item union that is used by this instance.
 
@@ -535,7 +535,7 @@ public abstract class IAggregatePool ( T ) : IPool, IFreeList!(ItemType_!(T))
             item union instance with the member set that is used by this
             instance.
 
-     **************************************************************************/
+    ***************************************************************************/
 
     protected static Item toItem ( ItemType item )
     {
@@ -553,7 +553,7 @@ public abstract class IAggregatePool ( T ) : IPool, IFreeList!(ItemType_!(T))
         return item_out;
     }
 
-    /**************************************************************************
+    /***************************************************************************
 
         Sets the object pool index to item.
 
@@ -561,7 +561,7 @@ public abstract class IAggregatePool ( T ) : IPool, IFreeList!(ItemType_!(T))
             item = item to set index
             n    = index to set item to
 
-     **************************************************************************/
+    ***************************************************************************/
 
     protected override void setItemIndex ( Item item, size_t n )
     {
@@ -572,7 +572,7 @@ public abstract class IAggregatePool ( T ) : IPool, IFreeList!(ItemType_!(T))
         this.fromItem(item).object_pool_index = cast(uint) n;
     }
 
-    /**************************************************************************
+    /***************************************************************************
 
         Gets the object pool index of item.
 
@@ -582,32 +582,32 @@ public abstract class IAggregatePool ( T ) : IPool, IFreeList!(ItemType_!(T))
         Returns:
             object pool index of item.
 
-     **************************************************************************/
+    ***************************************************************************/
 
     protected override size_t getItemIndex ( Item item )
     {
         return this.fromItem(item).object_pool_index;
     }
 
-    /**************************************************************************
+    /***************************************************************************
 
         Resets item.
 
         Params:
             item = item to reset
 
-     **************************************************************************/
+    ***************************************************************************/
 
     abstract protected override void resetItem ( Item item );
 
-    /**************************************************************************
+    /***************************************************************************
 
         Deletes item and sets it to null.
 
         Params:
             item = item to delete
 
-     **************************************************************************/
+    ***************************************************************************/
 
     protected override void deleteItem ( ref Item item )
     out
@@ -628,7 +628,7 @@ public abstract class IAggregatePool ( T ) : IPool, IFreeList!(ItemType_!(T))
         }
     }
 
-    /**************************************************************************
+    /***************************************************************************
 
         Checks a and b for identity.
 
@@ -636,27 +636,27 @@ public abstract class IAggregatePool ( T ) : IPool, IFreeList!(ItemType_!(T))
             a = item to check for being identical to b
             b = item to check for being identical to a
 
-        Returs:
+        Returns:
             true if a and b are identical or false otherwise.
 
-     **************************************************************************/
+    ***************************************************************************/
 
     protected override bool isSame ( Item a, Item b )
     {
         return this.fromItem(a) is this.fromItem(b);
     }
 
-    /**************************************************************************
+    /***************************************************************************
 
         Checks if item is null.
 
         Params:
             item = item to check for being null
 
-        Returs:
+        Returns:
             true if item is null or false otherwise.
 
-     **************************************************************************/
+    ***************************************************************************/
 
     protected override bool isNull ( Item item )
     {
