@@ -124,45 +124,45 @@ public abstract class IPool : IPoolInfo, ILimitable
         }
     }
 
-    /**************************************************************************
+    /***************************************************************************
 
         Maximum number of items allowed when the pool is limited. This value has
         no meaning if this.limited is false.
 
-     **************************************************************************/
+    ***************************************************************************/
 
     private size_t limit_max;
 
-    /**************************************************************************
+    /***************************************************************************
 
         May be set to true at any time to limit the number of items in pool to
         the current number or to false to disable limitation.
 
-     **************************************************************************/
+    ***************************************************************************/
 
     public bool limited = false;
 
-    /**************************************************************************
+    /***************************************************************************
 
         List of items (objects) in pool, busy items first
 
-     **************************************************************************/
+    ***************************************************************************/
 
     protected Item[] items;
 
-    /**************************************************************************
+    /***************************************************************************
 
         Number of busy items in pool
 
-     **************************************************************************/
+    ***************************************************************************/
 
     protected size_t num_busy_ = 0;
 
-    /**************************************************************************
+    /***************************************************************************
 
         Reused exception instance
 
-     **************************************************************************/
+    ***************************************************************************/
 
     private LimitExceededException limit_exception;
 
@@ -173,60 +173,60 @@ public abstract class IPool : IPoolInfo, ILimitable
         assert (this.num_busy_ <= this.items.length);
     }
 
-    /**************************************************************************
+    /***************************************************************************
 
         Constructor
 
-     **************************************************************************/
+    ***************************************************************************/
 
     public this ( )
     {
         this.limit_exception = new .LimitExceededException;
     }
 
-    /**************************************************************************
+    /***************************************************************************
 
         Returns the number of items in pool.
 
         Returns:
             the number of items in pool
 
-     **************************************************************************/
+    ***************************************************************************/
 
     override public size_t length ( )
     {
         return this.items.length;
     }
 
-    /**************************************************************************
+    /***************************************************************************
 
         Returns the number of busy items in pool.
 
         Returns:
             the number of busy items in pool
 
-     **************************************************************************/
+    ***************************************************************************/
 
     override public size_t num_busy ( )
     {
         return this.num_busy_;
     }
 
-    /**************************************************************************
+    /***************************************************************************
 
         Returns the number of idle items in pool.
 
         Returns:
             the number of idle items in pool
 
-     **************************************************************************/
+    ***************************************************************************/
 
     override public size_t num_idle ( )
     {
         return this.items.length - this.num_busy_;
     }
 
-    /**************************************************************************
+    /***************************************************************************
 
         Returns the limit of number of items in pool or unlimited if currently
         unlimited.
@@ -234,33 +234,33 @@ public abstract class IPool : IPoolInfo, ILimitable
         Returns:
             the limit of number of items in pool or 0 if currently unlimited
 
-     **************************************************************************/
+    ***************************************************************************/
 
     override public size_t limit ( )
     {
         return this.limited? this.limit_max : this.unlimited;
     }
 
-    /**************************************************************************
+    /***************************************************************************
 
         Returns:
-            true if the number of items in the pool is limited or fase otherwise
+            true if the number of items in the pool is limited, false otherwise
 
-     **************************************************************************/
+    ***************************************************************************/
 
     override public bool is_limited ( )
     {
         return this.limited;
     }
 
-    /**************************************************************************
+    /***************************************************************************
 
         Recycles all items in the pool.
 
         Returns:
             this instance
 
-    **************************************************************************/
+    ***************************************************************************/
 
     public typeof(this) clear ( )
     {
@@ -274,7 +274,7 @@ public abstract class IPool : IPoolInfo, ILimitable
         return this;
     }
 
-    /**************************************************************************
+    /***************************************************************************
 
         Sets the limit of number of items in pool or disables limitation for
         limit = unlimited. When limiting the pool, any excess idle items are
@@ -291,7 +291,7 @@ public abstract class IPool : IPoolInfo, ILimitable
             LimitExceededException if the number of busy pool items exceeds
             the desired limit.
 
-     **************************************************************************/
+    ***************************************************************************/
 
     override public size_t setLimit ( size_t limit )
     out
@@ -322,7 +322,7 @@ public abstract class IPool : IPoolInfo, ILimitable
         return limit;
     }
 
-    /**************************************************************************
+    /***************************************************************************
 
         Ensures that the pool contains at least the specified number of items.
         Useful to pre-allocate a pool of a certain size.
@@ -338,7 +338,7 @@ public abstract class IPool : IPoolInfo, ILimitable
             LimitExceededException if the requested number of items exceeds
             the previously specified limit.
 
-     **************************************************************************/
+    ***************************************************************************/
 
     protected typeof(this) fill_ ( size_t num, lazy Item new_item )
     {
@@ -362,7 +362,7 @@ public abstract class IPool : IPoolInfo, ILimitable
         return this;
     }
 
-    /**************************************************************************
+    /***************************************************************************
 
         Takes an idle item from the pool or creates a new one if all items are
         busy or the pool is empty.
@@ -377,7 +377,7 @@ public abstract class IPool : IPoolInfo, ILimitable
             LimitExceededException if limitation is enabled and all pool items
             are busy
 
-    **************************************************************************/
+    ***************************************************************************/
 
     protected Item get_ ( lazy Item new_item )
     out (_item_out)
@@ -431,7 +431,7 @@ public abstract class IPool : IPoolInfo, ILimitable
         return item;
     }
 
-    /**************************************************************************
+    /***************************************************************************
 
         Obtains the n-th pool item. n must be less than the value returned by
         length().
@@ -445,7 +445,7 @@ public abstract class IPool : IPoolInfo, ILimitable
         Returns:
             n-th pool item
 
-    **************************************************************************/
+    ***************************************************************************/
 
     protected Item opIndex_ ( size_t n )
     {
@@ -493,7 +493,7 @@ public abstract class IPool : IPoolInfo, ILimitable
         this.setItemIndex(*first_idle_item, this.num_busy_);
     }
 
-    /**************************************************************************
+    /***************************************************************************
 
         Sets the object pool index to item.
 
@@ -501,11 +501,11 @@ public abstract class IPool : IPoolInfo, ILimitable
             item = item to set index
             n    = index to set item to
 
-     **************************************************************************/
+    ***************************************************************************/
 
     abstract protected void setItemIndex ( Item item, size_t n );
 
-    /**************************************************************************
+    /***************************************************************************
 
         Gets the object pool index of item.
 
@@ -515,33 +515,33 @@ public abstract class IPool : IPoolInfo, ILimitable
         Returns:
             object pool index of item.
 
-     **************************************************************************/
+    ***************************************************************************/
 
     abstract protected size_t getItemIndex ( Item item );
 
-    /**************************************************************************
+    /***************************************************************************
 
         Resets item.
 
         Params:
             item = item to reset
 
-     **************************************************************************/
+    ***************************************************************************/
 
     abstract protected void resetItem ( Item item );
 
-    /**************************************************************************
+    /***************************************************************************
 
         Deletes item and sets it to null.
 
         Params:
             item = item to delete
 
-     **************************************************************************/
+    ***************************************************************************/
 
     abstract protected void deleteItem ( ref Item item );
 
-    /**************************************************************************
+    /***************************************************************************
 
         Checks a and b for identity.
 
@@ -549,28 +549,28 @@ public abstract class IPool : IPoolInfo, ILimitable
             a = item to check for being indentical to b
             b = item to check for being indentical to a
 
-        Returs:
+        Returns:
             true if a and b are identical or false otherwise.
 
-     **************************************************************************/
+    ***************************************************************************/
 
     abstract protected bool isSame ( Item a, Item b );
 
-    /**************************************************************************
+    /***************************************************************************
 
         Checks if item is null.
 
         Params:
             item = item to check for being null
 
-        Returs:
+        Returns:
             true if item is null or false otherwise.
 
-     **************************************************************************/
+    ***************************************************************************/
 
     abstract protected bool isNull ( Item item );
 
-    /**************************************************************************
+    /***************************************************************************
 
         Removes idle items from the pool. Excess idle items are reset and
         deleted.
@@ -578,7 +578,7 @@ public abstract class IPool : IPoolInfo, ILimitable
         Params:
             remove = number of idle items to remove from pool
 
-     **************************************************************************/
+    ***************************************************************************/
 
     protected void truncate ( size_t remove )
     {
