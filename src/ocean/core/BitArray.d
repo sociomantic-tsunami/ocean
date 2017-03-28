@@ -86,13 +86,17 @@ struct BitArray
                 uint[] buf = ptr[0 .. olddim];
 
                 buf.length = newdim; // realloc
+                enableStomping(buf);
+
                 ptr = buf.ptr;
-                if( newdim & 31 )
-                {
-                    // Set any pad bits to 0
-                    ptr[newdim - 1] &= ~(~0 << (newdim & 31));
-                }
             }
+
+            if( auto pad_bits = (newlen & 31) )
+            {
+                // Set any pad bits to 0
+                ptr[newdim - 1] &= ~(~0 << pad_bits);
+            }
+
             len = newlen;
         }
     }
@@ -1120,4 +1124,75 @@ struct BitArray
 
         assert( c == a );
     }
+}
+
+version (UnitTest)
+{
+    import ocean.core.Test : NamedTest;
+}
+
+unittest
+{
+    auto t = new NamedTest("Test increase and decrease length of the BitArray");
+
+    const size_of_uint = uint.sizeof * 8;
+    const num_bits = (size_of_uint * 5) + 15;
+
+    // Creates a BitArray and sets all the bits.
+    scope bool_array = new bool[num_bits];
+    bool_array[] = true;
+
+    BitArray bit_array;
+    bit_array = bool_array;
+
+    // Self-verification of the BitArray.
+    assert(bit_array.length == bool_array.length);
+    foreach (bit; bit_array)
+        t.test!("==")(bit, true);
+
+    // Increases the length of the BitArray and checks the former bits remain
+    // set and the new ones are not.
+    const greater_length = size_of_uint * 7;
+    static assert(greater_length > num_bits);
+    bit_array.length = greater_length;
+    foreach (pos, bit; bit_array)
+    {
+        if (pos < num_bits)
+            t.test!("==")(bit, true);
+        else
+            t.test!("==")(bit, false);
+    }
+
+    // Decreases the length of the BitArray to a shorter length than the
+    // initial one and checks all bits remain set.
+    const lower_length = size_of_uint * 5;
+    static assert(lower_length < num_bits);
+    bit_array.length = lower_length;
+    foreach (bit; bit_array)
+        t.test!("==")(bit, true);
+
+    // Resizes back to the initial length of the BitArray to check the bits
+    // reassigned after decreasing the length of the BitArray are not set.
+    bit_array.length = num_bits;
+    foreach (pos, bit; bit_array)
+    {
+        if (pos < lower_length)
+            t.test!("==")(bit, true);
+        else
+            t.test!("==")(bit, false);
+    }
+
+    // Checks the bits are reset to zero resizing the BitArray without changing
+    // its dimension (the BitArray is large enough to hold the new length).
+    bit_array = [true, true, true, true];
+
+    bit_array.length = 2;
+    t.test!("==")(bit_array[0], true);
+    t.test!("==")(bit_array[1], true);
+
+    bit_array.length = 4;
+    t.test!("==")(bit_array[0], true);
+    t.test!("==")(bit_array[1], true);
+    t.test!("==")(bit_array[2], false);
+    t.test!("==")(bit_array[3], false);
 }
