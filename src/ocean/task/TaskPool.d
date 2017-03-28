@@ -160,10 +160,14 @@ class TaskPool ( TaskT : Task ) : ObjectPool!(Task)
         Suspends the current task until all running tasks in the pool have
         finished executing.
 
-        Note: care should be taken to ensure that the current task (i.e. the one
-        to be suspended) is not itself a task from the pool. If that is the
-        case, the current task will never be resumed, and this function will
-        never return.
+        Note: it is important to ensure that the current task (i.e. the one to
+        be suspended) is not itself a task from the pool. If that were allowed,
+        the current task would never get resumed, and this function would never
+        return.
+
+        Throws:
+            if the current task is null or if the current task belongs to the
+            task pool
 
     ***************************************************************************/
 
@@ -181,6 +185,9 @@ class TaskPool ( TaskT : Task ) : ObjectPool!(Task)
 
         foreach (task; tasks_iterator)
         {
+            enforce(!this.isSame(this.toItem(current_task), this.toItem(task)),
+                "Current task cannot be from the pool of tasks to wait upon");
+
             if (!this.isBusy(this.toItem(task)))
                 continue;
 
@@ -363,4 +370,37 @@ unittest
     initScheduler(SchedulerConfiguration.init);
     theScheduler.schedule(new MainTask);
     theScheduler.eventLoop();
+}
+
+unittest
+{
+    // Test that 'awaitRunningTasks()' cannot be called from a task that itself
+    // belongs to the pool.
+
+    static class AwaitTask : Task
+    {
+        void delegate () dg;
+
+        public void copyArguments ( void delegate () dg )
+        {
+            this.dg = dg;
+        }
+
+        override public void run ( )
+        {
+            testThrown!(Exception)(this.dg());
+        }
+    }
+
+    auto pool = new TaskPool!(AwaitTask);
+    initScheduler(SchedulerConfiguration.init);
+
+    pool.start(
+        {
+            // This delegate should throw as it will attempt to call the task
+            // pool's awaitRunningTasks() method from within a task that itself
+            // belongs to the pool.
+            pool.awaitRunningTasks();
+        }
+    );
 }
