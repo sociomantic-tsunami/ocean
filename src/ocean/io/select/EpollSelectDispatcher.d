@@ -137,7 +137,10 @@ public class EpollSelectDispatcher : IEpollSelectDispatcherInfo
 
     /***************************************************************************
 
-        Optional hook to be called on unhandled exceptions from events
+        Optional hook to be called on unhandled exceptions from event callbacks.
+
+        NB: it won't be called on actual event errors thrown as EpollException
+        as those are expected to be handled on select client level exclusively.
 
     ***************************************************************************/
 
@@ -712,7 +715,7 @@ public class EpollSelectDispatcher : IEpollSelectDispatcherInfo
                 if (unhandled_exception_hook !is null)
                     unhandled_exception_hook(e);
                 else
-                    throw e;              
+                    throw e;
             }
 
             if (select_cycle_hook !is null)
