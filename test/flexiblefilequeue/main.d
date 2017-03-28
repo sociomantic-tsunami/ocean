@@ -10,9 +10,6 @@
 
 *******************************************************************************/
 
-module flexiblefilequeue.main;
-
-
 import ocean.transition;
 import ocean.io.Stdout;
 import ocean.text.util.StringC;

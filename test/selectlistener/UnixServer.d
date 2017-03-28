@@ -15,13 +15,6 @@
 
 module test.selectlistener.UnixServer;
 
-
-/*******************************************************************************
-
-    Imports
-
-*******************************************************************************/
-
 import ocean.io.select.EpollSelectDispatcher;
 import ocean.io.select.protocol.fiber.FiberSelectReader;
 import ocean.io.select.protocol.fiber.FiberSelectWriter;

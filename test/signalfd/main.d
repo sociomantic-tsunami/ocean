@@ -18,22 +18,24 @@
 
 *******************************************************************************/
 
+import core.stdc.errno;
+import core.sys.posix.semaphore;
+import core.sys.posix.sys.mman;
+
 import ocean.sys.SignalFD;
-
-import ocean.core.Test;
-
 import ocean.sys.Epoll;
 import ocean.sys.SignalMask;
 
 import ocean.transition;
 import ocean.core.Array : contains;
+import ocean.core.Enforce;
+import ocean.core.Test;
 
 import core.sys.posix.signal : kill, pid_t, sigaction, sigaction_t,
     SIGHUP, SIGINT, SIGQUIT, SIGILL, SIGABRT, SIGBUS;
 import core.sys.posix.stdlib : exit;
 import core.sys.posix.unistd : fork;
 import ocean.stdc.posix.sys.wait : waitpid;
-
 
 
 /*******************************************************************************
@@ -44,6 +46,18 @@ import ocean.stdc.posix.sys.wait : waitpid;
 
 private class SignalFDTest
 {
+    /***************************************************************************
+
+        Semaphore used to synchronize parent and child process. Because child
+        may handle only some of the signals that parent has sent (when handle
+        returns in the middle of the parent sending signals), we need to make
+        sure that we will handle signals in child only after parent sent all
+        signals to the child.
+
+    ***************************************************************************/
+
+    private static sem_t* signals_sent_semaphore;
+
     /***************************************************************************
 
         Maximum signal which can be handled during tests. This is due to the
@@ -166,6 +180,7 @@ private class SignalFDTest
             sigaction_t handler;
             handler.sa_handler = &typeof(this).handler;
             auto sigaction_res = sigaction(this.signal, &handler, &this.old_handler);
+            enforce(sigaction_res == 0);
 
             // Reset the static list of fired signals, so that it is clear at
             // the beginning of each test
@@ -184,7 +199,8 @@ private class SignalFDTest
 
         public void restore ( )
         {
-            sigaction(this.signal, &this.old_handler, null);
+            auto sigaction_res = sigaction(this.signal, &this.old_handler, null);
+            enforce(sigaction_res == 0);
         }
 
 
@@ -245,6 +261,43 @@ private class SignalFDTest
         }
     }
 
+    /***************************************************************************
+
+        Static constructor, initializes semaphore.
+
+    ***************************************************************************/
+
+    static this ()
+    {
+        signals_sent_semaphore = cast(sem_t*)mmap(null,
+                sem_t.sizeof, PROT_READ | PROT_WRITE,
+                MAP_SHARED | MAP_ANON, -1, 0);
+
+        if (signals_sent_semaphore is null)
+        {
+            exit(1);
+        }
+
+        if (sem_init(signals_sent_semaphore, 1, 0) == -1)
+        {
+            exit(1);
+        }
+    }
+
+    /***************************************************************************
+
+        Destroys the unnamed semaphore and deallocates shared memory mapping.
+
+    ***************************************************************************/
+
+    static void destroy ()
+    {
+        auto ret = sem_destroy(signals_sent_semaphore);
+        enforce(ret == 0);
+
+        ret = munmap(signals_sent_semaphore, sem_t.sizeof);
+        enforce(ret == 0);
+    }
 
     /***************************************************************************
 
@@ -319,13 +372,24 @@ private class SignalFDTest
         foreach ( signal;
             this.handled_signals ~ this.non_handled_signals )
         {
-            kill(this.pid, signal);
+            auto ret = kill(this.pid, signal);
+            enforce(ret == 0);
         }
+
+        auto res = sem_post(signals_sent_semaphore);
+        enforce(res == 0);
 
         // Wait for the child process to exit. The exit status should be 0,
         // otherwise an exception has been thrown in the child process.
         int child_exit_status;
-        auto wait_pid_res = waitpid(this.pid, &child_exit_status, 0);
+        int wait_pid_res;
+
+        do
+        {
+            wait_pid_res = waitpid(this.pid, &child_exit_status, 0);
+        }
+        while (wait_pid_res == -1 && errno == EINTR);
+
         // FLAKY: call to waitpid() may fail or return an invalid pid
         test!("!=")(wait_pid_res, -1); // waitpid() error
         test!("==")(wait_pid_res, this.pid); // waitpid() returned wrong pid
@@ -354,11 +418,21 @@ private class SignalFDTest
             this.signal_fd.fileHandle(),
             Epoll.Event.EPOLLIN, this.signal_fd);
 
-        // Start the epoll event loop, in order to be notified when the signals
-        // have fired
-        epoll_event_t[1] fired_events;
+        // Wait for the parent to send signals, then start the epoll event
+        // loop, in order to be notified when the signals have fired
+        int ret;
+
+        do
+        {
+            ret = sem_wait(signals_sent_semaphore);
+        }
+        while (ret == -1 && errno == EINTR);
+        enforce (ret == 0);
+
         const int timeout_ms = 100; // just in case
+        epoll_event_t[1] fired_events;
         auto epoll_res = epoll.wait(fired_events, timeout_ms);
+
         // FLAKY: call to epoll_wait() may fail or return wrong number of events
         test!("!=")(epoll_res, -1); // epoll_wait() error
         test!("==")(epoll_res, 1); // one event fired
@@ -367,7 +441,7 @@ private class SignalFDTest
         // Allow this.signal_fd to handle the signals which have fired
         SignalFD.SignalInfo[] siginfos;
         this.signal_fd.handle(siginfos);
-        assert(siginfos.length == this.handled_signals.length, "handled signals "
+        enforce(siginfos.length == this.handled_signals.length, "handled signals "
             "count wrong");
 
         // Create a list of the signals which were handled
@@ -440,18 +514,10 @@ unittest
     // are not handled
     new SignalFDTest(new SignalFD([SIGHUP, SIGINT, SIGQUIT]),
         [SIGHUP, SIGINT, SIGQUIT, SIGILL, SIGABRT, SIGBUS]);
-}
 
+    // unittests where the set of signals being handled by the SignalFD is set
+    // after construction.
 
-/*******************************************************************************
-
-    unittests where the set of signals being handled by the SignalFD is set
-    after construction.
-
-*******************************************************************************/
-
-unittest
-{
     // Test a single signal handled by a signalfd
     {
         auto signalfd = new SignalFD([]);
@@ -493,4 +559,7 @@ unittest
         new SignalFDTest(signalfd, [SIGHUP, SIGINT, SIGQUIT, SIGILL, SIGABRT,
             SIGBUS]);
     }
+
+    // Destroy all global resources
+    SignalFDTest.destroy();
 }

@@ -75,6 +75,8 @@ static this ( )
 
 class TimerEventTimeoutManager : TimeoutManager
 {
+    import ocean.util.container.map.model.IAllocator;
+
     /***************************************************************************
 
         TimerEvent for absolute real-time that calls checkTimeouts() when fired.
@@ -129,10 +131,16 @@ class TimerEventTimeoutManager : TimeoutManager
 
         Constructor
 
+        Params:
+            allocator = use this bucket element allocator for the expiry
+                registration to ISelectClient map. If it is null the default map
+                allocator (BucketElementGCAllocator) is used.
+
     ***************************************************************************/
 
-    public this ( )
+    public this ( IAllocator allocator = null )
     {
+        super(allocator);
         this.event = this.new TimerEvent;
     }
 

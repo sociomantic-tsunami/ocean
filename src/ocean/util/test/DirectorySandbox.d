@@ -54,7 +54,7 @@ class DirectorySandbox
 
     ***************************************************************************/
 
-    public static DirectorySandbox create (in cstring[] subdirectories,
+    public static DirectorySandbox create (in cstring[] subdirectories = null,
             mstring path_template = "/tmp/Dunittest-XXXXXXXX".dup)
     {
         auto sandbox = new DirectorySandbox;
@@ -84,6 +84,18 @@ class DirectorySandbox
     {
         this.exception.enforceRetCode!(chdir).call(
                 StringC.toCString(this.old_cwd));
+    }
+
+    /***************************************************************************
+
+        Returns:
+            path of the sandbox
+
+    ***************************************************************************/
+
+    public cstring path ()
+    {
+        return this.sandbox_path;
     }
 
     /***************************************************************************

@@ -33,12 +33,14 @@ import ocean.transition;
 import ocean.task.Task;
 import ocean.task.Scheduler;
 
+import ocean.core.Enforce;
 import ocean.core.Traits;
 import ocean.util.container.pool.ObjectPool;
 
 version (UnitTest)
 {
     import ocean.core.Test;
+    import ocean.task.util.Timer;
 }
 
 /*******************************************************************************
@@ -151,6 +153,55 @@ class TaskPool ( TaskT : Task ) : ObjectPool!(Task)
         }
 
         return true;
+    }
+
+    /***************************************************************************
+
+        Suspends the current task until all running tasks in the pool have
+        finished executing.
+
+        Note: it is important to ensure that the current task (i.e. the one to
+        be suspended) is not itself a task from the pool. If that were allowed,
+        the current task would never get resumed, and this function would never
+        return.
+
+        Throws:
+            if the current task is null or if the current task belongs to the
+            task pool
+
+    ***************************************************************************/
+
+    public void awaitRunningTasks ()
+    {
+        if (!this.num_busy())
+            return;
+
+        auto current_task = Task.getThis();
+        enforce(current_task !is null,
+            "Current task is null in TaskPool.awaitRunningTasks");
+
+        scope tasks_iterator = this.new AllItemsIterator;
+        int count;
+
+        foreach (task; tasks_iterator)
+        {
+            enforce(!this.isSame(this.toItem(current_task), this.toItem(task)),
+                "Current task cannot be from the pool of tasks to wait upon");
+
+            if (!this.isBusy(this.toItem(task)))
+                continue;
+
+            ++count;
+
+            task.terminationHook({
+                --count;
+                if (count == 0)
+                    current_task.resume();
+            });
+        }
+
+        if (count > 0)
+            current_task.suspend();
     }
 
     static if( hasMethod!(TaskT, "deserialize", void delegate(void[])) )
@@ -273,4 +324,83 @@ unittest
     theScheduler.eventLoop();
     test!("==")(RecycleTask.recycle_count, 2,
         "RecycleTask.recycle was not called the correct number of times");
+}
+
+unittest
+{
+    // Test for waiting until all running tasks of a task pool finish executing.
+
+    static class AwaitTask : Task
+    {
+        static int value;
+
+        public void copyArguments ( )
+        {
+        }
+
+        override public void run ( )
+        {
+            .wait(1); // so that the task gets suspended
+            value++;
+        }
+    }
+
+    class MainTask : Task
+    {
+        TaskPool!(AwaitTask) my_task_pool;
+
+        public this ( )
+        {
+            this.my_task_pool = new TaskPool!(AwaitTask);
+        }
+
+        override protected void run ( )
+        {
+            const NUM_START_CALLS = 6;
+
+            for (uint i; i < NUM_START_CALLS; i++)
+                this.my_task_pool.start();
+
+            this.my_task_pool.awaitRunningTasks();
+
+            test!("==")(AwaitTask.value, NUM_START_CALLS);
+        }
+    }
+
+    initScheduler(SchedulerConfiguration.init);
+    theScheduler.schedule(new MainTask);
+    theScheduler.eventLoop();
+}
+
+unittest
+{
+    // Test that 'awaitRunningTasks()' cannot be called from a task that itself
+    // belongs to the pool.
+
+    static class AwaitTask : Task
+    {
+        void delegate () dg;
+
+        public void copyArguments ( void delegate () dg )
+        {
+            this.dg = dg;
+        }
+
+        override public void run ( )
+        {
+            testThrown!(Exception)(this.dg());
+        }
+    }
+
+    auto pool = new TaskPool!(AwaitTask);
+    initScheduler(SchedulerConfiguration.init);
+
+    pool.start(
+        {
+            // This delegate should throw as it will attempt to call the task
+            // pool's awaitRunningTasks() method from within a task that itself
+            // belongs to the pool.
+            pool.awaitRunningTasks();
+        }
+    );
 }

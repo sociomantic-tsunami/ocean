@@ -15,6 +15,10 @@
 
 import ocean.transition;
 
+import ocean.core.Enforce;
+
+import ocean.io.device.File;
+
 import ocean.io.device.TempFile;
 
 import ocean.io.select.client.TimerEvent;
@@ -29,43 +33,14 @@ import ocean.io.FilePath;
 
 import ocean.core.Test;
 
+import ocean.util.test.DirectorySandbox;
 
+import ocean.task.Task;
 
-/*******************************************************************************
+import ocean.task.Scheduler;
 
-    Class to perform a single test on FileSystemEvent
-
-*******************************************************************************/
-
-private class FileSystemEventTest
+deprecated class FileModificationTestTask: Task
 {
-    /***************************************************************************
-
-        Epoll where the inotifier instance will be registered
-
-    ***************************************************************************/
-
-    private EpollSelectDispatcher epoll;
-
-
-    /***************************************************************************
-
-        Temporary file used to generate file system events
-
-    ***************************************************************************/
-
-    private TempFile temp_file;
-
-
-    /***************************************************************************
-
-        Filepath of the temporary file
-
-    ***************************************************************************/
-
-    private FilePath temp_path;
-
-
     /***************************************************************************
 
         File operations to be checked
@@ -76,6 +51,21 @@ private class FileSystemEventTest
     private bool deleted  = false;
     private bool closed   = false;
 
+    /***************************************************************************
+
+        Name of the created file.
+
+    ***************************************************************************/
+
+    private cstring created_name;
+
+    /***************************************************************************
+
+        Path to the monitored file.
+
+    ***************************************************************************/
+
+    private FilePath temp_path;
 
     /***************************************************************************
 
@@ -85,71 +75,54 @@ private class FileSystemEventTest
 
     private int operation_order = 0;
 
-
     /***************************************************************************
 
-        Constructor
-
-        Also register a timer event to time-out the test after 1s, in case the
-        file event notification fails.
+        Tested FileSystemEvent instance.
 
     ***************************************************************************/
 
-    this ( )
-    {
-        this.epoll = new EpollSelectDispatcher;
-
-        this.temp_file = new TempFile(TempFile.Permanent);
-        this.temp_path = FilePath(this.temp_file.toString());
-
-        TimerEvent timer = new TimerEvent(&this.timerHandler);
-        this.epoll.register(timer);
-        timer.set(1, 0, 0, 0);
-
-        this.run();
-    }
-
+    private FileSystemEvent inotifier;
 
     /***************************************************************************
 
-        Run the test:
-            Creates a watch to a temporary file which is written, closed and
-            deleted.
-            The epoll is blocked until the FileSystem handler shutdown the epoll,
-            or the timer (worst case/failed test).
+        Test entry point. Prepares environment and tests the FileSystemEvent.
 
     ***************************************************************************/
 
-    public void run ( )
+    override public void run ( )
     {
-        auto inotifier  = new FileSystemEvent(&this.fileSystemHandler);
-        inotifier.watch(cast(char[]) this.temp_file.toString(),
-                           FileEventsEnum.IN_MODIFY | FileEventsEnum.IN_DELETE_SELF
-                         | FileEventsEnum.IN_CLOSE_WRITE );
+        auto temp_file = new TempFile(TempFile.Permanent);
+        this.temp_path = FilePath(temp_file.toString());
 
-        this.epoll.register(inotifier);
+        this.inotifier  = new FileSystemEvent(&this.fileSystemHandler);
+        inotifier.watch(cast(char[]) temp_file.toString(),
+                       FileEventsEnum.IN_MODIFY | FileEventsEnum.IN_DELETE_SELF
+                     | FileEventsEnum.IN_CLOSE_WRITE );
 
-        this.temp_file.write("something");
-        this.temp_file.close;
-        this.temp_path.remove();
+        theScheduler.epoll.register(inotifier);
 
-        this.epoll.eventLoop();
+        temp_file.write("something");
+        temp_file.close;
+        temp_path.remove();
+
+        this.suspend();
+
+        theScheduler.epoll.unregister(inotifier);
 
         test(this.modified);
         test(this.closed);
         test(this.deleted);
     }
 
-
-    /***************************************************************************
+    /**********************************************************************
 
         File System handler: called anytime a File System event occurs.
 
         Params:
-            path   = Path of the file
+            path   = monitored path
             event  = Inotify event (see FileEventsEnum)
 
-    ****************************************************************************/
+    **********************************************************************/
 
     private void fileSystemHandler ( char[] path, uint event )
     {
@@ -180,39 +153,233 @@ private class FileSystemEventTest
                     if ( this.operation_order == 3 )
                     {
                         this.deleted = true;
+                        if (this.suspended())
+                            this.resume();
                     }
                     break;
 
+                case FileEventsEnum.IN_IGNORED:
+                    enforce(this.deleted);
+                    break;
 
                 default:
                     test(false, "Unexpected file system event notification.");
             }
         }
-
-        if ( this.modified && this.closed && this.deleted )
-        {
-            this.epoll.shutdown();
-        }
     }
+}
 
-
+class FileCreationTestTask: Task
+{
     /***************************************************************************
 
-        Timer Handler: Called when the timer is fired.
-
-        Note: The timer is needed to assure epoll does not get blocked
-              indefinitely.
-
-        Returns:
-            Always false - Timer will not be re-set.
+        File operations to be checked
 
     ***************************************************************************/
 
-    private bool timerHandler ( )
-    {
-        this.epoll.shutdown();
+    private bool created;
+    private bool modified = false;
+    private bool deleted  = false;
+    private bool closed   = false;
 
-        return false;
+    /***************************************************************************
+
+        Name of the created file.
+
+    ***************************************************************************/
+
+    private cstring created_name;
+
+    /***************************************************************************
+
+        Path to the monitored file.
+
+    ***************************************************************************/
+
+    private FilePath temp_path;
+
+    /***************************************************************************
+
+        Variable to control/test the order of the file operations
+
+    ***************************************************************************/
+
+    private int operation_order = 0;
+
+    /***************************************************************************
+
+        Path to the monitored directory.
+
+    ***************************************************************************/
+
+    private cstring watched_path;
+
+    /***************************************************************************
+
+        Tested FileSystemEvent instance.
+
+    ***************************************************************************/
+
+    private FileSystemEvent inotifier;
+
+    /***************************************************************************
+
+        Test that tests monitoring a directory and watching for the file
+        creation.
+
+    ***************************************************************************/
+
+    private void testFileCreation ( )
+    {
+        inotifier.watch(this.watched_path.dup,
+               FileEventsEnum.IN_CREATE);
+
+        theScheduler.epoll.register(inotifier);
+
+        auto file_name = "test_file";
+        File.set(file_name, "".dup);
+
+        this.suspend();
+
+        theScheduler.epoll.unregister(inotifier);
+
+        test(this.created);
+        test!("==")(this.created_name, file_name);
+    }
+
+    /***************************************************************************
+
+        Test that tests modifications/closing/deleting performed on individual
+        file (not a directory)
+
+    ***************************************************************************/
+
+    private void testFileModification ( )
+    {
+        auto temp_file = new TempFile(TempFile.Permanent);
+        this.temp_path = FilePath(temp_file.toString());
+
+        inotifier.watch(cast(char[]) temp_file.toString(),
+                       FileEventsEnum.IN_MODIFY | FileEventsEnum.IN_DELETE_SELF
+                     | FileEventsEnum.IN_CLOSE_WRITE );
+
+        theScheduler.epoll.register(inotifier);
+
+        temp_file.write("something");
+        temp_file.close;
+        temp_path.remove();
+
+        this.suspend();
+
+        theScheduler.epoll.unregister(inotifier);
+
+        test(this.modified);
+        test(this.closed);
+        test(this.deleted);
+    }
+
+    /***************************************************************************
+
+        Test entry point. Prepares environment and tests the FileSystemEvent.
+
+    ***************************************************************************/
+
+    override public void run ( )
+    {
+        auto sandbox = DirectorySandbox.create();
+        scope (exit)
+            sandbox.exitSandbox();
+
+        this.watched_path = sandbox.path;
+
+        this.inotifier  = new FileSystemEvent(&this.fileSystemHandler);
+
+        this.testFileCreation();
+        this.testFileModification();
+    }
+
+    /**********************************************************************
+
+        File System handler: called anytime a File System event occurs.
+
+        Params:
+            path   = monitored path
+            name = name of the file
+            event  = Inotify event (see FileEventsEnum)
+
+    **********************************************************************/
+
+    private void fileSystemHandler ( FileSystemEvent.RaisedEvent raised_event )
+    {
+        with (raised_event.Active) switch (raised_event.active)
+        {
+        case directory_file_event:
+            auto event = raised_event.directory_file_event;
+
+            if ( this.watched_path == event.path )
+            {
+                switch ( event.event )
+                {
+                    case FileEventsEnum.IN_CREATE:
+                        this.created = true;
+                        this.created_name = event.name.dup;
+                        if (this.suspended())
+                            this.resume();
+                        break;
+                    default:
+                        test(false, "Unexpected file system event notification.");
+                }
+            }
+            break;
+
+        case file_event:
+            auto event = raised_event.file_event;
+
+            if ( this.temp_path == event.path )
+            {
+                this.operation_order++;
+
+                switch ( event.event )
+                {
+                    case FileEventsEnum.IN_MODIFY:
+
+                        if ( this.operation_order == 1 )
+                        {
+                            this.modified = true;
+                        }
+                        break;
+
+                    case FileEventsEnum.IN_CLOSE_WRITE:
+
+                        if ( this.operation_order == 2 )
+                        {
+                            this.closed = true;
+                        }
+                        break;
+
+                    case FileEventsEnum.IN_DELETE_SELF:
+
+                        if ( this.operation_order == 3 )
+                        {
+                            this.deleted = true;
+                            if (this.suspended())
+                                this.resume();
+                        }
+                        break;
+
+                    case FileEventsEnum.IN_IGNORED:
+                        enforce(this.deleted);
+                        break;
+
+                    default:
+                        test(false, "Unexpected file system event notification.");
+                }
+            }
+            break;
+
+        default:
+            assert(false);
+        }
     }
 }
 
@@ -235,5 +402,24 @@ void main ( )
 
 unittest
 {
-    new FileSystemEventTest();
+    initScheduler(SchedulerConfiguration.init);
+    theScheduler.exception_handler = (Task t, Exception e) {
+        throw e;
+    };
+
+    auto dir_test_task = new FileCreationTestTask;
+    theScheduler.schedule(dir_test_task);
+    theScheduler.eventLoop();
+}
+
+deprecated unittest
+{
+    initScheduler(SchedulerConfiguration.init);
+    theScheduler.exception_handler = (Task t, Exception e) {
+        throw e;
+    };
+
+    auto test_task = new FileModificationTestTask;
+    theScheduler.schedule(test_task);
+    theScheduler.eventLoop();
 }

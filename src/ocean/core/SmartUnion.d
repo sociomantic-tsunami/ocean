@@ -3,27 +3,6 @@
     Template for a union that knows its active field and uses contracts to
     assert that always the active field is read.
 
-    Usage:
-    ---
-        import $(TITLE);
-                union MyUnion
-        {
-            int    x;
-            char[] y;
-        }
-                void main ( )
-        {
-            SmartUnion!(MyUnion) u;
-                    u.Active a;             // u.Active is defined as
-                                    // enum u.Active {none, x, y}
-            a = u.active;           // a is now a.none
-                    int b = u.x;            // error, u.x has not yet been set
-            u.x   = 35;
-                    a = u.active;           // a is now a.x
-                    char[] c = u.y          // error, u.y is not the active member
-        }
-    ---
-
     Copyright:
         Copyright (c) 2009-2016 Sociomantic Labs GmbH.
         All rights reserved.
@@ -89,6 +68,19 @@ struct SmartUnion ( U )
 
     Active active ( ) { return this._.active; }
 
+    /***************************************************************************
+
+        Returns:
+            name of the currently active member or "none" if no member has yet
+            been set.
+
+    ***************************************************************************/
+
+    public istring active_name ( )
+    {
+        return this._.active_names[this._.active];
+    }
+
     /**************************************************************************
 
         Member getter/setter method definitions string mixin
@@ -103,6 +95,31 @@ struct SmartUnion ( U )
 ///
 unittest
 {
+    union MyUnion
+    {
+        int x;
+        mstring y;
+    }
+
+    void main ( )
+    {
+        SmartUnion!(MyUnion) u;
+        istring name;
+        u.Active a;             // u.Active is defined as
+                                // `enum u.Active {none, x, y}`
+
+        a = u.active;           // a is now a.none
+        name = u.active_name;   // name is now "none"
+        int b = u.x;            // error, u.x has not yet been set
+        u.x   = 35;
+        a = u.active;           // a is now a.x
+        name = u.active_name;   // name is now "x"
+        mstring c = u.y;        // error, u.y is not the active member
+    }
+}
+
+unittest
+{
     SmartUnion!(U1) u1;
     SmartUnion!(U2) u2;
     SmartUnion!(U3) u3;
@@ -115,6 +132,10 @@ unittest
     test!("==")(u2.active, 0);
     test!("==")(u3.active, 0);
 
+    test!("==")(u1.active_name, "none");
+    test!("==")(u2.active_name, "none");
+    test!("==")(u3.active_name, "none");
+
     testThrown!(Exception)(u1.a(), false);
     testThrown!(Exception)(u1.b(), false);
     testThrown!(Exception)(u2.a(), false);
@@ -124,26 +145,38 @@ unittest
 
     u1.a(42);
     test!("==")(u1.a, 42);
+    test!("==")(u1.active, u1.Active.a);
+    test!("==")(u1.active_name, "a");
     testThrown!(Exception)(u1.b(), false);
 
     u2.a(new C1());
     test!("==")(u2.a.v, uint.init);
+    test!("==")(u2.active, u2.Active.a);
+    test!("==")(u2.active_name, "a");
     testThrown!(Exception)(u2.b(), false);
 
     u3.a(S1(42));
     test!("==")(u3.a, S1(42));
+    test!("==")(u3.active, u3.Active.a);
+    test!("==")(u3.active_name, "a");
     testThrown!(Exception)(u3.b(), false);
 
     u1.b("Hello world".dup);
     test!("==")(u1.b, "Hello world"[]);
+    test!("==")(u1.active, u1.Active.b);
+    test!("==")(u1.active_name, "b");
     testThrown!(Exception)(u1.a(), false);
 
     u2.b(S1.init);
     test!("==")(u2.b, S1.init);
+    test!("==")(u2.active, u2.Active.b);
+    test!("==")(u2.active_name, "b");
     testThrown!(Exception)(u2.a(), false);
 
     u3.b(21);
     test!("==")(u3.b, 21);
+    test!("==")(u3.active, u3.Active.b);
+    test!("==")(u3.active_name, "b");
     testThrown!(Exception)(u3.a(), false);
 
 }
@@ -177,6 +210,83 @@ version (UnitTest)
         S1 a;
         uint b;
     }
+}
+
+
+/*******************************************************************************
+
+    Calls the specified callable with the active field of the provided
+    smart-union. If no field is active, does nothing.
+
+    Note: declared at module-scope (rather than nested inside the SmartUnion
+    template) to work around limitations of template alias parameters. (Doing it
+    like this allows it to be called with a local name.)
+
+    Params:
+        Callable = alias for the thing to be called with the active member of
+            the provided smart-union
+        SU = type of smart-union to operate on
+        smart_union = smart-union instance whose active field should be passed
+            to Callable
+
+*******************************************************************************/
+
+public void callWithActive ( alias Callable, SU ) ( SU smart_union )
+{
+    static assert(is(TemplateInstanceArgs!(SmartUnion, SU)));
+    alias typeof(smart_union._.u) U;
+
+    if ( !smart_union._.active )
+        return;
+
+    auto active_i = smart_union._.active - 1;
+    assert(active_i < U.tupleof.length);
+
+    // "static foreach", unrolls into the equivalent of a switch
+    foreach ( i, ref field; smart_union._.u.tupleof )
+    {
+        if ( i == active_i )
+        {
+            Callable(field);
+            break;
+        }
+    }
+}
+
+///
+version (D_Version2) unittest
+{
+    // This example is D2 only because it requires a function template,
+    // `print`, and D1 doesn't allow defining a function template at the scope
+    // of a function, including a `unittest`. In D1 this example works if
+    // `print`, is defined outside of function scope.
+
+    union TestUnion
+    {
+        int a;
+        float b;
+    }
+    alias SmartUnion!(TestUnion) TestSmartUnion;
+
+    static struct ActiveUnionFieldPrinter
+    {
+        static void print ( T ) ( T t )
+        {
+            Stdout.formatln("{}", t);
+        }
+
+        void printActiveUnionField ( )
+        {
+            TestSmartUnion su;
+            su.a = 23;
+            callWithActive!(print)(su);
+        }
+    }
+}
+
+version ( UnitTest )
+{
+    import ocean.io.Stdout;
 }
 
 /******************************************************************************
@@ -220,6 +330,34 @@ private struct SmartUnionIntern ( U )
      **************************************************************************/
 
     Active active;
+
+    /***************************************************************************
+
+        List of active state names
+
+    ***************************************************************************/
+
+    const istring[] active_names = member_string_list();
+
+    /***************************************************************************
+
+        CTFE function to generate the list of active state names for union U.
+
+        Returns:
+            a list containing the names of each of the active states of the
+            smart-union (i.e. the names of the fields of U)
+
+    ***************************************************************************/
+
+    static private istring[] member_string_list ( )
+    {
+        istring[] names = ["none"[]];
+        foreach ( i, F; typeof(U.init.tupleof) )
+        {
+            names ~= FieldName!(i, U);
+        }
+        return names;
+    }
 }
 
 /*******************************************************************************
@@ -228,6 +366,8 @@ private struct SmartUnionIntern ( U )
 
     Template_Params:
         i   = U member start index
+        len = number of members in U
+        U = aggregate to iterate over
 
     Evaluates to:
         a ',' separated list of the names of the members of U
@@ -245,7 +385,6 @@ private template MemberList ( uint i, size_t len, U )
         const MemberList = "," ~ FieldName!(i, U) ~ MemberList!(i + 1, len, U);
     }
 }
-
 
 /*******************************************************************************
 

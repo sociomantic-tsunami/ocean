@@ -17,7 +17,6 @@
         3-Clause BSD License (see LICENSE_BSD.txt for details).
 
 *******************************************************************************/
-module test.collectd.main;
 
 import ocean.transition;
 import ocean.core.Test;
