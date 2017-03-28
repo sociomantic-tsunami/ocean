@@ -324,6 +324,23 @@ public abstract class IPool : IPoolInfo, ILimitable
 
     /***************************************************************************
 
+        Checks if item is currently busy.
+
+        Params:
+            item = item to check
+
+        Returns:
+            true if item is currently busy, false otherwise.
+
+    ***************************************************************************/
+
+    public bool isBusy ( Item item )
+    {
+        return this.getItemIndex(item) < this.num_busy_;
+    }
+
+    /***************************************************************************
+
         Ensures that the pool contains at least the specified number of items.
         Useful to pre-allocate a pool of a certain size.
 
