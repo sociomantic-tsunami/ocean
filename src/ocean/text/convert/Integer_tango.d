@@ -379,7 +379,7 @@ Const!(T)[] formatter(T, N) (T[] dst, N i_, char type, char pre, int width)
             do
                 *--p = numbers[abs(i % radix)];
             while ((i /= radix) && --len);
-         }
+        }
         else // Those numbers are not signed
         {
             ulong v = reinterpretInteger!(ulong)(i);
