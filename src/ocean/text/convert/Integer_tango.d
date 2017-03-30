@@ -257,6 +257,14 @@ unittest
     assert (s == "43");
 }
 
+/*
+    Params:
+        T = format string base type
+        fmt = the format string
+        type = set to the type string (e.g 'd', 'f')
+        pre = set to string prefix
+        width = set to the padding space that the number should occupy
+*/
 private void decode(T) (T[] fmt, ref char type, out char pre, out int width)
 {
     if (fmt.length is 0)
