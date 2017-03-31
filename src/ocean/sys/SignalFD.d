@@ -129,6 +129,7 @@ debug import ocean.io.Stdout;
 public class SignalFD : ISelectable
 {
     import core.sys.linux.sys.signalfd;
+    import ocean.sys.CloseOnExec;
 
     /***************************************************************************
 
@@ -267,7 +268,9 @@ public class SignalFD : ISelectable
         sigset.add(this.signals);
         auto c_sigset = cast(sigset_t) sigset;
 
-        this.fd = signalfd(this.fd, &c_sigset, SFD_NONBLOCK);
+        this.fd = signalfd(
+            this.fd, &c_sigset, setCloExec(SFD_NONBLOCK, SFD_CLOEXEC)
+        );
         if ( this.fd == -1 )
         {
             scope ( exit ) .errno = 0;

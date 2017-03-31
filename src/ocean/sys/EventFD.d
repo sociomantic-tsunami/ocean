@@ -118,7 +118,11 @@ import core.sys.posix.unistd: read, write, close;
 
 *******************************************************************************/
 
-private extern ( C ) int eventfd ( uint initval, int flags );
+private extern ( C )
+{
+    int eventfd ( uint initval, int flags );
+    const EFD_CLOEXEC = 0x80000;
+}
 
 
 
@@ -130,6 +134,8 @@ private extern ( C ) int eventfd ( uint initval, int flags );
 
 public class EventFD : ISelectable
 {
+    import ocean.sys.CloseOnExec;
+
     /***************************************************************************
 
         Integer file descriptor provided by the operating system and used to
@@ -148,7 +154,7 @@ public class EventFD : ISelectable
 
     public this ( )
     {
-        this.fd = .eventfd(0, 0);
+        this.fd = .eventfd(0, setCloExec(0, EFD_CLOEXEC));
     }
 
 
