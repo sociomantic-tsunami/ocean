@@ -66,6 +66,8 @@ public enum SocketFlags
 
 public abstract class ISocket : IODevice
 {
+    import ocean.sys.CloseOnExec;
+
     /**************************************************************************
 
         Flags supported by accept4().
@@ -311,7 +313,9 @@ public abstract class ISocket : IODevice
 
     public int socket ( int domain, int type, int protocol = 0 )
     {
-        this.fd = .socket(domain, type, protocol);
+        this.fd = .socket(
+            domain, setCloExec(type, SocketFlags.SOCK_CLOEXEC), protocol
+        );
 
         this.close_in_destructor = (this.fd >= 0);
 
@@ -467,7 +471,10 @@ public abstract class ISocket : IODevice
     {
         addrlen = this.in_addrlen;
 
-        this.fd = .accept4(listening_socket.fileHandle, remote_address, &addrlen, flags);
+        this.fd = .accept4(
+            listening_socket.fileHandle, remote_address, &addrlen,
+            setCloExec(flags, SocketFlags.SOCK_CLOEXEC)
+        );
 
         this.close_in_destructor = (this.fd >= 0);
 
@@ -494,7 +501,10 @@ public abstract class ISocket : IODevice
 
     public int accept ( ISelectable listening_socket, SocketFlags flags = SocketFlags.None )
     {
-        this.fd = .accept4(listening_socket.fileHandle, null, null, flags);
+        this.fd = .accept4(
+            listening_socket.fileHandle, null, null,
+            setCloExec(flags, SocketFlags.SOCK_CLOEXEC)
+        );
 
         this.close_in_destructor = (this.fd >= 0);
 

@@ -46,6 +46,8 @@ import core.stdc.errno: EAGAIN, EWOULDBLOCK, errno;
 
 public class Inotify : ISelectable
 {
+    import ocean.sys.CloseOnExec;
+
     /***************************************************************************
 
         Exception class, thrown on errors with inotify functions
@@ -164,7 +166,9 @@ public class Inotify : ISelectable
     public this ( InotifyException e )
     {
         this.e = e;
-        this.fd = this.e.enforceRet!(inotify_init1)(&verify).call(IN_NONBLOCK);
+
+        this.fd = this.e.enforceRet!(inotify_init1)(&verify)
+            .call(setCloExec(IN_NONBLOCK, IN_CLOEXEC));
     }
 
 

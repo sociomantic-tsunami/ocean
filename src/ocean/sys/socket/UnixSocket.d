@@ -43,6 +43,7 @@ import ocean.stdc.posix.sys.un;
 
 public class UnixSocket : ISocket
 {
+    import ocean.sys.CloseOnExec;
 
     /***************************************************************************
 
@@ -104,7 +105,9 @@ public class UnixSocket : ISocket
 
     public int socket ( int type = SOCK_STREAM )
     {
-        return super.socket(AF_UNIX, type, 0);
+        return super.socket(
+            AF_UNIX, setCloExec(type, SocketFlags.SOCK_CLOEXEC), 0
+        );
     }
 
 

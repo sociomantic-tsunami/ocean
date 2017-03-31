@@ -492,6 +492,8 @@ extern (C)
 
 struct Epoll
 {
+    import ocean.sys.CloseOnExec;
+
     /**************************************************************************
 
         Convenience aliases
@@ -536,7 +538,9 @@ struct Epoll
 
     public int create ( CreateFlags flags = CreateFlags.None )
     {
-        return this.fd = epoll_create1(flags);
+        return this.fd = epoll_create1(
+            setCloExec(flags, EpollCreateFlags.EPOLL_CLOEXEC)
+        );
     }
 
     /**************************************************************************
