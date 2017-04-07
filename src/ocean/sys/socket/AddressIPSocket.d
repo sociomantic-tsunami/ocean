@@ -173,8 +173,8 @@ class AddressIPSocket ( bool IPv6 = false ) : IPSocket!(IPv6), IAddressIPSocketI
             appropriately.
 
         Errors:
-            as above but also sets errno to EAFNOSUPPORT if the address does not
-            contain a valid IP address string.
+            as the overridden method but also sets errno to EAFNOSUPPORT if the
+            address does not contain a valid IP address string.
 
      **************************************************************************/
 
@@ -227,8 +227,8 @@ class AddressIPSocket ( bool IPv6 = false ) : IPSocket!(IPv6), IAddressIPSocketI
             appropriately.
 
         Errors:
-            as above but also sets errno to EAFNOSUPPORT if the address does not
-            contain a valid IP address string.
+            as the overridden method but also sets errno to EAFNOSUPPORT if the
+            address does not contain a valid IP address string.
 
      **************************************************************************/
 
