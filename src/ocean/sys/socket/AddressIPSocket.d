@@ -173,7 +173,7 @@ class AddressIPSocket ( bool IPv6 = false ) : IPSocket!(IPv6), IAddressIPSocketI
             appropriately.
 
         Errors:
-            as the overridden method but also sets errno to EAFNOSUPPORT if the
+            as the overridden method but also sets errno to EINVAL if the
             address does not contain a valid IP address string.
 
      **************************************************************************/
@@ -227,7 +227,7 @@ class AddressIPSocket ( bool IPv6 = false ) : IPSocket!(IPv6), IAddressIPSocketI
             appropriately.
 
         Errors:
-            as the overridden method but also sets errno to EAFNOSUPPORT if the
+            as the overridden method but also sets errno to EINVAL if the
             address does not contain a valid IP address string.
 
      **************************************************************************/
@@ -412,7 +412,7 @@ class AddressIPSocket ( bool IPv6 = false ) : IPSocket!(IPv6), IAddressIPSocketI
 version (UnitTest)
 {
     import ocean.core.Test;
-    import core.stdc.errno: errno, EAFNOSUPPORT, EBADF;
+    import core.stdc.errno: errno, EINVAL, EBADF;
 }
 
 unittest
@@ -431,7 +431,7 @@ unittest
 
         errno = 0;
         test!("==")(s.bind("Hello World!", 6789), -1);
-        test!("==")(errno, EAFNOSUPPORT);
+        test!("==")(errno, EINVAL);
         test!("==")(s.address, "127.0.0.1");
         test!("==")(s.port, 12345);
 
@@ -443,7 +443,7 @@ unittest
 
         errno = 0;
         test!("==")(s.connect("Hello World!", 54321), -1);
-        test!("==")(errno, EAFNOSUPPORT);
+        test!("==")(errno, EINVAL);
         test!("==")(s.address, "127.0.0.2");
         test!("==")(s.port, 9876);
     }
@@ -461,7 +461,7 @@ unittest
 
         errno = 0;
         test!("==")(s.bind("Hello World!", 6789), -1);
-        test!("==")(errno, EAFNOSUPPORT);
+        test!("==")(errno, EINVAL);
         test!("==")(s.address, "::ffff:204.152.189.116");
         test!("==")(s.port, 12345);
 
@@ -473,7 +473,7 @@ unittest
 
         errno = 0;
         test!("==")(s.connect("Hello World!", 54321), -1);
-        test!("==")(errno, EAFNOSUPPORT);
+        test!("==")(errno, EINVAL);
         test!("==")(s.address, "::ffff:204.152.189.117");
         test!("==")(s.port, 9876);
     }
