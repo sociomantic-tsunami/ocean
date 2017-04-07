@@ -180,9 +180,15 @@ class AddressIPSocket ( bool IPv6 = false ) : IPSocket!(IPv6), IAddressIPSocketI
 
     public override int bind ( cstring local_ip_address, ushort local_port = 0 )
     {
-        scope (exit) this.setAddress();
-
-        return super.bind(this.in_address(local_ip_address, local_port));
+        if (auto a = this.in_address(local_ip_address, local_port))
+        {
+            scope (exit) this.setAddress();
+            return super.bind(a);
+        }
+        else
+        {
+            return -1;
+        }
     }
 
     /**************************************************************************
@@ -228,9 +234,15 @@ class AddressIPSocket ( bool IPv6 = false ) : IPSocket!(IPv6), IAddressIPSocketI
 
     public override int connect ( cstring remote_ip_address, ushort remote_port )
     {
-        scope (exit) this.setAddress();
-
-        return super.connect(this.in_address(remote_ip_address, remote_port));
+        if (auto a = this.in_address(remote_ip_address, remote_port))
+        {
+            scope (exit) this.setAddress();
+            return super.connect(a);
+        }
+        else
+        {
+            return -1;
+        }
     }
 
     /**************************************************************************
@@ -391,5 +403,78 @@ class AddressIPSocket ( bool IPv6 = false ) : IPSocket!(IPv6), IAddressIPSocketI
     private void setAddress ( )
     {
         this.ip_address_len = this.in_address.inet_ntop(this.ip_address_).length;
+    }
+}
+
+/// Test that methods that accept IP addresses in presentation notation
+/// correctly accept valid and reject invalid addresses.
+
+version (UnitTest)
+{
+    import ocean.core.Test;
+    import core.stdc.errno: errno, EAFNOSUPPORT, EBADF;
+}
+
+unittest
+{
+    {
+        scope s = new AddressIPSocket!();
+        // With s.fd == -1 the connect(2) call should fail with EBADF if the
+        // inet_pton(3) call succeeds.
+        assert(s.fd == -1);
+
+        errno = 0;
+        test!("==")(s.bind("127.0.0.1", 12345), -1);
+        test!("==")(errno, EBADF);
+        test!("==")(s.address, "127.0.0.1");
+        test!("==")(s.port, 12345);
+
+        errno = 0;
+        test!("==")(s.bind("Hello World!", 6789), -1);
+        test!("==")(errno, EAFNOSUPPORT);
+        test!("==")(s.address, "127.0.0.1");
+        test!("==")(s.port, 12345);
+
+        errno = 0;
+        test!("==")(s.connect("127.0.0.2", 9876), -1);
+        test!("==")(errno, EBADF);
+        test!("==")(s.address, "127.0.0.2");
+        test!("==")(s.port, 9876);
+
+        errno = 0;
+        test!("==")(s.connect("Hello World!", 54321), -1);
+        test!("==")(errno, EAFNOSUPPORT);
+        test!("==")(s.address, "127.0.0.2");
+        test!("==")(s.port, 9876);
+    }
+
+    {
+        scope s = new AddressIPSocket!(true);
+        assert(s.fd == -1);
+
+        errno = 0;
+        // IP address taken from the Linux manual page for inet_pton(3).
+        test!("==")(s.bind("::ffff:204.152.189.116", 12345), -1);
+        test!("==")(errno, EBADF);
+        test!("==")(s.address, "::ffff:204.152.189.116");
+        test!("==")(s.port, 12345);
+
+        errno = 0;
+        test!("==")(s.bind("Hello World!", 6789), -1);
+        test!("==")(errno, EAFNOSUPPORT);
+        test!("==")(s.address, "::ffff:204.152.189.116");
+        test!("==")(s.port, 12345);
+
+        errno = 0;
+        test!("==")(s.connect("::ffff:204.152.189.117", 9876), -1);
+        test!("==")(errno, EBADF);
+        test!("==")(s.address, "::ffff:204.152.189.117");
+        test!("==")(s.port, 9876);
+
+        errno = 0;
+        test!("==")(s.connect("Hello World!", 54321), -1);
+        test!("==")(errno, EAFNOSUPPORT);
+        test!("==")(s.address, "::ffff:204.152.189.117");
+        test!("==")(s.port, 9876);
     }
 }
