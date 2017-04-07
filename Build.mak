@@ -125,6 +125,8 @@ $O/test-unixlistener: override LDFLAGS += -lebtree
 
 $O/test-loggerstats: override LDFLAGS += -lebtree
 
+$O/test-sysstats: override LDFLAGS += -lebtree
+
 # Link unittests to all used libraries
 $O/%unittests: override LDFLAGS += -lglib-2.0 -lpcre -lxml2 -lxslt -lebtree \
 		-lreadline -lhistory -llzo2 -lbz2 -lz -ldl -lgcrypt -lgpg-error -lrt
