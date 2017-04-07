@@ -517,7 +517,7 @@ public ProcMemInfo getProcMemInfo ()
         auto field_name = data[0..colon_pos];
 
         // Swallow all spaces between colon and number
-        data = data[colon_pos..$];
+        data = data[colon_pos+1..$];
         enforce(data.length);
 
         while (data[0] == ' ')
