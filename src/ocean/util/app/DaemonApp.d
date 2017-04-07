@@ -734,7 +734,7 @@ unittest
             settings.signals = [SIGINT, SIGTERM];
 
             // Call the super class' ctor.
-            super(name, desc, VersionInfo.init, settings);
+            super(name, desc, ver, settings);
         }
 
         // Called after arguments and config file parsing.
