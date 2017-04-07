@@ -62,7 +62,7 @@ import core.sys.posix.arpa.inet: inet_ntop, inet_pton, ntohs, htons, htonl;
 
 import core.stdc.string: strlen;
 
-import core.stdc.errno: errno, EAFNOSUPPORT;
+import core.stdc.errno: errno, EINVAL;
 
 import ocean.core.TypeConvert;
 
@@ -302,8 +302,8 @@ struct InetAddress ( bool IPv6 = false )
         Returns:
             a sockaddr pointer to this.addr on success.
             If ip_address_str does not contain a valid IP address, null is
-            returned and errno set to EAFNOSUPPORT (this error is reported by
-            this wrapper, not the underlying system function).
+            returned and errno set to EINVAL (this error is reported by this
+            wrapper, not the underlying POSIX function).
 
      **************************************************************************/
 
@@ -316,7 +316,7 @@ struct InetAddress ( bool IPv6 = false )
         }
         else
         {
-            .errno = EAFNOSUPPORT;
+            .errno = EINVAL;
             return null;
         }
     }
