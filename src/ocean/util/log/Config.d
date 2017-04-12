@@ -319,7 +319,7 @@ public Layout newLayout ( cstring layout_str )
             // yields `cstring` instead of `istring`.
             istring msg = "Invalid layout requested : ";
             msg ~= layout_str;
-            throw new Exception(msg);
+            throw new Exception(msg, __FILE__, __LINE__);
     }
 
     return layout;
