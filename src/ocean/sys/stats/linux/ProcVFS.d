@@ -708,6 +708,9 @@ private ProcStat parseProcStatData (cstring data)
 
     // consume pid
     auto pid_pos = space_it.forward(data);
+    if (pid_pos == data.length)
+        return ProcStat.init;
+
     toInteger(data[0..pid_pos], s.pid);
 
     // chop pid
@@ -719,6 +722,10 @@ private ProcStat parseProcStatData (cstring data)
     // Find the last closing bracket (as the process name can contain bracket
     // itself.
     auto last_bracket = parenth_it.reverse(data);
+    // There should be space for the space and process status ("(cat) R ")
+    if (last_bracket >= data.length - 3)
+        return ProcStat.init;
+
     s.cmd.length = last_bracket;
     s.cmd[] = data[0..last_bracket];
 
@@ -727,9 +734,10 @@ private ProcStat parseProcStatData (cstring data)
 
     s.state = data[0];
 
-    // chop status and the space
+    // Cut the process status and the trailing space
     data = data[2..$];
 
+    // Now we have a list of numbers, parse one after another
     foreach (i, ref field; s.tupleof)
     {
         static if (i > 2)
@@ -747,4 +755,21 @@ private ProcStat parseProcStatData (cstring data)
     }
 
     return s;
+}
+
+unittest
+{
+    // Test with invalid inputs, all should return empty struct
+    auto data = "13300 (cat R 32559 13300 32559 34817 13300 4194304 116 0 0 0 "[];
+    test!("==")(parseProcStatData(data), ProcStat.init);
+
+    data = "";
+    test!("==")(parseProcStatData(data), ProcStat.init);
+
+    data = "13300 (cat)";
+    test!("==")(parseProcStatData(data), ProcStat.init);
+
+    // Test with no fields except process state
+    data = "13300 (cat) R";
+    test!("==")(parseProcStatData(data), ProcStat.init);
 }
