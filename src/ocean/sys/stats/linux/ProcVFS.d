@@ -649,3 +649,57 @@ private ProcMemInfo parseProcMemInfoData (cstring delegate() read_next_line)
 
     return meminfo;
 }
+
+version (UnitTest)
+{
+    import ocean.io.Stdout;
+}
+
+unittest
+{
+    // test empty string
+    cstring empty () { return null; }
+    test!("==")(parseProcMemInfoData(&empty), ProcMemInfo.init);
+
+    // test input in expected format, all lines supported
+    cstring[] data =
+        [
+        "MemTotal:        8131024 kB",
+        "MemFree:           35664 MB",
+        "MemAvailable:          4 GB",
+        "Buffers:               1   "
+        ];
+
+    int line_read;
+    cstring read_data(cstring[] data) {
+        if (line_read >= data.length)
+            return null;
+        return data[line_read++];
+    }
+
+    auto res = parseProcMemInfoData({ return read_data(data); });
+
+    ProcMemInfo expected;
+    expected.MemTotal = 8131024UL * 1024;
+    expected.MemFree  = 35664UL * 1024 * 1024;
+    expected.MemAvailable = 4UL * 1024 * 1024 * 1024;
+    expected.Buffers = 1UL;
+
+    test!("==")(res, expected);
+
+    // test input in expected format, but add some
+    // lines that don't correspond ProcMemInfo fields (kernel update)
+    cstring[] new_data =
+        [
+        "SomeNewStat:       11111 kB",
+        "MemTotal:        8131024 kB",
+        "MemFree:           35664 MB",
+        "MemAvailable:          4 GB",
+        "ExtraStats:        11111 kB",
+        "Buffers:               1   "
+        ];
+
+    line_read = 0;
+    res = parseProcMemInfoData({ return read_data(new_data); });
+    test!("==")(res, expected);
+}
