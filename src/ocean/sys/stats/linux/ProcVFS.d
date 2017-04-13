@@ -481,11 +481,6 @@ public ProcMemInfo getProcMemInfo ()
     // Instance of the getline_buffer_t.
     static getline_buffer_t getline_buf;
 
-
-    ProcMemInfo meminfo;
-
-    ulong res;
-
     auto f = fopen("/proc/meminfo".ptr, "r".ptr);
 
     if (!f)
@@ -495,6 +490,78 @@ public ProcMemInfo getProcMemInfo ()
 
     scope (exit) fclose(f);
 
+    cstring get_next_line ()
+    {
+        ssize_t read = getline(&getline_buf.ptr, &getline_buf.length, f);
+
+        if (read <= 0)
+        {
+            return null;
+        }
+
+        // getline gets the last \n
+        auto data = getline_buf.ptr[0 .. read - 1];
+
+        return data;
+    }
+
+    return parseProcMemInfoData(&get_next_line);
+}
+
+/*******************************************************************************
+
+    Returns:
+        size of machine's RAM in bytes, as reported in /proc/meminfo
+
+    Throws:
+        ErrnoException on failure to parse this file.
+
+*******************************************************************************/
+
+public ulong getTotalMemoryInBytes ()
+{
+    return getProcMemInfo().MemTotal;
+}
+
+/*******************************************************************************
+
+    Initializes .exception object if necessary and throws it, carrying the
+    last errno.
+
+    Params:
+        name = name of the method that failed
+
+*******************************************************************************/
+
+private void throwException( istring name )
+{
+    auto saved_errno = .errno;
+
+    if (.procvfs_exception is null)
+    {
+        .procvfs_exception = new ErrnoException();
+    }
+
+    throw .procvfs_exception.set(saved_errno, name);
+}
+
+/*******************************************************************************
+
+    Provides parsing for /proc/meminfo data.
+
+    Params:
+        read_next_line = delegate providing next line, or `null` when
+        no more data is to be parsed
+
+    Returns:
+        Filled in ProcMemInfo structure
+
+*******************************************************************************/
+
+private ProcMemInfo parseProcMemInfoData (cstring delegate() read_next_line)
+{
+    ProcMemInfo meminfo;
+
     cstring colon = ":";
     cstring space = " ";
     auto colon_it = find(colon);
@@ -502,15 +569,12 @@ public ProcMemInfo getProcMemInfo ()
 
     while (true)
     {
-        ssize_t read = getline(&getline_buf.ptr, &getline_buf.length, f);
+        auto data = read_next_line();
 
-        if (read <= 0)
+        if (data.length == 0)
         {
             break;
         }
-
-        // getline gets the last \n
-        auto data = getline_buf.ptr[0 .. read - 1];
 
         // MemTotal:          32 kB
         auto colon_pos = colon_it.forward(data);
@@ -584,41 +648,4 @@ public ProcMemInfo getProcMemInfo ()
     }
 
     return meminfo;
-}
-
-/*******************************************************************************
-
-    Returns:
-        size of machine's RAM in bytes, as reported in /proc/meminfo
-
-    Throws:
-        ErrnoException on failure to parse this file.
-
-*******************************************************************************/
-
-public ulong getTotalMemoryInBytes ()
-{
-    return getProcMemInfo().MemTotal;
-}
-
-/*******************************************************************************
-
-    Initializes .exception object if necessary and throws it, carrying the
-    last errno.
-
-    Params:
-        name = name of the method that failed
-
-*******************************************************************************/
-
-private void throwException( istring name )
-{
-    auto saved_errno = .errno;
-
-    if (.procvfs_exception is null)
-    {
-        .procvfs_exception = new ErrnoException();
-    }
-
-    throw .procvfs_exception.set(saved_errno, name);
 }
