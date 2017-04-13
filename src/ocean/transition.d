@@ -254,16 +254,16 @@ unittest
 
 /*******************************************************************************
 
-    Replacement for `typedef` which is completely deprecated. It generates
-    usual `typedef` when built with D1 compiler and wrapper struct with
-    `alias this` when built with D2 compiler.
+    Replacement for `typedef` which is not available as a keyword in D2. It
+    generates usual `typedef` when built with D1 compiler and wrapper struct
+    with `alias this` when built with D2 compiler.
 
     Used as mixin(Typedef!(hash_t, "MyHash"))
 
     D2 version has `IsTypedef` member alias defined so that any struct type
     can be quickly checked if it originates from typedef via
     `is(typeof(S.IsTypedef))`. This is a hack reserved for backwards
-    compatibility in libaries and should be never relied upon in user code.
+    compatibility in libraries and should be never relied upon in user code.
 
     Template Parameters:
         T       = type to typedef
@@ -381,8 +381,13 @@ unittest
 
 *******************************************************************************/
 
-void enableStomping(T)(ref T array)
+void enableStomping(T)(ref T[] array)
 {
+    static assert (
+        is(T == Unqual!(T)),
+        "Must not call `enableStomping` on const/immutable array"
+    );
+
     version(D_Version2)
     {
         assumeSafeAppend(array);
@@ -395,9 +400,9 @@ void enableStomping(T)(ref T array)
 
 /*******************************************************************************
 
-    Helper template that can be used instead of deprecated octal literals. In
-    some cases preserving octal notation is really important for readability and
-    those can't be simply replace with decimal/hex ones.
+    Helper template that can be used instead of octal literals. In some cases
+    preserving octal notation is really important for readability and those
+    can't be simply replace with decimal/hex ones.
 
     Template_Params:
         literal = octal number literal as string
@@ -444,7 +449,7 @@ else
     what you need but sometimes true globals are necessary - primarily related
     to thread and related tool implementation.
 
-    This small mixin helper prepends __gshared to input declatation when
+    This small mixin helper prepends __gshared to input declaration when
     compiled in D2 mode.
 
 *******************************************************************************/
@@ -667,7 +672,7 @@ unittest
     version (D_Version2) { }
     else
     {
-        // built-in sort is deprecated and importing ocean.core.Array
+        // built-in sort is not available in D2 and importing ocean.core.Array
         // introduces module cycle
         auto s_arr = [ S(2), S(3), S(1) ];
         auto c_arr = [ new C(2), new C(3), new C(1) ];
@@ -677,7 +682,7 @@ unittest
         assert (s_arr == [ S(1), S(2), S(3) ]);
         assert (c_arr <= [ new C(1), new C(2), new C(3) ]);
         assert (c_arr >= [ new C(1), new C(2), new C(3) ]);
-        // Fails because we haven't overriden opEquals...
+        // Fails because we haven't overridden opEquals...
         // assert (c_arr == [ new C(1), new C(2), new C(3) ]);
     }
 }
@@ -800,7 +805,7 @@ else
     D2 it's the actual type of the aggregate. It doesn't change anything for
     classes which are reference types, but for struct and unions, it yields
     a pointer instead of the actual type.
-    d1tod2fix does the convertion automatically for `structs`, but there are
+    d1tod2fix does the conversion automatically for `structs`, but there are
     places where manual intervention is needed (e.g. `mixin template`s).
 
 *******************************************************************************/
@@ -867,16 +872,16 @@ cstring getMsg ( Throwable e )
 
         version (D_Version2)
         {
-            // reusable exceptions don't have common base class which makes
-            // impossible to accesss `reused_msg` directly but it is best to
+            // reusable exceptions don't have a common base class which makes it
+            // impossible to access `reused_msg` directly but it is best to
             // ensure at least "traditional" exceptions are formatted correctly
-            // before failing 
+            // before failing
             if (e.msg.length)
                 return e.msg;
             else
                 // ReusableExceptionImpl currently implements D2 toString in
                 // the same way as D1 toString which is illegal but can be used
-                // as temporary workaround
+                // as a temporary workaround
                 return e.toString();
         }
         else
@@ -894,7 +899,7 @@ cstring getMsg ( Throwable e )
         enableStomping(buffer);
         e.message((cstring chunk) {
             buffer ~= chunk;
-        });  
+        });
         return buffer;
     }
 }
@@ -914,7 +919,16 @@ unittest
 
 static import core.memory;
 
-static if (is(typeof(core.memory.GC.usage)))
+static if (is(typeof(core.memory.GC.stats)))
+{
+    void gc_usage ( out size_t used, out size_t free )
+    {
+        auto stats = core.memory.GC.stats();
+        used = stats.usedSize;
+        free = stats.freeSize;
+    }
+}
+else static if (is(typeof(core.memory.GC.usage)))
 {
     alias core.memory.GC.usage gc_usage;
 }
