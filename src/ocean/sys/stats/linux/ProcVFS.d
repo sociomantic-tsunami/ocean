@@ -560,6 +560,21 @@ private void throwException( istring name )
 
 private ProcMemInfo parseProcMemInfoData (cstring delegate() read_next_line)
 {
+    /// Helper function to strip leading spaces
+    /// Params:
+    ///     data: string to strip spaces from
+    /// Returns:
+    ///     passed string with no leading spaces
+    cstring strip_spaces (cstring data)
+    {
+        while (data.length && data[0] == ' ')
+        {
+            data = data[1..$];
+        }
+
+        return data;
+    }
+
     ProcMemInfo meminfo;
 
     cstring colon = ":";
@@ -583,17 +598,13 @@ private ProcMemInfo parseProcMemInfoData (cstring delegate() read_next_line)
         // Swallow all spaces between colon and number
         data = data[colon_pos+1..$];
         enforce(data.length);
-
-        while (data[0] == ' ')
-        {
-            data = data[1..$];
-        }
+        data = strip_spaces(data);
 
         // Find separator between value and units
         auto space_pos = space_it.forward(data);
         auto field_value = data[0..space_pos];
         auto field_units = space_pos < data.length ?
-            data[space_pos + 1 .. $] : "";
+            strip_spaces(data[space_pos + 1 .. $]) : "";
 
         /***********************************************************************
 
@@ -701,5 +712,21 @@ unittest
 
     line_read = 0;
     res = parseProcMemInfoData({ return read_data(new_data); });
+    test!("==")(res, expected);
+
+    // Let's see if we can handle misalignment
+    // Separator between name and value is ':',
+    // and between value and units is ' '. Any number of spaces
+    // should be irrelevant
+    data =
+        [
+        "MemTotal:8131024 kB",
+        "MemFree:35664  MB",
+        "MemAvailable:          4 GB",
+        "Buffers:               1   "
+        ];
+
+    line_read = 0;
+    res = parseProcMemInfoData({ return read_data(data); });
     test!("==")(res, expected);
 }
