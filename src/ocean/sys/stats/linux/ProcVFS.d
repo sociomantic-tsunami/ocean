@@ -751,6 +751,10 @@ private ProcStat parseProcStatData (cstring data)
             {
                 data = data[next_space+1..$];
             }
+            else
+            {
+                break;
+            }
         }
     }
 
@@ -772,4 +776,36 @@ unittest
     // Test with no fields except process state
     data = "13300 (cat) R";
     test!("==")(parseProcStatData(data), ProcStat.init);
+
+    // Test with just three first fields filled
+    data = "13300 (cat) R 32559 13300 32559";
+    auto res = parseProcStatData(data);
+
+    // Compare the strings separatelly
+    test!("==")(res.cmd, "cat");
+
+    // workaround for easy comparing structs without going into field by field
+    // comparison
+    char[] empty_string = "".dup;
+    res.cmd = empty_string;
+    test!("==")(res, ProcStat(13300, empty_string, 'R', 32559, 13300, 32559));
+
+    // Test will full data
+    data = "13300 (cat) R 32559 13300 32559 34817 13300 4194304 116 0 0 0 "
+        ~ "0 0 0 0 20 0 1 0 28524130 9216000 173 18446744073709551615 4194304 "
+        ~ "4240332 140734453962304 140734453961656 139949142898304 0 0 0 0 0 "
+        ~ "0 0 17 1 0 0 0 0 0 6340112 6341364 21700608 140734453969735 "
+        ~ "140734453969755 140734453969755 140734453972975 0";
+
+    res = parseProcStatData(data);
+    test!("==")(res.cmd, "cat");
+    res.cmd = empty_string;
+
+    test!("==")(res, ProcStat(13300, empty_string, 'R', 32559, 13300, 32559, 34817, 13300,
+                4194304, 116, 0, 0, 0, 0, 0, 0, 0, 20, 0, 1, 0, 28524130,
+                9216000, 173, 18446744073709551615UL, 4194304, 4240332,
+                140734453962304, 140734453961656, 139949142898304, 0, 0, 0, 0,
+                0, 0, 0, 17, 1, 0, 0, 0, 0, 0, 6340112, 6341364, 21700608,
+                140734453969735, 140734453969755, 140734453969755,
+                140734453972975, 0));
 }
