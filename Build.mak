@@ -8,6 +8,8 @@ DC = dmd
 override DFLAGS += -de
 endif
 
+TEST_RUNNER_MODULE:=ocean.core.UnitTestRunner
+
 # Remove deprecated modules from testing:
 TEST_FILTER_OUT += \
 	$C/src/ocean/core/Array_tango.d
