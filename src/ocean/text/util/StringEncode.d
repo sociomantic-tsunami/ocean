@@ -69,36 +69,39 @@ class IconvException : Exception
         super(msg, file, line);
     }
 
-    /**************************************************************************
+    alias .InvalidMbSeq InvalidMbSeq;
+    alias .IncompleteMbSeq IncompleteMbSeq;
+}
 
-        Invalid Multibyte Sequence
+/**************************************************************************
 
-     **************************************************************************/
+    Invalid Multibyte Sequence
 
-    static class InvalidMbSeq :  IconvException
+ **************************************************************************/
+
+class InvalidMbSeq :  IconvException
+{
+    const msg = "Iconv: Invalid Multibyte Sequence";
+
+    this ( istring file = __FILE__, int line = __LINE__ )
     {
-        const msg = "Iconv: Invalid Multibyte Sequence";
-
-        this ( istring file = __FILE__, int line = __LINE__ )
-        {
-            super(this.msg, file, line);
-        }
+        super(this.msg, file, line);
     }
+}
 
-    /**************************************************************************
+/**************************************************************************
 
-        Incomplete Multibyte Sequence
+    Incomplete Multibyte Sequence
 
-     **************************************************************************/
+ **************************************************************************/
 
-    static class IncompleteMbSeq :  IconvException
+class IncompleteMbSeq :  IconvException
+{
+    const msg = "Iconv: Incomplete Multibyte Sequence";
+
+    this ( istring file = __FILE__, int line = __LINE__ )
     {
-        const msg = "Iconv: Incomplete Multibyte Sequence";
-
-        this ( istring file = __FILE__, int line = __LINE__ )
-        {
-            super(this.msg, file, line);
-        }
+        super(this.msg, file, line);
     }
 }
 

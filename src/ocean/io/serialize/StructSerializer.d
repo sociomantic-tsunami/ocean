@@ -46,27 +46,28 @@ class SerializerException : Exception
 {
     mixin DefaultExceptionCtor;
 
-    /***************************************************************************
-
-        StructSerializer Exception
-
-    ***************************************************************************/
-
-    static class LengthMismatch : SerializerException
-    {
-        size_t bytes_expected, bytes_got;
-
-        this ( size_t bytes_expected, size_t bytes_got,
-               istring msg, istring file, typeof(__LINE__) line )
-        {
-            super(msg, file, line);
-
-            this.bytes_expected = bytes_expected;
-            this.bytes_got      = bytes_got;
-        }
-    }
+    alias .LengthMismatch LengthMismatch;
 }
 
+/***************************************************************************
+
+    StructSerializer Exception
+
+***************************************************************************/
+
+class LengthMismatch : SerializerException
+{
+    size_t bytes_expected, bytes_got;
+
+    this ( size_t bytes_expected, size_t bytes_got,
+           istring msg, istring file, typeof(__LINE__) line )
+    {
+        super(msg, file, line);
+
+        this.bytes_expected = bytes_expected;
+        this.bytes_got      = bytes_got;
+    }
+}
 
 /*******************************************************************************
 
