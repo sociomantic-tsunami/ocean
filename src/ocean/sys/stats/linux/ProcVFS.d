@@ -154,7 +154,7 @@ struct ProcStat
 
 /*******************************************************************************
 
-    Parses /proc/<pid>/stat and extracts the data.
+    Reads /proc/<pid>/stat and extracts the data.
 
     Params:
         path = path of the file to query
@@ -167,14 +167,6 @@ struct ProcStat
 
 public ProcStat getProcStat (cstring path)
 {
-    ProcStat s;
-
-    cstring space = " ";
-    cstring parenth = ")";
-
-    auto space_it = find(space);
-    auto parenth_it = find(parenth);
-
     // Get the data from file
     scope file = new File(path);
 
@@ -187,55 +179,7 @@ public ProcStat getProcStat (cstring path)
 
     char[] data = procvfs_file_buf[0..num_read];
 
-    // The /proc/self/stat file is based on the following format
-    // (consult the man proc(5) page for details):
-    // pid (<cmd>) C # # # # .... #
-    // Where pid is a number, cmd is a file name, with arbitrary amount of
-    // spaces, but always with parentheses,
-    // C being the character describing the status of the program
-    // and # being again numbers, for every of the entries in the ProcStat
-
-    // consume pid
-    auto pid_pos = space_it.forward(data);
-    toInteger(data[0..pid_pos], s.pid);
-
-    // chop pid
-    data = data[pid_pos+1..$];
-
-    // chop the left bracket from cmd name
-    data = data[1 .. $];
-
-    // Find the last closing bracket (as the process name can contain bracket
-    // itself.
-    auto last_bracket = parenth_it.reverse(data);
-    s.cmd.length = last_bracket;
-    s.cmd[] = data[0..last_bracket];
-
-    // chop last bracket and space
-    data = data[last_bracket+2..$];
-
-    s.state = data[0];
-
-    // chop status and the space
-    data = data[2..$];
-
-    foreach (i, ref field; s.tupleof)
-    {
-        static if (i > 2)
-        {
-            static assert (isIntegerType!(typeof(field)));
-            auto next_space = space_it.forward(data);
-            toInteger(data[0..next_space], field);
-
-            // Last field doesn't have space after it
-            if (next_space < data.length)
-            {
-                data = data[next_space+1..$];
-            }
-        }
-    }
-
-    return s;
+    return parseProcStatData(data);
 }
 
 /*******************************************************************************
@@ -729,4 +673,78 @@ unittest
     line_read = 0;
     res = parseProcMemInfoData({ return read_data(data); });
     test!("==")(res, expected);
+}
+
+/*******************************************************************************
+
+    Parses /proc/<pid>/stat data and extracts the data.
+
+    Params:
+        path = path of the file to query
+
+    Returns:
+        filled ProcStat structure based on data in form of /proc/self/stat
+        or empty ProcStat instance in case parsing has failed.
+
+*******************************************************************************/
+
+private ProcStat parseProcStatData (cstring data)
+{
+    ProcStat s;
+
+    cstring space = " ";
+    cstring parenth = ")";
+
+    auto space_it = find(space);
+    auto parenth_it = find(parenth);
+
+    // The /proc/self/stat file is based on the following format
+    // (consult the man proc(5) page for details):
+    // pid (<cmd>) C # # # # .... #
+    // Where pid is a number, cmd is a file name, with arbitrary amount of
+    // spaces, but always with parentheses,
+    // C being the character describing the status of the program
+    // and # being again numbers, for every of the entries in the ProcStat
+
+    // consume pid
+    auto pid_pos = space_it.forward(data);
+    toInteger(data[0..pid_pos], s.pid);
+
+    // chop pid
+    data = data[pid_pos+1..$];
+
+    // chop the left bracket from cmd name
+    data = data[1 .. $];
+
+    // Find the last closing bracket (as the process name can contain bracket
+    // itself.
+    auto last_bracket = parenth_it.reverse(data);
+    s.cmd.length = last_bracket;
+    s.cmd[] = data[0..last_bracket];
+
+    // chop last bracket and space
+    data = data[last_bracket+2..$];
+
+    s.state = data[0];
+
+    // chop status and the space
+    data = data[2..$];
+
+    foreach (i, ref field; s.tupleof)
+    {
+        static if (i > 2)
+        {
+            static assert (isIntegerType!(typeof(field)));
+            auto next_space = space_it.forward(data);
+            toInteger(data[0..next_space], field);
+
+            // Last field doesn't have space after it
+            if (next_space < data.length)
+            {
+                data = data[next_space+1..$];
+            }
+        }
+    }
+
+    return s;
 }
