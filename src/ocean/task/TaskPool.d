@@ -166,8 +166,8 @@ class TaskPool ( TaskT : Task ) : ObjectPool!(Task)
         return.
 
         Throws:
-            if the current task is null or if the current task belongs to the
-            task pool
+            `Exception` if the current task is null or if the current task
+            belongs to the task pool
 
     ***************************************************************************/
 
