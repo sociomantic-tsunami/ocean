@@ -195,6 +195,8 @@ struct S
 
     char[][3] static_of_dynamic;
 
+    char[][2][3][] dynamic_of_static_of_static_of_dynamic;
+
     union
     {
         int union_a;
@@ -268,6 +270,11 @@ S defaultS()
 
     s.static_of_dynamic[] = [ "a".dup, "b".dup, "c".dup ];
 
+    s.dynamic_of_static_of_static_of_dynamic = [
+        [["Die".dup, "Katze".dup], ["tritt".dup, "die".dup], ["Treppe".dup, "krumm.".dup]],
+        [["abc".dup, "def".dup], ["ghi".dup, "jkl".dup], ["mno".dup, "pqr".dup]]
+    ];
+
     s.union_a = 42;
 
     return s;
@@ -310,6 +317,9 @@ void testS(NamedTest t, ref S checked)
 
         test!("==")(checked.static_of_dynamic[],
                     defaultS().static_of_dynamic[]);
+
+        test!("==")(checked.dynamic_of_static_of_static_of_dynamic,
+                    defaultS().dynamic_of_static_of_static_of_dynamic);
 
         test!("==")(checked.union_a, defaultS().union_b);
     }
