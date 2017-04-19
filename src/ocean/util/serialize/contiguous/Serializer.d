@@ -417,7 +417,16 @@ struct Serializer
 
             foreach (subelement; element)
             {
-                len += This.countElementSize(subelement);
+                static if (is(Unqual!(Base) Sub == Sub[]))
+                {
+                    // subelement is a dynamic array
+                    len += This.countArraySize(subelement);
+                }
+                else
+                {
+                    // subelement is a value containing dynamic arrays
+                    len += This.countElementSize(subelement);
+                }
             }
 
             return len;
@@ -707,7 +716,7 @@ struct Serializer
 
             foreach (ref element; array)
             {
-                data = This.dumpElement(element, data);
+                data = This.dumpStaticArray(element[], data);
                 This.resetArrayReferences(element);
             }
         }
