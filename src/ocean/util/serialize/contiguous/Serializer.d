@@ -709,10 +709,9 @@ struct Serializer
 
         static if (is (T == struct))
         {
-            foreach (ref element; array)
+            foreach (ref element; cast(Unqual!(T)[])array)
             {
-                auto ptr = cast(Unqual!(T)*) &element;
-                data = This.dumpAllArrays(*ptr, data);
+                data = This.dumpAllArrays(element, data);
                 This.resetReferences(element);
             }
         }
