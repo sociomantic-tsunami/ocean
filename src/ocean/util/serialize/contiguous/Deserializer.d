@@ -261,6 +261,8 @@ struct Deserializer
         debug (DeserializationTrace)
         {
             Stdout.formatln("> deserialize!({})({})", S.stringof, src.ptr);
+            nesting = 0;
+            scope (exit) nesting = 0;
         }
         size_t slices_len = 0,
                data_len   = This.countRequiredSize!(S)(src, slices_len);
@@ -327,6 +329,8 @@ struct Deserializer
         {
             Stdout.formatln("> deserialize!({})({}, {})", S.stringof,
                 src.ptr, dst.ptr);
+            nesting = 0;
+            scope (exit) nesting = 0;
         }
 
         This.e.enforceInputSize!(S)(src.length, S.sizeof);
@@ -397,16 +401,18 @@ struct Deserializer
     {
         debug (DeserializationTrace)
         {
-            Stdout.formatln("< countStructArraySizes!({})({}) : {}", S.stringof,
-                instance.ptr, size);
+            Stdout.formatln("{}< countStructArraySizes!({})({}) : {}", tabs,
+                S.stringof, instance.ptr, size);
+            nesting--;
         }
     }
     body
     {
         debug (DeserializationTrace)
         {
-            Stdout.formatln("> countStructArraySizes!({})({})", S.stringof,
-                instance.ptr);
+            nesting++;
+            Stdout.formatln("{}> countStructArraySizes!({})({})", tabs,
+                S.stringof, instance.ptr);
         }
 
         size_t extra;
@@ -445,19 +451,23 @@ struct Deserializer
 
         debug (DeserializationTrace)
         {
-            Stdout.formatln("< countRequiredSize!({})({}, {}) : {}",
+            Stdout.formatln("{}< countRequiredSize!({})({}, {}) : {}",
+                tabs,
                 S.stringof,
                 data.ptr,
                 extra_bytes,
-                size
+                cast(size_t)size
             );
+            nesting--;
         }
     }
     body
     {
         debug (DeserializationTrace)
         {
-            Stdout.formatln("> countRequiredSize!({})({}, {})",
+            nesting++;
+            Stdout.formatln("{}> countRequiredSize!({})({}, {})",
+                tabs,
                 S.stringof,
                 data.ptr,
                 extra_bytes
@@ -502,19 +512,23 @@ struct Deserializer
     {
         debug (DeserializationTrace)
         {
-            Stdout.formatln("< countStructArraySizes!({})({}, {}) : {}",
+            Stdout.formatln("{}< countStructArraySizes!({})({}, {}) : {}",
+                tabs,
                 S.stringof,
                 data.ptr,
                 extra_bytes,
-                size
+                cast(size_t)size
             );
+            nesting--;
         }
     }
     body
     {
         debug (DeserializationTrace)
         {
-            Stdout.formatln("> countStructArraySizes!({})({}, {})",
+            nesting++;
+            Stdout.formatln("{}> countStructArraySizes!({})({}, {})",
+                tabs,
                 S.stringof,
                 data.ptr,
                 extra_bytes
@@ -606,15 +620,17 @@ struct Deserializer
     {
         debug (DeserializationTrace)
         {
-            Stdout.formatln("< countDynamicArraySize!({})({}, {}) : {}",
-                T.stringof, data.ptr, extra_bytes, size);
+            Stdout.formatln("{}< countDynamicArraySize!({})({}, {}) : {}", tabs,
+                T.stringof, data.ptr, extra_bytes, cast(size_t)size);
+            nesting--;
         }
     }
     body
     {
         debug (DeserializationTrace)
         {
-            Stdout.formatln("> countDynamicArraySize!({})({}, {})",
+            nesting++;
+            Stdout.formatln("{}> countDynamicArraySize!({})({}, {})", tabs,
                 T.stringof, data.ptr, extra_bytes);
         }
 
@@ -631,7 +647,7 @@ struct Deserializer
 
         debug (DeserializationTrace)
         {
-            Stdout.formatln("  len = {}, bytes = {}, pos = {}", len, bytes, pos);
+            Stdout.formatln("{}  len = {}, bytes = {}, pos = {}", tabs, len, bytes, pos);
         }
 
         This.e.enforceSizeLimit!(T[])(len, This.max_length);
@@ -644,7 +660,7 @@ struct Deserializer
              */
             debug (DeserializationTrace)
             {
-                Stdout.formatln("  need {} more bytes for branched arrays", bytes);
+                Stdout.formatln("{}  need {} more bytes for branched arrays", tabs, bytes);
             }
 
             extra_bytes += bytes;
@@ -657,7 +673,7 @@ struct Deserializer
 
             debug (DeserializationTrace)
             {
-                Stdout.formatln("  pos += {}", bytes);
+                Stdout.formatln("{}  pos += {}", tabs, bytes);
             }
 
             pos += bytes;
@@ -704,15 +720,17 @@ struct Deserializer
     {
         debug (DeserializationTrace)
         {
-            Stdout.formatln("< countArraySize!({})({}, {}, {}) : {}",
-                T.stringof, len, data.ptr, extra_bytes, size);
+            Stdout.formatln("{}< countArraySize!({})({}, {}, {}) : {}", tabs,
+                T.stringof, len, data.ptr, extra_bytes, cast(size_t)size);
+            nesting--;
         }
     }
     body
     {
         debug (DeserializationTrace)
         {
-            Stdout.formatln("> countArraySize!({})({}, {}, {})",
+            nesting++;
+            Stdout.formatln("{}> countArraySize!({})({}, {}, {})", tabs,
                 T.stringof, len, data.ptr, extra_bytes);
         }
 
@@ -789,15 +807,17 @@ struct Deserializer
 
         debug (DeserializationTrace)
         {
-            Stdout.formatln("< handleBranching!({})({}, {}) : {}",
+            Stdout.formatln("{}< handleBranching!({})({}, {}) : {}", tabs,
                 S.stringof, src.ptr, slices_buffer.ptr, data.ptr);
+            nesting--;
         }
     }
     body
     {
         debug (DeserializationTrace)
         {
-            Stdout.formatln("> handleBranching!({})({}, {})",
+            nesting++;
+            Stdout.formatln("{}> handleBranching!({})({}, {})", tabs,
                 S.stringof, src.ptr, slices_buffer.ptr);
         }
 
@@ -844,15 +864,17 @@ struct Deserializer
     {
         debug (DeserializationTrace)
         {
-            Stdout.formatln("< sliceArrays!({})({}, {}, {}) : {}",
+            Stdout.formatln("{}< sliceArrays!({})({}, {}, {}) : {}", tabs,
                 S.stringof, &s, data.ptr, slices_buffer.ptr, data.ptr);
+            nesting--;
         }
     }
     body
     {
         debug (DeserializationTrace)
         {
-            Stdout.formatln("> sliceArrays!({})({}, {}, {})",
+            nesting++;
+            Stdout.formatln("{}> sliceArrays!({})({}, {}, {})", tabs,
                 S.stringof, &s, data.ptr, slices_buffer.ptr);
         }
 
@@ -916,15 +938,17 @@ struct Deserializer
     {
         debug (DeserializationTrace)
         {
-            Stdout.formatln("< sliceArray!({})({}, {}, {}) : {}",
-                T.stringof, array.ptr, data.ptr, slices_buffer.ptr, size);
+            Stdout.formatln("{}< sliceArray!({})({}, {}, {}) : {}", tabs,
+                T.stringof, array.ptr, data.ptr, slices_buffer.ptr, cast(size_t)size);
+            nesting--;
         }
     }
     body
     {
         debug (DeserializationTrace)
         {
-            Stdout.formatln("> sliceArray!({})({}, {}, {})",
+            nesting++;
+            Stdout.formatln("{}> sliceArray!({})({}, {}, {})", tabs,
                 T.stringof, array.ptr, data.ptr, slices_buffer.ptr);
         }
 
@@ -941,7 +965,7 @@ struct Deserializer
 
         debug (DeserializationTrace)
         {
-            Stdout.formatln("  len = {}, bytes = {}, pos = {}", len, bytes, pos);
+            Stdout.formatln("{}  len = {}, bytes = {}, pos = {}", tabs, len, bytes, pos);
         }
 
         This.e.enforceSizeLimit!(T[])(len, This.max_length);
@@ -955,8 +979,8 @@ struct Deserializer
 
             debug (DeserializationTrace)
             {
-                Stdout.formatln("  obtaining buffer for branched arrays from slice {}",
-                    slices_buffer.ptr);
+                Stdout.formatln("{}  obtaining buffer for branched arrays from slice {}",
+                    tabs, slices_buffer.ptr);
             }
 
             This.e.enforceInputSize!(T[])(slices_buffer.length, bytes);
@@ -991,7 +1015,7 @@ struct Deserializer
 
             debug (DeserializationTrace)
             {
-                Stdout.formatln("  writing branched array elements to {}", array.ptr);
+                Stdout.formatln("{}  writing branched array elements to {}", tabs, array.ptr);
             }
 
             return pos + This.sliceSubArrays(array, data[pos .. $], slices_buffer);
@@ -1026,16 +1050,18 @@ struct Deserializer
     {
         debug (DeserializationTrace)
         {
-            Stdout.formatln("< sliceSubArrays!({})({}, {}, {}) : {}",
-                T.stringof, array.ptr, data.ptr, slices_buffer.ptr, size);
+            Stdout.formatln("{}< sliceSubArrays!({})({} @{}, {}, {}) : {}", tabs,
+                T.stringof, array.length, array.ptr, data.ptr, slices_buffer.ptr, cast(size_t)size);
+            nesting--;
         }
     }
     body
     {
         debug (DeserializationTrace)
         {
-            Stdout.formatln("> sliceSubArrays!({})({}, {}, {})",
-                T.stringof, array.ptr, data.ptr, slices_buffer.ptr);
+            nesting++;
+            Stdout.formatln("{}> sliceSubArrays!({})({} @{}, {}, {})", tabs,
+                T.stringof, array.length, array.ptr, data.ptr, slices_buffer.ptr);
         }
 
         size_t pos = 0;
@@ -1073,6 +1099,7 @@ struct Deserializer
         return pos;
     }
 
+
     /**************************************************************************
 
         Returns a pointer to the i-th field of s.
@@ -1106,6 +1133,15 @@ struct Deserializer
             static assert(is(T == typeof(mixin("cast()T.init"))),
             T.stringof ~ " -- type qualifiers are currently not supported, sorry");
         alias T RejectQualifier;
+    }
+
+    /**************************************************************************/
+
+    debug (DeserializationTrace) private static
+    {
+        char[20] tabs_ = '\t';
+        uint nesting = 0;
+        cstring tabs ( ) { return tabs_[0 .. nesting]; }
     }
 }
 

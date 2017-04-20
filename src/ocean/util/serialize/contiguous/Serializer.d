@@ -159,7 +159,7 @@ struct Serializer
     {
         debug (SerializationTrace)
         {
-            Stdout.formatln("< countRequiredSize!({})(<input>) : {}", S.stringof, size);
+            Stdout.formatln("< countRequiredSize!({})(<input>) : {}", S.stringof, cast(size_t)size);
         }
     }
     body
@@ -251,7 +251,7 @@ struct Serializer
         debug (SerializationTrace)
         {
             Stdout.formatln("< countAllArraySize!({})(<s>) : {}",
-                S.stringof, size);
+                S.stringof, cast(size_t)size);
         }
     }
     body
@@ -330,15 +330,15 @@ struct Serializer
     {
         debug (SerializationTrace)
         {
-            Stdout.formatln("< countArraySize!({})({}) : {}",
-                T.stringof, array.ptr, size);
+            Stdout.formatln("< countArraySize!({})({} @{}) : {}",
+                T.stringof, array.length, array.ptr, cast(size_t)size);
         }
     }
     body
     {
         debug (SerializationTrace)
         {
-            Stdout.formatln("> countArraySize!({})({})", T.stringof, array.ptr);
+            Stdout.formatln("> countArraySize!({})({} @{})", T.stringof, array.length, array.ptr);
         }
 
         size_t len = size_t.sizeof;
@@ -389,7 +389,7 @@ struct Serializer
         debug (SerializationTrace)
         {
             Stdout.formatln("< countElementSize!({})(<element>) : {}",
-                T.stringof, size);
+                T.stringof, cast(size_t)size);
         }
     }
     body
@@ -459,8 +459,8 @@ struct Serializer
     {
         debug (SerializationTrace)
         {
-            Stdout.formatln("< dumpAllArrays!({})({}, {}) : {}",
-                S.stringof, &s, data.ptr, result.ptr);
+            Stdout.formatln("< dumpAllArrays!({})({}, {}) : {} @{}",
+                S.stringof, &s, data.ptr, result.length, result.ptr);
         }
     }
     body
@@ -549,16 +549,16 @@ struct Serializer
     {
         debug (SerializationTrace)
         {
-            Stdout.formatln("< dumpArray!({})({}, {}) : {}",
-                T.stringof, array.ptr, data.ptr, result.ptr);
+            Stdout.formatln("< dumpArray!({})({} @{}, {} @{}) : {} @{}",
+                T.stringof, array.length, array.ptr, data.length, data.ptr, result.length, result.ptr);
         }
     }
     body
     {
         debug (SerializationTrace)
         {
-            Stdout.formatln("> dumpArray!({})({}, {})",
-                T.stringof, array.ptr, data.ptr);
+            Stdout.formatln("> dumpArray!({})({} @{}, {} @{})",
+                T.stringof, array.length, array.ptr, data.length, data.ptr);
         }
 
         *cast (size_t*) data[0 .. size_t.sizeof] = array.length;
