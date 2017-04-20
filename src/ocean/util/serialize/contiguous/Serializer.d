@@ -816,8 +816,6 @@ struct Serializer
     }
     body
     {
-        static assert (ContainsDynamicArray!(T), "nothing to do for " ~ S.stringof);
-
         debug (SerializationTrace)
         {
             Stdout.formatln("> resetArrayReferences!({})({})", T.stringof, array.ptr);
