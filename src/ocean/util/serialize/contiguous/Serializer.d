@@ -272,8 +272,10 @@ struct Serializer
                 static if (is (T == struct))
                 {
                     // Recurse into struct field.
-
-                    len += This.countAllArraySize(field);
+                    static if (ContainsDynamicArray!(T))
+                    {
+                        len += This.countAllArraySize(field);
+                    }
                 }
                 else static if (is (T Base : Base[]))
                 {
