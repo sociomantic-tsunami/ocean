@@ -200,6 +200,42 @@ struct S
         int union_a;
         int union_b;
     }
+
+    mixin TypeofThis!();
+
+    /***************************************************************************
+
+        Ensure all dynamic array references in this instance are `null`, which
+        they should be if this instance references the output data of
+        `Serializer.serialize`.
+
+    ***************************************************************************/
+
+    void testNullReferences ( ) /* d1to2fix_inject: const */
+    {
+        foreach (s2_static_array_element; this.s2_static_array)
+        {
+            testArray!("is")(s2_static_array_element.a, null);
+            testArray!("is")(s2_static_array_element.b, null);
+        }
+
+        foreach (s3_a_element; this.s3.a)
+            testArray!("is")(s3_a_element, null);
+
+        testArray!("is")(this.s4_dynamic_array, null);
+        testArray!("is")(this.recursive, null);
+
+        foreach (static_of_dynamic_element; this.static_of_dynamic)
+            testArray!("is")(static_of_dynamic_element, null);
+    }
+
+    /***************************************************************************
+
+        Convenience alias, this template instantiation is used a lot in tests.
+
+    ***************************************************************************/
+
+    alias .trivialDeserialize!(This) trivialDeserialize;
 }
 
 /******************************************************************************
@@ -305,6 +341,7 @@ unittest
     void[] buffer;
 
     Serializer.serialize(s, buffer);
+    S.trivialDeserialize(buffer).testNullReferences();
     auto cont_S = Deserializer.deserialize!(S)(buffer);
     cont_S.enforceIntegrity();
     testS(t, *cont_S.ptr);
@@ -323,6 +360,7 @@ unittest
     void[] buffer;
 
     Serializer.serialize(s, buffer);
+    S.trivialDeserialize(buffer).testNullReferences();
     Contiguous!(S) destination;
     auto cont_S = Deserializer.deserialize!(S)(buffer, destination);
     cont_S.enforceIntegrity();
@@ -345,6 +383,7 @@ unittest
 
     // create Contiguous!(S) instance first
     Serializer.serialize(s, buffer);
+    S.trivialDeserialize(buffer).testNullReferences();
     auto cont_S = Deserializer.deserialize!(S)(buffer);
 
     // check that serializations nulls pointers
@@ -368,6 +407,7 @@ unittest
     void[] buffer;
 
     Serializer.serialize(s, buffer);
+    S.trivialDeserialize(buffer).testNullReferences();
 
     // emulate left-over bytes from previous deserializations
     buffer.length = buffer.length * 2;
@@ -394,6 +434,7 @@ unittest
     void[] buffer;
 
     Serializer.serialize(s, buffer);
+    S.trivialDeserialize(buffer).testNullReferences();
     auto cont_S = Deserializer.deserialize!(S)(buffer);
     cont_S.enforceIntegrity();
 
@@ -417,6 +458,7 @@ unittest
     void[] buffer;
 
     Serializer.serialize(s, buffer);
+    S.trivialDeserialize(buffer).testNullReferences();
     auto cont_S = Deserializer.deserialize!(S)(buffer);
     cont_S.enforceIntegrity();
 
@@ -444,6 +486,7 @@ unittest
     void[] buffer;
 
     Serializer.serialize(s, buffer);
+    S.trivialDeserialize(buffer).testNullReferences();
     Contiguous!(S) destination;
     auto cont_S = Deserializer.deserialize!(S)(buffer, destination);
     cont_S.enforceIntegrity();
@@ -484,6 +527,13 @@ unittest
 
     void[] buffer;
     Serializer.serialize(s, buffer);
+
+    with (*trivialDeserialize!(Outer)(buffer))
+        foreach (a1; a)
+            foreach (a2; a1)
+                foreach (a3; a2)
+                    testArray!("is")(a3.a, null);
+
     auto cont = Deserializer.deserialize!(Outer)(buffer);
 
     test!("==")(cont.ptr.a[0][0][0].a, s.a[0][0][0].a);
@@ -595,6 +645,7 @@ unittest
     void[] buffer;
 
     Serializer.serialize(s, buffer);
+    S.trivialDeserialize(buffer).testNullReferences();
     testNoAlloc(Serializer.serialize(s, buffer));
     auto cont_s = Deserializer.deserialize!(S)(buffer);
     testNoAlloc(Deserializer.deserialize!(S)(buffer));
@@ -616,12 +667,14 @@ unittest
         cstring s;
     }
 
-    CS s = CS("Hello world");
+    CS cs = CS("Hello world");
     void[] buffer;
 
-    Serializer.serialize(s, buffer);
+    Serializer.serialize(cs, buffer);
+    with (*trivialDeserialize!(CS)(buffer))
+        testArray!("is")(s, null);
     auto new_s = Deserializer.deserialize!(CS)(buffer);
-    test!("==")(s.s, new_s.ptr.s);
+    test!("==")(cs.s, new_s.ptr.s);
 }
 
 
@@ -686,6 +739,40 @@ unittest
     void[] buffer;
 
     Serializer.serialize(s, buffer);
+    with (*trivialDeserialize!(S2)(buffer))
+        testArray!("is")(nested, null);
+
     auto d = Deserializer.deserialize!(S2)(buffer);
     test(deepEquals(*d.ptr, s));
+}
+
+/*******************************************************************************
+
+    Deserialise `serializer_output` in the trivial way to verify all dynamic
+    array slices are `null`.
+
+*******************************************************************************/
+
+static Const!(Struct)* trivialDeserialize ( Struct )
+    ( Const!(void)[] serializer_output )
+in
+{
+    assert(serializer_output.length >= Struct.sizeof);
+}
+body
+{
+    return cast(Const!(Struct)*)serializer_output.ptr;
+}
+
+/*******************************************************************************
+
+    `testArray!(op)(a, b)` is equivalent to
+    `testArray!(op)(cast(Const!(void)[])a, cast(Const!(void)[])b)`, which allows
+    for `testArray!(op)(a, null)` avoiding D2 trouble with `typeof(null)`.
+
+*******************************************************************************/
+
+template testArray ( istring op )
+{
+    alias test!(op, Const!(void)[], Const!(void)[]) testArray;
 }

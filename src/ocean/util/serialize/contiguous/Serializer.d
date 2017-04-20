@@ -622,6 +622,7 @@ struct Serializer
                 {
                     // element is a dynamic array
                     data = This.dumpArray(element, data);
+                    *(cast(T*)&element) = null;
                 }
                 else
                 {
