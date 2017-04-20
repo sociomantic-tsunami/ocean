@@ -871,13 +871,15 @@ struct Deserializer
 
         size_t pos = 0;
 
-        foreach (i, Field; typeof (S.tupleof))
+        foreach (i, ref field; s.tupleof)
         {
+            alias typeof(field) Field;
+
             static if (is (Field == struct))
             {
                 This.e.enforceInputSize!(S)(data.length, pos);
 
-                pos += This.sliceArrays(*This.getField!(i, Field)(s), data[pos .. $], slices_buffer);
+                pos += This.sliceArrays(field, data[pos .. $], slices_buffer);
             }
             else static if (is (RejectQualifier!(Field) Element : Element[]))
             {
@@ -887,8 +889,7 @@ struct Deserializer
                 {
                     This.e.enforceInputSize!(S)(data.length, pos);
 
-                    auto pfield = This.getField!(i, Field)(s);
-                    auto increment = This.sliceArray(*pfield, data[pos .. $],
+                    auto increment = This.sliceArray(field, data[pos .. $],
                         slices_buffer);
 
                     // if host struct is Contiguous, internal `data` array
@@ -897,9 +898,9 @@ struct Deserializer
                     static if (is(S T == Contiguous!(T)))
                     {
                         static assert (is(Element == void));
-                        auto orig_length = pfield.length;
-                        deserialize!(T)(*pfield);
-                        assert (orig_length == pfield.length);
+                        auto orig_length = field.length;
+                        deserialize!(T)(field);
+                        assert (orig_length == field.length);
                     }
 
                     pos += increment;
@@ -908,7 +909,7 @@ struct Deserializer
                 {
                     This.e.enforceInputSize!(S)(data.length, pos);
 
-                    pos += This.sliceSubArrays(*This.getField!(i, Field)(s), data[pos .. $], slices_buffer);
+                    pos += This.sliceSubArrays(field, data[pos .. $], slices_buffer);
                 }
             }
         }
@@ -1103,28 +1104,6 @@ struct Deserializer
         }
 
         return pos;
-    }
-
-
-    /**************************************************************************
-
-        Returns a pointer to the i-th field of s.
-
-        Template parameter:
-            i = struct field index
-            T = struct field type
-
-        Params:
-            s = struct instance to reference
-
-        Returns:
-            pointer to the i-th field of s.
-
-     **************************************************************************/
-
-    private static T* getField ( size_t i, T, S ) ( ref S s )
-    {
-        return cast (T*) ((cast (void*) &s) + S.tupleof[i].offsetof);
     }
 
     /**************************************************************************
