@@ -215,7 +215,7 @@ private void enforceContiguous (S) ( ref S input, in void[] allowed_range )
             {
                 // static + dynamic arrays
 
-                static if (is(Member == U[]))
+                static if (is(Unqual!(Member) == U[]))
                 {
                     if (member.ptr)
                     {
@@ -257,6 +257,9 @@ private void enforceContiguous (S) ( ref S input, in void[] allowed_range )
     }
 }
 
+version (UnitTest)
+    import core.stdc.string: memset;
+
 unittest
 {
     mixin(Typedef!(int, "MyInt"));
@@ -287,4 +290,15 @@ unittest
 
     tested.subs.arr = new void[2];
     testThrown!(Exception)(enforceContiguous(*tested, buffer));
+
+    static struct S4
+    {
+        Const!(char[])[] str = ["Hello", "World"];
+    }
+
+    auto tested2 = cast(S4*) memset(buffer.ptr, 0, buffer.length);
+
+    *tested2 = S4.init;
+    test!("==")(tested2.str.length, 2);
+    testThrown!(Exception)(enforceContiguous(*tested2, buffer));
 }
