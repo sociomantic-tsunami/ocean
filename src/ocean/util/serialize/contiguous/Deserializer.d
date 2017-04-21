@@ -563,7 +563,8 @@ struct Deserializer
 
                     This.e.enforceInputSize!(S)(data.length, pos);
 
-                    pos += This.countDynamicArraySize!(Element)(data[pos .. $], extra_bytes);
+                    pos += This.countDynamicArraySize!(Element)(
+                        data[pos .. $], extra_bytes);
                 }
                 else static if (hasIndirections!(Element))
                 {
@@ -753,7 +754,8 @@ struct Deserializer
                 {
                     This.e.enforceInputSize!(T[])(data.length, pos);
 
-                    pos += This.countArraySize!(Element)(T.length, data[pos .. $], extra_bytes);
+                    pos += This.countArraySize!(Element)(
+                        T.length, data[pos .. $], extra_bytes);
                 }
             }
         }
