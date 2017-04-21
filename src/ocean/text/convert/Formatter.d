@@ -96,11 +96,11 @@ public istring format (Args...) (cstring fmt, Args args)
 
 /*******************************************************************************
 
-    Write the processed (formatted) input into a buffer
+    Append the processed (formatted) input onto the end of the provided buffer
 
     Params:
-        buffer  = The buffer to write the formatted string into, will be
-                  extended if needed
+        buffer  = The buffer to which to append the formatted string; its
+                  capacity will be increased if necessary
         fmt     = Format string to use
         args    = Variadic arguments to format according to `fmt`
 
