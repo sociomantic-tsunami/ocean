@@ -734,21 +734,17 @@ struct Deserializer
         }
         else static if (is (T Element : Element[]))
         {
-            static if (is (Element[] == RejectQualifier!(T)))
+            for (size_t i = 0; i < len; i++)
             {
-                for (size_t i = 0; i < len; i++)
-                {
-                    This.e.enforceInputSize!(T[])(data.length, pos);
+                This.e.enforceInputSize!(T[])(data.length, pos);
 
-                    pos += This.countDynamicArraySize!(Element)(data[pos .. $], extra_bytes);
+                static if (is (Element[] == RejectQualifier!(T)))
+                {
+                    pos += This.countDynamicArraySize!(Element)(
+                        data[pos .. $], extra_bytes);
                 }
-            }
-            else static if (hasIndirections!(Element))
-            {
-                for (size_t i = 0; i < len; i++)
+                else
                 {
-                    This.e.enforceInputSize!(T[])(data.length, pos);
-
                     pos += This.countArraySize!(Element)(
                         T.length, data[pos .. $], extra_bytes);
                 }
@@ -1081,19 +1077,18 @@ struct Deserializer
         {
             // To support const substitute T with Unqual!(T) in this scope and
             // cast(Unqual!(T)[])array.
-            static if (is (Element[] == T)) foreach (ref element; array)
+
+            foreach (ref element; array)
             {
                 This.e.enforceInputSize!(T[])(data.length, pos);
 
-                pos += This.sliceArray(element, data[pos .. $], slices_buffer);
-            }
-            else static if (hasIndirections!(Element))
-            {
-                for (size_t i = 0; i < array.length; i++)
+                static if (is (Element[] == T))
                 {
-                    This.e.enforceInputSize!(T[])(data.length, pos);
-
-                    pos += This.sliceSubArrays(array[i], data[pos .. $], slices_buffer);
+                    pos += This.sliceArray(element, data[pos .. $], slices_buffer);
+                }
+                else static if (hasIndirections!(Element))
+                {
+                    pos += This.sliceSubArrays(element, data[pos .. $], slices_buffer);
                 }
             }
         }
