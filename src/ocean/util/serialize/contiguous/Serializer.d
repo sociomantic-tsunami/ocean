@@ -289,11 +289,7 @@ struct Serializer
                     {
                         // Recurse into static array elements which contain a
                         // dynamic array.
-
-                        foreach (element; s.tupleof[i])
-                        {
-                            len += This.countArraySize(field);
-                        }
+                        len += This.countElementSize(field);
                     }
                 }
                 else static if (is (T == union))

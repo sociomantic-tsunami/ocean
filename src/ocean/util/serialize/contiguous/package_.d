@@ -238,6 +238,52 @@ struct S
     ***************************************************************************/
 
     alias .trivialDeserialize!(This) trivialDeserialize;
+
+    /***************************************************************************
+
+        Returns the number of bytes the `Serializer` should use to serialise
+        this instance.
+
+    ***************************************************************************/
+
+    size_t serialized_length ( ) /* d1to2fix_inject: const */
+    {
+        static size_t s2_length ( ref Const!(S_2) s2 )
+        {
+            return serialArrayLength(s2.a) + serialArrayLength(s2.b);
+        }
+
+        size_t n = This.sizeof;
+
+        n += s2_length(this.s2);
+
+        foreach (s2_static_array_element; this.s2_static_array)
+            n += s2_length(s2_static_array_element);
+
+        foreach (s3_a_element; this.s3.a)
+            n += serialArrayLength(s3_a_element);
+
+        n += serialArrayLength(this.s4_dynamic_array);
+        foreach (s4_dynamic_array_element; this.s4_dynamic_array)
+            n += serialArrayLength(s4_dynamic_array_element.a);
+
+        n += this.recursive.length.sizeof;
+        // Don't add the byte length of `this.recursive` here: The recursive
+        // `serialized_length` calls will do it.
+        foreach (recursive_element; this.recursive)
+            n += recursive_element.serialized_length;
+
+        foreach (static_of_dynamic_element; this.static_of_dynamic)
+            n += serialArrayLength(static_of_dynamic_element);
+
+        n += serialArrayLength(this.dynamic_of_static_of_static_of_dynamic);
+        foreach (dynamic_element; this.dynamic_of_static_of_static_of_dynamic)
+            foreach (static_element; dynamic_element)
+                foreach (static_element2; static_element)
+                    n += serialArrayLength(static_element2);
+
+        return n;
+    }
 }
 
 /******************************************************************************
@@ -351,6 +397,7 @@ unittest
     void[] buffer;
 
     Serializer.serialize(s, buffer);
+    test!("==")(buffer.length, s.serialized_length);
     S.trivialDeserialize(buffer).testNullReferences();
     auto cont_S = Deserializer.deserialize!(S)(buffer);
     cont_S.enforceIntegrity();
@@ -370,6 +417,7 @@ unittest
     void[] buffer;
 
     Serializer.serialize(s, buffer);
+    test!("==")(buffer.length, s.serialized_length);
     S.trivialDeserialize(buffer).testNullReferences();
     Contiguous!(S) destination;
     auto cont_S = Deserializer.deserialize!(S)(buffer, destination);
@@ -393,6 +441,7 @@ unittest
 
     // create Contiguous!(S) instance first
     Serializer.serialize(s, buffer);
+    test!("==")(buffer.length, s.serialized_length);
     S.trivialDeserialize(buffer).testNullReferences();
     auto cont_S = Deserializer.deserialize!(S)(buffer);
 
@@ -417,6 +466,7 @@ unittest
     void[] buffer;
 
     Serializer.serialize(s, buffer);
+    test!("==")(buffer.length, s.serialized_length);
     S.trivialDeserialize(buffer).testNullReferences();
 
     // emulate left-over bytes from previous deserializations
@@ -444,6 +494,7 @@ unittest
     void[] buffer;
 
     Serializer.serialize(s, buffer);
+    test!("==")(buffer.length, s.serialized_length);
     S.trivialDeserialize(buffer).testNullReferences();
     auto cont_S = Deserializer.deserialize!(S)(buffer);
     cont_S.enforceIntegrity();
@@ -468,6 +519,7 @@ unittest
     void[] buffer;
 
     Serializer.serialize(s, buffer);
+    test!("==")(buffer.length, s.serialized_length);
     S.trivialDeserialize(buffer).testNullReferences();
     auto cont_S = Deserializer.deserialize!(S)(buffer);
     cont_S.enforceIntegrity();
@@ -496,6 +548,7 @@ unittest
     void[] buffer;
 
     Serializer.serialize(s, buffer);
+    test!("==")(buffer.length, s.serialized_length);
     S.trivialDeserialize(buffer).testNullReferences();
     Contiguous!(S) destination;
     auto cont_S = Deserializer.deserialize!(S)(buffer, destination);
@@ -537,6 +590,13 @@ unittest
 
     void[] buffer;
     Serializer.serialize(s, buffer);
+
+    size_t expected_length = s.sizeof;
+    foreach (a1; s.a)
+        foreach (a2; a1)
+            foreach (a3; a2)
+                expected_length += serialArrayLength(a3.a);
+    test!("==")(buffer.length, expected_length);
 
     with (*trivialDeserialize!(Outer)(buffer))
         foreach (a1; a)
@@ -681,6 +741,7 @@ unittest
     void[] buffer;
 
     Serializer.serialize(cs, buffer);
+    test!("==")(buffer.length, cs.sizeof + serialArrayLength(cs.s));
     with (*trivialDeserialize!(CS)(buffer))
         testArray!("is")(s, null);
     auto new_s = Deserializer.deserialize!(CS)(buffer);
@@ -749,6 +810,12 @@ unittest
     void[] buffer;
 
     Serializer.serialize(s, buffer);
+
+    size_t expected_length = s.sizeof + serialArrayLength(s.nested);
+    foreach (nested_element; s.nested)
+        expected_length += serialArrayLength(nested_element.s);
+    test!("==")(buffer.length, expected_length);
+
     with (*trivialDeserialize!(S2)(buffer))
         testArray!("is")(nested, null);
 
@@ -772,6 +839,29 @@ in
 body
 {
     return cast(Const!(Struct)*)serializer_output.ptr;
+}
+
+/*******************************************************************************
+
+    Returns the number of bytes used to serialise `array`, recursing into the
+    elements of `array` if `Element` is a dynamic array type. No recursion is
+    done if `Element` is a value type containing dynamic arrays.
+
+*******************************************************************************/
+
+static size_t serialArrayLength ( T : Element[], Element ) ( T array )
+{
+    size_t n = array.length.sizeof;
+
+    static if (is(Unqual!(Element) Sub == Sub[]))
+    {
+        foreach (element; array)
+            n += serialArrayLength(element);
+    }
+    else
+        n += (array.length * array[0].sizeof);
+
+    return n;
 }
 
 /*******************************************************************************
