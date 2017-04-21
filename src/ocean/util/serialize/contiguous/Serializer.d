@@ -696,7 +696,7 @@ struct Serializer
         }
         else static if (is (T Base : Base[]))
         {
-            static assert (!is (Base[] == T),
+            static assert (!is (Base[] == Unqual!(T)),
                "expected static, not dynamic array of " ~ T.stringof);
 
             debug (SerializationTrace)
