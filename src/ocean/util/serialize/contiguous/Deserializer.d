@@ -565,22 +565,17 @@ struct Deserializer
                     `);
 
 
+                This.e.enforceInputSize!(S)(data.length, pos);
 
                 static if (is (Element[] == RejectQualifier!(Field)))
                 {
                     // dynamic array
-
-                    This.e.enforceInputSize!(S)(data.length, pos);
-
                     pos += This.countDynamicArraySize!(Element)(
                         data[pos .. $], extra_bytes);
                 }
                 else static if (hasIndirections!(Element))
                 {
                     // static array with indirections
-
-                    This.e.enforceInputSize!(S)(data.length, pos);
-
                     pos += This.countArraySize!(Element)(
                         Field.length, data[pos .. $], extra_bytes);
                 }
@@ -896,16 +891,14 @@ struct Deserializer
             {
                 // To support const substitute Field with Unqual!(Field) in this
                 // scope.
+                This.e.enforceInputSize!(S)(data.length, pos);
+
                 static if (is (Element[] == Field))
                 {
-                    This.e.enforceInputSize!(S)(data.length, pos);
-
                     pos += This.sliceArray(field, data[pos .. $], slices_buffer);
                 }
                 else static if (hasIndirections!(Element))
                 {
-                    This.e.enforceInputSize!(S)(data.length, pos);
-
                     pos += This.sliceSubArrays(field, data[pos .. $], slices_buffer);
                 }
             }
