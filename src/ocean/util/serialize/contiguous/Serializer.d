@@ -267,21 +267,21 @@ struct Serializer
         {
             foreach (i, ref field; s.tupleof)
             {
-                alias typeof (field) T;
+                alias typeof (field) Field;
 
-                static if (is (T == struct))
+                static if (is (Field == struct))
                 {
                     // Recurse into struct field.
-                    static if (ContainsDynamicArray!(T))
+                    static if (ContainsDynamicArray!(Field))
                     {
                         len += This.countAllArraySize(field);
                     }
                 }
-                else static if (is (T Base : Base[]))
+                else static if (is (Field Element : Element[]))
                 {
-                    alias Unqual!(T) U;
+                    alias Unqual!(Field) UField;
 
-                    static if (is (Base[] == U))
+                    static if (is (Element[] == UField))
                     {
                         // Dump dynamic array.
 
@@ -291,7 +291,7 @@ struct Serializer
                     {
                         // Static array
 
-                        static if (ContainsDynamicArray!(Base))
+                        static if (ContainsDynamicArray!(Element))
                         {
                             // Recurse into static array elements which contain a
                             // dynamic array.
@@ -299,10 +299,10 @@ struct Serializer
                         }
                     }
                 }
-                else static if (is (T == union))
+                else static if (is (Field == union))
                 {
-                    static assert (!ContainsDynamicArray!(T),
-                                   T.stringof ~ " " ~ s.tupleof[i].stringof ~
+                    static assert (!ContainsDynamicArray!(Field),
+                                   Field.stringof ~ " " ~ s.tupleof[i].stringof ~
                                    " - unions containing dynamic arrays are is not "
                                    ~ "allowed, sorry");
                 }
@@ -345,7 +345,7 @@ struct Serializer
 
         size_t len = size_t.sizeof;
 
-        static if (is (Unqual!(T) Base == Base[]))
+        static if (is (Unqual!(T) Element == Element[]))
         {
             // array is a dynamic array of dynamic arrays.
 
@@ -411,16 +411,16 @@ struct Serializer
                 return This.countAllArraySize(element);
             }
         }
-        else static if (is (T Base : Base[]))
+        else static if (is (T Element : Element[]))
         {
-            static assert (!is (Base[] == T),
+            static assert (!is (Element[] == T),
                            "expected a static, not a dynamic array of " ~ T.stringof);
 
             size_t len = 0;
 
             foreach (subelement; element)
             {
-                static if (is(Unqual!(Base) Sub == Sub[]))
+                static if (is(Unqual!(Element) Sub == Sub[]))
                 {
                     // subelement is a dynamic array
                     len += This.countArraySize(subelement);
@@ -477,32 +477,32 @@ struct Serializer
         {
             foreach (i, ref field; s.tupleof)
             {
-                alias typeof(field) T;
+                alias typeof(field) Field;
 
-                static if (is (T == struct))
+                static if (is (Field == struct))
                 {
                     // Recurse into struct field.
 
-                    auto ptr = cast(Unqual!(T)*) &field;
+                    auto ptr = cast(Unqual!(Field)*) &field;
                     data = This.dumpAllArrays(*ptr, data);
                 }
-                else static if (is (T Base : Base[]))
+                else static if (is (Field Element : Element[]))
                 {
-                    alias Unqual!(T) U;
+                    alias Unqual!(Field) UField;
 
-                    static if (is (Base[] == U))
+                    static if (is (Element[] == UField))
                     {
                         // Dump dynamic array.
 
                         data = This.dumpArray(field, data);
 
-                        *cast(U*)&field = null;
+                        *cast(UField*)&field = null;
                     }
                     else
                     {
                         // Dump static array
 
-                        static if (ContainsDynamicArray!(Base))
+                        static if (ContainsDynamicArray!(Element))
                         {
                             // Recurse into static array elements which contain a
                             // dynamic array.
@@ -517,11 +517,11 @@ struct Serializer
                         }
                     }
                 }
-                else static if (is (T == union))
+                else static if (is (Field == union))
                 {
                     static assert (
-                        !ContainsDynamicArrays!(T),
-                        T.stringof ~ " " ~ s.tupleof[i].stringof ~
+                        !ContainsDynamicArrays!(Field),
+                        Field.stringof ~ " " ~ s.tupleof[i].stringof ~
                             " - unions containing dynamic arrays are is not " ~
                             "allowed, sorry"
                     );
@@ -571,7 +571,7 @@ struct Serializer
 
         if (array.length)
         {
-            static if (is (Unqual!(T) Base == Base[]))
+            static if (is (Unqual!(T) Element == Element[]))
             {
                 foreach (ref element; array)
                 {
@@ -635,10 +635,10 @@ struct Serializer
         foreach (ref element; array)
         {
             alias Unqual!(T) U;
-            static if (is(T Base: Base[]))
+            static if (is(T Element: Element[]))
             {
                 // element is a static or dynamic array
-                static if (is(U == Base[]))
+                static if (is(U == Element[]))
                 {
                     // element is a dynamic array
                     data = This.dumpArray(element, data);
@@ -714,9 +714,9 @@ struct Serializer
                 This.resetReferences(element);
             }
         }
-        else static if (is (T Base : Base[]))
+        else static if (is (T Element : Element[]))
         {
-            static assert (!is (Base[] == Unqual!(T)),
+            static assert (!is (Element[] == Unqual!(T)),
                "expected static, not dynamic array of " ~ T.stringof);
 
             debug (SerializationTrace)
@@ -771,40 +771,40 @@ struct Serializer
 
         foreach (i, ref field; s.tupleof)
         {
-            alias typeof(field) T;
+            alias typeof(field) Field;
 
-            static if (is (T == struct))
+            static if (is (Field == struct))
             {
                 // Recurse into field of struct type if it contains
                 // a dynamic array.
-                static if (ContainsDynamicArray!(T))
+                static if (ContainsDynamicArray!(Field))
                 {
                     This.resetReferences(field);
                 }
             }
-            else static if (is (Unqual!(T) Base == Base[]))
+            else static if (is (Unqual!(Field) Element == Element[]))
             {
                 // Reset field of dynamic array type.
 
                 field = null;
             }
-            else static if (is (T Base : Base[]))
+            else static if (is (Field Element : Element[]))
             {
                 // Static array
 
-                static if (ContainsDynamicArray!(Base))
+                static if (ContainsDynamicArray!(Element))
                 {
                     // Field of static array that contains a dynamic array:
                     // Recurse into field array elements.
 
-                    resetArrayReferences(cast(Unqual!(Base)[])field);
+                    resetArrayReferences(cast(Unqual!(Element)[])field);
                 }
             }
-            else static if (is (T == union))
+            else static if (is (Field == union))
             {
                 static assert (
-                    !ContainsDynamicArrays!(T),
-                    T.stringof ~ " " ~ s.tupleof[i].stringof ~
+                    !ContainsDynamicArrays!(Field),
+                    Field.stringof ~ " " ~ s.tupleof[i].stringof ~
                         " - unions containing dynamic arrays are is not " ~
                         "allowed, sorry"
                 );
@@ -843,9 +843,9 @@ struct Serializer
             Stdout.formatln("> resetArrayReferences!({})({})", T.stringof, array.ptr);
         }
 
-        static if (is (T Base : Base[]))
+        static if (is (T Element : Element[]))
         {
-            static if (is (Base[] == T))
+            static if (is (Element[] == T))
             {
                 // Reset elements of dynamic array type.
 

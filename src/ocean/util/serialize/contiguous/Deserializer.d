@@ -652,7 +652,7 @@ struct Deserializer
 
         This.e.enforceSizeLimit!(T[])(len, This.max_length);
 
-        static if (is (RejectQualifier!(T) U == U[]))
+        static if (is (RejectQualifier!(T) Element == Element[]))
         {
             /*
              * If array is an array of slices (dynamic arrays), obtain a data
@@ -745,24 +745,24 @@ struct Deserializer
                 pos += This.countStructArraySizes!(T)(data[pos .. $], extra_bytes);
             }
         }
-        else static if (is (T V : V[]))
+        else static if (is (T Element : Element[]))
         {
-            static if (is (V[] == RejectQualifier!(T)))
+            static if (is (Element[] == RejectQualifier!(T)))
             {
                 for (size_t i = 0; i < len; i++)
                 {
                     This.e.enforceInputSize!(T[])(data.length, pos);
 
-                    pos += This.countDynamicArraySize!(V)(data[pos .. $], extra_bytes);
+                    pos += This.countDynamicArraySize!(Element)(data[pos .. $], extra_bytes);
                 }
             }
-            else static if (hasIndirections!(V))
+            else static if (hasIndirections!(Element))
             {
                 for (size_t i = 0; i < len; i++)
                 {
                     This.e.enforceInputSize!(T[])(data.length, pos);
 
-                    pos += This.countArraySize!(V)(T.length, data[pos .. $], extra_bytes);
+                    pos += This.countArraySize!(Element)(T.length, data[pos .. $], extra_bytes);
                 }
             }
         }
@@ -972,7 +972,7 @@ struct Deserializer
 
         This.e.enforceSizeLimit!(T[])(len, This.max_length);
 
-        static if (is (RejectQualifier!(T) U == U[]))
+        static if (is (RejectQualifier!(T) Element == Element[]))
         {
             /*
              * If array is an array of slices (dynamic arrays), obtain a data
@@ -1077,17 +1077,17 @@ struct Deserializer
                 pos += This.sliceArrays(element, data[pos .. $], slices_buffer);
             }
         }
-        else static if (is (RejectQualifier!(T) V : V[]))
+        else static if (is (RejectQualifier!(T) Element : Element[]))
         {
             // To support const substitute T with Unqual!(T) in this scope and
             // cast(Unqual!(T)[])array.
-            static if (is (V[] == T)) foreach (ref element; array)
+            static if (is (Element[] == T)) foreach (ref element; array)
             {
                 This.e.enforceInputSize!(T[])(data.length, pos);
 
                 pos += This.sliceArray(element, data[pos .. $], slices_buffer);
             }
-            else static if (hasIndirections!(V))
+            else static if (hasIndirections!(Element))
             {
                 for (size_t i = 0; i < array.length; i++)
                 {
