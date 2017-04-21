@@ -262,13 +262,13 @@ unittest
     mixin(Typedef!(int, "MyInt"));
 
     // prepare structures
-    struct S1
+    static struct S1
     {
         void[] arr;
         MyInt[2][2] static_arr;
     }
 
-    struct S2
+    static struct S2
     {
         int a, b, c;
         S1 subs;
