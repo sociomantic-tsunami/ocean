@@ -1,4 +1,4 @@
-/******************************************************************************
+/*******************************************************************************
 
     Defines the fundamental task abstraction.
 
@@ -19,15 +19,15 @@
         Alternatively, this file may be distributed under the terms of the Tango
         3-Clause BSD License (see LICENSE_BSD.txt for details).
 
-******************************************************************************/
+*******************************************************************************/
 
 module ocean.task.Task;
 
-/******************************************************************************
+/*******************************************************************************
 
     Imports
 
-******************************************************************************/
+*******************************************************************************/
 
 static import core.thread;
 
@@ -44,48 +44,48 @@ debug (TaskScheduler)
     import ocean.io.Stdout;
 }
 
-/******************************************************************************
+/*******************************************************************************
 
     Fiber sub-class used by the scheduler to run tasks in. In addition to the
     functionality of the base fiber, it also:
         1. stores a reference to the task currently being executed
         2. can be stored in an object pool
 
-******************************************************************************/
+*******************************************************************************/
 
 public class WorkerFiber : core.thread.Fiber
 {
-    /*************************************************************************
+    /***************************************************************************
 
         Allows smooth integration of WorkerFiber with object pool
 
-    *************************************************************************/
+    ***************************************************************************/
 
     public size_t object_pool_index;
 
-    /*************************************************************************
+    /***************************************************************************
 
         If not null, refers to the Task object currently being executed in this
         fiber
 
-    *************************************************************************/
+    ***************************************************************************/
 
     package Task active_task;
 
-    /*************************************************************************
+    /***************************************************************************
 
         Returns:
             the task object currently being executed in this fiber or null if
             there isn't one
 
-    *************************************************************************/
+    ***************************************************************************/
 
     public Task activeTask ( )
     {
         return this.active_task;
     }
 
-    /**************************************************************************
+    /***************************************************************************
 
         Constructor
 
@@ -96,7 +96,7 @@ public class WorkerFiber : core.thread.Fiber
         Params:
             stack_size = stack size of the new fiber to allocate
 
-    **************************************************************************/
+    ***************************************************************************/
 
     public this ( size_t stack_size )
     {
@@ -109,13 +109,13 @@ public class WorkerFiber : core.thread.Fiber
     }
 }
 
-/******************************************************************************
+/*******************************************************************************
 
     Exception class that indicates that current task must be terminated. It
     can be used to forcefully kill the task while still properly cleaning
     current stack frame.
 
-******************************************************************************/
+*******************************************************************************/
 
 public class TaskKillException : Exception
 {
@@ -125,7 +125,7 @@ public class TaskKillException : Exception
     }
 }
 
-/******************************************************************************
+/*******************************************************************************
 
     Minimal usable Task class.
 
@@ -135,20 +135,20 @@ public class TaskKillException : Exception
       * wraps the abstract `run()` method in a try/catch statement which
         rethrows any unhandled exceptions
 
-******************************************************************************/
+*******************************************************************************/
 
 public abstract class Task : ISuspendable
 {
-    /**************************************************************************
+    /***************************************************************************
 
         Thrown from within the task to force early termination. One instance
         is used by all tasks as this exception must never be caught.
 
-    **************************************************************************/
+    ***************************************************************************/
 
     private static TaskKillException kill_exception;
 
-    /**************************************************************************
+    /***************************************************************************
 
         When unhandled exception occurs in a task, it gets rethrown in the
         caller context, suspending that task right before cleanup routines
@@ -156,54 +156,54 @@ public abstract class Task : ISuspendable
         such suspended task quickly and resume after handling the exception,
         reference to it is stored in static thread-local variable.
 
-    **************************************************************************/
+    ***************************************************************************/
 
     package static Task task_pending_cleanup;
 
-    /**************************************************************************
+    /***************************************************************************
 
         Static constructor. Initializes the exception that indicates the task
         must be terminated.
 
-    **************************************************************************/
+    ***************************************************************************/
 
     public static this ( )
     {
         Task.kill_exception = new TaskKillException;
     }
 
-    /**************************************************************************
+    /***************************************************************************
 
         If this flag is set, task will try to kill itself as soon at is
         resumed by throwing TaskKillException.
 
-    **************************************************************************/
+    ***************************************************************************/
 
     private bool to_kill;
 
-    /**************************************************************************
+    /***************************************************************************
 
         List of hooks that needs to be fired after Task has been terminated.
 
         Delegates will be called both if task terminates routinely and if
         it terminates dues to unhandled exception / gets killed.
 
-    **************************************************************************/
+    ***************************************************************************/
 
     /* package(ocean.task) */
     public Buffer!(void delegate()) termination_hooks;
 
-    /**************************************************************************
+    /***************************************************************************
 
         Reserved index field which ensures that any Task derivative can be
         used with ObjectPool. That comes at minor cost of one unused size_t
         per Task instance if not needed which is not a problem.
 
-    **************************************************************************/
+    ***************************************************************************/
 
     public size_t object_pool_index;
 
-    /**************************************************************************
+    /***************************************************************************
 
         Fiber this task executes in
 
@@ -211,17 +211,17 @@ public abstract class Task : ISuspendable
         is only available in D2. Please don't use it in applications
         directly.
 
-    **************************************************************************/
+    ***************************************************************************/
 
     /* package(ocean.task) */
     public WorkerFiber fiber;
 
-    /**************************************************************************
+    /***************************************************************************
 
         Returns:
             current task reference if there is one running, null otherwise
 
-    **************************************************************************/
+    ***************************************************************************/
 
     public static Task getThis ( )
     {
@@ -232,7 +232,7 @@ public abstract class Task : ISuspendable
             return null;
     }
 
-    /**************************************************************************
+    /***************************************************************************
 
         Must be called after handling exception rethrown from the task in cases
         when it doesn't result in immediate program termination. Not calling
@@ -241,7 +241,7 @@ public abstract class Task : ISuspendable
         Returns:
             'true' if pending task was resumed, 'false' otherwise
 
-    **************************************************************************/
+    ***************************************************************************/
 
     public static bool continueAfterThrow ( )
     {
@@ -254,11 +254,11 @@ public abstract class Task : ISuspendable
         }
     }
 
-    /**************************************************************************
+    /***************************************************************************
 
         Constructor. Used only to insert debug trace message.
 
-    **************************************************************************/
+    ***************************************************************************/
 
     public this ( )
     {
@@ -266,7 +266,7 @@ public abstract class Task : ISuspendable
             cast(void*) this);
     }
 
-    /**************************************************************************
+    /***************************************************************************
 
         Assigns the task to a fiber. In most cases you need to use
         `Scheduler.schedule` instead.
@@ -281,7 +281,7 @@ public abstract class Task : ISuspendable
         Params:
             fiber = the fiber to assign the task to
 
-    **************************************************************************/
+    ***************************************************************************/
 
     public void assignTo ( WorkerFiber fiber )
     {
@@ -294,11 +294,11 @@ public abstract class Task : ISuspendable
         }
     }
 
-    /**************************************************************************
+    /***************************************************************************
 
         Suspends execution of this task.
 
-    **************************************************************************/
+    ***************************************************************************/
 
     public void suspend ( )
     {
@@ -313,12 +313,12 @@ public abstract class Task : ISuspendable
             throw Task.kill_exception;
     }
 
-    /**************************************************************************
+    /***************************************************************************
 
         Resumes execution of this task. If task has not been started yet,
         starts it.
 
-    **************************************************************************/
+    ***************************************************************************/
 
     public void resume ( )
     {
@@ -398,12 +398,12 @@ public abstract class Task : ISuspendable
         return this.fiber.state() == core.thread.Fiber.State.HOLD;
     }
 
-    /**************************************************************************
+    /***************************************************************************
 
         Forces abnormal termination for the task by throwing special
         exception instance.
 
-    **************************************************************************/
+    ***************************************************************************/
 
     public void kill ( istring file = __FILE__, int line = __LINE__ )
     {
@@ -418,7 +418,7 @@ public abstract class Task : ISuspendable
             this.resume();
     }
 
-    /**************************************************************************
+    /***************************************************************************
 
         Method that will be run by scheduler when task finishes. Must be
         overridden by specific task class to reset reusable resources.
@@ -426,20 +426,20 @@ public abstract class Task : ISuspendable
         It is public so that both scheduler can access it and derivatives can
         override it. No one but scheduler must call this method.
 
-    **************************************************************************/
+    ***************************************************************************/
 
     public void recycle ( ) { }
 
-    /**************************************************************************
+    /***************************************************************************
 
         Method that must be overridden in actual application/library task
         classes to provide entry point.
 
-    **************************************************************************/
+    ***************************************************************************/
 
     protected abstract void run ( );
 
-    /**************************************************************************
+    /***************************************************************************
 
         Internal wrapper around `this.run()` which is used as primary fiber
         entry point and ensures any uncaught exception propagates to the
@@ -449,7 +449,7 @@ public abstract class Task : ISuspendable
             'true' if the task terminated with unhandled exception, 'false'
             otherwise
 
-    **************************************************************************/
+    ***************************************************************************/
 
     package final bool entryPoint ( )
     {
@@ -622,7 +622,7 @@ unittest
     test!("==")(task.fiber.state, core.thread.Fiber.State.TERM);
 }
 
-/******************************************************************************
+/*******************************************************************************
 
     `Task` descendant which supports extensions that alter the semantics of
     suspending and resuming the task. An arbitrary number of extensions may be
@@ -649,20 +649,20 @@ unittest
     Template_params:
         Extensions = variadic template argument list of extensions to use
 
-******************************************************************************/
+*******************************************************************************/
 
 public class TaskWith ( Extensions... ) : Task
 {
     mixin (genExtensionAggregate!(Extensions)());
 
-    /**************************************************************************
+    /***************************************************************************
 
         Constructor
 
         Allows extensions to get information about host task if they have
         matching `reset` method defined.
 
-    **************************************************************************/
+    ***************************************************************************/
 
     this ( )
     {
@@ -673,12 +673,12 @@ public class TaskWith ( Extensions... ) : Task
         }
     }
 
-    /**************************************************************************
+    /***************************************************************************
 
         Suspends this task, calls extension methods before and after
         suspending (if there are any).
 
-    **************************************************************************/
+    ***************************************************************************/
 
     override public void suspend ( )
     {
@@ -697,12 +697,12 @@ public class TaskWith ( Extensions... ) : Task
         }
     }
 
-    /**************************************************************************
+    /***************************************************************************
 
         Resumes this task, calls extension methods before resuming
         (if there are any).
 
-    **************************************************************************/
+    ***************************************************************************/
 
     override public void resume ( )
     {
@@ -715,12 +715,12 @@ public class TaskWith ( Extensions... ) : Task
         super.resume();
     }
 
-    /**************************************************************************
+    /***************************************************************************
 
         Ensures extensions are reset to initial state when task is assigned
         to new worker fiber.
 
-    **************************************************************************/
+    ***************************************************************************/
 
     override public void assignTo ( WorkerFiber fiber )
     {
