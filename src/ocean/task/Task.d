@@ -160,7 +160,7 @@ public abstract class Task : ISuspendable
 
     package static Task task_pending_cleanup;
 
-    static this ( )
+    public static this ( )
     {
         Task.kill_exception = new TaskKillException;
     }
