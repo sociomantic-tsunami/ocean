@@ -275,21 +275,26 @@ struct Serializer
 
                     len += This.countAllArraySize(field);
                 }
-                else static if (is (T Base == Base[]))
-                {
-                    // Dump dynamic array.
-
-                    len += This.countArraySize(field);
-                }
                 else static if (is (T Base : Base[]))
                 {
-                    // Static array
+                    alias Unqual!(T) U;
 
-                    static if (ContainsDynamicArray!(Base))
+                    static if (is (Base[] == U))
                     {
-                        // Recurse into static array elements which contain a
-                        // dynamic array.
-                        len += This.countElementSize(field);
+                        // Dump dynamic array.
+
+                        len += This.countArraySize(field);
+                    }
+                    else
+                    {
+                        // Static array
+
+                        static if (ContainsDynamicArray!(Base))
+                        {
+                            // Recurse into static array elements which contain a
+                            // dynamic array.
+                            len += This.countElementSize(field);
+                        }
                     }
                 }
                 else static if (is (T == union))
@@ -338,7 +343,7 @@ struct Serializer
 
         size_t len = size_t.sizeof;
 
-        static if (is (T Base == Base[]))
+        static if (is (Unqual!(T) Base == Base[]))
         {
             // array is a dynamic array of dynamic arrays.
 
@@ -477,30 +482,35 @@ struct Serializer
                     auto ptr = cast(Unqual!(typeof(s.tupleof[i]))*) &s.tupleof[i];
                     data = This.dumpAllArrays(*ptr, data);
                 }
-                else static if (is (T Base == Base[]))
-                {
-                    // Dump dynamic array.
-
-                    data = This.dumpArray(s.tupleof[i], data);
-
-                    s.tupleof[i] = null;
-                }
                 else static if (is (T Base : Base[]))
                 {
-                    // Dump static array
+                    alias Unqual!(T) U;
 
-                    static if (ContainsDynamicArray!(Base))
+                    static if (is (Base[] == U))
                     {
-                        // Recurse into static array elements which contain a
-                        // dynamic array.
+                        // Dump dynamic array.
 
-                        debug (SerializationTrace)
+                        data = This.dumpArray(s.tupleof[i], data);
+
+                        *(cast(U*)&s.tupleof[i]) = null;
+                    }
+                    else
+                    {
+                        // Dump static array
+
+                        static if (ContainsDynamicArray!(Base))
                         {
-                            Stdout.formatln("  iterating static array of length {}",
-                                s.tupleof[i].length);
-                        }
+                            // Recurse into static array elements which contain a
+                            // dynamic array.
 
-                        data = This.dumpStaticArray(s.tupleof[i][], data);
+                            debug (SerializationTrace)
+                            {
+                                Stdout.formatln("  iterating static array of length {}",
+                                    s.tupleof[i].length);
+                            }
+
+                            data = This.dumpStaticArray(s.tupleof[i][], data);
+                        }
                     }
                 }
                 else static if (is (T == union))
@@ -557,7 +567,7 @@ struct Serializer
 
         if (array.length)
         {
-            static if (is (T Base == Base[]))
+            static if (is (Unqual!(T) Base == Base[]))
             {
                 foreach (ref element; array)
                 {
@@ -620,14 +630,15 @@ struct Serializer
     {
         foreach (ref element; array)
         {
+            alias Unqual!(T) U;
             static if (is(T Base: Base[]))
             {
                 // element is a static or dynamic array
-                static if (is(T == Base[]))
+                static if (is(U == Base[]))
                 {
                     // element is a dynamic array
                     data = This.dumpArray(element, data);
-                    *(cast(T*)&element) = null;
+                    *(cast(U*)&element) = null;
                 }
                 else
                 {
@@ -645,7 +656,7 @@ struct Serializer
                         T.stringof ~ " doesn't have"
                 );
 
-                auto ptr = cast(Unqual!(T)*) &element;
+                auto ptr = cast(U*) &element;
                 data = This.dumpAllArrays(*ptr, data);
             }
         }
@@ -766,7 +777,7 @@ struct Serializer
                     This.resetReferences(s.tupleof[i]);
                 }
             }
-            else static if (is (T Base == Base[]))
+            else static if (is (Unqual!(T) Base == Base[]))
             {
                 // Reset field of dynamic array type.
 
@@ -781,7 +792,7 @@ struct Serializer
                     // Field of static array that contains a dynamic array:
                     // Recurse into field array elements.
 
-                    resetArrayReferences(s.tupleof[i]);
+                    resetArrayReferences(cast(Unqual!(Base)[])s.tupleof[i]);
                 }
             }
             else static if (is (T == union))
