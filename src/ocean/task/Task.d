@@ -261,7 +261,7 @@ public abstract class Task : ISuspendable
 
     /**************************************************************************
 
-        Assign task to a fiber. In most cases you need to use
+        Assigns the task to a fiber. In most cases you need to use
         `Scheduler.schedule` instead.
 
         In simple applications there tends to be 1-to-1 relation between task
@@ -270,6 +270,9 @@ public abstract class Task : ISuspendable
         memory consumption reasons (fiber has to allocate a stack for itself
         which doesn't allow having too many of them). Such functionality
         is provided by `ocean.task.Scheduler`.
+
+        Params:
+            fiber = the fiber to assign the task to
 
     **************************************************************************/
 
