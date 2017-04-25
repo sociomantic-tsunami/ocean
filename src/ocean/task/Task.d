@@ -160,6 +160,13 @@ public abstract class Task : ISuspendable
 
     package static Task task_pending_cleanup;
 
+    /**************************************************************************
+
+        Static constructor. Initializes the exception that indicates the task
+        must be terminated.
+
+    **************************************************************************/
+
     public static this ( )
     {
         Task.kill_exception = new TaskKillException;
