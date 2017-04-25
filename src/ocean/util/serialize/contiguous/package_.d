@@ -823,6 +823,77 @@ unittest
     test(deepEquals(*d.ptr, s));
 }
 
+/******************************************************************************
+
+    Const arrays of arrays, `const` is serialise-only
+
+******************************************************************************/
+
+struct ConstS
+{
+    Const!(int) n = 3;
+    Const!(char[][]) a = ["Hello", "World"];
+    Const!(char[])[2][3] b = [
+        ["Die", "Katze"], ["tritt", "die"], ["Treppe", "krumm."]
+    ];
+}
+
+struct UnqualConstS
+{
+    int n = 3;
+    char[][] a;
+    char[][2][3] b;
+}
+
+unittest
+{
+    void[] buffer;
+
+    ConstS s;
+
+    Serializer.serialize(s, buffer);
+
+    size_t expected_length = s.sizeof + serialArrayLength(s.a);
+    foreach (b1; s.b)
+        foreach (b2; b1)
+            expected_length += serialArrayLength(b2);
+    test!("==")(buffer.length, expected_length);
+
+    with (*trivialDeserialize!(ConstS)(buffer))
+    {
+        testArray!("is")(a, null);
+        foreach (b1; b)
+            foreach (b2; b1)
+                testArray!("is")(b2, null);
+    }
+
+    // Make sure ConstS cannot be deserialised; its const fields should be
+    // rejected.
+    version(D_Version2)
+        static assert(!mixin(
+            "__traits(compiles, Deserializer.deserialize!(ConstS)(buffer))"));
+
+    auto cont_S = Deserializer.deserialize!(UnqualConstS)(buffer);
+    cont_S.enforceIntegrity();
+
+    test!("==")(cont_S.ptr.n, 3);
+    test!("==")(cont_S.ptr.a, ["Hello", "World"]);
+
+    version (D_Version2)
+    {
+        test!("==")(cont_S.ptr.b, [
+            ["Die", "Katze"], ["tritt", "die"], ["Treppe", "krumm."]
+        ]);
+    }
+    else
+    {
+        char[][2][3] b = [
+            ["Die", "Katze"], ["tritt", "die"], ["Treppe", "krumm."]
+        ];
+        test!("==")(cont_S.ptr.b, b);
+    }
+}
+
 /*******************************************************************************
 
     Deserialise `serializer_output` in the trivial way to verify all dynamic
