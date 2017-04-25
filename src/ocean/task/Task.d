@@ -117,9 +117,9 @@ public class WorkerFiber : core.thread.Fiber
 
 ******************************************************************************/
 
-class TaskKillException : Exception
+public class TaskKillException : Exception
 {
-    this ( istring file = __FILE__, int line = __LINE__ )
+    public this ( istring file = __FILE__, int line = __LINE__ )
     {
         super("Task was killed", file, line);
     }
