@@ -901,6 +901,29 @@ unittest
     }
 }
 
+unittest
+{
+    static struct Inner
+    {
+        mstring s;
+    }
+
+    static struct Outer
+    {
+        Contiguous!(Inner) inner;
+    }
+
+    auto s1 = Inner("abcd".dup);
+    Outer s2;
+    copy(s1, s2.inner);
+
+    Contiguous!(Outer) s3;
+    copy(s2, s3);
+
+    s3.ptr.inner.enforceIntegrity();
+    test!("==")(s3.ptr.inner.ptr.s, "abcd");
+}
+
 /*******************************************************************************
 
     Deserialise `serializer_output` in the trivial way to verify all dynamic

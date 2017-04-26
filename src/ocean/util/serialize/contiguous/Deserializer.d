@@ -874,7 +874,22 @@ struct Deserializer
                 {
                     This.e.enforceInputSize!(S)(data.length, pos);
 
-                    pos += This.sliceArray(*This.getField!(i, Field)(s), data[pos .. $], slices_buffer);
+                    auto pfield = This.getField!(i, Field)(s);
+                    auto increment = This.sliceArray(*pfield, data[pos .. $],
+                        slices_buffer);
+
+                    // if host struct is Contiguous, internal `data` array
+                    // needs to be deserialized as a struct to ensure that
+                    // internal pointers are updated and it stays contiguous
+                    static if (is(S T == Contiguous!(T)))
+                    {
+                        static assert (is(Element == void));
+                        auto orig_length = pfield.length;
+                        deserialize!(T)(*pfield);
+                        assert (orig_length == pfield.length);
+                    }
+
+                    pos += increment;
                 }
                 else static if (hasIndirections!(Element))
                 {
