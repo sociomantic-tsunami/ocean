@@ -552,7 +552,7 @@ struct Deserializer
 
 
 
-                static if (is (Element[] == Field))
+                static if (is (Element[] == RejectQualifier!(Field)))
                 {
                     // dynamic array
 
@@ -636,7 +636,7 @@ struct Deserializer
 
         This.e.enforceSizeLimit!(T[])(len, This.max_length);
 
-        static if (is (T U == U[]))
+        static if (is (RejectQualifier!(T) U == U[]))
         {
             /*
              * If array is an array of slices (dynamic arrays), obtain a data
@@ -729,7 +729,7 @@ struct Deserializer
         }
         else static if (is (T V : V[]))
         {
-            static if (is (V[] == T))
+            static if (is (V[] == RejectQualifier!(T)))
             {
                 for (size_t i = 0; i < len; i++)
                 {
@@ -866,8 +866,10 @@ struct Deserializer
 
                 pos += This.sliceArrays(*This.getField!(i, Field)(s), data[pos .. $], slices_buffer);
             }
-            else static if (is (Field Element : Element[]))
+            else static if (is (RejectQualifier!(Field) Element : Element[]))
             {
+                // To support const substitute Field with Unqual!(Field) in this
+                // scope.
                 static if (is (Element[] == Field))
                 {
                     This.e.enforceInputSize!(S)(data.length, pos);
@@ -944,7 +946,7 @@ struct Deserializer
 
         This.e.enforceSizeLimit!(T[])(len, This.max_length);
 
-        static if (is (T U == U[]))
+        static if (is (RejectQualifier!(T) U == U[]))
         {
             /*
              * If array is an array of slices (dynamic arrays), obtain a data
@@ -1047,8 +1049,10 @@ struct Deserializer
                 pos += This.sliceArrays(element, data[pos .. $], slices_buffer);
             }
         }
-        else static if (is (T V : V[]))
+        else static if (is (RejectQualifier!(T) V : V[]))
         {
+            // To support const substitute T with Unqual!(T) in this scope and
+            // cast(Unqual!(T)[])array.
             static if (is (V[] == T)) foreach (ref element; array)
             {
                 This.e.enforceInputSize!(T[])(data.length, pos);
@@ -1088,6 +1092,23 @@ struct Deserializer
     private static T* getField ( size_t i, T, S ) ( ref S s )
     {
         return cast (T*) ((cast (void*) &s) + S.tupleof[i].offsetof);
+    }
+
+    /**************************************************************************
+
+        `static assert`s that `T` has no qualifier.
+
+     **************************************************************************/
+
+    template RejectQualifier ( T )
+    {
+        version (D_Version2)
+            static if (!is(T == typeof(mixin("cast()T.init"))))
+            {
+                pragma(msg, "Warning: ", T,
+                " -- type qualifiers are not supported");
+            }
+        alias T RejectQualifier;
     }
 }
 

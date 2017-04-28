@@ -1009,16 +1009,19 @@ template ContainsDynamicArray ( T ... )
         }
         else
         {
-            static if (is (T[0] Element == Element[])) // array
+            static if (is (T[0] Element : Element[])) // array
             {
-                const ContainsDynamicArray = true;
-            }
-            else static if (is (T[0] Element : Element[]))
-            {
-                // Static array, recurse into base type.
+                static if (is (Element[] == Unqual!(T[0])))
+                {
+                    const ContainsDynamicArray = true;
+                }
+                else
+                {
+                    // Static array, recurse into base type.
 
-                const ContainsDynamicArray = ContainsDynamicArray!(Element) ||
-                                             ContainsDynamicArray!(T[1 .. $]);
+                    const ContainsDynamicArray = ContainsDynamicArray!(Element) ||
+                                                 ContainsDynamicArray!(T[1 .. $]);
+                }
             }
             else
             {
@@ -1046,6 +1049,14 @@ unittest
     }
 
     static assert ( ContainsDynamicArray!(Const!(S)));
+
+    static struct S2
+    {
+        struct Arr { Const!(int[]) x; }
+        Arr[3][4] arr;
+    }
+
+    static assert(ContainsDynamicArray!(Immut!(S2)));
 }
 
 
