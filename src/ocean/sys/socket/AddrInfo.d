@@ -158,6 +158,7 @@ struct addrinfo
             case AF_INET6:
                 assert (dst.length >= INET6_ADDRSTRLEN,
                         "dst.length expected to be at least " ~ INET6_ADDRSTRLEN.stringof);
+                break;
 
             default: // will fail with EAFNOSUPPORT anyway
         }

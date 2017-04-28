@@ -207,7 +207,7 @@ private void enforceContiguous (S) ( ref S input, in void[] allowed_range )
             {
                 // static + dynamic arrays
 
-                static if (is(Member == U[]))
+                static if (is(Unqual!(Member) == U[]))
                 {
                     if (member.ptr)
                     {
@@ -304,18 +304,21 @@ package template ensureValueTypeMember ( S, size_t i, T )
                   " is a or contains an unsupported reference type");
 }
 
+version (UnitTest)
+    import core.stdc.string: memset;
+
 unittest
 {
     mixin(Typedef!(int, "MyInt"));
 
     // prepare structures
-    struct S1
+    static struct S1
     {
         void[] arr;
         MyInt[2][2] static_arr;
     }
 
-    struct S2
+    static struct S2
     {
         int a, b, c;
         S1 subs;
@@ -330,4 +333,15 @@ unittest
 
     tested.subs.arr = new void[2];
     testThrown!(Exception)(enforceContiguous(*tested, buffer));
+
+    static struct S4
+    {
+        Const!(char[])[] str = ["Hello", "World"];
+    }
+
+    auto tested2 = cast(S4*) memset(buffer.ptr, 0, buffer.length);
+
+    *tested2 = S4.init;
+    test!("==")(tested2.str.length, 2);
+    testThrown!(Exception)(enforceContiguous(*tested2, buffer));
 }

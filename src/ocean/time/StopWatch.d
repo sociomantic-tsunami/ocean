@@ -17,15 +17,17 @@
 
 module ocean.time.StopWatch;
 
-import ocean.core.ExceptionDefinitions;
-
-/*******************************************************************************
-
-*******************************************************************************/
-
-version (Posix)
+// CLOCK_MONOTONIC and clock_gettime will be added to core.sys.posix.time in
+// tangort v1.7.0, see tangort issue #6.
+import core.sys.posix.time; // clockid_t, timespec
+extern (C) private
 {
-        import ocean.stdc.posix.sys.time;
+    enum: clockid_t
+    {
+        CLOCK_MONOTONIC = 1
+    }
+
+    int clock_gettime(clockid_t clk_id, timespec* t);
 }
 
 /*******************************************************************************
@@ -41,17 +43,23 @@ version (Posix)
         // ...
 
         double i = elapsed.stop;
+        ulong us = elapsed.microsec;
         ---
 
-        The measured interval is in units of seconds, using floating-
-        point to represent fractions. This approach is more flexible
-        than integer arithmetic since it migrates trivially to more
-        capable timer hardware (there no implicit granularity to the
-        measurable intervals, except the limits of fp representation)
-
-        StopWatch is accurate to the extent of what the underlying OS
-        supports. On linux systems, this accuracy is typically 1 us at
-        best. Win32 is generally more precise.
+        The measured interval is either an integer value in units of
+        microseconds -- returned by `microsec` -- or a floating-point value in
+        units of seconds with fractions -- returned by `stop`.
+        The integer value has always a precision of 1µs and is recommended if
+        you want to compare it with reference values such as checking if it's
+        below or above 1ms (e.g. `elapsed.microsec <= 1000`).
+        Although floating-point representation seems often more convenient, bear
+        in mind that
+          - The precision is relative to the value (i.e. the greater the values
+            the lower the absolute precision).
+          - Comparing fractions can yield unexpected results due to rounding and
+            because decimal fractions have no exact binary floating-point
+            representation. To avoid surprises like this using the integer
+            represenation of time spans is in general recommended.
 
         There is some minor overhead in using StopWatch, so take that into
         account
@@ -60,8 +68,14 @@ version (Posix)
 
 public struct StopWatch
 {
+         // TODO: From tangort v1.7.0 import clock_gettime and CLOCK_MONOTONIC.
+        import core.sys.posix.time: timespec;
+
+        import ocean.core.ExceptionDefinitions : PlatformException;
+
+
         private ulong  started;
-        private static double multiplier = 1.0 / 1_000_000.0;
+        private const double multiplier = 1.0 / 1_000_000.0;
 
         /***********************************************************************
 
@@ -82,7 +96,7 @@ public struct StopWatch
 
         double stop ()
         {
-                return multiplier * (timer - started);
+                return multiplier * this.microsec;
         }
 
         /***********************************************************************
@@ -93,8 +107,7 @@ public struct StopWatch
 
         ulong microsec ()
         {
-                version (Posix)
-                         return (timer - started);
+                 return (timer >= started)? (timer - started) : 0;
         }
 
         /***********************************************************************
@@ -105,14 +118,11 @@ public struct StopWatch
 
         private static ulong timer ()
         {
-                version (Posix)
-                {
-                        timeval tv;
-                        if (gettimeofday (&tv, null))
-                            throw new PlatformException ("Timer :: linux timer is not available");
+                timespec t;
+                if (clock_gettime(CLOCK_MONOTONIC, &t))
+                    throw new PlatformException ("Timer :: CLOCK_MONOTONIC is not available");
 
-                        return (cast(ulong) tv.tv_sec * 1_000_000) + tv.tv_usec;
-                }
+                return t.tv_sec * 1_000_000UL + t.tv_nsec / 1_000UL;
         }
 }
 
