@@ -195,10 +195,94 @@ struct S
 
     char[][3] static_of_dynamic;
 
+    char[][2][3][] dynamic_of_static_of_static_of_dynamic;
+
     union
     {
         int union_a;
         int union_b;
+    }
+
+    mixin TypeofThis!();
+
+    /***************************************************************************
+
+        Ensure all dynamic array references in this instance are `null`, which
+        they should be if this instance references the output data of
+        `Serializer.serialize`.
+
+    ***************************************************************************/
+
+    void testNullReferences ( ) /* d1to2fix_inject: const */
+    {
+        foreach (s2_static_array_element; this.s2_static_array)
+        {
+            testArray!("is")(s2_static_array_element.a, null);
+            testArray!("is")(s2_static_array_element.b, null);
+        }
+
+        foreach (s3_a_element; this.s3.a)
+            testArray!("is")(s3_a_element, null);
+
+        testArray!("is")(this.s4_dynamic_array, null);
+        testArray!("is")(this.recursive, null);
+
+        foreach (static_of_dynamic_element; this.static_of_dynamic)
+            testArray!("is")(static_of_dynamic_element, null);
+    }
+
+    /***************************************************************************
+
+        Convenience alias, this template instantiation is used a lot in tests.
+
+    ***************************************************************************/
+
+    alias .trivialDeserialize!(This) trivialDeserialize;
+
+    /***************************************************************************
+
+        Returns the number of bytes the `Serializer` should use to serialise
+        this instance.
+
+    ***************************************************************************/
+
+    size_t serialized_length ( ) /* d1to2fix_inject: const */
+    {
+        static size_t s2_length ( ref Const!(S_2) s2 )
+        {
+            return serialArrayLength(s2.a) + serialArrayLength(s2.b);
+        }
+
+        size_t n = This.sizeof;
+
+        n += s2_length(this.s2);
+
+        foreach (s2_static_array_element; this.s2_static_array)
+            n += s2_length(s2_static_array_element);
+
+        foreach (s3_a_element; this.s3.a)
+            n += serialArrayLength(s3_a_element);
+
+        n += serialArrayLength(this.s4_dynamic_array);
+        foreach (s4_dynamic_array_element; this.s4_dynamic_array)
+            n += serialArrayLength(s4_dynamic_array_element.a);
+
+        n += this.recursive.length.sizeof;
+        // Don't add the byte length of `this.recursive` here: The recursive
+        // `serialized_length` calls will do it.
+        foreach (recursive_element; this.recursive)
+            n += recursive_element.serialized_length;
+
+        foreach (static_of_dynamic_element; this.static_of_dynamic)
+            n += serialArrayLength(static_of_dynamic_element);
+
+        n += serialArrayLength(this.dynamic_of_static_of_static_of_dynamic);
+        foreach (dynamic_element; this.dynamic_of_static_of_static_of_dynamic)
+            foreach (static_element; dynamic_element)
+                foreach (static_element2; static_element)
+                    n += serialArrayLength(static_element2);
+
+        return n;
     }
 }
 
@@ -231,6 +315,11 @@ S defaultS()
     ];
 
     s.static_of_dynamic[] = [ "a".dup, "b".dup, "c".dup ];
+
+    s.dynamic_of_static_of_static_of_dynamic = [
+        [["Die".dup, "Katze".dup], ["tritt".dup, "die".dup], ["Treppe".dup, "krumm.".dup]],
+        [["abc".dup, "def".dup], ["ghi".dup, "jkl".dup], ["mno".dup, "pqr".dup]]
+    ];
 
     s.union_a = 42;
 
@@ -275,6 +364,9 @@ void testS(NamedTest t, ref S checked)
         test!("==")(checked.static_of_dynamic[],
                     defaultS().static_of_dynamic[]);
 
+        test!("==")(checked.dynamic_of_static_of_static_of_dynamic,
+                    defaultS().dynamic_of_static_of_static_of_dynamic);
+
         test!("==")(checked.union_a, defaultS().union_b);
     }
 }
@@ -305,6 +397,8 @@ unittest
     void[] buffer;
 
     Serializer.serialize(s, buffer);
+    test!("==")(buffer.length, s.serialized_length);
+    S.trivialDeserialize(buffer).testNullReferences();
     auto cont_S = Deserializer.deserialize!(S)(buffer);
     cont_S.enforceIntegrity();
     testS(t, *cont_S.ptr);
@@ -323,6 +417,8 @@ unittest
     void[] buffer;
 
     Serializer.serialize(s, buffer);
+    test!("==")(buffer.length, s.serialized_length);
+    S.trivialDeserialize(buffer).testNullReferences();
     Contiguous!(S) destination;
     auto cont_S = Deserializer.deserialize!(S)(buffer, destination);
     cont_S.enforceIntegrity();
@@ -345,6 +441,8 @@ unittest
 
     // create Contiguous!(S) instance first
     Serializer.serialize(s, buffer);
+    test!("==")(buffer.length, s.serialized_length);
+    S.trivialDeserialize(buffer).testNullReferences();
     auto cont_S = Deserializer.deserialize!(S)(buffer);
 
     // check that serializations nulls pointers
@@ -368,6 +466,8 @@ unittest
     void[] buffer;
 
     Serializer.serialize(s, buffer);
+    test!("==")(buffer.length, s.serialized_length);
+    S.trivialDeserialize(buffer).testNullReferences();
 
     // emulate left-over bytes from previous deserializations
     buffer.length = buffer.length * 2;
@@ -394,6 +494,8 @@ unittest
     void[] buffer;
 
     Serializer.serialize(s, buffer);
+    test!("==")(buffer.length, s.serialized_length);
+    S.trivialDeserialize(buffer).testNullReferences();
     auto cont_S = Deserializer.deserialize!(S)(buffer);
     cont_S.enforceIntegrity();
 
@@ -417,6 +519,8 @@ unittest
     void[] buffer;
 
     Serializer.serialize(s, buffer);
+    test!("==")(buffer.length, s.serialized_length);
+    S.trivialDeserialize(buffer).testNullReferences();
     auto cont_S = Deserializer.deserialize!(S)(buffer);
     cont_S.enforceIntegrity();
 
@@ -444,6 +548,8 @@ unittest
     void[] buffer;
 
     Serializer.serialize(s, buffer);
+    test!("==")(buffer.length, s.serialized_length);
+    S.trivialDeserialize(buffer).testNullReferences();
     Contiguous!(S) destination;
     auto cont_S = Deserializer.deserialize!(S)(buffer, destination);
     cont_S.enforceIntegrity();
@@ -484,6 +590,20 @@ unittest
 
     void[] buffer;
     Serializer.serialize(s, buffer);
+
+    size_t expected_length = s.sizeof;
+    foreach (a1; s.a)
+        foreach (a2; a1)
+            foreach (a3; a2)
+                expected_length += serialArrayLength(a3.a);
+    test!("==")(buffer.length, expected_length);
+
+    with (*trivialDeserialize!(Outer)(buffer))
+        foreach (a1; a)
+            foreach (a2; a1)
+                foreach (a3; a2)
+                    testArray!("is")(a3.a, null);
+
     auto cont = Deserializer.deserialize!(Outer)(buffer);
 
     test!("==")(cont.ptr.a[0][0][0].a, s.a[0][0][0].a);
@@ -595,6 +715,7 @@ unittest
     void[] buffer;
 
     Serializer.serialize(s, buffer);
+    S.trivialDeserialize(buffer).testNullReferences();
     testNoAlloc(Serializer.serialize(s, buffer));
     auto cont_s = Deserializer.deserialize!(S)(buffer);
     testNoAlloc(Deserializer.deserialize!(S)(buffer));
@@ -616,12 +737,15 @@ unittest
         cstring s;
     }
 
-    CS s = CS("Hello world");
+    CS cs = CS("Hello world");
     void[] buffer;
 
-    Serializer.serialize(s, buffer);
+    Serializer.serialize(cs, buffer);
+    test!("==")(buffer.length, cs.sizeof + serialArrayLength(cs.s));
+    with (*trivialDeserialize!(CS)(buffer))
+        testArray!("is")(s, null);
     auto new_s = Deserializer.deserialize!(CS)(buffer);
-    test!("==")(s.s, new_s.ptr.s);
+    test!("==")(cs.s, new_s.ptr.s);
 }
 
 
@@ -686,6 +810,140 @@ unittest
     void[] buffer;
 
     Serializer.serialize(s, buffer);
+
+    size_t expected_length = s.sizeof + serialArrayLength(s.nested);
+    foreach (nested_element; s.nested)
+        expected_length += serialArrayLength(nested_element.s);
+    test!("==")(buffer.length, expected_length);
+
+    with (*trivialDeserialize!(S2)(buffer))
+        testArray!("is")(nested, null);
+
     auto d = Deserializer.deserialize!(S2)(buffer);
     test(deepEquals(*d.ptr, s));
+}
+
+/******************************************************************************
+
+    Const arrays of arrays, `const` is serialise-only
+
+******************************************************************************/
+
+struct ConstS
+{
+    Const!(int) n = 3;
+    Const!(char[][]) a = ["Hello", "World"];
+    Const!(char[])[2][3] b = [
+        ["Die", "Katze"], ["tritt", "die"], ["Treppe", "krumm."]
+    ];
+}
+
+struct UnqualConstS
+{
+    int n = 3;
+    char[][] a;
+    char[][2][3] b;
+}
+
+unittest
+{
+    void[] buffer;
+
+    ConstS s;
+
+    Serializer.serialize(s, buffer);
+
+    size_t expected_length = s.sizeof + serialArrayLength(s.a);
+    foreach (b1; s.b)
+        foreach (b2; b1)
+            expected_length += serialArrayLength(b2);
+    test!("==")(buffer.length, expected_length);
+
+    with (*trivialDeserialize!(ConstS)(buffer))
+    {
+        testArray!("is")(a, null);
+        foreach (b1; b)
+            foreach (b2; b1)
+                testArray!("is")(b2, null);
+    }
+
+    // Make sure ConstS cannot be deserialised; its const fields should be
+    // rejected.
+    version(D_Version2)
+        static assert(!mixin(
+            "__traits(compiles, Deserializer.deserialize!(ConstS)(buffer))"));
+
+    auto cont_S = Deserializer.deserialize!(UnqualConstS)(buffer);
+    cont_S.enforceIntegrity();
+
+    test!("==")(cont_S.ptr.n, 3);
+    test!("==")(cont_S.ptr.a, ["Hello", "World"]);
+
+    version (D_Version2)
+    {
+        test!("==")(cont_S.ptr.b, [
+            ["Die", "Katze"], ["tritt", "die"], ["Treppe", "krumm."]
+        ]);
+    }
+    else
+    {
+        char[][2][3] b = [
+            ["Die", "Katze"], ["tritt", "die"], ["Treppe", "krumm."]
+        ];
+        test!("==")(cont_S.ptr.b, b);
+    }
+}
+
+/*******************************************************************************
+
+    Deserialise `serializer_output` in the trivial way to verify all dynamic
+    array slices are `null`.
+
+*******************************************************************************/
+
+static Const!(Struct)* trivialDeserialize ( Struct )
+    ( Const!(void)[] serializer_output )
+in
+{
+    assert(serializer_output.length >= Struct.sizeof);
+}
+body
+{
+    return cast(Const!(Struct)*)serializer_output.ptr;
+}
+
+/*******************************************************************************
+
+    Returns the number of bytes used to serialise `array`, recursing into the
+    elements of `array` if `Element` is a dynamic array type. No recursion is
+    done if `Element` is a value type containing dynamic arrays.
+
+*******************************************************************************/
+
+static size_t serialArrayLength ( T : Element[], Element ) ( T array )
+{
+    size_t n = array.length.sizeof;
+
+    static if (is(Unqual!(Element) Sub == Sub[]))
+    {
+        foreach (element; array)
+            n += serialArrayLength(element);
+    }
+    else
+        n += (array.length * array[0].sizeof);
+
+    return n;
+}
+
+/*******************************************************************************
+
+    `testArray!(op)(a, b)` is equivalent to
+    `testArray!(op)(cast(Const!(void)[])a, cast(Const!(void)[])b)`, which allows
+    for `testArray!(op)(a, null)` avoiding D2 trouble with `typeof(null)`.
+
+*******************************************************************************/
+
+template testArray ( istring op )
+{
+    alias test!(op, Const!(void)[], Const!(void)[]) testArray;
 }

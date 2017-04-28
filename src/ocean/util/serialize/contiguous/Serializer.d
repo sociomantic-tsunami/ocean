@@ -295,11 +295,7 @@ struct Serializer
                     {
                         // Recurse into static array elements which contain a
                         // dynamic array.
-
-                        foreach (element; s.tupleof[i])
-                        {
-                            len += This.countArraySize!(S, i)(field);
-                        }
+                        len += This.countElementSize!(S, i)(field);
                     }
                     else
                     {
@@ -354,7 +350,7 @@ struct Serializer
 
         size_t len = size_t.sizeof;
 
-        static if (is (T Base == Base[]))
+        static if (is (Unqual!(T) Base == Base[]))
         {
             // array is a dynamic array of dynamic arrays.
 
@@ -373,7 +369,7 @@ struct Serializer
             {
                 foreach (element; array)
                 {
-                    len += This.countElementSize(element);
+                    len += This.countElementSize!(S, i)(element);
                 }
             }
             else
@@ -398,7 +394,7 @@ struct Serializer
 
     ***************************************************************************/
 
-    private static size_t countElementSize ( T ) ( T element )
+    private static size_t countElementSize ( S, size_t i, T ) ( T element )
     out (size)
     {
         debug (SerializationTrace)
@@ -433,7 +429,16 @@ struct Serializer
 
             foreach (subelement; element)
             {
-                len += This.countElementSize(subelement);
+                static if (is(Unqual!(Base) Sub == Sub[]))
+                {
+                    // subelement is a dynamic array
+                    len += This.countArraySize!(S, i)(subelement);
+                }
+                else
+                {
+                    // subelement is a value containing dynamic arrays
+                    len += This.countElementSize!(S, i)(subelement);
+                }
             }
 
             return len;
@@ -493,7 +498,7 @@ struct Serializer
                     // Dump dynamic array.
 
                     data = This.dumpArray!(S, i)(s.tupleof[i], data);
-                    s.tupleof[i] = null;
+                    *(cast(Unqual!(T)*)&s.tupleof[i]) = null;
                 }
                 else static if (is (T Base : Base[]))
                 {
@@ -573,7 +578,7 @@ struct Serializer
 
         if (array.length)
         {
-            static if (is (T Base == Base[]))
+            static if (is (Unqual!(T) Base == Base[]))
             {
                 foreach (ref element; array)
                 {
@@ -606,7 +611,7 @@ struct Serializer
                     // array is an array of structs or static arrays which
                     // contain dynamic arrays: Recurse into array elements.
 
-                    data = This.dumpArrayElements(dst, data);
+                    data = This.dumpArrayElements!(S, i)(dst, data);
                 }
                 else
                 {
@@ -640,19 +645,18 @@ struct Serializer
     {
         foreach (ref element; array)
         {
-            static if (is(T Base: Base[]))
+            alias Unqual!(typeof(element)) U;
+
+            static if (is(T Base == Base[]))
             {
-                // element is a static or dynamic array
-                static if (is(T == Base[]))
-                {
-                    // element is a dynamic array
-                    data = This.dumpArray!(S, i)(element, data);
-                }
-                else
-                {
-                    // element is a static array
-                    data = This.dumpStaticArray!(S, i)(element, data);
-                }
+                // element is a dynamic array
+                data = This.dumpArray!(S, i)(element, data);
+                *(cast(U*)&element) = null;
+            }
+            else static if (is(T Base : Base[]))
+            {
+                // element is a static array
+                data = This.dumpStaticArray!(S, i)(element, data);
             }
             else
             {
@@ -664,7 +668,7 @@ struct Serializer
                         T.stringof ~ " doesn't have"
                 );
 
-                auto ptr = cast(Unqual!(T)*) &element;
+                auto ptr = cast(U*) &element;
                 data = This.dumpAllArrays(*ptr, data);
             }
         }
@@ -688,7 +692,8 @@ struct Serializer
 
     ***************************************************************************/
 
-    private static void[] dumpArrayElements ( T ) ( T[] array, void[] data )
+    private static void[] dumpArrayElements ( S, size_t i, T ) ( T[] array,
+        void[] data )
     out (result)
     {
         debug (SerializationTrace)
@@ -721,7 +726,7 @@ struct Serializer
         }
         else static if (is (T Base : Base[]))
         {
-            static assert (!is (Base[] == T),
+            static assert (!is (Base[] == Unqual!(T)),
                "expected static, not dynamic array of " ~ T.stringof);
 
             debug (SerializationTrace)
@@ -731,7 +736,7 @@ struct Serializer
 
             foreach (ref element; array)
             {
-                data = This.dumpElement(element, data);
+                data = This.dumpStaticArray!(S, i)(element[], data);
                 This.resetArrayReferences(element);
             }
         }
@@ -785,7 +790,7 @@ struct Serializer
                     This.resetReferences(s.tupleof[i]);
                 }
             }
-            else static if (is (T Base == Base[]))
+            else static if (is (Unqual!(T) Base == Base[]))
             {
                 // Reset field of dynamic array type.
 
@@ -800,7 +805,7 @@ struct Serializer
                     // Field of static array that contains a dynamic array:
                     // Recurse into field array elements.
 
-                    resetArrayReferences(s.tupleof[i]);
+                    resetArrayReferences(cast(Unqual!(Base)[])s.tupleof[i]);
                 }
             }
             else
@@ -836,8 +841,6 @@ struct Serializer
     }
     body
     {
-        static assert (ContainsDynamicArray!(T), "nothing to do for " ~ S.stringof);
-
         debug (SerializationTrace)
         {
             Stdout.formatln("> resetArrayReferences!({})({})", T.stringof, array.ptr);
