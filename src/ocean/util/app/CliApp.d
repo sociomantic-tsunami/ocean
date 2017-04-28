@@ -233,7 +233,7 @@ unittest
             settings.help = "Actually, this program does nothing. Sorry!";
 
             // Call the super class' ctor.
-            super(name, desc, VersionInfo.init, settings);
+            super(name, desc, ver, settings);
         }
 
         // Called after arguments and config file parsing.

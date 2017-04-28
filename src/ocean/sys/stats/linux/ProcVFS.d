@@ -154,7 +154,7 @@ struct ProcStat
 
 /*******************************************************************************
 
-    Parses /proc/<pid>/stat and extracts the data.
+    Reads /proc/<pid>/stat and extracts the data.
 
     Params:
         path = path of the file to query
@@ -167,14 +167,6 @@ struct ProcStat
 
 public ProcStat getProcStat (cstring path)
 {
-    ProcStat s;
-
-    cstring space = " ";
-    cstring parenth = ")";
-
-    auto space_it = find(space);
-    auto parenth_it = find(parenth);
-
     // Get the data from file
     scope file = new File(path);
 
@@ -187,55 +179,7 @@ public ProcStat getProcStat (cstring path)
 
     char[] data = procvfs_file_buf[0..num_read];
 
-    // The /proc/self/stat file is based on the following format
-    // (consult the man proc(5) page for details):
-    // pid (<cmd>) C # # # # .... #
-    // Where pid is a number, cmd is a file name, with arbitrary amount of
-    // spaces, but always with parentheses,
-    // C being the character describing the status of the program
-    // and # being again numbers, for every of the entries in the ProcStat
-
-    // consume pid
-    auto pid_pos = space_it.forward(data);
-    toInteger(data[0..pid_pos], s.pid);
-
-    // chop pid
-    data = data[pid_pos+1..$];
-
-    // chop the left bracket from cmd name
-    data = data[1 .. $];
-
-    // Find the last closing bracket (as the process name can contain bracket
-    // itself.
-    auto last_bracket = parenth_it.reverse(data);
-    s.cmd.length = last_bracket;
-    s.cmd[] = data[0..last_bracket];
-
-    // chop last bracket and space
-    data = data[last_bracket+2..$];
-
-    s.state = data[0];
-
-    // chop status and the space
-    data = data[2..$];
-
-    foreach (i, ref field; s.tupleof)
-    {
-        static if (i > 2)
-        {
-            static assert (isIntegerType!(typeof(field)));
-            auto next_space = space_it.forward(data);
-            toInteger(data[0..next_space], field);
-
-            // Last field doesn't have space after it
-            if (next_space < data.length)
-            {
-                data = data[next_space+1..$];
-            }
-        }
-    }
-
-    return s;
+    return parseProcStatData(data);
 }
 
 /*******************************************************************************
@@ -481,11 +425,6 @@ public ProcMemInfo getProcMemInfo ()
     // Instance of the getline_buffer_t.
     static getline_buffer_t getline_buf;
 
-
-    ProcMemInfo meminfo;
-
-    ulong res;
-
     auto f = fopen("/proc/meminfo".ptr, "r".ptr);
 
     if (!f)
@@ -495,6 +434,93 @@ public ProcMemInfo getProcMemInfo ()
 
     scope (exit) fclose(f);
 
+    cstring get_next_line ()
+    {
+        ssize_t read = getline(&getline_buf.ptr, &getline_buf.length, f);
+
+        if (read <= 0)
+        {
+            return null;
+        }
+
+        // getline gets the last \n
+        auto data = getline_buf.ptr[0 .. read - 1];
+
+        return data;
+    }
+
+    return parseProcMemInfoData(&get_next_line);
+}
+
+/*******************************************************************************
+
+    Returns:
+        size of machine's RAM in bytes, as reported in /proc/meminfo
+
+    Throws:
+        ErrnoException on failure to parse this file.
+
+*******************************************************************************/
+
+public ulong getTotalMemoryInBytes ()
+{
+    return getProcMemInfo().MemTotal;
+}
+
+/*******************************************************************************
+
+    Initializes .exception object if necessary and throws it, carrying the
+    last errno.
+
+    Params:
+        name = name of the method that failed
+
+*******************************************************************************/
+
+private void throwException( istring name )
+{
+    auto saved_errno = .errno;
+
+    if (.procvfs_exception is null)
+    {
+        .procvfs_exception = new ErrnoException();
+    }
+
+    throw .procvfs_exception.set(saved_errno, name);
+}
+
+/*******************************************************************************
+
+    Provides parsing for /proc/meminfo data.
+
+    Params:
+        read_next_line = delegate providing next line, or `null` when
+        no more data is to be parsed
+
+    Returns:
+        Filled in ProcMemInfo structure
+
+*******************************************************************************/
+
+private ProcMemInfo parseProcMemInfoData (cstring delegate() read_next_line)
+{
+    /// Helper function to strip leading spaces
+    /// Params:
+    ///     data: string to strip spaces from
+    /// Returns:
+    ///     passed string with no leading spaces
+    cstring strip_spaces (cstring data)
+    {
+        while (data.length && data[0] == ' ')
+        {
+            data = data[1..$];
+        }
+
+        return data;
+    }
+
+    ProcMemInfo meminfo;
+
     cstring colon = ":";
     cstring space = " ";
     auto colon_it = find(colon);
@@ -502,34 +528,27 @@ public ProcMemInfo getProcMemInfo ()
 
     while (true)
     {
-        ssize_t read = getline(&getline_buf.ptr, &getline_buf.length, f);
+        auto data = read_next_line();
 
-        if (read <= 0)
+        if (data.length == 0)
         {
             break;
         }
-
-        // getline gets the last \n
-        auto data = getline_buf.ptr[0 .. read - 1];
 
         // MemTotal:          32 kB
         auto colon_pos = colon_it.forward(data);
         auto field_name = data[0..colon_pos];
 
         // Swallow all spaces between colon and number
-        data = data[colon_pos..$];
+        data = data[colon_pos+1..$];
         enforce(data.length);
-
-        while (data[0] == ' ')
-        {
-            data = data[1..$];
-        }
+        data = strip_spaces(data);
 
         // Find separator between value and units
         auto space_pos = space_it.forward(data);
         auto field_value = data[0..space_pos];
         auto field_units = space_pos < data.length ?
-            data[space_pos + 1 .. $] : "";
+            strip_spaces(data[space_pos + 1 .. $]) : "";
 
         /***********************************************************************
 
@@ -586,39 +605,207 @@ public ProcMemInfo getProcMemInfo ()
     return meminfo;
 }
 
-/*******************************************************************************
-
-    Returns:
-        size of machine's RAM in bytes, as reported in /proc/meminfo
-
-    Throws:
-        ErrnoException on failure to parse this file.
-
-*******************************************************************************/
-
-public ulong getTotalMemoryInBytes ()
+version (UnitTest)
 {
-    return getProcMemInfo().MemTotal;
+    import ocean.io.Stdout;
+}
+
+unittest
+{
+    // test empty string
+    cstring empty () { return null; }
+    test!("==")(parseProcMemInfoData(&empty), ProcMemInfo.init);
+
+    // test input in expected format, all lines supported
+    cstring[] data =
+        [
+        "MemTotal:        8131024 kB",
+        "MemFree:           35664 MB",
+        "MemAvailable:          4 GB",
+        "Buffers:               1   "
+        ];
+
+    int line_read;
+    cstring read_data(cstring[] data) {
+        if (line_read >= data.length)
+            return null;
+        return data[line_read++];
+    }
+
+    auto res = parseProcMemInfoData({ return read_data(data); });
+
+    ProcMemInfo expected;
+    expected.MemTotal = 8131024UL * 1024;
+    expected.MemFree  = 35664UL * 1024 * 1024;
+    expected.MemAvailable = 4UL * 1024 * 1024 * 1024;
+    expected.Buffers = 1UL;
+
+    test!("==")(res, expected);
+
+    // test input in expected format, but add some
+    // lines that don't correspond ProcMemInfo fields (kernel update)
+    cstring[] new_data =
+        [
+        "SomeNewStat:       11111 kB",
+        "MemTotal:        8131024 kB",
+        "MemFree:           35664 MB",
+        "MemAvailable:          4 GB",
+        "ExtraStats:        11111 kB",
+        "Buffers:               1   "
+        ];
+
+    line_read = 0;
+    res = parseProcMemInfoData({ return read_data(new_data); });
+    test!("==")(res, expected);
+
+    // Let's see if we can handle misalignment
+    // Separator between name and value is ':',
+    // and between value and units is ' '. Any number of spaces
+    // should be irrelevant
+    data =
+        [
+        "MemTotal:8131024 kB",
+        "MemFree:35664  MB",
+        "MemAvailable:          4 GB",
+        "Buffers:               1   "
+        ];
+
+    line_read = 0;
+    res = parseProcMemInfoData({ return read_data(data); });
+    test!("==")(res, expected);
 }
 
 /*******************************************************************************
 
-    Initializes .exception object if necessary and throws it, carrying the
-    last errno.
+    Parses /proc/<pid>/stat data and extracts the data.
 
     Params:
-        name = name of the method that failed
+        path = path of the file to query
+
+    Returns:
+        filled ProcStat structure based on data in form of /proc/self/stat
+        or empty ProcStat instance in case parsing has failed.
 
 *******************************************************************************/
 
-private void throwException( istring name )
+private ProcStat parseProcStatData (cstring data)
 {
-    auto saved_errno = .errno;
+    ProcStat s;
 
-    if (.procvfs_exception is null)
+    cstring space = " ";
+    cstring parenth = ")";
+
+    auto space_it = find(space);
+    auto parenth_it = find(parenth);
+
+    // The /proc/self/stat file is based on the following format
+    // (consult the man proc(5) page for details):
+    // pid (<cmd>) C # # # # .... #
+    // Where pid is a number, cmd is a file name, with arbitrary amount of
+    // spaces, but always with parentheses,
+    // C being the character describing the status of the program
+    // and # being again numbers, for every of the entries in the ProcStat
+
+    // consume pid
+    auto pid_pos = space_it.forward(data);
+    if (pid_pos == data.length)
+        return ProcStat.init;
+
+    toInteger(data[0..pid_pos], s.pid);
+
+    // chop pid
+    data = data[pid_pos+1..$];
+
+    // chop the left bracket from cmd name
+    data = data[1 .. $];
+
+    // Find the last closing bracket (as the process name can contain bracket
+    // itself.
+    auto last_bracket = parenth_it.reverse(data);
+    // There should be space for the space and process status ("(cat) R ")
+    if (last_bracket >= data.length - 3)
+        return ProcStat.init;
+
+    s.cmd.length = last_bracket;
+    s.cmd[] = data[0..last_bracket];
+
+    // chop last bracket and space
+    data = data[last_bracket+2..$];
+
+    s.state = data[0];
+
+    // Cut the process status and the trailing space
+    data = data[2..$];
+
+    // Now we have a list of numbers, parse one after another
+    foreach (i, ref field; s.tupleof)
     {
-        .procvfs_exception = new ErrnoException();
+        static if (i > 2)
+        {
+            static assert (isIntegerType!(typeof(field)));
+            auto next_space = space_it.forward(data);
+            toInteger(data[0..next_space], field);
+
+            // Last field doesn't have space after it
+            if (next_space < data.length)
+            {
+                data = data[next_space+1..$];
+            }
+            else
+            {
+                break;
+            }
+        }
     }
 
-    throw .procvfs_exception.set(saved_errno, name);
+    return s;
+}
+
+unittest
+{
+    // Test with invalid inputs, all should return empty struct
+    auto data = "13300 (cat R 32559 13300 32559 34817 13300 4194304 116 0 0 0 "[];
+    test!("==")(parseProcStatData(data), ProcStat.init);
+
+    data = "";
+    test!("==")(parseProcStatData(data), ProcStat.init);
+
+    data = "13300 (cat)";
+    test!("==")(parseProcStatData(data), ProcStat.init);
+
+    // Test with no fields except process state
+    data = "13300 (cat) R";
+    test!("==")(parseProcStatData(data), ProcStat.init);
+
+    // Test with just three first fields filled
+    data = "13300 (cat) R 32559 13300 32559";
+    auto res = parseProcStatData(data);
+
+    // Compare the strings separatelly
+    test!("==")(res.cmd, "cat");
+
+    // workaround for easy comparing structs without going into field by field
+    // comparison
+    char[] empty_string = "".dup;
+    res.cmd = empty_string;
+    test!("==")(res, ProcStat(13300, empty_string, 'R', 32559, 13300, 32559));
+
+    // Test will full data
+    data = "13300 (cat) R 32559 13300 32559 34817 13300 4194304 116 0 0 0 "
+        ~ "0 0 0 0 20 0 1 0 28524130 9216000 173 18446744073709551615 4194304 "
+        ~ "4240332 140734453962304 140734453961656 139949142898304 0 0 0 0 0 "
+        ~ "0 0 17 1 0 0 0 0 0 6340112 6341364 21700608 140734453969735 "
+        ~ "140734453969755 140734453969755 140734453972975 0";
+
+    res = parseProcStatData(data);
+    test!("==")(res.cmd, "cat");
+    res.cmd = empty_string;
+
+    test!("==")(res, ProcStat(13300, empty_string, 'R', 32559, 13300, 32559, 34817, 13300,
+                4194304, 116, 0, 0, 0, 0, 0, 0, 0, 20, 0, 1, 0, 28524130,
+                9216000, 173, 18446744073709551615UL, 4194304, 4240332,
+                140734453962304, 140734453961656, 139949142898304, 0, 0, 0, 0,
+                0, 0, 0, 17, 1, 0, 0, 0, 0, 0, 6340112, 6341364, 21700608,
+                140734453969735, 140734453969755, 140734453969755,
+                140734453972975, 0));
 }

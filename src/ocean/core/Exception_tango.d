@@ -161,7 +161,7 @@ class IOException : PlatformException
 
     *******************************************************************/
 
-    public this ( istring msg, int error_code, istring func_name,
+    public this ( istring msg, int error_num, istring func_name,
         istring file = __FILE__, long line = __LINE__ )
     {
         super(msg, file, line);

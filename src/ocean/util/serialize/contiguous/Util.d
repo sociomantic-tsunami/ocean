@@ -21,10 +21,11 @@ module ocean.util.serialize.contiguous.Util;
 
 *******************************************************************************/
 
-import ocean.util.serialize.contiguous.Contiguous,
-       ocean.util.serialize.contiguous.Serializer,
-       ocean.util.serialize.contiguous.Deserializer;
+import ocean.util.serialize.contiguous.Contiguous;
+import ocean.util.serialize.contiguous.Serializer;
+import ocean.util.serialize.contiguous.Deserializer;
 
+import ocean.transition;
 import ocean.core.Test;
 
 /*******************************************************************************
@@ -45,7 +46,7 @@ import ocean.core.Test;
 
 /******************************************************************************/
 
-public Contiguous!(S) copy(S) ( Contiguous!(S) src, ref Contiguous!(S) dst )
+public Contiguous!(S) copy(S) ( in Contiguous!(S) src, ref Contiguous!(S) dst )
 {
     Deserializer.deserialize!(S)(src.data, dst);
     return dst;
@@ -65,11 +66,27 @@ public Contiguous!(S) copy(S) ( Contiguous!(S) src, ref Contiguous!(S) dst )
 
 *******************************************************************************/
 
-public Contiguous!(S) copy(S) ( ref S src, ref Contiguous!(S) dst )
+version (D_Version2)
 {
-    Serializer.serialize(src, dst.data);
-    dst = Deserializer.deserialize!(S)(dst.data);
-    return dst;
+    // version has to be used here because `in ref` is not legal D1 and trying
+    // to use `Const!(T)` breaks IFTI
+    mixin(`
+    public Contiguous!(S) copy(S) ( ref const S src, ref Contiguous!(S) dst )
+    {
+        Serializer.serialize(src, dst.data);
+        dst = Deserializer.deserialize!(S)(dst.data);
+        return dst;
+    }
+    `);
+}
+else
+{
+    public Contiguous!(S) copy(S) ( ref S src, ref Contiguous!(S) dst )
+    {
+        Serializer.serialize(src, dst.data);
+        dst = Deserializer.deserialize!(S)(dst.data);
+        return dst;
+    }
 }
 
 unittest
@@ -92,6 +109,19 @@ unittest
 
     test!("==")(two.ptr.arr, t.arr);
     two.enforceIntegrity();
+}
+
+unittest
+{
+    struct Test
+    {
+        int[] arr;
+    }
+
+    Const!(Test) t = Test([ 1, 2, 3 ]);
+    Contiguous!(Test) dst;
+    copy(t, dst);
+    test!("==")(dst.ptr.arr, t.arr);
 }
 
 /*******************************************************************************
