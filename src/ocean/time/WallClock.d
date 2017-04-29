@@ -167,16 +167,3 @@ struct WallClock
                 return fromDate(date) + TimeSpan(mod);
         }
 }
-
-
-version (Posix)
-{
-    version (darwin) {}
-    else
-    {
-        static this()
-        {
-            tzset();
-        }
-    }
-}
