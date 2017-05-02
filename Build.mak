@@ -24,7 +24,7 @@ TEST_FILTER_OUT += \
 
 # integration test which is disabled by default because it depends on Collectd
 TEST_FILTER_OUT += \
-	$C/test/collectd/main.d 
+	$C/test/collectd/main.d
 
 $O/test-filesystemevent: override LDFLAGS += -lrt
 
@@ -35,6 +35,8 @@ $O/test-unixlistener: override LDFLAGS += -lebtree
 $O/test-loggerstats: override LDFLAGS += -lebtree
 
 $O/test-signalext: override LDFLAGS += -lebtree
+
+$O/test-sysstats: override LDFLAGS += -lebtree
 
 # Link unittests to all used libraries
 $O/%unittests: override LDFLAGS += -lglib-2.0 -lpcre -lxml2 -lxslt -lebtree \

@@ -309,10 +309,9 @@ struct InetAddress ( bool IPv6 = false )
 
     public sockaddr* opCall ( cstring ip_address_str, ushort port = 0 )
     {
-        this.port = port;
-
         if (this.inet_pton(ip_address_str) == 1)
         {
+            this.port = port;
             return cast (sockaddr*) &this.addr;
         }
         else
