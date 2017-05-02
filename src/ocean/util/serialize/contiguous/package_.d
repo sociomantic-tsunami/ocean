@@ -734,10 +734,10 @@ unittest
 {
     static struct CS
     {
-        cstring s;
+        mstring s;
     }
 
-    CS cs = CS("Hello world");
+    auto cs = Const!(CS)("Hello world");
     void[] buffer;
 
     Serializer.serialize(cs, buffer);
