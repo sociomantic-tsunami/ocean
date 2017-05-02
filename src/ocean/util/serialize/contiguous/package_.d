@@ -734,10 +734,10 @@ unittest
 {
     static struct CS
     {
-        cstring s;
+        mstring s;
     }
 
-    CS cs = CS("Hello world");
+    auto cs = Const!(CS)("Hello world");
     void[] buffer;
 
     Serializer.serialize(cs, buffer);
@@ -782,10 +782,14 @@ version (D_Version2) unittest
     //Deserializer.deserialize!(IS)(buffer1);
     //Deserializer.deserialize!(II)(buffer2);
 
-    static assert(!is(typeof({Deserializer.deserialize!(IS)(buffer1);})),
-                  "Serializer should reject a struct with 'istring'");
-    static assert(!is(typeof({Deserializer.deserialize!(II)(buffer2);})),
-                  "Deserializer should reject a struct with 'immutable' element");
+    version (none)
+    {
+        // TODO: re-enable in v4.x.x
+        static assert(!is(typeof({Deserializer.deserialize!(IS)(buffer1);})),
+                      "Serializer should reject a struct with 'istring'");
+        static assert(!is(typeof({Deserializer.deserialize!(II)(buffer2);})),
+                      "Deserializer should reject a struct with 'immutable' element");
+    }
 }
 
 /******************************************************************************
@@ -870,8 +874,11 @@ unittest
     // Make sure ConstS cannot be deserialised; its const fields should be
     // rejected.
     version(D_Version2)
-        static assert(!mixin(
-            "__traits(compiles, Deserializer.deserialize!(ConstS)(buffer))"));
+    {
+        // TODO: re-enable in v4.x.x
+        version (none)
+            static assert(!is(typeof(Deserializer.deserialize!(ConstS)(buffer))));
+    }
 
     auto cont_S = Deserializer.deserialize!(UnqualConstS)(buffer);
     cont_S.enforceIntegrity();
