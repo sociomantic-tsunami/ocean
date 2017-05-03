@@ -390,7 +390,8 @@ private void handle (T) (T v, FormatInfo f, Sink sf, ElementSink se)
     else static if (is(Unqual!(T) == float) || is(Unqual!(T) == double)
                     || is(Unqual!(T) == real))
     {
-        char[T.sizeof * 8] buff = void;
+        const POTENTIAL_COMMAS =  6; // Number of commas found in long.max
+        char[T.sizeof * 8 + POTENTIAL_COMMAS] buff = void;
         se(Float.format(buff, v, f.format), f);
     }
 
@@ -446,16 +447,18 @@ private void handle (T) (T v, FormatInfo f, Sink sf, ElementSink se)
     else static if (is(typeof(T.min)) && T.min < 0)
     {
         // Needs to support base 2 at most, plus an optional prefix
-        // of 2 chars max
-        char[T.sizeof * 8 + 2] buff = void;
+        // of 2 chars max + max potential commans (found for base 2)
+        const POTENTIAL_COMMAS = (T.sizeof * 8) / 4;
+        char[T.sizeof * 8 + 2 + + POTENTIAL_COMMAS] buff = void;
         se(Integer.format(buff, v, f.format), f);
     }
     // Unsigned integer
     else static if (is(typeof(T.min)) && T.min == 0)
     {
         // Needs to support base 2 at most, plus an optional prefix of 2 chars
-        // max
-        char[T.sizeof * 8 + 2] buff = void;
+        // max + max potential commans (found for base 2)
+        const POTENTIAL_COMMAS = (T.sizeof * 8) / 4;
+        char[T.sizeof * 8 + 2 + POTENTIAL_COMMAS] buff = void;
         se(Integer.format(buff, v, (f.format.length ? f.format : "u")), f);
     }
 
@@ -662,6 +665,9 @@ private FormatInfo consume (Sink sink, ref cstring fmt)
             ++s;
         ret.format = fs[0 .. cast(size_t) (s - fs)];
     }
+    // Special support for commas without need for ':'
+    else if (*s == '_' && s + 1 < end && *(s+1) == '}')
+        ret.format = (s++)[0 .. 1];
 
     forwardSlice(fmt, s);
 
@@ -951,6 +957,23 @@ unittest
     assert(format("{0}", 18446744073709551615UL) == "18446744073709551615");
     assert(format("{0}", 18446744073709551615UL) == "18446744073709551615");
 
+    // Integers with commans
+    assert(format("{0:_}", cast(short)-32768 ) == "-32,768");
+    assert(format("{0:_}", cast(short)32767) == "32,767");
+    assert(format("{0:_}", cast(ushort)65535) == "65,535");
+    assert(format("{0:_}", cast(short)32767) == "32,767");
+    assert(format("{0:_}", cast(ushort)65535) == "65,535");
+    assert(format("{0:_}", 999) == "999");
+    assert(format("{0:_}", -999) == "-999");
+    assert(format("{_}", -9223372036854775807L) == "-9,223,372,036,854,775,807");
+    assert(format("{_}", 0x8000_0000_0000_0000L) == "9,223,372,036,854,775,808");
+    assert(format("{_}", 9223372036854775807L) == "9,223,372,036,854,775,807");
+    assert(format("{_}", 18446744073709551615UL) == "18,446,744,073,709,551,615");
+    assert(format("x{_}x", 123_456) == "x123,456x");
+    // Check that internal buffer is big enough to hold the longest string
+    assert(format("{:b_}", ulong.max) ==
+        "1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111");
+
     // fragments before and after
     assert(format("d{0}d", "s") == "dsd");
     assert(format("d{0}d", "1234567890") == "d1234567890d");
@@ -1037,6 +1060,22 @@ unittest
     assert(format("{:f.}", 1.237) == "1.24");
     assert(format("{:f.}", 1.000) == "1");
     assert(format("{:f2.}", 200.001) == "200");
+
+    // floating points with commas
+    assert(format("{:_}", 1_234_567.89) == "1,234,567.89");
+    assert(format("{_}", 1_234_567.89) == "1,234,567.89");
+    assert(format("{_}", -1_234_567.89) == "-1,234,567.89");
+    assert(format("{_}", 1_234_567.0) == "1,234,567.00");
+    assert(format("{_}", 999.0) == "999.00");
+    assert(format("{_}", -999.0) == "-999.00");
+    assert(format("{0:_}", 1.23f) == "1.23");
+    assert(format("{0:_f4}", 1.23456789L) == "1.2346");
+    assert(format("{0:_e4}", 0.0001) == "1.0000e-04");
+    assert(format("{:_.4}", 1.2345) == "1.2345");
+    assert(format("{:_4.}", 1.230) == "1.23");
+    assert(format("{:_1.}", 1.230) == "1.2");
+    assert(format("{:_.}", 1.233) == "1.23");
+    assert(format("{:_.}", 1.000) == "1");
 
     // array output
     int[] a = [ 51, 52, 53, 54, 55 ];

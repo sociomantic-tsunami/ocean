@@ -94,6 +94,30 @@ private enum
 
 /******************************************************************************
 
+  Defines information needed to format Commas and decimals.
+
+ ******************************************************************************/
+
+public struct DecimalMark
+{
+    /// Character used for a comma
+    char  comma_char;
+    /// Character used for a decimal
+    char  decimal_char;
+    /// Number of digits between commas. len = 0 means commas are not used.
+    ubyte len;
+}
+
+/******************************************************************************
+
+  Default separtor used by the format() function.
+
+ ******************************************************************************/
+
+private const DEFAULT_DECIMAL_MARK = DecimalMark(',', '.', 0);
+
+/******************************************************************************
+
   Convert a formatted string of digits to a floating-point
   number. Throws an exception where the input text is not
   parsable in its entirety.
@@ -247,6 +271,7 @@ public Const!(T)[] format (T, V) (T[] output, V v, in T[] fmt)
     int dec = Dec;
     int exp = Exp;
     bool pad = true;
+    DecimalMark separator = DEFAULT_DECIMAL_MARK;
 
     for (auto p = fmt.ptr, e = p + fmt.length; p < e; ++p)
         switch (*p)
@@ -257,6 +282,9 @@ public Const!(T)[] format (T, V) (T[] output, V v, in T[] fmt)
         case 'e':
         case 'E':
             exp = 0;
+            break;
+        case '_':
+            separator = DecimalMark(',', '.', 3);
             break;
         default:
             Unqual!(T) c = *p;
@@ -269,7 +297,7 @@ public Const!(T)[] format (T, V) (T[] output, V v, in T[] fmt)
             break;
         }
 
-    return format!(T)(output, v, dec, exp, pad);
+    return format!(T)(output, v, dec, exp, pad, separator);
 }
 
 
@@ -286,6 +314,26 @@ unittest
     // Unlike Layout.floater, 'x' and 'X' aren't handled.
     //assert(format(buff, 8400.0, "X") == "0X40C0680000000000");
     assert(format(buff, 8400.0, "X") == "8400.00");
+
+    assert(format(buff, 1_234_567.89, "_") == "1,234,567.89");
+    assert(format(buff, -1_234_567.89, "_") == "-1,234,567.89");
+    assert(format(buff, 999.0, "_") == "999.00");
+    assert(format(buff, -999.0, "_") == "-999.00");
+    assert(format(buff, 1, "_") == "1.00");
+    assert(format(buff, -1, "_") == "-1.00");
+    assert(format(buff, 0f, "_") == "0.00");
+    assert(format(buff, 0.0001, "_.4") == "0.0001");
+    assert(format(buff, 0.0001, "_e4") == "1.0000e-04");
+    assert(format(buff, 1_234.567, "_.3") == "1,234.567");
+    assert(format(buff, 1_234.0, "_.") == "1,234");
+    assert(format(buff, float.nan, "_.") == "nan");
+    assert(format(buff, float.infinity, "_.") == "inf");
+
+    alias format!(char) formatT;
+    auto separator = DecimalMark('.', ',', 3); // German locale example
+    assert(formatT(buff, 1_234.56, Dec, Exp, Pad, separator) == "1.234,56");
+    separator = DecimalMark('_', '&', 2);
+    assert(formatT(buff, 1_23_45.67, Dec, Exp, Pad, separator) == "1_23_45&67");
 }
 
 
@@ -304,7 +352,8 @@ unittest
 
  ******************************************************************************/
 
-T[] format(T) (T[] dst, NumType x, int decimals=Dec, int e=Exp, bool pad=Pad)
+T[] format(T) (T[] dst, NumType x, int decimals=Dec, int e=Exp, bool pad=Pad,
+    DecimalMark separator = DEFAULT_DECIMAL_MARK)
 {
     Const!(char)*  end, str;
     int       exp,
@@ -375,11 +424,26 @@ T[] format(T) (T[] dst, NumType x, int decimals=Dec, int e=Exp, bool pad=Pad)
             if (exp <= 0)
                 *p++ = '0';
             else
+            {
+                if (separator.len)
+                {
+                    // +1 to not print comma after the last 3 digits
+                    while (exp >= separator.len + 1)
+                    {
+                        do
+                        {
+                            *p++ = (*str) ? *str++ : '0';
+                        }
+                        while (--exp % separator.len);
+                        *p++ = separator.comma_char;
+                    }
+                }
                 for (; exp > 0; --exp)
                     *p++ = (*str) ? *str++ : '0';
+            }
             if (*str || pad)
             {
-                *p++ = '.';
+                *p++ = separator.decimal_char;
                 auto d = p;
                 for (; exp < 0; ++exp)
                     *p++ = '0';
