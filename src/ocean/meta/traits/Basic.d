@@ -400,6 +400,46 @@ unittest
 
 *******************************************************************************/
 
+template isReferenceType ( T )
+{
+    const isReferenceType =
+           isPointerType!(T)
+        || is(T == delegate)
+        || isArrayType!(T) == ArrayKind.Dynamic
+        || isArrayType!(T) == ArrayKind.Associative
+        || is(T == class)
+        || is(T == interface);
+}
+
+///
+unittest
+{
+    struct S { }
+    class C { }
+    interface I { }
+
+    static assert (!isReferenceType!(S));
+    static assert ( isReferenceType!(S*));
+    static assert ( isReferenceType!(S[]));
+    static assert ( isReferenceType!(C));
+    static assert ( isReferenceType!(I));
+    static assert ( isReferenceType!(S[C]));
+    static assert ( isReferenceType!(void function(int)));
+
+    static void foo ( ) { }
+    static assert (!isReferenceType!(typeof(foo)));
+}
+
+/*******************************************************************************
+
+    Params:
+        T = type to check
+
+    Returns:
+        `true` if `T` is a struct, class, interface or union
+
+*******************************************************************************/
+
 template isAggregateType ( T )
 {
     const isAggregateType =

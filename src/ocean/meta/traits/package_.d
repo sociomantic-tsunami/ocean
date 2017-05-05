@@ -18,3 +18,4 @@
 module ocean.meta.traits.package_;
 
 public import ocean.meta.traits.Basic;
+public import ocean.meta.traits.Indirections;
