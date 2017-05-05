@@ -1,33 +1,23 @@
 #!/bin/sh
 set -xe
 
-if_d() {
-    wanted=$1
-    shift
-    if test $DVER -eq $wanted
-    then
-        "$@"
-    fi
-}
+# Defaults (in case they are not set by the CI)
+F=${F:-production}
+DC=${DC:-dmd1}
+DIST=${DIST:-xenial}
 
-for DVER in 1 2
-do
-    if test $DVER = 1; then
-        DC=dmd1
-    else
-        DC=dmd-transitional
-    fi
-    export DVER DC BUILD_DIR_NAME=build-d$DVER F=production
+DVER=1
+if test "$DC" != dmd1; then
+	DVER=2
+fi
 
-    xmlfile="$BUILD_DIR_NAME/$F/tmp/unittests.xml"
+export DC DVER
 
-    if_d 2 \
-        make -r d2conv
+if test "$DC" != dmd1; then
+	make -r d2conv
+fi
 
-    make -r all
+make -r all
 
-    make -r test UTFLAGS="-x $xmlfile"
+make -r test
 
-    if_d 2 \
-        sed -i 's/classname="/classname="D2./g' $xmlfile
-done
