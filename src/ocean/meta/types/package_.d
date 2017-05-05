@@ -19,3 +19,4 @@
 module ocean.meta.types.package_;
 
 public import ocean.meta.types.Qualifiers;
+public import ocean.meta.types.ReduceType;
