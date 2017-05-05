@@ -9,3 +9,5 @@ services: docker
 install: ci/travis-install.sh
 
 script: ci/travis-script.sh
+
+after_success: ci/travis-after-success.sh
