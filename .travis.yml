@@ -4,11 +4,8 @@ language: generic
 
 sudo: required
 
-services:
-    - docker
+services: docker
 
-install:
-    - ci/travis-install.sh
+install: ci/travis-install.sh
 
-script:
-    - ci/travis-script.sh
+script: ci/travis-script.sh
