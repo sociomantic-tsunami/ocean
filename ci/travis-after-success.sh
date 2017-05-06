@@ -9,6 +9,9 @@ then
 	git clean -fdx
 	# Convert the code
 	make -r d2conv
+	# Add dub.sdl
+	cp -v ci/ocean-d2-dub.sdl dub.sdl
+	git add dub.sdl
 	# Commit the changes and tag
 	git config user.name="Sociomantic Travis Bot"
 	git config user.email="tsunami@sociomantic.com"
