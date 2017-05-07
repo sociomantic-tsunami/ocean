@@ -35,7 +35,11 @@ class TaskSelectTransceiver
     import ocean.stdc.posix.sys.uio: iovec, readv;
     import ocean.stdc.posix.sys.socket: setsockopt;
     import ocean.stdc.posix.netinet.in_: IPPROTO_TCP;
-    import core.sys.linux.sys.netinet.tcp: TCP_CORK;
+
+    static if (__VERSION__ >= 2000 && __VERSION__ < 2073)
+        enum { TCP_CORK = 3 }
+    else
+        import core.sys.linux.sys.netinet.tcp: TCP_CORK;
 
     import ocean.sys.Epoll: epoll_event_t;
     alias epoll_event_t.Event Event;

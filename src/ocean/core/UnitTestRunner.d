@@ -58,8 +58,29 @@ import ocean.transition;
 
 import ocean.stdc.string: strdup, strlen, strncmp;
 import core.sys.posix.unistd: unlink;
-import core.sys.posix.libgen: basename;
-import core.sys.posix.sys.time: gettimeofday, timeval, timersub;
+import core.sys.posix.sys.time: gettimeofday, timeval;
+
+static if (__VERSION__ >= 2000 && __VERSION__ < 2073)
+{
+    extern(C) char* basename (char*);
+
+    void timersub (in timeval* a, in timeval* b, timeval *result)
+    {
+        result.tv_sec = a.tv_sec - b.tv_sec;
+        result.tv_usec = a.tv_usec - b.tv_usec;
+        if (result.tv_usec < 0)
+        {
+            --result.tv_sec;
+            result.tv_usec += 1_000_000;
+        }
+    }
+}
+else
+{
+    import core.sys.posix.libgen: basename;
+    import core.sys.posix.sys.time: timersub;
+}
+
 import ocean.core.Runtime: Runtime;
 import ocean.core.Exception_tango : AssertException;
 import ocean.io.Stdout_tango: Stdout, Stderr;

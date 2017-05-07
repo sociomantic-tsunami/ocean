@@ -50,7 +50,22 @@ module ocean.text.util.StringEncode;
 
 import ocean.transition;
 
-import core.sys.posix.iconv;
+static if (__VERSION__ >= 2000 && __VERSION__ < 2073)
+{
+    extern (C)
+    {
+        alias void* iconv_t;
+
+        iconv_t iconv_open (in char* tocode, in char* fromcode);
+
+        size_t iconv (iconv_t cd, char** inbuf, size_t* inbytesleft,
+            char** outbuf, size_t* outbytesleft);
+
+        int iconv_close (iconv_t cd);
+    }
+}
+else
+    import core.sys.posix.iconv;
 
 import core.stdc.errno;
 
