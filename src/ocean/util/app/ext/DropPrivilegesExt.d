@@ -15,18 +15,19 @@
 
 module ocean.util.app.ext.DropPrivilegesExt;
 
-import ocean.util.app.model.IApplicationExtension;
+
+import ocean.stdc.stringz;
+import ocean.transition;
 import ConfigFiller = ocean.util.config.ConfigFiller;
 import ocean.util.app.ext.model.IConfigExtExtension;
+import ocean.util.app.model.IApplicationExtension;
 
-import ocean.transition;
-import core.sys.posix.unistd : setuid, setgid;
-import core.sys.posix.pwd;
-import core.stdc.string;
-import ocean.stdc.stringz;
-import core.sys.posix.grp;
-import core.sys.posix.unistd;
 import core.stdc.errno;
+import core.stdc.string;
+import core.sys.posix.grp;
+import core.sys.posix.pwd;
+import core.sys.posix.unistd;
+
 
 /*******************************************************************************
 

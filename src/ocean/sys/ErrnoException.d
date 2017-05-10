@@ -37,12 +37,11 @@ version (UnitTest)
 
 public class ErrnoException : Exception
 {
+    import ocean.core.Exception : ReusableExceptionImplementation;
+    import ocean.core.Traits : ReturnTypeOf, identifier;
     import ocean.stdc.string;
     import ocean.stdc.stringz;
-    import ocean.core.Traits : ReturnTypeOf;
 
-    import ocean.core.Exception : ReusableExceptionImplementation;
-    import ocean.core.Traits : identifier;
 
     /**************************************************************************
 

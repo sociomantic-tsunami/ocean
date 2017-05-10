@@ -2076,5 +2076,3 @@ deprecated public class SocketSet
                 return select (checkRead, checkWrite, checkError, null);
         }
 }
-
-
