@@ -30,27 +30,16 @@
 
 module ocean.text.convert.DateTime_tango;
 
+import ocean.core.Exception_tango;
+import ocean.stdc.posix.langinfo;
+import ocean.stdc.stringz;
+import Integer = ocean.text.convert.Integer_tango;
+import Utf = ocean.text.convert.Utf;
+import ocean.time.chrono.Calendar;
+import ocean.time.chrono.Gregorian;
 import ocean.transition;
 
-import ocean.core.Exception_tango;
-
-import ocean.time.chrono.Calendar,
-       ocean.time.chrono.Gregorian;
-
-import Utf = ocean.text.convert.Utf;
-
-import Integer = ocean.text.convert.Integer_tango;
-
 import core.sys.posix.time; // timezone
-
-/******************************************************************************
-
-        O/S specifics
-
-******************************************************************************/
-
-import ocean.stdc.stringz;
-import ocean.stdc.posix.langinfo;
 
 /******************************************************************************
 

@@ -535,5 +535,3 @@ You might want to delete the permanent one afterwards, too. :)")
 
     Stdout("\nDone.").newline;
 }
-
-
