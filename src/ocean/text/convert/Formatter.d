@@ -36,10 +36,15 @@ version (UnitTest)
 
 /*******************************************************************************
 
-    Type of 'sink' that can be passed to `format`, matches `Layout.SizeSink`
+    Type of 'sink' that can be passed to `format`, that will just format a
+    string into the provided sink.
 
 *******************************************************************************/
 
+public alias void delegate(cstring) FormatterSink;
+
+/// Deprecated as the `size_t` return is not used. Use `FormatterSink` instead.
+deprecated("Use FormatterSink instead, Sink's return value is never used")
 public alias size_t delegate(cstring) Sink;
 
 
@@ -55,7 +60,7 @@ public alias size_t delegate(cstring) Sink;
 
 *******************************************************************************/
 
-private alias size_t delegate(cstring, ref Const!(FormatInfo)) ElemSink;
+private alias void delegate(cstring, ref Const!(FormatInfo)) ElemSink;
 
 /// This was accidentally made private so needs to be deprecated
 deprecated("This alias shouldn't be used from outside the Formatter")
@@ -79,10 +84,9 @@ public istring format (Args...) (cstring fmt, Args args)
 {
     mstring buffer;
 
-    scope Sink sink = (cstring s)
+    scope FormatterSink sink = (cstring s)
     {
         buffer ~= s;
-        return s.length;
     };
 
     sformat(sink, fmt, args);
@@ -107,10 +111,9 @@ public istring format (Args...) (cstring fmt, Args args)
 
 public mstring sformat (Args...) (ref mstring buffer, cstring fmt, Args args)
 {
-    scope Sink sink = (cstring s)
+    scope FormatterSink sink = (cstring s)
     {
         buffer ~= s;
-        return s.length;
     };
     sformat(sink, fmt, args);
     return buffer;
@@ -143,14 +146,13 @@ public mstring snformat (Args...) (mstring buffer, cstring fmt, Args args)
 {
     size_t start;
 
-    scope Sink sink = (cstring s)
+    scope FormatterSink sink = (cstring s)
     {
         size_t left = buffer.length - start;
         size_t wsize = left <= s.length ? left : s.length;
         if (wsize > 0)
             buffer[start .. start + wsize] = s[0 .. wsize];
         start += wsize;
-        return wsize;
     };
 
     sformat(sink, fmt, args);
@@ -173,7 +175,7 @@ public mstring snformat (Args...) (mstring buffer, cstring fmt, Args args)
 
 *******************************************************************************/
 
-public bool sformat (Args...) (Sink sink, cstring fmt, Args args)
+public bool sformat (Args...) (FormatterSink sink, cstring fmt, Args args)
 {
     FormatInfo info;
     size_t nextIndex;
@@ -181,7 +183,7 @@ public bool sformat (Args...) (Sink sink, cstring fmt, Args args)
     // A delegate to write elements according to the FormatInfo
     scope elemSink = (cstring str, ref Const!(FormatInfo) f)
     {
-        return widthSink(sink, str, f);
+        widthSink(sink, str, f);
     };
 
     // Main loop
@@ -231,6 +233,13 @@ public bool sformat (Args...) (Sink sink, cstring fmt, Args args)
     return true;
 }
 
+/// Ditto
+deprecated("Use the overload which accepts a `FormatterSink` instead")
+public bool sformat (Args...) (Sink sink, cstring fmt, Args args)
+{
+    return sformat!(Args)((cstring s) { sink(s); }, fmt, args);
+}
+
 
 /*******************************************************************************
 
@@ -241,12 +250,9 @@ public bool sformat (Args...) (Sink sink, cstring fmt, Args args)
         str  = String to write to the sink
         f    = FormatInfo object from which to read the width and flags
 
-    Returns:
-        Number of elements written to the sink
-
 *******************************************************************************/
 
-private size_t widthSink (Sink sink, cstring str, ref Const!(FormatInfo) f)
+private void widthSink (FormatterSink sink, cstring str, ref Const!(FormatInfo) f)
 {
     if (f.flags & Flags.Width)
     {
@@ -256,28 +262,48 @@ private size_t widthSink (Sink sink, cstring str, ref Const!(FormatInfo) f)
         {
             if (f.flags & Flags.AlignLeft)
             {
-                return (str.length > f.width ? sink("...") : 0)
-                    + sink(str[$ > f.width ? $ - f.width : 0 .. $]);
+                if (str.length > f.width)
+                {
+                    sink("...");
+                    sink(str[$ - f.width .. $]);
+                }
+                else
+                    sink(str);
             }
             else
             {
                 assert(f.flags & Flags.AlignRight);
-                return sink(str[0 .. $ > f.width ? f.width : $])
-                    + (str.length > f.width ? sink("...") : 0);
+                if (str.length > f.width)
+                {
+                    sink(str[0 .. f.width]);
+                    sink("...");
+                }
+                else
+                    sink(str);
             }
         }
-        if (f.width > str.length)
+        else if (f.width > str.length)
         {
             if (f.flags & Flags.AlignLeft)
-                return sink(str) + writeSpace(sink, f.width - str.length);
-
-            assert(f.flags & Flags.AlignRight);
-            return writeSpace(sink, f.width - str.length) + sink(str);
+            {
+                sink(str);
+                writeSpace(sink, f.width - str.length);
+            }
+            else
+            {
+                assert(f.flags & Flags.AlignRight);
+                writeSpace(sink, f.width - str.length);
+                sink(str);
+            }
         }
         // Else fall back to just writing the string
+        else
+        {
+            sink(str);
+        }
     }
-
-    return sink(str);
+    else
+        sink(str);
 }
 
 
@@ -294,7 +320,7 @@ private size_t widthSink (Sink sink, cstring str, ref Const!(FormatInfo) f)
 
 *******************************************************************************/
 
-private void handle (T) (T v, FormatInfo f, Sink sf, ElemSink se)
+private void handle (T) (T v, FormatInfo f, FormatterSink sf, ElemSink se)
 {
     // Handle ref types explicitly
     static if (is (typeof(v is null)))
@@ -431,7 +457,7 @@ private void handle (T) (T v, FormatInfo f, Sink sf, ElemSink se)
                     || is(T : Const!(dchar)[]))
     {
         if (f.flags & Flags.Nested) sf(`"`);
-        UTF.toString(v, (cstring val) { return se(val, f); });
+        UTF.toString(v, (cstring val) { se(val, f); return val.length; });
         if (f.flags & Flags.Nested) sf(`"`);
     }
     else static if (is(typeof((&v)[0 .. 1]) : cstring)
@@ -441,9 +467,9 @@ private void handle (T) (T v, FormatInfo f, Sink sf, ElemSink se)
         Unqual!(T)[3] b = "'_'";
         b[1] = v;
         if (f.flags & Flags.Nested)
-            UTF.toString(b, (cstring val) { return se(val, f); });
+            UTF.toString(b, (cstring val) { se(val, f); return val.length; });
         else
-            UTF.toString(b[1 .. 2], (cstring val) { return se(val, f); });
+            UTF.toString(b[1 .. 2], (cstring val) { se(val, f); return val.length; });
     }
 
     // Signed integer
@@ -600,7 +626,7 @@ private template DropTypedef (T)
 
 *******************************************************************************/
 
-private FormatInfo consume (Sink sink, ref cstring fmt)
+private FormatInfo consume (FormatterSink sink, ref cstring fmt)
 {
     FormatInfo ret;
     auto s = fmt.ptr;
@@ -745,29 +771,23 @@ private Const!(char)* skipSpace (Const!(char)* s, Const!(char)* end)
             s   = Sink to write to
             n   = Amount of spaces to write
 
-        Returns:
-            Amount written (should be == n)
-
 *******************************************************************************/
 
-private size_t writeSpace (Sink s, size_t n)
+private void writeSpace (FormatterSink s, size_t n)
 {
     const istring Spaces32 = "                                ";
-    size_t ret;
 
     // Make 'n' a multiple of Spaces32.length (32)
-    ret += s(Spaces32[0 .. n % Spaces32.length]);
+    s(Spaces32[0 .. n % Spaces32.length]);
     n -= n % Spaces32.length;
 
     assert((n % Spaces32.length) == 0);
 
     while (n != 0)
     {
-        ret += s(Spaces32);
+        s(Spaces32);
         n -= Spaces32.length;
     }
-
-    return ret;
 }
 
 /*******************************************************************************
@@ -808,9 +828,6 @@ private bool readNumber (out size_t f, ref Const!(char)* s)
             v   = Pointer to write
             f   = Format information gathered from parsing
             se  = Element sink, to emit a single element with alignment
-
-        Returns:
-            `true` if a number was read, `false` otherwise
 
 *******************************************************************************/
 
@@ -1208,7 +1225,7 @@ unittest
     // Support for new sink-based toString
     static struct S1
     {
-        void toString (size_t delegate(cstring d) sink)
+        void toString (FormatterSink sink)
         {
             sink("42424242424242");
         }
@@ -1219,7 +1236,7 @@ unittest
     // For classes too
     static class C1
     {
-        void toString (size_t delegate(cstring d) sink)
+        void toString (FormatterSink sink)
         {
             sink("42424242424242");
         }
@@ -1230,7 +1247,7 @@ unittest
     // Compile time support is awesome, isn't it ?
     static struct S2
     {
-        void toString (size_t delegate(cstring d) sink, cstring default_ = "42")
+        void toString (FormatterSink sink, cstring default_ = "42")
         {
             sink(default_);
         }
