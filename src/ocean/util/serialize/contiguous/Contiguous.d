@@ -295,7 +295,7 @@ package template ensureValueTypeMember ( S, size_t i, T )
     {
         static assert (!ContainsDynamicArray!(T),
                        M.stringof ~ " " ~ S.tupleof[i].stringof ~
-                       " - unions containing dynamic arrays are not "
+                       " - unions containing dynamic arrays are not " ~
                        "allowed, sorry");
     }
 
