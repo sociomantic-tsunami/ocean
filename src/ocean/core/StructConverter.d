@@ -488,9 +488,9 @@ private void callBestOverload ( From, To, istring function_name )
             static assert ( false,
               "Function ` ~
              To.stringof ~ `.` ~ function_name ~
-             ` (" ~ convFuncTypeString ~ ") doesn't `
-             `have any of the accepted types `
-             `'void function ( ref "~From.stringof~", ref "~To.stringof~", void[] delegate ( size_t ) )' or `
+             ` (" ~ convFuncTypeString ~ ") doesn't ` ~
+             `have any of the accepted types ` ~
+             `'void function ( ref "~From.stringof~", ref "~To.stringof~", void[] delegate ( size_t ) )' or ` ~
              `'void function ( ref "~From.stringof~", ref "~To.stringof~" )'");
         }`);
 }
