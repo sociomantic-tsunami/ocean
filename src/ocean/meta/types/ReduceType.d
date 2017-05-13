@@ -122,15 +122,6 @@ public template assertValidReducer ( Reducer )
         Reducer.stringof ~  " must define `Result` type alias"
     );
     static assert (
-        is(typeof(Reducer.seed) == Reducer.Result),
-        Reducer.stringof ~ " must define `seed` constant of type `Result`"
-    );
-    static assert (
-        is(typeof(Reducer.accumulate)),
-        Reducer.stringof ~ " must define `accumluate` CTFE function "
-            ~ "that takes two arguments of Result type and returns one"
-    );
-    static assert (
         is(typeof(Reducer.visit!(int))),
         Reducer.stringof ~ " must define `visit` templated function "
             ~ "that takes a type as template argument and returns single "
@@ -161,13 +152,36 @@ private struct ReduceTypeImpl ( Reducer )
     // Helper to calculate new value and update accumulator in one step
     private void accumulate ( T ) ( ref T accum, T next )
     {
-        accum = reducer.accumulate(accum, next);
+        static if (is(typeof(Reducer.accumulate)))
+        {
+            accum = reducer.accumulate(accum, next);
+        }
+        else
+        {
+            static assert (
+                is(T == bool),
+                "Must specify custom accumulator method for non-bool results"
+                    ~ "of ReduceType"
+            );
+            accum = accum || next;
+        }
     }
 
     // Main recursive visiting implementation
     private Reducer.Result reduce ( T ) ( )
     {
-        auto result = reducer.seed;
+        static if (is(typeof(reducer.seed)))
+            auto result = reducer.seed;
+        else
+        {
+            static assert (
+                is(Reducer.Result == bool),
+                "Default seed/accumulator are only supported for bool"
+                    ~ " ReduceType results"
+            );
+            auto result = false;
+        }
+
         accumulate(result, reducer.visit!(T)());
 
         static if (isPrimitiveType!(T))

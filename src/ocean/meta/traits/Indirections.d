@@ -102,12 +102,6 @@ unittest
 private struct HasIndirectionsReducer
 {
     alias bool Result;
-    const seed = false;
-
-    Result accumulate ( Result accum, Result next )
-    {
-        return accum || next;
-    }
 
     Result visit ( T ) ( )
     {
@@ -151,12 +145,6 @@ unittest
 private struct MultiDimArraysReducer
 {
     alias bool Result;
-    const seed = false;
-
-    Result accumulate ( Result accum, Result next )
-    {
-        return accum || next;
-    }
 
     Result visit ( T ) ( )
     {
