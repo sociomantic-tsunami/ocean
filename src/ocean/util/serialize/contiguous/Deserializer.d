@@ -181,14 +181,6 @@ struct Deserializer
 
     alias hasMultiDimensionalDynamicArrays canDeserializeInPlace;
 
-    /**************************************************************************
-
-        NB! This will suppress any compilation errors, comment out during
-        development and enable only when commiting.
-
-    **************************************************************************/
-
-    static assert (isDeserializer!(This));
 
     /***************************************************************************
 
@@ -1125,6 +1117,11 @@ struct Deserializer
             }
         alias T RejectQualifier;
     }
+}
+
+unittest
+{
+    static assert (isDeserializer!(Deserializer));
 }
 
 unittest

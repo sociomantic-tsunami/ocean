@@ -72,14 +72,6 @@ class VersionDecorator
 
     public alias VersionDecorator This;
 
-    /**************************************************************************
-
-        NB! This will suppress any compilation errors, comment out during
-        development and enable only when commiting.
-
-    **************************************************************************/
-
-    static assert (isDecorator!(This));
 
     /***************************************************************************
 
@@ -215,6 +207,11 @@ class VersionDecorator
 
         assert(0);
     }
+}
+
+unittest
+{
+    static assert (isDecorator!(VersionDecorator));
 }
 
 version(UnitTest)
