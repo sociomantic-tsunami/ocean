@@ -25,7 +25,6 @@ module ocean.util.serialize.contiguous.Deserializer;
 import ocean.transition;
 
 import ocean.util.serialize.contiguous.Contiguous;
-import ocean.util.serialize.model.Traits;
 
 import ocean.core.Enforce;
 import ocean.core.Traits;
@@ -1117,11 +1116,6 @@ struct Deserializer
             }
         alias T RejectQualifier;
     }
-}
-
-unittest
-{
-    static assert (isDeserializer!(Deserializer));
 }
 
 unittest

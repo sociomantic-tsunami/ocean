@@ -47,7 +47,7 @@ private struct _Dummy
 
 *******************************************************************************/
 
-template isSerializer(T)
+deprecated template isSerializer(T)
 {
     public const isSerializer =
         is(typeof({
@@ -59,7 +59,7 @@ template isSerializer(T)
         }));
 }
 
-unittest
+deprecated unittest
 {
     static assert( isSerializer!(DummySerializer));
     static assert(!isSerializer!(_Dummy));
@@ -102,7 +102,7 @@ version(UnitTest)
 
 *******************************************************************************/
 
-template isDeserializer(T)
+deprecated template isDeserializer(T)
 {
     public const isDeserializer =
         is(typeof({
@@ -118,7 +118,7 @@ template isDeserializer(T)
         }));
 }
 
-unittest
+deprecated unittest
 {
     static assert( isDeserializer!(DummyDeserializer));
     static assert(!isDeserializer!(_Dummy));
@@ -171,7 +171,7 @@ version(UnitTest)
 
 *******************************************************************************/
 
-template isDecorator(T)
+deprecated template isDecorator(T)
 {
     static if (
            is(typeof({ alias T.Serializer Alias; }))
@@ -200,7 +200,7 @@ template isDecorator(T)
     }
 }
 
-unittest
+deprecated unittest
 {
     static assert( isDecorator!(DummyDecorator));
     static assert(!isDecorator!(_Dummy));
@@ -245,7 +245,7 @@ version(UnitTest)
 
 *******************************************************************************/
 
-template DeserializerReturnType(D, S)
+deprecated template DeserializerReturnType(D, S)
 {
     static assert (isDeserializer!(D));
 
@@ -260,7 +260,7 @@ template DeserializerReturnType(D, S)
         DeserializerReturnType;
 }
 
-unittest
+deprecated unittest
 {
     static assert (is(DeserializerReturnType!(DummyDeserializer, _Dummy) == _Dummy));
 }

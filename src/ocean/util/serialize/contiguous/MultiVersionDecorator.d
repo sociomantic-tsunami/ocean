@@ -33,7 +33,6 @@ import ocean.core.Enforce,
        ocean.core.StructConverter : structConvert;
 
 import ocean.util.serialize.Version,
-       ocean.util.serialize.model.Traits,
        ocean.util.serialize.model.VersionDecoratorMixins;
 
 import ocean.util.serialize.contiguous.Serializer,
@@ -73,22 +72,8 @@ class VersionDecorator
     public alias VersionDecorator This;
 
 
-    /***************************************************************************
-
-        Aliases for used Serializer / Deserializer implementations as demanded
-        by `isDecorator` trait.
-
-    ***************************************************************************/
-
-    public alias .Serializer  Serializer;
-
-    /***************************************************************************
-
-        ditto
-
-    ***************************************************************************/
-
-    public alias .Deserializer Deserializer;
+    deprecated public alias .Serializer  Serializer;
+    deprecated public alias .Deserializer Deserializer;
 
     /***************************************************************************
 
@@ -131,10 +116,10 @@ class VersionDecorator
 
     ***************************************************************************/
 
-    mixin StoreMethod!(Serializer);
-    mixin LoadMethod!(Deserializer, This.e);
+    mixin StoreMethod!(.Serializer);
+    mixin LoadMethod!(.Deserializer, This.e);
     mixin LoadCopyMethod!(This.e);
-    mixin ConvertMethod!(Serializer, Deserializer);
+    mixin ConvertMethod!(.Serializer, .Deserializer);
 
     /***************************************************************************
 
@@ -174,7 +159,7 @@ class VersionDecorator
         if (input_version == VInfo.number)
         {
             // no conversion is necessary
-            return Deserializer.deserialize!(S)(buffer);
+            return .Deserializer.deserialize!(S)(buffer);
         }
 
         if (input_version > VInfo.number)
@@ -207,11 +192,6 @@ class VersionDecorator
 
         assert(0);
     }
-}
-
-unittest
-{
-    static assert (isDecorator!(VersionDecorator));
 }
 
 version(UnitTest)
