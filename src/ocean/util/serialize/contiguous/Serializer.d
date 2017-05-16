@@ -24,7 +24,6 @@ module ocean.util.serialize.contiguous.Serializer;
 
 import ocean.transition;
 
-import ocean.util.serialize.model.Traits;
 import ocean.util.serialize.contiguous.Contiguous;
 
 import ocean.core.Traits : ContainsDynamicArray;
@@ -57,15 +56,6 @@ struct Serializer
     **************************************************************************/
 
     alias typeof(*this) This;
-
-    /**************************************************************************
-
-        NB! This will suppress any compilation errors, comment out during
-        development and enable only when commiting.
-
-    **************************************************************************/
-
-    static assert (isSerializer!(This));
 
     /***************************************************************************
 
