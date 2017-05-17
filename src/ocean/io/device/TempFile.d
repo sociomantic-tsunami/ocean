@@ -29,7 +29,7 @@ import Path = ocean.io.Path;
 import ocean.math.random.Kiss : Kiss;
 import ocean.io.device.Device : Device;
 import ocean.io.device.File;
-import ocean.stdc.stringz : toStringz;
+import ocean.text.util.StringC;
 
 /******************************************************************************
  ******************************************************************************/
@@ -383,7 +383,9 @@ class TempFile : File
         {
             // Check suitability
             {
-                auto parentz = toStringz(Path.parse(path.dup).path);
+                mstring path_mut = Path.parse(path.dup).path;
+                enableStomping(path_mut);
+                auto parentz = StringC.toCString(path_mut);
 
                 // Make sure we have write access
                 if( access(parentz, W_OK) == -1 )
@@ -427,7 +429,7 @@ class TempFile : File
                     // NOTE: This should be an exception and not simply
                     // returning false, since this is a violation of our
                     // guarantees.
-                    if( unlink(toStringz(path)) == -1 )
+                    if( unlink((path ~ "\0").ptr) == -1 )
                         error("could not remove transient file");
                 }
 

@@ -40,7 +40,7 @@ public class ErrnoException : Exception
     import ocean.core.Exception : ReusableExceptionImplementation;
     import ocean.core.Traits : ReturnTypeOf, identifier;
     import ocean.stdc.string;
-    import ocean.stdc.stringz;
+    import ocean.text.util.StringC;
 
 
     /**************************************************************************
@@ -334,7 +334,7 @@ public class ErrnoException : Exception
             return this.append("Expected non-zero errno after failure");
 
         char[256] buf;
-        auto errmsg = fromStringz(strerror_r(err_num, buf.ptr, buf.length));
+        auto errmsg = StringC.toDString(strerror_r(err_num, buf.ptr, buf.length));
         return this.ReusableImpl.append(errmsg);
     }
 

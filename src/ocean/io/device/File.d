@@ -24,13 +24,13 @@
 
 module ocean.io.device.File;
 
+import ArrayMut = ocean.core.array.Mutation;
 import ocean.transition;
 
 import ocean.sys.Common;
-
+import ocean.text.util.StringC;
 import ocean.io.device.Device;
 
-import ocean.stdc.stringz;
 import core.stdc.string;
 import core.stdc.errno;
 
@@ -189,8 +189,8 @@ class File : Device, Device.Seek, Device.Truncate
                 if (msg.length == 0)
                 {
                     char[256] buf;
-                    auto errmsg = fromStringz(strerror_r(this.error_num, buf.ptr,
-                                buf.length));
+                    auto errmsg = StringC.toDString(
+                        strerror_r(this.error_num, buf.ptr, buf.length));
 
                     this.ReusableImpl.append(errmsg);
                 }
@@ -527,8 +527,9 @@ class File : Device, Device.Seek, Device.Truncate
             style_ = style;
 
             // zero terminate and convert to utf16
-            char[512] zero = void;
-            auto name = toStringz (path, zero);
+            static mstring buffer;
+            ArrayMut.copy(buffer, path);
+            auto name = StringC.toCString(buffer);
             auto mode = Access[style.access] | Create[style.open];
 
             handle = posix.open (name, mode | setCloExec(addflags, O_CLOEXEC), access);

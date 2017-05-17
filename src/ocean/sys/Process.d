@@ -28,7 +28,6 @@ import Integer = ocean.text.convert.Integer_tango;
 
 import core.stdc.stdlib;
 import core.stdc.string;
-import ocean.stdc.stringz;
 
 version (Posix)
 {
@@ -1049,7 +1048,7 @@ class Process
                         // Switch to the working directory if it has been set.
                         if (_workDir.length > 0)
                         {
-                            chdir(toStringz(_workDir));
+                            chdir((_workDir ~ "\0").ptr);
                         }
 
                         // Replace the child fork with a new process. We always use the
@@ -1502,11 +1501,13 @@ class Process
                 {
                     --i;
                     // Add a terminating null character to each string
-                    auto cstr = toStringz(src[i]);
-                    if (cstr is src[i].ptr) // no new array was allocated
-                        dest[i] = src[i].dup.ptr;
+                    auto cstr = src[i];
+                    if (cstr.length == 0)
+                        dest[i] = "\0".dup.ptr;
+                    else if (cstr[$ - 1] == '\0')
+                        dest[i] = cstr.dup.ptr;
                     else
-                        dest[i] = cast(char*) cstr;
+                        dest[i] = (cstr ~ "\0").ptr;
                 }
                 return dest;
             }

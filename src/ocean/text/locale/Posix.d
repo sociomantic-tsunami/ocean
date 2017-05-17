@@ -25,9 +25,9 @@ version (Posix)
 
     import ocean.core.Exception_tango;
     import ocean.text.locale.Data;
+    import ocean.text.util.StringC;
     import core.stdc.ctype;
     import core.stdc.string;
-    import core.stdc.stringz;
     import core.stdc.locale;
     import core.sys.posix.stdlib;
 
@@ -49,7 +49,7 @@ version (Posix)
         cstring s;
         if (env)
         {
-            auto s_mut = fromStringz(env).dup;
+            auto s_mut = StringC.toDString(env).dup;
             foreach (ref char c; s_mut)
             {
                 if (c == '.')

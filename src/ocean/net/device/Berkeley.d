@@ -16,14 +16,15 @@ import ocean.transition;
 
 import ocean.sys.Common;
 
+import ocean.core.array.Mutation;
 import ocean.core.Exception_tango;
 
 import ocean.stdc.string : strlen;
-import ocean.stdc.stringz;
 
 import ocean.stdc.posix.netdb;
 import ocean.stdc.posix.sys.socket;
 import ocean.stdc.posix.netinet.in_; // : sockaddr_in, sockaddr_in6
+import ocean.text.util.StringC;
 
 version (UnitTest)
 {
@@ -1033,7 +1034,9 @@ deprecated public abstract class Address
                 hints.ai_flags = flags;
                 hints.ai_family = (flags & AIFlags.PASSIVE && af == AddressFamily.UNSPEC) ? AddressFamily.INET6 : af;
                 hints.ai_socktype = SocketType.STREAM;
-                int error = getaddrinfo(toStringz(host), service.length == 0 ? null : toStringz(service), &hints, &info);
+                int error = getaddrinfo((host ~ "\0").ptr,
+                                        service.length == 0 ? null : (service ~ "\0").ptr,
+                                        &hints, &info);
                 if (error != 0)
                     throw new AddressException("couldn't resolve " ~ host);
 
@@ -1092,7 +1095,7 @@ deprecated public abstract class Address
                 // Getting name info. Don't look up hostname, returns
                 // numeric name. (NIFlags.NUMERICHOST)
                 getnameinfo (name, nameLen, host.ptr, host.length, null, 0, NIFlags.NUMERICHOST);
-                return idup(fromStringz (host.ptr));
+                return idup(StringC.toDString(host.ptr));
         }
 
         /***********************************************************************
@@ -1320,7 +1323,7 @@ deprecated public class IPv4Address : Address
         override istring toAddrString()
         {
                 char[16] buff = 0;
-                return idup(fromStringz(inet_ntop(AddressFamily.INET,
+                return idup(StringC.toDString(inet_ntop(AddressFamily.INET,
                     &sin.sin_addr.s_addr, buff.ptr, 16)));
         }
 
@@ -1352,8 +1355,9 @@ deprecated public class IPv4Address : Address
 
         static uint parse(istring addr)
         {
-                char[64] tmp;
-                return ntohl(inet_addr(toStringz(addr, tmp)));
+            static mstring tmp;
+            tmp.copy(addr);
+            return ntohl(inet_addr(StringC.toCString(tmp)));
         }
 }
 
@@ -1602,7 +1606,7 @@ protected:
         {
 
                 char[100] buff = 0;
-                return idup(fromStringz(inet_ntop(AddressFamily.INET6, &sin.sin6_addr, buff.ptr, 100)));
+                return idup(StringC.toDString(inet_ntop(AddressFamily.INET6, &sin.sin6_addr, buff.ptr, 100)));
         }
 
         /***********************************************************************
@@ -1685,7 +1689,7 @@ deprecated public class NetHost
                 int i;
                 char* p;
 
-                auto mkey = fromStringz(he.h_name);
+                auto mkey = StringC.toDString(he.h_name);
                 name = assumeUnique(mkey);
 
                 for (i = 0;; i++)
@@ -1700,7 +1704,7 @@ deprecated public class NetHost
                    aliases = new istring[i];
                    for (i = 0; i != aliases.length; i++)
                    {
-                        auto malias = fromStringz(he.h_aliases[i]);
+                        auto malias = StringC.toDString(he.h_aliases[i]);
                         aliases[i] = assumeUnique(malias);
                    }
                    }
@@ -1730,9 +1734,10 @@ deprecated public class NetHost
 
         bool getHostByName(istring name)
         {
-                char[1024] tmp;
+                static mstring tmp;
 
-                auto he = gethostbyname(toStringz(name, tmp));
+                tmp.copy(name);
+                auto he = gethostbyname(StringC.toCString(tmp));
                 if(!he)
                    return false;
                 validHostent(he);
@@ -1762,9 +1767,10 @@ deprecated public class NetHost
         //shortcut
         bool getHostByAddr(istring addr)
         {
-                char[64] tmp;
+                static mstring tmp;
 
-                uint x = inet_addr(toStringz(addr, tmp));
+                tmp.copy(addr);
+                uint x = inet_addr(StringC.toCString(tmp));
                 auto he = gethostbyaddr(&x, 4, cast(int)AddressFamily.INET);
                 if(!he)
                     return false;
