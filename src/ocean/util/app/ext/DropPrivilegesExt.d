@@ -16,8 +16,9 @@
 module ocean.util.app.ext.DropPrivilegesExt;
 
 
-import ocean.stdc.stringz;
+import ocean.core.array.Mutation;
 import ocean.transition;
+import ocean.text.util.StringC;
 import ConfigFiller = ocean.util.config.ConfigFiller;
 import ocean.util.app.ext.model.IConfigExtExtension;
 import ocean.util.app.model.IApplicationExtension;
@@ -121,12 +122,11 @@ class DropPrivilegesExt : IConfigExtExtension
     {
         passwd* result;
         passwd passwd_buf;
-        char[50] user_buf;
+        static mstring user_buf;
         char[2048] buf;
 
-        auto cuser = toStringz(usr, user_buf);
-
-        auto res = getpwnam_r(cuser, &passwd_buf,
+        user_buf.copy(usr);
+        auto res = getpwnam_r(StringC.toCString(user_buf), &passwd_buf,
                               buf.ptr, buf.length, &result);
 
         if ( result == null )
@@ -139,7 +139,7 @@ class DropPrivilegesExt : IConfigExtExtension
             {
                 char* err = strerror(res);
                 auto msg = "Error while getting user " ~ usr ~
-                    ": " ~ fromStringz(err);
+                    ": " ~ StringC.toDString(err);
                 throw new Exception(assumeUnique(msg));
             }
         }
@@ -152,7 +152,7 @@ class DropPrivilegesExt : IConfigExtExtension
         {
             char* err = strerror(errno());
             auto msg = "Failed to set process user id to " ~ usr
-                ~ ": " ~ fromStringz(err);
+                ~ ": " ~ StringC.toDString(err);
             throw new Exception(assumeUnique(msg));
         }
     }
@@ -171,12 +171,12 @@ class DropPrivilegesExt : IConfigExtExtension
     {
         group* result;
         group group_buf;
-        char[50] grp_buf;
+        static mstring grp_buf;
         char[2048] buf;
 
-        auto cgroup = toStringz(grp, grp_buf);
-
-        auto res = getgrnam_r(cgroup, &group_buf, buf.ptr, buf.length, &result);
+        grp_buf.copy(grp);
+        auto res = getgrnam_r(StringC.toCString(grp_buf), &group_buf,
+                              buf.ptr, buf.length, &result);
 
         if ( result == null )
         {
@@ -188,7 +188,7 @@ class DropPrivilegesExt : IConfigExtExtension
             {
                 char* err = strerror(res);
                 auto msg = "Error while getting group " ~ grp ~
-                    ": " ~ fromStringz(err);
+                    ": " ~ StringC.toDString(err);
                 throw new Exception(assumeUnique(msg));
             }
         }
@@ -201,7 +201,7 @@ class DropPrivilegesExt : IConfigExtExtension
         {
             char* err = strerror(errno());
             auto msg = "Failed to set process user group to " ~ grp
-                ~ ": " ~ fromStringz(err);
+                ~ ": " ~ StringC.toDString(err);
             throw new Exception(assumeUnique(msg));
         }
     }

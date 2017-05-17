@@ -92,6 +92,7 @@ TEST_FILTER_OUT += \
 	$C/src/ocean/stdc/stdint.d \
 	$C/src/ocean/stdc/stdio.d \
 	$C/src/ocean/stdc/stdlib.d \
+	$C/src/ocean/stdc/stringz.d \
 	$C/src/ocean/stdc/tgmath.d \
 	$C/src/ocean/stdc/time.d \
 	$C/src/ocean/stdc/wctype.d \

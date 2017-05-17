@@ -32,9 +32,9 @@ module ocean.text.convert.DateTime_tango;
 
 import ocean.core.Exception_tango;
 import ocean.stdc.posix.langinfo;
-import ocean.stdc.stringz;
 import Integer = ocean.text.convert.Integer_tango;
 import Utf = ocean.text.convert.Utf;
+import ocean.text.util.StringC;
 import ocean.time.chrono.Calendar;
 import ocean.time.chrono.Gregorian;
 import ocean.transition;
@@ -308,7 +308,7 @@ struct DateTimeLocale
             static cstring getString(nl_item id, cstring def = null)
             {
                 char* p = nl_langinfo(id);
-                return p ? fromStringz(p).dup : def;
+                return p ? StringC.toDString(p).dup : def;
             }
 
             static cstring getFormatString(nl_item id, cstring def = null)

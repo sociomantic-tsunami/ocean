@@ -33,8 +33,6 @@ import ocean.transition;
 
 import ocean.util.compress.c.zlib;
 
-import ocean.stdc.stringz : fromStringz;
-
 import ocean.core.Exception_tango : IOException;
 
 import ocean.io.device.Conduit : InputFilter, OutputFilter;
@@ -42,6 +40,7 @@ import ocean.io.device.Conduit : InputFilter, OutputFilter;
 import ocean.io.model.IConduit : InputStream, OutputStream, IConduit;
 
 import ocean.text.convert.Integer_tango : toString;
+import ocean.text.util.StringC;
 
 
 /* This constant controls the size of the input/output buffers we use
@@ -831,7 +830,9 @@ class ZlibException : IOException
      */
     this(int code, char* msg)
     {
-        super(codeName(code)~": "~idup(fromStringz(msg)));
+        istring m = codeName(code) ~ ": ";
+        m ~= StringC.toDString(msg);
+        super(m);
     }
 
     protected istring codeName(int code)

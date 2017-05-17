@@ -128,7 +128,6 @@ class SyncException : PlatformException
  */
 class IOException : PlatformException
 {
-    import ocean.stdc.stringz;
     import ocean.stdc.string;
     import core.stdc.errno;
 

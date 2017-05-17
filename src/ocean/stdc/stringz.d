@@ -15,7 +15,7 @@
 
 *******************************************************************************/
 
-module ocean.stdc.stringz;
+deprecated module ocean.stdc.stringz;
 
 import ocean.transition;
 
@@ -25,6 +25,7 @@ import ocean.transition;
  * appropriate.
  */
 
+deprecated("Use ocean.text.util.StringC : StringC.toCString instead")
 Const!(char)* toStringz (cstring s, char[] tmp = null)
 {
     mixin(global(`static char[] empty = "\0".dup`));
@@ -57,7 +58,7 @@ version (UnitTest)
     import ocean.stdc.string;
 }
 
-unittest
+deprecated unittest
 {
     cstring        input;
     Const!(char)*  sptr;
@@ -92,6 +93,7 @@ unittest
  * Returns a populated slice of dst
  */
 
+deprecated("Use ocean.text.util.StringC : StringC.toCString instead")
 Const!(char)*[] toStringz (char[] tmp, Const!(char)*[] dst, cstring[] strings...)
 {
     assert (dst.length >= strings.length);
@@ -110,7 +112,7 @@ Const!(char)*[] toStringz (char[] tmp, Const!(char)*[] dst, cstring[] strings...
     return dst [0 .. strings.length];
 }
 
-unittest
+deprecated unittest
 {
     char[] buf;
     Const!(char)*[2] dst;
@@ -125,7 +127,7 @@ unittest
 /*********************************
  * Convert a C-style 0 terminated string to an array of char
  */
-
+deprecated("Use ocean.text.util.StringC : StringC.toDString instead")
 Const!(char)[] fromStringz (Const!(char)* s)
 {
     return s ? s[0 .. strlenz(s)] : null;
@@ -134,7 +136,7 @@ Const!(char)[] fromStringz (Const!(char)* s)
 /*********************************
  * Convert array of wchars s[] to a C-style 0 terminated string.
  */
-
+deprecated("Use ocean.text.util.StringC : StringC.toCString instead")
 wchar* toString16z (wchar[] s)
 {
     if (s.ptr)
@@ -146,7 +148,7 @@ wchar* toString16z (wchar[] s)
 /*********************************
  * Convert a C-style 0 terminated string to an array of wchar
  */
-
+deprecated("Use ocean.text.util.StringC : StringC.toDString instead")
 Const!(wchar)[] fromString16z (Const!(wchar)* s)
 {
     return s ? s[0 .. strlenz(s)] : null;
@@ -155,7 +157,7 @@ Const!(wchar)[] fromString16z (Const!(wchar)* s)
 /*********************************
  * Convert array of dchars s[] to a C-style 0 terminated string.
  */
-
+deprecated("Use ocean.text.util.StringC : StringC.toCString instead")
 dchar* toString32z (dchar[] s)
 {
     if (s.ptr)
@@ -167,7 +169,7 @@ dchar* toString32z (dchar[] s)
 /*********************************
  * Convert a C-style 0 terminated string to an array of dchar
  */
-
+deprecated("Use ocean.text.util.StringC : StringC.toDString instead")
 Const!(dchar)[] fromString32z (Const!(dchar)* s)
 {
     return s ? s[0 .. strlenz(s)] : null;
@@ -176,7 +178,7 @@ Const!(dchar)[] fromString32z (Const!(dchar)* s)
 /*********************************
  * portable strlen
  */
-
+deprecated("Use ocean.stdc.string: strlen or wcslen")
 size_t strlenz(T) (T* s)
 {
     size_t i;
@@ -189,7 +191,7 @@ size_t strlenz(T) (T* s)
 
 
 
-unittest
+deprecated unittest
 {
     auto p = toStringz("foo");
     assert(strlenz(p) == 3);

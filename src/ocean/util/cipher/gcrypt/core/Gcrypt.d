@@ -67,8 +67,8 @@ public alias gcry_cipher_modes Mode;
 public class GcryptException : Exception
 {
     import ocean.core.Exception;
+    import ocean.text.util.StringC;
     import ocean.util.cipher.gcrypt.c.gcrypt;
-    import ocean.stdc.stringz;
 
     /***************************************************************************
 
@@ -180,9 +180,9 @@ public class GcryptException : Exception
                                      int line = __LINE__  )
     {
         this.set(`Error: "`, file, line)
-            .append(fromStringz(gcry_strerror(error)))
+            .append(StringC.toDString(gcry_strerror(error)))
             .append(`" Source: "`)
-            .append(fromStringz(gcry_strsource(error)))
+            .append(StringC.toDString(gcry_strsource(error)))
             .append(`"`);
     }
 }
