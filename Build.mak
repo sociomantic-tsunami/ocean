@@ -46,6 +46,8 @@ TEST_FILTER_OUT += \
 	$C/src/ocean/text/xml/Xslt.d \
 	$C/src/ocean/text/xml/c/LibXslt.d \
 	$C/src/ocean/text/xml/c/LibXml2.d \
+	$C/src/ocean/io/device/ProgressFile.d \
+	$C/src/ocean/io/device/SerialPort.d \
 	$C/src/ocean/io/serialize/XmlStructSerializer.d \
 	$C/src/ocean/util/container/HashMap.d \
 	$C/src/ocean/util/container/more/CacheMap.d \
