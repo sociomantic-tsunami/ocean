@@ -45,6 +45,25 @@ public alias size_t delegate(cstring) Sink;
 
 /*******************************************************************************
 
+    Internal sink type that wraps the user-provided one and takes care
+    of cropping and width
+
+    This sink expects to receive a full element as the first parameter,
+    in other words, the full chunk of text that needs a fixed size.
+    This is why one cannot format a whole aggregate (struct, arrays etc.), but
+    only individual elements.
+
+*******************************************************************************/
+
+private alias size_t delegate(cstring, ref Const!(FormatInfo)) ElemSink;
+
+/// This was accidentally made private so needs to be deprecated
+deprecated("This alias shouldn't be used from outside the Formatter")
+public alias size_t delegate(cstring, ref Const!(FormatInfo)) ElementSink;
+
+
+/*******************************************************************************
+
     Formats an input string into a newly-allocated string and returns it
 
     Params:
@@ -215,21 +234,6 @@ public bool sformat (Args...) (Sink sink, cstring fmt, Args args)
 
 /*******************************************************************************
 
-    Internal sink type that wraps the user-provided one and takes care
-    of cropping and width
-
-    This sink expects to receive a full element as the first parameter,
-    in other words, the full chunk of text that needs a fixed size.
-    This is why one cannot format a whole aggregate (struct, arrays etc.), but
-    only individual elements.
-
-*******************************************************************************/
-
-public alias size_t delegate(cstring, ref Const!(FormatInfo)) ElementSink;
-
-
-/*******************************************************************************
-
     A function that writes to a `Sink` according to the width limits
 
     Params:
@@ -290,7 +294,7 @@ private size_t widthSink (Sink sink, cstring str, ref Const!(FormatInfo) f)
 
 *******************************************************************************/
 
-private void handle (T) (T v, FormatInfo f, Sink sf, ElementSink se)
+private void handle (T) (T v, FormatInfo f, Sink sf, ElemSink se)
 {
     // Handle ref types explicitly
     static if (is (typeof(v is null)))
@@ -810,7 +814,7 @@ private bool readNumber (out size_t f, ref Const!(char)* s)
 
 *******************************************************************************/
 
-private void writePointer (in void* v, ref FormatInfo f, ElementSink se)
+private void writePointer (in void* v, ref FormatInfo f, ElemSink se)
 {
     alias void* T;
 
