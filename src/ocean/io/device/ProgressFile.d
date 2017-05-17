@@ -35,7 +35,7 @@
 
 *******************************************************************************/
 
-module ocean.io.device.ProgressFile;
+deprecated module ocean.io.device.ProgressFile;
 
 
 
@@ -51,7 +51,7 @@ import ocean.io.device.File;
 
 
 
-class ProgressFile : File
+deprecated class ProgressFile : File
 {
     /***************************************************************************
 
