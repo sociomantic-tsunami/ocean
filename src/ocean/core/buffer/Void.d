@@ -40,14 +40,6 @@ template VoidBufferImpl ( )
         this.data[] = (cast(ubyte[]) rhs)[];
     }
 
-    ///
-    unittest
-    {
-        Buffer!(void) buffer;
-        buffer = arrayOf!(ubyte)(2, 3, 4);
-        test!("==")(buffer[], arrayOf!(ubyte)(2, 3, 4));
-    }
-
     /***************************************************************************
 
         Assigns data to stored data from other slice
@@ -65,15 +57,6 @@ template VoidBufferImpl ( )
         if (end < 0)
             end = this.length();
         this.data[begin .. end] = (cast(ubyte[]) rhs)[];
-    }
-    
-    ///
-    unittest
-    {
-        Buffer!(void) buffer;
-        buffer.length = 4;
-        buffer[1 .. 4] = arrayOf!(ubyte)(2, 3, 4);
-        test!("==")(buffer[], arrayOf!(ubyte)( 0, 2, 3, 4));
     }
 
     /***************************************************************************
@@ -93,15 +76,6 @@ template VoidBufferImpl ( )
         return &this.data[i];
     }
 
-    ///
-    unittest
-    {
-        Buffer!(void) buffer;
-        buffer.length = 2;
-        buffer[1] = 42;
-        test!("==")(*buffer[1], 42);
-    }
-
     /***************************************************************************
 
         Invidual element assignment
@@ -115,15 +89,6 @@ template VoidBufferImpl ( )
     void opIndexAssign ( ubyte value, size_t i )
     {
         this.data[i] = value;
-    }
-
-    ///
-    unittest
-    {
-        Buffer!(void) buffer;
-        buffer.length = 2;
-        buffer[1] = 42;
-        test!("==")(buffer[], arrayOf!(ubyte)(0, 42));
     }
 
     /***************************************************************************
@@ -141,14 +106,6 @@ template VoidBufferImpl ( )
         this.data[$-1] = rhs;
     }
 
-    ///
-    unittest
-    {
-        Buffer!(void) buffer;
-        buffer ~= 42;
-        test!("==")(buffer[], arrayOf!(ubyte)(42));
-    }
-
     /***************************************************************************
 
         ditto
@@ -159,14 +116,6 @@ template VoidBufferImpl ( )
     {
         this.length = this.data.length + rhs.length;
         this.data[$-rhs.length .. $] = rhs[];
-    }
-
-    ///
-    unittest
-    {
-        Buffer!(void) buffer;
-        buffer ~= 42;
-        test!("==")(buffer[], arrayOf!(ubyte)(42));
     }
 
     /***************************************************************************
@@ -190,21 +139,6 @@ template VoidBufferImpl ( )
         return 0;
     }
 
-    ///
-    unittest
-    {
-        Buffer!(void) buffer;
-        buffer = arrayOf!(ubyte)(1, 2, 3, 4);
-        size_t sum = 0;
-        foreach (val; buffer)
-        {
-            if (val == 3)
-                break;
-            sum += val;
-        }
-        test!("==")(sum, 3);
-    }
-
     /***************************************************************************
 
         Buffer element iteration (with index)
@@ -225,19 +159,4 @@ template VoidBufferImpl ( )
 
         return 0;
     }
-
-    ///
-    unittest
-    {
-        Buffer!(void) buffer;
-        buffer = arrayOf!(ubyte)(1, 2, 3, 4);
-        size_t sum = 0;
-        foreach (index, val; buffer)
-        {
-            if (val == 3)
-                break;
-            sum += index;
-        }
-        test!("==")(sum, 1);
-    } 
 }

@@ -42,16 +42,6 @@ template WithIndirectionsBufferImpl ( )
         this.data[] = rhs[];
     }
 
-    ///
-    unittest
-    {
-        auto buffer = createBuffer(new C(1), new C(2));
-        auto old_ptr = buffer.data.ptr;
-        buffer = [ new C(2), new C(3) ];
-        test!("==")(buffer[], [ new C(2), new C(3) ]);
-        test!("is")(buffer.data.ptr, old_ptr);
-    }
-
     /***************************************************************************
 
         Assigns data to stored data from other slice
@@ -71,14 +61,6 @@ template WithIndirectionsBufferImpl ( )
         this.data[begin .. end] = rhs[];
     }
 
-    ///
-    unittest
-    {
-        auto buffer = createBuffer(new C(1), new C(2));
-        buffer[1 .. 2] = [ new C(3) ];
-        test!("==")(buffer[], [ new C(1), new C(3) ]);
-    }
-
     /***************************************************************************
 
         Individual element access.
@@ -96,13 +78,6 @@ template WithIndirectionsBufferImpl ( )
         return &this.data[i];
     }
 
-    ///
-    unittest
-    {
-        auto buffer = createBuffer(new C(42));
-        test!("==")(*buffer[0], new C(42));
-    }
-
     /***************************************************************************
 
         Invidual element assignment
@@ -116,14 +91,6 @@ template WithIndirectionsBufferImpl ( )
     void opIndexAssign ( T value, size_t i )
     {
         this.data[i] = value;
-    }
-
-    ///
-    unittest
-    {
-        auto buffer = createBuffer(new C(42));
-        buffer[0] = new C(43);
-        test!("==")(buffer[], [ new C(43) ]);
     }
 
     /***************************************************************************
@@ -141,18 +108,6 @@ template WithIndirectionsBufferImpl ( )
         this.data[$-1] = rhs;
     }
 
-    ///
-    unittest
-    {
-        auto buffer = createBuffer(new C(42));
-        buffer.reserve(5);
-
-        auto old_ptr = buffer.data.ptr;
-        buffer ~= new C(43);
-        test!("==")(buffer[], [ new C(42), new C(43) ]);
-        test!("is")(buffer.data.ptr, old_ptr);
-    }
-
     /***************************************************************************
 
         ditto
@@ -163,18 +118,6 @@ template WithIndirectionsBufferImpl ( )
     {
         this.length = this.data.length + rhs.length;
         this.data[$-rhs.length .. $] = rhs[];
-    }
-
-    ///
-    unittest
-    {
-        auto buffer = createBuffer(new C(42));
-        buffer.reserve(5);
-
-        auto old_ptr = buffer.data.ptr;
-        buffer ~= new C(43);
-        test!("==")(buffer[], [ new C(42), new C(43) ]);
-        test!("is")(buffer.data.ptr, old_ptr);
     }
 
     /***************************************************************************
@@ -198,20 +141,6 @@ template WithIndirectionsBufferImpl ( )
         return 0;
     }
 
-    ///
-    unittest
-    {
-        auto buffer = createBuffer(new C(1), new C(2), new C(3));
-        size_t sum = 0;
-        foreach (val; buffer)
-        {
-            if (val.x == 2)
-                break;
-            sum += val.x;
-        }
-        test!("==")(sum, 1);
-    }
-
     /***************************************************************************
 
         Buffer element iteration (with index)
@@ -231,19 +160,5 @@ template WithIndirectionsBufferImpl ( )
         }
 
         return 0;
-    }
-
-    ///
-    unittest
-    {
-        auto buffer = createBuffer(new C(1), new C(2), new C(3), new C(4));
-        size_t sum = 0;
-        foreach (index, val; buffer)
-        {
-            if (val.x == 3)
-                break;
-            sum += index;
-        }
-        test!("==")(sum, 1);
     }
 }
