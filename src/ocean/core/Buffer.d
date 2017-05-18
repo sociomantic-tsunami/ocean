@@ -34,9 +34,7 @@ module ocean.core.Buffer;
 
 import ocean.transition;
 
-import ocean.core.TypeConvert;
 import ocean.core.Traits;
-import ocean.core.Test;
 
 import ocean.core.buffer.Void;
 import ocean.core.buffer.WithIndirections;
@@ -112,19 +110,6 @@ struct Buffer ( T )
         this.length = 0;
     }
 
-    ///
-    unittest
-    {
-        static if (!is(ElementType == class) && !(is(ElementType == interface)))
-        {
-            Buffer!(T) buffer;
-            buffer = [ some!(ElementType), some!(ElementType) ];
-            buffer.reset();
-            test!("==")(buffer[], (T[]).init);
-            test!("!is")(buffer.data.ptr, null);
-        }
-    }
-
     /***************************************************************************
 
         Returns:
@@ -135,17 +120,6 @@ struct Buffer ( T )
     size_t length ( ) /* d1to2fix_inject: const */
     {
         return this.data.length;
-    }
-
-    ///
-    unittest
-    {
-        static if (!is(ElementType == class) && !(is(ElementType == interface)))
-        {
-            Buffer!(T) buffer;
-            buffer = [ some!(ElementType), some!(ElementType), some!(ElementType) ];
-            test!("==")(buffer.length, 3);
-        }
     }
 
     /***************************************************************************
@@ -164,17 +138,6 @@ struct Buffer ( T )
         this.data.length = new_length;
         version (D_Version2)
             assumeSafeAppend(this.data);
-    }
-
-    ///
-    unittest
-    {
-        static if (!is(ElementType == class) && !(is(ElementType == interface)))
-        {
-            Buffer!(T) buffer;
-            buffer.length = 1;
-            test!("==")(buffer.length, 1);
-        }
     }
 
     /***************************************************************************
@@ -198,21 +161,6 @@ struct Buffer ( T )
             assumeSafeAppend(this.data);
     }
 
-    ///
-    unittest
-    {
-        static if (!is(ElementType == class) && !(is(ElementType == interface)))
-        {
-            Buffer!(T) buffer;
-            buffer.reserve(20);
-            auto to_append = [ some!(ElementType), some!(ElementType) ];
-            testNoAlloc({
-                buffer ~= some!(ElementType);
-                buffer ~= to_append;
-            } ());
-        }
-    }
-
     /***************************************************************************
 
         Exposes owned data as an array slice
@@ -231,17 +179,6 @@ struct Buffer ( T )
         return this.data[begin .. end];
     }
 
-    ///
-    unittest
-    {
-        static if (!is(ElementType == class) && !(is(ElementType == interface)))
-        {
-            auto buffer = createBuffer([ some!(ElementType), some!(ElementType) ]);
-            test!("==")(buffer[0 .. buffer.length],
-                [ some!(ElementType), some!(ElementType) ]);
-        }
-    }
-
     /***************************************************************************
 
         Exposes owned data as an array slice
@@ -255,135 +192,39 @@ struct Buffer ( T )
     {
         return this.data[];
     }
-
-    ///
-    unittest
-    {
-        static if (!is(ElementType == class) && !(is(ElementType == interface)))
-        {
-            auto buffer = createBuffer([ some!(ElementType), some!(ElementType) ]);
-            test!("==")(buffer[],
-                [ some!(ElementType), some!(ElementType) ]);
-        }
-    }
 }
 
 unittest
 {
-    Buffer!(void) buffer;
-}
+    // test instantiation with various types
 
-unittest
-{
-    Buffer!(char) buffer;
-}
-
-version (UnitTest)
-{
-    struct S
     {
-        int x;
-        char y;
+        Buffer!(void) buffer;
     }
-}
 
-unittest
-{
-    Buffer!(S) buffer;
-}
-
-unittest
-{
-    Buffer!(istring) buffer1;
-    Buffer!(cstring) buffer2;
-    Buffer!(mstring) buffer3;
-}
-
-version (UnitTest)
-{
-    class C
     {
-        int x;
+        Buffer!(char) buffer;
+    }
 
-        this ( int x )
+    {
+        static struct S
         {
-            this.x = x;
         }
 
-        override int opCmp ( Object _rhs )
+        Buffer!(S) buffer;
+    }
+
+    {
+        Buffer!(istring) buffer1;
+        Buffer!(cstring) buffer2;
+        Buffer!(mstring) buffer3;
+    }
+
+    {
+        static class C
         {
-            auto rhs = cast(C) _rhs;
-            return this.x < rhs.x ? 1
-                : this.x > rhs.x ? -1 : 0;
         }
 
-        override equals_t opEquals ( Object rhs )
-        {
-            return this.opCmp(rhs) == 0;
-        }
+        Buffer!(C) buffer;
     }
-}
-
-/******************************************************************************
-
-    Creates valid comparable value of generic type T.
-
-    Useful when writing templated test cases to create initial data set that
-    is more likely to pass comparison checks than plain T.init
-
-    For classes tries using either default constructor or one which accepts
-    same arguments as class fields.
-
-    Params:
-        T = type to create value of
-
-    Returns:
-        some value of T
-
-******************************************************************************/
-
-version (UnitTest)
-private T some ( T ) ( )
-{
-    static if (isFloatingPointType!(T))
-        return 42.0;
-    else static if (isIntegerType!(T))
-        return 42;
-    else static if (is(T == class))
-    {
-        static if (is(typeof(new T())))
-            return new T();
-        else static if (is(typeof(new T(T.init.tupleof))))
-        {
-            typeof(T.init.tupleof) pseudoargs;
-            foreach (ref arg; pseudoargs)
-                arg = some!(typeof(arg));
-            return new T(pseudoargs);
-        }
-        else
-            static assert (false, "Class without supported constructor declaration");
-    }
-    else
-        return T.init;
-}
-
-///
-unittest
-{
-    assert (some!(int) == 42);
-    assert (some!(double) == 42.0);
-
-    static class C1
-    {
-        int x;
-        this ( ) { this.x = 42; }
-    }
-    assert (some!(C1).x == 42);
-
-    static class C2
-    {
-        int x;
-        this ( int x ) { this.x = x; }
-    }
-    assert (some!(C2).x == 42);
 }
