@@ -10,7 +10,7 @@
 
 *******************************************************************************/
 
-module flexiblefilequeue.main;
+module test.flexiblefilequeue.main;
 
 
 import ocean.transition;
