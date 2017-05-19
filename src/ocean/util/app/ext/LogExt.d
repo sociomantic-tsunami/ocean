@@ -177,7 +177,7 @@ class LogExt : IConfigExtExtension
             this.layout_maker, this.use_insert_appender);
 
         LogUtil.configureNewLoggers(log_config, log_meta_config, &appender,
-            this.use_insert_appender);
+            this.layout_maker, this.use_insert_appender);
 
         foreach (ext; this.extensions)
         {
