@@ -428,6 +428,9 @@ unittest
         }
         ocean.util.log.Config.configureOldLoggers(config, m_config,
             file_appender, &makeLayout, use_insert_appender);
+        // For new loggers:
+        ocean.util.log.Config.configureNewLoggers(config, m_config,
+            file_appender, &makeLayout, use_insert_appender);
     }
 }
 
@@ -454,6 +457,39 @@ public void configureNewLoggers (
     Appender delegate ( istring file, Layout layout ) file_appender,
     bool use_insert_appender = false)
 {
+    configureNewLoggers(config, m_config, file_appender,
+        (cstring v) { return newLayout(v); }, use_insert_appender);
+}
+
+
+/*******************************************************************************
+
+    Sets up logging configuration for `ocean.util.log.Logger`
+
+    Calls the provided `file_appender` delegate once per log being configured
+    and passes the returned `Appender` to the `Logger.add` method.
+
+    This is an extra overload because using a delegate literal as a parameter's
+    default argument causes linker error in D1.
+
+    Params:
+        config   = an instance of an class iterator for Config
+        m_config = an instance of the MetaConfig class
+        file_appender = delegate which returns appender instances to write to
+                        a file
+        makeLayout = A delegate that returns a `Layout` instance from
+                     a name, or throws on error.
+                     By default, wraps `ocean.util.log.Config.newLayout`
+        use_insert_appender = true if the InsertConsole appender should be used
+                              (needed when using the AppStatus module)
+
+*******************************************************************************/
+
+public void configureNewLoggers (
+    ClassIterator!(Config, ConfigParser) config, MetaConfig m_config,
+    Appender delegate ( istring file, Layout layout ) file_appender,
+    Layout delegate (cstring) makeLayout, bool use_insert_appender = false)
+{
     // DMD1 cannot infer the common type between both return, we have to work
     // around it...
     static Appender console_appender_fn (bool insert_appender, Layout layout)
@@ -471,9 +507,6 @@ public void configureNewLoggers (
                      = (cstring n) { return !n.length ? NewLog.Log.root : NewLog.Log.lookup(n); };
     scope Appender delegate(Layout) appender_dg = (Layout l)
                        { return console_appender_fn(use_insert_appender, l); };
-
-    scope Layout delegate(cstring) makeLayout
-        = (cstring v) { return newLayout(v); };
 
     configureLoggers!(NewLog.Logger, ConfigParser, LayoutDate, LayoutSimple)
         (config, m_config, lookup, file_appender, appender_dg, makeLayout);
