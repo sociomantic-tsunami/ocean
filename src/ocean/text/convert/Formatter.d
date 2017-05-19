@@ -385,7 +385,14 @@ private void handle (T) (T v, FormatInfo f, FormatterSink sf, ElemSink se)
     // toString hook: Give priority to the non-allocating one
     // Note: sink `toString` overload should take a `scope` delegate
     else static if (is(typeof(v.toString(sf))))
-        v.toString((cstring e) { return se(e, f); });
+        v.toString((cstring e) { se(e, f); });
+    else static if (is(typeof(v.toString((size_t delegate(cstring)).init))))
+    {
+        pragma(msg, "Deprecation: Please change toString to accept ",
+               "`scope FormatterSink` instead of `size_t delegate(cstring)` in ",
+               T.stringof);
+        v.toString((cstring e) { se(e, f); return e.length; });
+    }
     else static if (is(typeof(v.toString()) : cstring))
         se(v.toString(), f);
     else static if (is(T == interface))
