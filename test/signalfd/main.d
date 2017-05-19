@@ -417,23 +417,12 @@ private class SignalFDTest
 
 /*******************************************************************************
 
-    Dummy main (required by compiler).
+    Tests where the set of signals being handled by the SignalFD is set in the
+    ctor.
 
 *******************************************************************************/
 
 void main ( )
-{
-}
-
-
-/*******************************************************************************
-
-    unittests where the set of signals being handled by the SignalFD is set in
-    the ctor.
-
-*******************************************************************************/
-
-unittest
 {
     // Test a single signal handled by a signalfd
     new SignalFDTest(new SignalFD([SIGHUP]), [SIGHUP]);
