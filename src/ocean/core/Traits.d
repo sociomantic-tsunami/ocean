@@ -1269,11 +1269,11 @@ unittest
 
 /*******************************************************************************
 
-    Check if a class or struct type contains a method with the given
-    method name, and has the same signature as the given delegate.
+    Check if a class, struct, interface, or union type contains a method with
+    the given method name, and has the same signature as the given delegate.
 
     Template_Params:
-        T = The class or struct type to check
+        T = The type to check
         name = The name of the method to look up
         Dg = The delegate type with the signature of the method to look for
 
@@ -1284,7 +1284,8 @@ unittest
 
 template hasMethod ( T, istring name, Dg )
 {
-    static assert(is(T == struct) || is(T == class) || is(T == union));
+    static assert(is(T == struct) || is(T == class) || is(T == union) ||
+        is(T == interface));
     static assert(isIdentifier(name));
     static assert(is(Dg == delegate));
 
@@ -1349,6 +1350,16 @@ unittest
     static assert ( !hasMethod!(Class, "baseMethodVoid", void delegate(int)) );
     static assert ( hasMethod!(Class, "baseMethodInt", int delegate()) );
     static assert ( hasMethod!(Class, "baseMethodIntArgs", int delegate(int, float, char)) );
+
+    interface Interface
+    {
+        void reset ( );
+        int retint ( );
+        int retintargs ( int );
+        int retintargs2 ( int, float, char );
+    }
+
+    mixin Tests!(Interface);
 
     union Union
     {

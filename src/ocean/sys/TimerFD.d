@@ -210,6 +210,8 @@ extern (C)
 
 public class TimerFD : ISelectable
 {
+    import ocean.sys.CloseOnExec;
+
     /***************************************************************************
 
         Set to true to use an absolute or false for a relative timer. On default
@@ -288,8 +290,10 @@ public class TimerFD : ISelectable
     {
         this.e = e;
         static bool verify (int fd) { return fd >= 0; }
-        this.fd = this.e.enforceRet!(.timerfd_create)(&verify)
-            .call(realtime ? CLOCK_REALTIME : CLOCK_MONOTONIC, TFD_NONBLOCK);
+        this.fd = this.e.enforceRet!(.timerfd_create)(&verify).call(
+            realtime ? CLOCK_REALTIME : CLOCK_MONOTONIC,
+            setCloExec(TFD_NONBLOCK, TFD_CLOEXEC)
+        );
     }
 
     /***************************************************************************

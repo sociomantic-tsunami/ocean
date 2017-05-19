@@ -109,63 +109,16 @@ import ocean.core.Traits;
 import ocean.io.model.IConduit;
 
 import core.sys.posix.signal;
+
 import core.sys.posix.unistd : read, close;
 
 import core.stdc.errno : EAGAIN, EWOULDBLOCK, errno;
-
-import core.sys.posix.fcntl : O_NONBLOCK;
 
 import ocean.core.Array : contains;
 
 import ocean.transition;
 
 debug import ocean.io.Stdout;
-
-
-extern ( C )
-{
-    /***************************************************************************
-
-        Definition of external functions required to manage signal events.
-
-    ***************************************************************************/
-
-    public int signalfd ( int fd, sigset_t* mask, int flags );
-
-
-
-    /***************************************************************************
-
-        Struct used by signal notification.
-
-    ***************************************************************************/
-
-    public struct signalfd_siginfo
-    {
-        uint ssi_signo;    /* Signal number */
-        int  ssi_errno;    /* Error number (unused) */
-        int  ssi_code;     /* Signal code */
-        uint ssi_pid;      /* PID of sender */
-        uint ssi_uid;      /* Real UID of sender */
-        int  ssi_fd;       /* File descriptor (SIGIO) */
-        uint ssi_tid;      /* Kernel timer ID (POSIX timers) */
-        uint ssi_band;     /* Band event (SIGIO) */
-        uint ssi_overrun;  /* POSIX timer overrun count */
-        uint ssi_trapno;   /* Trap number that caused signal */
-        int  ssi_status;   /* Exit status or signal (SIGCHLD) */
-        int  ssi_int;      /* Integer sent by sigqueue(2) */
-        ulong ssi_ptr;     /* Pointer sent by sigqueue(2) */
-        ulong ssi_utime;   /* User CPU time consumed (SIGCHLD) */
-        ulong ssi_stime;   /* System CPU time consumed (SIGCHLD) */
-        ulong ssi_addr;    /* Address that generated signal
-                              (for hardware-generated signals) */
-        ubyte[48] pad;     /* Pad size to 128 bytes (allow for
-                              additional fields in the future) */
-
-        static assert(signalfd_siginfo.sizeof == 128);
-    }
-}
-
 
 /*******************************************************************************
 
@@ -175,6 +128,9 @@ extern ( C )
 
 public class SignalFD : ISelectable
 {
+    import core.sys.linux.sys.signalfd;
+    import ocean.sys.CloseOnExec;
+
     /***************************************************************************
 
         errno exception type for signal events.
@@ -202,16 +158,7 @@ public class SignalFD : ISelectable
 
     ***************************************************************************/
 
-    public alias .signalfd_siginfo SignalInfo;
-
-
-    /***************************************************************************
-
-        SFD_NONBLOCK flags used by signalfd() function.
-
-    ***************************************************************************/
-
-    private alias O_NONBLOCK SFD_NONBLOCK;
+    public alias signalfd_siginfo SignalInfo;
 
 
     /***************************************************************************
@@ -321,12 +268,14 @@ public class SignalFD : ISelectable
         sigset.add(this.signals);
         auto c_sigset = cast(sigset_t) sigset;
 
-        this.fd = .signalfd(this.fd, &c_sigset, SFD_NONBLOCK);
+        this.fd = signalfd(
+            this.fd, &c_sigset, setCloExec(SFD_NONBLOCK, SFD_CLOEXEC)
+        );
         if ( this.fd == -1 )
         {
             scope ( exit ) .errno = 0;
             auto errnum = .errno;
-            throw this.errno_exception.set(errnum, identifier!(.signalfd));
+            throw this.errno_exception.set(errnum, identifier!(signalfd));
         }
 
         if ( mask )

@@ -140,6 +140,8 @@ import core.sys.posix.sys.types;
 class File : Device, Device.Seek, Device.Truncate
 {
         static import ocean.core.ExceptionDefinitions;
+        import ocean.sys.CloseOnExec;
+        const O_CLOEXEC = 0x80000;
 
         public alias Device.read  read;
         public alias Device.write write;
@@ -529,7 +531,7 @@ class File : Device, Device.Seek, Device.Truncate
             auto name = toStringz (path, zero);
             auto mode = Access[style.access] | Create[style.open];
 
-            handle = posix.open (name, mode | addflags, access);
+            handle = posix.open (name, mode | setCloExec(addflags, O_CLOEXEC), access);
             if (handle is -1)
                 return false;
 

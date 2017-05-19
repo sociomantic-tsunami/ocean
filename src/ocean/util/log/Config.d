@@ -278,7 +278,7 @@ alias Appender.Layout Layout;
 
 *******************************************************************************/
 
-public Layout newLayout ( istring layout_str )
+public Layout newLayout ( cstring layout_str )
 {
     Layout layout;
 
@@ -316,7 +316,11 @@ public Layout newLayout ( istring layout_str )
             break;
 
         default:
-            throw new Exception("Invalid layout requested : " ~ layout_str);
+            // Has to be 2 statements because `istring ~ cstring`
+            // yields `cstring` instead of `istring`.
+            istring msg = "Invalid layout requested : ";
+            msg ~= layout_str;
+            throw new Exception(msg, __FILE__, __LINE__);
     }
 
     return layout;
@@ -345,14 +349,47 @@ public void configureOldLoggers (
     Appender delegate ( istring file, Layout layout ) file_appender,
     bool use_insert_appender = false)
 {
+    configureOldLoggers(config, m_config, file_appender,
+        (cstring v) { return newLayout(v); }, use_insert_appender);
+}
+
+
+/*******************************************************************************
+
+    Sets up logging configuration for `ocean.util.log.Log`
+
+    Calls the provided `file_appender` delegate once per log being configured
+    and passes the returned `Appender` to the `Logger.add` method.
+
+    This is an extra overload because using a delegate literal as a parameter's
+    default argument causes linker error in D1.
+
+    Params:
+        config   = an instance of an class iterator for Config
+        m_config = an instance of the MetaConfig class
+        file_appender = delegate which returns appender instances to write to
+                        a file
+        makeLayout = A delegate that returns a `Layout` instance from
+                     a name, or throws on error.
+                     By default, wraps `ocean.util.log.Config.newLayout`
+        use_insert_appender = true if the InsertConsole appender should be used
+                              (needed when using the AppStatus module)
+
+*******************************************************************************/
+
+public void configureOldLoggers (
+    ClassIterator!(Config, ConfigParser) config, MetaConfig m_config,
+    Appender delegate ( istring file, Layout layout ) file_appender,
+    Layout delegate (cstring) makeLayout, bool use_insert_appender = false)
+{
     // DMD1 cannot infer the common type between both return, we have to work
     // around it...
-    static Appender console_appender_fn (bool insert_appender, Layout l)
+    static Appender console_appender_fn (bool insert_appender, Layout layout)
     {
         if (insert_appender)
-            return new InsertConsole(l);
+            return new InsertConsole(layout);
         else
-            return new AppendStderrStdout(ILogger.Level.Warn, l);
+            return new AppendStderrStdout(ILogger.Level.Warn, layout);
     }
 
     // The type needs to be spelt out loud because DMD2 is clever enough
@@ -364,7 +401,34 @@ public void configureOldLoggers (
                        { return console_appender_fn(use_insert_appender, l); };
 
     configureLoggers!(OldLog.Logger, ConfigParser, LayoutDate, LayoutSimple)
-        (config, m_config, lookup, file_appender, appender_dg);
+        (config, m_config, lookup, file_appender, appender_dg, makeLayout);
+}
+
+
+///
+unittest
+{
+    // In a real app those would be full-fledged implementation
+    alias LayoutSimple AquaticLayout;
+    alias LayoutSimple SubmarineLayout;
+
+    void myConfigureLoggers (
+        ClassIterator!(Config, ConfigParser) config,
+        MetaConfig m_config,
+        Appender delegate ( istring file, Layout layout ) file_appender,
+        bool use_insert_appender = false)
+    {
+        Layout makeLayout (cstring name)
+        {
+            if (name == "aquatic")
+                return new AquaticLayout;
+            if (name == "submarine")
+                return new SubmarineLayout;
+            return ocean.util.log.Config.newLayout(name);
+        }
+        ocean.util.log.Config.configureOldLoggers(config, m_config,
+            file_appender, &makeLayout, use_insert_appender);
+    }
 }
 
 
@@ -408,8 +472,11 @@ public void configureNewLoggers (
     scope Appender delegate(Layout) appender_dg = (Layout l)
                        { return console_appender_fn(use_insert_appender, l); };
 
+    scope Layout delegate(cstring) makeLayout
+        = (cstring v) { return newLayout(v); };
+
     configureLoggers!(NewLog.Logger, ConfigParser, LayoutDate, LayoutSimple)
-        (config, m_config, lookup, file_appender, appender_dg);
+        (config, m_config, lookup, file_appender, appender_dg, makeLayout);
 }
 
 
@@ -435,6 +502,8 @@ public void configureNewLoggers (
         console_appender = Delegate which returns an Appender suitable to use
                            as console appender. Might not be called if console
                            writing is disabled.
+        makeLayout      = A delegate that returns a `Layout` instance from
+                          a name, or throws on error.
 
 *******************************************************************************/
 
@@ -444,7 +513,8 @@ private void configureLoggers
     (ClassIterator!(Config, Source) config, MetaConfig m_config,
      LoggerT delegate (cstring name) lookup,
      Appender delegate (istring file, Layout layout) file_appender,
-     Appender delegate (Layout) console_appender)
+     Appender delegate (Layout) console_appender,
+     Layout delegate (cstring) makeLayout)
 {
     // It is important to ensure that parent loggers are configured before child
     // loggers. This is because parent loggers will override the settings of
@@ -501,7 +571,8 @@ private void configureLoggers
         configureLogger!(FileLayout, ConsoleLayout, LoggerT)
             (lookup(name), settings, name,
              file_appender, console_appender,
-             console_enabled, syslog_enabled, m_config.buffer_size);
+             console_enabled, syslog_enabled, m_config.buffer_size,
+             makeLayout);
     }
 }
 
@@ -529,6 +600,9 @@ private void configureLoggers
         console_enabled = `true` if a console appender should be added (by
                           calling `console_enabled`).
         syslog_enabled  = `true` if a syslog appender should be added.
+        makeLayout      = A delegate that returns a `Layout` instance from
+                          a name, or throws on error.
+                          By default, wraps `ocean.util.log.Config.newLayout`.
 
 *******************************************************************************/
 
@@ -538,7 +612,8 @@ public void configureLogger
     (LoggerT log, Config settings, istring name,
      Appender delegate ( istring file, Layout layout ) file_appender,
      Appender delegate (Layout) console_appender,
-     bool console_enabled, bool syslog_enabled, size_t buffer_size)
+     bool console_enabled, bool syslog_enabled, size_t buffer_size,
+     Layout delegate (cstring) makeLayout = (cstring v) { return newLayout(v); })
 {
     if (settings.buffer_size)
         buffer_size = settings.buffer_size;
@@ -556,7 +631,7 @@ public void configureLogger
     if (settings.file.set)
     {
         Layout file_log_layout = (settings.file_layout.length)
-            ? newLayout(settings.file_layout)
+            ? makeLayout(settings.file_layout)
             : new FileLayout;
         log.add(file_appender(settings.file(), file_log_layout));
     }
@@ -567,7 +642,7 @@ public void configureLogger
     if (console_enabled)
     {
         Layout console_log_layout = (settings.console_layout.length)
-            ? newLayout(settings.console_layout)
+            ? makeLayout(settings.console_layout)
             : new ConsoleLayout;
         log.add(console_appender(console_log_layout));
     }

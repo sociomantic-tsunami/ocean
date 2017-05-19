@@ -79,6 +79,8 @@ public enum TcpOptions
 
 abstract class IIPSocket : ISocket
 {
+    import ocean.sys.CloseOnExec;
+
     version (D_Version2)
     {
         // add to overload set explicitly
@@ -230,7 +232,10 @@ abstract class IIPSocket : ISocket
 
     public int socket ( int type, int protocol = 0 )
     {
-        this.fd = .socket(this.is_ipv6? AF_INET6 : AF_INET, type, protocol);
+        this.fd = .socket(
+            this.is_ipv6? AF_INET6 : AF_INET,
+            setCloExec(type, SocketFlags.SOCK_CLOEXEC), protocol
+        );
 
         this.close_in_destructor = (this.fd >= 0);
 

@@ -29,7 +29,6 @@ import ocean.text.util.StringC;
 import ocean.sys.ErrnoException;
 
 import core.sys.linux.sys.inotify;
-import core.sys.posix.fcntl;
 
 import ocean.io.model.IConduit: ISelectable;
 
@@ -47,6 +46,8 @@ import core.stdc.errno: EAGAIN, EWOULDBLOCK, errno;
 
 public class Inotify : ISelectable
 {
+    import ocean.sys.CloseOnExec;
+
     /***************************************************************************
 
         Exception class, thrown on errors with inotify functions
@@ -165,18 +166,9 @@ public class Inotify : ISelectable
     public this ( InotifyException e )
     {
         this.e = e;
-        this.fd = this.e.enforceRet!(inotify_init)(&verify).call();
 
-        int flags  =  fcntl(this.fd, F_GETFL, 0);
-
-        if ( fcntl(this.fd, F_SETFL, flags | O_NONBLOCK) < 0 )
-        {
-            scope (exit) errno = 0;
-
-            int errnum = errno;
-
-            throw this.e.set(errnum, identifier!(.fcntl));
-        }
+        this.fd = this.e.enforceRet!(inotify_init1)(&verify)
+            .call(setCloExec(IN_NONBLOCK, IN_CLOEXEC));
     }
 
 

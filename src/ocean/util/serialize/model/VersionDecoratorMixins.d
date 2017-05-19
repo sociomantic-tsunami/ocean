@@ -29,8 +29,8 @@ import ocean.core.Enforce,
        ocean.util.container.ConcatBuffer,
        ocean.core.StructConverter;
 
-import ocean.util.serialize.Version,
-       ocean.util.serialize.model.Traits;
+import ocean.util.serialize.Version;
+import ocean.util.serialize.contiguous.Contiguous;
 
 import ocean.stdc.string;
 
@@ -127,7 +127,7 @@ template LoadMethod (Deserializer, alias exception_field)
 
     ***************************************************************************/
 
-    public DeserializerReturnType!(Deserializer, S) load(S)(ref void[] buffer)
+    public Contiguous!(S) load(S)(ref void[] buffer)
     {
         static assert (
             Version.Info!(S).exists,
@@ -186,7 +186,7 @@ template HandleVersionMethod(Deserializer, alias exception_field)
 
     ***************************************************************************/
 
-    private DeserializerReturnType!(Deserializer, S) handleVersion(S)
+    private Contiguous!(S) handleVersion(S)
         (ref void[] buffer, Version.Type input_version)
     body
     {
@@ -261,8 +261,7 @@ template ConvertMethod(Serializer, Deserializer)
 
     ***************************************************************************/
 
-    public DeserializerReturnType!(Deserializer, S) convert(S, Source)
-        (ref void[] buffer)
+    private Contiguous!(S) convert (S, Source) (ref void[] buffer)
     {
         scope(exit)
         {
@@ -375,14 +374,14 @@ version(UnitTest)
 {
     struct DummyDeserializer
     {
-        static void[] deserialize(S)(void[] buffer)
+        static Contiguous!(S) deserialize(S)(void[] buffer)
         {
-            return null;
+            return Contiguous!(S).init;
         }
 
-        static void[] deserialize(S)(void[] buffer, void[] copy_buffer)
+        static Contiguous!(S) deserialize(S)(void[] buffer, void[] copy_buffer)
         {
-            return null;
+            return Contiguous!(S).init;
         }
 
         static size_t countRequiredSize(S)(void[] buffer)

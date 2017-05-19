@@ -13,7 +13,7 @@
 
 *******************************************************************************/
 
-module ocean.io.device.SerialPort;
+deprecated module ocean.io.device.SerialPort;
 
 import ocean.transition;
 
@@ -49,7 +49,7 @@ private const B57600 = Octal!("001001");
 
 *******************************************************************************/
 
-class SerialPort : Device
+deprecated class SerialPort : Device
 {
     private istring              str;
     private static istring[]     _ports;

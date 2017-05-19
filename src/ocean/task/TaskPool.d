@@ -160,14 +160,23 @@ class TaskPool ( TaskT : Task ) : ObjectPool!(Task)
         Suspends the current task until all running tasks in the pool have
         finished executing.
 
+        Because of `terminationHook` implementation details, by the time caller
+        task gets resumed, there will still be one (last) non-recycled running
+        task in the pool, suspended right before actual termination. Once caller
+        task gets suspended again for any reason, that last task will be
+        recycled too. It is possible to manually call
+        `theScheduler.processEvents()` after `awaitRunningTasks()` to force
+        recycling of that last task at cost of a small additional delay in
+        resuming the caller.
+
         Note: it is important to ensure that the current task (i.e. the one to
         be suspended) is not itself a task from the pool. If that were allowed,
         the current task would never get resumed, and this function would never
         return.
 
         Throws:
-            if the current task is null or if the current task belongs to the
-            task pool
+            `Exception` if the current task is null or if the current task
+            belongs to the task pool
 
     ***************************************************************************/
 

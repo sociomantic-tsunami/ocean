@@ -33,7 +33,6 @@ import ocean.core.Enforce,
        ocean.core.StructConverter : structConvert;
 
 import ocean.util.serialize.Version,
-       ocean.util.serialize.model.Traits,
        ocean.util.serialize.model.VersionDecoratorMixins;
 
 import ocean.util.serialize.contiguous.Serializer,
@@ -72,31 +71,9 @@ class VersionDecorator
 
     public alias VersionDecorator This;
 
-    /**************************************************************************
 
-        NB! This will suppress any compilation errors, comment out during
-        development and enable only when commiting.
-
-    **************************************************************************/
-
-    static assert (isDecorator!(This));
-
-    /***************************************************************************
-
-        Aliases for used Serializer / Deserializer implementations as demanded
-        by `isDecorator` trait.
-
-    ***************************************************************************/
-
-    public alias .Serializer  Serializer;
-
-    /***************************************************************************
-
-        ditto
-
-    ***************************************************************************/
-
-    public alias .Deserializer Deserializer;
+    deprecated public alias .Serializer  Serializer;
+    deprecated public alias .Deserializer Deserializer;
 
     /***************************************************************************
 
@@ -139,10 +116,10 @@ class VersionDecorator
 
     ***************************************************************************/
 
-    mixin StoreMethod!(Serializer);
-    mixin LoadMethod!(Deserializer, This.e);
+    mixin StoreMethod!(.Serializer);
+    mixin LoadMethod!(.Deserializer, This.e);
     mixin LoadCopyMethod!(This.e);
-    mixin ConvertMethod!(Serializer, Deserializer);
+    mixin ConvertMethod!(.Serializer, .Deserializer);
 
     /***************************************************************************
 
@@ -182,7 +159,7 @@ class VersionDecorator
         if (input_version == VInfo.number)
         {
             // no conversion is necessary
-            return Deserializer.deserialize!(S)(buffer);
+            return .Deserializer.deserialize!(S)(buffer);
         }
 
         if (input_version > VInfo.number)
