@@ -1,0 +1,18 @@
+coverage:
+    status:
+        # Make all cov less fatal initially
+        project:
+            default:
+                if_no_uploads: success
+                if_not_found: success
+        patch:
+            default:
+                if_no_uploads: success
+                if_not_found: success
+        changes:
+            default:
+                if_no_uploads: success
+                if_not_found: success
+
+comment:
+    layout: "diff"
