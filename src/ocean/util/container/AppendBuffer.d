@@ -202,9 +202,9 @@ public template AppendBuffer ( T, bool use_malloc = false )
 
 public class AppendBuffer ( T, Base: AppendBufferImpl ): Base, IAppendBufferReader!(T)
 {
-    static if ( is(T == class) || is(T == interface) )
+    static if (hasIndirections!(T))
     {
-        // implicit reference semantics make impossible to use const params
+        // Cannot use `const` for types with indirections
         alias T ParamT;
     }
     else
@@ -1692,3 +1692,65 @@ unittest
     assert (ab[] == "~~~~~"d);
 }
 
+unittest
+{
+    static struct WithIndirection
+    {
+        char[] value;
+    }
+
+    static struct WithoutIndirection
+    {
+        char value;
+    }
+
+
+    scope buffer1 = new AppendBuffer!(WithIndirection);
+    scope buffer2 = new AppendBuffer!(WithoutIndirection);
+
+    WithIndirection w;
+    WithoutIndirection wo;
+
+    buffer1 ~= w;
+    buffer2 ~= wo;
+
+    Const!(WithIndirection) cw = w;
+    Const!(WithoutIndirection) cwo = wo;
+
+    version (D_Version2)
+        static assert(!is(typeof({ buffer1 ~= cw; })));
+    buffer2 ~= cwo;
+}
+
+
+unittest
+{
+    static class WithIndirection
+    {
+        char[] value;
+    }
+
+    static class WithoutIndirection
+    {
+        char value;
+    }
+
+
+    scope buffer1 = new AppendBuffer!(WithIndirection);
+    scope buffer2 = new AppendBuffer!(WithoutIndirection);
+
+    scope w = new WithIndirection;
+    scope wo = new WithoutIndirection;
+
+    buffer1 ~= w;
+    buffer2 ~= wo;
+
+    Const!(WithIndirection) cw = w;
+    Const!(WithoutIndirection) cwo = wo;
+
+    version (D_Version2)
+    {
+        static assert(!is(typeof({ buffer1 ~= cw; })));
+        static assert(!is(typeof({ buffer2 ~= cwo; })));
+    }
+}
