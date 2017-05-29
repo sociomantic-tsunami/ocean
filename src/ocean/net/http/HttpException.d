@@ -125,7 +125,7 @@ class HttpException : HttpServerException
         catch (Exception)
         {
             test!("==")(e.status, HttpResponseCode.OK);
-            test!("==")(getMsg(e), "Ok Invalid resource");
+            test!("==")(getMsg(e), "OK Invalid resource");
         }
 
         try
