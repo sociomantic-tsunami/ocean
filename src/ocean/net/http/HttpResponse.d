@@ -496,7 +496,7 @@ unittest
 
     test!("==")(
         rendered,
-        "HTTP/1.1 200 Ok\r\nDate: dummy\r\nContent-Length: 0\r\n"
+        "HTTP/1.1 200 OK\r\nDate: dummy\r\nContent-Length: 0\r\n"
             ~ "Key1: \r\nKey2: chunk1chunk2\r\n\r\n"
     );
 }
