@@ -53,7 +53,7 @@ struct StatusPhrases
     [
         HttpStatusPhrase(HttpResponseCode.Continue,                     "Continue"),
         HttpStatusPhrase(HttpResponseCode.SwitchingProtocols,           "Switching Protocols"),
-        HttpStatusPhrase(HttpResponseCode.OK,                           "Ok"),
+        HttpStatusPhrase(HttpResponseCode.OK,                           "OK"),
         HttpStatusPhrase(HttpResponseCode.Created,                      "Created"),
         HttpStatusPhrase(HttpResponseCode.Accepted,                     "Accepted"),
         HttpStatusPhrase(HttpResponseCode.NonAuthoritativeInformation,  "Non-Authoritative Information"),
