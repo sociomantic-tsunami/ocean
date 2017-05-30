@@ -2,18 +2,12 @@
 set -xe
 
 # Submit code coverage report
-mkdir coverage
-cp .codecov.yml coverage/
-cp ci/codecov.sh coverage/
-find . -maxdepth 1 -type f -name "*.lst" -exec mv '{}' 'coverage/' \;
-git_commit=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
-CODECOVCMD="codecov.sh -y .codecov.yml -R ."
-docker run -ti --rm -v $PWD/coverage:/docker -w /docker \
+docker run -ti --rm -v $PWD:/docker -w /docker \
     -e CI \
     -e TRAVIS -e TRAVIS_BRANCH -e TRAVIS_COMMIT -e TRAVIS_JOB_NUMBER \
     -e TRAVIS_PULL_REQUEST -e TRAVIS_JOB_ID -e TRAVIS_REPO_SLUG -e TRAVIS_TAG \
     -e TRAVIS_OS_NAME -e TRAVIS_PULL_REQUEST_BRANCH -e TRAVIS_PULL_REQUEST_SHA \
-    ocean bash $CODECOVCMD
+    ocean bash ci/codecov.sh
 
 # If this is a tag, convert and push to ocean-d2 repo
 if test -n "$TRAVIS_TAG"

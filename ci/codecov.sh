@@ -38,7 +38,6 @@ ft_xcodeplist="0"
 
 _git_root=$(git rev-parse --show-toplevel 2>/dev/null || hg root 2>/dev/null || echo $PWD)
 git_root="$_git_root"
-codecov_yml=""
 remote_addr=""
 if [ "$git_root" = "$PWD" ];
 then
@@ -121,7 +120,6 @@ cat << EOF
                  -X network       Disable uploading the file network
 
     -R root dir  Used when not in git/hg project to identify project root directory
-    -y conf file Used to specify the location of the .codecov.yml config file
     -F flag      Flag the upload to group coverage metrics
 
                  -F unittests        This upload is only unittests
@@ -229,7 +227,7 @@ parse_yaml() {
 
 if [ $# != 0 ];
 then
-  while getopts "a:A:b:B:cC:dD:e:f:F:g:G:hJ:Kn:p:P:r:R:y:s:S:t:T:u:U:vx:X:Z" o
+  while getopts "a:A:b:B:cC:dD:e:f:F:g:G:hJ:Kn:p:P:r:R:s:S:t:T:u:U:vx:X:Z" o
   do
     case "$o" in
       "a")
@@ -326,9 +324,6 @@ $OPTARG"
         ;;
       "R")
         git_root="$OPTARG"
-        ;;
-      "y")
-        codecov_yml="$OPTARG"
         ;;
       "s")
         if [ "$search_in_o" = "" ];
@@ -433,16 +428,8 @@ then
   say "$e==>$x Travis CI detected."
   # http://docs.travis-ci.com/user/ci-environment/#Environment-variables
   service="travis"
-  branch="$TRAVIS_PULL_REQUEST_BRANCH"
-  if [ -z "$branch" ];
-  then
-      branch="$TRAVIS_BRANCH"
-  fi
-  commit="$TRAVIS_PULL_REQUEST_SHA"
-  if [ -z "$commit" ];
-  then
-      commit="$TRAVIS_COMMIT"
-  fi
+  branch="$TRAVIS_BRANCH"
+  commit="$TRAVIS_COMMIT"
   build="$TRAVIS_JOB_NUMBER"
   pr="$TRAVIS_PULL_REQUEST"
   job="$TRAVIS_JOB_ID"
@@ -768,9 +755,8 @@ then
   fi
 fi
 
-yaml=$(test -n "$codecov_yml" && echo "$codecov_yml" \
-       || cd "$git_root" && \
-           git ls-files "*codecov.yml" "*codecov.yaml" 2>/dev/null \
+yaml=$(cd "$git_root" && \
+       git ls-files "*codecov.yml" "*codecov.yaml" 2>/dev/null \
        || hg locate "*codecov.yml" "*codecov.yaml" 2>/dev/null \
        || echo '')
 yaml=$(echo "$yaml" | head -1)
