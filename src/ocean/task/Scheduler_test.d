@@ -56,7 +56,7 @@ unittest
             enforce(false, "epoll");
         }
     }
- 
+
     SchedulerConfiguration config;
     config.worker_fiber_limit = 1; // make sure tasks run 1 by 1
     initScheduler(config);
@@ -122,4 +122,22 @@ unittest
     initScheduler(SchedulerConfiguration.init);
     theScheduler.schedule(new MainTask);
     theScheduler.eventLoop();
+}
+
+unittest
+{
+    static class DummyTask : Task
+    {
+        override void run ( )
+        {
+            theScheduler.processEvents();
+        }
+    }
+
+    SchedulerConfiguration config;
+    config.suspended_task_limit = 1;
+    initScheduler(config);
+    theScheduler.schedule(new DummyTask);
+    testThrown!(SuspendQueueFullException)(
+        theScheduler.schedule(new DummyTask));
 }
