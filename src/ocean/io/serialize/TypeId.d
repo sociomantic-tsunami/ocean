@@ -9,63 +9,8 @@
     unions and function/delegate parameter lists and using the base type of
     enums and typedefs.
 
-    Example:
-
-    ---
-        struct S
-        {
-            typedef int Spam;
-
-            struct T
-            {
-                enum Eggs : ushort
-                {
-                    Ham = 7
-                }
-
-                Eggs eggs;                              // at offset 0
-
-                char[] str;                             // at offset 8
-            }
-
-            Spam x;                                     // at offset 0
-
-            T[][5] y;                                   // at offset 8
-
-            Spam delegate ( T ) dg;                     // at offset 88
-
-            T*[float function(Spam, T.Eggs)] a;         // at offset 104
-        }
-
-
-        const id = TypeId!(S);
-
-        // id is now "struct{
-        //               "0LUint"
-        //               "8LU"
-        //               "struct{"
-        //                   "0LUushort"
-        //                   "8LUchar[]"
-        //               "}[][5LU]"
-        //               "88LUintdelegate("
-        //                   "struct{"
-        //                       "0LUushort"
-        //                       "8LUchar[]"
-        //                   "}"
-        //               ")"
-        //               "104LUstruct{"
-        //                   "0LUushort"
-        //                   "8LUchar[]"
-        //               "}*[floatfunction(intushort)]
-        //           "}".
-
-        const hash = TypeHash!(S);
-
-        // hash is now 0x3ff282c0d315761b, the 64-bit Fnv1a hash of id .
-    ---
-
-    The type identifier of a non-aggregate type is the .stringof of that type
-    (or its base if it is a typedef or enum).
+    The type identifier of a non-aggregate type is the `.stringof` of that type
+    (or its base if it is a `typedef` or `enum`).
 
     Copyright:
         Copyright (c) 2009-2016 Sociomantic Labs GmbH.
@@ -80,14 +25,61 @@
 
 module ocean.io.serialize.TypeId;
 
-/******************************************************************************
-
-    Imports
-
- ******************************************************************************/
-
-import ocean.io.digest.Fnv1: StaticFnv1a64, Fnv164Const;
 import ocean.core.Traits;
+import ocean.io.digest.Fnv1: StaticFnv1a64, Fnv164Const;
+import ocean.transition;
+
+/// Usage example
+unittest
+{
+    static struct S
+    {
+        mixin(Typedef!(int, `Spam`));
+
+        uint spam;
+
+        static struct T
+        {
+            enum Eggs : ushort
+            {
+                Ham = 7
+            }
+
+            Eggs eggs;                              // at offset 0
+            char[] str;                             // at offset 8
+        }
+
+        Spam x;                                     // at offset 0
+        T[][5] y;                                   // at offset 8
+        Spam delegate ( T ) dg;                     // at offset 88
+        T*[float function(Spam, T.Eggs)] a;         // at offset 104
+    }
+
+    const id = TypeId!(S);
+    static assert(id ==
+                  `struct{` ~
+                    `0LU` ~ `uint` ~
+                    `4LU` ~ `int` ~
+                    `8LU` ~ `struct{` ~
+                      `0LU` ~ `ushort` ~
+                      `8LU` ~ `char[]` ~
+                    `}[][5LU]` ~
+                    `88LU` ~ `intdelegate(` ~
+                      `struct{` ~
+                        `0LU` ~ `ushort` ~
+                        `8LU` ~ `char[]` ~
+                      `}` ~
+                    `)` ~
+                    `104LU` ~ `struct{` ~
+                      `0LU` ~ `ushort` ~
+                      `8LU` ~ `char[]` ~
+                    `}*[floatfunction(intushort)]` ~
+                  `}`);
+
+    const hash = TypeHash!(S);
+    static assert(hash == 0x3ff282c0d315761b);
+}
+
 
 /******************************************************************************
 
