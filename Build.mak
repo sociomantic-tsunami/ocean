@@ -17,6 +17,9 @@ override DFLAGS += -de
 COVFLAG:=
 endif
 
+# Remove coverage files
+clean += *.lst
+
 # Remove deprecated modules from testing:
 TEST_FILTER_OUT += \
 	$C/src/ocean/text/util/c/iconv.d \
