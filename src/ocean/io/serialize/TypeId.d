@@ -140,7 +140,7 @@ template TypeId ( T )
 
 unittest
 {
-    struct Sample
+    static struct Sample
     {
         int[4] arr;
         int a;
@@ -148,7 +148,29 @@ unittest
         char* c;
     }
 
+
     const x = TypeId!(Sample);
+    const ExpectedSampleStr = `struct{0LUint[4LU]16LUint24LUdouble32LUchar*}`;
+    static assert(x == ExpectedSampleStr);
+
+    // This looks like a bug
+    mixin(Typedef!(Sample, `NestedTypedef`));
+    static assert (TypeId!(NestedTypedef) == `Sample`);
+
+    static struct Bar { NestedTypedef f; }
+    static assert(TypeId!(Bar) == `struct{0LUSample}`);
+
+    union Foo { char* ptr; ulong val; }
+    static assert(TypeId!(Foo) == `union{0LUchar*0LUulong}`);
+
+    interface IFoo {}
+    mixin(Typedef!(IFoo, `DasInterface`));
+    static assert (!is(typeof(TypeId!(IFoo))));
+    static assert (!is(typeof(TypeId!(DasInterface))));
+
+    mixin(Typedef!(Object, `Klass`));
+    static assert (!is(typeof(TypeId!(Object))));
+    static assert (!is(typeof(TypeId!(Klass))));
 }
 
 /******************************************************************************
@@ -165,7 +187,7 @@ template TypeHash ( T )
 
 unittest
 {
-    struct Sample
+    static struct Sample
     {
         int[4] arr;
         int a;
@@ -174,6 +196,27 @@ unittest
     }
 
     const hash = TypeHash!(Sample);
+    const ExpectedSampleHash = 0x25E3D303374B7838;
+    static assert(hash == ExpectedSampleHash);
+
+    // This looks like a bug
+    mixin(Typedef!(Sample, `NestedTypedef`));
+    static assert (TypeHash!(NestedTypedef) == StaticFnv1a64!(`Sample`));
+
+    static struct Bar { NestedTypedef f; }
+    static assert(TypeHash!(Bar) == 0xB3F1A91424ABC725);
+
+    union Foo { char* ptr; ulong val; }
+    static assert(TypeHash!(Foo) == 0xC4BD15CE20899C30);
+
+    interface IFoo {}
+    mixin(Typedef!(IFoo, `DasInterface`));
+    static assert (!is(typeof(TypeHash!(IFoo))));
+    static assert (!is(typeof(TypeHash!(DasInterface))));
+
+    mixin(Typedef!(Object, `Klass`));
+    static assert (!is(typeof(TypeHash!(Object))));
+    static assert (!is(typeof(TypeHash!(Klass))));
 }
 
 /******************************************************************************
