@@ -106,6 +106,9 @@
 
 module ocean.text.Util;
 
+import ocean.core.Array : copy;
+import ocean.core.Enforce;
+import ocean.text.convert.Formatter;
 import ocean.transition;
 
 version (UnitTest) import ocean.core.Test;
@@ -783,6 +786,136 @@ bool isSpace(T) (T c)
                    return (c <= 32 && (c is ' ' || c is '\t' || c is '\r' || c is '\n' || c is '\f' || c is '\v'));
         else
            return (c <= 32 && (c is ' ' || c is '\t' || c is '\r' || c is '\n' || c is '\f' || c is '\v')) || (c is '\u2028' || c is '\u2029');
+}
+
+/*******************************************************************************
+
+    Enumeration of the different ways in which a string can be padded in order
+    to increase its length.
+
+*******************************************************************************/
+
+public enum PadType : ubyte
+{
+    PadPre,    // Padding is only applied before the string
+    PadPost,   // Padding is only applied after the string
+    PadAround  // Padding is applied on both sides of the string
+}
+
+/*******************************************************************************
+
+    Shortens/Lengthens a string as necessary to get it to a desired length.
+
+    Note 1:
+        If the string is shortened, an ellipsis (3 dots) will be appended to
+        indicate intentional truncation.
+
+    Note 2:
+        The length specified must be at least 4. If this constraint were absent
+        and a length of 3 or lower was specified, then the input string would be
+        converted simply to an ellipsis, losing all information about the
+        string.
+
+    Note 3:
+        If the input string needs to be lengthened and padding on both sides
+        is requested; then the padding will be added evenly on both sides if the
+        input string length and the desired length are both even or both odd,
+        otherwise an extra space will be added on the right side.
+
+    Params:
+        orig_str = original input string
+        final_length = desired length of the final string
+        final_str = transformed output string
+        pad_type = defines how the string should be padded (applicable only if
+            the string needs to be lengthened, defaults to padding being added
+            after the original string)
+
+    Returns:
+        The transformed string with the desired length
+
+*******************************************************************************/
+
+public mstring setLength (cstring orig_str, size_t final_length,
+    ref mstring final_str, PadType pad_type = PadType.PadPost)
+out
+{
+    assert(final_str.length == final_length, "setLength: out contract failed");
+}
+body
+{
+    enforce(final_length > 3, "setLength: desired final length too small");
+
+    static mstring fmt;
+
+    fmt.length = 0;
+    enableStomping(fmt);
+
+    final_str.length = 0;
+    enableStomping(final_str);
+
+    if (orig_str.length < final_length)
+    {
+        if (pad_type == PadType.PadPost)
+        {
+            sformat(fmt, "{{,-{}}", final_length);
+            sformat(final_str, fmt, orig_str);
+        }
+        else if (pad_type == PadType.PadPre)
+        {
+            sformat(fmt, "{{,{}}", final_length);
+            sformat(final_str, fmt, orig_str);
+        }
+        else
+        {
+            auto total_padding_len = final_length - orig_str.length;
+            auto pre_padding_len = total_padding_len / 2;
+            auto post_padding_len = total_padding_len - pre_padding_len;
+
+            assert(post_padding_len >= 1, "post_padding_len is less than 1");
+
+            if (pre_padding_len > 0)
+            {
+                sformat(fmt, "{{,{}}", pre_padding_len);
+                sformat(final_str, fmt, " ");
+            }
+
+            sformat(final_str, "{}", orig_str);
+
+            fmt.length = 0;
+            enableStomping(fmt);
+
+            sformat(fmt, "{{,{}}", post_padding_len);
+            sformat(final_str, fmt, " ");
+        }
+    }
+    else if (orig_str.length > final_length)
+    {
+        sformat(fmt, "{{.{}}", (final_length - 3));
+        sformat(final_str, fmt, orig_str);
+    }
+    else
+    {
+        final_str.copy(orig_str);
+    }
+
+    return final_str;
+}
+
+unittest
+{
+    mstring tmp;
+
+    test!("==")(setLength("abcde", 8, tmp), "abcde   ");
+    test!("==")(setLength("abcde", 8, tmp, PadType.PadPre), "   abcde");
+    test!("==")(setLength("abcde", 6, tmp, PadType.PadAround), "abcde ");
+    test!("==")(setLength("abcde", 8, tmp, PadType.PadAround), " abcde  ");
+    test!("==")(setLength("abcde", 9, tmp, PadType.PadAround), "  abcde  ");
+
+    test!("==")(setLength("abcdefghijk", 7, tmp), "abcd...");
+
+    test!("==")(setLength("abcde", 5, tmp), "abcde");
+
+    testThrown!(Exception)(setLength("abcde", 2, tmp));
 }
 
 /******************************************************************************
