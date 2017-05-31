@@ -91,7 +91,7 @@ unittest
 
 template TypeId ( T )
 {
-    static if (is (T == struct))
+    static if (is (T == struct) && !IsTypedef!(T))
     {
         const TypeId = "struct{" ~ AggregateId!(CheckedBaseType!(T)) ~ "}";
     }
@@ -187,7 +187,7 @@ unittest
 
 template TypeHash ( ulong hash, T )
 {
-    static if (is (T == struct))
+    static if (is (T == struct) && !IsTypedef!(T))
     {
         const TypeHash = StaticFnv1a64!(AggregateHash!(StaticFnv1a64!(hash, "struct{"), CheckedBaseType!(T)), "}");
     }
@@ -336,13 +336,8 @@ template CheckedBaseType ( T )
 
 template BaseType ( T )
 {
-    static if (isTypedef!(T))
-    {
-        mixin(`
-            static if (is (T Base == typedef))
-                alias BaseType!(Base) BaseType;
-        `);
-    }
+    static if (IsTypedef!(T))
+        alias DropTypedef!(T) BaseType;
     else static if (is (T Base == enum))
     {
         alias BaseType!(Base) BaseType;
@@ -369,4 +364,54 @@ template TypeErrorMsg ( T, Base )
     {
         const TypeErrorMsg = T.stringof ~ " is a typedef of " ~ Base.stringof ~ " which is not supported because it is a class or interface";
     }
+}
+
+
+/*******************************************************************************
+
+    Helper template to detect if a given type is a typedef (D1 and D2).
+
+    This bears the same name as the template in `ocean.core.Traits`.
+    However, the definition in `Traits` unconditionally returns `false` in D2.
+    While it might be suitable for most use cases, here we have to
+    explicitly handle `typedef`.
+
+    Params:
+        T   = Type to check
+
+*******************************************************************************/
+
+private template IsTypedef (T)
+{
+    version (D_Version2)
+        const IsTypedef = is(T.IsTypedef);
+    else
+        const IsTypedef = mixin("is(T == typedef)");
+}
+
+
+/*******************************************************************************
+
+   Helper template to get the underlying type of a typedef (D1 and D2).
+
+   This bears the same name as the template in `ocean.core.Traits`.
+   However, the definition in `Traits` unconditionally returns `T` in D2.
+   While it might be suitable for most use cases, here we have to
+   explicitly handle `typedef`.
+
+   Params:
+       T   = Typedef for which to get the underlying type
+
+*******************************************************************************/
+
+private template DropTypedef (T)
+{
+    static assert(IsTypedef!(T),
+                  "DropTypedef called on non-typedef type " ~ T.stringof);
+
+    version (D_Version2)
+        alias typeof(T.value) DropTypedef;
+    else
+        mixin("static if (is (T V == typedef))
+                alias V DropTypedef;");
 }
