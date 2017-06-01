@@ -6,6 +6,9 @@ sudo: required
 
 services: docker
 
+cache:
+    directories: /tmp/docker-cache
+
 install: ci/travis-install.sh
 
 script: ci/travis-script.sh
