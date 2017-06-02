@@ -6,6 +6,16 @@ sudo: required
 
 services: docker
 
+env:
+    - DC=dmd1 DIST=trusty F=production
+    - DC=dmd1 DIST=trusty F=devel
+    - DC=dmd1 DIST=xenial F=production
+    - DC=dmd1 DIST=xenial F=devel
+    - DC=dmd-transitional DIST=trusty F=production
+    - DC=dmd-transitional DIST=trusty F=devel
+    - DC=dmd-transitional DIST=xenial F=production
+    - DC=dmd-transitional DIST=xenial F=devel
+
 install: ci/travis-install.sh
 
 script: ci/travis-script.sh
