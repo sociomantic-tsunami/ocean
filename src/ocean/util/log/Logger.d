@@ -71,6 +71,12 @@ import ocean.util.log.Hierarchy;
 
 import ocean.stdc.string;
 
+version (UnitTest)
+{
+    import ocean.core.Test;
+}
+
+
 /*******************************************************************************
 
     These represent the standard LOG4J event levels.
@@ -223,7 +229,7 @@ public struct Log
         foreach (field; Pairs)
         {
             if (field.name.length == name.length
-                && strncasecmp(name.ptr, field.name.ptr, name.length))
+                && !strncasecmp(name.ptr, field.name.ptr, name.length))
                 return field.value;
         }
         return def;
@@ -936,4 +942,17 @@ unittest
         log.error("Le navire glissant sur les gouffres amers.");
         log.fatal("Ses ailes de géant l'empêchent de marcher.");
     }
+}
+
+unittest
+{
+    test!("==")(Log.convert("info"), Level.Info);
+    test!("==")(Log.convert("Info"), Level.Info);
+    test!("==")(Log.convert("INFO"), Level.Info);
+    test!("==")(Log.convert("FATAL"), Level.Fatal);
+    // Use the default value
+    test!("==")(Log.convert("Info!"), Level.Trace);
+    test!("==")(Log.convert("Baguette", Level.Warn), Level.Warn);
+    // The first entry in the array
+    test!("==")(Log.convert("trace", Level.Error), Level.Trace);
 }
