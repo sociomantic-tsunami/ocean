@@ -237,7 +237,7 @@ public bool sformat (Args...) (FormatterSink sink, cstring fmt, Args args)
 deprecated("Use the overload which accepts a `FormatterSink` instead")
 public bool sformat (Args...) (Sink sink, cstring fmt, Args args)
 {
-    return sformat!(Args)((cstring s) { sink(s); }, fmt, args);
+    return sformat((cstring s) { sink(s); }, fmt, args);
 }
 
 
