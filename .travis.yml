@@ -1,14 +1,21 @@
+# Don't use any predefined language env
+# (see https://github.com/travis-ci/travis-ci/issues/4895#issuecomment-150703192)
+language: generic
+
 sudo: required
 
-services:
-    - docker
+services: docker
 
-# D is still in beta and we don't even use it's features, so we just pick
-# a lightweight environment
-language: c
+env:
+    - DC=dmd1 DIST=trusty F=production
+    - DC=dmd1 DIST=trusty F=devel
+    - DC=dmd1 DIST=xenial F=production
+    - DC=dmd1 DIST=xenial F=devel
+    - DC=dmd-transitional DIST=trusty F=production
+    - DC=dmd-transitional DIST=trusty F=devel
+    - DC=dmd-transitional DIST=xenial F=production
+    - DC=dmd-transitional DIST=xenial F=devel
 
-install:
-    - ci/travis-install.sh
+install: ci/travis-install.sh
 
-script:
-    - ci/travis-script.sh
+script: ci/travis-script.sh
