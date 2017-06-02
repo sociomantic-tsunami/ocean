@@ -215,10 +215,11 @@ public bool sformat (Args...) (FormatterSink sink, cstring fmt, Args args)
              */
         JT: switch (info.index)
             {
-                // NOTE: The access needs to be through args[idx].
-                // Using the 'unused' variable generates wrong code
+                // NOTE: We could static foreach over `args` (the values)
+                // instead of `Args` (the type) but it currently triggers
+                // a DMD bug, and as a result a deprecation message:
                 // https://issues.dlang.org/show_bug.cgi?id=16521
-                foreach (idx, unused; args)
+                foreach (idx, Tunused; Args)
                 {
                 case idx:
                     handle(args[idx], info, sink, elemSink);
