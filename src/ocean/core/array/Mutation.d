@@ -209,8 +209,8 @@ size_t moveToEnd ( T, Pred = DefaultPredicates.IsEqual!(T) )
     void exch( size_t p1, size_t p2 )
     {
         T t = array[p1];
-        array[p1] = array[p2];
-        array[p2] = t;
+        ArrayAssigner!(T).f(array[p1], array[p2]);
+        ArrayAssigner!(T).f(array[p2], t);
     }
 
     size_t cnt = 0;
@@ -603,8 +603,8 @@ T[] sort ( T, Pred = DefaultPredicates.IsLess!(T) )
     void exch( size_t p1, size_t p2 )
     {
         T t  = array[p1];
-        array[p1] = array[p2];
-        array[p2] = t;
+        ArrayAssigner!(T).f(array[p1], array[p2]);
+        ArrayAssigner!(T).f(array[p2], t);
     }
 
     // NOTE: This algorithm operates on the inclusive range [l .. r].
@@ -624,10 +624,10 @@ T[] sort ( T, Pred = DefaultPredicates.IsLess!(T) )
             // don't need to test (j != l) because of the sentinel
             while( pred( v, array[j - 1] ) )
             {
-                array[j] = array[j - 1];
+                ArrayAssigner!(T).f(array[j], array[j - 1]);
                 j--;
             }
-            array[j] = v;
+            ArrayAssigner!(T).f(array[j], v);
         }
     }
 
@@ -780,6 +780,20 @@ unittest
     testOne(very_long);
 }
 
+// Test for static arrays
+unittest
+{
+    char[2][] arr = [ "EN", "FR", "DE" ];
+    sort(arr);
+    test!("==")(arr[0], "DE");
+    test!("==")(arr[1], "EN");
+    test!("==")(arr[2], "FR");
+    reverse(arr);
+    test!("==")(arr[2], "DE");
+    test!("==")(arr[1], "EN");
+    test!("==")(arr[0], "FR");
+}
+
 /*******************************************************************************
 
     Swaps elements of argument array so they all come in reverse order
@@ -797,8 +811,8 @@ T[] reverse (T) (T[] array)
     for (ptrdiff_t i = 0; i < array.length / 2; ++i)
     {
         auto tmp = array[i];
-        array[i] = array[$-i-1];
-        array[$-i-1] = tmp;
+        ArrayAssigner!(T).f(array[i], array[$-i-1]);
+        ArrayAssigner!(T).f(array[$-i-1], tmp);
     }
 
     return array;
@@ -2141,6 +2155,45 @@ T quickselect ( T, Pred = DefaultPredicates.IsLess!(T) )
 
     return arr[pivot_index];
 }
+
+/*******************************************************************************
+
+    Function to work around the D1 limitation that static arrays can't be
+    assigned to.
+
+*******************************************************************************/
+
+private template ArrayAssigner (T)
+{
+    // D2 just works
+    version (D_Version2)
+    {
+        void f (ref T a, ref T b)
+        {
+            a = b;
+        }
+    }
+    else
+    {
+        // Cannot have `ref` static array parameter in D1
+        static if (!isStaticArrayType!(T))
+        {
+            void f (ref T a, ref T b)
+            {
+                a = b;
+            }
+        }
+        else
+        {
+            // In D1, static arrays are ref by default
+            void f (T a, T b)
+            {
+                a[] = b;
+            }
+        }
+    }
+}
+
 
 version (UnitTest)
 {
