@@ -216,7 +216,7 @@ struct PeriodicTracer
 
     ***************************************************************************/
 
-    public typeof(this) format ( ulong interval, char[] fmt, ... )
+    public typeof(this) format ( ulong interval, cstring fmt, ... )
     {
         this.interval = interval;
         return this.format(fmt, _argptr, _arguments);
