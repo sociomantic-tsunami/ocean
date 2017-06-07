@@ -13,7 +13,7 @@
  *
  */
 
-module ocean.math.BigInt;
+deprecated module ocean.math.BigInt;
 
 import ocean.transition;
 
@@ -33,6 +33,7 @@ import ocean.math.internal.BiguintCore;
  * Performance is excellent for numbers below ~1000 decimal digits.
  * For X86 machines, highly optimised assembly routines are used.
  */
+deprecated("BigInt does not meet Sociomantic memory requirements, use WideUint instead")
 struct BigInt
 {
 private:
