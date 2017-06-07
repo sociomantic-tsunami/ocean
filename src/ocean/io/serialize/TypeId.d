@@ -344,12 +344,13 @@ template CheckedBaseType ( T )
 
 template BaseType ( T )
 {
-    static if (isTypedef!(T))
+    static if (is(TypedefBaseType!(T)))
     {
-        mixin(`
-            static if (is (T Base == typedef))
-                alias BaseType!(Base) BaseType;
-        `);
+        // this code would work correctly without removing typedef in D2 version
+        // but the module is used as part of MapSerializer which requires stored
+        // data to be loadable between D1 and D2 builds
+
+        alias BaseType!(TypedefBaseType!(T)) BaseType;
     }
     else static if (is (T Base == enum))
     {

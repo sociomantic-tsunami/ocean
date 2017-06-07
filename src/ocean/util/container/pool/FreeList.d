@@ -41,7 +41,7 @@ import ocean.util.container.pool.model.IFreeList;
 
 import ocean.core.Array : pop;
 
-import ocean.core.Traits;
+import ocean.meta.traits.Basic;
 
 import ocean.transition;
 
@@ -56,9 +56,11 @@ import ocean.transition;
 
 private template ItemType_ ( T )
 {
-    static if ( isReferenceType!(StripTypedef!(T)) ||
-                isDynamicArrayType!(StripTypedef!(T)) ||
-                isAssocArrayType!(StripTypedef!(T)) )
+    static if (isD1Typedef!(T))
+    {
+        alias ItemType_!(TypedefBaseType!(T)) ItemType_;
+    }
+    else static if (isReferenceType!(T))
     {
         alias T ItemType_;
     }
@@ -88,8 +90,11 @@ public class FreeList ( T ) : IFreeList!(ItemType_!(T))
 
     ***************************************************************************/
 
-    static assert(!isStaticArrayType!(T), "Cannot use static array type '"
-        ~ T.stringof ~ "' as base type for FreeList");
+    static assert(
+        isArrayType!(T) != ArrayKind.Static,
+        "Cannot use static array type '" ~ T.stringof ~
+            "' as base type for FreeList"
+    );
 
     static assert(!isPrimitiveType!(T), "Cannot use primitive type '" ~ T.stringof ~
         "' as base type for FreeList");

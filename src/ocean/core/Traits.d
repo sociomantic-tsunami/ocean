@@ -243,7 +243,10 @@ private bool hasIndirectionsImpl ( T... )()
     }
     else
     {
-        alias StripEnum!(StripTypedef!(Unqual!(T[0]))) Type;
+        static if (isD1Typedef!(T[0]))
+            alias StripEnum!(TypedefBaseType!(Unqual!(T[0]))) Type;
+        else
+            alias StripEnum!(Unqual!(T[0])) Type;
 
         static if ( isPrimitiveType!(Type) || is(Type == function) )
         {
@@ -334,7 +337,10 @@ public template hasMultiDimensionalDynamicArrays ( T )
 
 private bool hasMultiDimensionalDynamicArraysImpl ( T ) ()
 {
-    alias StripEnum!(StripTypedef!(T)) Type;
+    static if (isD1Typedef!(T[0]))
+        alias StripEnum!(TypedefBaseType!(Unqual!(T))) Type;
+    else
+        alias StripEnum!(Unqual!(T)) Type;
 
     static if (is(Type Element: Element[])) // dynamic or static array of Element
     {
@@ -862,6 +868,7 @@ unittest
 
 version (D_Version2)
 {
+    deprecated("Either remove completely, or use ocean.transition.TypedefBaseType instead")
     public template isTypedef (T)
     {
         const bool isTypedef = false;
@@ -870,6 +877,7 @@ version (D_Version2)
 else
 {
     mixin("
+    deprecated(\"Either remove completely, or use ocean.transition.TypedefBaseType instead\")
     public template isTypedef (T)
     {
         static if (is(T Orig == typedef))
@@ -882,7 +890,7 @@ else
         }
     }
 
-    unittest
+    deprecated unittest
     {
         typedef double RealNum;
 
@@ -892,7 +900,7 @@ else
     }");
 }
 
-unittest
+deprecated unittest
 {
     mixin(Typedef!(int, "MyInt"));
 
@@ -923,6 +931,7 @@ unittest
 
 version (D_Version2)
 {
+    deprecated("Either remove completely, or use ocean.transition.TypedefBaseType instead")
     public template StripTypedef (T)
     {
         alias T StripTypedef;
@@ -931,6 +940,7 @@ version (D_Version2)
 else
 {
     mixin("
+    deprecated(\"Either remove completely, or use ocean.transition.TypedefBaseType instead\")
     public template StripTypedef ( T )
     {
         static if ( is ( T Orig == typedef ) )
@@ -953,7 +963,7 @@ else
     }");
 }
 
-unittest
+deprecated unittest
 {
     mixin(Typedef!(int, "MyInt"));
 
@@ -989,16 +999,10 @@ template ContainsDynamicArray ( T ... )
 {
     static if (T.length)
     {
-        static if (isTypedef!(T[0]))
+        static if (isD1Typedef!(T[0]))
         {
-            mixin(`
-            static if (is (T[0] Base == typedef))
-            {
-                // Recurse into typedef.
-
-                const ContainsDynamicArray = ContainsDynamicArray!(Base, T[1 .. $]);
-            }
-            `);
+            const ContainsDynamicArray =
+                ContainsDynamicArray!(TypedefBaseType!(T[0]), T[1 .. $]);
         }
         else static if (is (T[0] == struct) || is (T[0] == union))
         {
@@ -1079,12 +1083,12 @@ unittest
 
 template ReturnAndArgumentTypesOf ( T )
 {
-    static if (isTypedef!(T))
+    static if (isD1Typedef!(T))
     {
-        mixin(`
-        static if (is(T F == typedef))
-            alias ReturnAndArgumentTypesOf!(F) ReturnAndArgumentTypesOf;
-        `);
+        pragma(msg, "Usage of typedef with function types is problematic " ~
+            "for D2 migration, switch to alias instead");
+
+        alias ReturnAndArgumentTypesOf!(TypedefBaseType!(T)) ReturnAndArgumentTypesOf;
     }
     else static if (is(T Args == function) && is(T Return == return))
     {

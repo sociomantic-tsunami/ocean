@@ -573,14 +573,10 @@ struct StructSerializer ( bool AllowUnions = false )
             {
                 mixin AssertSupportedType!(T, S, i);
 
-                static if (isTypedef!(T))
+                static if (isD1Typedef!(T))
                 {
-                    mixin(`
-                    static if ( is(T B == typedef) )
-                    {
-                        serializer.serialize(data, cast(B)(field), field_name);
-                    }
-                    `);
+                    serializer.serialize(data, cast(TypedefBaseType!(T)) field,
+                            field_name);
                 }
                 else static if ( is(T B == enum) )
                 {
@@ -694,14 +690,10 @@ struct StructSerializer ( bool AllowUnions = false )
             {
                 mixin AssertSupportedType!(T, S, i);
 
-                static if (isTypedef!(T))
+                static if (isD1Typedef!(T))
                 {
-                    mixin(`
-                    else static if ( is(T B == typedef) )
-                    {
-                        deserializer.deserialize(cast(B)(*field), field_name);
-                    }
-                    `);
+                    deserializer.deserialize(cast(TypedefBaseType!(T))(*field),
+                        field_name);
                 }
                 else static if ( is(T B == enum) )
                 {
