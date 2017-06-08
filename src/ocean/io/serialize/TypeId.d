@@ -346,10 +346,7 @@ template BaseType ( T )
 {
     static if (isTypedef!(T))
     {
-        mixin(`
-            static if (is (T Base == typedef))
-                alias BaseType!(Base) BaseType;
-        `);
+        alias BaseType!(StripTypedef!(T)) BaseType;
     }
     else static if (is (T Base == enum))
     {

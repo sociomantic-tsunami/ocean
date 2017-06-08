@@ -849,10 +849,7 @@ unittest
 
     Determines if T is a typedef.
 
-    Typedef has been removed in D2 and this template will always evaluate to
-    false if compiled with version = D_Version2.
-
-    Template_Params:
+    Params:
         T = type to check
 
     Evaluates to:
@@ -864,7 +861,7 @@ version (D_Version2)
 {
     public template isTypedef (T)
     {
-        const bool isTypedef = false;
+        const bool isTypedef = is(T.IsTypedef == void);
     }
 }
 else
@@ -895,25 +892,14 @@ else
 unittest
 {
     mixin(Typedef!(int, "MyInt"));
-
-    version (D_Version2)
-    {
-        static assert (!isTypedef!(MyInt)); // just a struct
-    }
-    else
-    {
-        static assert ( isTypedef!(MyInt));
-    }
+    static assert (isTypedef!(MyInt));
 }
 
 /*******************************************************************************
 
     Strips the typedef off T.
 
-    Typedef has been removed in D2 and this template is a no-op if compiled
-    with version = D_Version2.
-
-    Template_Params:
+    Params:
         T = type to strip of typedef
 
     Evaluates to:
@@ -925,7 +911,10 @@ version (D_Version2)
 {
     public template StripTypedef (T)
     {
-        alias T StripTypedef;
+        static if (isTypedef!(T))
+            alias T.TypedefBaseType StripTypedef;
+        else
+            alias T StripTypedef;
     }
 }
 else
@@ -956,15 +945,7 @@ else
 unittest
 {
     mixin(Typedef!(int, "MyInt"));
-
-    version (D_Version2)
-    {
-        static assert (is(StripTypedef!(MyInt) == MyInt));
-    }
-    else
-    {
-        static assert (is(StripTypedef!(MyInt) == int));
-    }
+    static assert (is(StripTypedef!(MyInt) == int));
 }
 
 /******************************************************************************
@@ -991,14 +972,8 @@ template ContainsDynamicArray ( T ... )
     {
         static if (isTypedef!(T[0]))
         {
-            mixin(`
-            static if (is (T[0] Base == typedef))
-            {
-                // Recurse into typedef.
-
-                const ContainsDynamicArray = ContainsDynamicArray!(Base, T[1 .. $]);
-            }
-            `);
+            const ContainsDynamicArray = ContainsDynamicArray!(
+                StripTypedef!(T[0]), T[1 .. $]);
         }
         else static if (is (T[0] == struct) || is (T[0] == union))
         {
@@ -1081,10 +1056,7 @@ template ReturnAndArgumentTypesOf ( T )
 {
     static if (isTypedef!(T))
     {
-        mixin(`
-        static if (is(T F == typedef))
-            alias ReturnAndArgumentTypesOf!(F) ReturnAndArgumentTypesOf;
-        `);
+        alias ReturnAndArgumentTypesOf!(StripTypedef!(T)) ReturnAndArgumentTypesOf;
     }
     else static if (is(T Args == function) && is(T Return == return))
     {

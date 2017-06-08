@@ -575,12 +575,8 @@ struct StructSerializer ( bool AllowUnions = false )
 
                 static if (isTypedef!(T))
                 {
-                    mixin(`
-                    static if ( is(T B == typedef) )
-                    {
-                        serializer.serialize(data, cast(B)(field), field_name);
-                    }
-                    `);
+                    serializer.serialize(data, cast(StripTypedef!(T))(field),
+                                         field_name);
                 }
                 else static if ( is(T B == enum) )
                 {
@@ -696,12 +692,8 @@ struct StructSerializer ( bool AllowUnions = false )
 
                 static if (isTypedef!(T))
                 {
-                    mixin(`
-                    else static if ( is(T B == typedef) )
-                    {
-                        deserializer.deserialize(cast(B)(*field), field_name);
-                    }
-                    `);
+                    deserializer.deserialize(cast(StripTypedef!(T))(*field),
+                                             field_name);
                 }
                 else static if ( is(T B == enum) )
                 {

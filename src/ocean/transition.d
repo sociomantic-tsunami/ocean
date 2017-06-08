@@ -101,6 +101,7 @@ template Typedef(T, istring name, T initval)
                 ("static struct " ~ name ~
                 "{ " ~
                 "alias IsTypedef = void;" ~
+                "alias TypedefBaseType = " ~ T.stringof ~ ";" ~
                 T.stringof ~ " value = " ~ initval.stringof ~ ";" ~
                 "alias value this;" ~
                 "this(" ~ T.stringof ~ " rhs) { this.value = rhs; }" ~
@@ -127,6 +128,7 @@ template Typedef(T, istring name)
                 ("static struct " ~ name ~
                 "{ " ~
                 "alias IsTypedef = void;" ~
+                "alias TypedefBaseType = " ~ T.stringof ~ ";" ~
                 T.stringof ~ " value; " ~
                 "alias value this;" ~
                 "this(" ~ T.stringof ~ " rhs) { this.value = rhs; }" ~
