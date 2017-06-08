@@ -1,6 +1,8 @@
 #!/bin/sh
 set -xe
 
+test "$AFTER_SCRIPT" = "1" || exit 0
+
 # Submit code coverage report
 docker run -ti --rm -v $PWD:/docker -w /docker \
     -e CI \
