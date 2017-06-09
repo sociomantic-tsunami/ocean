@@ -38,7 +38,7 @@ import ocean.io.Stdout;
 import ocean.core.Array: startsWith;
 
 import ocean.transition;
-import ocean.util.log.Log;
+import ocean.util.log.Logger;
 import ocean.util.log.AppendFile;
 import ocean.util.log.LayoutDate;
 import ocean.core.Array: sort;

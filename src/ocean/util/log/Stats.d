@@ -57,7 +57,7 @@ import ocean.sys.ErrnoException;
 import ocean.text.convert.Layout: StringLayout;
 import ocean.util.log.layout.LayoutStatsLog;
 import ocean.util.log.Appender;
-import ocean.util.log.Log;
+import ocean.util.log.Logger;
 
 
 version (UnitTest)

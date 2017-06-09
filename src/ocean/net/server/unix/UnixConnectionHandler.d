@@ -59,7 +59,7 @@ import ocean.io.select.protocol.fiber.FiberSelectWriter;
 import ocean.sys.socket.UnixSocket;
 import ocean.io.select.protocol.generic.ErrnoIOException : SocketError;
 
-import ocean.util.log.Log;
+import ocean.util.log.Logger;
 import ocean.text.util.SplitIterator: ChrSplitIterator;
 import ocean.core.array.Mutation : copy;
 

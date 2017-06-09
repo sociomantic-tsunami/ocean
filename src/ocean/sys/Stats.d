@@ -19,7 +19,7 @@ import ocean.transition;
 import core.sys.posix.sys.resource;
 import ProcVFS = ocean.sys.stats.linux.ProcVFS;
 import ocean.sys.stats.linux.Queriable;
-import ocean.util.log.Log;
+import ocean.util.log.Logger;
 
 /// Logger for logging errors
 private Logger stats_module_logger;

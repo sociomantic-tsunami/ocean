@@ -29,7 +29,7 @@ import ocean.core.Buffer;
 import ocean.util.container.queue.FlexibleRingQueue;
 import ocean.util.container.queue.model.IByteQueue;
 import ocean.util.container.queue.model.IQueueInfo;
-import ocean.util.log.Log;
+import ocean.util.log.Logger;
 import ocean.io.device.File;
 import Filesystem = ocean.io.Path;
 import ocean.io.stream.Buffered;

@@ -89,7 +89,7 @@ public class UnixSocketListener ( CommandHandlerType ) : SelectListener!(
 
     import ocean.core.Enforce;
 
-    import ocean.util.log.Log;
+    import ocean.util.log.Logger;
 
     import core.sys.posix.sys.stat: umask;
 

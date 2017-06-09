@@ -13,7 +13,7 @@
 
 *******************************************************************************/
 
-import ocean.util.log.Log;
+import ocean.util.log.Logger;
 import ocean.core.Test;
 import ocean.io.device.File;
 

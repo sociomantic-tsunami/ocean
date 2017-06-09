@@ -119,7 +119,7 @@ debug import ocean.io.Stdout;
 
 import core.stdc.errno;
 
-import ocean.util.log.Log;
+import ocean.util.log.Logger;
 
 import core.sys.posix.signal : SIGCHLD;
 

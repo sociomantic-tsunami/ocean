@@ -47,7 +47,7 @@ import ocean.sys.socket.model.ISocket;
 import ocean.io.select.protocol.generic.ErrnoIOException: SocketError;
 
 
-import ocean.util.log.Log;
+import ocean.util.log.Logger;
 
 /*******************************************************************************
 

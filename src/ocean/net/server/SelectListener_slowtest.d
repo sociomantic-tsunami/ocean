@@ -26,7 +26,7 @@ import ocean.transition;
 import ocean.net.server.SelectListener;
 import ocean.net.server.connection.IConnectionHandler;
 import ocean.io.select.protocol.generic.ErrnoIOException: SocketError;
-import ocean.util.log.Log;
+import ocean.util.log.Logger;
 
 import ocean.core.Test;
 import ocean.sys.socket.AddressIPSocket;
