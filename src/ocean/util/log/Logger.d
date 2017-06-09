@@ -62,7 +62,6 @@ import ocean.io.model.IConduit;
 import ocean.sys.Common;
 import ocean.text.convert.Formatter;
 import ocean.time.Clock;
-import ocean.util.log.Log;
 import ocean.util.log.Appender;
 import ocean.util.log.Event;
 import ocean.util.log.model.ILogger;
