@@ -753,9 +753,9 @@ file = dummy
     auto log_config = iterate!(Config)("LOG", config_parser);
     auto dummy_meta_config = new MetaConfig();
 
-    configureOldLoggers(log_config, dummy_meta_config, &appender);
+    configureNewLoggers(log_config, dummy_meta_config, &appender);
 
-    auto log_D = OldLog.Log.lookup("A.B.C.D");
+    auto log_D = NewLog.Log.lookup("A.B.C.D");
 
     log_D.trace("trace log (shouldn't be sent to appender)");
     test!("==")(temp_appender.latest_log_msg, "");
