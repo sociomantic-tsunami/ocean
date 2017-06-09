@@ -40,7 +40,7 @@ public struct LogEvent
     /// Set the various attributes of this event.
     void set (ILogger.Context host, ILogger.Level level, cstring msg, cstring name)
     {
-        time_ = Log.time;
+        time_ = Clock.now;
         level_ = level;
         host_ = host;
         name_ = name;
@@ -75,7 +75,7 @@ public struct LogEvent
     /// relative to the start of this executable
     TimeSpan span ()
     {
-        return time_ - Log.beginTime;
+        return time_ - Clock.startTime();
     }
 
     /// Return the time this event was produced relative to Epoch
@@ -85,9 +85,10 @@ public struct LogEvent
     }
 
     /// Return time when the executable started
+    deprecated("Use ocean.time.Clock : Clock.startTime() directly")
     Time started ()
     {
-        return Log.beginTime;
+        return Clock.startTime();
     }
 
     /// Return the logger level name of this event.
