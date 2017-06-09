@@ -619,7 +619,7 @@ class NotifyingQueue ( T ) : NotifyingByteQueue
 
             auto void_buffer = cast(void[]) data;
 
-            Deserializer.deserialize!(T)(void_buffer, cont_buffer);
+            Deserializer.deserialize(void_buffer, cont_buffer);
 
             return cont_buffer.ptr;
         }

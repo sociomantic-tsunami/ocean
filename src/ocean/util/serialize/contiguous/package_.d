@@ -420,7 +420,7 @@ unittest
     test!("==")(buffer.length, s.serialized_length);
     S.trivialDeserialize(buffer).testNullReferences();
     Contiguous!(S) destination;
-    auto cont_S = Deserializer.deserialize!(S)(buffer, destination);
+    auto cont_S = Deserializer.deserialize(buffer, destination);
     cont_S.enforceIntegrity();
 
     t.test(cont_S.ptr is destination.ptr);
@@ -473,7 +473,7 @@ unittest
     buffer.length = buffer.length * 2;
 
     Contiguous!(S) destination;
-    auto cont_S = Deserializer.deserialize!(S)(buffer, destination);
+    auto cont_S = Deserializer.deserialize(buffer, destination);
     cont_S.enforceIntegrity();
 
     t.test(cont_S.ptr is destination.ptr);
@@ -551,7 +551,7 @@ unittest
     test!("==")(buffer.length, s.serialized_length);
     S.trivialDeserialize(buffer).testNullReferences();
     Contiguous!(S) destination;
-    auto cont_S = Deserializer.deserialize!(S)(buffer, destination);
+    auto cont_S = Deserializer.deserialize(buffer, destination);
     cont_S.enforceIntegrity();
 
     t.test(cont_S.ptr is destination.ptr);
@@ -720,7 +720,7 @@ unittest
     auto cont_s = Deserializer.deserialize!(S)(buffer);
     testNoAlloc(Deserializer.deserialize!(S)(buffer));
     buffer = buffer.dup;
-    testNoAlloc(Deserializer.deserialize!(S)(buffer, cont_s));
+    testNoAlloc(Deserializer.deserialize(buffer, cont_s));
 }
 
 
