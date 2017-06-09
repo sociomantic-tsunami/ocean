@@ -1137,29 +1137,11 @@ D toFromUDT(D,S)(S value)
 
 D toImpl(D,S)(S value)
 {
-    version (D_Version2)
-    {
-        // has own different static branch
-        const isTypedef = false;
-    }
-    else
-    {
-        mixin("
-            static if (is( S BaseType == typedef ))
-                const isTypedef = true;
-            else
-                const isTypedef = false;
-        ");
-    }
-
     static if( is( D == S ) )
         return value;
 
-    else static if ( isTypedef )
-        return toImpl!(D,BaseType)(value);
-
-    else static if ( is(S.IsTypedef) )
-        return toImpl!(D, typeof(S.value))(value.value);
+    else static if ( is(TypedefBaseType!(S)) )
+        return toImpl!(D, TypedefBaseType!(S))(value);
 
     else static if( is( S BaseType == enum ) )
         return toImpl!(D,BaseType)(value);

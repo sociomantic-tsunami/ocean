@@ -84,6 +84,11 @@ unittest
     `is(typeof(S.IsTypedef))`. This is a hack reserved for backwards
     compatibility in libraries and should be never relied upon in user code.
 
+    The whole purpose if "Typedef" template is to define something as closely
+    resembling original D1 typedef as possible. It is not recommended for usage
+    in your code and will likely to be replaced by something conceptually
+    different when D1 support is dropped.
+
     Template Parameters:
         T       = type to typedef
         name    = identifier string for new type
@@ -180,6 +185,74 @@ unittest
     mixin(Typedef!(int, "MyInt"));
     MyInt var = 42;
     assert (var == 42);
+}
+
+/*******************************************************************************
+
+    Utility template combining both old `isTypedef` and `StripTypedef` traits,
+    intended to be used in library code that has to process D1 typedef and D2
+    typedef-like struct in a uniform manner (for example, because binary
+    compatibility is required).
+
+    Not recommended for any other usage.
+
+    Params:
+        T = type to check
+
+*******************************************************************************/
+
+public template TypedefBaseType ( T )
+{
+    version (D_Version2)
+    {
+        static assert (is(T.IsTypedef));
+        alias typeof(T.init.value) TypedefBaseType;
+    }
+    else
+    {
+        mixin("
+        static if (is(T U == typedef))
+        {
+            alias U TypedefBaseType;
+        }
+        else
+            static assert (false);
+        ");
+    }
+}
+
+unittest
+{
+    mixin(Typedef!(int, "MyInt"));
+    static assert (is(TypedefBaseType!(MyInt) == int));
+    static assert (!is(TypedefBaseType!(int)));
+}
+
+/*******************************************************************************
+
+    Returns:
+        'true' if T is D1 `typedef`, 'false' otherwise. Always 'false' in D2.
+
+*******************************************************************************/
+
+public template isD1Typedef ( T )
+{
+    version (D_Version2)
+        const isD1Typedef = false;
+    else
+    {
+        const isD1Typedef = is(TypedefBaseType!(T));
+    }
+}
+
+unittest
+{
+    mixin(Typedef!(int, "MyInt"));
+
+    version (D_Version2)
+        static assert (!isD1Typedef!(MyInt));
+    else
+        static assert ( isD1Typedef!(MyInt));
 }
 
 /*******************************************************************************
