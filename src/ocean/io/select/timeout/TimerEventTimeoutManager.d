@@ -56,20 +56,7 @@ debug
     import ocean.io.Stdout_tango;
 }
 
-import ocean.util.log.Log;
 
-/*******************************************************************************
-
-    Static module logger
-
-*******************************************************************************/
-
-private Logger log;
-
-static this ( )
-{
-    log = Log.lookup("ocean.io.select.timeout.TimerEventTimeoutManager");
-}
 
 /******************************************************************************/
 
