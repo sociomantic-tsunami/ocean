@@ -206,11 +206,3 @@ unittest
 
     assert (time is Clock.fromDate(date));
 }
-
-debug (Clock)
-{
-    void main()
-    {
-        auto time = Clock.now;
-    }
-}
