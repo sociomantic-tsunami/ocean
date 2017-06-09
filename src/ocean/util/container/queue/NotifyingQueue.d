@@ -108,6 +108,8 @@ import ocean.util.serialize.contiguous.Deserializer;
 
 import ocean.core.Array;
 
+import ocean.transition;
+
 import ocean.util.container.AppendBuffer;
 
 import ocean.io.serialize.StructSerializer;
@@ -617,7 +619,7 @@ class NotifyingQueue ( T ) : NotifyingByteQueue
                 return null;
             }
 
-            auto void_buffer = cast(void[]) data;
+            Const!(void[]) void_buffer = data;
 
             Deserializer.deserialize(void_buffer, cont_buffer);
 
