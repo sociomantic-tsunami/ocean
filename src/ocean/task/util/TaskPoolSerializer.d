@@ -245,7 +245,7 @@ unittest
 
         public void deserialize ( void[] buffer )
         {
-            Deserializer.deserialize!(TaskArgs)(buffer, this.args);
+            Deserializer.deserialize(buffer, this.args);
         }
     }
 
