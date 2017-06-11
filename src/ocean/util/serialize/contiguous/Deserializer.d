@@ -397,7 +397,7 @@ struct Deserializer
     {
         debug (DeserializationTrace)
         {
-            Stdout.formatln("< countStructArraySizes!({})({}) : {}", S.stringof,
+            Stdout.formatln("< countRequiredSize!({})({}) : {}\n", S.stringof,
                 instance.ptr, size);
         }
     }
@@ -405,7 +405,7 @@ struct Deserializer
     {
         debug (DeserializationTrace)
         {
-            Stdout.formatln("> countStructArraySizes!({})({})", S.stringof,
+            Stdout.formatln("> countRequiredSize!({})({})", S.stringof,
                 instance.ptr);
         }
 
