@@ -734,10 +734,10 @@ unittest
 {
     static struct CS
     {
-        mstring s;
+        cstring s;
     }
 
-    auto cs = Const!(CS)("Hello world");
+    auto cs = CS("Hello world");
     void[] buffer;
 
     Serializer.serialize(cs, buffer);
@@ -782,14 +782,10 @@ version (D_Version2) unittest
     //Deserializer.deserialize!(IS)(buffer1);
     //Deserializer.deserialize!(II)(buffer2);
 
-    version (none)
-    {
-        // TODO: re-enable in v4.x.x
-        static assert(!is(typeof({Deserializer.deserialize!(IS)(buffer1);})),
-                      "Serializer should reject a struct with 'istring'");
-        static assert(!is(typeof({Deserializer.deserialize!(II)(buffer2);})),
-                      "Deserializer should reject a struct with 'immutable' element");
-    }
+    static assert(!is(typeof({Deserializer.deserialize!(IS)(buffer1);})),
+        "Serializer should reject a struct with 'istring'");
+    static assert(!is(typeof({Deserializer.deserialize!(II)(buffer2);})),
+        "Deserializer should reject a struct with 'immutable' element");
 }
 
 /******************************************************************************
@@ -829,7 +825,7 @@ unittest
 
 /******************************************************************************
 
-    Const arrays of arrays, `const` is serialise-only
+    Const arrays of arrays
 
 ******************************************************************************/
 
@@ -840,13 +836,6 @@ struct ConstS
     Const!(char[])[2][3] b = [
         ["Die", "Katze"], ["tritt", "die"], ["Treppe", "krumm."]
     ];
-}
-
-struct UnqualConstS
-{
-    int n = 3;
-    char[][] a;
-    char[][2][3] b;
 }
 
 unittest
@@ -871,34 +860,16 @@ unittest
                 testArray!("is")(b2, null);
     }
 
-    // Make sure ConstS cannot be deserialised; its const fields should be
-    // rejected.
-    version(D_Version2)
-    {
-        // TODO: re-enable in v4.x.x
-        version (none)
-            static assert(!is(typeof(Deserializer.deserialize!(ConstS)(buffer))));
-    }
-
-    auto cont_S = Deserializer.deserialize!(UnqualConstS)(buffer);
+    auto cont_S = Deserializer.deserialize!(ConstS)(buffer);
     cont_S.enforceIntegrity();
 
     test!("==")(cont_S.ptr.n, 3);
     test!("==")(cont_S.ptr.a, ["Hello", "World"]);
 
-    version (D_Version2)
-    {
-        test!("==")(cont_S.ptr.b, [
-            ["Die", "Katze"], ["tritt", "die"], ["Treppe", "krumm."]
-        ]);
-    }
-    else
-    {
-        char[][2][3] b = [
-            ["Die", "Katze"], ["tritt", "die"], ["Treppe", "krumm."]
-        ];
-        test!("==")(cont_S.ptr.b, b);
-    }
+    cstring[2][3] b = [
+        ["Die", "Katze"], ["tritt", "die"], ["Treppe", "krumm."]
+    ];
+    test!("==")(cont_S.ptr.b, b);
 }
 
 /*******************************************************************************
