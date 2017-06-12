@@ -34,14 +34,14 @@ import ocean.transition;
 
 import ocean.core.Exception_tango;
 
-import ocean.time.WallClock;
-
 import ocean.time.chrono.Calendar,
        ocean.time.chrono.Gregorian;
 
 import Utf = ocean.text.convert.Utf;
 
 import Integer = ocean.text.convert.Integer_tango;
+
+import core.sys.posix.time; // timezone
 
 /******************************************************************************
 
@@ -747,7 +747,7 @@ struct DateTimeLocale
                     // timezone offset
                 case 'z':
                     len = parseRepeat (format, index, c);
-                    auto minutes = cast(int) (WallClock.zone.minutes);
+                    auto minutes = cast(int) (TimeSpan.fromSeconds(-timezone).minutes);
                     if (minutes < 0)
                     {
                         minutes = -minutes;
