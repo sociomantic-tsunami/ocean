@@ -167,17 +167,22 @@ class HttpRequest : HttpHeader
                                        header fields as well
             msg_body_prealloc_length = expected message body length for
                                        preallocation;
+            uri_prealloc_length      = the initial amount of memory the
+                                       contained Uri object will be asked to
+                                       pre-allocate to hold the URI-decoded
+                                       URI of a request.
 
      **************************************************************************/
 
-    public this ( bool add_entity_headers = false, size_t msg_body_prealloc_length = 0 )
+    public this ( bool add_entity_headers = false, size_t msg_body_prealloc_length = 0,
+            uint uri_prealloc_length = 512)
     {
         super(HeaderFieldNames.Request.NameList,
               add_entity_headers? HeaderFieldNames.Entity.NameList : null);
 
         this.header = this.parser = new HttpHeaderParser;
 
-        this._uri = new Uri;
+        this._uri = new Uri(uri_prealloc_length);
 
         this.msg_body_ = new char[msg_body_prealloc_length];
 

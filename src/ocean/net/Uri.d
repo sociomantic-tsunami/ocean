@@ -225,12 +225,17 @@ class Uri : UriView
 
                 Create an empty Uri
 
+                Params:
+                    initial_buffer_size = the initial amount of memory to
+                        allocate to hold the URI-decoded URI. Will be extended
+                        if necessary.
+
         ***********************************************************************/
 
-        this ()
+        this ( uint initial_buffer_size = 512 )
         {
                 port_ = InvalidPort;
-                decoded.expand (512);
+                decoded.expand (initial_buffer_size);
         }
 
         /***********************************************************************
