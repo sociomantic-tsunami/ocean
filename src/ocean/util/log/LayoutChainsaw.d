@@ -15,7 +15,7 @@
 
 *******************************************************************************/
 
-module ocean.util.log.LayoutChainsaw;
+deprecated module ocean.util.log.LayoutChainsaw;
 
 import ocean.transition;
 
@@ -31,6 +31,7 @@ import ocean.util.log.Log;
 
 *******************************************************************************/
 
+deprecated("This class isn't maintained, but can trivially be replicated if needed")
 public class LayoutChainsaw : Appender.Layout
 {
         /***********************************************************************
