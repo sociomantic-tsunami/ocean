@@ -317,6 +317,12 @@ body
     unique. This allows the use of decode tables with alternatives for certain
     characters.
 
+    Since the padding is required only between multiple base64 strings (for the
+    decoder not to interpret the start of the next string as the end of the
+    previous one, data may or may not contain the trailing padding, and it will
+    still be decoded correctly.
+
+
     Params:
       Table = The decode table to use. Variadic template parameter is used to
               allow passing it as an expression in D1, but a single `ubyte[256]`
@@ -357,6 +363,11 @@ body
     Note that the entries in the provided decode table are not required to be
     unique. This allows the use of decode tables with alternatives for certain
     characters.
+
+    Since the padding is required only between multiple base64 strings (for the
+    decoder not to interpret the start of the next string as the end of the
+    previous one, data may or may not contain the trailing padding, and it will
+    still be decoded correctly.
 
     Params:
       Table = The decode table to use. Variadic template parameter is used to
@@ -422,8 +433,8 @@ body
 
         if (padCount > 2)
             throw new Exception("Improperly terminated base64 string. Base64 pad character (=) found where there shouldn't be one.");
-        if (padCount == 0)
-            paddedPos = 0;
+        if (padCount < 2)
+            paddedPos = cast(ubyte)((data.length-padCount) % 4);
 
         auto nonPadded = data[0..($ - paddedPos)];
         foreach(piece; nonPadded)
@@ -446,12 +457,17 @@ body
         if (paddedPos)
         {
             auto padded = data[($ - paddedPos) .. $];
-            foreach(char piece; padded)
+            assert (padded.length <= 4);
+
+            // Fill the missing paddings if needed
+            base64Quad[padded.length .. $] = BASE64_PAD;
+
+            foreach(i, char piece; padded)
             {
                 ubyte next = table[piece];
                 if (next || piece == 'A')
                     *quadPtr++ = next;
-                if (quadPtr is endPtr)
+                if (i == padded.length - 1)
                 {
                     *rtnPt++ = cast(ubyte) (((base64Quad[0] << 2) | (base64Quad[1]) >> 4));
                     if (base64Quad[2] != BASE64_PAD)
@@ -507,6 +523,35 @@ unittest
         test!("==")(result, payload);
         result = decode("SGVsbG8sIGhvdyBhcmUgeW91IHRvZGF5Pw==");
         test!("==")(result, payload);
+        result = decode("SGVsbG8sIGhvdyBhcmUgeW91IHRvZGF5Pw=");
+        test!("==")(result, payload);
+        result = decode("SGVsbG8sIGhvdyBhcmUgeW91IHRvZGF5Pw");
+        test!("==")(result, payload);
+    }
+
+    // single padding test
+    {
+        // try the string with the single `=` padding, and without it
+        auto result = cast(Const!(ubyte)[])"any carnal pleasure.";
+        test!("==")(result, decode("YW55IGNhcm5hbCBwbGVhc3VyZS4="));
+        test!("==")(result, decode("YW55IGNhcm5hbCBwbGVhc3VyZS4"));
+    }
+
+    // short decode test
+    {
+        auto result = cast(Const!(ubyte)[])"M";
+
+        test!("==")(result, decode("TQ"));
+        test!("==")(result, decode("TQ="));
+        test!("==")(result, decode("TQ=="));
+    }
+    // ditto
+    {
+        auto result = cast(Const!(ubyte)[])"Ma";
+
+        test!("==")(result, decode("TWE"));
+        test!("==")(result, decode("TWE="));
+        test!("!=")(result, decode(""));
     }
 }
 
@@ -517,6 +562,9 @@ unittest
     Const!(ubyte)[] payload = cast(Const!(ubyte)[]) str;
     cstring result = encode(payload, false);
     test!("==")(result, "SGVsbG8sIGhvdyBhcmUgeW91IHRvZGF5Pw");
+
+    auto decoded = cast(cstring)decode(result);
+    test!("==")(decoded, str);
 }
 
 
