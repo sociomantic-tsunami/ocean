@@ -308,8 +308,11 @@ body
 
 /*******************************************************************************
 
-    Decodes an ASCII base64 string and returns it as ubyte[] data.
+    Decodes one or more ASCII base64 string and returns it as ubyte[] data.
     Allocates the size of the array.
+
+    Note that in case of multiple base64 strings, the padding needs to be
+    correctly applied on every string but last.
 
     This decoder will ignore non-base64 characters, so for example data with
     newline in it is valid.
@@ -356,7 +359,10 @@ body
 
 /*******************************************************************************
 
-    Decodes an ASCCI base64 string and returns it as ubyte[] data.
+    Decodes one or more ASCII base64 string and returns it as ubyte[] data.
+
+    Note that in case of multiple base64 strings, the padding needs to be
+    correctly applied on every string but last.
 
     This decoder will ignore non-base64 characters, so for example data with
     newline in it is valid.
@@ -444,12 +450,34 @@ body
                 *quadPtr++ = next;
             if (quadPtr is endPtr)
             {
-                rtnPt[0] = cast(ubyte) ((base64Quad[0] << 2) | (base64Quad[1] >> 4));
-                rtnPt[1] = cast(ubyte) ((base64Quad[1] << 4) | (base64Quad[2] >> 2));
-                rtnPt[2] = cast(ubyte) ((base64Quad[2] << 6) | base64Quad[3]);
-                encodedLength += 3;
-                quadPtr = base64Quad.ptr;
-                rtnPt += 3;
+                // Most common scenario, extracted in a separate branch for the perfomance
+                // reasons
+                if (base64Quad[3] != BASE64_PAD)
+                {
+                    rtnPt[0] = cast(ubyte) ((base64Quad[0] << 2) | (base64Quad[1] >> 4));
+                    rtnPt[1] = cast(ubyte) ((base64Quad[1] << 4) | (base64Quad[2] >> 2));
+                    rtnPt[2] = cast(ubyte) ((base64Quad[2] << 6) | base64Quad[3]);
+                    encodedLength += 3;
+                    quadPtr = base64Quad.ptr;
+                    rtnPt += 3;
+                }
+                else
+                {
+                    // End of a non-last base64 string with padding in a message containing multiple
+                    // base64 encoded strings. May contain padding.
+                    *rtnPt++ = cast(ubyte) (((base64Quad[0] << 2) | (base64Quad[1]) >> 4));
+                    if (base64Quad[2] != BASE64_PAD)
+                    {
+                        *rtnPt++ = cast(ubyte) (((base64Quad[1] << 4) | (base64Quad[2] >> 2)));
+                        encodedLength += 2;
+                    }
+                    else
+                    {
+                        encodedLength++;
+                    }
+
+                    quadPtr = base64Quad.ptr;
+                }
             }
         }
 
@@ -552,6 +580,58 @@ unittest
         test!("==")(result, decode("TWE"));
         test!("==")(result, decode("TWE="));
         test!("!=")(result, decode(""));
+    }
+
+    // decode multiple strings with and without the trailing padding
+    {
+        auto result =
+            cast(Const!(ubyte)[])"any carnal pleasure.any carnal pleasure.";
+        test!("==")(result,
+                    decode("YW55IGNhcm5hbCBwbGVhc3VyZS4=" ~
+                           "YW55IGNhcm5hbCBwbGVhc3VyZS4="));
+        test!("==")(result,
+                    decode("YW55IGNhcm5hbCBwbGVhc3VyZS4=" ~
+                           "YW55IGNhcm5hbCBwbGVhc3VyZS4"));
+    }
+
+
+    // Multiple base64 strings
+    {
+        test!("==")(
+            decode("SGVsbG8sIGhvdyBhcmUgeW91IHRvZGF5Pw==" ~
+                   "SGVsbG8sIGhvdyBhcmUgeW91IHRvZGF5Pw=="),
+            payload ~ payload
+        );
+        test!("==")(
+            decode("SGVsbG8sIGhvdyBhcmUgeW91IHRvZGF5Pw==" ~
+                   "SGVsbG8sIGhvdyBhcmUgeW91IHRvZGF5Pw="),
+            payload ~ payload
+        );
+        test!("==")(
+            decode("SGVsbG8sIGhvdyBhcmUgeW91IHRvZGF5Pw==" ~
+                   "SGVsbG8sIGhvdyBhcmUgeW91IHRvZGF5Pw"),
+            payload ~ payload
+        );
+        test!("==")(
+            decode("SGVsbG8sIGhvdyBhcmUgeW91IHRvZGF5Pw==" ~
+                   "SGVsbG8sIGhvdyBhcmUgeW91IHRvZGF5Pw==" ~
+                   "SGVsbG8sIGhvdyBhcmUgeW91IHRvZGF5Pw==" ~
+                   "SGVsbG8sIGhvdyBhcmUgeW91IHRvZGF5Pw==" ~
+                   "SGVsbG8sIGhvdyBhcmUgeW91IHRvZGF5Pw"),
+            payload ~ payload ~ payload ~ payload ~ payload
+        );
+
+        // Broken, missing padding between the strings
+        test!("!=")(
+            decode("SGVsbG8sIGhvdyBhcmUgeW91IHRvZGF5Pw" ~
+                   "SGVsbG8sIGhvdyBhcmUgeW91IHRvZGF5Pw=="),
+            payload ~ payload
+        );
+        test!("!=")(
+            decode("SGVsbG8sIGhvdyBhcmUgeW91IHRvZGF5Pw=" ~
+                   "SGVsbG8sIGhvdyBhcmUgeW91IHRvZGF5Pw=="),
+            payload ~ payload
+        );
     }
 }
 
