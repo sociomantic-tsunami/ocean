@@ -28,8 +28,8 @@ That said, for now Ocean is only intended to work with D 2.070.x, but even that
 is not possible at the moment because of some changes needed in the upstream
 compiler that are still pending. Because of this a patched *transitional*
 compiler is needed.  The patches needed to compile the ``dmd-transitional``
-compiler are located in `docker/dmd-transitional/patches
-<https://github.com/sociomantic-tsunami/ocean/tree/v2.4.x/docker/dmd-transitional/patches>`_.
+compiler are located in the `dedicated repository
+<https://github.com/sociomantic-tsunami/dmd-transitional>`_.
 
 We are working with upstream to get this issue sorted out as soon as possible.
 To track progress or read more details, please subscribe to `issue #9
