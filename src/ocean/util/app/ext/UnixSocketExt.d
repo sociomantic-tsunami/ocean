@@ -56,8 +56,17 @@ public class UnixSocketExt : IApplicationExtension, IConfigExtExtension
     /// Stores the command arguments split by " ";
     private cstring[] args_buf;
 
-    /// Alias for our handler delegate.
-    public alias void delegate ( cstring[], void delegate (cstring) ) Handler;
+    /// Alias for our interactive handler delegate.
+    public alias void delegate ( cstring[],
+            void delegate (cstring),
+            void delegate (ref mstring) ) InteractiveHandler;
+
+    /// Alias for our non-interactive handler delegate.
+    public alias void delegate ( cstring[],
+            void delegate (cstring) ) Handler;
+
+    /// Our registered map of interactive handlers by command.
+    private InteractiveHandler[istring] interactive_handlers;
 
     /// Our registered map of handlers by command.
     private Handler[istring] handlers;
@@ -129,13 +138,22 @@ public class UnixSocketExt : IApplicationExtension, IConfigExtExtension
             command = The command received by the unix socket.
             args = The arguments provided with the command.
             send_response = Delegate to call with response string.
+            wait_reply = Delegate to call to obtain the reply from the user
 
     ***************************************************************************/
 
     public void handle ( cstring command, cstring args,
-                         void delegate (cstring) send_response )
+                 void delegate (cstring) send_response,
+                 void delegate (ref mstring buf) wait_reply )
     {
-        if (auto handler = command in this.handlers)
+        if (auto handler = command in this.interactive_handlers)
+        {
+            split(args, " ", this.args_buf);
+            scope predicate = (cstring v) { return v.length; };
+            auto arguments = filter(this.args_buf[], predicate, this.args_buf);
+            (*handler)(arguments, send_response, wait_reply);
+        }
+        else if (auto handler = command in this.handlers)
         {
             split(args, " ", this.args_buf);
             scope predicate = (cstring v) { return v.length; };
@@ -146,6 +164,22 @@ public class UnixSocketExt : IApplicationExtension, IConfigExtExtension
         {
             send_response("Command not found\n");
         }
+    }
+
+    /***************************************************************************
+
+        Register a command and interactive handler to the unix listener.
+
+        Params:
+            command = The command to listen for in the socket listener.
+            handler = The interactive handler to call when command is received.
+
+    ***************************************************************************/
+
+    public void addInteractiveHandler ( istring command,
+        InteractiveHandler handler )
+    {
+        this.interactive_handlers[command] = handler;
     }
 
     /***************************************************************************
@@ -161,6 +195,20 @@ public class UnixSocketExt : IApplicationExtension, IConfigExtExtension
     public void addHandler ( istring command, Handler handler )
     {
         this.handlers[command] = handler;
+    }
+
+    /***************************************************************************
+
+        Unregister a command and handler from the unix listener.
+
+        Params:
+            command = The command to be removed from the listener.
+
+    ***************************************************************************/
+
+    public void removeInteractiveHandler ( istring command )
+    {
+        this.interactive_handlers.remove(command);
     }
 
     /***************************************************************************
@@ -286,13 +334,14 @@ unittest
         override public int run ( Arguments args, ConfigParser config )
         {
             this.startEventHandling(new EpollSelectDispatcher);
-            this.unix_socket_ext.addHandler("test", &this.test);
+            this.unix_socket_ext.addInteractiveHandler("test", &this.test);
 
             return 0;
         }
 
         private void test ( cstring[] args,
-            void delegate ( cstring response ) send_response )
+            void delegate ( cstring response ) send_response,
+            void delegate ( ref mstring response ) wait_reply )
         {
             send_response("Test request received");
         }
