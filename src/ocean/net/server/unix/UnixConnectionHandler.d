@@ -51,6 +51,7 @@ module ocean.net.server.unix.UnixConnectionHandler;
 import ocean.net.server.connection.IFiberConnectionHandler;
 
 import ocean.transition;
+import ocean.core.array.Mutation;
 
 import ocean.io.select.EpollSelectDispatcher;
 import ocean.io.select.protocol.fiber.FiberSelectReader;
@@ -66,8 +67,9 @@ import ocean.core.array.Mutation : copy;
 /// Provides basic command handling functionality for unix socket commands.
 public class BasicCommandHandler
 {
-    /// Alias for a command handler response delegate.
-    public alias void delegate ( cstring,  void delegate (cstring) ) Handler;
+    /// Alias for a command handler delegate.
+    public alias void delegate ( cstring,  void delegate (cstring),
+            void delegate (ref mstring)) Handler;
 
     /// Map of command name to handler response delegate.
     public Handler[istring] handlers;
@@ -95,15 +97,17 @@ public class BasicCommandHandler
             command = Command received from unix socket.
             args = Arguments provided (if any).
             send_response = Delegate to send a response to the unix socket.
+            wait_reply = delegate to get a reply from the unix socket
 
     ***************************************************************************/
 
     public void handle ( cstring command, cstring args,
-        void delegate ( cstring ) send_response )
+        void delegate ( cstring ) send_response,
+        void delegate (ref mstring) wait_reply)
     {
         if (auto handler = command in this.handlers)
         {
-            (*handler)(args, send_response);
+            (*handler)(args, send_response, wait_reply);
         }
         else
         {
@@ -175,12 +179,20 @@ public class UnixSocketConnectionHandler ( CommandHandlerType ) : IFiberConnecti
 
     /***************************************************************************
 
-        Buffer to store the partial line that followed the last occurrence of
+        Buffer to store the partial handler that followed the last occurrence of
         '\n' in the most recently read input data.
 
     ***************************************************************************/
 
     private char[] remaining_request_ln;
+
+    /***************************************************************************
+
+        Buffer to store the partial line of a in-command response.
+
+    ***************************************************************************/
+
+    private mstring last_read_line;
 
     /***************************************************************************
 
@@ -240,7 +252,12 @@ public class UnixSocketConnectionHandler ( CommandHandlerType ) : IFiberConnecti
 
         this.remaining_request_ln.length = 0;
         enableStomping(this.remaining_request_ln);
-        this.reader.readConsume(&this.parseLinesAndHandle);
+
+        while (true)
+        {
+            getNextLine();
+            handleCmd(this.last_read_line);
+        }
     }
 
     /***************************************************************************
@@ -255,31 +272,63 @@ public class UnixSocketConnectionHandler ( CommandHandlerType ) : IFiberConnecti
             data = socket input data
 
         Returns:
-            A value greater than `data.length` so that `this.reader.readConsume`
-            continues reading from the socket.
+            If no newline is found, A value greater than `data.length` so
+            that `this.reader.readConsume` continues reading from the socket.
+            Otherwise, `data.lenght`, so the reading continues when needed.
 
     ***************************************************************************/
 
-    private size_t parseLinesAndHandle ( void[] data )
+    private size_t parseLine ( void[] data )
     {
         scope split = new ChrSplitIterator('\n');
         split.include_remaining = false;
         split.reset(cast(char[])data);
 
-        if (this.remaining_request_ln.length)
+        auto before_newline = split.next();
+
+        // no newline found, read more
+        if (before_newline.length == data.length)
         {
-            this.remaining_request_ln ~= split.next();
-            this.handleCmd(this.remaining_request_ln);
+            this.remaining_request_ln ~= before_newline;
+            return data.length + 1;
         }
 
-        foreach (request_ln; split)
+        // We have read up to newline, leave the line for the user
+        // to process, or for this facility to call the next command, and
+        // save the optional rest
+        this.last_read_line.length = 0;
+        enableStomping(this.last_read_line);
+
+        this.last_read_line ~= this.remaining_request_ln;
+        this.last_read_line ~= before_newline;
+
+        this.remaining_request_ln.copy(split.remaining());
+
+        return data.length;
+    }
+
+    private void getNextLine()
+    {
+        // do we have more lines in the remaining data?
+        scope split = new ChrSplitIterator('\n');
+
+        split.include_remaining = false;
+        split.reset(this.remaining_request_ln);
+
+        auto before_newline = split.next();
+
+        if (before_newline.length)
         {
-            this.handleCmd(request_ln);
+            this.last_read_line.copy(before_newline);
+            auto remaining = split.remaining();
+            removeShift(this.remaining_request_ln,
+                0, remaining_request_ln.length - remaining.length);
+            return;
         }
 
-        this.remaining_request_ln.copy(split.remaining);
 
-        return data.length + 1;
+        // else fetch a new one
+        this.reader.readConsume(&this.parseLine);
     }
 
     /***************************************************************************
@@ -306,7 +355,8 @@ public class UnixSocketConnectionHandler ( CommandHandlerType ) : IFiberConnecti
 
         cstring cmd = split_cmd.trim(split_cmd.next());
 
-        this.handler.handle(cmd, split_cmd.remaining, &this.sendResponse);
+        this.handler.handle(cmd, split_cmd.remaining, &this.sendResponse,
+                &this.waitReply);
     }
 
     /***************************************************************************
@@ -322,5 +372,22 @@ public class UnixSocketConnectionHandler ( CommandHandlerType ) : IFiberConnecti
     private void sendResponse ( cstring response )
     {
         this.writer.send(response);
+    }
+
+    /***************************************************************************
+
+        Reads the input from the client socket. This method is passed to the
+        user's command handler as a delegate.
+
+        Params:
+            prompt = prompt to send to the user
+            buf = buffer to read the response in.
+
+    ***************************************************************************/
+
+    private void waitReply ( ref mstring response )
+    {
+        this.getNextLine();
+        response.copy(this.last_read_line);
     }
 }

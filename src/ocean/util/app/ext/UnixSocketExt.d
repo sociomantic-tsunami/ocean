@@ -50,7 +50,9 @@ public class UnixSocketExt : IApplicationExtension, IConfigExtExtension
     private cstring[] args_buf;
 
     /// Alias for our handler delegate.
-    public alias void delegate ( cstring[], void delegate (cstring) ) Handler;
+    public alias void delegate ( cstring[],
+            void delegate (cstring),
+            void delegate (ref mstring) ) Handler;
 
     /// Our registered map of handlers by command.
     private Handler[istring] handlers;
@@ -104,18 +106,20 @@ public class UnixSocketExt : IApplicationExtension, IConfigExtExtension
             command = The command received by the unix socket.
             args = The arguments provided with the command.
             send_response = Delegate to call with response string.
+            wait_reply = Delegate to call to obtain the reply from the user
 
     ***************************************************************************/
 
     public void handle ( cstring command, cstring args,
-                         void delegate (cstring) send_response )
+                 void delegate (cstring) send_response,
+                 void delegate (ref mstring buf) wait_reply )
     {
         if (auto handler = command in this.handlers)
         {
             split(args, " ", this.args_buf);
             scope predicate = (cstring v) { return v.length; };
             auto arguments = filter(this.args_buf[], predicate, this.args_buf);
-            (*handler)(arguments, send_response);
+            (*handler)(arguments, send_response, wait_reply);
         }
         else
         {
@@ -267,7 +271,8 @@ unittest
         }
 
         private void test ( cstring[] args,
-            void delegate ( cstring response ) send_response )
+            void delegate ( cstring response ) send_response,
+            void delegate ( ref mstring response ) wait_reply )
         {
             send_response("Test request received");
         }
