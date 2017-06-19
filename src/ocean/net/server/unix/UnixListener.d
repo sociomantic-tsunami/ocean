@@ -68,7 +68,8 @@ public class UnixListener : UnixSocketListener!( BasicCommandHandler )
                              The type is passed as the template argument of
                              UnixConnectionHandler and is assumed to have a
                              callable member `void handle ( cstring, cstring,
-                             void delegate ( cstring ))`.
+                             void delegate ( cstring ),
+                             void delegate ( ref mstring ))`.
 
 *******************************************************************************/
 
