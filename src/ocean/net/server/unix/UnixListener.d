@@ -54,6 +54,35 @@ public class UnixListener : UnixSocketListener!( BasicCommandHandler )
         this.handler = new BasicCommandHandler(handlers);
         super(address_path, epoll, this.handler);
     }
+
+    /***********************************************************************
+
+        Constructor to create the basic command handler directly from
+        an array of handlers with support for interactive sessions.
+
+        Params:
+            address_path = the file path i.e. addreBasicCommandHandlerss of the Unix domain
+                            server socket
+            epoll        = the `EpollSelectDispatcher` instance to use for
+                            I/O (connection handler parameter)
+            handlers     = Array of command to handler delegate.
+            interactive_handlers  = Array of command to interactive handler delegate.
+
+        Throws:
+        `Exception` if
+            - `path` is too long; `path.length` must be less than
+            `UNIX_PATH_MAX`,
+            - an error occurred creating or binding the server socket.
+
+    ***********************************************************************/
+
+    public this ( istring address_path, EpollSelectDispatcher epoll,
+                  BasicCommandHandler.Handler[istring] handlers,
+                  BasicCommandHandler.InteractiveHandler[istring] interactive_handlers )
+    {
+        this.handler = new BasicCommandHandler(handlers, interactive_handlers);
+        super(address_path, epoll, this.handler);
+    }
 }
 
 /*******************************************************************************
@@ -63,7 +92,8 @@ public class UnixListener : UnixSocketListener!( BasicCommandHandler )
                              The type is passed as the template argument of
                              UnixConnectionHandler and is assumed to have a
                              callable member `void handle ( cstring, cstring,
-                             void delegate ( cstring ))`.
+                             void delegate ( cstring ),
+                             void delegate ( ref mstring ))`.
 
 *******************************************************************************/
 
