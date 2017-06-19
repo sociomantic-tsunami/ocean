@@ -98,11 +98,22 @@ To run the tests using D2 you can use::
   make DVER=2
 
 
+Versioning
+==========
+
+ocean's versioning follows `Neptune
+<https://github.com/sociomantic-tsunami/neptune/blob/master/doc/library-user.rst>`_.
+
+This means that the major version is increased for breaking changes, the minor
+version is increased for feature releases, and the patch version is increased
+for bug fixes that don't cause breaking changes.
+
 Support Guarantees
 ------------------
 
 * Major branch development period: 6 months
 * Maintained minor versions: 2 most recent
+
 
 Maintained Major Branches
 -------------------------
@@ -122,12 +133,6 @@ Releases
 `Latest release notes
 <https://github.com/sociomantic-tsunami/ocean/releases/latest>`_ | `All
 releases <https://github.com/sociomantic-tsunami/ocean/releases>`_
-
-Ocean's release process is based on `SemVer
-<https://github.com/sociomantic-tsunami/ocean/blob/v2.x.x/VERSIONING.rst>`_. This means
-that the major version is increased for breaking changes, the minor version is
-increased for feature releases, and the patch version is increased for bug fixes
-that don't cause breaking changes.
 
 Releases are handled using GitHub releases. The notes associated with a
 major or minor github release are designed to help developers to migrate from
