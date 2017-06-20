@@ -38,7 +38,8 @@ import ocean.util.app.ext.model.IConfigExtExtension;
 public class UnixSocketExt : IApplicationExtension, IConfigExtExtension
 {
     import ocean.core.Buffer;
-    import ocean.core.array.Transformation: split;
+    import ocean.core.array.Transformation: filter, split;
+    import ocean.io.select.EpollSelectDispatcher;
     import ocean.net.server.unix.UnixListener;
     import ocean.util.config.ConfigParser;
 
@@ -112,7 +113,9 @@ public class UnixSocketExt : IApplicationExtension, IConfigExtExtension
         if (auto handler = command in this.handlers)
         {
             split(args, " ", this.args_buf);
-            (*handler)(this.args_buf[], send_response);
+            scope predicate = (cstring v) { return v.length; };
+            auto arguments = filter(this.args_buf[], predicate, this.args_buf);
+            (*handler)(arguments, send_response);
         }
         else
         {
