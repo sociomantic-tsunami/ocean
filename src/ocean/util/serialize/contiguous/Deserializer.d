@@ -397,7 +397,7 @@ struct Deserializer
     {
         debug (DeserializationTrace)
         {
-            Stdout.formatln("< countStructArraySizes!({})({}) : {}", S.stringof,
+            Stdout.formatln("< countRequiredSize!({})({}) : {}", S.stringof,
                 instance.ptr, size);
         }
     }
@@ -405,7 +405,7 @@ struct Deserializer
     {
         debug (DeserializationTrace)
         {
-            Stdout.formatln("> countStructArraySizes!({})({})", S.stringof,
+            Stdout.formatln("> countRequiredSize!({})({})", S.stringof,
                 instance.ptr);
         }
 
@@ -523,15 +523,9 @@ struct Deserializer
 
         size_t pos = 0;
 
-        foreach (i, Field; typeof (S.tupleof))
+        foreach (i, QualField; typeof (S.tupleof))
         {
-            // Mixin to avoid -v2 warning about immutable being a D2 keyword
-            version (D_Version2)
-                mixin(`
-                static assert (!is(Field == immutable),
-                    "Cannot deserialize field " ~  FieldName!(i, S)
-                    ~ " of struct " ~ S.stringof ~ " because it is immutable");
-                `);
+            alias StripQualifier!(QualField) Field;
 
             static if (is (Field == struct))
             {
@@ -539,20 +533,11 @@ struct Deserializer
 
                 pos += This.countStructArraySizes!(Field)(data[pos .. $], extra_bytes);
             }
-            else static if (is (Field Element : Element[]))
+            else static if (is (Field QualElement : QualElement[]))
             {
-                // Mixin to avoid -v2 warning about immutable being a D2 keyword
-                version (D_Version2)
-                    mixin(`
-                    static assert (!is(Element == immutable),
-                        "Cannot deserialize field " ~ FieldName!(i, S)
-                        ~ " of struct " ~ S.stringof
-                        ~ " because it has an array of immutable elements");
-                    `);
+                alias StripQualifier!(QualElement) Element;
 
-
-
-                static if (is (Element[] == RejectQualifier!(Field)))
+                static if (is (QualElement[] == Field))
                 {
                     // dynamic array
 
@@ -636,7 +621,7 @@ struct Deserializer
 
         This.e.enforceSizeLimit!(T[])(len, This.max_length);
 
-        static if (is (RejectQualifier!(T) U == U[]))
+        static if (is (StripQualifier!(T) U == U[]))
         {
             /*
              * If array is an array of slices (dynamic arrays), obtain a data
@@ -729,7 +714,7 @@ struct Deserializer
         }
         else static if (is (T V : V[]))
         {
-            static if (is (V[] == RejectQualifier!(T)))
+            static if (is (V[] == StripQualifier!(T)))
             {
                 for (size_t i = 0; i < len; i++)
                 {
@@ -858,18 +843,18 @@ struct Deserializer
 
         size_t pos = 0;
 
-        foreach (i, Field; typeof (S.tupleof))
+        foreach (i, QualField; typeof (S.tupleof))
         {
+            alias StripQualifier!(QualField) Field;
+
             static if (is (Field == struct))
             {
                 This.e.enforceInputSize!(S)(data.length, pos);
 
                 pos += This.sliceArrays(*This.getField!(i, Field)(s), data[pos .. $], slices_buffer);
             }
-            else static if (is (RejectQualifier!(Field) Element : Element[]))
+            else static if (is (Field Element : Element[]))
             {
-                // To support const substitute Field with Unqual!(Field) in this
-                // scope.
                 static if (is (Element[] == Field))
                 {
                     This.e.enforceInputSize!(S)(data.length, pos);
@@ -946,7 +931,7 @@ struct Deserializer
 
         This.e.enforceSizeLimit!(T[])(len, This.max_length);
 
-        static if (is (RejectQualifier!(T) U == U[]))
+        static if (is (StripQualifier!(T) U == U[]))
         {
             /*
              * If array is an array of slices (dynamic arrays), obtain a data
@@ -1040,30 +1025,33 @@ struct Deserializer
 
         size_t pos = 0;
 
-        static if (is (T == struct))
+        alias StripQualifier!(T) Element;
+
+        static if (is (Element == struct))
         {
             foreach (ref element; array)
             {
-                This.e.enforceInputSize!(T[])(data.length, pos);
+                This.e.enforceInputSize!(Element[])(data.length, pos);
 
                 pos += This.sliceArrays(element, data[pos .. $], slices_buffer);
             }
         }
-        else static if (is (RejectQualifier!(T) V : V[]))
+        else static if (is (Element V : V[]))
         {
-            // To support const substitute T with Unqual!(T) in this scope and
-            // cast(Unqual!(T)[])array.
-            static if (is (V[] == T)) foreach (ref element; array)
+            static if (is (V[] == Element))
             {
-                This.e.enforceInputSize!(T[])(data.length, pos);
+                foreach (ref element; cast(Element[]) array)
+                {
+                    This.e.enforceInputSize!(Element[])(data.length, pos);
 
-                pos += This.sliceArray(element, data[pos .. $], slices_buffer);
+                    pos += This.sliceArray(element, data[pos .. $], slices_buffer);
+                }
             }
             else static if (hasIndirections!(V))
             {
                 for (size_t i = 0; i < array.length; i++)
                 {
-                    This.e.enforceInputSize!(T[])(data.length, pos);
+                    This.e.enforceInputSize!(Element[])(data.length, pos);
 
                     pos += This.sliceSubArrays(array[i], data[pos .. $], slices_buffer);
                 }
@@ -1100,15 +1088,11 @@ struct Deserializer
 
      **************************************************************************/
 
-    template RejectQualifier ( T )
+    template StripQualifier ( T )
     {
         version (D_Version2)
-            static if (!is(T == typeof(mixin("cast()T.init"))))
-            {
-                pragma(msg, "Warning: ", T,
-                " -- type qualifiers are not supported");
-            }
-        alias T RejectQualifier;
+            mixin("static assert (!is(T == immutable));");
+        alias Unqual!(T) StripQualifier;
     }
 }
 

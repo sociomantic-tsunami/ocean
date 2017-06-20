@@ -148,7 +148,7 @@ struct Contiguous( S )
             // can't call this.enforceIntegrity because it will trigger
             // invariant recursively being a public method
 
-            if (this.data.ptr)
+            if (this.data.length)
             {
                 enforceContiguous(*cast(S*) this.data.ptr, this.data);
             }
@@ -344,4 +344,13 @@ unittest
     *tested2 = S4.init;
     test!("==")(tested2.str.length, 2);
     testThrown!(Exception)(enforceContiguous(*tested2, buffer));
+}
+
+unittest
+{
+    static struct S { int x; }
+    Contiguous!(S) s;
+    s.data = new void[42];
+    s.data.length = 0;
+    test!("==")(s.ptr(), null);
 }
