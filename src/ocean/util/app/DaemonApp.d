@@ -62,7 +62,6 @@ public abstract class DaemonApp : Application,
 
     import ocean.sys.Stats;
     import ocean.task.Scheduler;
-    import ocean.text.Arguments : Arguments;
     import ocean.util.app.ext.ArgumentsExt;
     import ocean.util.app.ext.ConfigExt;
     import ocean.util.app.ext.VersionArgsExt;
@@ -75,7 +74,6 @@ public abstract class DaemonApp : Application,
     import ocean.util.app.ext.PidLockExt;
     import ocean.util.app.ext.UnixSocketExt;
     import ocean.util.app.ExitException;
-    import ocean.util.config.ConfigParser : ConfigParser;
     import ocean.util.log.Log;
     import ocean.util.log.Stats;
 
