@@ -442,6 +442,13 @@ final class Scheduler
 
         This method must not be called outside of a task.
 
+        Because of how termination hooks are implemented, by the time `await`
+        returns, the task object is not yet completely recycled - it will only
+        happen during next context switch. Caller of `await` must either ensure
+        that the task object lives long enough for that or call
+        `theScheduler.processEvents` right after `await` to ensure immediate
+        recycle (at the performance cost of an extra context switch).
+
         Params:
             task = task to schedule and wait for
             finished_dg = optional delegate called after task finishes but
