@@ -30,6 +30,10 @@ import ocean.transition;
 
 import ocean.core.Traits;
 
+import ocean.core.array.Search : find;
+
+import ocean.math.Math;
+
 
 /*******************************************************************************
 
@@ -165,6 +169,138 @@ public bool toLong ( T ) ( T[] digits, out long value, uint radix = 0 )
 public bool toUlong ( T ) ( T[] digits, out ulong value, uint radix = 0 )
 {
     return toUnsignedInteger(digits, value, radix);
+}
+
+
+/*******************************************************************************
+
+    Parses a floating point number represented as a string directly to an
+    integer value.
+
+    To represent the fractional part we multiply the value by the requested
+    amount of decimal points and add it up. For example:
+
+    "1.123" -> 1123  (decimal_points = 3)
+    "0.01"  ->   10  (decimal_points = 3)
+
+    Any characters longer than the requested amount of decimal points will be
+    cut off:
+
+    "1.2345"  ->  123 (decimal_points = 2)
+    "10.2030" -> 1020 (decimal_points = 2)
+
+    "1.2345"  ->  1 (decimal_points = 0)
+    "10.2030" -> 10 (decimal_points = 0)
+
+    Params:
+        T              = type of the integer
+        float_str = floating point number string to parse
+        value     = out parameter containing the result
+        decimal_points = amount of decimal points to consider
+
+    Returns:
+        true if the parsing was successful, else false
+
+*******************************************************************************/
+
+public bool floatStringToInt ( T = ulong ) ( cstring float_str, out T value,
+                                             size_t decimal_points = 0 )
+{
+    const MaxDecimal = 16;
+
+    assert(decimal_points <= MaxDecimal);
+
+    T multiplier = pow(cast(T)10, decimal_points);
+    char[MaxDecimal] zeros_suffix_buf = '0';
+    char[] zeros_suffix = zeros_suffix_buf[0 .. decimal_points];
+
+    cstring[2] num_parts;
+
+    // Split string at '.'
+    auto idx = find(float_str, '.');
+
+    if (idx == float_str.length)
+    {
+        num_parts[0] = float_str;
+        num_parts[1] = zeros_suffix;
+    }
+    else
+    {
+        num_parts[0] = float_str[0 .. idx];
+        num_parts[1] = float_str[idx+1..$];
+    }
+
+    // Cut off if too long
+    if (num_parts[1].length > decimal_points)
+        num_parts[1].length = decimal_points;
+
+    // Fill with zeros if too short
+    if (num_parts[1].length < decimal_points)
+    {
+        zeros_suffix[0 .. num_parts[1].length] = num_parts[1];
+        num_parts[1] = zeros_suffix;
+    }
+
+    if (!toUlong(num_parts[0], value))
+        return false;
+
+    T frac_value;
+
+    if (num_parts[1].length > 0 && !toUlong(num_parts[1], frac_value))
+        return false;
+
+    value *= multiplier;
+    value += frac_value;
+
+    return true;
+}
+
+version ( UnitTest )
+{
+    import ocean.core.Test;
+}
+
+unittest
+{
+    void testWith ( cstring str, ulong result, size_t dec_points )
+    {
+        ulong ret;
+        test(floatStringToInt(str, ret, dec_points));
+        test!("==")(ret, result);
+    }
+
+    testWith("0.16",   160, 3);
+    testWith("0.59",   590, 3);
+    testWith("3.29", 3_290, 3);
+    testWith("0.16",   160, 3);
+    testWith("4.00", 4_000, 3);
+    testWith("3.5993754486719", 3_599, 3);
+    testWith("0.99322729901677", 993, 3);
+    testWith("1.05", 1_050, 3);
+    testWith("0.5",  500, 3);
+    testWith("2",    2_000, 3);
+
+    testWith("2",        2, 0);
+    testWith("2.1",      2, 0);
+    testWith("2.123",    2, 0);
+    testWith("2.123456", 2, 0);
+
+    testWith("0.1", 10, 2);
+    testWith("1.1", 110, 2);
+    testWith("1",  100, 2);
+    testWith("01", 100, 2);
+    testWith("10.10",  1010, 2);
+    testWith("225.04", 22504, 2);
+    testWith("225.100000000000004", 22510, 2);
+    testWith("225.000000000000004", 22500, 2);
+    testWith("225.009999", 22500, 2);
+
+    ulong result;
+    test(!floatStringToInt("225.0.09999", result, 2));
+    test(!floatStringToInt("10,10", result, 2));
+    test(!floatStringToInt("0,1", result, 2));
+    test(!floatStringToInt("1,1", result, 2));
+    test(!floatStringToInt("6,6", result, 2));
 }
 
 
