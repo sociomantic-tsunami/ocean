@@ -1131,5 +1131,5 @@ unittest
     auto r1 = Deserializer.deserialize!(Trivial)(buf);
 
     Contiguous!(Trivial) copy_dst;
-    auto r2 = Deserializer.deserialize!(Trivial)(buf, copy_dst);
+    auto r2 = Deserializer.deserialize(buf, copy_dst);
 }

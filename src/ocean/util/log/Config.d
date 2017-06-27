@@ -110,7 +110,6 @@ import ocean.util.log.layout.LayoutMessageOnly;
 import ocean.util.log.layout.LayoutStatsLog;
 import ocean.util.log.layout.LayoutSimple;
 import ocean.util.log.LayoutDate;
-import ocean.util.log.LayoutChainsaw;
 
 
 
@@ -309,10 +308,6 @@ public Layout newLayout ( cstring layout_str )
 
         case "date":
             layout = new LayoutDate;
-            break;
-
-        case "chainsaw":
-            layout = new LayoutChainsaw;
             break;
 
         default:

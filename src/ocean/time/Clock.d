@@ -39,6 +39,20 @@ import ocean.core.ExceptionDefinitions;
 
 struct Clock
 {
+        /// Time at which the program started
+        private static Time start_time_;
+
+        /// Returns: Time at which the application started
+        public static Time startTime ()
+        {
+            return start_time_;
+        }
+
+        static this ()
+        {
+            start_time_ = Clock.now;
+        }
+
         // copied from Gregorian.  Used while we rely on OS for toDate.
         package static uint[] DaysToMonthCommon = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365];
         package static void setDoy(ref DateTime dt)
@@ -191,12 +205,4 @@ unittest
     auto date = Clock.toDate(time);
 
     assert (time is Clock.fromDate(date));
-}
-
-debug (Clock)
-{
-    void main()
-    {
-        auto time = Clock.now;
-    }
 }

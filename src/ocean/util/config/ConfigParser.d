@@ -3,7 +3,7 @@
     Load Configuration from Config File
 
     Copyright:
-        Copyright (c) 2009-2016 Sociomantic Labs GmbH.
+        Copyright (c) 2009-2017 sociomantic labs GmbH.
         All rights reserved.
 
     License:
@@ -16,42 +16,21 @@
 module ocean.util.config.ConfigParser;
 
 
-/*******************************************************************************
-
-    Imports
-
-*******************************************************************************/
-
 import ocean.transition;
 
-import ocean.core.Array : copy;
-
+import ocean.core.Array;
+import ocean.core.ExceptionDefinitions;
 import ocean.core.Exception;
 import ocean.core.Enforce;
-
-import ocean.io.Stdout;
-
-import ocean.core.Array;
-
-import ocean.io.stream.TextFile;
-
-import ocean.io.stream.Format;
-
-import ocean.text.convert.Integer_tango: toLong;
-
-import ocean.text.convert.Float: toFloat;
-
-import ocean.text.convert.Formatter;
-
-import ocean.text.Util: locate, trim, delimit, lines;
-
-import ocean.text.convert.Utf;
-
-import ocean.core.ExceptionDefinitions;
-
 import ocean.core.Traits : DynamicArrayType;
-
-
+import ocean.io.Stdout;
+import ocean.io.stream.Format;
+import ocean.io.stream.TextFile;
+import ocean.text.convert.Float: toFloat;
+import ocean.text.convert.Formatter;
+import ocean.text.convert.Integer_tango: toLong;
+import ocean.text.convert.Utf;
+import ocean.text.Util: locate, trim, delimit, lines;
 
 /******************************************************************************
 
@@ -59,11 +38,12 @@ import ocean.core.Traits : DynamicArrayType;
 
 *******************************************************************************/
 
-class ConfigException : Exception
+/// Exception thrown whenever an error happened while parsing / using
+/// the configuration, such as `getStrict` on a missing field
+public class ConfigException : Exception
 {
     mixin DefaultExceptionCtor;
 }
-
 
 /*******************************************************************************
 
@@ -71,64 +51,39 @@ class ConfigException : Exception
     following format:
 
     ---
+    // --------------------------
+    // Config Example
+    // --------------------------
 
-        // --------------------------
-        // Config Example
-        // --------------------------
+    ; Database config parameters
+    [DATABASE]
+    table1 = "name_of_table1"
+    table2 = "name_of_table2"
 
-        ; Database config parameters
-        [DATABASE]
-        table1 = "name_of_table1"
-        table2 = "name_of_table2"
+    ; An example of a multi-value parameter
+    fields = "create_time"
+             "update_time"
+             "count"
 
-        ; An example of a multi-value parameter
-        fields = "create_time"
-                 "update_time"
-                 "count"
-
-        ; Logging config parameters
-        [LOGGING]
-        level = 4
-        file = "access.log"
-
+    ; Logging config parameters
+    [LOGGING]
+    level = info
+    file = "access.log"
     ---
 
     The properties defined in the file are read and stored in an internal array,
     which can then be accessed through get and set methods as follows:
 
-    Usage example:
-
-    ---
-
-        // Read config file from disk
-        Config.parseFile("etc/my_config.ini");
-
-        // Read a single value
-        istring value = Config.Char["category", "key"];
-
-        // Set a single value
-        Config.set("category", "key", "new value");
-
-        // Read a multi-line value
-        istring[] values = Config.getListStrict("category", "key");
-
-    ---
-
     The parseFile() method only needs to be called once, though may be called
     multiple times if the config file needs to be re-read from the file on disk.
 
     TODO:
-
-    If properties have changed within the program it can be written back to
-    the INI file with a write function. This function clears the INI file and
-    writes all current parameters stored in properties to INI file.
-
-        Config.set("key", "new value");
-        Config.write;
+    At the moment it's possible to set a key (se `set`), but it's not possible
+    to write back to the file.
 
 *******************************************************************************/
 
-class ConfigParser
+public class ConfigParser
 {
     /***************************************************************************
 
@@ -374,14 +329,6 @@ class ConfigParser
               value2
               value3
 
-        Usage Example:
-
-        ---
-
-            Config.parseFile("etc/config.ini");
-
-        ---
-
         Params:
             file_path = string that contains the path to the configuration file
             clean_old = true if the existing configuration should be overwritten
@@ -399,6 +346,16 @@ class ConfigParser
         auto get_line = new TextFileInput(this.config_file);
 
         this.parseIter(get_line, clean_old);
+    }
+
+    ///
+    unittest
+    {
+        void main ()
+        {
+            scope config = new ConfigParser();
+            config.parseFile("etc/config.ini");
+        }
     }
 
 
@@ -843,10 +800,8 @@ class ConfigParser
         Actually performs parsing of the lines of a config file or a string.
         Each line to be parsed is obtained via an iterator.
 
-        Template_Params:
-            I = type of the iterator that will supply lines to be parsed
-
         Params:
+            I = type of the iterator that will supply lines to be parsed
             iter = iterator that will supply lines to be parsed
             clean_old = true if the existing configuration should be overwritten
                         with the result of the current parse, false if the
@@ -1180,13 +1135,25 @@ class ConfigParser
     }
 }
 
+/// Usage example
+unittest
+{
+    void main ()
+    {
+        // Read config file from disk
+        scope config = new ConfigParser("etc/config.ini");
 
+        // Read a single value
+        istring value = config.getStrict!(istring)("category", "key");
 
-/*******************************************************************************
+        // Set a single value
+        config.set("category", "key", "new value");
 
-    Unittest
+        // Read a multi-line value
+        istring[] values = config.getListStrict("category", "key");
+    }
+}
 
-*******************************************************************************/
 
 version ( UnitTest )
 {
@@ -1462,21 +1429,13 @@ three = teen
 
     // Test to ensure that a few hundred additional parses of the same
     // configuration does not allocate at all.
-
-    size_t mem_used1, mem_free1;
-    gc_usage(mem_used1, mem_free1);
-
-    const num_parses = 200;
-    for (int i; i < num_parses; i++)
-    {
-        Config.parseString(str2);
-    }
-
-    size_t mem_used2, mem_free2;
-    gc_usage(mem_used2, mem_free2);
-
-    test!("==")(mem_used1, mem_used2);
-    test!("==")(mem_free1, mem_free2);
+    testNoAlloc({
+            const num_parses = 200;
+            for (int i; i < num_parses; i++)
+            {
+                Config.parseString(str2);
+            }
+        }());
 
     Config.clearParsingContext();
 }

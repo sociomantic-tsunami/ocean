@@ -96,11 +96,11 @@ public istring format (Args...) (cstring fmt, Args args)
 
 /*******************************************************************************
 
-    Write the processed (formatted) input into a buffer
+    Append the processed (formatted) input onto the end of the provided buffer
 
     Params:
-        buffer  = The buffer to write the formatted string into, will be
-                  extended if needed
+        buffer  = The buffer to which to append the formatted string; its
+                  capacity will be increased if necessary
         fmt     = Format string to use
         args    = Variadic arguments to format according to `fmt`
 
@@ -215,10 +215,11 @@ public bool sformat (Args...) (FormatterSink sink, cstring fmt, Args args)
              */
         JT: switch (info.index)
             {
-                // NOTE: The access needs to be through args[idx].
-                // Using the 'unused' variable generates wrong code
+                // NOTE: We could static foreach over `args` (the values)
+                // instead of `Args` (the type) but it currently triggers
+                // a DMD bug, and as a result a deprecation message:
                 // https://issues.dlang.org/show_bug.cgi?id=16521
-                foreach (idx, unused; args)
+                foreach (idx, Tunused; Args)
                 {
                 case idx:
                     handle(args[idx], info, sink, elemSink);

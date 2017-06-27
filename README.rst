@@ -28,8 +28,8 @@ That said, for now Ocean is only intended to work with D 2.070.x, but even that
 is not possible at the moment because of some changes needed in the upstream
 compiler that are still pending. Because of this a patched *transitional*
 compiler is needed.  The patches needed to compile the ``dmd-transitional``
-compiler are located in `docker/dmd-transitional/patches
-<https://github.com/sociomantic-tsunami/ocean/tree/v2.4.x/docker/dmd-transitional/patches>`_.
+compiler are located in the `dedicated repository
+<https://github.com/sociomantic-tsunami/dmd-transitional>`_.
 
 We are working with upstream to get this issue sorted out as soon as possible.
 To track progress or read more details, please subscribe to `issue #9
@@ -98,11 +98,22 @@ To run the tests using D2 you can use::
   make DVER=2
 
 
+Versioning
+==========
+
+ocean's versioning follows `Neptune
+<https://github.com/sociomantic-tsunami/neptune/blob/master/doc/library-user.rst>`_.
+
+This means that the major version is increased for breaking changes, the minor
+version is increased for feature releases, and the patch version is increased
+for bug fixes that don't cause breaking changes.
+
 Support Guarantees
 ------------------
 
 * Major branch development period: 6 months
 * Maintained minor versions: 2 most recent
+
 
 Maintained Major Branches
 -------------------------
@@ -122,12 +133,6 @@ Releases
 `Latest release notes
 <https://github.com/sociomantic-tsunami/ocean/releases/latest>`_ | `All
 releases <https://github.com/sociomantic-tsunami/ocean/releases>`_
-
-Ocean's release process is based on `SemVer
-<https://github.com/sociomantic-tsunami/ocean/blob/v2.x.x/VERSIONING.rst>`_. This means
-that the major version is increased for breaking changes, the minor version is
-increased for feature releases, and the patch version is increased for bug fixes
-that don't cause breaking changes.
 
 Releases are handled using GitHub releases. The notes associated with a
 major or minor github release are designed to help developers to migrate from

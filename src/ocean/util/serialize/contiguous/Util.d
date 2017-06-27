@@ -48,7 +48,7 @@ import ocean.core.Test;
 
 public Contiguous!(S) copy(S) ( in Contiguous!(S) src, ref Contiguous!(S) dst )
 {
-    Deserializer.deserialize!(S)(src.data, dst);
+    Deserializer.deserialize(src.data, dst);
     return dst;
 }
 

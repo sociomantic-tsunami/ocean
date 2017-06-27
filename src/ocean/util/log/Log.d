@@ -241,7 +241,6 @@ public struct Log
 
         // internal use only
         private static Hierarchy base;
-        package static Time beginTime;
 
         private struct  Pair {istring name; Level value;}
 
@@ -295,11 +294,6 @@ public struct Log
 
                 foreach (p; Pairs)
                          map[p.name] = p.value;
-
-                version (Posix)
-                {
-                        beginTime = Clock.now;
-                }
         }
 
         /***********************************************************************
@@ -322,6 +316,7 @@ public struct Log
 
         ***********************************************************************/
 
+        deprecated("Use ocean.time.Clock : Clock.now() directly")
         static Time time ()
         {
                 version (Posix)
@@ -790,7 +785,7 @@ public class Logger : ILogger
 
         final TimeSpan runtime ()
         {
-                return Clock.now - Log.beginTime;
+            return Clock.now - Clock.startTime();
         }
 
         /***********************************************************************
