@@ -391,14 +391,7 @@ public class BufferedDirectWriteFile: OutputStream
 
     public this (cstring path = null, size_t buffer_blocks = 32 * 2 * 1024)
     {
-        // O_DIRECT needs to work with aligned memory (to the block size,
-        // which 99.9% of the time is 512), but the current GC implementation
-        // always align memory for a particular block size (and 512 is a current
-        // GC block size), so if the buffer is 512 or bigger, we are just fine.
-        //
-        // If we can't rely on this eventually, we can use posix_memalign(3)
-        // instead to allocate the memory.
-        this(path, new ubyte[buffer_blocks * BLOCK_SIZE]);
+        this(path, createAlignedBuffer(buffer_blocks));
     }
 
     /***************************************************************************
@@ -676,7 +669,7 @@ public class BufferedDirectReadFile: InputStream
 
     public this (cstring path = null, size_t buffer_blocks = 32 * 2 * 1024)
     {
-        this(path, new ubyte[buffer_blocks * BLOCK_SIZE]);
+        this(path, createAlignedBuffer(buffer_blocks));
     }
 
     /***************************************************************************
