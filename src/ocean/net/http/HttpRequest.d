@@ -158,9 +158,9 @@ class HttpRequest : HttpHeader
         standard Entity header fields. (The standard General-Header and
         Request-Header fields are added automatically.)
 
-        Note that a non-zero value for msg_body_prealloc_length is senseful only
-        when requests with message body (POST, PUT etc.) are supported by this
-        server.
+        Note that a non-zero value for msg_body_prealloc_length is only
+        sensible when requests with a message body (POST, PUT etc.) are
+        supported by this server.
 
         Params:
             add_entity_headers       = set to true to add the standard Entity
