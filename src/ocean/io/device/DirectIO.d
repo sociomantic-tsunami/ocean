@@ -175,9 +175,9 @@ private template AlignedBufferedStream ( )
 
     ***************************************************************************/
 
-    final public bool isAligned ( Const!(void)* ptr )
+    static public bool isAligned ( Const!(void)* ptr )
     {
-        return (cast(size_t) ptr & (this.BLOCK_SIZE - 1)) == 0;
+        return (cast(size_t) ptr & (BLOCK_SIZE - 1)) == 0;
     }
 
     /***************************************************************************
