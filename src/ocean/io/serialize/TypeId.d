@@ -9,63 +9,8 @@
     unions and function/delegate parameter lists and using the base type of
     enums and typedefs.
 
-    Example:
-
-    ---
-        struct S
-        {
-            typedef int Spam;
-
-            struct T
-            {
-                enum Eggs : ushort
-                {
-                    Ham = 7
-                }
-
-                Eggs eggs;                              // at offset 0
-
-                char[] str;                             // at offset 8
-            }
-
-            Spam x;                                     // at offset 0
-
-            T[][5] y;                                   // at offset 8
-
-            Spam delegate ( T ) dg;                     // at offset 88
-
-            T*[float function(Spam, T.Eggs)] a;         // at offset 104
-        }
-
-
-        const id = TypeId!(S);
-
-        // id is now "struct{
-        //               "0LUint"
-        //               "8LU"
-        //               "struct{"
-        //                   "0LUushort"
-        //                   "8LUchar[]"
-        //               "}[][5LU]"
-        //               "88LUintdelegate("
-        //                   "struct{"
-        //                       "0LUushort"
-        //                       "8LUchar[]"
-        //                   "}"
-        //               ")"
-        //               "104LUstruct{"
-        //                   "0LUushort"
-        //                   "8LUchar[]"
-        //               "}*[floatfunction(intushort)]
-        //           "}".
-
-        const hash = TypeHash!(S);
-
-        // hash is now 0x3ff282c0d315761b, the 64-bit Fnv1a hash of id .
-    ---
-
-    The type identifier of a non-aggregate type is the .stringof of that type
-    (or its base if it is a typedef or enum).
+    The type identifier of a non-aggregate type is the `.stringof` of that type
+    (or its base if it is a `typedef` or `enum`).
 
     Copyright:
         Copyright (c) 2009-2016 Sociomantic Labs GmbH.
@@ -80,14 +25,61 @@
 
 module ocean.io.serialize.TypeId;
 
-/******************************************************************************
-
-    Imports
-
- ******************************************************************************/
-
-import ocean.io.digest.Fnv1: StaticFnv1a64, Fnv164Const;
 import ocean.core.Traits;
+import ocean.io.digest.Fnv1: StaticFnv1a64, Fnv164Const;
+import ocean.transition;
+
+/// Usage example
+unittest
+{
+    static struct S
+    {
+        mixin(Typedef!(int, `Spam`));
+
+        uint spam;
+
+        static struct T
+        {
+            enum Eggs : ushort
+            {
+                Ham = 7
+            }
+
+            Eggs eggs;                              // at offset 0
+            char[] str;                             // at offset 8
+        }
+
+        Spam x;                                     // at offset 0
+        T[][5] y;                                   // at offset 8
+        Spam delegate ( T ) dg;                     // at offset 88
+        T*[float function(Spam, T.Eggs)] a;         // at offset 104
+    }
+
+    const id = TypeId!(S);
+    static assert(id ==
+                  `struct{` ~
+                    `0LU` ~ `uint` ~
+                    `4LU` ~ `int` ~
+                    `8LU` ~ `struct{` ~
+                      `0LU` ~ `ushort` ~
+                      `8LU` ~ `char[]` ~
+                    `}[][5LU]` ~
+                    `88LU` ~ `intdelegate(` ~
+                      `struct{` ~
+                        `0LU` ~ `ushort` ~
+                        `8LU` ~ `char[]` ~
+                      `}` ~
+                    `)` ~
+                    `104LU` ~ `struct{` ~
+                      `0LU` ~ `ushort` ~
+                      `8LU` ~ `char[]` ~
+                    `}*[floatfunction(intushort)]` ~
+                  `}`);
+
+    const hash = TypeHash!(S);
+    static assert(hash == 0x3ff282c0d315761b);
+}
+
 
 /******************************************************************************
 
@@ -99,7 +91,7 @@ import ocean.core.Traits;
 
 template TypeId ( T )
 {
-    static if (is (T == struct))
+    static if (is (T == struct) && !IsTypedef!(T))
     {
         const TypeId = "struct{" ~ AggregateId!(CheckedBaseType!(T)) ~ "}";
     }
@@ -148,7 +140,7 @@ template TypeId ( T )
 
 unittest
 {
-    struct Sample
+    static struct Sample
     {
         int[4] arr;
         int a;
@@ -156,7 +148,29 @@ unittest
         char* c;
     }
 
+
     const x = TypeId!(Sample);
+    const ExpectedSampleStr = `struct{0LUint[4LU]16LUint24LUdouble32LUchar*}`;
+    static assert(x == ExpectedSampleStr);
+
+    // This looks like a bug
+    mixin(Typedef!(Sample, `NestedTypedef`));
+    static assert (TypeId!(NestedTypedef) == `Sample`);
+
+    static struct Bar { NestedTypedef f; }
+    static assert(TypeId!(Bar) == `struct{0LUSample}`);
+
+    union Foo { char* ptr; ulong val; }
+    static assert(TypeId!(Foo) == `union{0LUchar*0LUulong}`);
+
+    interface IFoo {}
+    mixin(Typedef!(IFoo, `DasInterface`));
+    static assert (!is(typeof(TypeId!(IFoo))));
+    static assert (!is(typeof(TypeId!(DasInterface))));
+
+    mixin(Typedef!(Object, `Klass`));
+    static assert (!is(typeof(TypeId!(Object))));
+    static assert (!is(typeof(TypeId!(Klass))));
 }
 
 /******************************************************************************
@@ -173,7 +187,7 @@ template TypeHash ( T )
 
 unittest
 {
-    struct Sample
+    static struct Sample
     {
         int[4] arr;
         int a;
@@ -182,6 +196,27 @@ unittest
     }
 
     const hash = TypeHash!(Sample);
+    const ExpectedSampleHash = 0x25E3D303374B7838;
+    static assert(hash == ExpectedSampleHash);
+
+    // This looks like a bug
+    mixin(Typedef!(Sample, `NestedTypedef`));
+    static assert (TypeHash!(NestedTypedef) == StaticFnv1a64!(`Sample`));
+
+    static struct Bar { NestedTypedef f; }
+    static assert(TypeHash!(Bar) == 0xB3F1A91424ABC725);
+
+    union Foo { char* ptr; ulong val; }
+    static assert(TypeHash!(Foo) == 0xC4BD15CE20899C30);
+
+    interface IFoo {}
+    mixin(Typedef!(IFoo, `DasInterface`));
+    static assert (!is(typeof(TypeHash!(IFoo))));
+    static assert (!is(typeof(TypeHash!(DasInterface))));
+
+    mixin(Typedef!(Object, `Klass`));
+    static assert (!is(typeof(TypeHash!(Object))));
+    static assert (!is(typeof(TypeHash!(Klass))));
 }
 
 /******************************************************************************
@@ -195,7 +230,7 @@ unittest
 
 template TypeHash ( ulong hash, T )
 {
-    static if (is (T == struct))
+    static if (is (T == struct) && !IsTypedef!(T))
     {
         const TypeHash = StaticFnv1a64!(AggregateHash!(StaticFnv1a64!(hash, "struct{"), CheckedBaseType!(T)), "}");
     }
@@ -344,13 +379,8 @@ template CheckedBaseType ( T )
 
 template BaseType ( T )
 {
-    static if (isTypedef!(T))
-    {
-        mixin(`
-            static if (is (T Base == typedef))
-                alias BaseType!(Base) BaseType;
-        `);
-    }
+    static if (IsTypedef!(T))
+        alias DropTypedef!(T) BaseType;
     else static if (is (T Base == enum))
     {
         alias BaseType!(Base) BaseType;
@@ -377,4 +407,54 @@ template TypeErrorMsg ( T, Base )
     {
         const TypeErrorMsg = T.stringof ~ " is a typedef of " ~ Base.stringof ~ " which is not supported because it is a class or interface";
     }
+}
+
+
+/*******************************************************************************
+
+    Helper template to detect if a given type is a typedef (D1 and D2).
+
+    This bears the same name as the template in `ocean.core.Traits`.
+    However, the definition in `Traits` unconditionally returns `false` in D2.
+    While it might be suitable for most use cases, here we have to
+    explicitly handle `typedef`.
+
+    Params:
+        T   = Type to check
+
+*******************************************************************************/
+
+private template IsTypedef (T)
+{
+    version (D_Version2)
+        const IsTypedef = is(T.IsTypedef);
+    else
+        const IsTypedef = mixin("is(T == typedef)");
+}
+
+
+/*******************************************************************************
+
+   Helper template to get the underlying type of a typedef (D1 and D2).
+
+   This bears the same name as the template in `ocean.core.Traits`.
+   However, the definition in `Traits` unconditionally returns `T` in D2.
+   While it might be suitable for most use cases, here we have to
+   explicitly handle `typedef`.
+
+   Params:
+       T   = Typedef for which to get the underlying type
+
+*******************************************************************************/
+
+private template DropTypedef (T)
+{
+    static assert(IsTypedef!(T),
+                  "DropTypedef called on non-typedef type " ~ T.stringof);
+
+    version (D_Version2)
+        alias typeof(T.value) DropTypedef;
+    else
+        mixin("static if (is (T V == typedef))
+                alias V DropTypedef;");
 }

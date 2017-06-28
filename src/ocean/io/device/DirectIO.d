@@ -76,6 +76,11 @@ import ocean.io.device.File;
 import ocean.core.Exception_tango: IOException;
 import ocean.stdc.posix.fcntl : O_DIRECT; // Linux only
 
+version ( UnitTest )
+{
+    import ocean.core.Test;
+}
+
 /*******************************************************************************
 
     Mixin template for classes that need to have buffers that are aligned to
@@ -154,19 +159,62 @@ private template AlignedBufferedStream ( )
 
     protected void createBuffer ( size_t buffer_blocks )
     {
-        // O_DIRECT needs to work with aligned memory (to the block size,
-        // which 99.9% of the time is 512), but the current GC implementation
-        // always align memory for a particular block size (and 512 is a current
-        // GC block size), so if the buffer is 512 or bigger, we are just fine.
-        //
-        // If we can't rely on this eventually, we can use posix_memalign(3)
-        // instead to allocate the memory.
+        this.setBuffer(createAlignedBuffer(buffer_blocks));
+    }
 
-        // https://dlang.org/phobos/core_memory.html#.GC.malloc promises to
-        // return aligned block of managed memory
+    /***************************************************************************
+
+        Construct a buffer with length equal to the specified multiple of
+        BLOCK_SIZE. This method checks the buffer is properly aligned and the
+        length is a multiple of BLOCK_SIZE too.
+
+        Note on buffer allocation:
+            O_DIRECT requires BLOCK_SIZE-aligned memory. BLOCK_SIZE is defined
+            as 512 bytes. Conveniently, the current GC implementation always
+            aligns memory to 512 bytes, so we can simply rely on that. In D2,
+            `new` is not guaranteed to provide block-aligned memory, but
+            `GC.malloc` does make that promise in its documentation:
+                https://dlang.org/phobos/core_memory.html#.GC.malloc
+
+            (This behaviour is  tested with a unittest, in case BLOCK_SIZE or
+            the GC's behaviour ever changes.)
+
+        Params:
+            buffer_blocks = Buffer size in blocks
+
+        Returns:
+            newly allocated buffer of the specified size
+
+    ***************************************************************************/
+
+    private static ubyte[] createAlignedBuffer ( size_t buffer_blocks )
+    out ( buffer )
+    {
+        assert(isAligned(buffer.ptr));
+        assert((buffer.length % BLOCK_SIZE) == 0);
+    }
+    body
+    {
         auto bytes = buffer_blocks * BLOCK_SIZE;
         auto buffer = cast(ubyte[]) GC.malloc(bytes)[0 .. bytes];
-        this.setBuffer(buffer);
+        return buffer;
+    }
+
+    /***************************************************************************
+
+        Unittest to confirm during testing that the statement above about the
+        implementation of GC malloc returning 512-byte-aligned buffers is
+        correct in all builds.
+
+        If this test ever fails, we should adapt createAlignedBuffer to use
+        posix_memalign(3) instead to allocate the memory.
+
+    ***************************************************************************/
+
+    unittest
+    {
+        auto buffer = createAlignedBuffer(1);
+        test(isAligned(buffer.ptr));
     }
 
     /***************************************************************************
@@ -175,9 +223,9 @@ private template AlignedBufferedStream ( )
 
     ***************************************************************************/
 
-    final public bool isAligned ( Const!(void)* ptr )
+    static public bool isAligned ( Const!(void)* ptr )
     {
-        return (cast(size_t) ptr & (this.BLOCK_SIZE - 1)) == 0;
+        return (cast(size_t) ptr & (BLOCK_SIZE - 1)) == 0;
     }
 
     /***************************************************************************
@@ -343,14 +391,7 @@ public class BufferedDirectWriteFile: OutputStream
 
     public this (cstring path = null, size_t buffer_blocks = 32 * 2 * 1024)
     {
-        // O_DIRECT needs to work with aligned memory (to the block size,
-        // which 99.9% of the time is 512), but the current GC implementation
-        // always align memory for a particular block size (and 512 is a current
-        // GC block size), so if the buffer is 512 or bigger, we are just fine.
-        //
-        // If we can't rely on this eventually, we can use posix_memalign(3)
-        // instead to allocate the memory.
-        this(path, new ubyte[buffer_blocks * BLOCK_SIZE]);
+        this(path, createAlignedBuffer(buffer_blocks));
     }
 
     /***************************************************************************
@@ -628,7 +669,7 @@ public class BufferedDirectReadFile: InputStream
 
     public this (cstring path = null, size_t buffer_blocks = 32 * 2 * 1024)
     {
-        this(path, new ubyte[buffer_blocks * BLOCK_SIZE]);
+        this(path, createAlignedBuffer(buffer_blocks));
     }
 
     /***************************************************************************
