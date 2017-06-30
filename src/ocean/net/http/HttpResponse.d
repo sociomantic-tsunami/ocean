@@ -107,15 +107,19 @@ class HttpResponse : HttpHeader
 
         Constructor
 
+        Params:
+            initial_buffer_size = the initial amount of memory to allocate to
+                hold the rendered response. Will be extended if necessary.
+
      **************************************************************************/
 
-    public this ( )
+    public this ( size_t initial_buffer_size = 1024 )
     {
         super(HeaderFieldNames.Response.NameList,
               HeaderFieldNames.Entity.NameList);
 
         this.append_header_lines = new AppendHeaderLines(
-                this.content = new AppendBuffer!(char)(1024));
+                this.content = new AppendBuffer!(char)(initial_buffer_size));
     }
 
     /**************************************************************************
