@@ -116,6 +116,7 @@ alias va_list ArgList;
 
 *******************************************************************************/
 
+deprecated("Import ocean.util.log.Logger instead")
 alias ILogger.Level Level;
 
 
@@ -128,6 +129,7 @@ alias ILogger.Level Level;
 
 *******************************************************************************/
 
+deprecated("Import ocean.util.log.Logger instead")
 public struct Log
 {
         /***********************************************************************
@@ -497,13 +499,18 @@ public struct Log
 
 public class Logger : ILogger
 {
-
+        deprecated("Import ocean.util.log.Logger instead")
         alias Level.Trace Trace;        // shortcut to Level values
+        deprecated("Import ocean.util.log.Logger instead")
         alias Level.Info  Info;         // ...
+        deprecated("Import ocean.util.log.Logger instead")
         alias Level.Warn  Warn;         // ...
+        deprecated("Import ocean.util.log.Logger instead")
         alias Level.Error Error;        // ...
+        deprecated("Import ocean.util.log.Logger instead")
         alias Level.Fatal Fatal;        // ...
 
+        deprecated("Import ocean.util.log.Logger instead")
         alias append      opCall;       // shortcut to append
 
         /***********************************************************************
@@ -557,6 +564,7 @@ public class Logger : ILogger
 
         ***********************************************************************/
 
+        deprecated("Import ocean.util.log.Logger instead")
         final bool enabled (Level level = Level.Fatal)
         {
                 return host_.context.enabled (level_, level);
@@ -568,6 +576,7 @@ public class Logger : ILogger
 
         ***********************************************************************/
 
+        deprecated("Use ocean.util.log.Logger instead")
         final void trace (cstring fmt, ...)
         {
             format (Level.Trace, fmt, _arguments, _argptr);
@@ -579,6 +588,7 @@ public class Logger : ILogger
 
         ***********************************************************************/
 
+        deprecated("Use ocean.util.log.Logger instead")
         final void info (cstring fmt, ...)
         {
             format (Level.Info, fmt, _arguments, _argptr);
@@ -590,6 +600,7 @@ public class Logger : ILogger
 
         ***********************************************************************/
 
+        deprecated("Use ocean.util.log.Logger instead")
         final void warn (cstring fmt, ...)
         {
             format (Level.Warn, fmt, _arguments, _argptr);
@@ -601,6 +612,7 @@ public class Logger : ILogger
 
         ***********************************************************************/
 
+        deprecated("Use ocean.util.log.Logger instead")
         final void error (cstring fmt, ...)
         {
             format (Level.Error, fmt, _arguments, _argptr);
@@ -612,6 +624,7 @@ public class Logger : ILogger
 
         ***********************************************************************/
 
+        deprecated("Use ocean.util.log.Logger instead")
         final void fatal (cstring fmt, ...)
         {
             format (Level.Fatal, fmt, _arguments, _argptr);
@@ -623,6 +636,7 @@ public class Logger : ILogger
 
         ***********************************************************************/
 
+        // Not deprecated: Triggers wrong deprecation messages
         final cstring name ()
         {
                 auto i = name_.length;
@@ -637,6 +651,7 @@ public class Logger : ILogger
 
         ***********************************************************************/
 
+        // Not deprecated: Triggers wrong deprecation messages
         final Level level ()
         {
                 return level_;
@@ -648,6 +663,7 @@ public class Logger : ILogger
 
         ***********************************************************************/
 
+        deprecated("Use ocean.util.log.Logger instead")
         final Logger level (Level l)
         {
                 return level (l, false);
@@ -660,6 +676,7 @@ public class Logger : ILogger
 
         ***********************************************************************/
 
+        // Not deprecated: Triggers wrong deprecation messages
         final Logger level (Level level, bool propagate)
         {
                 level_ = level;
@@ -679,6 +696,7 @@ public class Logger : ILogger
 
         ***********************************************************************/
 
+        deprecated("Import ocean.util.log.Logger instead")
         final bool additive ()
         {
                 return additive_;
@@ -690,6 +708,7 @@ public class Logger : ILogger
 
         ***********************************************************************/
 
+        // Not deprecated: Triggers wrong deprecation messages
         final Logger additive (bool enabled)
         {
                 additive_ = enabled;
@@ -704,6 +723,7 @@ public class Logger : ILogger
 
         ***********************************************************************/
 
+        // Not deprecated: Triggers wrong deprecation messages
         final Logger add (AP.Appender another)
         {
                 assert (another);
@@ -718,6 +738,7 @@ public class Logger : ILogger
 
         ***********************************************************************/
 
+        // Not deprecated: Triggers wrong deprecation messages
         final Logger clear ()
         {
                 appender_ = null;
@@ -730,6 +751,7 @@ public class Logger : ILogger
 
         ***********************************************************************/
 
+        deprecated("Import ocean.util.log.Logger instead")
         final mstring buffer ()
         {
                 return buffer_;
@@ -743,6 +765,7 @@ public class Logger : ILogger
 
         ***********************************************************************/
 
+        // Not deprecated: Triggers wrong deprecation messages
         final Logger buffer (mstring buf)
         {
                 buffer_ = buf;
@@ -763,6 +786,7 @@ public class Logger : ILogger
 
         ***********************************************************************/
 
+        // Not deprecated: Triggers wrong deprecation messages
         void collectStats (bool value, bool propagate)
         {
             this.collect_stats = value;
@@ -779,6 +803,7 @@ public class Logger : ILogger
 
         ***********************************************************************/
 
+        deprecated("Import ocean.util.log.Logger instead")
         final TimeSpan runtime ()
         {
             return Clock.now - Clock.startTime();
@@ -790,6 +815,7 @@ public class Logger : ILogger
 
         ***********************************************************************/
 
+        deprecated("Use ocean.util.log.Logger instead")
         final Logger append (Level level, lazy cstring exp)
         {
                 if (host_.context.enabled (level_, level))
@@ -809,6 +835,7 @@ public class Logger : ILogger
 
         ***********************************************************************/
 
+        deprecated("Use ocean.util.log.Logger instead")
         private void append (EV.LogEvent event)
         {
                 // indicator if the event was at least once emitted to the
@@ -857,6 +884,7 @@ public class Logger : ILogger
 
         ***********************************************************************/
 
+        deprecated("Use ocean.util.log.Logger instead")
         final mstring format (mstring buffer, cstring formatStr, ...)
         {
             return Format.vprint (buffer, formatStr, _arguments, _argptr);
@@ -869,6 +897,7 @@ public class Logger : ILogger
 
         ***********************************************************************/
 
+        deprecated("Use ocean.util.log.Logger instead")
         final void format (Level level, cstring fmt, ...)
         {
             format (level, fmt, _arguments, _argptr);
@@ -880,6 +909,7 @@ public class Logger : ILogger
 
         ***********************************************************************/
 
+        deprecated("Use ocean.util.log.Logger instead")
         final Logger format (Level level, cstring fmt, TypeInfo[] types, ArgList args)
         {
                 if (types.length)
@@ -894,18 +924,21 @@ public class Logger : ILogger
                 return this;
         }
 
+        deprecated("Use ocean.util.log.Logger instead")
         private void formatWithDefaultBuffer(Level level, cstring fmt, TypeInfo[] types, ArgList args)
         {
             char[2048] tmp = void;
             formatWithBuffer(level, fmt, types, args, tmp);
         }
 
+        deprecated("Use ocean.util.log.Logger instead")
         private void formatWithProvidedBuffer(Level level, cstring fmt, TypeInfo[] types, ArgList args)
         {
             formatWithBuffer(level, fmt, types, args, buffer_);
             buffer_.length = buffer_size_;
         }
 
+        deprecated("Use ocean.util.log.Logger instead")
         private void formatWithBuffer(Level level, cstring fmt, TypeInfo[] types, ArgList args, mstring buf)
         {
             append (level, Format.vprint (buf, fmt, types, args));
@@ -919,6 +952,7 @@ public class Logger : ILogger
 
         ***********************************************************************/
 
+        // Not deprecated: Triggers wrong deprecation messages
         package final bool isChildOf (istring candidate)
         {
                 auto len = candidate.length;
@@ -941,6 +975,7 @@ public class Logger : ILogger
 
         ***********************************************************************/
 
+        // Not deprecated: Triggers wrong deprecation messages
         package final bool isCloserAncestor (Logger other)
         {
                 auto name = other.name_;
@@ -965,4 +1000,5 @@ public class Logger : ILogger
 
 *******************************************************************************/
 
+deprecated("Import ocean.util.log.Logger instead")
 public alias HierarchyT!(Logger) Hierarchy;
