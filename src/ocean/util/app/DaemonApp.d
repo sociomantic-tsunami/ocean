@@ -75,6 +75,7 @@ public abstract class DaemonApp : Application,
     import ocean.util.app.ext.UnixSocketExt;
     import ocean.util.app.ExitException;
     import ocean.util.log.Log;
+    import NewLog = ocean.util.log.Logger;
     import ocean.util.log.Stats;
 
 
@@ -470,7 +471,7 @@ public abstract class DaemonApp : Application,
 
     override public void exit ( int status, istring msg = null )
     {
-        this.exit(status, msg, null);
+        this.exit(status, msg, NewLog.Logger.init);
     }
 
     /***************************************************************************
@@ -486,6 +487,7 @@ public abstract class DaemonApp : Application,
 
     ***************************************************************************/
 
+    deprecated("Use the overload that accepts a new Logger")
     public void exit ( int status, istring msg, Logger logger )
     {
         if (logger !is null)
@@ -494,6 +496,17 @@ public abstract class DaemonApp : Application,
         }
         throw new ExitException(status, msg);
     }
+
+    /// Ditto
+    public void exit ( int status, istring msg, NewLog.Logger logger )
+    {
+        if (logger !is null)
+        {
+            logger.fatal(msg);
+        }
+        throw new ExitException(status, msg);
+    }
+
 
     /***************************************************************************
 
