@@ -1,17 +1,23 @@
 /*******************************************************************************
 
-        Copyright:
-            Copyright (c) 2004 Kris Bell.
-            Some parts copyright (c) 2009-2016 Sociomantic Labs GmbH.
-            All rights reserved.
+    Base interface for Loggers implementation
 
-        License:
-            Tango Dual License: 3-Clause BSD License / Academic Free License v3.0.
-            See LICENSE_TANGO.txt for details.
+    Note:
+        The formatting primitives (error, info, warn...) are not part of the
+        interface anymore, as they can be templated functions.
 
-        Version: Initial release: May 2004
+    Copyright:
+        Copyright (c) 2004 Kris Bell.
+        Some parts copyright (c) 2009-2016 Sociomantic Labs GmbH.
+        All rights reserved.
 
-        Authors: Kris
+    License:
+        Tango Dual License: 3-Clause BSD License / Academic Free License v3.0.
+        See LICENSE_TANGO.txt for details.
+
+    Version: Initial release: May 2004
+
+    Authors: Kris
 
 *******************************************************************************/
 
@@ -19,42 +25,68 @@ module ocean.util.log.model.ILogger;
 
 import ocean.transition;
 
-/*******************************************************************************
 
-*******************************************************************************/
-
+/// Ditto
 interface ILogger
 {
-        enum Level {Trace=0, Info, Warn, Error, Fatal, None};
+    /// Defines the level at which a message can be logged
+    public enum Level
+    {
+        ///
+        Trace = 0,
+        ///
+        Info,
+        ///
+        Warn,
+        ///
+        Error,
+        ///
+        Fatal,
+        ///
+        None
+    };
 
 
-        /***********************************************************************
+    /***************************************************************************
 
-                Context for a hierarchy, used for customizing behaviour
-                of log hierarchies. You can use this to implement dynamic
-                log-levels, based upon filtering or some other mechanism
+        Context for a hierarchy, used for customizing behaviour of log
+        hierarchies. You can use this to implement dynamic log-levels,
+        based upon filtering or some other mechanism
 
-        ***********************************************************************/
+    ***************************************************************************/
 
-        interface Context
-        {
-                /// return a label for this context
-                istring label ();
+    public interface Context
+    {
+        /// return a label for this context
+        public istring label ();
 
-                /// first arg is the setting of the logger itself, and
-                /// the second arg is what kind of message we're being
-                /// asked to produce
-                bool enabled (Level setting, Level target);
-        }
+        /// first arg is the setting of the logger itself, and
+        /// the second arg is what kind of message we're being
+        /// asked to produce
+        public bool enabled (Level setting, Level target);
+    }
 
 
-        /***********************************************************************
+    /***************************************************************************
 
-                Is this logger enabed for the specified Level?
+        Returns:
+            `true` if this logger is enabed for the specified `Level`
 
-        ***********************************************************************/
+        Params:
+            `Level` to test for, defaults to `Level.Fatal`.
 
-        bool enabled (Level level = Level.Fatal);
+    ***************************************************************************/
+
+    public bool enabled (Level level = Level.Fatal);
+
+    /***************************************************************************
+
+        Returns:
+            The name of this `ILogger` (without the appended dot).
+
+    ***************************************************************************/
+
+    public cstring name ();
 
         /***********************************************************************
 
@@ -96,52 +128,69 @@ interface ILogger
 
         void fatal (cstring fmt, ...);
 
-        /***********************************************************************
+    /***************************************************************************
 
-                Return the name of this ILogger (sans the appended dot).
+        Returns:
+            The `Level` this `ILogger` is set to
 
-        ***********************************************************************/
+    ***************************************************************************/
 
-        cstring name ();
+    public Level level ();
 
-        /***********************************************************************
+    /***************************************************************************
 
-                Return the Level this logger is set to
+        Set the current `Level` for this logger (and only this logger).
 
-        ***********************************************************************/
+        Params:
+            l = New `Level` value to set this logger to.
 
-        Level level ();
+        Returns:
+            `this` for easy chaining
 
-        /***********************************************************************
+    ***************************************************************************/
 
-                Set the current level for this logger (and only this logger).
+    public ILogger level (Level l);
 
-        ***********************************************************************/
+    /***************************************************************************
 
-        ILogger level (Level l);
+        Returns:
+            `true` if the logger is additive.
+            Additive loggers walk through ancestors looking for more appenders
 
-        /***********************************************************************
+    ***************************************************************************/
 
-                Is this logger additive? That is, should we walk ancestors
-                looking for more appenders?
+    public bool additive ();
 
-        ***********************************************************************/
+    /***************************************************************************
 
-        bool additive ();
+        Set the additive status of this logger
 
-        /***********************************************************************
+        Additive loggers walk through ancestors looking for more appenders
 
-                Set the additive status of this logger. See isAdditive().
+        Params:
+            enabled = Whereas this logger is additive.
 
-        ***********************************************************************/
+        Returns:
+            `this` for easy chaining
 
-        ILogger additive (bool enabled);
+    ***************************************************************************/
 
-        /***********************************************************************
+    public ILogger additive (bool enabled);
 
-                Send a message to this logger via its appender list.
+    /***************************************************************************
 
-        ***********************************************************************/
+        Send a message to this logger.
 
-        ILogger append (Level level, lazy cstring exp);
+        Params:
+            level = Level at which to log the message
+            exp   = Lazily evaluated message string
+                    If the `level` is not enabled for this logger, it won't
+                    be evaluated.
+
+        Returns:
+            `this` for easy chaining
+
+    ***************************************************************************/
+
+    public ILogger append (Level level, lazy cstring exp);
 }
