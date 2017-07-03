@@ -33,6 +33,7 @@ import ocean.util.app.ext.ConfigExt;
 
 import ocean.util.app.ext.ReopenableFilesExt;
 
+import ocean.util.config.ConfigFiller;
 import ocean.util.config.ConfigParser;
 import LogUtil = ocean.util.log.Config;
 import ConfigFiller = ocean.util.config.ConfigFiller;
@@ -54,8 +55,6 @@ import ocean.util.log.Appender;
 
 class LogExt : IConfigExtExtension
 {
-    import ocean.util.config.ConfigFiller;
-
     /***************************************************************************
 
         Adds a list of extensions (this.extensions) and methods to handle them.
@@ -171,7 +170,7 @@ class LogExt : IConfigExtExtension
 
         enable_loose_parsing(conf_ext.loose_config_parsing);
 
-        LogUtil.configureOldLoggers(log_config, log_meta_config, &appender,
+        configureOldLoggersLogExtHack(log_config, log_meta_config, &appender,
             this.layout_maker, this.use_insert_appender);
 
         LogUtil.configureNewLoggers(log_config, log_meta_config, &appender,
@@ -249,3 +248,18 @@ class LogExt : IConfigExtExtension
         return LogUtil.newLayout(name);
     }
 }
+
+
+/// Hack to allow to call a deprecated function without deprecations
+/// TODO: Remove for v4.0.0 release with other deprecated things
+private extern extern(C) void configureOldLoggersLogExtHack (
+    ClassIterator!(LogUtil.Config, ConfigParser) config,
+    LogUtil.MetaConfig m_config,
+    AppenderExternD file_appender, MakeLayoutExternD makeLayout,
+    bool use_insert_appender = false);
+/// Hack because DMD1 applies extern(C) to the delegate type as well...
+private alias extern(D) Appender delegate (istring, Appender.Layout)
+    AppenderExternD;
+/// Ditto
+private alias extern(D) Appender.Layout delegate (cstring)
+    MakeLayoutExternD;

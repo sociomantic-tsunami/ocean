@@ -339,6 +339,7 @@ public Layout newLayout ( cstring layout_str )
 
 *******************************************************************************/
 
+deprecated("Old Loggers are deprecated, use configureNewLoggers instead")
 public void configureOldLoggers (
     ClassIterator!(Config, ConfigParser) config, MetaConfig m_config,
     Appender delegate ( istring file, Layout layout ) file_appender,
@@ -347,6 +348,24 @@ public void configureOldLoggers (
     configureOldLoggers(config, m_config, file_appender,
         (cstring v) { return newLayout(v); }, use_insert_appender);
 }
+
+
+/// Hack to allow to call a deprecated function without deprecations
+private deprecated extern(C) void configureOldLoggersLogExtHack (
+    ClassIterator!(Config, ConfigParser) config, MetaConfig m_config,
+    AppenderExternD file_appender, MakeLayoutExternD makeLayout,
+    bool use_insert_appender = false)
+{
+    configureOldLoggers(config, m_config, file_appender, makeLayout,
+                        use_insert_appender);
+}
+
+/// Hack because DMD1 applies extern(C) to the delegate type as well...
+private alias extern(D) Appender delegate (istring, Appender.Layout)
+    AppenderExternD;
+/// Ditto
+private alias extern(D) Layout delegate (cstring)
+    MakeLayoutExternD;
 
 
 /*******************************************************************************
@@ -372,6 +391,7 @@ public void configureOldLoggers (
 
 *******************************************************************************/
 
+deprecated("Old Loggers are deprecated, use configureNewLoggers instead")
 public void configureOldLoggers (
     ClassIterator!(Config, ConfigParser) config, MetaConfig m_config,
     Appender delegate ( istring file, Layout layout ) file_appender,
@@ -421,10 +441,32 @@ unittest
                 return new SubmarineLayout;
             return ocean.util.log.Config.newLayout(name);
         }
-        ocean.util.log.Config.configureOldLoggers(config, m_config,
-            file_appender, &makeLayout, use_insert_appender);
-        // For new loggers:
         ocean.util.log.Config.configureNewLoggers(config, m_config,
+            file_appender, &makeLayout, use_insert_appender);
+    }
+}
+
+deprecated unittest
+{
+    // In a real app those would be full-fledged implementation
+    alias LayoutSimple AquaticLayout;
+    alias LayoutSimple SubmarineLayout;
+
+    void myConfigureLoggers (
+        ClassIterator!(Config, ConfigParser) config,
+        MetaConfig m_config,
+        Appender delegate ( istring file, Layout layout ) file_appender,
+        bool use_insert_appender = false)
+    {
+        Layout makeLayout (cstring name)
+        {
+            if (name == "aquatic")
+                return new AquaticLayout;
+            if (name == "submarine")
+                return new SubmarineLayout;
+            return ocean.util.log.Config.newLayout(name);
+        }
+        ocean.util.log.Config.configureOldLoggers(config, m_config,
             file_appender, &makeLayout, use_insert_appender);
     }
 }

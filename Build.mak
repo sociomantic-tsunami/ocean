@@ -29,7 +29,8 @@ TEST_FILTER_OUT += \
 	$C/src/ocean/io/device/SerialPort.d \
 	$C/src/ocean/io/device/ProgressFile.d \
 	$C/src/ocean/math/BigInt.d \
-	$C/src/ocean/util/log/LayoutChainsaw.d
+	$C/src/ocean/util/log/LayoutChainsaw.d \
+	$C/src/ocean/util/log/Log.d \
 
 # integration test which is disabled by default because it depends on Collectd
 TEST_FILTER_OUT += \
