@@ -36,7 +36,7 @@ import  Integer = ocean.text.convert.Integer_tango;
         Example:
         ------
         import ocean.util.log.layout.LayoutSimple;
-        import ocean.util.log.Log;
+        import ocean.util.log.Logger;
         import ocean.util.log.AppendConsole;
 
 
