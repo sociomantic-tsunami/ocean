@@ -69,7 +69,6 @@ import ocean.util.log.model.ILogger;
 
 import ocean.util.log.Hierarchy;
 
-import ocean.stdc.string;
 
 version (UnitTest)
 {
@@ -185,28 +184,6 @@ public struct Log
     /// Time elapsed since the first logger instantiation
     private static Time beginTime;
 
-    /// Internal struct to associate a `Level` with its name
-    private struct Pair
-    {
-        /// The name associated with `value`
-        istring name;
-        /// An `ILogger.Level` value
-        Level value;
-    }
-
-    /// Poor man's SmartEnum: We don't use SmartEnum directly because
-    /// it would change the public interface, and we accept any case anyway.
-    /// This can be fixed when we drop D1 support.
-    private const Pair[Level.max + 1] Pairs =
-    [
-        { "Trace",  Level.Trace },
-        { "Info",   Level.Info },
-        { "Warn",   Level.Warn },
-        { "Error",  Level.Error },
-        { "Fatal",  Level.Fatal },
-        { "None",   Level.None }
-    ];
-
     /// Logger stats
     private static Stats logger_stats;
 
@@ -226,34 +203,24 @@ public struct Log
 
     public static Level convert (cstring name, Level def = Level.Trace)
     {
-        foreach (field; Pairs)
-        {
-            if (field.name.length == name.length
-                && !strncasecmp(name.ptr, field.name.ptr, name.length))
-                return field.value;
-        }
-        return def;
+        return ILogger.convert(name, def);
     }
 
     /***************************************************************************
 
-        Return the name associated with level, or `null`
+        Return the name associated with level
 
         Params:
             level = The `Level` to get the name for
 
         Returns:
             The name associated with `level`.
-            If `level` is out of bound, returns `null`.
 
     ***************************************************************************/
 
     public static istring convert (Level level)
     {
-        if (level >= Level.Trace && level <= Level.None)
-            return null;
-
-        return This.Pairs[level].name;
+        return ILogger.convert(level);
     }
 
 
