@@ -23,7 +23,13 @@
 
 module ocean.util.log.model.ILogger;
 
+import ocean.stdc.string;
 import ocean.transition;
+
+version (UnitTest)
+{
+    import ocean.core.Test;
+}
 
 
 /// Ditto
@@ -45,6 +51,76 @@ interface ILogger
         ///
         None
     };
+
+    /// Internal struct to associate a `Level` with its name
+    private struct Pair
+    {
+        /// The name associated with `value`
+        istring name;
+        /// An `ILogger.Level` value
+        Level value;
+    }
+
+    /***************************************************************************
+
+        Poor man's SmartEnum: We don't use SmartEnum directly because
+        it would change the public interface, and we accept any case anyway.
+
+        This can be fixed when we drop D1 support.
+
+    ***************************************************************************/
+
+    private const Pair[Level.max + 1] Pairs =
+    [
+        { "Trace",  Level.Trace },
+        { "Info",   Level.Info },
+        { "Warn",   Level.Warn },
+        { "Error",  Level.Error },
+        { "Fatal",  Level.Fatal },
+        { "None",   Level.None }
+    ];
+
+    /***************************************************************************
+
+        Return the enum value associated with `name`, or a default value
+
+        Params:
+            name = Case-independent string representation of an `ILogger.Level`
+                   If the name is not one of the logger, `def` is returned.
+            def  = Default value to return if no match is found for `name`
+
+        Returns:
+            The `Level` value for `name`, or `def`
+
+    ***************************************************************************/
+
+    public static Level convert (cstring name, Level def = Level.Trace)
+    {
+        foreach (field; ILogger.Pairs)
+        {
+            if (field.name.length == name.length
+                && !strncasecmp(name.ptr, field.name.ptr, name.length))
+                return field.value;
+        }
+        return def;
+    }
+
+    /***************************************************************************
+
+        Return the name associated with level
+
+        Params:
+            level = The `Level` to get the name for
+
+        Returns:
+            The name associated with `level`.
+
+    ***************************************************************************/
+
+    public static istring convert (Level level)
+    {
+        return ILogger.Pairs[level].name;
+    }
 
 
     /***************************************************************************
@@ -193,4 +269,29 @@ interface ILogger
     ***************************************************************************/
 
     public ILogger append (Level level, lazy cstring exp);
+}
+
+unittest
+{
+    test!("==")(ILogger.convert(ILogger.Level.Trace), "Trace");
+    test!("==")(ILogger.convert(ILogger.Level.Info), "Info");
+    test!("==")(ILogger.convert(ILogger.Level.Warn), "Warn");
+    test!("==")(ILogger.convert(ILogger.Level.Error), "Error");
+    test!("==")(ILogger.convert(ILogger.Level.Fatal), "Fatal");
+    test!("==")(ILogger.convert(ILogger.Level.None), "None");
+}
+
+unittest
+{
+    test!("==")(ILogger.convert("info"), ILogger.Level.Info);
+    test!("==")(ILogger.convert("Info"), ILogger.Level.Info);
+    test!("==")(ILogger.convert("INFO"), ILogger.Level.Info);
+    test!("==")(ILogger.convert("FATAL"), ILogger.Level.Fatal);
+    // Use the default value
+    test!("==")(ILogger.convert("Info!"), ILogger.Level.Trace);
+    test!("==")(ILogger.convert("Baguette", ILogger.Level.Warn),
+                ILogger.Level.Warn);
+    // The first entry in the array
+    test!("==")(ILogger.convert("trace", ILogger.Level.Error),
+                ILogger.Level.Trace);
 }
