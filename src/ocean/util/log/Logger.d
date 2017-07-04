@@ -132,6 +132,27 @@ public struct Log
         static assert(Level.max == This.tupleof.length,
                       "Number of members doesn't match Levels");
 
+        /***********************************************************************
+
+            Total count of all events emitted during this period.
+
+            Returns:
+                Total count of all events emitted during this period.
+
+        ***********************************************************************/
+
+        public uint total ()
+        {
+            uint total;
+
+            foreach (field; this.tupleof)
+            {
+                total += field;
+            }
+
+            return total;
+        }
+
         /// Resets the counters
         private void reset ()
         {
