@@ -41,8 +41,6 @@ import ocean.transition;
 import ocean.io.device.File;
 
 import ocean.util.log.Appender;
-import ocean.util.log.Log;
-
 
 
 /*******************************************************************************

@@ -16,7 +16,6 @@ module ocean.util.container.queue.LinkedListQueue;
 import ocean.transition;
 
 import core.memory;
-import ocean.util.log.Log;
 import ocean.util.container.Container;
 import ocean.core.Test;
 import ocean.util.container.queue.model.ITypedQueue;

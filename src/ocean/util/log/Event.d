@@ -27,8 +27,6 @@ import ocean.transition;
 import ocean.time.Clock;
 import ocean.util.log.model.ILogger;
 
-import ocean.util.log.Log;
-
 ///
 public struct LogEvent
 {
@@ -94,7 +92,7 @@ public struct LogEvent
     /// Return the logger level name of this event.
     cstring levelName ()
     {
-        return Log.LevelNames[level_];
+        return ILogger.convert(this.level_);
     }
 
     /// Convert a time value (in milliseconds) to ascii

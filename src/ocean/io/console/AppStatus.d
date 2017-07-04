@@ -92,7 +92,8 @@ import core.stdc.time: clock_t, clock, tm, time_t, time;
 
 import ocean.text.convert.Format;
 
-import ocean.util.log.Log;
+import ocean.util.log.Event;
+import ocean.util.log.model.ILogger;
 
 import ocean.io.Console;
 
@@ -665,10 +666,8 @@ public class AppStatus
             return this;
         }
 
-        Hierarchy host_;
-        Level level_;
         LogEvent event;
-        event.set(host_, level_, this.msg[], "");
+        event.set(ILogger.Context.init, ILogger.Level.init, this.msg[], "");
 
         this.applyDisplayProps(this.current_display_props);
 

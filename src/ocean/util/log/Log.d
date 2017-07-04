@@ -268,11 +268,6 @@ public struct Log
                         {"none",   Level.None},
                         ];
 
-        // logging-level names
-        package static istring[] LevelNames =
-        [
-                "Trace", "Info", "Warn", "Error", "Fatal", "None"
-        ];
 
         /***********************************************************************
 
@@ -366,8 +361,9 @@ public struct Log
 
         static istring convert (int level)
         {
-                assert (level >= Level.Trace && level <= Level.None);
-                return LevelNames[level];
+            assert (level >= Level.Trace && level <= Level.None);
+            Level l = cast(Level) level;
+            return ILogger.convert(l);
         }
 
         /***********************************************************************
