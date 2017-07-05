@@ -169,17 +169,8 @@ struct Deserializer
 
     alias typeof(*this) This;
 
-    /**************************************************************************
-
-        Convenience shortcut
-
-        If canDeserializeInPlace!(T) is true then T can be deserialised without
-        the need of extending and possibly relocating the data buffer.
-
-    **************************************************************************/
-
+    deprecated("This symbol has always been resolved to wrong function and never worked")
     alias hasMultiDimensionalDynamicArrays canDeserializeInPlace;
-
 
     /***************************************************************************
 
