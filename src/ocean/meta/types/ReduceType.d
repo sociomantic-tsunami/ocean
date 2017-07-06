@@ -188,6 +188,15 @@ private struct ReduceTypeImpl ( Reducer )
         {
             // do nothing, already processed
         }
+        else static if (isD1Typedef!(T))
+        {
+            mixin("
+                static if (is(T Base == typedef))
+                {
+                    accumulate(result, reduce!(Base)());
+                }
+            ");
+        }
         else static if (isAggregateType!(T))
         {
             foreach (TElem; typeof(T.init.tupleof))

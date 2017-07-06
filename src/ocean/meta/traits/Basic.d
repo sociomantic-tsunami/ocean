@@ -546,3 +546,51 @@ unittest
     static assert (isCallableType!(S));
     static assert (isCallableType!(typeof(S.opCall)));
 }
+
+/*******************************************************************************
+
+    Determines if T is a D1 typedef.
+
+    Typedef has been removed in D2 and this template will always evaluate to
+    false if compiled with version = D_Version2. Once ocean drops D1 support,
+    all references to this template can be removed.
+
+    Template_Params:
+        T = type to check
+
+    Evaluates to:
+        true if T is a typedef, false otherwise
+
+*******************************************************************************/
+
+version (D_Version2)
+{
+    public template isD1Typedef (T)
+    {
+        const bool isD1Typedef = false;
+    }
+}
+else
+{
+    mixin("
+    public template isD1Typedef (T)
+    {
+        static if (is(T Orig == typedef))
+        {
+            const bool isD1Typedef = true;
+        }
+        else
+        {
+            const bool isD1Typedef = false;
+        }
+    }
+
+    unittest
+    {
+        typedef double RealNum;
+
+        static assert(!isD1Typedef!(int));
+        static assert(!isD1Typedef!(double));
+        static assert( isD1Typedef!(RealNum));
+    }");
+}
