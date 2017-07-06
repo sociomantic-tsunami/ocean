@@ -14,9 +14,8 @@
 
 module ocean.text.util.ClassName;
 
+import ocean.stdc.gnu.string;
 import ocean.transition;
-
-extern (C) private void* memrchr(Const!(void)* s, int c, size_t n);
 
 istring classname ( Const!(Object) o )
 {
@@ -29,7 +28,8 @@ istring classname ( Const!(Object) o, out istring mod )
 {
     istring str = o.classinfo.name;
 
-    char* lastdot = cast (char*) memrchr(str.ptr, '.', str.length);
+    Const!(void)* result = memrchr(str.ptr, '.', str.length);
+    Const!(char)* lastdot = cast(Const!(char)*) result;
 
     if (lastdot)
     {
