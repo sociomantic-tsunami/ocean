@@ -25,25 +25,6 @@ public import ocean.meta.types.Qualifiers;
 
 /*******************************************************************************
 
-    String type aliases. Goal is to avoid mentioning plain `char[]` types in
-    code and replace with aliases needed for this code to compile in D2. To
-    find this out one needs to try compiling module in D2 mode once other
-    stuff is taken care of and fix all immutability errors by using these
-    aliases, then switch back to D1 and verify it still compiles.
-
-    In most cases you will need to use cstring for any function parameter types
-    as those can accept both immutable and normal char arrays. However istring
-    is necessary for Object overloads like toString() to match exact signature
-    in object.di
-
-*******************************************************************************/
-
-alias Immut!(char)[] istring;
-alias Const!(char)[] cstring;
-alias char[]         mstring;
-
-/*******************************************************************************
-
     Checks (non-transitively) if type is mutable
 
     Template_Params:
