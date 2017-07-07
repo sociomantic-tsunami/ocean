@@ -338,6 +338,28 @@ unittest
 /*******************************************************************************
 
     Params:
+        T = static array type
+
+    Returns:
+        for static array T[N] returns N
+
+*******************************************************************************/
+
+public template staticArrayLength ( T : U[Dim], U, size_t Dim )
+{
+    const staticArrayLength = Dim;
+}
+
+unittest
+{
+    static assert (staticArrayLength!(int[][5]) == 5);
+    static assert (staticArrayLength!(char[42]) == 42);
+    static assert (staticArrayLength!(Immut!(mstring[2])) == 2);
+}
+
+/*******************************************************************************
+
+    Params:
         T = type to check
 
     Returns:
