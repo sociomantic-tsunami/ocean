@@ -28,3 +28,8 @@
   New module which matches Phobos `AliasSeq` and is intended to replace
   `ocean.core.Tuple` eventually. Currently only contains `AliasSeq` definition
   itself and no other utilities.
+
+* `ocean.meta.traits.Function`
+
+  New module which is intended to provide any traits specific to function types.
+  Currently contains single trait - `ParametersOf`.
