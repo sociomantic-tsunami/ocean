@@ -22,3 +22,9 @@
   `ocean.core.Traits.isTypedef`, returning enum instead of plain boolean and
   thus allowing to distinguish between typedef keyword case and struct-based
   emulation if that is needed in generic code.
+
+* `ocean.meta.AliasSeq`
+
+  New module which matches Phobos `AliasSeq` and is intended to replace
+  `ocean.core.Tuple` eventually. Currently only contains `AliasSeq` definition
+  itself and no other utilities.
