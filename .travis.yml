@@ -1,23 +1,35 @@
-# Don't use any predefined language env
-# (see https://github.com/travis-ci/travis-ci/issues/4895#issuecomment-150703192)
+# We will use docker to set up out environment, so don't use any particular
+# language in Travis itself
 language: generic
 
+# Enable docker
 sudo: required
+services:
+    - docker
 
-services: docker
+# Disable automatic submodule fetching (it's done recursively)
+git:
+    submodules: false
+
+# Do a shallow submodule fetch
+before_install: git submodule update --init
 
 env:
-    - DC=dmd1 DIST=trusty F=production
-    - DC=dmd1 DIST=trusty F=devel
-    - DC=dmd1 DIST=xenial F=production AFTER_SCRIPT=1
-    - DC=dmd1 DIST=xenial F=devel
-    - DC=dmd-transitional DIST=trusty F=production
-    - DC=dmd-transitional DIST=trusty F=devel
-    - DC=dmd-transitional DIST=xenial F=production
-    - DC=dmd-transitional DIST=xenial F=devel
+    global:
+        # Make sure beaver is in the PATH
+        - PATH="$(git config -f .gitmodules submodule.beaver.path)/bin:$PATH"
+    matrix:
+        - DC=dmd1 DIST=trusty F=production
+        - DC=dmd1 DIST=trusty F=devel
+        - DC=dmd1 DIST=xenial F=production AFTER_SCRIPT=1
+        - DC=dmd1 DIST=xenial F=devel
+        - DC=dmd-transitional DIST=trusty F=production
+        - DC=dmd-transitional DIST=trusty F=devel
+        - DC=dmd-transitional DIST=xenial F=production
+        - DC=dmd-transitional DIST=xenial F=devel
 
-install: ci/travis-install.sh
+install: beaver install
 
-script: ci/travis-script.sh
+script: BEAVER_DOCKER_VARS="DC" beaver run ci/travis.sh
 
-after_success: ci/travis-after-success.sh
+after_success: beaver run ci/travis-after-success.sh
