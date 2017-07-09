@@ -104,6 +104,10 @@ public class HashMap ( V ) : Map!(V, hash_t)
         Calculates the hash value from key. Uses the identity since key is
         expected to be a suitable hash value.
 
+        This method has to accept `const(hash_t)` because it overrides templated
+        base `toHash (K) (in K key)` method and DMD demands exact qualifier
+        match for arguments.
+
         Params:
             key = key to hash
 
@@ -112,7 +116,7 @@ public class HashMap ( V ) : Map!(V, hash_t)
 
     ***************************************************************************/
 
-    public override hash_t toHash ( hash_t key )
+    public override hash_t toHash ( in hash_t key )
     {
         return key;
     }

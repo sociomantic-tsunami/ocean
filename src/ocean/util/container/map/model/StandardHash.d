@@ -58,7 +58,7 @@ struct StandardHash
 
      **************************************************************************/
 
-    hash_t toHash ( K ) ( K key )
+    hash_t toHash ( K ) ( in K key )
     {
         static if (StandardHash.IsPrimitiveValueType!(K))
         {

@@ -202,7 +202,7 @@ public final class ClientSet : IRegisteredClients
 
         ***********************************************************************/
 
-        public override hash_t toHash ( ISelectClient c )
+        public override hash_t toHash ( in ISelectClient c )
         {
             return cast(hash_t)cast(void*)c;
         }

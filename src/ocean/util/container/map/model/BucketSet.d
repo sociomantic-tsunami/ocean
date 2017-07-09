@@ -417,7 +417,7 @@ public abstract class BucketSet ( size_t V, K = hash_t ) : IBucketSet
 
      ***************************************************************************/
 
-    final protected Bucket.Element* get_ ( K key, bool must_exist = false )
+    final protected Bucket.Element* get_ ( in K key, bool must_exist = false )
     out (element)
     {
         // FIXME: Disabled due to DMD bug 6417, the method parameter argument
@@ -437,7 +437,9 @@ public abstract class BucketSet ( size_t V, K = hash_t ) : IBucketSet
     }
     body
     {
-        auto element = this.buckets[this.toHash(key) & this.bucket_mask].find(key);
+        auto element = this
+            .buckets[this.toHash(key) & this.bucket_mask]
+            .find(key);
 
         if (element)
         {
@@ -608,7 +610,7 @@ public abstract class BucketSet ( size_t V, K = hash_t ) : IBucketSet
 
     ***************************************************************************/
 
-    abstract public hash_t toHash ( K key );
+    abstract public hash_t toHash ( in K key );
 
     /***************************************************************************
 
