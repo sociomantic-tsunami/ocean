@@ -208,3 +208,52 @@ unittest
 
     static assert(!containsMultiDimensionalDynamicArrays!(C));
 }
+
+/*******************************************************************************
+
+    Checks if T or any of its subtypes is a dynamic array.
+
+    Params:
+        T = type to check
+
+    Returns:
+        true if T or any of its subtypes is a dynamic array or
+        false otherwise.
+
+*******************************************************************************/
+
+public template containsDynamicArray ( T )
+{
+    const containsDynamicArray =
+        ReduceType!(T, DynArrayReducer);
+}
+
+///
+unittest
+{
+    static assert (!containsDynamicArray!(void));
+
+    static struct S
+    {
+        int[] x;
+    }
+    static assert ( containsDynamicArray!(Const!(S)));
+
+    static struct S2
+    {
+        struct Arr { Const!(int[]) x; }
+        Arr[3][4] arr;
+    }
+
+    static assert( containsDynamicArray!(Immut!(S2)));
+}
+
+private struct DynArrayReducer
+{
+    alias bool Result;
+
+    Result visit ( T ) ( )
+    {
+        return isArrayType!(T) == ArrayKind.Dynamic;
+    }
+}
