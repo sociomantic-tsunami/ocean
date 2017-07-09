@@ -467,7 +467,7 @@ public abstract class Map ( V, K ) : BucketSet!(V.sizeof, K)
 
     ***************************************************************************/
 
-    public V* opIn_r ( K key )
+    public V* opIn_r ( in K key )
     {
         auto element = this.get_(key);
 
@@ -494,7 +494,7 @@ public abstract class Map ( V, K ) : BucketSet!(V.sizeof, K)
 
     ***************************************************************************/
 
-    public V* get ( K key )
+    public V* get ( in K key )
     out (val)
     {
         assert (val !is null);
@@ -521,7 +521,7 @@ public abstract class Map ( V, K ) : BucketSet!(V.sizeof, K)
 
     ***************************************************************************/
 
-    public VReturn opIndex ( K key )
+    public VReturn opIndex ( in K key )
     {
         return *this.get(key);
     }
@@ -865,7 +865,7 @@ public abstract class Map ( size_t V, K ) : BucketSet!(V, K)
 
      ***************************************************************************/
 
-    public void[] opIn_r ( K key )
+    public void[] opIn_r ( in K key )
     out (val)
     {
         if (val)
@@ -898,7 +898,7 @@ public abstract class Map ( size_t V, K ) : BucketSet!(V, K)
 
     ***************************************************************************/
 
-    public void[] get ( K key )
+    public void[] get ( in K key )
     out (val)
     {
         assert (val.length == V);
@@ -950,7 +950,7 @@ public abstract class Map ( size_t V, K ) : BucketSet!(V, K)
 
      ***************************************************************************/
 
-    public void[] put ( K key, out bool added )
+    public void[] put ( in K key, out bool added )
     out (val)
     {
         assert (val.length == V);
@@ -1040,7 +1040,7 @@ public abstract class Map ( size_t V, K ) : BucketSet!(V, K)
 
     ***************************************************************************/
 
-    public void[] remove ( K key )
+    public void[] remove ( in K key )
     out (val)
     {
         if (val)
@@ -1226,6 +1226,14 @@ unittest
     test_val!(short);
     test_val!(int);
     test_val!(long);
+}
+
+unittest
+{
+    // ensure opIn works with const keys
+    auto map = new StandardKeyHashingMap!(int, mstring)(5);
+    auto v = "something" in map;
+    test!("is")(v, null);
 }
 
 /*******************************************************************************

@@ -1342,7 +1342,7 @@ version ( UnitTest )
 
         ***********************************************************************/
 
-        public override hash_t toHash ( K key )
+        public override hash_t toHash ( in K key )
         {
             return Fnv1a.fnv1(key);
         }
@@ -1863,7 +1863,11 @@ unittest
     class Map : SerializingMap!(int, int)
     {
         this ( ) { super(10); }
-        public override hash_t toHash ( int key ) { return key; }
+
+        // This method has to accept `const(int)` because it overrides templated
+        // base `toHash (K) (in K key)` method and DMD demands exact qualifier
+        // match for arguments.
+        public override hash_t toHash ( in int key ) { return key; }
     }
 
     scope device = new MemoryDevice;

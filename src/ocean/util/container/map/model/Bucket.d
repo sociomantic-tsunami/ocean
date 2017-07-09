@@ -177,7 +177,7 @@ public struct Bucket ( size_t V, K = hash_t )
 
      **************************************************************************/
 
-    public Element* find ( Element.Key key )
+    public Element* find ( in Element.Key key )
     out (element)
     {
         debug (HostingArrayMapBucket) if (element)
