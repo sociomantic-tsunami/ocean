@@ -23,7 +23,8 @@ import ocean.core.Verify;
 import ocean.util.serialize.contiguous.Contiguous;
 
 import ocean.core.Exception;
-import ocean.core.Traits;
+import ocean.core.Enforce;
+import ocean.meta.traits.Indirections;
 
 debug (DeserializationTrace) import ocean.io.Stdout;
 

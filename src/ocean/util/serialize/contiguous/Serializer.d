@@ -20,9 +20,7 @@ module ocean.util.serialize.contiguous.Serializer;
 import ocean.transition;
 
 import ocean.util.serialize.contiguous.Contiguous;
-
-import ocean.core.Traits : ContainsDynamicArray;
-
+import ocean.meta.traits.Indirections;
 import ocean.core.Test;
 
 debug(SerializationTrace) import ocean.io.Stdout;
@@ -87,7 +85,7 @@ struct Serializer
         data[0 .. S.sizeof] = (cast(void*) &src)[0 .. S.sizeof];
         auto s_root = cast(Unqual!(S)*) data.ptr;
 
-        static if (ContainsDynamicArray!(S))
+        static if (containsDynamicArray!(S))
         {
             void[] remaining = This.dumpAllArrays(*s_root, data[S.sizeof .. $]);
 
@@ -153,7 +151,7 @@ struct Serializer
             Stdout.formatln("> countRequiredSize!({})(<input>)", S.stringof);
         }
 
-        static if (ContainsDynamicArray!(S))
+        static if (containsDynamicArray!(S))
         {
             return input.sizeof + This.countAllArraySize(input);
         }
@@ -250,7 +248,7 @@ struct Serializer
 
         size_t len = 0;
 
-        static if (ContainsDynamicArray!(S))
+        static if (containsDynamicArray!(S))
         {
             foreach (i, ref field; s.tupleof)
             {
@@ -259,7 +257,7 @@ struct Serializer
                 static if (is (Field == struct))
                 {
                     // Recurse into struct field.
-                    static if (ContainsDynamicArray!(Field))
+                    static if (containsDynamicArray!(Field))
                     {
                         len += This.countAllArraySize(field);
                     }
@@ -274,7 +272,7 @@ struct Serializer
                 {
                     // Static array
 
-                    static if (ContainsDynamicArray!(Element))
+                    static if (containsDynamicArray!(Element))
                     {
                         // Recurse into static array elements which contain a
                         // dynamic array.
@@ -348,7 +346,7 @@ struct Serializer
 
             len += array.length * T.sizeof;
 
-            static if (ContainsDynamicArray!(T))
+            static if (containsDynamicArray!(T))
             {
                 foreach (element; array)
                 {
@@ -388,7 +386,7 @@ struct Serializer
     }
     body
     {
-        static assert (ContainsDynamicArray!(T), T.stringof ~
+        static assert (containsDynamicArray!(T), T.stringof ~
                        " contains no dynamic array - nothing to do");
 
         debug (SerializationTrace)
@@ -398,7 +396,7 @@ struct Serializer
 
         static if (is (T == struct))
         {
-            static if (ContainsDynamicArray!(T))
+            static if (containsDynamicArray!(T))
             {
                 return This.countAllArraySize(element);
             }
@@ -465,7 +463,7 @@ struct Serializer
                 S.stringof, &s, data.ptr);
         }
 
-        static if (ContainsDynamicArray!(S))
+        static if (containsDynamicArray!(S))
         {
             foreach (i, ref field; s.tupleof)
             {
@@ -489,7 +487,7 @@ struct Serializer
                 {
                     // Dump static array
 
-                    static if (ContainsDynamicArray!(Element))
+                    static if (containsDynamicArray!(Element))
                     {
                         // Recurse into static array elements which contain a
                         // dynamic array.
@@ -591,7 +589,7 @@ struct Serializer
 
                 dst[] = array[];
 
-                static if (ContainsDynamicArray!(T))
+                static if (containsDynamicArray!(T))
                 {
                     // array is an array of structs or static arrays which
                     // contain dynamic arrays: Recurse into array elements.
@@ -696,7 +694,7 @@ struct Serializer
         // array is a dynamic array of structs or static arrays which
         // contain dynamic arrays.
 
-        static assert (ContainsDynamicArray!(T), "nothing to do for " ~ T.stringof);
+        static assert (containsDynamicArray!(T), "nothing to do for " ~ T.stringof);
 
         static if (is (T == struct))
         {
@@ -754,7 +752,7 @@ struct Serializer
     body
     {
         static assert (is (S == struct), "struct expected, not " ~ S.stringof);
-        static assert (ContainsDynamicArray!(S), "nothing to do for " ~ S.stringof);
+        static assert (containsDynamicArray!(S), "nothing to do for " ~ S.stringof);
 
         debug (SerializationTrace)
         {
@@ -769,7 +767,7 @@ struct Serializer
             {
                 // Recurse into field of struct type if it contains
                 // a dynamic array.
-                static if (ContainsDynamicArray!(Field))
+                static if (containsDynamicArray!(Field))
                 {
                     This.resetReferences(field);
                 }
@@ -784,7 +782,7 @@ struct Serializer
             {
                 // Static array
 
-                static if (ContainsDynamicArray!(Element))
+                static if (containsDynamicArray!(Element))
                 {
                     // Field of static array that contains a dynamic array:
                     // Recurse into field array elements.
