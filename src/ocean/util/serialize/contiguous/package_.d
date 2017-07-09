@@ -192,8 +192,6 @@ struct S
 
     S_4[] s4_dynamic_array;
 
-    S[] recursive;
-
     char[][3] static_of_dynamic;
 
     char[][2][3][] dynamic_of_static_of_static_of_dynamic;
@@ -226,7 +224,6 @@ struct S
             testArray!("is")(s3_a_element, null);
 
         testArray!("is")(this.s4_dynamic_array, null);
-        testArray!("is")(this.recursive, null);
 
         foreach (static_of_dynamic_element; this.static_of_dynamic)
             testArray!("is")(static_of_dynamic_element, null);
@@ -267,12 +264,6 @@ struct S
         n += serialArrayLength(this.s4_dynamic_array);
         foreach (s4_dynamic_array_element; this.s4_dynamic_array)
             n += serialArrayLength(s4_dynamic_array_element.a);
-
-        n += this.recursive.length.sizeof;
-        // Don't add the byte length of `this.recursive` here: The recursive
-        // `serialized_length` calls will do it.
-        foreach (recursive_element; this.recursive)
-            n += recursive_element.serialized_length;
 
         foreach (static_of_dynamic_element; this.static_of_dynamic)
             n += serialArrayLength(static_of_dynamic_element);
@@ -529,40 +520,6 @@ unittest
     auto s_ = cont_S.ptr;            // hijack the invariant
     s_.s2.b[0] = defaultS().s2.b[0]; // revert the difference
     testS(t, *s_);                   // check the rest
-}
-
-/******************************************************************************
-
-    Recursive definition
-
-******************************************************************************/
-
-unittest
-{
-    auto t = new NamedTest("Recursive");
-    auto s = defaultS();
-    s.recursive = new S[5];
-    foreach (ref s_rec; s.recursive)
-    {
-        s_rec = defaultS();
-    }
-    void[] buffer;
-
-    Serializer.serialize(s, buffer);
-    test!("==")(buffer.length, s.serialized_length);
-    S.trivialDeserialize(buffer).testNullReferences();
-    Contiguous!(S) destination;
-    auto cont_S = Deserializer.deserialize(buffer, destination);
-    cont_S.enforceIntegrity();
-
-    t.test(cont_S.ptr is destination.ptr);
-    testS(t, *cont_S.ptr);
-    t.test!("==")(cont_S.ptr.recursive.length, 5);
-
-    foreach (s_rec; cont_S.ptr.recursive)
-    {
-        testS(t, s_rec);
-    }
 }
 
 /******************************************************************************
