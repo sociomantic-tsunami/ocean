@@ -323,16 +323,6 @@ private void widthSink (FormatterSink sink, cstring str, ref Const!(FormatInfo) 
 
 private void handle (T) (T v, FormatInfo f, FormatterSink sf, ElemSink se)
 {
-    // Handle ref types explicitly
-    static if (is (typeof(v is null)))
-    {
-        if (v is null)
-        {
-            se("null", f);
-            return;
-        }
-    }
-
     /** The order in which the following conditions are applied matters.
      * Explicit type checks (e.g. associative array, or `is(T == V)`)
      * should go first as they are unambiguous.
@@ -386,16 +376,20 @@ private void handle (T) (T v, FormatInfo f, FormatterSink sf, ElemSink se)
     // toString hook: Give priority to the non-allocating one
     // Note: sink `toString` overload should take a `scope` delegate
     else static if (is(typeof(v.toString(sf))))
-        v.toString((cstring e) { se(e, f); });
+        nullWrapper(&v,
+                    v.toString((cstring e) { se(e, f); }),
+                    se("null", f));
     else static if (is(typeof(v.toString((size_t delegate(cstring)).init))))
     {
         pragma(msg, "Deprecation: Please change toString to accept ",
                "`scope FormatterSink` instead of `size_t delegate(cstring)` in ",
                T.stringof);
-        v.toString((cstring e) { se(e, f); return e.length; });
+        nullWrapper(&v,
+                    v.toString((cstring e) { se(e, f); return e.length; }),
+                    se("null", f));
     }
     else static if (is(typeof(v.toString()) : cstring))
-        se(v.toString(), f);
+        nullWrapper(&v, se(v.toString(), f), se("null", f));
     else static if (is(T == interface))
         handle!(Object)(cast(Object) v, f, sf, se);
 
@@ -454,7 +448,7 @@ private void handle (T) (T v, FormatInfo f, FormatterSink sf, ElemSink se)
         }
         if (started)
             sf(" ]");
-        else // Empty but not null
+        else // Empty or null
             sf("[:]");
         f.flags = old;
     }
@@ -607,6 +601,34 @@ private template DropTypedef (T)
     else
         mixin("static if (is (T V == typedef))
                 alias V DropTypedef;");
+}
+
+
+
+/*******************************************************************************
+
+    Wrapper to call `toString` methods after checking for `null`
+
+    Before calling `toString`, a `null` check should be performed.
+    However, it shouldn't always be performed, as `T` might not be a ref type.
+
+    Params:
+        v = Object to check, might be a reference type
+        expr = Expression to call if `v` is not null or not a ref type
+        onNull = Expression to call if `v` is null
+
+    Returns:
+        Value returned by either `expr` or `onNull`, if any.
+
+*******************************************************************************/
+
+private RetType nullWrapper (T, RetType) (T* v, lazy RetType expr,
+                                          lazy RetType onNull)
+{
+    static if (is(typeof(*v is null)))
+        if (*v is null)
+            return onNull;
+    return expr;
 }
 
 
@@ -849,11 +871,16 @@ private void writePointer (in void* v, ref FormatInfo f, ElemSink se)
         const int l = (T.sizeof * 2); // Needs to be int to avoid suffix
     const defaultFormat = "X" ~ l.stringof ~ "#";
 
-    // Needs to support base 2 at most, plus an optional prefix
-    // of 2 chars max
-    char[T.sizeof * 8 + 2] buff = void;
-    se(Integer.format(buff, cast(ptrdiff_t) v,
-                      (f.format.length ? f.format : defaultFormat)), f);
+    if (v is null)
+        se("null", f);
+    else
+    {
+        // Needs to support base 2 at most, plus an optional prefix
+        // of 2 chars max
+        char[T.sizeof * 8 + 2] buff = void;
+        se(Integer.format(buff, cast(ptrdiff_t) v,
+                          (f.format.length ? f.format : defaultFormat)), f);
+    }
 }
 
 
@@ -943,6 +970,7 @@ unittest
     assert(format("abc") == "abc");
     assert(format("{0}", 1) == "1");
 
+    assert(format("X{}Y", mstring.init) == "XY");
 
     assert(format("{0}", -1) == "-1");
 
@@ -1274,7 +1302,7 @@ unittest
     }
     S3 s3;
     assert(format("Woot {} it works", s3)
-           == `Woot { c: null, a: 42, ptr: null, foo: null, bar: "Hello World" } it works`);
+           == `Woot { c: null, a: 42, ptr: null, foo: "", bar: "Hello World" } it works`);
 
     // Pointers are nice too
     int* x = cast(int*)0x2A2A_0000_2A2A;
@@ -1283,10 +1311,8 @@ unittest
     // Null AA / array
     int[] empty_arr;
     int[int] empty_aa;
-    assert(format("{}", empty_arr) == "null");
-    assert(format("{}", empty_aa) == "null");
-
-    // Sadly empty != null
+    assert(format("{}", empty_arr) == "[]");
+    assert(format("{}", empty_aa) == "[:]");
     int[1] static_arr;
     assert(format("{}", static_arr[$ .. $]) == "[]");
 
