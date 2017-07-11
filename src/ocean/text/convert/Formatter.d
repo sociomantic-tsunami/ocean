@@ -345,7 +345,7 @@ private void handle (T) (T v, FormatInfo f, FormatterSink sf, ElemSink se)
 
     // Cannot print enum member name in D1, so just print the value
     else static if (is (T V == enum))
-             handle!(V)(v, f, sf, se);
+        handle!(V)(v, f, sf, se);
 
     // Delegate / Function pointers
     else static if (is(T == delegate))
