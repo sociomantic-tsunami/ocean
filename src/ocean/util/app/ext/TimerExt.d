@@ -108,6 +108,7 @@ public class TimerExt : IApplicationExtension
     import ocean.io.select.EpollSelectDispatcher;
     import ocean.io.select.client.TimerSet;
     import BucketElementFreeList = ocean.util.container.map.model.BucketElementFreeList;
+    import ocean.time.MicrosecondsClock;
     import ocean.time.timeout.TimeoutManager;
 
     /***************************************************************************
@@ -147,6 +148,9 @@ public class TimerExt : IApplicationExtension
         ***********************************************************************/
 
         public ulong repeat_microsec;
+
+        /// The expected time of the next call for the timer.
+        public ulong next_call;
     }
 
     /***************************************************************************
@@ -241,6 +245,7 @@ public class TimerExt : IApplicationExtension
             {
                 event.dg = dg;
                 event.repeat_microsec = period_microsec;
+                event.next_call = MicrosecondsClock.now_us() + init_microsec;
             },
             &this.eventFired, init_microsec);
     }
@@ -260,7 +265,9 @@ public class TimerExt : IApplicationExtension
     /***************************************************************************
 
         Internal delegate called when a scheduled event fires. Calls the user's
-        delegate and re-schedules the event after the specified period.
+        delegate and re-schedules the event after the specified period. If the
+        time spent in user's delegate is longer than the interval then delegate
+        calls for those intervals will be skipped.
 
         Params:
             event = data attached to the event which fired
@@ -272,7 +279,14 @@ public class TimerExt : IApplicationExtension
         auto reregister = event.dg();
         if ( reregister )
         {
-            this.registerMicrosec(event.dg, event.repeat_microsec, event.repeat_microsec);
+            do
+            {
+                event.next_call += event.repeat_microsec;
+            }
+            while ( event.next_call < MicrosecondsClock.now_us() );
+
+            auto ms_till = event.next_call - MicrosecondsClock.now_us();
+            this.registerMicrosec(event.dg, ms_till, event.repeat_microsec);
         }
     }
 
