@@ -105,6 +105,7 @@ class StringC
 
     ***************************************************************************/
 
+    deprecated("Usage of Wchar strings is deprecated.")
     public static Wchar* toCString ( ref Wchar[] str )
     {
         if (str.length && !!str[$ - 1])
