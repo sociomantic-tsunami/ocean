@@ -186,7 +186,7 @@ template HandleVersionMethod(Deserializer, alias exception_field)
 
     ***************************************************************************/
 
-    private Contiguous!(S) handleVersion(S)
+    public Contiguous!(S) handleVersion(S)
         (ref void[] buffer, Version.Type input_version)
     body
     {
@@ -261,7 +261,7 @@ template ConvertMethod(Serializer, Deserializer)
 
     ***************************************************************************/
 
-    private Contiguous!(S) convert (S, Source) (ref void[] buffer)
+    public Contiguous!(S) convert (S, Source) (ref void[] buffer)
     {
         scope(exit)
         {

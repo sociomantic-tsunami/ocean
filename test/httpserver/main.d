@@ -22,11 +22,15 @@ module test.selectlistener.main;
 import ocean.transition;
 
 import ocean.net.http.TaskHttpConnectionHandler;
+import ocean.net.http.HttpConst : HttpResponseCode;
+import ocean.net.http.consts.HttpMethod;
+import ocean.net.http.HttpException;
 import ocean.net.server.SelectListener;
 import ocean.task.Task;
 import ocean.task.Scheduler;
 import ocean.io.select.EpollSelectDispatcher;
 import ocean.sys.socket.IPSocket;
+import ocean.sys.ErrnoException;
 import core.stdc.errno;
 import core.stdc.stdlib;
 

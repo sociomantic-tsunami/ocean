@@ -36,7 +36,7 @@ abstract class TaskHttpConnectionHandler : TaskConnectionHandler
     import ocean.net.http.consts.HttpMethod: HttpMethod;
     import ocean.net.http.consts.HeaderFieldNames;
 
-    import ocean.io.select.protocol.generic.ErrnoIOException: IOError;
+    import ocean.io.select.protocol.generic.ErrnoIOException: IOError, IOWarning;
 
     import ocean.sys.socket.AddressIPSocket;
     import ocean.sys.ErrnoException;
