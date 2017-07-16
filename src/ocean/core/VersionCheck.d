@@ -39,9 +39,19 @@ unittest
 
 private bool hasFeaturesFromFunc ( istring libname, ulong major, ulong minor ) ()
 {
-    struct Library
+    // D1 does not support plain nested imports, D2 prohibits aggregate import
+    // exposure, thus two different approaches:
+
+    version (D_Version2)
     {
-        mixin("import " ~ libname ~ ".LibFeatures;");
+        mixin("import Library = " ~ libname ~ ".LibFeatures;");
+    }
+    else
+    {
+        struct Library
+        {
+            mixin("import " ~ libname ~ ".LibFeatures;");
+        }
     }
 
     mixin("return is(typeof(Library.has_features_"
