@@ -13,8 +13,6 @@
 
 *******************************************************************************/
 
-module test.sysstats.main;
-
 import ocean.transition;
 
 import ocean.core.Test;
