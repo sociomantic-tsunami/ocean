@@ -13,7 +13,7 @@
 
 *******************************************************************************/
 
-module ocean.text.convert.Memory;
+deprecated module ocean.text.convert.Memory;
 
 
 
@@ -52,6 +52,7 @@ import ocean.text.convert.Format;
 
 ******************************************************************************/
 
+deprecated("Copy this functionality directly, should you need it")
 public char[] memoryToHexAscii ( void[] mem, char[] output = null )
 {
     auto data = cast(ubyte[]) mem;

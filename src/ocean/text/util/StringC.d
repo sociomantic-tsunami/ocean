@@ -39,6 +39,7 @@ module ocean.text.util.StringC;
 
 import ocean.transition;
 
+import ocean.core.Buffer;
 import ocean.stdc.string: strlen, wcslen;
 import core.stdc.stddef: wchar_t;
 
@@ -84,12 +85,7 @@ class StringC
 
     public static char* toCString ( ref mstring str )
     {
-        if (str.length && !!str[$ - 1])
-        {
-            str ~= StringC.Term;
-        }
-
-        return str.ptr;
+        return typeof(this).toCString(*(cast(Buffer!(char)*)&str));
     }
 
     /***************************************************************************
@@ -106,6 +102,7 @@ class StringC
 
     ***************************************************************************/
 
+    deprecated("Usage of Wchar strings is deprecated.")
     public static Wchar* toCString ( ref Wchar[] str )
     {
         if (str.length && !!str[$ - 1])
@@ -114,6 +111,31 @@ class StringC
         }
 
         return str.ptr;
+    }
+
+    /***************************************************************************
+
+        Converts str to a C string, that is, if a null terminator is not
+        present then it is appended to the original string. A pointer to the
+        string is returned.
+
+        Params:
+            str = input string buffer
+
+        Returns:
+            C compatible (null terminated) string
+
+    ***************************************************************************/
+
+    public static char* toCString ( ref Buffer!(char) str )
+    {
+        if (str.length && !!*str[str.length - 1])
+        {
+            str.length = str.length + 1;
+            str[str.length - 1] = StringC.Term;
+        }
+
+        return str[].ptr;
     }
 
     /***************************************************************************
@@ -188,4 +210,9 @@ unittest
     assert(const_empty !is null);
     cstring r2 = StringC.toDString(const_empty);
     test!("is")(const_empty, r2.ptr);
+
+    Buffer!(char) buff;
+    buff = "Regular D string".dup;
+    StringC.toCString(buff);
+    test!("==")(buff[], "Regular D string\0");
 }

@@ -248,7 +248,8 @@ body
                 last = g_utf8_offset_to_pointer(str.ptr, last) - str.ptr;
             }
 
-            auto c = cast (char*) memrchr(str.ptr, ' ', last);
+            void* result = memrchr(str.ptr, ' ', last);
+            char* c = cast(char*) result;
             if (c)
             {
                 // Skip consecutive ' ' characters.
