@@ -322,6 +322,12 @@ body
     previous one), data may or may not contain the trailing padding, and it will
     still be decoded correctly.
 
+    Note: With explicit padding, three padding bytes will cause decoder to
+    throw an Exception. However, in the case of implicit padding, the last byte
+    will be silently ignored if it contains less than two bytes. This was the
+    undocumented behaviour of the decoder, and it will be changed in the next
+    major version.
+
 
     Params:
       Table = The decode table to use. Variadic template parameter is used to
@@ -454,7 +460,7 @@ body
         }
 
         // this will try and decode whatever is left, even if it isn't terminated properly (ie: missing last one or two =)
-        if (paddedPos)
+        if (paddedPos >= 2)
         {
             auto padded = data[($ - paddedPos) .. $];
             assert (padded.length <= 4);
@@ -552,6 +558,22 @@ unittest
         test!("==")(result, decode("TWE"));
         test!("==")(result, decode("TWE="));
         test!("!=")(result, decode(""));
+    }
+
+    // in case when implicit padding is used and the last quadruple
+    // has less than two bytes needed for the decoding in which case
+    // it will be silently ignored
+    {
+        auto result = cast(Const!(ubyte)[])"Maq";
+        // B should be ignored since it's missing the second byte
+        test!("==")(result, decode("TWFxB"));
+    }
+
+    // same as previous test, just there's nothing valid to be
+    // decoded in the first place
+    {
+        ubyte[] empty;
+        test!("==")(empty, decode("T"));
     }
 }
 
