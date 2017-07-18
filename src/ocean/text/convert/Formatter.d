@@ -419,7 +419,7 @@ private void handle (T) (T v, FormatInfo f, FormatterSink sf, ElemSink se)
     }
 
     // Bool
-    else static if (is (T == bool))
+    else static if (is (Unqual!(T) == bool))
         se(v ? "true" : "false", f);
 
     // Floating point values - Explicitly typed because we don't want
@@ -1392,4 +1392,11 @@ unittest
 
     assert(format("{}", t1) == "0XDEADBEEF00000000");
     assert(format("{}", t2) == "0XDEADBEEFDEADBEEF");
+}
+
+unittest
+{
+    const bool YES = true;
+    const bool NO  = false;
+    assert(format("{} -- {}", YES, NO) == "true -- false");
 }
