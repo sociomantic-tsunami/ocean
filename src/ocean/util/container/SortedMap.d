@@ -926,8 +926,12 @@ class SortedMap (K, V, alias Reap = Container.reap,
 
                 bool next (ref K k, ref V v)
                 {
-                        auto n = next (k);
-                        return (n) ? v = *n, true : false;
+                    if (auto n = next(k))
+                    {
+                        v = *n;
+                        return true;
+                    }
+                    return false;
                 }
 
                 /***************************************************************
