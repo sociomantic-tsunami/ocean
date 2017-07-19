@@ -84,7 +84,7 @@ class StringC
 
     public static char* toCString ( ref mstring str )
     {
-        if (str.length && !!str[$ - 1])
+        if (!str.length || !!str[$ - 1])
         {
             str ~= StringC.Term;
         }
@@ -108,7 +108,7 @@ class StringC
 
     public static Wchar* toCString ( ref Wchar[] str )
     {
-        if (str.length && !!str[$ - 1])
+        if (!str.length || !!str[$ - 1])
         {
             str ~= StringC.Wterm;
         }
@@ -165,8 +165,8 @@ unittest
     mstring str;
 
     str = "".dup;
-    StringC.toCString(str);
-    test!("==")(str, "");
+    test!("!is")(StringC.toCString(str), null);
+    test!("==")(str, "\0");
 
     str = "Already null-terminated\0".dup;
     StringC.toCString(str);
