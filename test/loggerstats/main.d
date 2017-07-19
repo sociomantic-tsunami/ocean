@@ -34,6 +34,9 @@ void main ( )
     auto log2 = Log.lookup("MyLog2");
     log2.level = log2.Warn;
 
+    // Clear any previous logger stats state
+    Log.stats();
+
     // Confirm that stats are auto reset
     for (auto i = 0; i < 3; i++)
     {
