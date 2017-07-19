@@ -20,6 +20,12 @@ module ocean.time.StopWatch;
 // CLOCK_MONOTONIC and clock_gettime will be added to core.sys.posix.time in
 // tangort v1.7.0, see tangort issue #6.
 import core.sys.posix.time; // clockid_t, timespec
+
+version (UnitTest)
+{
+    import ocean.core.Test;
+}
+
 extern (C) private
 {
     enum: clockid_t
@@ -125,22 +131,20 @@ public struct StopWatch
         }
 }
 
-
-/*******************************************************************************
-
-*******************************************************************************/
-
-debug (StopWatch)
+unittest
 {
-        import ocean.io.Stdout_tango;
+    StopWatch t;
+    t.start;
 
-        void main()
-        {
-                StopWatch t;
-                t.start;
+    auto wait_time = timespec(0, 10_000);  // 10_000 ns = 10 microsec
 
-                for (int i=0; i < 100_000_000; ++i)
-                    {}
-                Stdout.format ("{:f9}", t.stop).newline;
-        }
+    // validate that stopwatch time counts up
+    nanosleep(&wait_time, null);
+    auto stopwatch_sec = t.stop;
+    test!(">")(stopwatch_sec, 0);
+
+    // prove that `stop` doesn't stop anything ...
+    nanosleep(&wait_time, null);
+    auto stopwatch_sec_again = t.stop;
+    test!(">")(stopwatch_sec_again, stopwatch_sec);
 }
