@@ -108,7 +108,7 @@ class StringC
     deprecated("Usage of Wchar strings is deprecated.")
     public static Wchar* toCString ( ref Wchar[] str )
     {
-        if (str.length && !!str[$ - 1])
+        if (!str.length || !!str[$ - 1])
         {
             str ~= StringC.Wterm;
         }
@@ -132,7 +132,7 @@ class StringC
 
     public static char* toCString ( ref Buffer!(char) str )
     {
-        if (str.length && !!*str[str.length - 1])
+        if (!str.length || !!*str[str.length - 1])
         {
             str.length = str.length + 1;
             str[str.length - 1] = StringC.Term;
@@ -190,8 +190,8 @@ unittest
     mstring str;
 
     str = "".dup;
-    StringC.toCString(str);
-    test!("==")(str, "");
+    test!("!is")(StringC.toCString(str), null);
+    test!("==")(str, "\0");
 
     str = "Already null-terminated\0".dup;
     StringC.toCString(str);

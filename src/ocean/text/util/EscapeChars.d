@@ -24,6 +24,7 @@ module ocean.text.util.EscapeChars;
 import ocean.transition;
 
 import ocean.core.Array: concat;
+version (UnitTest) import ocean.core.Test;
 
 import ocean.stdc.string: strcspn, memmove, memcpy, memchr, strlen;
 
@@ -85,11 +86,13 @@ struct EscapeChars
                 assert (str.length);
                 assert (!str[$ - 1]);
                 str.length = str.length - 1;
+                enableStomping(str);
             }
 
             size_t end = str.length - 1;
 
             this.occurrences.length = 0;
+            enableStomping(this.occurrences);
 
             for (size_t pos = strcspn(str.ptr, tokens.ptr); pos < end;)
             {
@@ -143,4 +146,13 @@ struct EscapeChars
     {
         this.tokens.concat(tokens, "\0"[]);
     }
+}
+
+unittest
+{
+    EscapeChars ec;
+    auto to_escape = `Some \ special char`.dup;
+    test!("==")(ec(to_escape), `Some \\ special char`);
+    // Test for stomping prevention
+    test!("==")(ec(to_escape), `Some \\\\ special char`);
 }
