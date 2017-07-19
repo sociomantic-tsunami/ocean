@@ -1,11 +1,6 @@
 #!/bin/sh
 set -xe
 
-# Defaults (in case they are not set by the CI)
-F=${F:-production}
-DC=${DC:-dmd1}
-DIST=${DIST:-xenial}
-
 DVER=1
 if test "$DC" != dmd1; then
 	DVER=2
