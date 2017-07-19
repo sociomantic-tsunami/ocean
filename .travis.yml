@@ -19,17 +19,24 @@ env:
         # Make sure beaver is in the PATH
         - PATH="$(git config -f .gitmodules submodule.beaver.path)/bin:$PATH"
     matrix:
-        - DC=dmd1 DIST=trusty F=production
-        - DC=dmd1 DIST=trusty F=devel
-        - DC=dmd1 DIST=xenial F=production AFTER_SCRIPT=1
-        - DC=dmd1 DIST=xenial F=devel
-        - DC=dmd-transitional DIST=trusty F=production
-        - DC=dmd-transitional DIST=trusty F=devel
-        - DC=dmd-transitional DIST=xenial F=production
-        - DC=dmd-transitional DIST=xenial F=devel
+        - DMD=1.080.0 DIST=trusty F=production
+        - DMD=1.080.0 DIST=trusty F=devel
+        - DMD=1.080.0 DIST=xenial F=production AFTER_SCRIPT=1
+        - DMD=1.080.0 DIST=xenial F=devel
+        - DMD=2.070.2.s12 DIST=trusty F=production
+        - DMD=2.070.2.s12 DIST=trusty F=devel
+        - DMD=2.070.2.s12 DIST=xenial F=production
+        - DMD=2.070.2.s12 DIST=xenial F=devel
 
-install: beaver install
+install:
+    - beaver docker build --build-arg "DMD=$DMD" --build-arg "DC=$(ci/DC.sh)" -f "Dockerfile${DIST:+.$DIST}" .
 
-script: BEAVER_DOCKER_VARS="DC" beaver run ci/travis.sh
+script:
+    - beaver run ci/test.sh
 
-after_success: ci/travis-after-success.sh
+after_success:
+    # run only once among matrix rows, workaround for Travis lack of support
+    # for sequential pipelines
+    - test "$AFTER_SCRIPT" || exit 0
+    - beaver run ci/codecov.sh
+    - beaver run ci/d2-convert-tag.sh

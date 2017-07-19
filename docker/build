@@ -4,6 +4,7 @@ set -xe
 # Install dependencies
 apt-get update
 apt-get install -y \
+    "$DC=$DMD-$(lsb_release -cs)" \
     libglib2.0-dev \
     libpcre3-dev \
     libxml2-dev \
