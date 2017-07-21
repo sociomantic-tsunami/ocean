@@ -4,12 +4,7 @@ set -xe
 test "$AFTER_SCRIPT" = "1" || exit 0
 
 # Submit code coverage report
-docker run -ti --rm -v $PWD:/docker -w /docker \
-    -e CI \
-    -e TRAVIS -e TRAVIS_BRANCH -e TRAVIS_COMMIT -e TRAVIS_JOB_NUMBER \
-    -e TRAVIS_PULL_REQUEST -e TRAVIS_JOB_ID -e TRAVIS_REPO_SLUG -e TRAVIS_TAG \
-    -e TRAVIS_OS_NAME -e TRAVIS_PULL_REQUEST_BRANCH -e TRAVIS_PULL_REQUEST_SHA \
-    ocean:$DIST bash ci/codecov.sh
+beaver run ci/codecov.sh
 
 # If this is a tag, convert and push to ocean-d2 repo
 if test -n "$TRAVIS_TAG"
