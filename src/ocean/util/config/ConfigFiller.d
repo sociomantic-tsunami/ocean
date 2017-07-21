@@ -147,7 +147,7 @@ import ocean.core.Traits : DynamicArrayType, isStringType,
 
 import ocean.io.Stdout;
 
-import ocean.text.convert.Format;
+import ocean.text.convert.Formatter;
 
 version (UnitTest) import ocean.core.Test;
 
@@ -329,7 +329,7 @@ struct Required ( T )
     {
         enforce!(ConfigException)(
             found,
-            Format("Mandatory variable {}.{} not set.", group, name));
+            format("Mandatory variable {}.{} not set.", group, name));
     }
 }
 
@@ -374,11 +374,11 @@ struct MinMax ( T, T min, T max, T init = T.init )
     {
         enforce!(ConfigException)(
             Value(this.value) >= min,
-            Format("Configuration key {}.{} is smaller than allowed minimum of {}",
+            format("Configuration key {}.{} is smaller than allowed minimum of {}",
                    group, name, min));
         enforce!(ConfigException)(
             Value(this.value) <= max,
-            Format("Configuration key {}.{} is bigger than allowed maximum of {}",
+            format("Configuration key {}.{} is bigger than allowed maximum of {}",
                    group, name, max));
     }
 }
@@ -422,7 +422,7 @@ struct Min ( T, T min, T init = T.init )
     {
         enforce!(ConfigException)(
             Value(this.value) >= min,
-            Format("Configuration key {}.{} is smaller than allowed minimum of {}",
+            format("Configuration key {}.{} is smaller than allowed minimum of {}",
                    group, name, min));
     }
 }
@@ -467,7 +467,7 @@ struct Max ( T, T max, T init = T.init )
     {
         enforce!(ConfigException)(
             Value(this.value) <= max,
-            Format("Configuration key {}.{} is bigger than allowed maximum of {}",
+            format("Configuration key {}.{} is bigger than allowed maximum of {}",
                    group, name, max));
     }
 }
@@ -551,7 +551,7 @@ struct LimitCmp ( T, T init = T.init, alias comp = defComp!(T), Set... )
         }
 
         throw new ConfigException(
-            Format("Value '{}' of configuration key {}.{} is not within the "
+            format("Value '{}' of configuration key {}.{} is not within the "
                    ~ "set of allowed values ({})",
                    Value(this.value), group, name, allowed_vals[2 .. $]));
     }

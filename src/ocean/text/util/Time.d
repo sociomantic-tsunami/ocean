@@ -33,7 +33,7 @@ import ocean.core.Array : copy;
 
 import core.stdc.time : strftime, time_t, tm;
 
-import ocean.text.convert.Format;
+import ocean.text.convert.Formatter;
 
 
 
@@ -165,7 +165,7 @@ public mstring formatDuration ( ulong s, ref mstring output )
         if ( number > 0 )
         {
             if ( comma ) output ~= ", ";
-            Format.format(output, "{} {}{}", number, name,
+            sformat(output, "{} {}{}", number, name,
                 number > 1 ? "s" : "");
             comma = true;
         }
@@ -228,7 +228,7 @@ public mstring formatDurationShort ( ulong s, ref mstring output )
     {
         if ( number > 0 )
         {
-            Format.format(output, "{}{}", number, name);
+            sformat(output, "{}{}", number, name);
         }
     }
 

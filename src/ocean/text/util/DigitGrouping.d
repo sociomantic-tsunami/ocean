@@ -54,7 +54,7 @@ import ocean.text.util.MetricPrefix;
 
 import ocean.core.Traits;
 
-import ocean.text.convert.Format;
+import ocean.text.convert.Formatter;
 
 
 
@@ -146,15 +146,14 @@ public class DigitGrouping
         char[20] string_buf; // 20 characters is enough to store ulong.max
         size_t layout_pos;
 
-        size_t layoutSink ( cstring s )
+        void layoutSink ( cstring s )
         {
             string_buf[layout_pos .. layout_pos + s.length] = s[];
             layout_pos += s.length;
-            return s.length;
         }
 
         // Format number into a string
-        Format.convert(&layoutSink, "{}", num);
+        sformat(&layoutSink, "{}", num);
         mstring num_as_string = string_buf[0.. layout_pos];
 
         bool comma;
@@ -280,7 +279,7 @@ public class BitGrouping
 
         if ( num == 0 )
         {
-            Format.format(output, "0{}", unit);
+            sformat(output, "0{}", unit);
         }
         else
         {
@@ -290,11 +289,11 @@ public class BitGrouping
                 {
                     if ( order == 0 )
                     {
-                        Format.format(output, "{}{}", order_val, unit);
+                        sformat(output, "{}{}", order_val, unit);
                     }
                     else
                     {
-                        Format.format(output, "{}{}{} ", order_val, prefix, unit);
+                        sformat(output, "{}{}{} ", order_val, prefix, unit);
                     }
                 }
                 else if ( order_val == 0 && order == 0 )

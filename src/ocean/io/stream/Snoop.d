@@ -15,7 +15,7 @@
 
 *******************************************************************************/
 
-module ocean.io.stream.Snoop;
+deprecated module ocean.io.stream.Snoop;
 
 import ocean.transition;
 

@@ -219,14 +219,14 @@ public class FiberTimerEvent : IFiberSelectClient
     {
         private mstring time_buffer;
         import ocean.core.Array : copy;
-        import ocean.text.convert.Format;
+        import ocean.text.convert.Formatter;
 
         public override cstring id ( )
         {
             this.time_buffer.copy(super.id());
             auto time = this.timer.time();
 
-            Format.format(this.time_buffer, ": {}s {}ns",
+            sformat(this.time_buffer, ": {}s {}ns",
                 time.it_value.tv_sec, time.it_value.tv_nsec);
             return this.time_buffer;
         }

@@ -45,9 +45,8 @@ import ocean.io.select.timeout.TimerEventTimeoutManager;
 import ocean.time.timeout.model.ITimeoutClient;
 
 import ocean.transition;
-debug import ocean.text.convert.Format;
 import ocean.util.container.map.model.IAllocator;
-
+debug import ocean.text.convert.Formatter;
 
 
 /*******************************************************************************
@@ -233,7 +232,8 @@ public class TimerSet ( EventData ) : TimerEventTimeoutManager
             protected cstring id ( )
             {
                 this.id_buf.length = 0;
-                Format.format(this.id_buf, "Scheduler.Event {}", this.id_num);
+                enableStomping(this.id_buf);
+                sformat(this.id_buf, "Scheduler.Event {}", this.id_num);
                 return this.id_buf;
             }
         }
