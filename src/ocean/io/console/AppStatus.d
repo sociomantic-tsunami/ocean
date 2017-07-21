@@ -91,6 +91,7 @@ import core.stdc.stdlib: div;
 import core.stdc.time: clock_t, clock, tm, time_t, time;
 
 import ocean.text.convert.Format;
+import ocean.text.convert.Formatter;
 
 import ocean.util.log.Event;
 import ocean.util.log.model.ILogger;
@@ -827,7 +828,7 @@ public class AppStatus
         this.heading_line.length = 0;
         enableStomping(this.heading_line);
 
-        Format.format(this.heading_line, "[{:d2}/{:d2}/{:d2} "
+        sformat(this.heading_line, "[{:d2}/{:d2}/{:d2} "
           ~ "{:d2}:{:d2}:{:d2}] {}", dt.date.day, dt.date.month, dt.date.year,
             dt.time.hours, dt.time.minutes, dt.time.seconds, this.app_name);
 
@@ -856,12 +857,12 @@ public class AppStatus
 
         if (stats_available)
         {
-            Format.format(this.heading_line,
+            sformat(this.heading_line,
                 " Memory: Used {}Mb/Free {}Mb", mem_allocated, mem_free);
         }
         else
         {
-            Format.format(this.heading_line, " Memory: n/a");
+            sformat(this.heading_line, " Memory: n/a");
         }
     }
 
@@ -876,7 +877,7 @@ public class AppStatus
     {
         uint weeks, days, hours, mins, secs;
         this.getUptime(weeks, days, hours, mins, secs);
-        Format.format(this.heading_line, " Uptime: {}w{:d1}d{:d2}:"
+        sformat(this.heading_line, " Uptime: {}w{:d1}d{:d2}:"
             ~ "{:d2}:{:d2}", weeks, days, hours, mins, secs);
     }
 
@@ -891,7 +892,7 @@ public class AppStatus
     {
         long usage = 0;
         this.getCpuUsage(usage);
-        Format.format(this.heading_line, " CPU: {}%", usage);
+        sformat(this.heading_line, " CPU: {}%", usage);
     }
 
 
@@ -915,7 +916,7 @@ public class AppStatus
         this.footer_line.length = 0;
         enableStomping(this.footer_line);
 
-        Format.format(this.footer_line, "Version {} built on {} by {}",
+        sformat(this.footer_line, "Version {} built on {} by {}",
             this.app_version, this.app_build_date, this.app_build_author);
 
         Stdout.default_colour.default_bg.bold(true)

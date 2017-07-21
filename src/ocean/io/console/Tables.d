@@ -134,7 +134,7 @@ import ocean.text.util.MetricPrefix;
 
 import ocean.io.stream.Format;
 
-import ocean.text.convert.Format;
+import ocean.text.convert.Formatter;
 
 import ocean.io.Stdout;
 
@@ -708,13 +708,13 @@ public class Table
 
                             if ( metric.prefix == ' ' )
                             {
-                                Format.format(content_buf,
+                                sformat(content_buf,
                                     "{}      {}", cast(uint)metric.scaled,
                                     this.metric_string);
                             }
                             else
                             {
-                                Format.format(content_buf,
+                                sformat(content_buf,
                                     "{} {}i{}", metric.scaled, metric.prefix,
                                     this.metric_string);
                             }
@@ -728,13 +728,13 @@ public class Table
 
                             if ( metric.prefix == ' ' )
                             {
-                                Format.format(content_buf,
+                                sformat(content_buf,
                                     "{}     {}", cast(uint)metric.scaled,
                                     this.metric_string);
                             }
                             else
                             {
-                                Format.format(content_buf,
+                                sformat(content_buf,
                                     "{} {}{}", metric.scaled, metric.prefix,
                                     this.metric_string);
                             }
@@ -748,14 +748,14 @@ public class Table
                             {
                                 content_buf.length = 0;
                                 enableStomping(content_buf);
-                                Format.format(content_buf,
+                                sformat(content_buf,
                                     "{}", this.contents.integer);
                             }
                             break;
                         case Type.Float:
                             content_buf.length = 0;
                             enableStomping(content_buf);
-                            Format.format(content_buf,
+                            sformat(content_buf,
                                     "{}", this.contents.floating);
                             break;
                         case Type.String:

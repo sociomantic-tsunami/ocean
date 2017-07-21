@@ -55,14 +55,14 @@
 
     ---
 
-        import ocean.text.convert.Format;
+        import ocean.text.convert.Formatter;
 
         class TestTable : StructTable!(Test)
         {
             override protected char[] fraction_string ( float* field )
             {
                 this.format_buffer.length = 0;
-                Format.format(this.format_buffer, "{}%", *field * 100.0);
+                sformat(this.format_buffer, "{}%", *field * 100.0);
                 return this.format_buffer;
             }
         }
@@ -118,7 +118,7 @@ import ocean.core.Traits;
 
 import ocean.io.console.Tables;
 
-import ocean.text.convert.Format;
+import ocean.text.convert.Formatter;
 
 
 
@@ -274,7 +274,8 @@ public class StructTable ( S )
     private char[] defaultFieldString ( T ) ( T* field )
     {
         this.format_buffer.length = 0;
-        Format.format(this.format_buffer, "{}", *field);
+        enableStomping(this.format_buffer);
+        sformat(this.format_buffer, "{}", *field);
         return this.format_buffer;
     }
 

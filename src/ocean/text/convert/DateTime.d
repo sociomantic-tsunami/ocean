@@ -33,8 +33,6 @@ import core.sys.posix.time;
 
 import ocean.text.Unicode;
 
-import ocean.text.convert.Format;
-
 import ocean.core.Array : contains;
 
 import ocean.time.chrono.Gregorian;
@@ -377,6 +375,7 @@ private bool validateTime ( int hour, int minute, int second )
 version ( UnitTest )
 {
     import ocean.core.Test;
+    import ocean.text.convert.Formatter;
 }
 
 unittest
@@ -388,7 +387,7 @@ unittest
         time_t timestamp;
         auto conversion_type = DateConversion.None;
 
-        auto t = new NamedTest(Format("Date conversion test (line {})",
+        auto t = new NamedTest(format("Date conversion test (line {})",
             line_num));
 
         // check the conversion works if it should or fails if it should not
