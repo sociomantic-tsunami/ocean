@@ -24,5 +24,5 @@ then
 	set +x
 	git -c "credential.https://github.com.username=${OCEAN_D2_USER}" \
 		-c "core.askPass=./ci/askpass.sh" \
-		push "https://github.com/sociomantic-tsunami/ocean-d2.git" "$d2tag"
+		push "https://github.com/sociomantic-tsunami/ocean.git" "$d2tag"
 fi
