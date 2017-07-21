@@ -32,4 +32,4 @@ install: beaver install
 
 script: BEAVER_DOCKER_VARS="DC" beaver run ci/travis.sh
 
-after_success: beaver run ci/travis-after-success.sh
+after_success: ci/travis-after-success.sh
