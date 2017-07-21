@@ -90,7 +90,6 @@ import core.stdc.stdlib: div;
 
 import core.stdc.time: clock_t, clock, tm, time_t, time;
 
-import LT = ocean.text.convert.Layout_tango;
 import ocean.text.convert.Formatter;
 
 import ocean.util.log.Event;
@@ -589,14 +588,14 @@ public class AppStatus
 
     ***************************************************************************/
 
-    public typeof(this) formatStaticLine ( uint index, cstring format, ... )
+    public typeof(this) formatStaticLine (T...) ( uint index, cstring format,
+        T args )
     {
         assert( index < this.static_lines.length, "adding too many static lines" );
 
         this.static_lines[index].length = 0;
         enableStomping(this.static_lines[index]);
-        LT.Layout!(char).instance.vformat(
-            this.static_lines[index], format, _arguments, _argptr);
+        sformat(this.static_lines[index], format, args);
 
         structConvert!(DisplayProperties)(
             this.current_display_props,
