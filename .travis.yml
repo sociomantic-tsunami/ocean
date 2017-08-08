@@ -19,17 +19,17 @@ env:
         # Make sure beaver is in the PATH
         - PATH="$(git config -f .gitmodules submodule.beaver.path)/bin:$PATH"
     matrix:
-        - DC=dmd1 DIST=trusty F=production
-        - DC=dmd1 DIST=trusty F=devel
-        - DC=dmd1 DIST=xenial F=production AFTER_SCRIPT=1
-        - DC=dmd1 DIST=xenial F=devel
-        - DC=dmd-transitional DIST=trusty F=production
-        - DC=dmd-transitional DIST=trusty F=devel
-        - DC=dmd-transitional DIST=xenial F=production
-        - DC=dmd-transitional DIST=xenial F=devel
+        - DMD=dmd1 DIST=trusty F=production
+        - DMD=dmd1 DIST=trusty F=devel
+        - DMD=dmd1 DIST=xenial F=production AFTER_SCRIPT=1
+        - DMD=dmd1 DIST=xenial F=devel
+        - DMD=dmd-transitional DIST=trusty F=production
+        - DMD=dmd-transitional DIST=trusty F=devel
+        - DMD=dmd-transitional DIST=xenial F=production
+        - DMD=dmd-transitional DIST=xenial F=devel
 
-install: beaver install
+install: beaver dlang install
 
-script: BEAVER_DOCKER_VARS="DC" beaver run ci/travis.sh
+script: beaver dlang make
 
 after_success: ci/travis-after-success.sh
