@@ -1,10 +1,8 @@
 #!/bin/sh
-set -xe
+set -xeu
 
 # Install dependencies
-apt-get update
 apt-get install -y \
-    $DMD_PKG \
     libglib2.0-dev \
     libpcre3-dev \
     libxml2-dev \
