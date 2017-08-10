@@ -1,5 +1,0 @@
-FROM sociomantictsunami/dlang:trusty-v2
-ARG DMD_PKG
-ENV DMD_PKG="$DMD_PKG"
-COPY docker/build /
-RUN /build && rm /build
