@@ -585,7 +585,7 @@ private ProcMemInfo parseProcMemInfoData (cstring delegate() read_next_line)
 
         switch (field_name)
         {
-            foreach (i, ref field; meminfo.tupleof)
+            foreach (i, FieldT; typeof(meminfo.tupleof))
             {
                 case FieldName!(i, typeof(meminfo.init)):
                     // Using tupleof[i] instead of field
