@@ -969,8 +969,12 @@ class CircularList (V, alias Reap = Container.reap,
 
                 bool next (ref V v)
                 {
-                        auto n = next;
-                        return (n) ? v = *n, true : false;
+                    if (auto n = next)
+                    {
+                        v = *n;
+                        return true;
+                    }
+                    return false;
                 }
 
                 /***************************************************************
