@@ -1,11 +1,6 @@
 #!/bin/sh
 set -xe
 
-test "$AFTER_SCRIPT" = "1" || exit 0
-
-# Submit code coverage report
-beaver run ci/codecov.sh
-
 # If this is a tag, convert and push to ocean-d2 repo
 if test -n "$TRAVIS_TAG"
 then
@@ -29,5 +24,5 @@ then
 	set +x
 	git -c "credential.https://github.com.username=${OCEAN_D2_USER}" \
 		-c "core.askPass=./ci/askpass.sh" \
-		push "https://github.com/sociomantic-tsunami/ocean-d2.git" "$d2tag"
+		push "https://github.com/sociomantic-tsunami/ocean.git" "$d2tag"
 fi

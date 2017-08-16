@@ -1,3 +1,6 @@
 FROM sociomantictsunami/dlang:xenial-v2
+ARG DMD
+ARG DC
+ENV DMD="$DMD" DC="$DC"
 COPY docker/build /
 RUN /build && rm /build
