@@ -30,6 +30,7 @@ import core.thread;
 
 import ocean.transition;
 import ocean.core.Enforce;
+import ocean.core.Verify;
 import ocean.core.Traits;
 import ocean.core.array.Mutation : reverse;
 import ocean.io.select.EpollSelectDispatcher;
@@ -129,16 +130,6 @@ final class Scheduler
 
     /// ditto
     private State state = State.Initial;
-
-    /***************************************************************************
-
-        Thrown instead of `AssertError` when scheduler sanity is violated. Such
-        issues are almost impossible to reason about if not caught in time
-        thus we want all sanity checks to remain even in `-release` mode.
-
-    ***************************************************************************/
-
-    private SchedulerSanityException sanity_e;
 
     /***************************************************************************
 
@@ -278,12 +269,10 @@ final class Scheduler
             config.suspended_task_limit
         );
 
-        this.sanity_e = new SchedulerSanityException;
         this.queue_full_e = new TaskQueueFullException;
         this.suspend_queue_full_e = new SuspendQueueFullException;
 
-        enforce(
-            this.sanity_e,
+        verify(
             config.task_queue_limit >= config.worker_fiber_limit,
             "Must configure task queue size at least equal to worker fiber " ~
                 "count for optimal task scheduler performance."
@@ -569,7 +558,7 @@ final class Scheduler
         as there is at least one event registered.
 
         Throws:
-            SchedulerSanityException if there are some active worker fibers
+            SanityException if there are some active worker fibers
             left in the pool by the time there are not events left
 
     ***************************************************************************/
@@ -602,9 +591,9 @@ final class Scheduler
         foreach (ref fiber; iterator)
             fiber.active_task.kill();
 
-        enforce(this.sanity_e, this.fiber_pool.num_busy() == 0);
-        enforce(this.sanity_e, this.queued_tasks.length() == 0);
-        enforce(this.sanity_e, this.suspended_tasks.length() == 0);
+        verify(this.fiber_pool.num_busy() == 0);
+        verify(this.queued_tasks.length() == 0);
+        verify(this.suspended_tasks.length() == 0);
     }
 
     /***************************************************************************
@@ -645,7 +634,7 @@ final class Scheduler
             task   = task to run
 
         Throws:
-            SchedulerSanityException on attempt to run new task from the very
+            SanityException on attempt to run new task from the very
             same fiber which would result in fiber resetting own state.
 
     ***************************************************************************/
@@ -751,7 +740,7 @@ final class Scheduler
         for (auto i = 0; i < current_count; ++i)
         {
             Task task;
-            enforce(this.sanity_e, this.suspended_tasks.pop(task));
+            verify(this.suspended_tasks.pop(task));
             if (this.state == State.Shutdown)
                 task.kill();
             else
@@ -1008,21 +997,6 @@ public class SuspendQueueFullException : Exception
     this ( )
     {
         super("Attempt to temporary suspend a task when resuming queue is full");
-    }
-}
-
-/******************************************************************************
-
-    Exception class that indicates scheduler internal sanity violation,
-    for example, worker fiber leak.
-
-******************************************************************************/
-
-private class SchedulerSanityException : Exception
-{
-    this ( )
-    {
-        super("Internal sanity violation using the scheduler");
     }
 }
 
