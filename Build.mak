@@ -18,7 +18,7 @@ COVFLAG:=
 endif
 
 # Remove coverage files
-clean += *.lst
+clean += .*.lst
 
 # Remove deprecated modules from testing:
 TEST_FILTER_OUT += \
