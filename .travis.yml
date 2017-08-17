@@ -21,6 +21,8 @@ env:
     matrix:
         - DMD=1.080.0 DIST=xenial F=production AFTER_SCRIPT=1
         - DMD=1.080.0 DIST=xenial F=devel
+        - DMD=1.081.0 DIST=xenial F=production
+        - DMD=1.081.0 DIST=xenial F=devel
         - DMD=2.070.2.s12 DIST=xenial F=production
         - DMD=2.070.2.s12 DIST=xenial F=devel
 
