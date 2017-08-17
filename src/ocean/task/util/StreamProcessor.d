@@ -169,32 +169,27 @@ class StreamProcessor ( TaskT : Task )
 
         if (throttler_config.suspend_point == size_t.max)
             throttler_config.suspend_point = total / 3 * 2;
-        else
-        {
-            enforce(
-                this.throttler_failure_e,
-                throttler_config.suspend_point < total,
-                format(
-                    "Trying to configure StreamProcessor with suspend point ({}) " ~
-                        "larger or equal to task queue size {}",
-                    throttler_config.suspend_point, total
-                )
-            );
-        }
+        enforce(
+            this.throttler_failure_e,
+            throttler_config.suspend_point < total,
+            format(
+                "Trying to configure StreamProcessor with suspend point ({}) " ~
+                    "larger or equal to task queue size {}",
+                throttler_config.suspend_point, total
+            )
+        );
 
         if (throttler_config.resume_point == size_t.max)
             throttler_config.resume_point = total / 5;
-        {
-            enforce(
-                this.throttler_failure_e,
-                throttler_config.resume_point < total,
-                format(
-                    "Trying to configure StreamProcessor with resume point ({}) " ~
-                        "larger or equal to task queue size {}",
-                    throttler_config.resume_point, total
-                )
-            );
-        }
+        enforce(
+            this.throttler_failure_e,
+            throttler_config.resume_point < total,
+            format(
+                "Trying to configure StreamProcessor with resume point ({}) " ~
+                    "larger or equal to task queue size {}",
+                throttler_config.resume_point, total
+            )
+        );
 
         this.task_pool = new ThrottledTaskPool!(TaskT)(throttler_config.suspend_point, throttler_config.resume_point);
     }
