@@ -23,6 +23,8 @@ env:
         - DMD=1.081.0 DIST=xenial F=devel
         - DMD=2.070.2.s12 DIST=xenial F=production
         - DMD=2.070.2.s12 DIST=xenial F=devel
+        - DMD=2.071.2.s1 DIST=xenial F=production
+        - DMD=2.071.2.s1 DIST=xenial F=devel
 
 install: beaver dlang install
 
