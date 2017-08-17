@@ -30,6 +30,7 @@ import ocean.transition;
 import ocean.sys.Common;
 import ocean.text.util.StringC;
 import ocean.io.device.Device;
+import ocean.stdc.gnu.string;
 
 import core.stdc.string;
 import core.stdc.errno;
