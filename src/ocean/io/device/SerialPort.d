@@ -21,7 +21,6 @@ import ocean.core.Array : sort;
 
 import ocean.core.ExceptionDefinitions,
                 ocean.io.device.Device,
-                ocean.stdc.stringz,
                 ocean.sys.Common;
 
 import ocean.io.FilePath;
@@ -262,7 +261,7 @@ deprecated class SerialPort : Device
             else
                 str = "SerialPort@" ~ file;
 
-            handle = posix.open(file.toStringz(), O_RDWR | O_NOCTTY | O_NONBLOCK);
+            handle = posix.open((file ~ "\0").ptr, O_RDWR | O_NOCTTY | O_NONBLOCK);
             if(handle == -1) {
                 error();
             }

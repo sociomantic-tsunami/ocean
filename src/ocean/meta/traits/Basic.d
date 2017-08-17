@@ -17,6 +17,7 @@
 module ocean.meta.traits.Basic;
 
 import ocean.meta.types.Qualifiers;
+import ocean.meta.types.Typedef;
 
 /*******************************************************************************
 
@@ -337,6 +338,28 @@ unittest
 /*******************************************************************************
 
     Params:
+        T = static array type
+
+    Returns:
+        for static array T[N] returns N
+
+*******************************************************************************/
+
+public template staticArrayLength ( T : U[Dim], U, size_t Dim )
+{
+    const staticArrayLength = Dim;
+}
+
+unittest
+{
+    static assert (staticArrayLength!(int[][5]) == 5);
+    static assert (staticArrayLength!(char[42]) == 42);
+    static assert (staticArrayLength!(Immut!(mstring[2])) == 2);
+}
+
+/*******************************************************************************
+
+    Params:
         T = type to check
 
     Returns:
@@ -545,4 +568,71 @@ unittest
 
     static assert (isCallableType!(S));
     static assert (isCallableType!(typeof(S.opCall)));
+}
+
+/*******************************************************************************
+
+    Used as result type for `isTypedef` trait.
+
+    `None` value is explicitly set to `0` so that it can be used in condition
+    like `if(isTypedef!(T))`.
+
+*******************************************************************************/
+
+public enum TypedefKind
+{
+    /// Not a typedef
+    None = 0,
+    /// D1 `typedef` keyword
+    Keyword,
+    /// Emulated by struct
+    Struct
+}
+
+/*******************************************************************************
+
+    Determines if T is a typedef of some kind
+
+    Template_Params:
+        T = type to check
+
+    Evaluates to:
+        `TypedefKind` value which is non-zero is T is some typedef
+
+*******************************************************************************/
+
+public template isTypedef (T)
+{
+    version (D_Version2)
+    {
+        static if (is(T.IsTypedef))
+            const isTypedef = TypedefKind.Struct;
+        else
+            const isTypedef = TypedefKind.None;
+    }
+    else
+    {
+        // use mixin to avoid typedef keyword error from DMD2 when
+        // lexing/parsing
+        mixin("
+        static if (is(T _ == typedef))
+            const isTypedef = TypedefKind.Keyword;
+        else
+            const isTypedef = TypedefKind.None;
+        ");
+    }
+}
+
+unittest
+{
+    mixin(Typedef!(double, "RealNum"));
+
+    static assert(!isTypedef!(int));
+    static assert(!isTypedef!(double));
+    static assert( isTypedef!(RealNum));
+
+    version (D_Version2)
+        static assert(isTypedef!(RealNum) == TypedefKind.Struct);
+    else
+        static assert(isTypedef!(RealNum) == TypedefKind.Keyword);
 }

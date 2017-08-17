@@ -25,11 +25,11 @@ version (Posix)
 
     import ocean.core.ExceptionDefinitions;
     import ocean.text.locale.Data;
+    import ocean.text.util.StringC;
     import core.stdc.ctype;
-    import core.sys.posix.stdlib;
     import core.stdc.string;
-    import ocean.stdc.stringz;
     import core.stdc.locale;
+    import core.sys.posix.stdlib;
 
     /*private extern(C) char* setlocale(int type, char* locale);
       private extern(C) void putenv(char*);
@@ -49,7 +49,7 @@ version (Posix)
         cstring s;
         if (env)
         {
-            auto s_mut = fromStringz(env).dup;
+            auto s_mut = StringC.toDString(env).dup;
             foreach (ref char c; s_mut)
             {
                 if (c == '.')

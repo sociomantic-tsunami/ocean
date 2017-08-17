@@ -31,7 +31,8 @@ TEST_FILTER_OUT += \
 	$C/src/ocean/math/BigInt.d \
 	$C/src/ocean/util/log/LayoutChainsaw.d \
 	$C/src/ocean/util/log/Log.d \
-	$C/src/ocean/text/convert/Memory.d
+	$C/src/ocean/text/convert/Memory.d \
+	$C/src/ocean/stdc/stringz.d
 
 # integration test which is disabled by default because it depends on Collectd
 TEST_FILTER_OUT += \

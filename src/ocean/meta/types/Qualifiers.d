@@ -22,6 +22,19 @@ module ocean.meta.types.Qualifiers;
 
 /*******************************************************************************
 
+    Convenience string type aliases.
+
+    Initially defined to help with D2 migration but proved themselves as useful
+    shortcuts to reduce visual code clutter.
+
+*******************************************************************************/
+
+alias Immut!(char)[] istring;
+alias Const!(char)[] cstring;
+alias char[]         mstring;
+
+/*******************************************************************************
+
     Helper template to be used instead of plain types in function parameter
     list when one will need to be const-qualified in D2 world - usually this is
     necessary if function needs to handle string literals.

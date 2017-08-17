@@ -20,6 +20,7 @@ module ocean.meta.types.ReduceType;
 
 import ocean.meta.traits.Basic;
 import ocean.meta.types.Arrays;
+import ocean.meta.types.Typedef;
 
 /*******************************************************************************
 
@@ -75,34 +76,6 @@ import ocean.meta.types.Arrays;
 public template ReduceType ( T, Reducer )
 {
     const ReduceType = ReduceTypeImpl!(Reducer).init.reduce!(T)();
-}
-
-version(UnitTest)
-{
-    private struct ExampleReducer
-    {
-        alias int Result;
-        const seed = 0;
-
-        Result accumulate ( Result accum, Result next )
-        {
-            return accum + next;
-        }
-
-        Result visit ( T ) ( )
-        {
-            if (isIntegerType!(T))
-                return 1;
-            else
-                return 0;
-        }
-    }
-}
-
-unittest
-{
-    static assert (ReduceType!(int, ExampleReducer) == 1);
-    static assert (ReduceType!(int[int], ExampleReducer) == 2);
 }
 
 /*******************************************************************************
@@ -187,6 +160,10 @@ private struct ReduceTypeImpl ( Reducer )
         static if (isPrimitiveType!(T))
         {
             // do nothing, already processed
+        }
+        else static if (isTypedef!(T))
+        {
+            accumulate(result, reducer.visit!(TypedefBaseType!(T)));
         }
         else static if (isAggregateType!(T))
         {

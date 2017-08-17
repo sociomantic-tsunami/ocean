@@ -2,7 +2,7 @@
 
     Collection of utilities to modify arrays and buffers in-place.
 
-    All function is this module only work on mutable arguments and modify them
+    All functions in this module only work on mutable arguments and modify them
     in place. New memory must never be allocated.
 
     Based on `tango.core.Array` module from Tango library.
@@ -43,9 +43,9 @@ version (UnitTest)
 
 /*******************************************************************************
 
-    Performs a linear scan of array from [0 .. array.length$(RP), replacing
-    occurrences of specified element with new one.  Comparisons will be
-    performed using the supplied predicate or '==' if none is supplied.
+    Performs a linear scan of complete array, replacing occurrences of
+    specified element with the new element.  Comparisons will be performed
+    using the supplied predicate or '==' if none is supplied.
 
     Params:
         array = The array to scan.
@@ -113,8 +113,8 @@ unittest
 
 /*******************************************************************************
 
-    Performs a linear scan of the array from [0 .. buf.length$(RP), replacing
-    elements where pred returns true.
+    Performs a linear scan of the complete array, replacing elements where pred
+    returns true.
 
     Params:
         array = The array to scan.
@@ -178,9 +178,9 @@ unittest
 
 /*******************************************************************************
 
-    Performs a linear scan of array from [0 .. array.length$(RP), moving all
-    elements matching element to the end of the sequence.  The relative order of
-    elements not matching one will be preserved.  Comparisons will be
+    Performs a linear scan of complete array, moving all items matching
+    element to the end of the sequence.  The relative order of items not
+    matching the matching element will be preserved.  Comparisons will be
     performed using the supplied predicate or '==' if none is supplied.
 
     Params:
@@ -261,9 +261,9 @@ unittest
 
 /*******************************************************************************
 
-    Performs a linear scan of array from [0 .. buf.length$(RP), moving all
-    elements that satisfy pred to the end of the sequence.  The relative
-    order of elements that do not satisfy pred will be preserved.
+    Performs a linear scan of complete array, removing all elements that satisfy
+    pred from the sequence.  The relative order of elements that do not satisfy
+    pred will be preserved.
 
     Params:
     array = The array to scan.  This parameter is not marked 'ref'
@@ -348,11 +348,10 @@ unittest
 
 /*******************************************************************************
 
-    Performs a linear scan of array from [0 .. array.length$(RP), moving all
-    but the first element of each consecutive group of duplicate elements to
-    the end of the sequence.  The relative order of all remaining elements
-    will be preserved.  Comparisons will be performed using the supplied
-    predicate or '==' if none is supplied.
+    Performs a linear scan of complete array, moving all but the first element
+    of each consecutive group of duplicate elements to the end of the sequence.
+    The relative order of all remaining elements will be preserved.  Comparisons
+    will be performed using the supplied predicate or '==' if none is supplied.
 
     Params:
         array = The array to scan.  This parameter is not marked 'ref'
