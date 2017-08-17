@@ -30,4 +30,6 @@ install: beaver dlang install
 
 script: beaver dlang make
 
-after_success: ci/travis-after-success.sh
+after_success:
+    - test "$AFTER_SCRIPT" = "1" && beaver run ci/codecov.sh
+    - test "$AFTER_SCRIPT" = "1" && ci/d2tags.sh
