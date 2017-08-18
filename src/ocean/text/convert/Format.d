@@ -19,7 +19,7 @@
 
 module ocean.text.convert.Format;
 
-import ocean.text.convert.Layout_tango;
+deprecated import ocean.text.convert.Layout_tango;
 
 /******************************************************************************
 
@@ -27,9 +27,10 @@ import ocean.text.convert.Layout_tango;
 
  ******************************************************************************/
 
+deprecated("Use ocean.text.convert.Formatter : [s[n]]format instead")
 public Layout!(char) Format;
 
-static this()
+deprecated static this()
 {
     Format = Layout!(char).instance;
 }
