@@ -90,7 +90,7 @@ import core.stdc.stdlib: div;
 
 import core.stdc.time: clock_t, clock, tm, time_t, time;
 
-import ocean.text.convert.Format;
+import LT = ocean.text.convert.Layout_tango;
 import ocean.text.convert.Formatter;
 
 import ocean.util.log.Event;
@@ -595,7 +595,8 @@ public class AppStatus
 
         this.static_lines[index].length = 0;
         enableStomping(this.static_lines[index]);
-        Format.vformat(this.static_lines[index], format, _arguments, _argptr);
+        LT.Layout!(char).instance.vformat(
+            this.static_lines[index], format, _arguments, _argptr);
 
         structConvert!(DisplayProperties)(
             this.current_display_props,
