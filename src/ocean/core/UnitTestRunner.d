@@ -85,6 +85,7 @@ import ocean.text.xml.Document: Document;
 import ocean.text.xml.DocPrinter: DocPrinter;
 import ocean.text.convert.Formatter;
 import ocean.core.Test: TestException, test;
+import ocean.core.array.Mutation: uniq;
 import core.memory;
 import core.runtime: Runtime;
 
@@ -207,8 +208,8 @@ private scope class UnitTestRunner
             {
                 no_match++;
                 if (this.verbose > 1)
-                    Stdout.formatln("{}: {}: skipped (not in packages to test)",
-                            this.prog, m.name);
+                    Stdout.formatln("{}: {}: skipped (not in " ~
+                            "modules to test)", this.prog, m.name);
                 continue;
             }
 
@@ -307,7 +308,7 @@ private scope class UnitTestRunner
             if (!this.keep_going && failed)
                 Stdout.format(", {} skipped", skipped);
             if (this.verbose > 1)
-                Stdout.format(", {} didn't match --package", no_match);
+                Stdout.format(", {} didn't match -p/--package", no_match);
             Stdout.formatln(" [{}]", this.toHumanTime(total_time));
         }
 
@@ -736,8 +737,13 @@ private scope class UnitTestRunner
 
         foreach (pkg; this.packages)
         {
-            if (name.length >= pkg.length &&
-                    strncmp(pkg.ptr, name.ptr, pkg.length) == 0)
+            // It matches as a module
+            if (name == pkg)
+                return true;
+            // If name is part of the package, it must start with "pkg."
+            if (name.length > pkg.length &&
+                    strncmp(pkg.ptr, name.ptr, pkg.length) == 0 &&
+                    name[pkg.length] == '.')
                 return true;
         }
 
@@ -828,8 +834,18 @@ private scope class UnitTestRunner
             case "-p":
             case "--package":
                 auto opt_arg = getOptArg(i);
-                if (opt_arg is null)
+                if (opt_arg.length == 0)
                     return false;
+                // FIXME: This is just a compatibility-mode because at some
+                //        point this worked implicitly as some sort of pattern
+                //        matching ARG*, so to specify a strict package it was
+                //        common to use "pkg.". Now we just remove the trailing
+                //        "." if we find one, it's not a valid package name
+                //        anyway. This was introduced in v3, so it should be
+                //        safe to remove it in v4 or maybe v5 go make sure all
+                //        dependencies were updated.
+                if (opt_arg[$-1] == '.')
+                    opt_arg = opt_arg[0..$-1];
                 this.packages ~= opt_arg;
                 break;
 
@@ -864,6 +880,9 @@ private scope class UnitTestRunner
             Stderr.newline();
             return false;
         }
+
+        // Remove any package duplicates
+        this.packages = uniq(this.packages);
 
         return true;
     }
@@ -910,10 +929,8 @@ optional arguments:
   -s, --summary     print a summary with the passed, skipped and failed number
                     of tests
   -k, --keep-going  don't stop after the first module unittest failed
-  -p, --package PKG
-                    only run tests in the PKG package (effectively any module
-                    which fully qualified name starts with PKG), can be
-                    specified multiple times to indicate more packages to test
+  -p, --package PKG only run tests in package (or module) PKG (can be specified
+                    multiple times)
   -x, --xml-file FILE
                     write test results in FILE in a XML format that Jenkins
                     understands.
