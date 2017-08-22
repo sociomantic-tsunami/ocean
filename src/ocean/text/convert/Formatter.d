@@ -725,10 +725,11 @@ private FormatInfo consume (FormatterSink sink, ref cstring fmt)
 
     // Finally get the format string, if any
     // e.g. for `{5:X} that would be 'X'
-    if (*s == ':' && s < end)
+    if (*s == ':')
+        ++s;
+    if (s < end)
     {
-        auto fs = ++s;
-
+        auto fs = s;
         // eat everything up to closing brace
         while (s < end && *s != '}')
             ++s;

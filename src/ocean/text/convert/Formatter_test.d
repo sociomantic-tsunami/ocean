@@ -543,3 +543,9 @@ unittest
     const bool NO  = false;
     test(format("{} -- {}", YES, NO) == "true -- false");
 }
+
+unittest
+{
+    // Used to work only with "{:X}", however this limitation was lifted
+    assert(format("{X}", 42) == "2A");
+}
