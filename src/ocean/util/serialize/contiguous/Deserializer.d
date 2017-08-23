@@ -26,10 +26,8 @@ import ocean.transition;
 
 import ocean.util.serialize.contiguous.Contiguous;
 
-import ocean.core.Enforce;
+import ocean.core.Exception;
 import ocean.core.Traits;
-
-import ocean.text.convert.Formatter;
 
 debug (DeserializationTrace) import ocean.io.Stdout_tango;
 
@@ -42,16 +40,7 @@ debug (DeserializationTrace) import ocean.io.Stdout_tango;
 
 class DeserializationException : Exception
 {
-    /***************************************************************************
-
-        Trivial constructor
-
-    ***************************************************************************/
-
-    this ( )
-    {
-        super("");
-    }
+    mixin ReusableExceptionImplementation!();
 
     /**********************************************************************
 
@@ -74,12 +63,17 @@ class DeserializationException : Exception
     void enforceSizeLimit ( S ) ( size_t len, size_t max,
         istring file = __FILE__, int line = __LINE__ )
     {
-        enforceImpl(
-            this, len <= max,
-            format("Error deserializing '{}' : length {} exceeds limit {}",
-                S.stringof, len, max),
-            file, line
-        );
+        if (len > max)
+        {
+            throw this
+                .set("", file, line)
+                .fmtAppend(
+                    "Error deserializing '{}' : length {} exceeds limit {}",
+                    S.stringof,
+                    len,
+                    max
+                );
+        }
     }
 
     /**********************************************************************
@@ -103,12 +97,35 @@ class DeserializationException : Exception
     void enforceInputSize ( S ) ( size_t len, size_t required,
         istring file = __FILE__, int line = __LINE__ )
     {
-        enforceImpl(
-            this, len >= required,
-            format("Error deserializing '{}' : input data length {} < required {}",
-                S.stringof, len, required),
-            file, line
-        );
+        if (len < required)
+        {
+            throw this
+                .set("", file, line)
+                .fmtAppend(
+                    "Error deserializing '{}' : input data length {} < required {}",
+                    S.stringof,
+                    len,
+                    required
+                );
+        }
+    }
+
+    unittest
+    {
+        struct S { int i; }
+
+        auto e = new DeserializationException();
+        try
+        {
+            e.enforceSizeLimit!(S)(1,2);
+            e.enforceSizeLimit!(S)(2,2);
+            e.enforceSizeLimit!(S)(3,2);
+            assert(0);
+        }
+        catch ( DeserializationException e )
+        {
+            assert(getMsg(e) == "Error deserializing 'S' : length 3 exceeds limit 2");
+        }
     }
 }
 
