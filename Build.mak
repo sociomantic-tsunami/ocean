@@ -7,14 +7,17 @@ override DFLAGS += -w -version=GLIBC
 # but we -or course- don't have Ocean as a submodule, so we set it explicitly.
 TEST_RUNNER_MODULE := ocean.core.UnitTestRunner
 
+# Do we want coverage report?
+ifeq ($(AFTER_SCRIPT),1)
+COVFLAG:=-cov
+endif
+
 ifeq ($(DVER),1)
 override DFLAGS := $(filter-out -di,$(DFLAGS)) -v2 -v2=-static-arr-params -v2=-volatile
-COVFLAG:=-cov
 else
 # Open source Makd uses dmd by default
 DC ?= dmd
 override DFLAGS += -de
-COVFLAG:=
 endif
 
 # Remove coverage files
