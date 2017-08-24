@@ -19,7 +19,7 @@ env:
         # Make sure beaver is in the PATH
         - PATH="$(git config -f .gitmodules submodule.beaver.path)/bin:$PATH"
     matrix:
-        - DMD=1.081.* DIST=xenial F=production D2TAGS=1
+        - DMD=1.081.* DIST=xenial F=production
         - DMD=1.081.* DIST=xenial F=devel
         - DMD=1.081.* DIST=xenial F=production DFLAGS=-release
         - DMD=2.070.2.s* DIST=xenial F=production
@@ -31,8 +31,11 @@ install: beaver dlang install
 
 script: BEAVER_DOCKER_VARS="F DFLAGS" beaver dlang make
 
-after_success:
-    - beaver run ci/codecov.sh
-    - test "$D2TAGS" = "1" &&
-        BEAVER_DOCKER_VARS="OCEAN_D2_USER OCEAN_D2_PASS"
-        beaver run ci/d2tags.sh
+after_success: ci/minicodecov.sh
+
+jobs:
+    include:
+        - stage: D2 Release
+          if: tag IS present
+          env: DMD=2.070.2.s12 DIST=xenial F=production
+          script: ci/d2-tag-push
