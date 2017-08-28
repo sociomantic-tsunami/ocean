@@ -24,6 +24,7 @@ module ocean.text.convert.Formatter;
 
 import ocean.transition;
 import ocean.core.Traits;
+import ocean.core.Buffer;
 import Integer = ocean.text.convert.Integer_tango;
 import Float = ocean.text.convert.Float;
 import UTF = ocean.text.convert.Utf;
@@ -119,6 +120,16 @@ public mstring sformat (Args...) (ref mstring buffer, cstring fmt, Args args)
     return buffer;
 }
 
+/// ditto
+public mstring sformat (Args...) (ref Buffer!(char) buffer, cstring fmt, Args args)
+{
+    scope FormatterSink sink = (cstring s)
+    {
+        buffer ~= s;
+    };
+    sformat(sink, fmt, args);
+    return buffer[];
+}
 
 /*******************************************************************************
 
@@ -159,6 +170,11 @@ public mstring snformat (Args...) (mstring buffer, cstring fmt, Args args)
     return buffer[0 .. start];
 }
 
+/// ditto
+public mstring snformat (Args...) (ref Buffer!(char) buffer, cstring fmt, Args args)
+{
+    return snformat(buffer[], fmt, args);
+}
 
 /*******************************************************************************
 
