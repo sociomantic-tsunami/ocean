@@ -60,6 +60,7 @@ public abstract class DaemonApp : Application,
         ISignalExtExtension
 {
     import ocean.io.select.EpollSelectDispatcher;
+    import ocean.io.Stdout;
     import ocean.sys.Stats;
     import ocean.task.Scheduler;
     import ocean.text.Arguments : Arguments;
@@ -563,7 +564,23 @@ public abstract class DaemonApp : Application,
 
     private bool statsTimer ( )
     {
-        this.onStatsTimer();
+        try
+        {
+            this.onStatsTimer();
+        }
+        catch (Exception e)
+        {
+            try
+            {
+                Stderr.formatln(
+                        "Exception caught in DaemonApp.statsTimer: {}", e);
+            }
+            catch (Exception)
+            {
+                // ignore the failed stderr output, keep the timer registered
+            }
+        }
+
         return true;
     }
 
