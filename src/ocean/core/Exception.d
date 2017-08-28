@@ -100,9 +100,10 @@ unittest
 public template ReusableExceptionImplementation()
 {
     import ocean.transition;
-    static import ocean.text.convert.Integer_tango;
     import ocean.core.Buffer;
     static import ocean.core.array.Mutation;
+    static import ocean.text.convert.Formatter;
+    static import ocean.text.convert.Integer_tango;
 
     static assert (is(typeof(this) : Exception));
 
@@ -247,6 +248,25 @@ public template ReusableExceptionImplementation()
                 ocean.text.convert.Integer_tango.format(buff, num));
         return this;
     }
+
+    /**************************************************************************
+
+        Appends formatted string
+
+        Params:
+            fmt = string format to use
+            args = variadic args list to format
+
+        Returns:
+            this instance
+
+    **************************************************************************/
+
+    public typeof (this) fmtAppend ( Args... ) ( cstring fmt, Args args )
+    {
+        ocean.text.convert.Formatter.sformat(this.reused_msg, fmt, args);
+        return this;
+    }
 }
 
 ///
@@ -281,6 +301,13 @@ unittest
     catch (SomeReusableException) { }
     assert (getMsg(e) == "Wrong name (NAME) 0x2A 42");
     assert (old_ptr is e.reused_msg[].ptr);
+}
+
+unittest
+{
+    auto e = new SomeReusableException;
+    e.set("aaa").fmtAppend("{0}{0}", 42);
+    test!("==")(getMsg(e), "aaa4242");
 }
 
 version (UnitTest)
