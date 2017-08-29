@@ -107,6 +107,26 @@ public class TimerExt : IApplicationExtension
     import BucketElementFreeList = ocean.util.container.map.model.BucketElementFreeList;
     import ocean.time.MicrosecondsClock;
     import ocean.time.timeout.TimeoutManager;
+    import ocean.util.log.Logger;
+
+    /***************************************************************************
+
+        Static logger.
+
+    ***************************************************************************/
+
+    static private Logger log;
+
+    /***************************************************************************
+
+        Static constructor.
+
+    ***************************************************************************/
+
+    static this ( )
+    {
+        log = Log.lookup("ocean.util.app.ext.TimerExt");
+    }
 
     /***************************************************************************
 
@@ -273,7 +293,25 @@ public class TimerExt : IApplicationExtension
 
     private void eventFired ( ref EventData event )
     {
-        auto reregister = event.dg();
+        bool reregister = true; // by default, always stay registered
+
+        try
+        {
+            reregister = event.dg();
+        }
+        catch (Exception e)
+        {
+            try
+            {
+                log.error("Unhnandled exception in TimerExt's callback: {}",
+                        getMsg(e));
+            }
+            catch (Exception)
+            {
+                // ignore the potential logger failure, keep the timerset running
+            }
+        }
+
         if ( reregister )
         {
             do
