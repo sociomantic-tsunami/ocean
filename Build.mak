@@ -39,6 +39,8 @@ $O/test-signalext: override LDFLAGS += -lebtree
 
 $O/test-sysstats: override LDFLAGS += -lebtree
 
+$O/test-timerext: override LDFLAGS += -lebtree
+
 $O/test-httpserver: override LDFLAGS += -lebtree -lglib-2.0
 
 $O/test-unixsockext: override LDFLAGS += -lebtree
