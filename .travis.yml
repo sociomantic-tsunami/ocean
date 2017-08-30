@@ -26,7 +26,7 @@ env:
 
 install: beaver dlang install
 
-script: BEAVER_DOCKER_VARS=AFTER_SCRIPT beaver dlang make
+script: BEAVER_DOCKER_VARS="AFTER_SCRIPT F" beaver dlang make
 
 after_success:
     - test "$AFTER_SCRIPT" = "1" && beaver run ci/codecov.sh
