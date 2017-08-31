@@ -18,6 +18,7 @@ env:
     global:
         # Make sure beaver is in the PATH
         - PATH="$(git config -f .gitmodules submodule.beaver.path)/bin:$PATH"
+        - COVERAGE_REPORT="1"
     matrix:
         - DMD=1.081.1 DIST=xenial F=production AFTER_SCRIPT=1
         - DMD=1.081.1 DIST=xenial F=devel
@@ -26,7 +27,7 @@ env:
 
 install: beaver dlang install
 
-script: BEAVER_DOCKER_VARS="AFTER_SCRIPT F" beaver dlang make
+script: BEAVER_DOCKER_VARS="AFTER_SCRIPT COVERAGE_REPORT F" beaver dlang make
 
 after_success:
     - beaver run ci/codecov.sh

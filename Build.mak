@@ -8,7 +8,7 @@ override DFLAGS += -w -version=GLIBC
 TEST_RUNNER_MODULE := ocean.core.UnitTestRunner
 
 # Do we want coverage report?
-ifeq ($(AFTER_SCRIPT),1)
+ifeq ($(COVERAGE_REPORT),1)
 COVFLAG:=-cov
 endif
 
