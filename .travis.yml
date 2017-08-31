@@ -22,8 +22,8 @@ env:
     matrix:
         - DMD=1.081.1 DIST=xenial F=production AFTER_SCRIPT=1
         - DMD=1.081.1 DIST=xenial F=devel
-        - DMD=2.070.2.s12 DIST=xenial F=production
-        - DMD=2.070.2.s12 DIST=xenial F=devel
+        - DMD=2.070.2.s13 DIST=xenial F=production
+        - DMD=2.070.2.s13 DIST=xenial F=devel
 
 install: beaver dlang install
 
