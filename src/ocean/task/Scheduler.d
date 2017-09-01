@@ -933,6 +933,18 @@ body
 
 /*******************************************************************************
 
+    Returns:
+        'true' if scheduler system was initialized, 'false' otherwise
+
+*******************************************************************************/
+
+public bool isSchedulerUsed ( )
+{
+    return _scheduler !is null;
+}
+
+/*******************************************************************************
+
     Creates or re-creates the scheduler instance.
 
     Re-creating of scheduler is only allowed if previous one doesn't have
