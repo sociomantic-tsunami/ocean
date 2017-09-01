@@ -79,6 +79,7 @@ public abstract class DaemonApp : Application,
     import NewLog = ocean.util.log.Logger;
     import ocean.util.log.Stats;
 
+    static import core.sys.posix.signal;
 
     /***************************************************************************
 
@@ -324,6 +325,9 @@ public abstract class DaemonApp : Application,
     {
         super(name, desc);
 
+        // DaemonApp always handles SIGTERM:
+        settings.signals ~= core.sys.posix.signal.SIGTERM;
+
         // Create and register arguments extension
         this.args_ext = new ArgumentsExt(name, desc, settings.usage,
             settings.help);
@@ -550,19 +554,32 @@ public abstract class DaemonApp : Application,
 
     /***************************************************************************
 
-        ISignalExtExtension methods dummy implementation.
+        ISignalExtExtension method default implementation.
 
-        This method is implemented with an "empty" implementation to ease
-        deriving from this class.
+        This method is implemented with behaviour most commonly desired in apps
+        that don't do any custom signal handling - attempt cleaner shutdown on
+        SIGTERM signal.
 
         See ISignalExtExtension documentation for more information on how to
-        override this method.
+        override this method with own behaviour. `super.onSignal` is not needed
+        to be called when doing so.
 
     ***************************************************************************/
 
     override public void onSignal ( int signum )
     {
-        // Dummy implementation of the interface
+        switch ( signum )
+        {
+            case core.sys.posix.signal.SIGTERM:
+                // Default implementation to shut down cleanly
+                if (isSchedulerUsed())
+                    theScheduler.shutdown();
+                else
+                    this.epoll.shutdown();
+                break;
+            default:
+                assert(false);
+        }
     }
 
     /***************************************************************************
