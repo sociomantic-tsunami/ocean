@@ -1266,7 +1266,18 @@ static RandomSync rand;
 static this ()
 {
     rand = new RandomSync(false);
-    version(has_urandom){
+
+    static void set_array_source(ulong s)
+    {
+        uint[2] a;
+        a[0]= cast(uint)(s & 0xFFFF_FFFFUL);
+        a[1]= cast(uint)(s>>32);
+        rand.seed(&(ArraySource(a).next));
+    }
+
+    version(UnitTest){
+        set_array_source(9); // http://dilbert.com/strip/2001-10-25
+    } else version(has_urandom){
         URandom r;
         rand.seed(&r.next);
     } else {
@@ -1275,11 +1286,8 @@ static this ()
             timeval tv;
             gettimeofday (&tv, null);
             s = tv.tv_usec;
-         }
-        uint[2] a;
-        a[0]= cast(uint)(s & 0xFFFF_FFFFUL);
-        a[1]= cast(uint)(s>>32);
-        rand.seed(&(ArraySource(a).next));
+        }
+        set_array_source(s);
     }
 }
 
