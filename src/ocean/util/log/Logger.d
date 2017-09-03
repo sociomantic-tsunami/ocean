@@ -859,6 +859,12 @@ public final class Logger : ILogger
 
         Format and emit a textual log message from the given arguments
 
+        The formatted string emitted will have a length up to `buffer.length`,
+        which is 2048 by default.
+        If no formatting argument is provided (the call has only 2 parameters,
+        e.g. `format(Level.Trace, "Baguette");`), then the string will be just
+        emitted to the appender(s) verbatim and won't be limited in length.
+
         Params:
             Args  = Auto-deduced argument list
             level = Message severity
@@ -869,9 +875,14 @@ public final class Logger : ILogger
 
     public void format (Args...) (Level level, cstring fmt, Args args)
     {
-        // If the buffer has length 0 / is null, we just don't log anything
-        if (this.buffer_.length)
-            this.append(level, snformat(this.buffer_, fmt, args));
+        static if (Args.length == 0)
+            this.append(level, fmt);
+        else
+        {
+            // If the buffer has length 0 / is null, we just don't log anything
+            if (this.buffer_.length)
+                this.append(level, snformat(this.buffer_, fmt, args));
+        }
     }
 
     /***************************************************************************
@@ -942,4 +953,37 @@ unittest
     test!("==")(Log.convert("Baguette", Level.Warn), Level.Warn);
     // The first entry in the array
     test!("==")(Log.convert("trace", Level.Error), Level.Trace);
+}
+
+// Test that argumentless format call does not shrink the output
+unittest
+{
+    static class Buffer : Appender
+    {
+        public struct Event { Logger.Level level; cstring message; }
+        public Event[] result;
+
+        public override Mask mask () { Mask m = 42; return m; }
+        public override cstring name () { return "BufferAppender"; }
+        public override void append (LogEvent e)
+        {
+            this.result ~= Event(e.level, e.toString());
+        }
+    }
+
+    // Test string of 87 chars
+    const TestStr = "Ce qui se conçoit bien s'énonce clairement - Et les mots pour le dire arrivent aisément";
+    scope appender = new Buffer();
+    char[32] log_buffer;
+    Logger log = Log.lookup("ocean.util.log.Logger.TestLogTrim")
+        .add(appender).buffer(log_buffer);
+    log.info("{}", TestStr);
+    log.error(TestStr);
+    test!("==")(appender.result.length, 2);
+    // Trimmed string
+    test!("==")(appender.result[0].level, Logger.Level.Info);
+    test!("==")(appender.result[0].message, TestStr[0 .. 32]);
+    // Full string
+    test!("==")(appender.result[1].level, Logger.Level.Error);
+    test!("==")(appender.result[1].message, TestStr);
 }

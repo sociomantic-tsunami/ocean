@@ -65,7 +65,21 @@ public class Appender
     /// Return the name of this Appender.
     abstract cstring name ();
 
-    /// Append a message to the output.
+    /***************************************************************************
+
+        Append a message to the output.
+
+        The event received is only valid for the duration of the `apppend`
+        call and shouldn't outlive the scope of `append`.
+        Moreover, as `Logger` use a class-local buffer, its tracing functions
+        which use formatting are not re-entrant and should not be called
+        from here.
+
+        Params:
+            event = Event to log
+
+    ***************************************************************************/
+
     abstract void append (LogEvent event);
 
     /// Create an Appender and default its layout to LayoutTimer.
