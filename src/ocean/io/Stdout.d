@@ -122,21 +122,6 @@ public class TerminalOutput ( T ) : FormatOutput!(T)
         super(output, eol);
     }
 
-
-    /***************************************************************************
-
-        Construct a FormatOutput instance, tying the provided stream to a layout
-        formatter.
-
-    ***************************************************************************/
-
-    deprecated("Using Layout with this class is deprecated - Remove first argument at call site")
-    public this (Layout!(T) convert, OutputStream output, Immut!(T)[] eol = Eol)
-    {
-        super(convert, output, eol);
-    }
-
-
     /***************************************************************************
 
         Layout using the provided formatting specification.
@@ -149,22 +134,6 @@ public class TerminalOutput ( T ) : FormatOutput!(T)
         return this;
     }
 
-
-    /***************************************************************************
-
-        Layout using the provided formatting specification. Varargs pass-through
-        version.
-
-    ***************************************************************************/
-
-    deprecated("RTTI-specific function is deprecated, use a Formatter-compatible API")
-    public typeof(this) format (Const!(T)[] fmt, TypeInfo[] arguments, ArgList args)
-    {
-        super.format(fmt, arguments, args);
-        return this;
-    }
-
-
     /***************************************************************************
 
         Layout using the provided formatting specification, and append a
@@ -176,21 +145,6 @@ public class TerminalOutput ( T ) : FormatOutput!(T)
     {
         super._transitional_format(fmt, _arguments, _argptr);
         return this.newline;
-    }
-
-
-    /***************************************************************************
-
-        Layout using the provided formatting specification, and append a
-        newline. Varargs pass-through version.
-
-    ***************************************************************************/
-
-    deprecated("RTTI-specific function is deprecated, use a Formatter-compatible API")
-    public typeof(this) formatln (Const!(T)[] fmt, TypeInfo[] arguments, ArgList args)
-    {
-        super.formatln(fmt, arguments, args);
-        return this;
     }
 
 

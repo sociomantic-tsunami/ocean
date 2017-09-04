@@ -204,13 +204,6 @@ public class CpuMemoryStats
         return stats;
     }
 
-    /// ditto
-    deprecated("ocean.sys.Stats.CpuMemoryStats.log is deprecated. Use collect instead.")
-    public Stats log ()
-    {
-        return this.collect();
-    }
-
     /***************************************************************************
 
         Converts the Uptime type to number of ticks.
