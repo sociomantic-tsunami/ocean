@@ -18,11 +18,7 @@
 
 module ocean.math.random.Twister;
 
-
-version (Posix)
-        {
-        import ocean.stdc.posix.sys.time;
-        }
+import core.sys.posix.sys.time : timeval, gettimeofday;
 
 /*******************************************************************************
 
