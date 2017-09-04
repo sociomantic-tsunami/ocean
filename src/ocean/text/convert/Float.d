@@ -118,40 +118,6 @@ char[] toString (NumType d, uint decimals=Dec, int e=Exp)
 
 /******************************************************************************
 
-  Template wrapper to make life simpler. Returns a text version
-  of the provided value.
-
-  See format() for details
-
- ******************************************************************************/
-
-deprecated("Format for wchar/dchar is deprecated")
-wchar[] toString16 (NumType d, uint decimals=Dec, int e=Exp)
-{
-    wchar[64] tmp = void;
-
-    return format (tmp, d, decimals, e).dup;
-}
-
-/******************************************************************************
-
-  Template wrapper to make life simpler. Returns a text version
-  of the provided value.
-
-  See format() for details
-
- ******************************************************************************/
-
-deprecated("Format for wchar/dchar is deprecated")
-dchar[] toString32 (NumType d, uint decimals=Dec, int e=Exp)
-{
-    dchar[64] tmp = void;
-
-    return format (tmp, d, decimals, e).dup;
-}
-
-/******************************************************************************
-
   Truncate trailing '0' and '.' from a string, such that 200.000
   becomes 200, and 20.10 becomes 20.1
 

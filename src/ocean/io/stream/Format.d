@@ -81,7 +81,6 @@ class FormatOutput(T) : OutputFilter
         private Layout!(T)      convert;
         private bool            flushLines;
 
-        public alias print      opCall;         /// opCall -> print
         public alias newline    nl;             /// nl -> newline
 
         protected const Eol = "\n";
@@ -103,24 +102,6 @@ class FormatOutput(T) : OutputFilter
 
         /**********************************************************************
 
-                Construct a FormatOutput instance, tying the provided stream
-                to a layout formatter.
-
-        **********************************************************************/
-
-        deprecated("Using Layout with this class is deprecated - Remove the first argument at call site")
-        this (Layout!(T) convert, OutputStream output, Const!(T)[] eol = Eol)
-        {
-                verify(convert !is null);
-                verify(output !is null);
-
-                this.convert = convert;
-                this.eol = eol;
-                super (output);
-        }
-
-        /**********************************************************************
-
                 Layout using the provided formatting specification.
 
         **********************************************************************/
@@ -128,27 +109,6 @@ class FormatOutput(T) : OutputFilter
         final FormatOutput format (Const!(T)[] fmt, ...)
         {
             this.convert(&this.emit, _arguments, _argptr, fmt);
-            return this;
-        }
-
-        /// Used by derived classes to avoid deprecations - deprecated, remove in v4.0.0
-        protected final void _transitional_format (Const!(T)[] fmt, TypeInfo[] arguments, ArgList args)
-        {
-            this.convert(&this.emit, arguments, args, fmt);
-        }
-
-        /**********************************************************************
-
-                Layout using the provided formatting specification. Varargs
-                pass-through version.
-
-        **********************************************************************/
-
-        deprecated("RTTI-specific function is deprecated, use a Formatter-compatible API")
-        final FormatOutput format (Const!(T)[] fmt, TypeInfo[] arguments, ArgList args)
-        {
-            convert (&emit, arguments, args, fmt);
-
             return this;
         }
 
@@ -162,46 +122,6 @@ class FormatOutput(T) : OutputFilter
         {
             this.convert(&this.emit, _arguments, _argptr, fmt);
             return this.newline;
-        }
-
-        /**********************************************************************
-
-                Layout using the provided formatting specification. Varargs
-                pass-through version.
-
-        **********************************************************************/
-        deprecated("RTTI-specific function is deprecated, use a Formatter-compatible API")
-        final FormatOutput formatln (Const!(T)[] fmt, TypeInfo[] arguments, ArgList args)
-        {
-            convert (&emit, arguments, args, fmt);
-
-            return newline;
-        }
-
-        /**********************************************************************
-
-                Unformatted layout, with commas inserted between args.
-                Currently supports a maximum of 24 arguments.
-
-        **********************************************************************/
-
-        deprecated("Use the 'format' method instead, or 'flush'")
-        final FormatOutput print ( ... )
-        {
-                static slice =  "{}, {}, {}, {}, {}, {}, {}, {}, " ~
-                                          "{}, {}, {}, {}, {}, {}, {}, {}, " ~
-                                          "{}, {}, {}, {}, {}, {}, {}, {}, ";
-
-                verify(_arguments.length <= slice.length/4,
-                        "FormatOutput :: too many arguments");
-
-                if (_arguments.length == 0)
-                    sink.flush;
-                else
-                {
-                    convert (&emit, _arguments, _argptr, slice[0 .. _arguments.length * 4 - 2]);
-                }
-                return this;
         }
 
         /***********************************************************************
@@ -256,30 +176,6 @@ class FormatOutput(T) : OutputFilter
 
         /**********************************************************************
 
-                Return the associated Layout.
-
-        **********************************************************************/
-
-        deprecated("FormatOutput will stop using Layout and switch to Formatter in v4.0.0")
-        final Layout!(T) layout ()
-        {
-                return convert;
-        }
-
-        /**********************************************************************
-
-                Set the associated Layout.
-
-        **********************************************************************/
-        deprecated("FormatOutput will stop using Layout and switch to Formatter in v4.0.0")
-        final FormatOutput layout (Layout!(T) layout)
-        {
-                convert = layout;
-                return this;
-        }
-
-        /**********************************************************************
-
                 Sink for passing to the formatter.
 
         **********************************************************************/
@@ -290,5 +186,11 @@ class FormatOutput(T) : OutputFilter
                 if (count is Eof)
                     conduit.error ("FormatOutput :: unexpected Eof");
                 return count;
+        }
+
+        /// Used by derived classes to avoid deprecations - deprecated, remove in v4.0.0
+        protected final void _transitional_format (Const!(T)[] fmt, TypeInfo[] arguments, ArgList args)
+        {
+            this.convert(&this.emit, arguments, args, fmt);
         }
 }

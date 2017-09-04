@@ -343,66 +343,6 @@ IeeeFlags ieeeFlags() { return IeeeFlags.getIeeeFlags(); }
 /// Set all of the floating-point status flags to false.
 void resetIeeeFlags() { IeeeFlags.resetIeeeFlags; }
 
-/** IEEE rounding modes.
- * The default mode is ROUNDTONEAREST.
- */
-deprecated
-enum RoundingMode : short {
-    ROUNDTONEAREST = 0x0000,
-    ROUNDDOWN      = 0x0400,
-    ROUNDUP        = 0x0800,
-    ROUNDTOZERO    = 0x0C00
-};
-
-/** Change the rounding mode used for all floating-point operations.
- *
- * Returns the old rounding mode.
- *
- * When changing the rounding mode, it is almost always necessary to restore it
- * at the end of the function. Typical usage:
----
-    auto oldrounding = setIeeeRounding(RoundingMode.ROUNDDOWN);
-    scope (exit) setIeeeRounding(oldrounding);
----
- */
-deprecated
-RoundingMode setIeeeRounding(RoundingMode roundingmode) {
-   version(D_InlineAsm_X86) {
-        // TODO: For SSE/SSE2, do we also need to set the SSE rounding mode?
-        short cont;
-        asm {
-            fstcw cont;
-            mov CX, cont;
-            mov AX, cont;
-            and EAX, 0x0C00; // Form the return value
-            and CX, 0xF3FF;
-            or CX, roundingmode;
-            mov cont, CX;
-            fldcw cont;
-        }
-    } else {
-           throw new SanityException("Not yet supported");
-    }
-}
-
-/** Get the IEEE rounding mode which is in use.
- *
- */
-deprecated
-RoundingMode getIeeeRounding() {
-   version(D_InlineAsm_X86) {
-        // TODO: For SSE/SSE2, do we also need to check the SSE rounding mode?
-        short cont;
-        asm {
-            mov EAX, 0x0C00;
-            fstcw cont;
-            and AX, cont;
-        }
-    } else {
-           throw new SanityException("Not yet supported");
-    }
-}
-
 unittest {
     static real a = 3.5;
     resetIeeeFlags();
@@ -420,43 +360,6 @@ unittest {
     a /= 99;
     test(ieeeFlags.underflow);
     test(ieeeFlags.inexact);
-
-    version(D_InlineAsm_X86) { // Won't work for anything else yet
-        int r = getIeeeRounding;
-        test(r == RoundingMode.ROUNDTONEAREST);
-    }
-}
-
-// Note: Itanium supports more precision options than this. SSE/SSE2 does not support any.
-deprecated
-enum PrecisionControl : short {
-    PRECISION80 = 0x300,
-    PRECISION64 = 0x200,
-    PRECISION32 = 0x000
-};
-
-/** Set the number of bits of precision used by 'real'.
- *
- * Returns: the old precision.
- * This is not supported on all platforms.
- */
-deprecated
-PrecisionControl reduceRealPrecision(PrecisionControl prec) {
-   version(D_InlineAsm_X86) {
-        short cont;
-        asm {
-            fstcw cont;
-            mov CX, cont;
-            mov AX, cont;
-            and EAX, 0x0300; // Form the return value
-            and CX,  0xFCFF;
-            or  CX,  prec;
-            mov cont, CX;
-            fldcw cont;
-        }
-    } else {
-           throw new SanityException("Not yet supported");
-    }
 }
 
 /*********************************************************************

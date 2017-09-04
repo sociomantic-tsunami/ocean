@@ -74,8 +74,7 @@ public abstract class DaemonApp : Application,
     import ocean.util.app.ext.PidLockExt;
     import ocean.util.app.ext.UnixSocketExt;
     import ocean.util.app.ExitException;
-    import ocean.util.log.Log;
-    import NewLog = ocean.util.log.Logger;
+    import ocean.util.log.Logger;
     import ocean.util.log.Stats;
 
     static import core.sys.posix.signal;
@@ -497,34 +496,11 @@ public abstract class DaemonApp : Application,
 
     override public void exit ( int status, istring msg = null )
     {
-        this.exit(status, msg, NewLog.Logger.init);
-    }
-
-    /***************************************************************************
-
-        Exit cleanly from the application, passing the specified return code to
-        the OS and optionally printing the specified message to the console and
-        the specified logger (if one is provided).
-
-        Params:
-            status = status code to return to the OS
-            msg = optional message to show just before exiting
-            logger = logger to use to log the message
-
-    ***************************************************************************/
-
-    deprecated("Use the overload that accepts a new Logger")
-    public void exit ( int status, istring msg, Logger logger )
-    {
-        if (logger !is null)
-        {
-            logger.fatal(msg);
-        }
-        throw new ExitException(status, msg);
+        this.exit(status, msg, Logger.init);
     }
 
     /// Ditto
-    public void exit ( int status, istring msg, NewLog.Logger logger )
+    public void exit ( int status, istring msg, Logger logger )
     {
         if (logger !is null)
         {
