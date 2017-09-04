@@ -630,7 +630,6 @@ struct Time
         /**********************************************************************
 
                 Subtracts the specified time span from the time,
-                assigning the result to this instance.
 
                 Params:  t = A TimeSpan value.
                 Returns: The current Time instance, with t subtracted
@@ -721,25 +720,6 @@ struct Time
         {
             return Time(epoch1970.ticks_ + unix_time * TimeSpan.TicksPerSecond);
         }
-
-    /// Support for `ocean.text.convert.Formatter`: Print the string in a
-    /// user-friendly way
-    deprecated("Use `format(\"{}\", asPrettyStr(time))` instead")
-    public void toString (size_t delegate(cstring) sink)
-    {
-        // Layout defaults to 'G'
-        DateTimeDefault.format(sink, *this, "");
-    }
-
-    /// Support for `ocean.text.convert.Formatter`: Print the string in a
-    /// user-friendly way
-    deprecated("Use `format(\"{}\", asPrettyStr(time))` instead")
-    public void toString (void delegate(cstring) sink)
-    {
-        // Layout defaults to 'G'
-        scope dg = (cstring s) { sink(s); return s.length; };
-        DateTimeDefault.format(dg, *this, "");
-    }
 }
 
 
