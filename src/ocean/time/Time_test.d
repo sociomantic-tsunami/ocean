@@ -70,9 +70,6 @@ unittest
 // raw time
 unittest
 {
-    // NB: ocean is compiled with deprecations-as-errors, so deprecated
-    // toString method is not picked even before it is completely removed:
-
     test!("==")(
         format("{}", Time.epoch1970),
         "{ ticks_: 621355968000000000 }"

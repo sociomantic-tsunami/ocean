@@ -205,10 +205,6 @@ private Unqual!(T) ctfe_powI(T)(T _x,int p){
 }
 // ----- templateFu end --------
 
-version (Posix) {
-    import ocean.stdc.posix.sys.time;
-}
-
 version(darwin) { version=has_urandom; }
 version(linux)  { version=has_urandom; }
 version(solaris){ version=has_urandom; }

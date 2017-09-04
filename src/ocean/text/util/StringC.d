@@ -90,31 +90,6 @@ class StringC
         string is returned.
 
         Params:
-            str = input string
-
-        Returns:
-            C compatible (null terminated) string
-
-    ***************************************************************************/
-
-    deprecated("Usage of Wchar strings is deprecated.")
-    public static Wchar* toCString ( ref Wchar[] str )
-    {
-        if (!str.length || !!str[$ - 1])
-        {
-            str ~= StringC.Wterm;
-        }
-
-        return str.ptr;
-    }
-
-    /***************************************************************************
-
-        Converts str to a C string, that is, if a null terminator is not
-        present then it is appended to the original string. A pointer to the
-        string is returned.
-
-        Params:
             str = input string buffer
 
         Returns:
