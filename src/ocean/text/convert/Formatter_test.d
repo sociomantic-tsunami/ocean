@@ -16,6 +16,7 @@
 module ocean.text.convert.Formatter_test;
 
 import ocean.core.Test;
+import ocean.core.Buffer;
 import ocean.text.convert.Formatter;
 import ocean.transition;
 
@@ -50,4 +51,14 @@ unittest
 
     Bar b;
     test!("==")(format("{}", b), "Hello void");
+}
+
+/// Test for Buffer overloads
+unittest
+{
+    Buffer!(char) buff;
+    sformat(buff, "{}", 42);
+    test!("==")(buff[], "42");
+    snformat(buff, "{}", 1000);
+    test!("==")(buff[], "10");
 }

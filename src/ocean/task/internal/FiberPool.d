@@ -24,7 +24,7 @@ module ocean.task.internal.FiberPool;
 import core.thread;
 
 import ocean.task.Task;
-import ocean.core.Enforce;
+import ocean.core.Verify;
 import ocean.util.container.pool.ObjectPool;
 
 debug (TaskScheduler)
@@ -53,15 +53,6 @@ public class FiberPool : ObjectPool!(WorkerFiber)
 
     /**************************************************************************
 
-        Exception object thrown if internal pool state is compromised, should
-        normally result in application termination.
-
-    **************************************************************************/
-
-    private FiberPoolSanityException exception;
-
-    /**************************************************************************
-
         Constructor
 
         Params:
@@ -75,7 +66,6 @@ public class FiberPool : ObjectPool!(WorkerFiber)
     this ( size_t stack_size, size_t limit = 0 )
     {
         this.stack_size = stack_size;
-        this.exception = new FiberPoolSanityException;
         if (limit > 0)
             this.setLimit(limit);
     }
@@ -101,7 +91,7 @@ public class FiberPool : ObjectPool!(WorkerFiber)
         auto fiber = super.get(if_missing);
         if (fiber is null)
             return null;
-        enforce(this.exception, fiber.state() != Fiber.State.EXEC);
+        verify(fiber.state() != Fiber.State.EXEC);
         return fiber;
     }
 
@@ -136,25 +126,9 @@ public class FiberPool : ObjectPool!(WorkerFiber)
     override protected void resetItem ( Item item )
     {
         auto fiber = this.fromItem(item);
-        enforce(
-            this.exception,
+        verify(
             fiber is Fiber.getThis()
                 || fiber.state() == Fiber.State.TERM
         );
-    }
-}
-
-/******************************************************************************
-
-    Exception class that indicates fiber pool internal sanity violation,
-    for example, trying to recycle fiber that is still running.
-
-******************************************************************************/
-
-private class FiberPoolSanityException : Exception
-{
-    this ( )
-    {
-        super("Internal sanity violation using fiber pool");
     }
 }
