@@ -3,9 +3,6 @@ set -xe
 
 test "$AFTER_SCRIPT" = "1" || exit 0
 
-# Submit code coverage report
-beaver run ci/codecov.sh
-
 # If this is a tag, convert and push to ocean-d2 repo
 if test -n "$TRAVIS_TAG"
 then
