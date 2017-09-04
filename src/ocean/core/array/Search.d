@@ -522,7 +522,7 @@ size_t findIf ( T, Pred ) ( in T[] haystack, Pred pred )
 {
     static assert( isCallableType!(Pred) );
 
-    foreach( size_t pos, T cur; haystack )
+    foreach( pos, cur; haystack )
     {
         if( pred( cur ) )
             return pos;
@@ -534,6 +534,18 @@ size_t findIf ( T, Pred ) ( in T[] haystack, Pred pred )
 unittest
 {
     test!("==")(findIf("bcecg", ( char c ) { return c == 'a'; }), 5);
+}
+
+unittest
+{
+    struct S
+    {
+        mstring err;
+        int x;
+    }
+
+    S[] sarr;
+    findIf(sarr, ( in S s ) { return s.x == 5; });
 }
 
 /// ditto
