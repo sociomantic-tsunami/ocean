@@ -76,5 +76,4 @@
 
 module ocean.util.serialize.package_;
 
-public import ocean.util.serialize.model.Traits;
 public import ocean.util.serialize.contiguous.package_;

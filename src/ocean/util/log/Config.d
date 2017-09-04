@@ -92,8 +92,7 @@ import ocean.util.log.AppendSysLog;
 import ocean.stdc.string;
 import ocean.text.util.StringSearch;
 
-import OldLog = ocean.util.log.Log;
-import NewLog = ocean.util.log.Logger;
+import ocean.util.log.Logger;
 import ocean.util.log.InsertConsole;
 import ocean.util.log.Appender;
 import ocean.util.log.AppendStderrStdout;
@@ -316,104 +315,12 @@ public Layout newLayout ( cstring layout_str )
     return layout;
 }
 
-
-/*******************************************************************************
-
-    Sets up logging configuration for `ocean.util.log.Log`
-
-    Calls the provided `file_appender` delegate once per log being configured
-    and passes the returned `Appender` to the `Logger.add` method.
-
-    Params:
-        config   = an instance of an class iterator for Config
-        m_config = an instance of the MetaConfig class
-        file_appender = delegate which returns appender instances to write to
-                        a file
-        use_insert_appender = true if the InsertConsole appender should be used
-                              (needed when using the AppStatus module)
-
-*******************************************************************************/
-
-deprecated("Old Loggers are deprecated, use configureNewLoggers instead")
-public void configureOldLoggers (
-    ClassIterator!(Config, ConfigParser) config, MetaConfig m_config,
-    Appender delegate ( istring file, Layout layout ) file_appender,
-    bool use_insert_appender = false)
-{
-    configureOldLoggers(config, m_config, file_appender,
-        (cstring v) { return newLayout(v); }, use_insert_appender);
-}
-
-
-/// Hack to allow to call a deprecated function without deprecations
-private deprecated extern(C) void configureOldLoggersLogExtHack (
-    ClassIterator!(Config, ConfigParser) config, MetaConfig m_config,
-    AppenderExternD file_appender, MakeLayoutExternD makeLayout,
-    bool use_insert_appender = false)
-{
-    configureOldLoggers(config, m_config, file_appender, makeLayout,
-                        use_insert_appender);
-}
-
 /// Hack because DMD1 applies extern(C) to the delegate type as well...
 private alias extern(D) Appender delegate (istring, Appender.Layout)
     AppenderExternD;
 /// Ditto
 private alias extern(D) Layout delegate (cstring)
     MakeLayoutExternD;
-
-
-/*******************************************************************************
-
-    Sets up logging configuration for `ocean.util.log.Log`
-
-    Calls the provided `file_appender` delegate once per log being configured
-    and passes the returned `Appender` to the `Logger.add` method.
-
-    This is an extra overload because using a delegate literal as a parameter's
-    default argument causes linker error in D1.
-
-    Params:
-        config   = an instance of an class iterator for Config
-        m_config = an instance of the MetaConfig class
-        file_appender = delegate which returns appender instances to write to
-                        a file
-        makeLayout = A delegate that returns a `Layout` instance from
-                     a name, or throws on error.
-                     By default, wraps `ocean.util.log.Config.newLayout`
-        use_insert_appender = true if the InsertConsole appender should be used
-                              (needed when using the AppStatus module)
-
-*******************************************************************************/
-
-deprecated("Old Loggers are deprecated, use configureNewLoggers instead")
-public void configureOldLoggers (
-    ClassIterator!(Config, ConfigParser) config, MetaConfig m_config,
-    Appender delegate ( istring file, Layout layout ) file_appender,
-    Layout delegate (cstring) makeLayout, bool use_insert_appender = false)
-{
-    // DMD1 cannot infer the common type between both return, we have to work
-    // around it...
-    static Appender console_appender_fn (bool insert_appender, Layout layout)
-    {
-        if (insert_appender)
-            return new InsertConsole(layout);
-        else
-            return new AppendStderrStdout(ILogger.Level.Warn, layout);
-    }
-
-    // The type needs to be spelt out loud because DMD2 is clever enough
-    // to see it's a function and not a delegate, but not clever enough
-    // to understand we want a delegate in the end...
-    scope OldLog.Logger delegate(cstring) lookup
-                     = (cstring n) { return !n.length ? OldLog.Log.root : OldLog.Log.lookup(n); };
-    scope Appender delegate(Layout) appender_dg = (Layout l)
-                       { return console_appender_fn(use_insert_appender, l); };
-
-    configureLoggers!(OldLog.Logger, ConfigParser, LayoutDate, LayoutSimple)
-        (config, m_config, lookup, file_appender, appender_dg, makeLayout);
-}
-
 
 ///
 unittest
@@ -440,32 +347,6 @@ unittest
             file_appender, &makeLayout, use_insert_appender);
     }
 }
-
-deprecated unittest
-{
-    // In a real app those would be full-fledged implementation
-    alias LayoutSimple AquaticLayout;
-    alias LayoutSimple SubmarineLayout;
-
-    void myConfigureLoggers (
-        ClassIterator!(Config, ConfigParser) config,
-        MetaConfig m_config,
-        Appender delegate ( istring file, Layout layout ) file_appender,
-        bool use_insert_appender = false)
-    {
-        Layout makeLayout (cstring name)
-        {
-            if (name == "aquatic")
-                return new AquaticLayout;
-            if (name == "submarine")
-                return new SubmarineLayout;
-            return ocean.util.log.Config.newLayout(name);
-        }
-        ocean.util.log.Config.configureOldLoggers(config, m_config,
-            file_appender, &makeLayout, use_insert_appender);
-    }
-}
-
 
 /*******************************************************************************
 
@@ -535,12 +416,12 @@ public void configureNewLoggers (
     // The type needs to be spelt out loud because DMD2 is clever enough
     // to see it's a function and not a delegate, but not clever enough
     // to understand we want a delegate in the end...
-    scope NewLog.Logger delegate(cstring) lookup
-                     = (cstring n) { return !n.length ? NewLog.Log.root : NewLog.Log.lookup(n); };
+    scope Logger delegate(cstring) lookup
+                     = (cstring n) { return !n.length ? Log.root : Log.lookup(n); };
     scope Appender delegate(Layout) appender_dg = (Layout l)
                        { return console_appender_fn(use_insert_appender, l); };
 
-    configureLoggers!(NewLog.Logger, ConfigParser, LayoutDate, LayoutSimple)
+    configureLoggers!(Logger, ConfigParser, LayoutDate, LayoutSimple)
         (config, m_config, lookup, file_appender, appender_dg, makeLayout);
 }
 
@@ -792,7 +673,7 @@ file = dummy
 
     configureNewLoggers(log_config, dummy_meta_config, &appender);
 
-    auto log_D = NewLog.Log.lookup("A.B.C.D");
+    auto log_D = Log.lookup("A.B.C.D");
 
     log_D.trace("trace log (shouldn't be sent to appender)");
     test!("==")(temp_appender.latest_log_msg, "");
