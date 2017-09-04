@@ -706,15 +706,6 @@ struct Time
 
     /// Support for `ocean.text.convert.Formatter`: Print the string in a
     /// user-friendly way
-    deprecated("Use the overload accepting a FormatterSink")
-    public void toString (size_t delegate(cstring) sink)
-    {
-        // Layout defaults to 'G'
-        DateTimeDefault.format(sink, *this, "");
-    }
-
-    /// Support for `ocean.text.convert.Formatter`: Print the string in a
-    /// user-friendly way
     public void toString (void delegate(cstring) sink)
     {
         // Layout defaults to 'G'

@@ -29,15 +29,6 @@ import ocean.net.http.HttpConst: HttpHeader, HttpResponseCode;
 
 /******************************************************************************
 
-    Status code enumerator redefinition to make OK the default/initial value
-
- ******************************************************************************/
-
-mixin(`deprecated("Use HttpResponseCode instead")` ~
-    Typedef!(HttpResponseCode, "StatusCode", HttpResponseCode.OK));
-
-/******************************************************************************
-
     Status phrase string definitions and code association
 
  ******************************************************************************/

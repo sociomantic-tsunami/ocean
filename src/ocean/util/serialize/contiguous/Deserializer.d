@@ -186,9 +186,6 @@ struct Deserializer
 
     alias typeof(*this) This;
 
-    deprecated("This symbol has always been resolved to wrong function and never worked")
-    alias hasMultiDimensionalDynamicArrays canDeserializeInPlace;
-
     /***************************************************************************
 
         Maximum allowed dynamic array length.

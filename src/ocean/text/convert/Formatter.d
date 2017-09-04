@@ -44,11 +44,6 @@ version (UnitTest)
 
 public alias void delegate(cstring) FormatterSink;
 
-/// Deprecated as the `size_t` return is not used. Use `FormatterSink` instead.
-deprecated("Use FormatterSink instead, Sink's return value is never used")
-public alias size_t delegate(cstring) Sink;
-
-
 /*******************************************************************************
 
     Internal sink type that wraps the user-provided one and takes care
@@ -62,10 +57,6 @@ public alias size_t delegate(cstring) Sink;
 *******************************************************************************/
 
 private alias void delegate(cstring, ref Const!(FormatInfo)) ElemSink;
-
-/// This was accidentally made private so needs to be deprecated
-deprecated("This alias shouldn't be used from outside the Formatter")
-public alias size_t delegate(cstring, ref Const!(FormatInfo)) ElementSink;
 
 
 /*******************************************************************************
@@ -249,14 +240,6 @@ public bool sformat (Args...) (FormatterSink sink, cstring fmt, Args args)
     }
     return true;
 }
-
-/// Ditto
-deprecated("Use the overload which accepts a `FormatterSink` instead")
-public bool sformat (Args...) (Sink sink, cstring fmt, Args args)
-{
-    return sformat((cstring s) { sink(s); }, fmt, args);
-}
-
 
 /*******************************************************************************
 

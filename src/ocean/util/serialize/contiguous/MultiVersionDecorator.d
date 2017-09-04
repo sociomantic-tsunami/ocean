@@ -71,10 +71,6 @@ class VersionDecorator
 
     public alias VersionDecorator This;
 
-
-    deprecated public alias .Serializer  Serializer;
-    deprecated public alias .Deserializer Deserializer;
-
     /***************************************************************************
 
         Reused exception instance

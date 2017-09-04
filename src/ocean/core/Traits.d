@@ -2020,25 +2020,6 @@ unittest
 }
 
 /**
- * Returns the type that a T would evaluate to in an expression.
- * Expr is not required to be a callable type
- */
-deprecated template ExprTypeOf( Expr )
-{
-    static if(isCallableType!( Expr ))
-        alias ReturnTypeOf!( Expr ) ExprTypeOf;
-    else
-        alias Expr ExprTypeOf;
-}
-
-deprecated unittest
-{
-    static assert (is(ExprTypeOf!(int) == int));
-    auto dg = () { return 42; };
-    static assert (is(ExprTypeOf!(typeof(dg)) == int));
-}
-
-/**
  * Evaluates to a tuple representing the parameters of Fn.  Fn is required to
  * be a callable type.
  */

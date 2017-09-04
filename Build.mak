@@ -23,22 +23,6 @@ endif
 # Remove coverage files
 clean += .*.lst
 
-# Remove deprecated modules from testing:
-TEST_FILTER_OUT += \
-	$C/src/ocean/io/Stdout_tango.d \
-	$C/src/ocean/io/FilePath_tango.d \
-	$C/src/ocean/core/Traits_tango.d \
-	$C/src/ocean/core/Exception_tango.d \
-	$C/src/ocean/io/device/SerialPort.d \
-	$C/src/ocean/io/device/ProgressFile.d \
-	$C/src/ocean/math/BigInt.d \
-	$C/src/ocean/util/log/LayoutChainsaw.d \
-	$C/src/ocean/util/log/Log.d \
-	$C/src/ocean/text/convert/Memory.d \
-	$C/src/ocean/stdc/stringz.d \
-	$C/src/ocean/io/stream/Snoop.d \
-	$(shell find $C/src/ocean/text/locale -type f)
-
 # integration test which is disabled by default because it depends on Collectd
 TEST_FILTER_OUT += \
 	$C/test/collectd/main.d

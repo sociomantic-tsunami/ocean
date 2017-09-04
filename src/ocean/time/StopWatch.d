@@ -105,9 +105,6 @@ public struct StopWatch
                 return multiplier * this.microsec;
         }
 
-        deprecated("Use `sec` instead of `stop` (which does not stop anything)")
-        alias sec stop;
-
         /***********************************************************************
 
                 Return elapsed time since the last start() as microseconds
@@ -150,23 +147,5 @@ unittest
     // validate that checking the elapsed time doesn't stop the timer
     nanosleep(&wait_time, null);
     auto stopwatch_sec_again = t.sec;
-    test!(">")(stopwatch_sec_again, stopwatch_sec);
-}
-
-deprecated unittest
-{
-    StopWatch t;
-    t.start;
-
-    auto wait_time = timespec(0, 10_000);  // 10_000 ns = 10 microsec
-
-    // validate that stopwatch time counts up
-    nanosleep(&wait_time, null);
-    auto stopwatch_sec = t.stop;
-    test!(">")(stopwatch_sec, 0);
-
-    // prove that `stop` doesn't stop anything ...
-    nanosleep(&wait_time, null);
-    auto stopwatch_sec_again = t.stop;
     test!(">")(stopwatch_sec_again, stopwatch_sec);
 }

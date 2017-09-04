@@ -84,16 +84,6 @@ class FileSystemEvent : ISelectClient
 
     /***************************************************************************
 
-        Alias for event handler delegate.
-
-    ***************************************************************************/
-
-    // TODO: this is deprecated. Remove in the next major
-    public alias void delegate ( char[] path, uint event ) Handler;
-
-
-    /***************************************************************************
-
         Structure carrying only path and event.
 
     ***************************************************************************/
@@ -162,17 +152,6 @@ class FileSystemEvent : ISelectClient
 
     /***************************************************************************
 
-        Event handler delegate, specified in the constructor and called whenever
-        a watched file system event fires.
-
-    ***************************************************************************/
-
-    // TODO: this is deprecated. Remove in the next major
-    private Handler handler;
-
-
-    /***************************************************************************
-
         Event notifier delegate, specified in the constructor and called whenever
         a watched file system event fires, passing the SmartUnion describing the
         event.
@@ -195,24 +174,6 @@ class FileSystemEvent : ISelectClient
     ***************************************************************************/
 
     private char[][uint] watched_files;
-
-
-    /***********************************************************************
-
-        Constructor. Creates a custom event and hooks it up to the provided
-        event handler.
-
-        Params:
-            handler = event handler
-
-    ***********************************************************************/
-
-    deprecated ("Please use this(Notifier) instead")
-    public this ( Handler handler )
-    {
-        this();
-        this.handler = handler;
-    }
 
 
     /***********************************************************************
@@ -241,22 +202,6 @@ class FileSystemEvent : ISelectClient
     private this ()
     {
         this.fd = new Inotify;
-    }
-
-
-    /***********************************************************************
-
-        Replace the handle delegate
-
-        Params:
-            handler = event handler
-
-    ***********************************************************************/
-
-    deprecated ("Please use setNotifier(Notifier) instead")
-    public void setHandler ( Handler handler )
-    {
-        this.handler = handler;
     }
 
 
@@ -387,9 +332,6 @@ class FileSystemEvent : ISelectClient
 
             auto path = ev.wd in this.watched_files;
             assert(path !is null);
-
-            if (this.handler)
-                this.handler(*path , ev.mask);
 
             if (this.notifier)
             {
