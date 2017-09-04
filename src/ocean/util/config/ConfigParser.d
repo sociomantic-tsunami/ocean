@@ -22,7 +22,6 @@ import ocean.core.Array;
 import ocean.core.ExceptionDefinitions;
 import ocean.core.Exception;
 import ocean.core.Enforce;
-import ocean.core.Traits : DynamicArrayType;
 import ocean.io.Stdout;
 import ocean.io.stream.Format;
 import ocean.io.stream.TextFile;
@@ -576,12 +575,12 @@ public class ConfigParser
 
     ***************************************************************************/
 
-    public DynamicArrayType!(T) get ( T ) ( cstring category, cstring key,
+    public SliceIfD1StaticArray!(T) get ( T ) ( cstring category, cstring key,
             T default_value )
     {
         if ( exists(category, key) )
         {
-            return getStrict!(DynamicArrayType!(T))(category, key);
+            return getStrict!(SliceIfD1StaticArray!(T))(category, key);
         }
         return default_value;
     }

@@ -139,8 +139,7 @@ import ocean.util.config.ConfigParser;
 
 import ocean.util.Convert;
 
-import ocean.core.Traits : DynamicArrayType, isStringType,
-                           isIntegerType, isRealType;
+import ocean.core.Traits : isStringType, isIntegerType, isRealType;
 
 import ocean.io.Stdout;
 
@@ -1050,11 +1049,13 @@ private void readFieldsImpl ( T, Source )
         {
             static if ( is(Type U : U[]) && !isStringType!(Type))
             {
-                reference.tupleof[si] = config.getListStrict!(DynamicArrayType!(U))(group, key);
+                reference.tupleof[si] =
+                    config.getListStrict!(SliceIfD1StaticArray!(U))(group, key);
             }
             else
             {
-                reference.tupleof[si] = config.getStrict!(DynamicArrayType!(Type))(group, key);
+                reference.tupleof[si] =
+                    config.getStrict!(SliceIfD1StaticArray!(Type))(group, key);
             }
 
 
