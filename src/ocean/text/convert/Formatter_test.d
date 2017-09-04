@@ -20,37 +20,19 @@ import ocean.core.Buffer;
 import ocean.text.convert.Formatter;
 import ocean.transition;
 
-/// Tests for #120
 unittest
 {
     static struct Foo
     {
         int i = 0x2A;
-        void toString (size_t delegate (cstring) sink)
-        {
-            sink("Hello size_t");
-        }
-    }
-
-    Foo f;
-    test!("==")(format("{}", f), "Hello size_t");
-
-    static struct Bar
-    {
-        int i = 0x2A;
-         void toString (size_t delegate (cstring) sink)
-        {
-            sink("Hello size_t");
-        }
-        // This one takes precedence
         void toString (void delegate (cstring) sink)
         {
             sink("Hello void");
         }
     }
 
-    Bar b;
-    test!("==")(format("{}", b), "Hello void");
+    Foo f;
+    test!("==")(format("{}", f), "Hello void");
 }
 
 /// Test for Buffer overload
@@ -59,15 +41,6 @@ unittest
     Buffer!(char) buff;
     sformat(buff, "{}", 42);
     test!("==")(buff[], "42");
-}
-
-/// Ditto
-deprecated unittest
-{
-    Buffer!(char) buff;
-    buff.length = 2;
-    snformat(buff, "{}", 1000);
-    test!("==")(buff[], "10");
 }
 
 /*******************************************************************************
