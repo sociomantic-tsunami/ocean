@@ -20,12 +20,7 @@
 
 module ocean.math.random.Kiss;
 
-
-version (Posix)
-        {
-        import ocean.stdc.posix.sys.time;
-        }
-
+import core.sys.posix.sys.time : timeval, gettimeofday;
 
 /******************************************************************************
 

@@ -611,7 +611,6 @@ import ocean.io.stream.Format : FormatOutput;
 import ocean.math.Math;
 import ocean.text.Util;
 import ocean.text.convert.Formatter;
-static import ocean.text.convert.Layout_tango; // TODO: deprecated - remove in v4.0.0
 import ocean.text.convert.Integer_tango;
 import ocean.util.container.SortedMap;
 import ocean.util.container.more.Stack;
@@ -1075,41 +1074,6 @@ public class Arguments
             if ( (result = dg(arg)) != 0 )
             {
                 break;
-            }
-        }
-
-        return result;
-    }
-
-
-    /***************************************************************************
-
-        Constructs a string of error messages, using the given delegate to
-        format the output.
-        The system formatter can be used by passing `&stderr.layout.sprint` as
-        the delegate.
-
-        Params:
-            dg = delegate that will be called for formatting the error messages
-
-        Returns:
-            formatted error message string
-
-    ***************************************************************************/
-
-    deprecated("Use the overload that doesn't take a parameter (and use the Formatter)")
-    public istring errors ( mstring delegate(mstring buf, cstring fmt, ...) dg )
-    {
-        char[256] tmp;
-        istring result;
-
-        foreach ( arg; args )
-        {
-            if ( arg.error )
-            {
-                result ~= dg(tmp, msgs[arg.error-1], arg.name,
-                    arg.values.length, arg.min, arg.max, arg.bogus,
-                    arg.options);
             }
         }
 

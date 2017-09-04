@@ -18,8 +18,8 @@ module ocean.time.model.IMicrosecondsClock;
 
 
 
-import ocean.stdc.posix.sys.time : timeval;
 import core.stdc.time : tm, time_t;
+import core.sys.posix.sys.time : timeval, gettimeofday;
 import ocean.time.Time;
 
 
