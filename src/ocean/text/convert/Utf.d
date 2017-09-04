@@ -59,9 +59,6 @@ static import core.exception;
 
 import ocean.transition;
 
-deprecated("Import core.exception directly")
-public extern (C) void onUnicodeError (cstring msg, size_t idx = 0);
-
 /*******************************************************************************
 
   Symmetric calls for equivalent types; these return the provided

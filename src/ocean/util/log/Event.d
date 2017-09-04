@@ -83,13 +83,6 @@ public struct LogEvent
         return time_;
     }
 
-    /// Return time when the executable started
-    deprecated("Use ocean.time.Clock : Clock.startTime() directly")
-    Time started ()
-    {
-        return Clock.startTime();
-    }
-
     /// Return the logger level name of this event.
     cstring levelName ()
     {

@@ -16,7 +16,6 @@
 module ocean.task.extensions.package_;
 
 public import ocean.task.extensions.ExceptionForwarding;
-public import ocean.task.extensions.SelectFiberSupport;
 
 version (UnitTest)
 {
