@@ -20,6 +20,7 @@ import ocean.transition;
 import ocean.core.ExceptionDefinitions;
 import ocean.core.Test;
 import ocean.core.Traits;
+import ocean.core.Verify;
 
 
 
@@ -503,7 +504,7 @@ private template Methods ( U, uint i )
     const type = "typeof(" ~ member_access ~ ")";
 
     const get = type ~ ' ' ~  member ~ "() "
-        ~ "{ enforce(_.active == _.active." ~ member ~ ", "
+        ~ "{ verify(_.active == _.active." ~ member ~ ", "
         ~ `"SmartUnion: '` ~ member ~ `' not active"); `
         ~ "return " ~ member_access ~ "; }";
 
