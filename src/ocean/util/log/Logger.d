@@ -976,7 +976,7 @@ unittest
     scope appender = new Buffer();
     char[32] log_buffer;
     Logger log = Log.lookup("ocean.util.log.Logger.TestLogTrim")
-        .add(appender).buffer(log_buffer);
+        .additive(false).add(appender).buffer(log_buffer);
     log.info("{}", TestStr);
     log.error(TestStr);
     test!("==")(appender.result.length, 2);
