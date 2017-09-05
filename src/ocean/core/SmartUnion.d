@@ -503,9 +503,9 @@ private template Methods ( U, uint i )
     const type = "typeof(" ~ member_access ~ ")";
 
     const get = type ~ ' ' ~  member ~ "() "
-        ~ "in { enforce(_.active == _.active." ~ member ~ ", "
-        ~ `"SmartUnion: '` ~ member ~ `' not active"); } `
-        ~ "body { return " ~ member_access ~ "; }";
+        ~ "{ enforce(_.active == _.active." ~ member ~ ", "
+        ~ `"SmartUnion: '` ~ member ~ `' not active"); `
+        ~ "return " ~ member_access ~ "; }";
 
     const set = type ~ ' ' ~  member ~ '(' ~ type ~ ' ' ~ member ~ ")"
         ~ "{ _.active = _.active." ~ member ~ ";"
