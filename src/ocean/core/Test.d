@@ -4,6 +4,16 @@
   functions to define actual test cases. These helpers are supposed to be
   used in unittest blocks instead of asserts.
 
+  There were three reasons why dedicated function got introduced:
+
+  1) Bultin `assert` throws an `Error`, which makes implementing test runner
+     that doesn't stop on first failure illegal by language specification.
+  2) These `test` functions can provide more informational formatting compared
+     to plain `assert`, for example `test!("==")(a, b)` will print `a` and `b`
+     values on failure.
+  3) Having dedicated exception type for test failures makes possible to
+     distinguish in test runners between contract failures and test failures.
+
   Copyright:
       Copyright (c) 2009-2016 Sociomantic Labs GmbH.
       All rights reserved.
