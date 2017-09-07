@@ -865,50 +865,50 @@ unittest
     const queue_size_1 = (9+FlexibleByteRingQueue.Header.sizeof)*10;
 
     scope queue = new FlexibleByteRingQueue(queue_size_1);
-    assert(queue.free_space >= queue_size_1);
-    assert(queue.is_empty);
+    test(queue.free_space >= queue_size_1);
+    test(queue.is_empty);
 
-    assert(queue.free_space >= queue_size_1);
-    assert(queue.is_empty);
+    test(queue.free_space >= queue_size_1);
+    test(queue.is_empty);
 
-    assert(queue.push(cast(ubyte[])"Element 1"));
-    assert(queue.pop() == cast(ubyte[])"Element 1");
-    assert(queue.get_items == 0);
-    assert(!queue.free_space == 0);
-    assert(queue.is_empty);
-    assert(queue.used_space() == 0);
+    test(queue.push(cast(ubyte[])"Element 1"));
+    test(queue.pop() == cast(ubyte[])"Element 1");
+    test(queue.get_items == 0);
+    test(!queue.free_space == 0);
+    test(queue.is_empty);
+    test(queue.used_space() == 0);
 
-    assert(queue.push(cast(ubyte[])"Element 1"));
-    assert(queue.push(cast(ubyte[])"Element 2"));
-    assert(queue.push(cast(ubyte[])"Element 3"));
-    assert(queue.push(cast(ubyte[])"Element 4"));
-    assert(queue.push(cast(ubyte[])"Element 5"));
-    assert(queue.push(cast(ubyte[])"Element 6"));
-    assert(queue.push(cast(ubyte[])"Element 7"));
-    assert(queue.push(cast(ubyte[])"Element 8"));
-    assert(queue.push(cast(ubyte[])"Element 9"));
-    assert(queue.push(cast(ubyte[])"Element10"));
+    test(queue.push(cast(ubyte[])"Element 1"));
+    test(queue.push(cast(ubyte[])"Element 2"));
+    test(queue.push(cast(ubyte[])"Element 3"));
+    test(queue.push(cast(ubyte[])"Element 4"));
+    test(queue.push(cast(ubyte[])"Element 5"));
+    test(queue.push(cast(ubyte[])"Element 6"));
+    test(queue.push(cast(ubyte[])"Element 7"));
+    test(queue.push(cast(ubyte[])"Element 8"));
+    test(queue.push(cast(ubyte[])"Element 9"));
+    test(queue.push(cast(ubyte[])"Element10"));
 
-    assert(queue.length == 10);
-    assert(queue.free_space == 0);
-    assert(!queue.is_empty);
+    test(queue.length == 10);
+    test(queue.free_space == 0);
+    test(!queue.is_empty);
 
-    assert(!queue.push(cast(ubyte[])"more"));
-    assert(queue.length == 10);
+    test(!queue.push(cast(ubyte[])"more"));
+    test(queue.length == 10);
 
     scope middle = new FlexibleByteRingQueue((1+FlexibleByteRingQueue.Header.sizeof)*5);
     middle.push(cast(ubyte[])"1");
     middle.push(cast(ubyte[])"2");
     middle.push(cast(ubyte[])"3");
     middle.push(cast(ubyte[])"4");
-    assert(middle.pop == cast(ubyte[])"1");
-    assert(middle.get_read_from == 1 + FlexibleByteRingQueue.Header.sizeof);
-    assert(middle.get_write_to == (1+FlexibleByteRingQueue.Header.sizeof)*4);
-    assert(middle.free_space() == (1+FlexibleByteRingQueue.Header.sizeof)*2);
+    test(middle.pop == cast(ubyte[])"1");
+    test(middle.get_read_from == 1 + FlexibleByteRingQueue.Header.sizeof);
+    test(middle.get_write_to == (1+FlexibleByteRingQueue.Header.sizeof)*4);
+    test(middle.free_space() == (1+FlexibleByteRingQueue.Header.sizeof)*2);
 
-    assert(middle.push(cast(ubyte[])"5"));
-    assert(middle.push(cast(ubyte[])"6"));
-    assert(middle.free_space() == 0);
+    test(middle.push(cast(ubyte[])"5"));
+    test(middle.push(cast(ubyte[])"6"));
+    test(middle.free_space() == 0);
 }
 
 /*******************************************************************************
@@ -950,32 +950,32 @@ unittest
     const queue_size_1 = (9+FlexibleByteRingQueue.Header.sizeof)*10;
 
     scope queue = new FlexibleByteRingQueue(queue_size_1);
-    assert(queue.free_space >= queue_size_1);
-    assert(queue.is_empty);
+    test(queue.free_space >= queue_size_1);
+    test(queue.is_empty);
 
     queue.save(&store);
     queue.load(&restore);
 
-    assert(queue.free_space >= queue_size_1);
-    assert(queue.is_empty);
+    test(queue.free_space >= queue_size_1);
+    test(queue.is_empty);
 
-    assert(queue.push(cast(ubyte[])"Element 1"));
-    assert(queue.pop() == cast(ubyte[])"Element 1");
-    assert(queue.get_items == 0);
-    assert(!queue.free_space == 0);
-    assert(queue.is_empty);
-    assert(queue.used_space() == 0);
+    test(queue.push(cast(ubyte[])"Element 1"));
+    test(queue.pop() == cast(ubyte[])"Element 1");
+    test(queue.get_items == 0);
+    test(!queue.free_space == 0);
+    test(queue.is_empty);
+    test(queue.used_space() == 0);
 
-    assert(queue.push(cast(ubyte[])"Element 1"));
-    assert(queue.push(cast(ubyte[])"Element 2"));
-    assert(queue.push(cast(ubyte[])"Element 3"));
-    assert(queue.push(cast(ubyte[])"Element 4"));
-    assert(queue.push(cast(ubyte[])"Element 5"));
-    assert(queue.push(cast(ubyte[])"Element 6"));
-    assert(queue.push(cast(ubyte[])"Element 7"));
-    assert(queue.push(cast(ubyte[])"Element 8"));
-    assert(queue.push(cast(ubyte[])"Element 9"));
-    assert(queue.push(cast(ubyte[])"Element10"));
+    test(queue.push(cast(ubyte[])"Element 1"));
+    test(queue.push(cast(ubyte[])"Element 2"));
+    test(queue.push(cast(ubyte[])"Element 3"));
+    test(queue.push(cast(ubyte[])"Element 4"));
+    test(queue.push(cast(ubyte[])"Element 5"));
+    test(queue.push(cast(ubyte[])"Element 6"));
+    test(queue.push(cast(ubyte[])"Element 7"));
+    test(queue.push(cast(ubyte[])"Element 8"));
+    test(queue.push(cast(ubyte[])"Element 9"));
+    test(queue.push(cast(ubyte[])"Element10"));
 
     // Save and restore the queue status in the middle of a test.
 
@@ -983,22 +983,22 @@ unittest
     queue.clear();
     queue.load(&restore);
 
-    assert(queue.length == 10);
-    assert(queue.free_space == 0);
-    assert(!queue.is_empty);
+    test(queue.length == 10);
+    test(queue.free_space == 0);
+    test(!queue.is_empty);
 
-    assert(!queue.push(cast(ubyte[])"more"));
-    assert(queue.length == 10);
+    test(!queue.push(cast(ubyte[])"more"));
+    test(queue.length == 10);
 
     scope middle = new FlexibleByteRingQueue((1+FlexibleByteRingQueue.Header.sizeof)*5);
     middle.push(cast(ubyte[])"1");
     middle.push(cast(ubyte[])"2");
     middle.push(cast(ubyte[])"3");
     middle.push(cast(ubyte[])"4");
-    assert(middle.pop == cast(ubyte[])"1");
-    assert(middle.get_read_from == 1 + FlexibleByteRingQueue.Header.sizeof);
-    assert(middle.get_write_to == (1+FlexibleByteRingQueue.Header.sizeof)*4);
-    assert(middle.free_space() == (1+FlexibleByteRingQueue.Header.sizeof)*2);
+    test(middle.pop == cast(ubyte[])"1");
+    test(middle.get_read_from == 1 + FlexibleByteRingQueue.Header.sizeof);
+    test(middle.get_write_to == (1+FlexibleByteRingQueue.Header.sizeof)*4);
+    test(middle.free_space() == (1+FlexibleByteRingQueue.Header.sizeof)*2);
 
     // Save and restore the queue status in the middle of a test.
 
@@ -1006,12 +1006,12 @@ unittest
     middle.clear();
     backup.seek(0);
     middle.load(backup);
-    assert(backup.read(null) == backup.Eof);
+    test(backup.read(null) == backup.Eof);
     backup.close();
 
-    assert(middle.push(cast(ubyte[])"5"));
-    assert(middle.push(cast(ubyte[])"6"));
-    assert(middle.free_space() == 0);
+    test(middle.push(cast(ubyte[])"5"));
+    test(middle.push(cast(ubyte[])"6"));
+    test(middle.free_space() == 0);
 }
 
 /*******************************************************************************
@@ -1053,7 +1053,7 @@ unittest
         void push(uint n)
         in
         {
-            assert(n <= ubyte.max);
+            test(n <= ubyte.max);
         }
         body
         {
@@ -1085,7 +1085,7 @@ unittest
                         q.clear();
                         backup.seek(0);
                         q.load(backup);
-                        assert(backup.read(null) == backup.Eof);
+                        test(backup.read(null) == backup.Eof);
                         backup.close();
                         break;
 
@@ -1100,8 +1100,8 @@ unittest
             {
                 if (ubyte[] popped = q.pop())
                 {
-                    assert (popped.length == 1);
-                    assert (popped[0] != Q_SIZE+1);
+                    test (popped.length == 1);
+                    test (popped[0] != Q_SIZE+1);
                     popped[0] = Q_SIZE+1;
                 }
                 else
@@ -1156,77 +1156,77 @@ unittest
     {
         scope queue = new FlexibleByteRingQueue((1+FlexibleByteRingQueue.Header.sizeof)*3);
 
-        assert(queue.get_read_from == 0);
-        assert(queue.get_write_to == 0);
+        test(queue.get_read_from == 0);
+        test(queue.get_write_to == 0);
         // [___] r=0 w=0
-        assert(queue.push(cast(ubyte[])"1"));
+        test(queue.push(cast(ubyte[])"1"));
 
-        assert(queue.get_read_from == 0);
-        assert(queue.get_write_to == 1+FlexibleByteRingQueue.Header.sizeof);
-        assert(queue.get_items == 1);
-        assert((cast(FlexibleByteRingQueue.Header*) queue.get_data.ptr).length == 1);
+        test(queue.get_read_from == 0);
+        test(queue.get_write_to == 1+FlexibleByteRingQueue.Header.sizeof);
+        test(queue.get_items == 1);
+        test((cast(FlexibleByteRingQueue.Header*) queue.get_data.ptr).length == 1);
 
-        assert(queue.get_data[FlexibleByteRingQueue.Header.sizeof ..
+        test(queue.get_data[FlexibleByteRingQueue.Header.sizeof ..
                           1+FlexibleByteRingQueue.Header.sizeof] ==
                               cast(ubyte[]) "1");
 
         // [#__] r=0 w=5
-        assert(queue.push(cast(ubyte[])"2"));
+        test(queue.push(cast(ubyte[])"2"));
 
         // [##_] r=0 w=10
-        assert(queue.push(cast(ubyte[])"3"));
+        test(queue.push(cast(ubyte[])"3"));
 
         // [###] r=0 w=15
-        assert(!queue.push(cast(ubyte[])"4"));
-        assert(queue.free_space == 0);
-        assert(queue.pop() == cast(ubyte[])"1");
+        test(!queue.push(cast(ubyte[])"4"));
+        test(queue.free_space == 0);
+        test(queue.pop() == cast(ubyte[])"1");
 
         // [_##] r=5 w=15
-        assert(queue.free_space() == 1+FlexibleByteRingQueue.Header.sizeof);
-        assert(queue.pop() == cast(ubyte[])"2");
+        test(queue.free_space() == 1+FlexibleByteRingQueue.Header.sizeof);
+        test(queue.pop() == cast(ubyte[])"2");
 
         // [__#] r=10 w=15
-        assert(queue.free_space() == (1+FlexibleByteRingQueue.Header.sizeof)*2);
-        assert(queue.get_write_to == queue.get_data.length);
-        assert(queue.push(cast(ubyte[])"1"));
+        test(queue.free_space() == (1+FlexibleByteRingQueue.Header.sizeof)*2);
+        test(queue.get_write_to == queue.get_data.length);
+        test(queue.push(cast(ubyte[])"1"));
 
         // [#_#] r=10 w=5
-        assert(queue.free_space() == 1+FlexibleByteRingQueue.Header.sizeof);
-        assert(queue.get_write_to == queue.pushSize("2".length));
-        assert(queue.push(cast(ubyte[])"2"));
+        test(queue.free_space() == 1+FlexibleByteRingQueue.Header.sizeof);
+        test(queue.get_write_to == queue.pushSize("2".length));
+        test(queue.push(cast(ubyte[])"2"));
        // Stdout.formatln("gap is {}, free is {}, write is {}", queue.gap, queue.free_space(),queue.write_to);
 
 
         // [###] r=10 w=10
-        assert(queue.free_space == 0);
-        assert(queue.pop() == cast(ubyte[])"3");
+        test(queue.free_space == 0);
+        test(queue.pop() == cast(ubyte[])"3");
 
         // [##_] r=15/0 w=10
-        assert(queue.free_space() == (1+FlexibleByteRingQueue.Header.sizeof)*1);
-        assert(queue.pop() == cast(ubyte[])"1");
+        test(queue.free_space() == (1+FlexibleByteRingQueue.Header.sizeof)*1);
+        test(queue.pop() == cast(ubyte[])"1");
 
         // [_#_] r=5 w=10
-        assert(queue.pop() == cast(ubyte[])"2");
+        test(queue.pop() == cast(ubyte[])"2");
 
         // [__] r=0 w=0
-        assert(queue.is_empty);
-        assert(queue.push(cast(ubyte[])"1"));
+        test(queue.is_empty);
+        test(queue.push(cast(ubyte[])"1"));
 
         // [#__] r=0 w=5
-        assert(queue.push(cast(ubyte[])"2#"));
+        test(queue.push(cast(ubyte[])"2#"));
 
         // [#$_] r=0 w=11 ($ = 2 bytes)
-        assert(queue.pop() == cast(ubyte[])"1");
+        test(queue.pop() == cast(ubyte[])"1");
 
         // [_$_] r=5 w=11
-        assert(queue.push(cast(ubyte[])"1"));
+        test(queue.push(cast(ubyte[])"1"));
 
         // [#$_] r=5 w=5
-        assert(!queue.push(cast(ubyte[])"2"));
-        assert(queue.pop() == cast(ubyte[])"2#");
+        test(!queue.push(cast(ubyte[])"2"));
+        test(queue.pop() == cast(ubyte[])"2#");
 
         // [#__] r=11 w=5
-        assert(queue.push(cast(ubyte[])"2")); // this needs to be wrapped now
+        test(queue.push(cast(ubyte[])"2")); // this needs to be wrapped now
 
         // [##_] r=11 w=10
     }

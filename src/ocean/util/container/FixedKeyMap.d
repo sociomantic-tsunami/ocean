@@ -72,6 +72,7 @@ import ocean.core.Enforce;
 
 debug import ocean.io.Stdout;
 
+version(UnitTest) import ocean.core.Test;
 
 
 /*******************************************************************************
@@ -327,24 +328,24 @@ public class FixedKeyMap ( K, V )
 unittest
 {
     auto map = new FixedKeyMap!(istring, istring)(["first", "second", "third"]);
-    assert(("first" in map) !is null);
-    assert(("second" in map) !is null);
-    assert(("third" in map) !is null);
-    assert(("fourth" in map) is null);
+    test(("first" in map) !is null);
+    test(("second" in map) !is null);
+    test(("third" in map) !is null);
+    test(("fourth" in map) is null);
 
-    assert(*("first" in map) == "");
-    assert(*("second" in map) == "");
-    assert(*("third" in map) == "");
+    test(*("first" in map) == "");
+    test(*("second" in map) == "");
+    test(*("third" in map) == "");
 
     map["first"] = "hello";
-    assert(("first" in map) !is null);
-    assert(*("first" in map) == "hello");
-    assert(map["first"] == "hello");
+    test(("first" in map) !is null);
+    test(*("first" in map) == "hello");
+    test(map["first"] == "hello");
 
     map["first"] = "world";
-    assert(("first" in map) !is null);
-    assert(*("first" in map) == "world");
-    assert(map["first"] == "world");
+    test(("first" in map) !is null);
+    test(*("first" in map) == "world");
+    test(map["first"] == "world");
 
     bool caught;
     try
@@ -355,5 +356,5 @@ unittest
     {
         caught = true;
     }
-    assert(caught);
+    test(caught);
 }

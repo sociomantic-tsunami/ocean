@@ -26,6 +26,8 @@ public  import ocean.util.digest.Md4;
 
 import ocean.util.digest.MerkleDamgard;
 
+version(UnitTest) import ocean.core.Test;
+
 /*******************************************************************************
 
 *******************************************************************************/
@@ -271,6 +273,6 @@ unittest
         h.update(cast(ubyte[]) s);
         char[] d = h.hexDigest;
 
-        assert(d == results[i],":("~s~")("~d~")!=("~results[i]~")");
+        test(d == results[i],":("~s~")("~d~")!=("~results[i]~")");
     }
 }

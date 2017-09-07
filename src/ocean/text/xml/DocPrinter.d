@@ -28,6 +28,7 @@ import ocean.core.ExceptionDefinitions : XmlException;
 version (UnitTest)
 {
     import ocean.text.xml.Document;
+    import ocean.core.Test;
 }
 
 
@@ -231,7 +232,7 @@ unittest
     auto p = new DocPrinter!(char);
     char[1024] buf;
     auto newbuf = p.print (doc, buf);
-    assert(document == newbuf);
-    assert(buf.ptr == newbuf.ptr);
-    assert(document == p.print(doc));
+    test(document == newbuf);
+    test(buf.ptr == newbuf.ptr);
+    test(document == p.print(doc));
 }

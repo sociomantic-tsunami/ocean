@@ -50,6 +50,8 @@ module ocean.text.util.StringEncode;
 
 import ocean.transition;
 
+version(UnitTest) import ocean.core.Test;
+
 static if (__VERSION__ >= 2000 && __VERSION__ < 2073)
 {
     extern (C)
@@ -458,5 +460,5 @@ unittest
     Utf8Encoder utf8_encoder = new Utf8Encoder();
     mstring buff;
     utf8_encoder.convert("Soon\u2122", buff);
-    assert(buff == "Soon™", buff);
+    test(buff == "Soon™", buff);
 }

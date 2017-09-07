@@ -62,6 +62,8 @@ import      ocean.io.compress.CompressException;
 
 import      ocean.core.Enforce;
 
+version(UnitTest) import ocean.core.Test;
+
 /*******************************************************************************
 
     LzoChunk compressor/decompressor
@@ -403,8 +405,8 @@ unittest
 
     uncomp_us -= compr_us;
 
-    assert (data.length == uncompressed.length, "data lengthmismatch");
-    assert (data        == uncompressed,        "data mismatch");
+    test (data.length == uncompressed.length, "data lengthmismatch");
+    test (data        == uncompressed,        "data mismatch");
 
     pre_comp_sz.bin(compressed.length);
     pre_uncomp_sz.bin(data.length);

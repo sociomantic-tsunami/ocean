@@ -25,6 +25,8 @@ import ocean.time.chrono.Calendar;
 
 import ocean.core.ExceptionDefinitions;
 
+version(UnitTest) import ocean.core.Test;
+
 /**
  * $(ANCHOR _Gregorian)
  * Represents the Gregorian calendar.
@@ -510,27 +512,27 @@ unittest
     //
     Time t = Time.epoch + TimeSpan.fromDays(365);
     Date d = Gregorian.generic.toDate(t);
-    assert(d.year == 2);
-    assert(d.month == 1);
-    assert(d.day == 1);
-    assert(d.era == Gregorian.AD_ERA);
-    assert(d.doy == 1);
+    test(d.year == 2);
+    test(d.month == 1);
+    test(d.day == 1);
+    test(d.era == Gregorian.AD_ERA);
+    test(d.doy == 1);
     //
     // note that this is in disagreement with the Julian Calendar
     //
-    assert(d.dow == Gregorian.DayOfWeek.Tuesday);
+    test(d.dow == Gregorian.DayOfWeek.Tuesday);
 
     //
     // check that it handles negative time
     //
     t = Time.epoch - TimeSpan.fromDays(366);
     d = Gregorian.generic.toDate(t);
-    assert(d.year == 1);
-    assert(d.month == 1);
-    assert(d.day == 1);
-    assert(d.era == Gregorian.BC_ERA);
-    assert(d.doy == 1);
-    assert(d.dow == Gregorian.DayOfWeek.Saturday);
+    test(d.year == 1);
+    test(d.month == 1);
+    test(d.day == 1);
+    test(d.era == Gregorian.BC_ERA);
+    test(d.doy == 1);
+    test(d.dow == Gregorian.DayOfWeek.Saturday);
 
     //
     // check that addMonths works properly, add 15 months to
@@ -538,32 +540,32 @@ unittest
     //
     t = Gregorian.generic.toTime(2004, 2, 3, 4, 5, 6, 7) + TimeSpan.fromMicros(8);
     d = Gregorian.generic.toDate(t);
-    assert(d.year == 2004);
-    assert(d.month == 2);
-    assert(d.day == 3);
-    assert(d.era == Gregorian.AD_ERA);
-    assert(d.doy == 34);
-    assert(d.dow == Gregorian.DayOfWeek.Tuesday);
+    test(d.year == 2004);
+    test(d.month == 2);
+    test(d.day == 3);
+    test(d.era == Gregorian.AD_ERA);
+    test(d.doy == 34);
+    test(d.dow == Gregorian.DayOfWeek.Tuesday);
 
     auto t2 = Gregorian.generic.addMonths(t, 15);
     d = Gregorian.generic.toDate(t2);
-    assert(d.year == 2005);
-    assert(d.month == 5);
-    assert(d.day == 3);
-    assert(d.era == Gregorian.AD_ERA);
-    assert(d.doy == 123);
-    assert(d.dow == Gregorian.DayOfWeek.Tuesday);
+    test(d.year == 2005);
+    test(d.month == 5);
+    test(d.day == 3);
+    test(d.era == Gregorian.AD_ERA);
+    test(d.doy == 123);
+    test(d.dow == Gregorian.DayOfWeek.Tuesday);
 
     t2 = Gregorian.generic.addMonths(t2, -15);
     d = Gregorian.generic.toDate(t2);
-    assert(d.year == 2004);
-    assert(d.month == 2);
-    assert(d.day == 3);
-    assert(d.era == Gregorian.AD_ERA);
-    assert(d.doy == 34);
-    assert(d.dow == Gregorian.DayOfWeek.Tuesday);
+    test(d.year == 2004);
+    test(d.month == 2);
+    test(d.day == 3);
+    test(d.era == Gregorian.AD_ERA);
+    test(d.doy == 34);
+    test(d.dow == Gregorian.DayOfWeek.Tuesday);
 
-    assert(t == t2);
+    test(t == t2);
 
     //
     // verify that illegal argument exceptions occur
@@ -571,7 +573,7 @@ unittest
     try
     {
         t = Gregorian.generic.toTime (0, 1, 1, 0, 0, 0, 0, Gregorian.AD_ERA);
-        assert(false, "Did not throw illegal argument exception");
+        test(false, "Did not throw illegal argument exception");
     }
     catch(Exception iae)
     {
@@ -579,7 +581,7 @@ unittest
     try
     {
         t = Gregorian.generic.toTime (1, 0, 1, 0, 0, 0, 0, Gregorian.AD_ERA);
-        assert(false, "Did not throw illegal argument exception");
+        test(false, "Did not throw illegal argument exception");
     }
     catch(IllegalArgumentException iae)
     {
@@ -587,7 +589,7 @@ unittest
     try
     {
         t = Gregorian.generic.toTime (1, 1, 0, 0, 0, 0, 0, Gregorian.BC_ERA);
-        assert(false, "Did not throw illegal argument exception");
+        test(false, "Did not throw illegal argument exception");
     }
     catch(IllegalArgumentException iae)
     {
@@ -597,7 +599,7 @@ unittest
     {
         t = Gregorian.generic.toTime(2000, 1, 31, 0, 0, 0, 0);
         t = Gregorian.generic.addMonths(t, 1);
-        assert(false, "Did not throw illegal argument exception");
+        test(false, "Did not throw illegal argument exception");
     }
     catch(IllegalArgumentException iae)
     {
@@ -607,10 +609,10 @@ unittest
     {
         t = Gregorian.generic.toTime(2000, 1, 31, 0, 0, 0, 0);
         t = Gregorian.generic.addMonths(t, 1, true);
-        assert(Gregorian.generic.getDayOfMonth(t) == 29);
+        test(Gregorian.generic.getDayOfMonth(t) == 29);
     }
     catch(IllegalArgumentException iae)
     {
-        assert(false, "Should not throw illegal argument exception");
+        test(false, "Should not throw illegal argument exception");
     }
 }

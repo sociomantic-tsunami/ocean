@@ -27,6 +27,7 @@ import ocean.transition;
 import TextUtil = ocean.text.Util;
 import Path = ocean.io.Path;
 import ocean.sys.Environment;
+version(UnitTest) import ocean.core.Test;
 
 version (Posix)
 {
@@ -228,20 +229,20 @@ unittest
 
         // Testing when there is no environment variable.
         Environment.set("HOME", null);
-        assert(expandTilde("~/") == "~/");
-        assert(expandTilde("~") == "~");
+        test(expandTilde("~/") == "~/");
+        test(expandTilde("~") == "~");
 
         // Testing when an environment variable is set.
         Environment.set("HOME", "ocean/test");
-        assert (Environment.get("HOME") == "ocean/test");
+        test (Environment.get("HOME") == "ocean/test");
 
-        assert(expandTilde("~/") == "ocean/test/");
-        assert(expandTilde("~") == "ocean/test");
+        test(expandTilde("~/") == "ocean/test/");
+        test(expandTilde("~") == "ocean/test");
 
         // The same, but with a variable ending in a slash.
         Environment.set("HOME", "ocean/test/");
-        assert(expandTilde("~/") == "ocean/test/");
-        assert(expandTilde("~") == "ocean/test");
+        test(expandTilde("~/") == "ocean/test/");
+        test(expandTilde("~") == "ocean/test");
 
         // Recover original HOME variable before continuing.
         if (home)
@@ -250,8 +251,8 @@ unittest
             Environment.set("HOME", null);
 
         // Test user expansion for root. Are there unices without /root?
-        assert(expandTilde("~root") == "/root" || expandTilde("~root") == "/var/root");
-        assert(expandTilde("~root/") == "/root/" || expandTilde("~root") == "/var/root");
-        assert(expandTilde("~Idontexist/hey") == "~Idontexist/hey");
+        test(expandTilde("~root") == "/root" || expandTilde("~root") == "/var/root");
+        test(expandTilde("~root/") == "/root/" || expandTilde("~root") == "/var/root");
+        test(expandTilde("~Idontexist/hey") == "~Idontexist/hey");
     }
 }

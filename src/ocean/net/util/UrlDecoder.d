@@ -33,6 +33,8 @@ import ocean.text.util.SplitIterator: ChrSplitIterator;
 
 import ocean.stdc.string: memmove;
 
+version(UnitTest) import ocean.core.Test;
+
 extern (C) private
 {
     /**************************************************************************
@@ -524,8 +526,8 @@ unittest
         decoded ~= chunk;
     }
 
-    assert (decoded == "%Die %uKatze ∞∞ tritt die Treppe % krumm. ∇%");
+    test (decoded == "%Die %uKatze ∞∞ tritt die Treppe % krumm. ∇%");
 
-    assert (UrlDecoder.decode("%Die %uKatze %u221E%u221E tritt die Treppe %% krumm. %u2207".dup) ==
+    test (UrlDecoder.decode("%Die %uKatze %u221E%u221E tritt die Treppe %% krumm. %u2207".dup) ==
                    "%Die %uKatze ∞∞ tritt die Treppe % krumm. ∇");
 }

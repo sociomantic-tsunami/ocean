@@ -97,7 +97,7 @@ char [] indexedLoopUnroll(int n, char [] s)
 
 unittest
 {
-    assert(indexedLoopUnroll(3, "@*23;")=="0*23;1*23;2*23;");
+    test(indexedLoopUnroll(3, "@*23;")=="0*23;1*23;2*23;");
 }
 
 public:
@@ -193,10 +193,10 @@ unittest
     }
     c[19]=0x3333_3333;
     uint carry = multibyteAddSub!('+')(c[0..18], a[0..18], b[0..18], 0);
-    assert(carry==1);
-    assert(c[0]==0x8000_0003);
-    assert(c[1]==4);
-    assert(c[19]==0x3333_3333); // check for overrun
+    test(carry==1);
+    test(c[0]==0x8000_0003);
+    test(c[1]==4);
+    test(c[19]==0x3333_3333); // check for overrun
     for (int i=0; i<a.length; ++i)
     {
         a[i]=b[i]=c[i]=0;
@@ -207,8 +207,8 @@ unittest
     b[10]=0x1D950C84;
     a[5] =0x44444444;
     carry = multibyteAddSub!('-')(a[0..12], a[0..12], b[0..12], 0);
-    assert(a[11]==0);
-    for (int i=0; i<10; ++i) if (i!=5) assert(a[i]==0);
+    test(a[11]==0);
+    for (int i=0; i<10; ++i) if (i!=5) test(a[i]==0);
 
     for (int q=3; q<36;++q) {
         for (int i=0; i<a.length; ++i)
@@ -218,7 +218,7 @@ unittest
         a[q-2]=0x040000;
         b[q-2]=0x040000;
        carry = multibyteAddSub!('-')(a[0..q], a[0..q], b[0..q], 0);
-       assert(a[q-2]==0);
+       test(a[q-2]==0);
     }
 }
 
@@ -530,34 +530,34 @@ unittest
 
     uint [] aa = [0x1222_2223, 0x4555_5556, 0x8999_999A, 0xBCCC_CCCD, 0xEEEE_EEEE];
     multibyteShr(aa[0..$-1], aa, 4);
-    assert(aa[0] == 0x6122_2222 && aa[1]==0xA455_5555
+    test(aa[0] == 0x6122_2222 && aa[1]==0xA455_5555
         && aa[2]==0xD899_9999 && aa[3]==0x0BCC_CCCC);
 
     aa = [0x1222_2223, 0x4555_5556, 0x8999_999A, 0xBCCC_CCCD, 0xEEEE_EEEE];
     multibyteShr(aa[2..$-1], aa[2..$-1], 4);
-    assert(aa[0] == 0x1222_2223 && aa[1]==0x4555_5556
+    test(aa[0] == 0x1222_2223 && aa[1]==0x4555_5556
         && aa[2]==0xD899_9999 && aa[3]==0x0BCC_CCCC);
 
     aa = [0x1222_2223, 0x4555_5556, 0x8999_999A, 0xBCCC_CCCD, 0xEEEE_EEEE];
     multibyteShr(aa[0..$-2], aa, 4);
-    assert(aa[1]==0xA455_5555 && aa[2]==0x0899_9999);
-    assert(aa[0]==0x6122_2222);
-    assert(aa[3]==0xBCCC_CCCD);
+    test(aa[1]==0xA455_5555 && aa[2]==0x0899_9999);
+    test(aa[0]==0x6122_2222);
+    test(aa[3]==0xBCCC_CCCD);
 
 
     aa = [0xF0FF_FFFF, 0x1222_2223, 0x4555_5556, 0x8999_999A, 0xBCCC_CCCD, 0xEEEE_EEEE];
     uint r = multibyteShl(aa[2..4], aa[2..4], 4);
-    assert(aa[0] == 0xF0FF_FFFF && aa[1]==0x1222_2223
+    test(aa[0] == 0xF0FF_FFFF && aa[1]==0x1222_2223
         && aa[2]==0x5555_5560 && aa[3]==0x9999_99A4 && aa[4]==0xBCCC_CCCD);
-    assert(r==8);
+    test(r==8);
 
     aa = [0xF0FF_FFFF, 0x1222_2223, 0x4555_5556, 0x8999_999A, 0xBCCC_CCCD, 0xEEEE_EEEE];
     r = multibyteShl(aa[1..4], aa[1..4], 4);
-    assert(aa[0] == 0xF0FF_FFFF
+    test(aa[0] == 0xF0FF_FFFF
         && aa[2]==0x5555_5561);
-        assert(aa[3]==0x9999_99A4 && aa[4]==0xBCCC_CCCD);
-    assert(r==8);
-        assert(aa[1]==0x2222_2230);
+        test(aa[3]==0x9999_99A4 && aa[4]==0xBCCC_CCCD);
+    test(r==8);
+        test(aa[1]==0x2222_2230);
 
     aa = [0xF0FF_FFFF, 0x1222_2223, 0x4555_5556, 0x8999_999A, 0xBCCC_CCCD, 0xEEEE_EEEE];
     r = multibyteShl(aa[0..4], aa[1..5], 31);
@@ -630,7 +630,7 @@ unittest
 {
     uint [] aa = [0xF0FF_FFFF, 0x1222_2223, 0x4555_5556, 0x8999_999A, 0xBCCC_CCCD, 0xEEEE_EEEE];
     multibyteMul(aa[1..4], aa[1..4], 16, 0);
-    assert(aa[0] == 0xF0FF_FFFF && aa[1] == 0x2222_2230 && aa[2]==0x5555_5561 && aa[3]==0x9999_99A4 && aa[4]==0x0BCCC_CCCD);
+    test(aa[0] == 0xF0FF_FFFF && aa[1] == 0x2222_2230 && aa[2]==0x5555_5561 && aa[3]==0x9999_99A4 && aa[4]==0x0BCCC_CCCD);
 }
 
 // The inner multiply-and-add loop, together with the Even entry point.
@@ -797,8 +797,8 @@ unittest {
     uint [] aa = [0xF0FF_FFFF, 0x1222_2223, 0x4555_5556, 0x8999_999A, 0xBCCC_CCCD, 0xEEEE_EEEE];
     uint [] bb = [0x1234_1234, 0xF0F0_F0F0, 0x00C0_C0C0, 0xF0F0_F0F0, 0xC0C0_C0C0];
     multibyteMulAdd!('+')(bb[1..$-1], aa[1..$-2], 16, 5);
-    assert(bb[0] == 0x1234_1234 && bb[4] == 0xC0C0_C0C0);
-    assert(bb[1] == 0x2222_2230 + 0xF0F0_F0F0+5 && bb[2] == 0x5555_5561+0x00C0_C0C0+1
+    test(bb[0] == 0x1234_1234 && bb[4] == 0xC0C0_C0C0);
+    test(bb[1] == 0x2222_2230 + 0xF0F0_F0F0+5 && bb[2] == 0x5555_5561+0x00C0_C0C0+1
         && bb[3] == 0x9999_99A4+0xF0F0_F0F0 );
 }
 
@@ -1012,8 +1012,8 @@ unittest {
     for (int i=0; i<aa.length; ++i) aa[i] = 0x8765_4321 * (i+3);
     uint overflow = multibyteMul(aa, aa, 0x8EFD_FCFB, 0x33FF_7461);
     uint r = multibyteDivAssign(aa, 0x8EFD_FCFB, overflow);
-    for (int i=0; i<aa.length-1; ++i) assert(aa[i] == 0x8765_4321 * (i+3));
-    assert(r==0x33FF_7461);
+    for (int i=0; i<aa.length-1; ++i) test(aa[i] == 0x8765_4321 * (i+3));
+    test(r==0x33FF_7461);
 }
 
 // Set dest[2*i..2*i+1]+=src[i]*src[i]
@@ -1066,8 +1066,8 @@ unittest {
     for (int i=0; i<bb.length; ++i) bb[i] = i;
 	aa[$-1]= 7;
     multibyteAddDiagonalSquares(aa[0..$-1], bb);
-	assert(aa[$-1]==7);
-	for (int i=0; i<bb.length; ++i) { assert(aa[2*i]==0x8000_0000+i*i); assert(aa[2*i+1]==0x8000_0000); }
+	test(aa[$-1]==7);
+	for (int i=0; i<bb.length; ++i) { test(aa[2*i]==0x8000_0000+i*i); test(aa[2*i+1]==0x8000_0000); }
 }
 
 void multibyteTriangleAccumulateD(uint[] dest, uint[] x)
@@ -1214,8 +1214,8 @@ unittest {
     c[] = 0;
     c[1] = 17;
     c[3] = 6;
-    assert(a[]==c[]);
-    assert(a[0]==0);
+    test(a[]==c[]);
+    test(a[0]==0);
     aa[] = 0xFFFF_FFFF;
     a[] = 0;
     b[] = 0;
@@ -1225,19 +1225,19 @@ unittest {
     b[3] = 0;
 
     multibyteTriangleAccumulateAsm(a[0..8], b[0..4]);
-    assert(a[1]==0x3a600964);
-    assert(a[2]==0x339974f6);
-    assert(a[3]==0x46736fce);
-    assert(a[4]==0x5e24a2b4);
+    test(a[1]==0x3a600964);
+    test(a[2]==0x339974f6);
+    test(a[3]==0x46736fce);
+    test(a[4]==0x5e24a2b4);
 
     b[3] = 0xe93ff9f4;
     b[4] = 0x184f03;
     a[]=0;
     multibyteTriangleAccumulateAsm(a[0..14], b[0..7]);
-    assert(a[3]==0x79fff5c2);
-    assert(a[4]==0xcf384241);
-    assert(a[5]== 0x4a17fc8);
-    assert(a[6]==0x4d549025);
+    test(a[3]==0x79fff5c2);
+    test(a[4]==0xcf384241);
+    test(a[5]== 0x4a17fc8);
+    test(a[6]==0x4d549025);
 }
 
 void multibyteSquare(BigDigit[] result, BigDigit [] x)

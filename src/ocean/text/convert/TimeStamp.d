@@ -47,6 +47,8 @@ import ocean.time.chrono.Gregorian;
 
 import Integer = ocean.text.convert.Integer_tango;
 
+version(UnitTest) import ocean.core.Test;
+
 /******************************************************************************
 
   Parse provided input and return a UTC epoch time. An exception
@@ -165,9 +167,9 @@ unittest
     const STR_1970 = "Thu, 01 Jan 1970 00:00:00 GMT";
     mstring buf;
     buf.length = 29;
-    assert(format(buf, Time.epoch1970) == STR_1970);
+    test(format(buf, Time.epoch1970) == STR_1970);
     char[29] static_buf;
-    assert(format(static_buf, Time.epoch1970) == STR_1970);
+    test(format(static_buf, Time.epoch1970) == STR_1970);
 }
 
 /******************************************************************************
@@ -214,9 +216,9 @@ unittest
     const STR_1970 = "1970-01-01T00:00:00Z";
     mstring buf;
     buf.length = 29;
-    assert(format8601(buf, Time.epoch1970) == STR_1970);
+    test(format8601(buf, Time.epoch1970) == STR_1970);
     char[29] static_buf;
-    assert(format8601(static_buf, Time.epoch1970) == STR_1970);
+    test(format8601(static_buf, Time.epoch1970) == STR_1970);
 }
 
 /******************************************************************************
@@ -761,11 +763,11 @@ private static int parseInt(T) (ref T* p, T* e)
 unittest
 {
     wchar[30] tmp;
-    Const!(wchar)[] test = "Sun, 06 Nov 1994 08:49:37 GMT";
+    Const!(wchar)[] s = "Sun, 06 Nov 1994 08:49:37 GMT";
 
-    auto time = parse (test);
+    auto time = parse (s);
     auto text = format (tmp, time);
-    assert (text == test);
+    test (text == s);
 
     cstring garbageTest = "Wed Jun 11 17:22:07 20088";
     garbageTest = garbageTest[0..$-1];
@@ -773,7 +775,7 @@ unittest
 
     time = parse(garbageTest);
     auto text2 = format(tmp2, time);
-    assert (text2 == "Wed, 11 Jun 2008 17:22:07 GMT");
+    test (text2 == "Wed, 11 Jun 2008 17:22:07 GMT");
 }
 
 /******************************************************************************

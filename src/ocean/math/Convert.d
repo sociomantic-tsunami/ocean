@@ -40,6 +40,8 @@ import core.stdc.fenv;
 
 import core.stdc.math;
 
+version(UnitTest) import ocean.core.Test;
+
 /*******************************************************************************
 
     Rounds a float, double, or real value to the nearest (away from zero) int

@@ -30,6 +30,8 @@ import core.stdc.time:       time_t, tm, time;
 import core.sys.posix.time: gmtime_r, localtime_r;
 import core.stdc.stdlib:     lldiv;
 
+version(UnitTest) import ocean.core.Test;
+
 /******************************************************************************/
 
 struct HttpTimeFormatter
@@ -217,5 +219,5 @@ struct HttpTimeFormatter
 unittest
 {
     char[HttpTimeFormatter.ResultLength] buf;
-    assert (HttpTimeFormatter.format(buf, 352716457) == "Fri, 06 Mar 1981 08:47:37 GMT");
+    test (HttpTimeFormatter.format(buf, 352716457) == "Fri, 06 Mar 1981 08:47:37 GMT");
 }

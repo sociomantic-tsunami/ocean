@@ -39,6 +39,8 @@ module ocean.util.encode.Base32;
 
 import ocean.transition;
 
+version(UnitTest) import ocean.core.Test;
+
 /*******************************************************************************
 
     calculates and returns the size needed to encode the length of the
@@ -251,11 +253,11 @@ unittest
 
     for (uint i; i < testBytes.length; i++) {
         auto resultChars = encode(cast(ubyte[])testBytes[i]);
-        assert(resultChars == testChars[i],
+        test(resultChars == testChars[i],
                 testBytes[i]~": ("~resultChars~") != ("~testChars[i]~")");
 
         auto resultBytes = decode(testChars[i]);
-        assert(resultBytes == cast(ubyte[])testBytes[i],
+        test(resultBytes == cast(ubyte[])testBytes[i],
                 testChars[i]~": ("~cast(char[])resultBytes~") != ("~testBytes[i]~")");
     }
 }

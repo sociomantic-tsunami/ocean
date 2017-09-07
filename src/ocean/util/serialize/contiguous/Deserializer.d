@@ -31,6 +31,8 @@ import ocean.core.Traits;
 
 debug (DeserializationTrace) import ocean.io.Stdout;
 
+version(UnitTest) import ocean.core.Test;
+
 /*******************************************************************************
 
     Indicates a problem during deserialization process, most often some sort
@@ -120,11 +122,11 @@ class DeserializationException : Exception
             e.enforceSizeLimit!(S)(1,2);
             e.enforceSizeLimit!(S)(2,2);
             e.enforceSizeLimit!(S)(3,2);
-            assert(0);
+            assert(false);
         }
         catch ( DeserializationException e )
         {
-            assert(getMsg(e) == "Error deserializing 'S' : length 3 exceeds limit 2");
+            test(getMsg(e) == "Error deserializing 'S' : length 3 exceeds limit 2");
         }
     }
 }

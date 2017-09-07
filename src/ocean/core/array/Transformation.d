@@ -435,18 +435,18 @@ unittest
     {
         Buffer!(char) buf;
         auto r = filter( array, dg, buf );
-        assert( r.length == num );
+        .test( r.length == num );
         size_t rpos = 0;
         foreach( pos, cur; buf )
         {
             if ( dg( cur ) )
             {
-                assert( r[rpos] == cur );
+                .test( r[rpos] == cur );
                 rpos++;
             }
         }
 
-        assert( rpos == num );
+        .test( rpos == num );
     }
 
     test( "abcdefghij", ( char c ) { return c == 'x'; },  0 );

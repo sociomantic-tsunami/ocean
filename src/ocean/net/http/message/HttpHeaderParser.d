@@ -33,6 +33,8 @@ import ocean.text.util.SplitIterator: ChrSplitIterator, ISplitIterator;
 
 import ocean.net.http.HttpException: HttpParseException;
 
+version(UnitTest) import ocean.core.Test;
+
 public alias long ssize_t;
 
 /******************************************************************************
@@ -959,47 +961,47 @@ unittest
                 {
                     msg_body_start = parser.parse(content2[pos .. content2.length]);
 
-                    assert (msg_body_start !is null);
-                    assert (msg_body_start.length <= content2.length);
-                    assert (msg_body_start == content2[content2.length - msg_body_start.length .. content2.length]);
+                    test (msg_body_start !is null);
+                    test (msg_body_start.length <= content2.length);
+                    test (msg_body_start == content2[content2.length - msg_body_start.length .. content2.length]);
                 }
             }
         }
 
-        assert (parser.start_line_tokens[0]  == "POST");
-        assert (parser.start_line_tokens[1]  == "/dir?query=Hello%20World!&abc=def&ghi");
-        assert (parser.start_line_tokens[2]  == "HTTP/1.1");
+        test (parser.start_line_tokens[0]  == "POST");
+        test (parser.start_line_tokens[1]  == "/dir?query=Hello%20World!&abc=def&ghi");
+        test (parser.start_line_tokens[2]  == "HTTP/1.1");
 
         {
             auto elements = parser.header_elements;
 
-            with (elements[0]) assert (key == "Host"            && val == "www.example.org:12345");
-            with (elements[1]) assert (key == "User-Agent"      && val == "Mozilla/5.0 (X11; U; Linux i686; de; rv:1.9.2.17) Gecko/20110422 Ubuntu/9.10 (karmic) Firefox/3.6.17");
-            with (elements[2]) assert (key == "Accept"          && val == "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
-            with (elements[3]) assert (key == "Accept-Language" && val == "de-de,de;q=0.8,en-us;q=0.5,en;q=0.3");
-            with (elements[4]) assert (key == "Accept-Encoding" && val == "gzip,deflate");
-            with (elements[5]) assert (key == "Accept-Charset"  && val == "UTF-8,*");
-            with (elements[6]) assert (key == "Keep-Alive"      && val == "115");
-            with (elements[7]) assert (key == "Connection"      && val == "keep-alive");
-            with (elements[8]) assert (key == "Cache-Control"   && val == "max-age=0");
+            with (elements[0]) test (key == "Host"            && val == "www.example.org:12345");
+            with (elements[1]) test (key == "User-Agent"      && val == "Mozilla/5.0 (X11; U; Linux i686; de; rv:1.9.2.17) Gecko/20110422 Ubuntu/9.10 (karmic) Firefox/3.6.17");
+            with (elements[2]) test (key == "Accept"          && val == "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
+            with (elements[3]) test (key == "Accept-Language" && val == "de-de,de;q=0.8,en-us;q=0.5,en;q=0.3");
+            with (elements[4]) test (key == "Accept-Encoding" && val == "gzip,deflate");
+            with (elements[5]) test (key == "Accept-Charset"  && val == "UTF-8,*");
+            with (elements[6]) test (key == "Keep-Alive"      && val == "115");
+            with (elements[7]) test (key == "Connection"      && val == "keep-alive");
+            with (elements[8]) test (key == "Cache-Control"   && val == "max-age=0");
 
-            assert (elements.length == 9);
+            test (elements.length == 9);
         }
 
         {
             auto lines = parser.header_lines;
 
-            assert (lines[0] == "Host: www.example.org:12345");
-            assert (lines[1] == "User-Agent: Mozilla/5.0 (X11; U; Linux i686; de; rv:1.9.2.17) Gecko/20110422 Ubuntu/9.10 (karmic) Firefox/3.6.17");
-            assert (lines[2] == "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
-            assert (lines[3] == "Accept-Language: de-de,de;q=0.8,en-us;q=0.5,en;q=0.3");
-            assert (lines[4] == "Accept-Encoding: gzip,deflate");
-            assert (lines[5] == "Accept-Charset: UTF-8,*");
-            assert (lines[6] == "Keep-Alive: 115");
-            assert (lines[7] == "Connection: keep-alive");
-            assert (lines[8] == "Cache-Control: max-age=0");
+            test (lines[0] == "Host: www.example.org:12345");
+            test (lines[1] == "User-Agent: Mozilla/5.0 (X11; U; Linux i686; de; rv:1.9.2.17) Gecko/20110422 Ubuntu/9.10 (karmic) Firefox/3.6.17");
+            test (lines[2] == "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
+            test (lines[3] == "Accept-Language: de-de,de;q=0.8,en-us;q=0.5,en;q=0.3");
+            test (lines[4] == "Accept-Encoding: gzip,deflate");
+            test (lines[5] == "Accept-Charset: UTF-8,*");
+            test (lines[6] == "Keep-Alive: 115");
+            test (lines[7] == "Connection: keep-alive");
+            test (lines[8] == "Cache-Control: max-age=0");
 
-            assert (lines.length == 9);
+            test (lines.length == 9);
         }
 
         version (OceanPerformanceTest)

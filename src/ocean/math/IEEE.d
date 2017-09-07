@@ -37,6 +37,8 @@ module ocean.math.IEEE;
 
 import ocean.transition;
 
+version(UnitTest) import ocean.core.Test;
+
 version(TangoNoAsm) {
 
 } else version(D_InlineAsm_X86) {
@@ -403,23 +405,23 @@ version(D_InlineAsm_X86) { // Won't work for anything else yet
     unittest {
         real a = 3.5;
         resetIeeeFlags();
-        assert(!ieeeFlags.divByZero);
+        test(!ieeeFlags.divByZero);
         a /= 0.0L;
-        assert(ieeeFlags.divByZero);
-        assert(a == real.infinity);
+        test(ieeeFlags.divByZero);
+        test(a == real.infinity);
         a *= 0.0L;
-        assert(ieeeFlags.invalid);
-        assert(isNaN(a));
+        test(ieeeFlags.invalid);
+        test(isNaN(a));
         a = real.max;
         a *= 2;
-        assert(ieeeFlags.overflow);
+        test(ieeeFlags.overflow);
         a = min_normal!(real) * real.epsilon;
         a /= 99;
-        assert(ieeeFlags.underflow);
-        assert(ieeeFlags.inexact);
+        test(ieeeFlags.underflow);
+        test(ieeeFlags.inexact);
 
         int r = getIeeeRounding;
-        assert(r == RoundingMode.ROUNDTONEAREST);
+        test(r == RoundingMode.ROUNDTONEAREST);
     }
 }
 
@@ -586,11 +588,11 @@ unittest
     int i;
     int eptr;
     real v = frexp(NaN(0xABC), eptr);
-    assert(isIdentical(NaN(0xABC), v));
-    assert(eptr ==int.min);
+    test(isIdentical(NaN(0xABC), v));
+    test(eptr ==int.min);
     v = frexp(-NaN(0xABC), eptr);
-    assert(isIdentical(-NaN(0xABC), v));
-    assert(eptr ==int.min);
+    test(isIdentical(-NaN(0xABC), v));
+    test(eptr ==int.min);
 
     for (i = 0; i < vals.length; i++) {
         real x = vals[i][0];
@@ -598,8 +600,8 @@ unittest
         int exp = cast(int)vals[i][2];
         v = frexp(x, eptr);
 //        printf("frexp(%La) = %La, should be %La, eptr = %d, should be %d\n", x, v, e, eptr, exp);
-        assert(isIdentical(e, v));
-        assert(exp == eptr);
+        test(isIdentical(e, v));
+        test(exp == eptr);
 
     }
    static if (real.mant_dig == 64) {
@@ -615,8 +617,8 @@ unittest
         real e = extendedvals[i][1];
         int exp = cast(int)extendedvals[i][2];
         v = frexp(x, eptr);
-        assert(isIdentical(e, v));
-        assert(exp == eptr);
+        test(isIdentical(e, v));
+        test(exp == eptr);
 
     }
   }
@@ -713,16 +715,16 @@ version (X86)
 }
 
 unittest {
-    assert(ilogb(1.0) == 0);
-    assert(ilogb(65536) == 16);
-    assert(ilogb(-65536) == 16);
-    assert(ilogb(1.0 / 65536) == -16);
-    assert(ilogb(real.nan) == FP_ILOGBNAN);
-    assert(ilogb(0.0) == FP_ILOGB0);
-    assert(ilogb(-0.0) == FP_ILOGB0);
+    test(ilogb(1.0) == 0);
+    test(ilogb(65536) == 16);
+    test(ilogb(-65536) == 16);
+    test(ilogb(1.0 / 65536) == -16);
+    test(ilogb(real.nan) == FP_ILOGBNAN);
+    test(ilogb(0.0) == FP_ILOGB0);
+    test(ilogb(-0.0) == FP_ILOGB0);
     // denormal
-    assert(ilogb(0.125 * min_normal!(real)) == real.min_exp - 4);
-    assert(ilogb(real.infinity) == FP_ILOGBINFINITY);
+    test(ilogb(0.125 * min_normal!(real)) == real.min_exp - 4);
+    test(ilogb(real.infinity) == FP_ILOGBINFINITY);
 }
 
 /*****************************************
@@ -754,12 +756,12 @@ real logb(real x)
 }
 
 unittest {
-    assert(logb(real.infinity)== real.infinity);
-    assert(isIdentical(logb(NaN(0xFCD)), NaN(0xFCD)));
-    assert(logb(1.0)== 0.0);
-    assert(logb(-65536) == 16);
-    assert(logb(0.0)== -real.infinity);
-    assert(ilogb(0.125*min_normal!(real)) == real.min_exp-4);
+    test(logb(real.infinity)== real.infinity);
+    test(isIdentical(logb(NaN(0xFCD)), NaN(0xFCD)));
+    test(logb(1.0)== 0.0);
+    test(logb(-65536) == 16);
+    test(logb(0.0)== -real.infinity);
+    test(ilogb(0.125*min_normal!(real)) == real.min_exp-4);
 }
 
 /*************************************
@@ -791,8 +793,8 @@ real scalbn(real x, int n)
 }
 
 unittest {
-    assert(scalbn(-real.infinity, 5) == -real.infinity);
-    assert(isIdentical(scalbn(NaN(0xABC),7), NaN(0xABC)));
+    test(scalbn(-real.infinity, 5) == -real.infinity);
+    test(isIdentical(scalbn(NaN(0xABC),7), NaN(0xABC)));
 }
 
 /**
@@ -812,7 +814,7 @@ real fdim(real x, real y)
 }
 
 unittest {
-    assert(isIdentical(fdim(NaN(0xABC), 58.2), NaN(0xABC)));
+    test(isIdentical(fdim(NaN(0xABC), 58.2), NaN(0xABC)));
 }
 
 /*******************************
@@ -840,7 +842,7 @@ real fabs(real x) /* intrinsic */
 }
 
 unittest {
-    assert(isIdentical(fabs(NaN(0xABC)), NaN(0xABC)));
+    test(isIdentical(fabs(NaN(0xABC)), NaN(0xABC)));
 }
 
 /**
@@ -879,8 +881,8 @@ creal expi(real y)
 
 unittest
 {
-    assert(expi(1.3e5L) == core.stdc.math.cosl(1.3e5L) + core.stdc.math.sinl(1.3e5L) * 1i);
-    assert(expi(0.0L) == 1L + 0.0Li);
+    test(expi(1.3e5L) == core.stdc.math.cosl(1.3e5L) + core.stdc.math.sinl(1.3e5L) * 1i);
+    test(expi(0.0L) == 1L + 0.0Li);
 }
 
 /*********************************
@@ -911,12 +913,12 @@ int isNaN(real x)
 
 unittest
 {
-    assert(isNaN(float.nan));
-    assert(isNaN(-double.nan));
-    assert(isNaN(real.nan));
+    test(isNaN(float.nan));
+    test(isNaN(-double.nan));
+    test(isNaN(real.nan));
 
-    assert(!isNaN(53.6));
-    assert(!isNaN(float.infinity));
+    test(!isNaN(53.6));
+    test(!isNaN(float.infinity));
 }
 
 /**
@@ -944,16 +946,16 @@ unittest
     double d = 500;
     real e = 10e+48;
 
-    assert(isNormal(f));
-    assert(isNormal(d));
-    assert(isNormal(e));
+    test(isNormal(f));
+    test(isNormal(d));
+    test(isNormal(e));
     f=d=e=0;
-    assert(!isNormal(f));
-    assert(!isNormal(d));
-    assert(!isNormal(e));
-    assert(!isNormal(real.infinity));
-    assert(isNormal(-real.max));
-    assert(!isNormal(min_normal!(real)/4));
+    test(!isNormal(f));
+    test(!isNormal(d));
+    test(!isNormal(e));
+    test(!isNormal(real.infinity));
+    test(isNormal(-real.max));
+    test(!isNormal(min_normal!(real)/4));
 
 }
 
@@ -992,15 +994,15 @@ bool isIdentical(creal x, creal y) {
 }
 
 unittest {
-    assert(isIdentical(0.0, 0.0));
-    assert(!isIdentical(0.0, -0.0));
-    assert(isIdentical(NaN(0xABC), NaN(0xABC)));
-    assert(!isIdentical(NaN(0xABC), NaN(218)));
-    assert(isIdentical(1.234e56, 1.234e56));
-    assert(isNaN(NaN(0x12345)));
-    assert(isIdentical(3.1 + NaN(0xDEF) * 1i, 3.1 + NaN(0xDEF)*1i));
-    assert(!isIdentical(3.1+0.0i, 3.1-0i));
-    assert(!isIdentical(0.0i, 2.5e58i));
+    test(isIdentical(0.0, 0.0));
+    test(!isIdentical(0.0, -0.0));
+    test(isIdentical(NaN(0xABC), NaN(0xABC)));
+    test(!isIdentical(NaN(0xABC), NaN(218)));
+    test(isIdentical(1.234e56, 1.234e56));
+    test(isNaN(NaN(0x12345)));
+    test(isIdentical(3.1 + NaN(0xDEF) * 1i, 3.1 + NaN(0xDEF)*1i));
+    test(!isIdentical(3.1+0.0i, 3.1-0i));
+    test(!isIdentical(0.0i, 2.5e58i));
 }
 
 /*********************************
@@ -1022,9 +1024,9 @@ int isSubnormal(float f)
 unittest
 {
     float f = -min_normal!(float);
-    assert(!isSubnormal(f));
+    test(!isSubnormal(f));
     f/=4;
-    assert(isSubnormal(f));
+    test(isSubnormal(f));
 }
 
 /// ditto
@@ -1040,7 +1042,7 @@ unittest
     double f;
 
     for (f = 1; !isSubnormal(f); f /= 2)
-    assert(f != 0);
+    test(f != 0);
 }
 
 /// ditto
@@ -1069,7 +1071,7 @@ unittest
     real f;
 
     for (f = 1; !isSubnormal(f); f /= 2)
-    assert(f != 0);
+    test(f != 0);
 }
 
 /*********************************
@@ -1094,10 +1096,10 @@ int isZero(real x)
 
 unittest
 {
-    assert(isZero(0.0));
-    assert(isZero(-0.0));
-    assert(!isZero(2.5));
-    assert(!isZero(min_normal!(real) / 1000));
+    test(isZero(0.0));
+    test(isZero(-0.0));
+    test(!isZero(2.5));
+    test(!isZero(min_normal!(real) / 1000));
 }
 
 /*********************************
@@ -1125,12 +1127,12 @@ int isInfinity(real x)
 
 unittest
 {
-    assert(isInfinity(float.infinity));
-    assert(!isInfinity(float.nan));
-    assert(isInfinity(double.infinity));
-    assert(isInfinity(-real.infinity));
+    test(isInfinity(float.infinity));
+    test(!isInfinity(float.nan));
+    test(isInfinity(double.infinity));
+    test(isInfinity(-real.infinity));
 
-    assert(isInfinity(-1.0 / 0.0));
+    test(isInfinity(-1.0 / 0.0));
 }
 
 /**
@@ -1272,55 +1274,55 @@ unittest {
 
         // Tests for 80-bit reals
 
-        assert(isIdentical(nextUp(NaN(0xABC)), NaN(0xABC)));
+        test(isIdentical(nextUp(NaN(0xABC)), NaN(0xABC)));
         // negative numbers
-        assert( nextUp(-real.infinity) == -real.max );
-        assert( nextUp(-1-real.epsilon) == -1.0 );
-        assert( nextUp(-2) == -2.0 + real.epsilon);
+        test( nextUp(-real.infinity) == -real.max );
+        test( nextUp(-1-real.epsilon) == -1.0 );
+        test( nextUp(-2) == -2.0 + real.epsilon);
         // denormals and zero
-        assert( nextUp(-min_normal!(real)) == -min_normal!(real)*(1-real.epsilon) );
-        assert( nextUp(-min_normal!(real)*(1-real.epsilon) == -min_normal!(real)*(1-2*real.epsilon)) );
-        assert( isIdentical(-0.0L, nextUp(-min_normal!(real)*real.epsilon)) );
-        assert( nextUp(-0.0) == min_normal!(real)*real.epsilon );
-        assert( nextUp(0.0) == min_normal!(real)*real.epsilon );
-        assert( nextUp(min_normal!(real)*(1-real.epsilon)) == min_normal!(real) );
-        assert( nextUp(min_normal!(real)) == min_normal!(real)*(1+real.epsilon) );
+        test( nextUp(-min_normal!(real)) == -min_normal!(real)*(1-real.epsilon) );
+        test( nextUp(-min_normal!(real)*(1-real.epsilon) == -min_normal!(real)*(1-2*real.epsilon)) );
+        test( isIdentical(-0.0L, nextUp(-min_normal!(real)*real.epsilon)) );
+        test( nextUp(-0.0) == min_normal!(real)*real.epsilon );
+        test( nextUp(0.0) == min_normal!(real)*real.epsilon );
+        test( nextUp(min_normal!(real)*(1-real.epsilon)) == min_normal!(real) );
+        test( nextUp(min_normal!(real)) == min_normal!(real)*(1+real.epsilon) );
         // positive numbers
-        assert( nextUp(1) == 1.0 + real.epsilon );
-        assert( nextUp(2.0-real.epsilon) == 2.0 );
-        assert( nextUp(real.max) == real.infinity );
-        assert( nextUp(real.infinity)==real.infinity );
+        test( nextUp(1) == 1.0 + real.epsilon );
+        test( nextUp(2.0-real.epsilon) == 2.0 );
+        test( nextUp(real.max) == real.infinity );
+        test( nextUp(real.infinity)==real.infinity );
     }
 
-    assert(isIdentical(nextDoubleUp(NaN(0xABC)), NaN(0xABC)));
+    test(isIdentical(nextDoubleUp(NaN(0xABC)), NaN(0xABC)));
     // negative numbers
-    assert( nextDoubleUp(-double.infinity) == -double.max );
-    assert( nextDoubleUp(-1-double.epsilon) == -1.0 );
-    assert( nextDoubleUp(-2) == -2.0 + double.epsilon);
+    test( nextDoubleUp(-double.infinity) == -double.max );
+    test( nextDoubleUp(-1-double.epsilon) == -1.0 );
+    test( nextDoubleUp(-2) == -2.0 + double.epsilon);
     // denormals and zero
 
-    assert( nextDoubleUp(-min_normal!(double)) == -min_normal!(double)*(1-double.epsilon) );
-    assert( nextDoubleUp(-min_normal!(double)*(1-double.epsilon) == -min_normal!(double)*(1-2*double.epsilon)) );
-    assert( isIdentical(-0.0, nextDoubleUp(-min_normal!(double)*double.epsilon)) );
-    assert( nextDoubleUp(0.0) == min_normal!(double)*double.epsilon );
-    assert( nextDoubleUp(-0.0) == min_normal!(double)*double.epsilon );
-    assert( nextDoubleUp(min_normal!(double)*(1-double.epsilon)) == min_normal!(double) );
-    assert( nextDoubleUp(min_normal!(double)) == min_normal!(double)*(1+double.epsilon) );
+    test( nextDoubleUp(-min_normal!(double)) == -min_normal!(double)*(1-double.epsilon) );
+    test( nextDoubleUp(-min_normal!(double)*(1-double.epsilon) == -min_normal!(double)*(1-2*double.epsilon)) );
+    test( isIdentical(-0.0, nextDoubleUp(-min_normal!(double)*double.epsilon)) );
+    test( nextDoubleUp(0.0) == min_normal!(double)*double.epsilon );
+    test( nextDoubleUp(-0.0) == min_normal!(double)*double.epsilon );
+    test( nextDoubleUp(min_normal!(double)*(1-double.epsilon)) == min_normal!(double) );
+    test( nextDoubleUp(min_normal!(double)) == min_normal!(double)*(1+double.epsilon) );
     // positive numbers
-    assert( nextDoubleUp(1) == 1.0 + double.epsilon );
-    assert( nextDoubleUp(2.0-double.epsilon) == 2.0 );
-    assert( nextDoubleUp(double.max) == double.infinity );
+    test( nextDoubleUp(1) == 1.0 + double.epsilon );
+    test( nextDoubleUp(2.0-double.epsilon) == 2.0 );
+    test( nextDoubleUp(double.max) == double.infinity );
 
-    assert(isIdentical(nextFloatUp(NaN(0xABC)), NaN(0xABC)));
-    assert( nextFloatUp(-min_normal!(float)) == -min_normal!(float)*(1-float.epsilon) );
-    assert( nextFloatUp(1.0) == 1.0+float.epsilon );
-    assert( nextFloatUp(-0.0) == min_normal!(float)*float.epsilon);
-    assert( nextFloatUp(float.infinity)==float.infinity );
+    test(isIdentical(nextFloatUp(NaN(0xABC)), NaN(0xABC)));
+    test( nextFloatUp(-min_normal!(float)) == -min_normal!(float)*(1-float.epsilon) );
+    test( nextFloatUp(1.0) == 1.0+float.epsilon );
+    test( nextFloatUp(-0.0) == min_normal!(float)*float.epsilon);
+    test( nextFloatUp(float.infinity)==float.infinity );
 
-    assert(nextDown(1.0+real.epsilon)==1.0);
-    assert(nextDoubleDown(1.0+double.epsilon)==1.0);
-    assert(nextFloatDown(1.0+float.epsilon)==1.0);
-    assert(nextafter(1.0+real.epsilon, -real.infinity)==1.0);
+    test(nextDown(1.0+real.epsilon)==1.0);
+    test(nextDoubleDown(1.0+double.epsilon)==1.0);
+    test(nextFloatDown(1.0+float.epsilon)==1.0);
+    test(nextafter(1.0+real.epsilon, -real.infinity)==1.0);
 }
 
 package {
@@ -1357,9 +1359,9 @@ X splitSignificand(X)(ref X x)
 unittest {
     double x = -0x1.234_567A_AAAA_AAp+250;
     double y = splitSignificand(x);
-    assert(x == -0x1.234_5678p+250);
-    assert(y == -0x0.000_000A_AAAA_A8p+248);
-    assert(x + y == -0x1.234_567A_AAAA_AAp+250);
+    test(x == -0x1.234_5678p+250);
+    test(y == -0x0.000_000A_AAAA_A8p+248);
+    test(x + y == -0x1.234_567A_AAAA_AAp+250);
 }
 }
 
@@ -1402,7 +1404,7 @@ float nextFloatDown(float x)
 }
 
 unittest {
-    assert( nextDown(1.0 + real.epsilon) == 1.0);
+    test( nextDown(1.0 + real.epsilon) == 1.0);
 }
 
 /**
@@ -1520,49 +1522,49 @@ int feqrel(X)(X x, X y)
 unittest
 {
    // Exact equality
-   assert(feqrel(real.max,real.max)==real.mant_dig);
-   assert(feqrel(0.0L,0.0L)==real.mant_dig);
-   assert(feqrel(7.1824L,7.1824L)==real.mant_dig);
-   assert(feqrel(real.infinity,real.infinity)==real.mant_dig);
+   test(feqrel(real.max,real.max)==real.mant_dig);
+   test(feqrel(0.0L,0.0L)==real.mant_dig);
+   test(feqrel(7.1824L,7.1824L)==real.mant_dig);
+   test(feqrel(real.infinity,real.infinity)==real.mant_dig);
 
    // a few bits away from exact equality
    real w=1;
    for (int i=1; i<real.mant_dig-1; ++i) {
-      assert(feqrel(1+w*real.epsilon,1.0L)==real.mant_dig-i);
-      assert(feqrel(1-w*real.epsilon,1.0L)==real.mant_dig-i);
-      assert(feqrel(1.0L,1+(w-1)*real.epsilon)==real.mant_dig-i+1);
+      test(feqrel(1+w*real.epsilon,1.0L)==real.mant_dig-i);
+      test(feqrel(1-w*real.epsilon,1.0L)==real.mant_dig-i);
+      test(feqrel(1.0L,1+(w-1)*real.epsilon)==real.mant_dig-i+1);
       w*=2;
    }
-   assert(feqrel(1.5+real.epsilon,1.5L)==real.mant_dig-1);
-   assert(feqrel(1.5-real.epsilon,1.5L)==real.mant_dig-1);
-   assert(feqrel(1.5-real.epsilon,1.5+real.epsilon)==real.mant_dig-2);
+   test(feqrel(1.5+real.epsilon,1.5L)==real.mant_dig-1);
+   test(feqrel(1.5-real.epsilon,1.5L)==real.mant_dig-1);
+   test(feqrel(1.5-real.epsilon,1.5+real.epsilon)==real.mant_dig-2);
 
-   assert(feqrel(min_normal!(real)/8,min_normal!(real)/17)==3);
+   test(feqrel(min_normal!(real)/8,min_normal!(real)/17)==3);
 
    // Numbers that are close
-   assert(feqrel(0x1.Bp+84, 0x1.B8p+84)==5);
-   assert(feqrel(0x1.8p+10, 0x1.Cp+10)==2);
-   assert(feqrel(1.5*(1-real.epsilon), 1.0L)==2);
-   assert(feqrel(1.5, 1.0)==1);
-   assert(feqrel(2*(1-real.epsilon), 1.0L)==1);
+   test(feqrel(0x1.Bp+84, 0x1.B8p+84)==5);
+   test(feqrel(0x1.8p+10, 0x1.Cp+10)==2);
+   test(feqrel(1.5*(1-real.epsilon), 1.0L)==2);
+   test(feqrel(1.5, 1.0)==1);
+   test(feqrel(2*(1-real.epsilon), 1.0L)==1);
 
    // Factors of 2
-   assert(feqrel(real.max,real.infinity)==0);
-   assert(feqrel(2*(1-real.epsilon), 1.0L)==1);
-   assert(feqrel(1.0, 2.0)==0);
-   assert(feqrel(4.0, 1.0)==0);
+   test(feqrel(real.max,real.infinity)==0);
+   test(feqrel(2*(1-real.epsilon), 1.0L)==1);
+   test(feqrel(1.0, 2.0)==0);
+   test(feqrel(4.0, 1.0)==0);
 
    // Extreme inequality
-   assert(feqrel(real.nan,real.nan)==0);
-   assert(feqrel(0.0L,-real.nan)==0);
-   assert(feqrel(real.nan,real.infinity)==0);
-   assert(feqrel(real.infinity,-real.infinity)==0);
-   assert(feqrel(-real.max,real.infinity)==0);
-   assert(feqrel(real.max,-real.max)==0);
+   test(feqrel(real.nan,real.nan)==0);
+   test(feqrel(0.0L,-real.nan)==0);
+   test(feqrel(real.nan,real.infinity)==0);
+   test(feqrel(real.infinity,-real.infinity)==0);
+   test(feqrel(-real.max,real.infinity)==0);
+   test(feqrel(real.max,-real.max)==0);
 
    // floats
-   assert(feqrel(2.1f, 2.1f)==float.mant_dig);
-   assert(feqrel(1.5f, 1.0f)==1);
+   test(feqrel(2.1f, 2.1f)==float.mant_dig);
+   test(feqrel(1.5f, 1.0f)==1);
 }
 
 /*********************************
@@ -1576,12 +1578,12 @@ int signbit(real x)
 
 unittest
 {
-    assert(!signbit(float.nan));
-    assert(signbit(-float.nan));
-    assert(!signbit(168.1234));
-    assert(signbit(-168.1234));
-    assert(!signbit(0.0));
-    assert(signbit(-0.0));
+    test(!signbit(float.nan));
+    test(signbit(-float.nan));
+    test(!signbit(168.1234));
+    test(signbit(-168.1234));
+    test(!signbit(0.0));
+    test(signbit(-0.0));
 }
 
 
@@ -1605,19 +1607,19 @@ unittest
     real e;
 
     e = copysign(21, 23.8);
-    assert(e == 21);
+    test(e == 21);
 
     e = copysign(-21, 23.8);
-    assert(e == 21);
+    test(e == 21);
 
     e = copysign(21, -23.8);
-    assert(e == -21);
+    test(e == -21);
 
     e = copysign(-21, -23.8);
-    assert(e == -21);
+    test(e == -21);
 
     e = copysign(real.nan, -23.8);
-    assert(isNaN(e) && signbit(e));
+    test(isNaN(e) && signbit(e));
 }
 
 /** Return the value that lies halfway between x and y on the IEEE number line.
@@ -1715,22 +1717,22 @@ body {
 }
 
 unittest {
-    assert(ieeeMean(-0.0,-1e-20)<0);
-    assert(ieeeMean(0.0,1e-20)>0);
+    test(ieeeMean(-0.0,-1e-20)<0);
+    test(ieeeMean(0.0,1e-20)>0);
 
-    assert(ieeeMean(1.0L,4.0L)==2L);
-    assert(ieeeMean(2.0*1.013,8.0*1.013)==4*1.013);
-    assert(ieeeMean(-1.0L,-4.0L)==-2L);
-    assert(ieeeMean(-1.0,-4.0)==-2);
-    assert(ieeeMean(-1.0f,-4.0f)==-2f);
-    assert(ieeeMean(-1.0,-2.0)==-1.5);
-    assert(ieeeMean(-1*(1+8*real.epsilon),-2*(1+8*real.epsilon))==-1.5*(1+5*real.epsilon));
-    assert(ieeeMean(0x1p60,0x1p-10)==0x1p25);
+    test(ieeeMean(1.0L,4.0L)==2L);
+    test(ieeeMean(2.0*1.013,8.0*1.013)==4*1.013);
+    test(ieeeMean(-1.0L,-4.0L)==-2L);
+    test(ieeeMean(-1.0,-4.0)==-2);
+    test(ieeeMean(-1.0f,-4.0f)==-2f);
+    test(ieeeMean(-1.0,-2.0)==-1.5);
+    test(ieeeMean(-1*(1+8*real.epsilon),-2*(1+8*real.epsilon))==-1.5*(1+5*real.epsilon));
+    test(ieeeMean(0x1p60,0x1p-10)==0x1p25);
     static if (real.mant_dig==64) { // x87, 80-bit reals
-      assert(ieeeMean(1.0L,real.infinity)==0x1p8192L);
-      assert(ieeeMean(0.0L,real.infinity)==1.5);
+      test(ieeeMean(1.0L,real.infinity)==0x1p8192L);
+      test(ieeeMean(0.0L,real.infinity)==1.5);
     }
-    assert(ieeeMean(0.5*min_normal!(real)*(1-4*real.epsilon),0.5*min_normal!(real))==0.5*min_normal!(real)*(1-2*real.epsilon));
+    test(ieeeMean(0.5*min_normal!(real)*(1-4*real.epsilon),0.5*min_normal!(real))==0.5*min_normal!(real)*(1-2*real.epsilon));
 }
 
 // Functions for NaN payloads
@@ -1837,9 +1839,9 @@ ulong getNaNPayload(real x)
 unittest {
   real nan4 = NaN(0x789_ABCD_EF12_3456);
   static if (real.mant_dig == 64 || real.mant_dig==113) {
-      assert (getNaNPayload(nan4) == 0x789_ABCD_EF12_3456);
+      test (getNaNPayload(nan4) == 0x789_ABCD_EF12_3456);
   } else {
-      assert (getNaNPayload(nan4) == 0x1_ABCD_EF12_3456);
+      test (getNaNPayload(nan4) == 0x1_ABCD_EF12_3456);
   }
   double nan5 = nan4;
   // FIXME: https://issues.dlang.org/show_bug.cgi?id=13743

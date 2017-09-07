@@ -469,7 +469,7 @@ unittest
 
         private bool second ( )
         {
-            test(false);
+            assert(false);
             return false;
         }
     }

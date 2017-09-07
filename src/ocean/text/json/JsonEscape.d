@@ -25,6 +25,8 @@ import Util = ocean.text.Util;
 
 import Utf = ocean.text.convert.Utf;
 
+version(UnitTest) import ocean.core.Test;
+
 /******************************************************************************
 
         Convert 'escaped' chars to normal ones. For example: \\ => \
@@ -56,7 +58,7 @@ TC[] unescape(T, TC = Unqual!(T)) (T[] src, TC[] dst = null)
 unittest
 {
     auto s = unescape("aaa\\\\b");
-    assert (s == "aaa\\b");
+    test (s == "aaa\\b");
 }
 
 
@@ -89,7 +91,7 @@ TC[] escape(T, TC = Unqual!(T)) (T[] src, TC[] dst = null)
 unittest
 {
     auto s = escape("aaa\\");
-    assert (s == "aaa\\\\");
+    test (s == "aaa\\\\");
 }
 
 

@@ -1260,7 +1260,7 @@ version ( UnitTest )
 unittest
 {
     static assert (is(typeof(toDg(&testToDgFoo)) == int delegate()));
-    assert (toDg(&testToDgFoo)() == 42);
+    test (toDg(&testToDgFoo)() == 42);
 
     toDg(&testToDgBar)(3, 4);
 
@@ -1410,13 +1410,13 @@ unittest
     extern(C) void funcNameArgs ( int a, double b ) { }
 
     static assert (identifier!(ClassName) == "ClassName");
-    assert (identifier!(ClassName) == "ClassName");
+    test (identifier!(ClassName) == "ClassName");
 
     static assert (identifier!(funcName) == "funcName");
-    assert (identifier!(funcName) == "funcName");
+    test (identifier!(funcName) == "funcName");
 
     static assert (identifier!(funcNameArgs) == "funcNameArgs");
-    assert (identifier!(funcNameArgs) == "funcNameArgs");
+    test (identifier!(funcNameArgs) == "funcNameArgs");
 }
 
 unittest

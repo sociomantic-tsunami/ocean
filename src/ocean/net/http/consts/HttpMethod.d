@@ -25,6 +25,7 @@ module ocean.net.http.consts.HttpMethod;
 
 import ocean.transition;
 
+version(UnitTest) import ocean.core.Test;
 
 /******************************************************************************
 
@@ -158,29 +159,29 @@ unittest
 
     static assert(!HttpMethodNames.List[HttpMethod.Undefined].length);
 
-    assert(HttpMethodNames[HttpMethod.Get]     == "GET");
-    assert(HttpMethodNames[HttpMethod.Head]    == "HEAD");
-    assert(HttpMethodNames[HttpMethod.Post]    == "POST");
-    assert(HttpMethodNames[HttpMethod.Put]     == "PUT");
-    assert(HttpMethodNames[HttpMethod.Delete]  == "DELETE");
-    assert(HttpMethodNames[HttpMethod.Trace]   == "TRACE");
-    assert(HttpMethodNames[HttpMethod.Connect] == "CONNECT");
-    assert(HttpMethodNames[HttpMethod.Options] == "OPTIONS");
+    test(HttpMethodNames[HttpMethod.Get]     == "GET");
+    test(HttpMethodNames[HttpMethod.Head]    == "HEAD");
+    test(HttpMethodNames[HttpMethod.Post]    == "POST");
+    test(HttpMethodNames[HttpMethod.Put]     == "PUT");
+    test(HttpMethodNames[HttpMethod.Delete]  == "DELETE");
+    test(HttpMethodNames[HttpMethod.Trace]   == "TRACE");
+    test(HttpMethodNames[HttpMethod.Connect] == "CONNECT");
+    test(HttpMethodNames[HttpMethod.Options] == "OPTIONS");
 
-    assert(!HttpMethodNames[HttpMethod.Undefined].length);
+    test(!HttpMethodNames[HttpMethod.Undefined].length);
 
-    assert(HttpMethodNames[cast(HttpMethod)(HttpMethod.max + 1)] is null);
+    test(HttpMethodNames[cast(HttpMethod)(HttpMethod.max + 1)] is null);
 
-    assert(HttpMethodNames["GET"]     == HttpMethod.Get);
-    assert(HttpMethodNames["HEAD"]    == HttpMethod.Head);
-    assert(HttpMethodNames["POST"]    == HttpMethod.Post);
-    assert(HttpMethodNames["PUT"]     == HttpMethod.Put);
-    assert(HttpMethodNames["DELETE"]  == HttpMethod.Delete);
-    assert(HttpMethodNames["TRACE"]   == HttpMethod.Trace);
-    assert(HttpMethodNames["CONNECT"] == HttpMethod.Connect);
-    assert(HttpMethodNames["OPTIONS"] == HttpMethod.Options);
+    test(HttpMethodNames["GET"]     == HttpMethod.Get);
+    test(HttpMethodNames["HEAD"]    == HttpMethod.Head);
+    test(HttpMethodNames["POST"]    == HttpMethod.Post);
+    test(HttpMethodNames["PUT"]     == HttpMethod.Put);
+    test(HttpMethodNames["DELETE"]  == HttpMethod.Delete);
+    test(HttpMethodNames["TRACE"]   == HttpMethod.Trace);
+    test(HttpMethodNames["CONNECT"] == HttpMethod.Connect);
+    test(HttpMethodNames["OPTIONS"] == HttpMethod.Options);
 
-    assert(HttpMethodNames["SPAM"]    == HttpMethod.Undefined);
-    assert(HttpMethodNames[""]        == HttpMethod.Undefined);
-    assert(HttpMethodNames[null]      == HttpMethod.Undefined);
+    test(HttpMethodNames["SPAM"]    == HttpMethod.Undefined);
+    test(HttpMethodNames[""]        == HttpMethod.Undefined);
+    test(HttpMethodNames[null]      == HttpMethod.Undefined);
 }

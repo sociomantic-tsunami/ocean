@@ -28,6 +28,8 @@ import ocean.io.device.Conduit;
 
 import ocean.io.stream.Buffered;
 
+version(UnitTest) import ocean.core.Test;
+
 /*******************************************************************************
 
         Type T is the element type.
@@ -158,5 +160,5 @@ unittest
     auto inp = new EndianInput!(dchar)(new Array("hello world"d.dup));
     auto oot = new EndianOutput!(dchar)(new Array(64));
     oot.copy (inp);
-    assert (oot.output.slice == "hello world"d);
+    test (oot.output.slice == "hello world"d);
 }

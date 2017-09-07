@@ -28,6 +28,8 @@ module ocean.core.StructConverter;
 import ocean.transition;
 import ocean.core.Traits;
 
+version(UnitTest) import ocean.core.Test;
+
 /***************************************************************************
 
     Copies members of the same name from <From> to <To>.
@@ -558,7 +560,7 @@ unittest
     a1.x = 42;
 
     structConvert(a1, a2, toDg(&testAlloc));
-    assert ( a1.x == a2.x, "failure to copy same type instances" );
+    test ( a1.x == a2.x, "failure to copy same type instances" );
 }
 
 // same fields, different order
@@ -583,9 +585,9 @@ unittest
 
     structConvert(a, b, toDg(&testAlloc));
 
-    assert ( a.a == b.a, "a != a" );
-    assert ( a.b == b.b, "b != b" );
-    assert ( a.c == b.c, "c != c" );
+    test ( a.a == b.a, "a != a" );
+    test ( a.b == b.b, "b != b" );
+    test ( a.c == b.c, "c != c" );
 }
 
 // no conversion method -> failure
@@ -664,17 +666,17 @@ unittest
 
     structConvert!(A, B)(a, b_loaded, toDg(&testAlloc));
 
-    assert ( b_loaded.a == a.a, "Conversion failure" );
-    assert ( b_loaded.b == a.b, "Conversion failure" );
-    assert ( b_loaded.c == a.c, "Conversion failure" );
-    assert ( b_loaded.d == a.a, "Conversion failure" );
-    assert ( b_loaded.the[] == a.the[], "Conversion failure" );
-    assert ( b_loaded.the.ptr == a.the.ptr, "Conversion failure" );
-    assert ( b_loaded.i.ptr == a.i.ptr, "Conversion failure" );
-    assert ( b_loaded.i[0][] == a.i[0][], "Nested array mismatch" );
-    assert ( b_loaded.i[1][] == a.i[1][], "Nested array mismatch" );
-    assert ( b_loaded.i[2][] == a.i[2][], "Nested array mismatch" );
-    assert ( b_loaded.i[3][] == a.i[3][], "Nested array mismatch" );
+    test ( b_loaded.a == a.a, "Conversion failure" );
+    test ( b_loaded.b == a.b, "Conversion failure" );
+    test ( b_loaded.c == a.c, "Conversion failure" );
+    test ( b_loaded.d == a.a, "Conversion failure" );
+    test ( b_loaded.the[] == a.the[], "Conversion failure" );
+    test ( b_loaded.the.ptr == a.the.ptr, "Conversion failure" );
+    test ( b_loaded.i.ptr == a.i.ptr, "Conversion failure" );
+    test ( b_loaded.i[0][] == a.i[0][], "Nested array mismatch" );
+    test ( b_loaded.i[1][] == a.i[1][], "Nested array mismatch" );
+    test ( b_loaded.i[2][] == a.i[2][], "Nested array mismatch" );
+    test ( b_loaded.i[3][] == a.i[3][], "Nested array mismatch" );
 }
 
 // multiple conversion overloads
@@ -726,16 +728,16 @@ unittest
 
     a.x = 42;
     structConvert(a, b, toDg(&testAlloc));
-    assert(b.x == 42);
+    test(b.x == 42);
 
     b.x = 43;
     structConvert(b, a, toDg(&testAlloc));
-    assert(a.x == 43);
+    test(a.x == 43);
 
     structConvert(b, c, toDg(&testAlloc));
-    assert(c.x == 43);
+    test(c.x == 43);
 
     c.x = 44;
     structConvert(c, b, toDg(&testAlloc));
-    assert(b.x == 44);
+    test(b.x == 44);
 }

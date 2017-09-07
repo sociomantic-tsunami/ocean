@@ -39,6 +39,7 @@ import ocean.math.GammaFunction;
 import ocean.math.Math;
 import ocean.math.IEEE;
 
+version(UnitTest) import ocean.core.Test;
 
 /***
 Cumulative distribution function for the Normal distribution, and its complement.
@@ -98,8 +99,8 @@ real normalDistributionComplInv(real p)
 }
 
 unittest {
-    assert(feqrel(normalDistributionInv(normalDistribution(0.1)),0.1L)>=real.mant_dig-4);
-    assert(feqrel(normalDistributionComplInv(normalDistributionCompl(0.1)),0.1L)>=real.mant_dig-4);
+    test(feqrel(normalDistributionInv(normalDistribution(0.1)),0.1L)>=real.mant_dig-4);
+    test(feqrel(normalDistributionComplInv(normalDistributionCompl(0.1)),0.1L)>=real.mant_dig-4);
 }
 
 /** Student's t cumulative distribution function
@@ -242,9 +243,9 @@ unittest {
     //              so tDistributionInv(p) = tan( PI * (p-0.5) );
     // nu==2: tDistribution(x) = 0.5 * (1 + x/ sqrt(2+x*x) )
 
-    assert(studentsTDistribution(1, -0.4)== 0.5 + atan(-0.4)/PI);
-    assert(studentsTDistribution(2, 0.9) == 0.5L * (1 + 0.9L/sqrt(2.0L + 0.9*0.9)) );
-    assert(studentsTDistribution(2, -5.4) == 0.5L * (1 - 5.4L/sqrt(2.0L + 5.4*5.4)) );
+    test(studentsTDistribution(1, -0.4)== 0.5 + atan(-0.4)/PI);
+    test(studentsTDistribution(2, 0.9) == 0.5L * (1 + 0.9L/sqrt(2.0L + 0.9*0.9)) );
+    test(studentsTDistribution(2, -5.4) == 0.5L * (1 - 5.4L/sqrt(2.0L + 5.4*5.4)) );
 
     // return true if a==b to given number of places.
     bool isfeqabs(real a, real b, real diff)
@@ -259,16 +260,16 @@ unittest {
     // in the last decimal places. However, they are helpful as a sanity check.
 
     //  Microsoft Excel 2003 gives TINV(2*(1-0.995), 10) == 3.16927267160917
-    assert(isfeqabs(studentsTDistributionInv(10, 0.995), 3.169_272_67L, 0.000_000_005L));
+    test(isfeqabs(studentsTDistributionInv(10, 0.995), 3.169_272_67L, 0.000_000_005L));
 
 
-    assert(isfeqabs(studentsTDistributionInv(8, 0.6), 0.261_921_096_769_043L,0.000_000_000_05L));
+    test(isfeqabs(studentsTDistributionInv(8, 0.6), 0.261_921_096_769_043L,0.000_000_000_05L));
     // -TINV(2*0.4, 18) ==  -0.257123042655869
 
-    assert(isfeqabs(studentsTDistributionInv(18, 0.4), -0.257_123_042_655_869L, 0.000_000_000_05L));
-    assert( feqrel(studentsTDistribution(18, studentsTDistributionInv(18, 0.4L)),0.4L)
+    test(isfeqabs(studentsTDistributionInv(18, 0.4), -0.257_123_042_655_869L, 0.000_000_000_05L));
+    test( feqrel(studentsTDistribution(18, studentsTDistributionInv(18, 0.4L)),0.4L)
             > real.mant_dig-5 );
-    assert( feqrel(studentsTDistribution(11, studentsTDistributionInv(11, 0.9L)),0.9L)
+    test( feqrel(studentsTDistribution(11, studentsTDistributionInv(11, 0.9L)),0.9L)
             > real.mant_dig-2);
 }
 
@@ -368,12 +369,12 @@ body{
 
 unittest {
 // fDistCompl(df1, df2, x) = Excel's FDIST(x, df1, df2)
-  assert(fabs(fDistributionCompl(6, 4, 16.5) - 0.00858719177897249L)< 0.0000000000005L);
-  assert(fabs((1-fDistribution(12, 23, 0.1)) - 0.99990562845505L)< 0.0000000000005L);
-  assert(fabs(fDistributionComplInv(8, 34, 0.2) - 1.48267037661408L)< 0.0000000005L);
-  assert(fabs(fDistributionComplInv(4, 16, 0.008) - 5.043_537_593_48596L)< 0.0000000005L);
+  test(fabs(fDistributionCompl(6, 4, 16.5) - 0.00858719177897249L)< 0.0000000000005L);
+  test(fabs((1-fDistribution(12, 23, 0.1)) - 0.99990562845505L)< 0.0000000000005L);
+  test(fabs(fDistributionComplInv(8, 34, 0.2) - 1.48267037661408L)< 0.0000000005L);
+  test(fabs(fDistributionComplInv(4, 16, 0.008) - 5.043_537_593_48596L)< 0.0000000005L);
   // Regression test: This one used to fail because of a bug in the definition of MINLOG.
-  assert(feqrel(fDistributionCompl(4, 16, fDistributionComplInv(4,16, 0.008)), 0.008L)>=real.mant_dig-3);
+  test(feqrel(fDistributionCompl(4, 16, fDistributionComplInv(4,16, 0.008)), 0.008L)>=real.mant_dig-3);
 }
 
 /** $(POWER &chi;,2) cumulative distribution function and its complement.
@@ -438,8 +439,8 @@ body
 }
 
 unittest {
-  assert(feqrel(chiSqrDistributionCompl(3.5L, chiSqrDistributionComplInv(3.5L, 0.1L)), 0.1L)>=real.mant_dig-5);
-  assert(chiSqrDistribution(19.02L, 0.4L) + chiSqrDistributionCompl(19.02L, 0.4L) ==1.0L);
+  test(feqrel(chiSqrDistributionCompl(3.5L, chiSqrDistributionComplInv(3.5L, 0.1L)), 0.1L)>=real.mant_dig-5);
+  test(chiSqrDistribution(19.02L, 0.4L) + chiSqrDistributionCompl(19.02L, 0.4L) ==1.0L);
 }
 
 /**
@@ -471,7 +472,7 @@ body {
 }
 
 unittest {
-    assert(gammaDistribution(7,3,0.18)+gammaDistributionCompl(7,3,0.18)==1);
+    test(gammaDistribution(7,3,0.18)+gammaDistributionCompl(7,3,0.18)==1);
 }
 
 /**********************
@@ -519,8 +520,8 @@ real betaDistributionComplInv(real a, real b, real y)
 }
 
 unittest {
-    assert(feqrel(betaDistributionInv(2, 6, betaDistribution(2,6, 0.7L)),0.7L)>=real.mant_dig-3);
-    assert(feqrel(betaDistributionComplInv(1.3, 8, betaDistributionCompl(1.3,8, 0.01L)),0.01L)>=real.mant_dig-4);
+    test(feqrel(betaDistributionInv(2, 6, betaDistribution(2,6, 0.7L)),0.7L)>=real.mant_dig-3);
+    test(feqrel(betaDistributionComplInv(1.3, 8, betaDistributionCompl(1.3,8, 0.01L)),0.01L)>=real.mant_dig-4);
 }
 
 /**
@@ -573,10 +574,10 @@ body {
 
 unittest {
 // = Excel's POISSON(k, m, TRUE)
-    assert( fabs(poissonDistribution(5, 6.3)
+    test( fabs(poissonDistribution(5, 6.3)
                 - 0.398771730072867L) < 0.000000000000005L);
-    assert( feqrel(poissonDistributionInv(8, poissonDistribution(8, 2.7e3L)), 2.7e3L)>=real.mant_dig-2);
-    assert( poissonDistribution(2, 8.4e-5) + poissonDistributionCompl(2, 8.4e-5) == 1.0L);
+    test( feqrel(poissonDistributionInv(8, poissonDistribution(8, 2.7e3L)), 2.7e3L)>=real.mant_dig-2);
+    test( poissonDistribution(2, 8.4e-5) + poissonDistributionCompl(2, 8.4e-5) == 1.0L);
 }
 
 /***********************************
@@ -618,11 +619,11 @@ body{
 
 unittest {
     // = Excel's BINOMDIST(k, n, p, TRUE)
-    assert( fabs(binomialDistribution(8, 12, 0.5)
+    test( fabs(binomialDistribution(8, 12, 0.5)
                 - 0.927001953125L) < 0.0000000000005L);
-    assert( fabs(binomialDistribution(0, 3, 0.008L)
+    test( fabs(binomialDistribution(0, 3, 0.008L)
                 - 0.976191488L) < 0.00000000005L);
-    assert(binomialDistribution(7,7, 0.3)==1.0);
+    test(binomialDistribution(7,7, 0.3)==1.0);
 }
 
  /** ditto */
@@ -648,13 +649,13 @@ body{
 
 unittest {
     // = Excel's (1 - BINOMDIST(k, n, p, TRUE))
-    assert( fabs(1.0L-binomialDistributionCompl(0, 15, 0.003)
+    test( fabs(1.0L-binomialDistributionCompl(0, 15, 0.003)
                 - 0.955932824838906L) < 0.0000000000000005L);
-    assert( fabs(1.0L-binomialDistributionCompl(0, 25, 0.2)
+    test( fabs(1.0L-binomialDistributionCompl(0, 25, 0.2)
                 - 0.00377789318629572L) < 0.000000000000000005L);
-    assert( fabs(1.0L-binomialDistributionCompl(8, 12, 0.5)
+    test( fabs(1.0L-binomialDistributionCompl(8, 12, 0.5)
                 - 0.927001953125L) < 0.00000000000005L);
-    assert(binomialDistributionCompl(7,7, 0.3)==0.0);
+    test(binomialDistributionCompl(7,7, 0.3)==0.0);
 }
 
 /** Inverse binomial distribution
@@ -696,13 +697,13 @@ body{
 
 unittest {
     real w = binomialDistribution(9, 15, 0.318L);
-    assert(feqrel(binomialDistributionInv(9, 15, w), 0.318L)>=real.mant_dig-3);
+    test(feqrel(binomialDistributionInv(9, 15, w), 0.318L)>=real.mant_dig-3);
     w = binomialDistribution(5, 35, 0.718L);
-    assert(feqrel(binomialDistributionInv(5, 35, w), 0.718L)>=real.mant_dig-3);
+    test(feqrel(binomialDistributionInv(5, 35, w), 0.718L)>=real.mant_dig-3);
     w = binomialDistribution(0, 24, 0.637L);
-    assert(feqrel(binomialDistributionInv(0, 24, w), 0.637L)>=real.mant_dig-3);
+    test(feqrel(binomialDistributionInv(0, 24, w), 0.637L)>=real.mant_dig-3);
     w = binomialDistributionInv(0, 59, 0.962L);
-    assert(feqrel(binomialDistribution(0, 59, w), 0.962L)>=real.mant_dig-5);
+    test(feqrel(binomialDistribution(0, 59, w), 0.962L)>=real.mant_dig-5);
 }
 
 /** Negative binomial distribution and its inverse
@@ -751,6 +752,6 @@ body{
 
 unittest {
   // Value obtained by sum of terms of MS Excel 2003's NEGBINOMDIST.
-  assert( fabs(negativeBinomialDistribution(10, 20, 0.2) - 3.830_52E-08)< 0.000_005e-08);
-  assert(feqrel(negativeBinomialDistributionInv(14, 208, negativeBinomialDistribution(14, 208, 1e-4L)), 1e-4L)>=real.mant_dig-3);
+  test( fabs(negativeBinomialDistribution(10, 20, 0.2) - 3.830_52E-08)< 0.000_005e-08);
+  test(feqrel(negativeBinomialDistributionInv(14, 208, negativeBinomialDistribution(14, 208, 1e-4L)), 1e-4L)>=real.mant_dig-3);
 }

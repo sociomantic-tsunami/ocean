@@ -51,6 +51,8 @@ import Integer = ocean.text.convert.Integer_tango;
 
 debug(Zip) import ocean.io.Stdout : Stderr;
 
+version(UnitTest) import ocean.core.Test;
+
 //////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
 //
@@ -2076,9 +2078,9 @@ debug( UnitTest )
         cstring c(cstring s) { return cp437_to_utf8(cast(ubyte[]) s); }
 
         auto s = c("Hi there \x01 old \x0c!");
-        assert( s == "Hi there \u263a old \u2640!", "\""~s~"\"" );
+        test( s == "Hi there \u263a old \u2640!", "\""~s~"\"" );
         s = c("Marker \x7f and divide \xf6.");
-        assert( s == "Marker \u2302 and divide \u00f7.", "\""~s~"\"" );
+        test( s == "Marker \u2302 and divide \u00f7.", "\""~s~"\"" );
     }
 }
 
@@ -2223,7 +2225,7 @@ debug( UnitTest )
             }
             msg ~= "failed.";
 
-            assert( false, msg );
+            test( false, msg );
         }
     }
 }

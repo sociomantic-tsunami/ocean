@@ -54,6 +54,8 @@ module ocean.math.Elliptic;
 import ocean.math.Math;
 import ocean.math.IEEE;
 
+version(UnitTest) import ocean.core.Test;
+
 /* These functions are based on code from:
 Cephes Math Library, Release 2.3:  October, 1995
 Copyright 1984, 1987, 1995 by Stephen L. Moshier
@@ -338,16 +340,16 @@ const real [] Q = [
 }
 
 unittest {
-    assert( ellipticF(1, 0)==1);
-    assert(ellipticEComplete(0)==1);
-    assert(ellipticEComplete(1)==PI_2);
-    assert(feqrel(ellipticKComplete(1),PI_2)>= real.mant_dig-1);
-    assert(ellipticKComplete(0)==real.infinity);
+    test( ellipticF(1, 0)==1);
+    test(ellipticEComplete(0)==1);
+    test(ellipticEComplete(1)==PI_2);
+    test(feqrel(ellipticKComplete(1),PI_2)>= real.mant_dig-1);
+    test(ellipticKComplete(0)==real.infinity);
 //    assert(ellipticKComplete(1)==0); //-real.infinity);
 
     real x=0.5653L;
-    assert(ellipticKComplete(1-x) == ellipticF(PI_2, x) );
-    assert(ellipticEComplete(1-x) == ellipticE(PI_2, x) );
+    test(ellipticKComplete(1-x) == ellipticF(PI_2, x) );
+    test(ellipticEComplete(1-x) == ellipticE(PI_2, x) );
 }
 
 /**

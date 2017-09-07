@@ -628,7 +628,7 @@ unittest
     mstring _dupes = defaultEncodeTable.dup;
     _dupes[1] = 'A';
     istring dupes = assumeUnique(_dupes);
-    assert(dupes[0] == dupes[1]);
+    test(dupes[0] == dupes[1]);
     test!("!is")(validateEncodeTable(dupes), istring.init);
 }
 
@@ -681,9 +681,9 @@ unittest
     test!("!is")(validateDecodeTable(notATable), istring.init);
 
     ubyte[char.max + 1] table = defaultDecodeTable;
-    assert(validateDecodeTable(table) is null);
+    test(validateDecodeTable(table) is null);
     table['*'] = BASE64_PAD;
-    assert(table['='] == table['*']);
+    test(table['='] == table['*']);
     test!("is")(validateDecodeTable(table), istring.init);
 }
 

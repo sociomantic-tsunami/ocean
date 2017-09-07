@@ -23,6 +23,8 @@ import ocean.sys.Common;
 
 import ocean.core.ExceptionDefinitions;
 
+version(UnitTest) import ocean.core.Test;
+
 /******************************************************************************
 
         Exposes UTC time relative to Jan 1st, 1 AD. These values are
@@ -199,10 +201,10 @@ unittest
 {
     auto time = Clock.now;
     auto clock=Clock.convert(time);
-    assert (Clock.convert(clock) is time);
+    test (Clock.convert(clock) is time);
 
     time -= TimeSpan(time.ticks % TimeSpan.TicksPerSecond);
     auto date = Clock.toDate(time);
 
-    assert (time is Clock.fromDate(date));
+    test (time is Clock.fromDate(date));
 }

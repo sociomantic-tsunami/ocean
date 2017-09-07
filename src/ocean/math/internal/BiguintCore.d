@@ -34,6 +34,8 @@ module ocean.math.internal.BiguintCore;
 
 import ocean.transition;
 
+version(UnitTest) import ocean.core.Test;
+
 //version=TangoBignumNoAsm;       /// temporal: see ticket #1878
 
 version(TangoBignumNoAsm) {
@@ -695,7 +697,7 @@ unittest {
    BigUint r = BigUint([5]);
    BigUint t = BigUint([7]);
    BigUint s = BigUint.mod(r, t);
-   assert(s==5);
+   test(s==5);
 }
 
 
@@ -707,11 +709,11 @@ unittest {
     s = BigUint.pow(r, 5);
     r.fromHexString("08000000_00000000_50000000_00000001_40000000_00000002_80000000"
       ~ "_00000002_80000000_00000001");
-    assert(s == r);
+    test(s == r);
     s = 10;
     s = BigUint.pow(s, 39);
     r.fromDecimalString("1000000000000000000000000000000000000000");
-    assert(s == r);
+    test(s == r);
     r.fromHexString("1_E1178E81_00000000");
     s = BigUint.pow(r, 15); // Regression test: this used to overflow array bounds
 
@@ -721,20 +723,20 @@ unittest {
 unittest {
     BigUint r;
     r.fromHexString("1_E1178E81_00000000");
-    assert(r.toHexString(0, '_', 0) == "1_E1178E81_00000000");
-    assert(r.toHexString(0, '_', 20) == "0001_E1178E81_00000000");
-    assert(r.toHexString(0, '_', 16+8) == "00000001_E1178E81_00000000");
-    assert(r.toHexString(0, '_', 16+9) == "0_00000001_E1178E81_00000000");
-    assert(r.toHexString(0, '_', 16+8+8) ==   "00000000_00000001_E1178E81_00000000");
-    assert(r.toHexString(0, '_', 16+8+8+1) ==      "0_00000000_00000001_E1178E81_00000000");
-    assert(r.toHexString(0, '_', 16+8+8+1, ' ') == "                  1_E1178E81_00000000");
-    assert(r.toHexString(0, 0, 16+8+8+1) == "00000000000000001E1178E8100000000");
+    test(r.toHexString(0, '_', 0) == "1_E1178E81_00000000");
+    test(r.toHexString(0, '_', 20) == "0001_E1178E81_00000000");
+    test(r.toHexString(0, '_', 16+8) == "00000001_E1178E81_00000000");
+    test(r.toHexString(0, '_', 16+9) == "0_00000001_E1178E81_00000000");
+    test(r.toHexString(0, '_', 16+8+8) ==   "00000000_00000001_E1178E81_00000000");
+    test(r.toHexString(0, '_', 16+8+8+1) ==      "0_00000000_00000001_E1178E81_00000000");
+    test(r.toHexString(0, '_', 16+8+8+1, ' ') == "                  1_E1178E81_00000000");
+    test(r.toHexString(0, 0, 16+8+8+1) == "00000000000000001E1178E8100000000");
     r = 0;
-    assert(r.toHexString(0, '_', 0) == "0");
-    assert(r.toHexString(0, '_', 7) == "0000000");
-    assert(r.toHexString(0, '_', 7, ' ') == "      0");
-    assert(r.toHexString(0, '#', 9) == "0#00000000");
-    assert(r.toHexString(0, 0, 9) == "000000000");
+    test(r.toHexString(0, '_', 0) == "0");
+    test(r.toHexString(0, '_', 7) == "0000000");
+    test(r.toHexString(0, '_', 7, ' ') == "      0");
+    test(r.toHexString(0, '#', 9) == "0#00000000");
+    test(r.toHexString(0, 0, 9) == "000000000");
 
 }
 
@@ -822,8 +824,8 @@ int slowHighestPowerBelowUintMax(uint x)
 }
 
 unittest {
-  assert(highestPowerBelowUintMax(10)==9);
-  for (int k=82; k<88; ++k) {assert(highestPowerBelowUintMax(k)== slowHighestPowerBelowUintMax(k)); }
+  test(highestPowerBelowUintMax(10)==9);
+  for (int k=82; k<88; ++k) {test(highestPowerBelowUintMax(k)== slowHighestPowerBelowUintMax(k)); }
 }
 }
 
@@ -1113,8 +1115,8 @@ unittest {
     uint [] q = new uint[u.length - v.length + 1];
     uint [] r = new uint[2];
     divModInternal(q, r, u, v);
-    assert(q[]==[0xFFFF_FFFFu, 0]);
-    assert(r[]==[0xFFFF_FFFFu, 0x7FFF_FFFF]);
+    test(q[]==[0xFFFF_FFFFu, 0]);
+    test(r[]==[0xFFFF_FFFFu, 0x7FFF_FFFF]);
     u = [0, 0xFFFF_FFFE, 0x8000_0001];
     v = [0xFFFF_FFFF, 0x8000_0000];
     divModInternal(q, r, u, v);
@@ -1774,6 +1776,6 @@ unittest
   uint [] q1 = q.dup;
   fastDivMod(q, b, a);
   r = b[0..a.length];
-  assert(r[]==r1[]);
-  assert(q[]==q1[]);
+  test(r[]==r1[]);
+  test(q[]==q1[]);
 }

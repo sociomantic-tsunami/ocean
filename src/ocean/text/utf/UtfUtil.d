@@ -176,30 +176,30 @@ public size_t utf8Length ( cstring str, void delegate ( size_t ) error_dg )
 
 unittest
 {
-    assert(utf8Length(null) == 0,
+    test(utf8Length(null) == 0,
         "the length of a null string should be 0");
 
-    assert(utf8Length("") == 0,
+    test(utf8Length("") == 0,
         "the length of an empty string should be 0");
 
-    assert(utf8Length("foo bar baz xyzzy") == 17,
+    test(utf8Length("foo bar baz xyzzy") == 17,
         "the length of \"foo bar baz xyzzy\" should be 17");
 
-    assert(utf8Length("ðäß ßøø+ ì$ æ ¢ööđ µøvi€ →→→") == 28,
+    test(utf8Length("ðäß ßøø+ ì$ æ ¢ööđ µøvi€ →→→") == 28,
         "the length of \"ðäß ßøø+ ì$ æ ¢ööđ µøvi€ →→→\" should be 28");
 
     // test if error delegate is called for an invalid string
     bool error_caught = false;
     const istring error_str = "error in " ~ char.init ~ " the middle";
     utf8Length(error_str, ( size_t i ) { error_caught = true; });
-    assert(error_caught,
+    test(error_caught,
         "the call to utf8Length should have caught an error");
 
     // test if error delegate is called for a valid string
     error_caught = false;
     const istring valid_str = "There are no errors in this string!";
     utf8Length(valid_str, ( size_t i ) { error_caught = true; });
-    assert(!error_caught,
+    test(!error_caught,
         "the call to utf8Length should not have caught an error");
 }
 

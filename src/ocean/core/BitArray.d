@@ -20,6 +20,7 @@ import ocean.transition;
 
 import ocean.core.BitManip;
 
+version(UnitTest) import ocean.core.Test;
 
 /**
  * This struct represents an array of boolean values, each of which occupy one
@@ -139,10 +140,10 @@ struct BitArray
         a.length = 3;
         a[0] = 1; a[1] = 0; a[2] = 1;
         b = a.dup;
-        assert( b.length == 3 );
+        test( b.length == 3 );
         for( int i = 0; i < 3; ++i )
         {
-            assert( b[i] == (((i ^ 1) & 1) ? true : false) );
+            test( b[i] == (((i ^ 1) & 1) ? true : false) );
         }
     }
 
@@ -226,24 +227,24 @@ struct BitArray
         buf = cast(void[])a;
         b.init( buf, a.length );
 
-        assert( b[0] == 1 );
-        assert( b[1] == 0 );
-        assert( b[2] == 1 );
-        assert( b[3] == 0 );
-        assert( b[4] == 1 );
+        test( b[0] == 1 );
+        test( b[1] == 0 );
+        test( b[2] == 1 );
+        test( b[3] == 0 );
+        test( b[4] == 1 );
 
         a[0] = 0;
-        assert( b[0] == 0 );
+        test( b[0] == 0 );
 
-        assert( a == b );
+        test( a == b );
 
         // test opSliceAssign
         BitArray c;
         c.length = a.length;
         c[] = a;
-        assert( c == a );
+        test( c == a );
         a[0] = 1;
-        assert( c != a );
+        test( c != a );
     }
 
     /**
@@ -286,7 +287,7 @@ struct BitArray
 
         for( size_t i = 0; i < data.length; ++i )
         {
-            assert( b[i] == data[4 - i] );
+            test( b[i] == data[4 - i] );
         }
     }
 
@@ -350,9 +351,9 @@ struct BitArray
 
         ba.sort;
         for( size_t i = 0; i < 6; ++i )
-            assert( ba[i] == false );
+            test( ba[i] == false );
         for( size_t i = 6; i < 10; ++i )
-            assert( ba[i] == true );
+            test( ba[i] == true );
     }
 
     /**
@@ -403,10 +404,10 @@ struct BitArray
         {
             switch( i )
             {
-                case 0: assert( b == true );  break;
-                case 1: assert( b == false ); break;
-                case 2: assert( b == true );  break;
-                default: assert( false );
+                case 0: test( b == true );  break;
+                case 1: test( b == false ); break;
+                case 2: test( b == true );  break;
+                default: test( false );
             }
             i++;
         }
@@ -415,10 +416,10 @@ struct BitArray
         {
             switch( j )
             {
-                case 0: assert( b == true );  break;
-                case 1: assert( b == false ); break;
-                case 2: assert( b == true );  break;
-                default: assert( false );
+                case 0: test( b == true );  break;
+                case 1: test( b == false ); break;
+                case 2: test( b == true );  break;
+                default: test( false );
             }
         }
     }
@@ -474,10 +475,10 @@ struct BitArray
         BitArray d = [1,0,1,1,1];
         BitArray e = [1,0,1,0,1];
 
-        assert(a != b);
-        assert(a != c);
-        assert(a != d);
-        assert(a == e);
+        test(a != b);
+        test(a != c);
+        test(a != d);
+        test(a == e);
     }
 
     /**
@@ -526,16 +527,16 @@ struct BitArray
         BitArray e = [1,0,1,0,1];
         BitArray f = [1,0,1,0];
 
-        assert( a >  b );
-        assert( a >= b );
-        assert( a <  c );
-        assert( a <= c );
-        assert( a <  d );
-        assert( a <= d );
-        assert( a == e );
-        assert( a <= e );
-        assert( a >= e );
-        assert( f >  b );
+        test( a >  b );
+        test( a >= b );
+        test( a <  c );
+        test( a <= c );
+        test( a <  d );
+        test( a <= d );
+        test( a == e );
+        test( a <= e );
+        test( a >= e );
+        test( f >  b );
     }
 
     /**
@@ -555,7 +556,7 @@ struct BitArray
         BitArray a = [1,0,1,0,1];
         void[] v = cast(void[])a;
 
-        assert( v.length == a.dim * uint.sizeof );
+        test( v.length == a.dim * uint.sizeof );
     }
 
     /**
@@ -608,11 +609,11 @@ struct BitArray
         BitArray a = [1,0,1,0,1];
         BitArray b = ~a;
 
-        assert(b[0] == 0);
-        assert(b[1] == 1);
-        assert(b[2] == 0);
-        assert(b[3] == 1);
-        assert(b[4] == 0);
+        test(b[0] == 0);
+        test(b[1] == 1);
+        test(b[2] == 0);
+        test(b[3] == 1);
+        test(b[4] == 0);
     }
 
     /**
@@ -654,11 +655,11 @@ struct BitArray
 
         BitArray c = a & b;
 
-        assert(c[0] == 1);
-        assert(c[1] == 0);
-        assert(c[2] == 1);
-        assert(c[3] == 0);
-        assert(c[4] == 0);
+        test(c[0] == 1);
+        test(c[1] == 0);
+        test(c[2] == 1);
+        test(c[3] == 0);
+        test(c[4] == 0);
     }
 
     /**
@@ -700,11 +701,11 @@ struct BitArray
 
         BitArray c = a | b;
 
-        assert(c[0] == 1);
-        assert(c[1] == 0);
-        assert(c[2] == 1);
-        assert(c[3] == 1);
-        assert(c[4] == 1);
+        test(c[0] == 1);
+        test(c[1] == 0);
+        test(c[2] == 1);
+        test(c[3] == 1);
+        test(c[4] == 1);
     }
 
     /**
@@ -745,11 +746,11 @@ struct BitArray
 
         BitArray c = a ^ b;
 
-        assert(c[0] == 0);
-        assert(c[1] == 0);
-        assert(c[2] == 0);
-        assert(c[3] == 1);
-        assert(c[4] == 1);
+        test(c[0] == 0);
+        test(c[1] == 0);
+        test(c[2] == 0);
+        test(c[3] == 1);
+        test(c[4] == 1);
     }
 
     /**
@@ -790,11 +791,11 @@ struct BitArray
 
         BitArray c = a - b;
 
-        assert( c[0] == 0 );
-        assert( c[1] == 0 );
-        assert( c[2] == 0 );
-        assert( c[3] == 0 );
-        assert( c[4] == 1 );
+        test( c[0] == 0 );
+        test( c[1] == 0 );
+        test( c[2] == 0 );
+        test( c[3] == 0 );
+        test( c[4] == 1 );
     }
 
     /**
@@ -849,24 +850,24 @@ struct BitArray
         BitArray c;
 
         c = (a ~ b);
-        assert( c.length == 5 );
-        assert( c[0] == 1 );
-        assert( c[1] == 0 );
-        assert( c[2] == 0 );
-        assert( c[3] == 1 );
-        assert( c[4] == 0 );
+        test( c.length == 5 );
+        test( c[0] == 1 );
+        test( c[1] == 0 );
+        test( c[2] == 0 );
+        test( c[3] == 1 );
+        test( c[4] == 0 );
 
         c = (a ~ true);
-        assert( c.length == 3 );
-        assert( c[0] == 1 );
-        assert( c[1] == 0 );
-        assert( c[2] == 1 );
+        test( c.length == 3 );
+        test( c[0] == 1 );
+        test( c[1] == 0 );
+        test( c[2] == 1 );
 
         c = (false ~ a);
-        assert( c.length == 3 );
-        assert( c[0] == 0 );
-        assert( c[1] == 1 );
-        assert( c[2] == 0 );
+        test( c.length == 3 );
+        test( c[0] == 0 );
+        test( c[1] == 1 );
+        test( c[2] == 0 );
     }
 
     /**
@@ -930,11 +931,11 @@ struct BitArray
         BitArray b = [1,0,1,1,0];
 
         a &= b;
-        assert( a[0] == 1 );
-        assert( a[1] == 0 );
-        assert( a[2] == 1 );
-        assert( a[3] == 0 );
-        assert( a[4] == 0 );
+        test( a[0] == 1 );
+        test( a[1] == 0 );
+        test( a[2] == 1 );
+        test( a[3] == 0 );
+        test( a[4] == 0 );
     }
 
     /**
@@ -971,11 +972,11 @@ struct BitArray
         BitArray b = [1,0,1,1,0];
 
         a |= b;
-        assert( a[0] == 1 );
-        assert( a[1] == 0 );
-        assert( a[2] == 1 );
-        assert( a[3] == 1 );
-        assert( a[4] == 1 );
+        test( a[0] == 1 );
+        test( a[1] == 0 );
+        test( a[2] == 1 );
+        test( a[3] == 1 );
+        test( a[4] == 1 );
     }
 
     /**
@@ -1011,11 +1012,11 @@ struct BitArray
         BitArray b = [1,0,1,1,0];
 
         a ^= b;
-        assert( a[0] == 0 );
-        assert( a[1] == 0 );
-        assert( a[2] == 0 );
-        assert( a[3] == 1 );
-        assert( a[4] == 1 );
+        test( a[0] == 0 );
+        test( a[1] == 0 );
+        test( a[2] == 0 );
+        test( a[3] == 1 );
+        test( a[4] == 1 );
     }
 
     /**
@@ -1052,11 +1053,11 @@ struct BitArray
         BitArray b = [1,0,1,1,0];
 
         a -= b;
-        assert( a[0] == 0 );
-        assert( a[1] == 0 );
-        assert( a[2] == 0 );
-        assert( a[3] == 0 );
-        assert( a[4] == 1 );
+        test( a[0] == 0 );
+        test( a[1] == 0 );
+        test( a[2] == 0 );
+        test( a[3] == 0 );
+        test( a[4] == 1 );
     }
 
     /**
@@ -1082,14 +1083,14 @@ struct BitArray
         BitArray b;
 
         b = (a ~= true);
-        assert( a[0] == 1 );
-        assert( a[1] == 0 );
-        assert( a[2] == 1 );
-        assert( a[3] == 0 );
-        assert( a[4] == 1 );
-        assert( a[5] == 1 );
+        test( a[0] == 1 );
+        test( a[1] == 0 );
+        test( a[2] == 1 );
+        test( a[3] == 0 );
+        test( a[4] == 1 );
+        test( a[5] == 1 );
 
-        assert( b == a );
+        test( b == a );
     }
 
     /** ditto */
@@ -1109,14 +1110,14 @@ struct BitArray
         BitArray c;
 
         c = (a ~= b);
-        assert( a.length == 5 );
-        assert( a[0] == 1 );
-        assert( a[1] == 0 );
-        assert( a[2] == 0 );
-        assert( a[3] == 1 );
-        assert( a[4] == 0 );
+        test( a.length == 5 );
+        test( a[0] == 1 );
+        test( a[1] == 0 );
+        test( a[2] == 0 );
+        test( a[3] == 1 );
+        test( a[4] == 0 );
 
-        assert( c == a );
+        test( c == a );
     }
 }
 
@@ -1140,7 +1141,7 @@ unittest
     bit_array = bool_array;
 
     // Self-verification of the BitArray.
-    assert(bit_array.length == bool_array.length);
+    test(bit_array.length == bool_array.length);
     foreach (bit; bit_array)
         t.test!("==")(bit, true);
 

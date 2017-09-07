@@ -31,6 +31,8 @@ import ocean.text.convert.Utf;
 import ocean.text.convert.Float;
 import ocean.text.convert.Integer_tango;
 
+version(UnitTest) import ocean.core.Test;
+
 import Ascii = ocean.text.Ascii;
 
 version( TangoDoc )
@@ -1297,134 +1299,134 @@ unittest
     static assert( !is( typeof(to!(bool)(1.0i)) ) );
     static assert( !is( typeof(to!(bool)(1.0+1.0i)) ) );
 
-    assert( to!(bool)(0) == false );
-    assert( to!(bool)(1) == true );
-    assert( to!(bool)(-1) == true );
+    test( to!(bool)(0) == false );
+    test( to!(bool)(1) == true );
+    test( to!(bool)(-1) == true );
 
-    assert( to!(bool)('t') == true );
-    assert( to!(bool)('T') == true );
-    assert( to!(bool)('f') == false );
-    assert( to!(bool)('F') == false );
-    assert(ex( to!(bool)('x') ));
+    test( to!(bool)('t') == true );
+    test( to!(bool)('T') == true );
+    test( to!(bool)('f') == false );
+    test( to!(bool)('F') == false );
+    test(ex( to!(bool)('x') ));
 
-    assert( to!(bool)("true"[]) == true );
-    assert( to!(bool)("false"[]) == false );
-    assert( to!(bool)("TrUe"[]) == true );
-    assert( to!(bool)("fAlSe"[]) == false );
+    test( to!(bool)("true"[]) == true );
+    test( to!(bool)("false"[]) == false );
+    test( to!(bool)("TrUe"[]) == true );
+    test( to!(bool)("fAlSe"[]) == false );
 
     /*
      * Integer
      */
-    assert( to!(int)(42L) == 42 );
-    assert( to!(byte)(42) == cast(byte)42 );
-    assert( to!(short)(-1701) == cast(short)-1701 );
-    assert( to!(long)(cast(ubyte)72) == 72L );
+    test( to!(int)(42L) == 42 );
+    test( to!(byte)(42) == cast(byte)42 );
+    test( to!(short)(-1701) == cast(short)-1701 );
+    test( to!(long)(cast(ubyte)72) == 72L );
 
-    assert(nx( to!(byte)(127) ));
-    assert(ex( to!(byte)(128) ));
-    assert(nx( to!(byte)(-128) ));
-    assert(ex( to!(byte)(-129) ));
+    test(nx( to!(byte)(127) ));
+    test(ex( to!(byte)(128) ));
+    test(nx( to!(byte)(-128) ));
+    test(ex( to!(byte)(-129) ));
 
-    assert(nx( to!(ubyte)(255) ));
-    assert(ex( to!(ubyte)(256) ));
-    assert(nx( to!(ubyte)(0) ));
-    assert(ex( to!(ubyte)(-1) ));
+    test(nx( to!(ubyte)(255) ));
+    test(ex( to!(ubyte)(256) ));
+    test(nx( to!(ubyte)(0) ));
+    test(ex( to!(ubyte)(-1) ));
 
-    assert(nx( to!(long)(9_223_372_036_854_775_807UL) ));
-    assert(ex( to!(long)(9_223_372_036_854_775_808UL) ));
-    assert(nx( to!(ulong)(0L) ));
-    assert(ex( to!(ulong)(-1L) ));
+    test(nx( to!(long)(9_223_372_036_854_775_807UL) ));
+    test(ex( to!(long)(9_223_372_036_854_775_808UL) ));
+    test(nx( to!(ulong)(0L) ));
+    test(ex( to!(ulong)(-1L) ));
 
-    assert( to!(int)(3.14159) == 3 );
-    assert( to!(int)(2.71828) == 3 );
+    test( to!(int)(3.14159) == 3 );
+    test( to!(int)(2.71828) == 3 );
 
-    assert( to!(int)("1234"[]) == 1234 );
+    test( to!(int)("1234"[]) == 1234 );
 
-    assert( to!(int)(true) == 1 );
-    assert( to!(int)(false) == 0 );
+    test( to!(int)(true) == 1 );
+    test( to!(int)(false) == 0 );
 
-    assert( to!(int)('0') == 0 );
-    assert( to!(int)('9') == 9 );
+    test( to!(int)('0') == 0 );
+    test( to!(int)('9') == 9 );
 
     /*
      * Real
      */
-    assert( to!(real)(3) == 3.0 );
-    assert( to!(real)("1.125"[]) == 1.125 );
+    test( to!(real)(3) == 3.0 );
+    test( to!(real)("1.125"[]) == 1.125 );
 
     /*
      * Imaginary
      */
     static assert( !is( typeof(to!(ireal)(3.0)) ) );
 
-    assert( to!(ireal)(0.0+1.0i) == 1.0i );
-    assert(nx( to!(ireal)(0.0+1.0i) ));
-    assert(ex( to!(ireal)(1.0+0.0i) ));
+    test( to!(ireal)(0.0+1.0i) == 1.0i );
+    test(nx( to!(ireal)(0.0+1.0i) ));
+    test(ex( to!(ireal)(1.0+0.0i) ));
 
     /*
      * Complex
      */
-    assert( to!(creal)(1) == (1.0+0.0i) );
-    assert( to!(creal)(2.0) == (2.0+0.0i) );
-    assert( to!(creal)(3.0i) == (0.0+3.0i) );
+    test( to!(creal)(1) == (1.0+0.0i) );
+    test( to!(creal)(2.0) == (2.0+0.0i) );
+    test( to!(creal)(3.0i) == (0.0+3.0i) );
 
     /*
      * Char
      */
-    assert( to!(char)(true) == 't' );
-    assert( to!(char)(false) == 'f' );
+    test( to!(char)(true) == 't' );
+    test( to!(char)(false) == 'f' );
 
-    assert( to!(char)(0) == '0' );
-    assert( to!(char)(9) == '9' );
+    test( to!(char)(0) == '0' );
+    test( to!(char)(9) == '9' );
 
-    assert(ex( to!(char)(-1) ));
-    assert(ex( to!(char)(10) ));
+    test(ex( to!(char)(-1) ));
+    test(ex( to!(char)(10) ));
 
-    assert( to!(char)("a"d[]) == 'a' );
-    assert( to!(dchar)("ε"c[]) == 'ε' );
+    test( to!(char)("a"d[]) == 'a' );
+    test( to!(dchar)("ε"c[]) == 'ε' );
 
-    assert(ex( to!(char)("ε"d[]) ));
+    test(ex( to!(char)("ε"d[]) ));
 
     /*
      * String-string
      */
-    assert( to!(char[])("Í love to æt "w[]) == "Í love to æt "c );
-    assert( to!(istring)("Í love to æt "w[]) == "Í love to æt "c );
-    assert( to!(char[])("them smûrƒies™,"d[]) == "them smûrƒies™,"c );
-    assert( to!(istring)("them smûrƒies™,"d[]) == "them smûrƒies™,"c );
-    assert( to!(wchar[])("Smûrﬁes™ I love"c[]) == "Smûrﬁes™ I love"w );
-    assert( to!(wchar[])("２ 食い散らす"d[]) == "２ 食い散らす"w );
-    assert( to!(dchar[])("bite đey µgly"c[]) == "bite đey µgly"d );
-    assert( to!(dchar[])("headž ㍳ff"w[]) == "headž ㍳ff"d );
+    test( to!(char[])("Í love to æt "w[]) == "Í love to æt "c );
+    test( to!(istring)("Í love to æt "w[]) == "Í love to æt "c );
+    test( to!(char[])("them smûrƒies™,"d[]) == "them smûrƒies™,"c );
+    test( to!(istring)("them smûrƒies™,"d[]) == "them smûrƒies™,"c );
+    test( to!(wchar[])("Smûrﬁes™ I love"c[]) == "Smûrﬁes™ I love"w );
+    test( to!(wchar[])("２ 食い散らす"d[]) == "２ 食い散らす"w );
+    test( to!(dchar[])("bite đey µgly"c[]) == "bite đey µgly"d );
+    test( to!(dchar[])("headž ㍳ff"w[]) == "headž ㍳ff"d );
     // ... nibble on they bluish feet.
 
     /*
      * String
      */
-    assert( to!(char[])(true) == "true" );
-    assert( to!(istring)(true) == "true" );
-    assert( to!(char[])(false) == "false" );
+    test( to!(char[])(true) == "true" );
+    test( to!(istring)(true) == "true" );
+    test( to!(char[])(false) == "false" );
 
-    assert( to!(char[])(12345678) == "12345678" );
-    assert( to!(istring)(12345678) == "12345678" );
-    assert( to!(char[])(1234.567800) == "1234.57");
-    assert( to!(istring)(1234.567800) == "1234.57");
+    test( to!(char[])(12345678) == "12345678" );
+    test( to!(istring)(12345678) == "12345678" );
+    test( to!(char[])(1234.567800) == "1234.57");
+    test( to!(istring)(1234.567800) == "1234.57");
 
-    assert( to!( char[])(cast(char) 'a') == "a"c );
-    assert( to!(wchar[])(cast(char) 'b') == "b"w );
-    assert( to!(dchar[])(cast(char) 'c') == "c"d );
-    assert( to!( char[])(cast(wchar)'d') == "d"c );
-    assert( to!(wchar[])(cast(wchar)'e') == "e"w );
-    assert( to!(dchar[])(cast(wchar)'f') == "f"d );
-    assert( to!( char[])(cast(dchar)'g') == "g"c );
-    assert( to!(wchar[])(cast(dchar)'h') == "h"w );
-    assert( to!(dchar[])(cast(dchar)'i') == "i"d );
+    test( to!( char[])(cast(char) 'a') == "a"c );
+    test( to!(wchar[])(cast(char) 'b') == "b"w );
+    test( to!(dchar[])(cast(char) 'c') == "c"d );
+    test( to!( char[])(cast(wchar)'d') == "d"c );
+    test( to!(wchar[])(cast(wchar)'e') == "e"w );
+    test( to!(dchar[])(cast(wchar)'f') == "f"d );
+    test( to!( char[])(cast(dchar)'g') == "g"c );
+    test( to!(wchar[])(cast(dchar)'h') == "h"w );
+    test( to!(dchar[])(cast(dchar)'i') == "i"d );
 
     /*
      * Array-array
      */
-    assert( to!(ubyte[])([1,2,3][]) == [cast(ubyte)1, 2, 3] );
-    assert( to!(bool[])(["true", "false"][]) == [true, false] );
+    test( to!(ubyte[])([1,2,3][]) == [cast(ubyte)1, 2, 3] );
+    test( to!(bool[])(["true", "false"][]) == [true, false] );
 
     /*
      * Map-map
@@ -1432,9 +1434,9 @@ unittest
     {
         istring[int] src = [1:"true"[], 2:"false"];
         bool[ubyte] dst = to!(bool[ubyte])(src);
-        assert( dst.keys.length == 2 );
-        assert( dst[1] == true );
-        assert( dst[2] == false );
+        test( dst.keys.length == 2 );
+        test( dst[1] == true );
+        test( dst[2] == false );
     }
 
     /*
@@ -1443,24 +1445,24 @@ unittest
     {
         Foo foo;
 
-        assert( to!(bool)(foo) == true );
-        assert( to!(int)(foo) == 42 );
-        assert( to!(char[])(foo) == "string foo" );
-        assert( to!(wchar[])(foo) == "string foo"w );
-        assert( to!(dchar[])(foo) == "string foo"d );
-        assert( to!(int[])(foo) == [1,2,3] );
-        assert( to!(ireal)(to!(Bar)(foo)) == 42.0i );
-        assert( to!(real)(to!(Bar)(to!(Baz)(foo))) == 3.14159 );
+        test( to!(bool)(foo) == true );
+        test( to!(int)(foo) == 42 );
+        test( to!(char[])(foo) == "string foo" );
+        test( to!(wchar[])(foo) == "string foo"w );
+        test( to!(dchar[])(foo) == "string foo"d );
+        test( to!(int[])(foo) == [1,2,3] );
+        test( to!(ireal)(to!(Bar)(foo)) == 42.0i );
+        test( to!(real)(to!(Bar)(to!(Baz)(foo))) == 3.14159 );
     }
 
     /*
      * Default values
      */
     {
-        assert( to!(int)("123"[], 456) == 123,
+        test( to!(int)("123"[], 456) == 123,
                 `to!(int)("123", 456) == "` ~ to!(char[])(
                     to!(int)("123"[], 456)) ~ `"` );
-        assert( to!(int)("abc"[], 456) == 456,
+        test( to!(int)("abc"[], 456) == 456,
                 `to!(int)("abc", 456) == "` ~ to!(char[])(
                     to!(int)("abc"[], 456)) ~ `"` );
     }
@@ -1469,21 +1471,21 @@ unittest
      * Ticket #1486
      */
     {
-        assert(ex( to!(int)(""[]) ));
+        test(ex( to!(int)(""[]) ));
 
-        assert(ex( to!(real)("Foo"[]) ));
-        assert(ex( to!(real)(""[]) ));
-        assert(ex( to!(real)("0x1.2cp+9"[]) ));
+        test(ex( to!(real)("Foo"[]) ));
+        test(ex( to!(real)(""[]) ));
+        test(ex( to!(real)("0x1.2cp+9"[]) ));
 
         // From d0c's patch
-        assert(ex( to!(int)("0x20"[]) ));
-        assert(ex( to!(int)("0x"[]) ));
-        assert(ex( to!(int)("-"[]) ));
-        assert(ex( to!(int)("-0x"[]) ));
+        test(ex( to!(int)("0x20"[]) ));
+        test(ex( to!(int)("0x"[]) ));
+        test(ex( to!(int)("-"[]) ));
+        test(ex( to!(int)("-0x"[]) ));
 
-        assert( to!(real)("0x20"[]) == cast(real) 0x20 );
-        assert(ex( to!(real)("0x"[]) ));
-        assert(ex( to!(real)("-"[]) ));
+        test( to!(real)("0x20"[]) == cast(real) 0x20 );
+        test(ex( to!(real)("0x"[]) ));
+        test(ex( to!(real)("-"[]) ));
     }
 }
 
@@ -1492,5 +1494,5 @@ unittest
     mixin(Typedef!(int, "MyInt"));
     MyInt value = 42;
     auto s = toImpl!(char[])(value);
-    assert (s == "42");
+    test (s == "42");
 }

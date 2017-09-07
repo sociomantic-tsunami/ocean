@@ -27,6 +27,8 @@ import ocean.util.digest.Sha01;
 
 public  import ocean.util.digest.Digest;
 
+version(UnitTest) import ocean.core.Test;
+
 /*******************************************************************************
 
 *******************************************************************************/
@@ -131,6 +133,6 @@ unittest
             h.update(s);
 
         char[] d = h.hexDigest();
-        assert(d == results[i],":("~s~")("~d~")!=("~results[i]~")");
+        test(d == results[i],":("~s~")("~d~")!=("~results[i]~")");
     }
 }

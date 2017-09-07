@@ -47,6 +47,8 @@ import ocean.math.Math : min;
 private alias Time DT;
 private alias ExtendedDate FullDate;
 
+version(UnitTest) import ocean.core.Test;
+
 /** An extended date type, wrapping a Time together with some additional
  * information. */
 public struct ExtendedDate {
@@ -935,311 +937,311 @@ unittest {
                    INIT_MONTH = months(FullDate.init),
                    INIT_DAY   = days  (FullDate.init);
 
-    assert (d("20abc") == 2);
-    assert (years(fd) == 2000);
+    test (d("20abc") == 2);
+    test (years(fd) == 2000);
 
-    assert (d("2004") == 4);
-    assert (years(fd) == 2004);
+    test (d("2004") == 4);
+    test (years(fd) == 2004);
 
-    assert (d("+0019", 2) == 5);
-    assert (years(fd) == 1900);
+    test (d("+0019", 2) == 5);
+    test (years(fd) == 1900);
 
-    assert (d("+111985", 2) == 7);
-    assert (years(fd) == INIT_YEAR);
-    assert (fd.year   == 111985);
+    test (d("+111985", 2) == 7);
+    test (years(fd) == INIT_YEAR);
+    test (fd.year   == 111985);
 
-    assert (d("+111985", 1) == 6);
-    assert (years(fd) == INIT_YEAR);
-    assert (fd.year   == 11198);
+    test (d("+111985", 1) == 6);
+    test (years(fd) == INIT_YEAR);
+    test (fd.year   == 11198);
 
-    assert (d("+111985", 3) == 0);
-    assert (years(fd) == INIT_YEAR);
-    assert (fd.year   == INIT_YEAR);
+    test (d("+111985", 3) == 0);
+    test (years(fd) == INIT_YEAR);
+    test (fd.year   == INIT_YEAR);
 
-    assert (d("+111985", 4) == 7);
-    assert (years(fd) == INIT_YEAR);
-    assert (fd.year   == 11198500);
+    test (d("+111985", 4) == 7);
+    test (years(fd) == INIT_YEAR);
+    test (fd.year   == 11198500);
 
-    assert (d("-111985", 5) == 0);
-    assert (years(fd) == INIT_YEAR);
-    assert (fd.year   == INIT_YEAR);
+    test (d("-111985", 5) == 0);
+    test (years(fd) == INIT_YEAR);
+    test (fd.year   == INIT_YEAR);
 
-    assert (d("+999999999", 5) == 10);
-    assert (years(fd) == INIT_YEAR);
-    assert (fd.year == 999_999_999);
+    test (d("+999999999", 5) == 10);
+    test (years(fd) == INIT_YEAR);
+    test (fd.year == 999_999_999);
 
     try {
         d("+10000000000", 6);
         assert (false);
     } catch (IllegalArgumentException) {
-        assert (years(fd) == INIT_YEAR);
-        assert (fd.year   == INIT_YEAR);
+        test (years(fd) == INIT_YEAR);
+        test (fd.year   == INIT_YEAR);
     }
 
-    assert (d("-999999999", 5) == 10);
-    assert (years(fd) == INIT_YEAR);
-    assert (fd.year == -1_000_000_000);
+    test (d("-999999999", 5) == 10);
+    test (years(fd) == INIT_YEAR);
+    test (fd.year == -1_000_000_000);
 
-    assert (d("0001") == 4);
-    assert (years(fd) == 1);
-    assert (fd.year   == 1);
+    test (d("0001") == 4);
+    test (years(fd) == 1);
+    test (fd.year   == 1);
 
-    assert (d("0000") == 4);
-    assert (fd.year   == -1);
+    test (d("0000") == 4);
+    test (fd.year   == -1);
 
-    assert (d("-0001") == 5);
-    assert (fd.year   == -2);
+    test (d("-0001") == 5);
+    test (fd.year   == -2);
 
-    assert (d("abc") == 0);
-    assert (years(fd) == INIT_YEAR);
-    assert (fd.year   == INIT_YEAR);
+    test (d("abc") == 0);
+    test (years(fd) == INIT_YEAR);
+    test (fd.year   == INIT_YEAR);
 
-    assert (d("abc123") == 0);
-    assert (years(fd) == INIT_YEAR);
-    assert (fd.year   == INIT_YEAR);
+    test (d("abc123") == 0);
+    test (years(fd) == INIT_YEAR);
+    test (fd.year   == INIT_YEAR);
 
-    assert (d("2007-08") == 7);
-    assert (years(fd)  == 2007);
-    assert (months(fd) ==    8);
+    test (d("2007-08") == 7);
+    test (years(fd)  == 2007);
+    test (months(fd) ==    8);
 
-    assert (d("+001985-04", 2) == 10);
-    assert (years(fd)  == 1985);
-    assert (months(fd) ==    4);
+    test (d("+001985-04", 2) == 10);
+    test (years(fd)  == 1985);
+    test (months(fd) ==    4);
 
-    assert (d("2007-08-07") == 10);
-    assert (years(fd)  == 2007);
-    assert (months(fd) ==    8);
-    assert (days(fd)   ==    7);
+    test (d("2007-08-07") == 10);
+    test (years(fd)  == 2007);
+    test (months(fd) ==    8);
+    test (days(fd)   ==    7);
 
-    assert (d("2008-20-30") == 4);
-    assert (years(fd)  == 2008);
-    assert (months(fd) == INIT_MONTH);
+    test (d("2008-20-30") == 4);
+    test (years(fd)  == 2008);
+    test (months(fd) == INIT_MONTH);
 
-    assert (d("2007-02-30") == 7);
-    assert (years(fd)  == 2007);
-    assert (months(fd) ==    2);
+    test (d("2007-02-30") == 7);
+    test (years(fd)  == 2007);
+    test (months(fd) ==    2);
 
-    assert (d("20060708") == 8);
-    assert (years(fd)  == 2006);
-    assert (months(fd) ==    7);
-    assert (days(fd)   ==    8);
+    test (d("20060708") == 8);
+    test (years(fd)  == 2006);
+    test (months(fd) ==    7);
+    test (days(fd)   ==    8);
 
-    assert (d("19953080") == 4);
-    assert (years(fd)  == 1995);
-    assert (months(fd) == INIT_MONTH);
+    test (d("19953080") == 4);
+    test (years(fd)  == 1995);
+    test (months(fd) == INIT_MONTH);
 
-    assert (d("2007-0201") == 7);
-    assert (years(fd)  == 2007);
-    assert (months(fd) ==    2);
+    test (d("2007-0201") == 7);
+    test (years(fd)  == 2007);
+    test (months(fd) ==    2);
 
-    assert (d("200702-01") == 6);
-    assert (years(fd)  == 2007);
-    assert (months(fd) ==    2);
+    test (d("200702-01") == 6);
+    test (years(fd)  == 2007);
+    test (months(fd) ==    2);
 
-    assert (d("+001985-04-12", 2) == 13);
-    assert (years(fd)  == 1985);
-    assert (fd.year    == 1985);
-    assert (months(fd) ==    4);
-    assert (days(fd)   ==   12);
+    test (d("+001985-04-12", 2) == 13);
+    test (years(fd)  == 1985);
+    test (fd.year    == 1985);
+    test (months(fd) ==    4);
+    test (days(fd)   ==   12);
 
-    assert (d("-0123450607", 2) == 11);
-    assert (years(fd)  == INIT_YEAR);
-    assert (fd.year    == -12346);
-    assert (months(fd) ==      6);
-    assert (days(fd)   ==      7);
+    test (d("-0123450607", 2) == 11);
+    test (years(fd)  == INIT_YEAR);
+    test (fd.year    == -12346);
+    test (months(fd) ==      6);
+    test (days(fd)   ==      7);
 
-    assert (d("1985W15") == 7);
-    assert (years(fd)  == 1985);
-    assert (months(fd) ==    4);
-    assert (days(fd)   ==    8);
+    test (d("1985W15") == 7);
+    test (years(fd)  == 1985);
+    test (months(fd) ==    4);
+    test (days(fd)   ==    8);
 
-    assert (d("2008-W01") == 8);
-    assert (years(fd)  == 2007);
-    assert (months(fd) ==   12);
-    assert (days(fd)   ==   31);
+    test (d("2008-W01") == 8);
+    test (years(fd)  == 2007);
+    test (months(fd) ==   12);
+    test (days(fd)   ==   31);
 
-    assert (d("2008-W012") == 8);
-    assert (years(fd)  == 2007);
-    assert (months(fd) ==   12);
-    assert (days(fd)   ==   31);
+    test (d("2008-W012") == 8);
+    test (years(fd)  == 2007);
+    test (months(fd) ==   12);
+    test (days(fd)   ==   31);
 
-    assert (d("2008W01-2") == 7);
-    assert (years(fd)  == 2007);
-    assert (months(fd) ==   12);
-    assert (days(fd)   ==   31);
+    test (d("2008W01-2") == 7);
+    test (years(fd)  == 2007);
+    test (months(fd) ==   12);
+    test (days(fd)   ==   31);
 
-    assert (d("2008-W01-2") == 10);
-    assert (years(fd)  == 2008);
-    assert (months(fd) ==    1);
-    assert (days(fd)   ==    1);
+    test (d("2008-W01-2") == 10);
+    test (years(fd)  == 2008);
+    test (months(fd) ==    1);
+    test (days(fd)   ==    1);
 
-    assert (d("2009-W53-4") == 10);
-    assert (years(fd)  == 2009);
-    assert (months(fd) ==   12);
-    assert (days(fd)   ==   31);
+    test (d("2009-W53-4") == 10);
+    test (years(fd)  == 2009);
+    test (months(fd) ==   12);
+    test (days(fd)   ==   31);
 
-    assert (d("2009-W01-1") == 10);
-    assert (years(fd)  == 2008);
-    assert (months(fd) ==   12);
-    assert (days(fd)   ==   29);
+    test (d("2009-W01-1") == 10);
+    test (years(fd)  == 2008);
+    test (months(fd) ==   12);
+    test (days(fd)   ==   29);
 
-    assert (d("2009W537") == 8);
-    assert (years(fd)  == 2010);
-    assert (months(fd) ==    1);
-    assert (days(fd)   ==    3);
+    test (d("2009W537") == 8);
+    test (years(fd)  == 2010);
+    test (months(fd) ==    1);
+    test (days(fd)   ==    3);
 
-    assert (d("2010W537") == 4);
-    assert (years(fd)  == 2010);
-    assert (months(fd) == INIT_MONTH);
+    test (d("2010W537") == 4);
+    test (years(fd)  == 2010);
+    test (months(fd) == INIT_MONTH);
 
-    assert (d("2009-W01-3") == 10);
-    assert (years(fd)  == 2008);
-    assert (months(fd) ==   12);
-    assert (days(fd)   ==   31);
+    test (d("2009-W01-3") == 10);
+    test (years(fd)  == 2008);
+    test (months(fd) ==   12);
+    test (days(fd)   ==   31);
 
-    assert (d("2009-W01-4") == 10);
-    assert (years(fd)  == 2009);
-    assert (months(fd) ==    1);
-    assert (days(fd)   ==    1);
+    test (d("2009-W01-4") == 10);
+    test (years(fd)  == 2009);
+    test (months(fd) ==    1);
+    test (days(fd)   ==    1);
 
-    assert (d("2004-W53-6") == 10);
-    assert (years(fd)  == 2005);
-    assert (months(fd) ==    1);
-    assert (days(fd)   ==    1);
+    test (d("2004-W53-6") == 10);
+    test (years(fd)  == 2005);
+    test (months(fd) ==    1);
+    test (days(fd)   ==    1);
 
-    assert (d("2004-W53-7") == 10);
-    assert (years(fd)  == 2005);
-    assert (months(fd) ==    1);
-    assert (days(fd)   ==    2);
+    test (d("2004-W53-7") == 10);
+    test (years(fd)  == 2005);
+    test (months(fd) ==    1);
+    test (days(fd)   ==    2);
 
-    assert (d("2005-W52-6") == 10);
-    assert (years(fd)  == 2005);
-    assert (months(fd) ==   12);
-    assert (days(fd)   ==   31);
+    test (d("2005-W52-6") == 10);
+    test (years(fd)  == 2005);
+    test (months(fd) ==   12);
+    test (days(fd)   ==   31);
 
-    assert (d("2007-W01-1") == 10);
-    assert (years(fd)  == 2007);
-    assert (months(fd) ==    1);
-    assert (days(fd)   ==    1);
+    test (d("2007-W01-1") == 10);
+    test (years(fd)  == 2007);
+    test (months(fd) ==    1);
+    test (days(fd)   ==    1);
 
-    assert (d("1000-W07-7") == 10);
-    assert (years(fd)  == 1000);
-    assert (months(fd) ==    2);
-    assert (days(fd)   ==   16);
+    test (d("1000-W07-7") == 10);
+    test (years(fd)  == 1000);
+    test (months(fd) ==    2);
+    test (days(fd)   ==   16);
 
-    assert (d("1500-W11-1") == 10);
-    assert (years(fd)  == 1500);
-    assert (months(fd) ==    3);
-    assert (days(fd)   ==   12);
+    test (d("1500-W11-1") == 10);
+    test (years(fd)  == 1500);
+    test (months(fd) ==    3);
+    test (days(fd)   ==   12);
 
-    assert (d("1700-W14-2") == 10);
-    assert (years(fd)  == 1700);
-    assert (months(fd) ==    4);
-    assert (days(fd)   ==    6);
+    test (d("1700-W14-2") == 10);
+    test (years(fd)  == 1700);
+    test (months(fd) ==    4);
+    test (days(fd)   ==    6);
 
-    assert (d("1800-W19-3") == 10);
-    assert (years(fd)  == 1800);
-    assert (months(fd) ==    5);
-    assert (days(fd)   ==    7);
+    test (d("1800-W19-3") == 10);
+    test (years(fd)  == 1800);
+    test (months(fd) ==    5);
+    test (days(fd)   ==    7);
 
-    assert (d("1900-W25-4") == 10);
-    assert (years(fd)  == 1900);
-    assert (months(fd) ==    6);
-    assert (days(fd)   ==   21);
+    test (d("1900-W25-4") == 10);
+    test (years(fd)  == 1900);
+    test (months(fd) ==    6);
+    test (days(fd)   ==   21);
 
-    assert (d("0900-W27-5") == 10);
-    assert (years(fd)  ==  900);
-    assert (months(fd) ==    7);
-    assert (days(fd)   ==    9);
+    test (d("0900-W27-5") == 10);
+    test (years(fd)  ==  900);
+    test (months(fd) ==    7);
+    test (days(fd)   ==    9);
 
-    assert (d("0800-W33-6") == 10);
-    assert (years(fd)  ==  800);
-    assert (months(fd) ==    8);
-    assert (days(fd)   ==   19);
+    test (d("0800-W33-6") == 10);
+    test (years(fd)  ==  800);
+    test (months(fd) ==    8);
+    test (days(fd)   ==   19);
 
-    assert (d("0700-W37-7") == 10);
-    assert (years(fd)  ==  700);
-    assert (months(fd) ==    9);
-    assert (days(fd)   ==   16);
+    test (d("0700-W37-7") == 10);
+    test (years(fd)  ==  700);
+    test (months(fd) ==    9);
+    test (days(fd)   ==   16);
 
-    assert (d("0600-W41-4") == 10);
-    assert (years(fd)  ==  600);
-    assert (months(fd) ==   10);
-    assert (days(fd)   ==    9);
+    test (d("0600-W41-4") == 10);
+    test (years(fd)  ==  600);
+    test (months(fd) ==   10);
+    test (days(fd)   ==    9);
 
-    assert (d("0500-W45-7") == 10);
-    assert (years(fd)  ==  500);
-    assert (months(fd) ==   11);
-    assert (days(fd)   ==   14);
+    test (d("0500-W45-7") == 10);
+    test (years(fd)  ==  500);
+    test (months(fd) ==   11);
+    test (days(fd)   ==   14);
 
-    assert (d("2000-W55") == 4);
-    assert (years(fd) == 2000);
+    test (d("2000-W55") == 4);
+    test (years(fd) == 2000);
 
-    assert (d("1980-002") == 8);
-    assert (years(fd)  == 1980);
-    assert (months(fd) ==    1);
-    assert (days(fd)   ==    2);
+    test (d("1980-002") == 8);
+    test (years(fd)  == 1980);
+    test (months(fd) ==    1);
+    test (days(fd)   ==    2);
 
-    assert (d("1981-034") == 8);
-    assert (years(fd)  == 1981);
-    assert (months(fd) ==    2);
-    assert (days(fd)   ==    3);
+    test (d("1981-034") == 8);
+    test (years(fd)  == 1981);
+    test (months(fd) ==    2);
+    test (days(fd)   ==    3);
 
-    assert (d("1982-063") == 8);
-    assert (years(fd)  == 1982);
-    assert (months(fd) ==    3);
-    assert (days(fd)   ==    4);
+    test (d("1982-063") == 8);
+    test (years(fd)  == 1982);
+    test (months(fd) ==    3);
+    test (days(fd)   ==    4);
 
-    assert (d("1983-095") == 8);
-    assert (years(fd)  == 1983);
-    assert (months(fd) ==    4);
-    assert (days(fd)   ==    5);
+    test (d("1983-095") == 8);
+    test (years(fd)  == 1983);
+    test (months(fd) ==    4);
+    test (days(fd)   ==    5);
 
-    assert (d("1984-127") == 8);
-    assert (years(fd)  == 1984);
-    assert (months(fd) ==    5);
-    assert (days(fd)   ==    6);
+    test (d("1984-127") == 8);
+    test (years(fd)  == 1984);
+    test (months(fd) ==    5);
+    test (days(fd)   ==    6);
 
-    assert (d("1985-158") == 8);
-    assert (years(fd)  == 1985);
-    assert (months(fd) ==    6);
-    assert (days(fd)   ==    7);
+    test (d("1985-158") == 8);
+    test (years(fd)  == 1985);
+    test (months(fd) ==    6);
+    test (days(fd)   ==    7);
 
-    assert (d("1986-189") == 8);
-    assert (years(fd)  == 1986);
-    assert (months(fd) ==    7);
-    assert (days(fd)   ==    8);
+    test (d("1986-189") == 8);
+    test (years(fd)  == 1986);
+    test (months(fd) ==    7);
+    test (days(fd)   ==    8);
 
-    assert (d("1987-221") == 8);
-    assert (years(fd)  == 1987);
-    assert (months(fd) ==    8);
-    assert (days(fd)   ==    9);
+    test (d("1987-221") == 8);
+    test (years(fd)  == 1987);
+    test (months(fd) ==    8);
+    test (days(fd)   ==    9);
 
-    assert (d("1988-254") == 8);
-    assert (years(fd)  == 1988);
-    assert (months(fd) ==    9);
-    assert (days(fd)   ==   10);
+    test (d("1988-254") == 8);
+    test (years(fd)  == 1988);
+    test (months(fd) ==    9);
+    test (days(fd)   ==   10);
 
-    assert (d("1989-284") == 8);
-    assert (years(fd)  == 1989);
-    assert (months(fd) ==   10);
-    assert (days(fd)   ==   11);
+    test (d("1989-284") == 8);
+    test (years(fd)  == 1989);
+    test (months(fd) ==   10);
+    test (days(fd)   ==   11);
 
-    assert (d("1990316") == 7);
-    assert (years(fd)  == 1990);
-    assert (months(fd) ==   11);
-    assert (days(fd)   ==   12);
+    test (d("1990316") == 7);
+    test (years(fd)  == 1990);
+    test (months(fd) ==   11);
+    test (days(fd)   ==   12);
 
-    assert (d("1991-347") == 8);
-    assert (years(fd)  == 1991);
-    assert (months(fd) ==   12);
-    assert (days(fd)   ==   13);
+    test (d("1991-347") == 8);
+    test (years(fd)  == 1991);
+    test (months(fd) ==   12);
+    test (days(fd)   ==   13);
 
-    assert (d("1992-000") == 4);
-    assert (years(fd) == 1992);
+    test (d("1992-000") == 4);
+    test (years(fd) == 1992);
 
-    assert (d("1993-370") == 4);
-    assert (years(fd) == 1993);
+    test (d("1993-370") == 4);
+    test (years(fd) == 1993);
 
     // time
 
@@ -1248,162 +1250,162 @@ unittest {
         return parseTime(s, fd);
     }
 
-    assert (t("20") == 2);
-    assert (hours(fd) == 20);
-    assert (mins(fd)  ==  0);
-    assert (secs(fd)  ==  0);
+    test (t("20") == 2);
+    test (hours(fd) == 20);
+    test (mins(fd)  ==  0);
+    test (secs(fd)  ==  0);
 
-    assert (t("30") == 0);
+    test (t("30") == 0);
 
-    assert (t("T15") == 3);
-    assert (hours(fd) == 15);
-    assert (mins(fd)  ==  0);
-    assert (secs(fd)  ==  0);
+    test (t("T15") == 3);
+    test (hours(fd) == 15);
+    test (mins(fd)  ==  0);
+    test (secs(fd)  ==  0);
 
-    assert (t("T1") == 0);
-    assert (t("T") == 0);
+    test (t("T1") == 0);
+    test (t("T") == 0);
 
-    assert (t("2004") == 4);
-    assert (hours(fd) == 20);
-    assert (mins(fd)  ==  4);
-    assert (secs(fd)  ==  0);
+    test (t("2004") == 4);
+    test (hours(fd) == 20);
+    test (mins(fd)  ==  4);
+    test (secs(fd)  ==  0);
 
-    assert (t("200406") == 6);
-    assert (hours(fd) == 20);
-    assert (mins(fd)  ==  4);
-    assert (secs(fd)  ==  6);
+    test (t("200406") == 6);
+    test (hours(fd) == 20);
+    test (mins(fd)  ==  4);
+    test (secs(fd)  ==  6);
 
-    assert (t("24:00") == 5);
-    assert (fd.endOfDay);
-    assert (days(fd)  == INIT_DAY + 1);
-    assert (hours(fd) == 0);
-    assert (mins(fd)  == 0);
-    assert (secs(fd)  == 0);
+    test (t("24:00") == 5);
+    test (fd.endOfDay);
+    test (days(fd)  == INIT_DAY + 1);
+    test (hours(fd) == 0);
+    test (mins(fd)  == 0);
+    test (secs(fd)  == 0);
 
-    assert (t("00:00") == 5);
-    assert (hours(fd) == 0);
-    assert (mins(fd)  == 0);
-    assert (secs(fd)  == 0);
+    test (t("00:00") == 5);
+    test (hours(fd) == 0);
+    test (mins(fd)  == 0);
+    test (secs(fd)  == 0);
 
-    assert (t("23:59:60") == 8);
-    assert (hours(fd)  == 23);
-    assert (mins(fd)   == 59);
-    assert (secs(fd)   == 59);
-    assert (fd.seconds == 60);
+    test (t("23:59:60") == 8);
+    test (hours(fd)  == 23);
+    test (mins(fd)   == 59);
+    test (secs(fd)   == 59);
+    test (fd.seconds == 60);
 
-    assert (t("12:3456") == 5);
-    assert (hours(fd) == 12);
-    assert (mins(fd)  == 34);
+    test (t("12:3456") == 5);
+    test (hours(fd) == 12);
+    test (mins(fd)  == 34);
 
-    assert (t("1234:56") == 4);
-    assert (hours(fd) == 12);
-    assert (mins(fd)  == 34);
+    test (t("1234:56") == 4);
+    test (hours(fd) == 12);
+    test (mins(fd)  == 34);
 
-    assert (t("16:49:30,001") == 12);
-    assert (hours(fd) == 16);
-    assert (mins(fd)  == 49);
-    assert (secs(fd)  == 30);
-    assert (ms(fd)    ==  1);
+    test (t("16:49:30,001") == 12);
+    test (hours(fd) == 16);
+    test (mins(fd)  == 49);
+    test (secs(fd)  == 30);
+    test (ms(fd)    ==  1);
 
-    assert (t("15:48:29,1") == 10);
-    assert (hours(fd) ==  15);
-    assert (mins(fd)  ==  48);
-    assert (secs(fd)  ==  29);
-    assert (ms(fd)    == 100);
+    test (t("15:48:29,1") == 10);
+    test (hours(fd) ==  15);
+    test (mins(fd)  ==  48);
+    test (secs(fd)  ==  29);
+    test (ms(fd)    == 100);
 
-    assert (t("02:10:34,a") ==  8);
-    assert (hours(fd) ==  2);
-    assert (mins(fd)  == 10);
-    assert (secs(fd)  == 34);
+    test (t("02:10:34,a") ==  8);
+    test (hours(fd) ==  2);
+    test (mins(fd)  == 10);
+    test (secs(fd)  == 34);
 
-    assert (t("14:50,5") == 7);
-    assert (hours(fd) == 14);
-    assert (mins(fd)  == 50);
-    assert (secs(fd)  == 30);
+    test (t("14:50,5") == 7);
+    test (hours(fd) == 14);
+    test (mins(fd)  == 50);
+    test (secs(fd)  == 30);
 
-    assert (t("1540,4") == 6);
-    assert (hours(fd) == 15);
-    assert (mins(fd)  == 40);
-    assert (secs(fd)  == 24);
+    test (t("1540,4") == 6);
+    test (hours(fd) == 15);
+    test (mins(fd)  == 40);
+    test (secs(fd)  == 24);
 
-    assert (t("1250,") == 4);
-    assert (hours(fd) == 12);
-    assert (mins(fd)  == 50);
+    test (t("1250,") == 4);
+    test (hours(fd) == 12);
+    test (mins(fd)  == 50);
 
-    assert (t("14,5") == 4);
-    assert (hours(fd) == 14);
-    assert (mins(fd)  == 30);
+    test (t("14,5") == 4);
+    test (hours(fd) == 14);
+    test (mins(fd)  == 30);
 
-    assert (t("12,") == 2);
-    assert (hours(fd) == 12);
-    assert (mins(fd)  ==  0);
+    test (t("12,") == 2);
+    test (hours(fd) == 12);
+    test (mins(fd)  ==  0);
 
-    assert (t("24:00:01") == 5);
-    assert (fd.endOfDay);
-    assert (hours(fd) == 0);
-    assert (mins(fd)  == 0);
-    assert (secs(fd)  == 0);
+    test (t("24:00:01") == 5);
+    test (fd.endOfDay);
+    test (hours(fd) == 0);
+    test (mins(fd)  == 0);
+    test (secs(fd)  == 0);
 
-    assert (t("12:34+:56") == 5);
-    assert (hours(fd) == 12);
-    assert (mins(fd)  == 34);
-    assert (secs(fd)  ==  0);
+    test (t("12:34+:56") == 5);
+    test (hours(fd) == 12);
+    test (mins(fd)  == 34);
+    test (secs(fd)  ==  0);
 
     // time zones
 
-    assert (t("14:45:15Z") == 9);
-    assert (hours(fd) == 14);
-    assert (mins(fd)  == 45);
-    assert (secs(fd)  == 15);
+    test (t("14:45:15Z") == 9);
+    test (hours(fd) == 14);
+    test (mins(fd)  == 45);
+    test (secs(fd)  == 15);
 
-    assert (t("23Z") == 3);
-    assert (hours(fd) == 23);
-    assert (mins(fd)  ==  0);
-    assert (secs(fd)  ==  0);
+    test (t("23Z") == 3);
+    test (hours(fd) == 23);
+    test (mins(fd)  ==  0);
+    test (secs(fd)  ==  0);
 
-    assert (t("21:32:43-12:34") == 14);
-    assert (days(fd)  == INIT_DAY + 1);
-    assert (hours(fd) == 10);
-    assert (mins(fd)  ==  6);
-    assert (secs(fd)  == 43);
+    test (t("21:32:43-12:34") == 14);
+    test (days(fd)  == INIT_DAY + 1);
+    test (hours(fd) == 10);
+    test (mins(fd)  ==  6);
+    test (secs(fd)  == 43);
 
-    assert (t("12:34,5+00:00") == 13);
-    assert (hours(fd) == 12);
-    assert (mins(fd)  == 34);
-    assert (secs(fd)  == 30);
+    test (t("12:34,5+00:00") == 13);
+    test (hours(fd) == 12);
+    test (mins(fd)  == 34);
+    test (secs(fd)  == 30);
 
     version (D_Version2) { }
     else
     {
         // TODO: modulo fix is only available in 2.067+
-        assert (t("03:04+07") == 8);
-        assert (hours(fd) == 20);
-        assert (mins(fd)  ==  4);
-        assert (secs(fd)  ==  0);
+        test (t("03:04+07") == 8);
+        test (hours(fd) == 20);
+        test (mins(fd)  ==  4);
+        test (secs(fd)  ==  0);
     }
 
-    assert (t("11,5+") == 4);
-    assert (hours(fd) == 11);
-    assert (mins(fd)  == 30);
+    test (t("11,5+") == 4);
+    test (hours(fd) == 11);
+    test (mins(fd)  == 30);
 
-    assert (t("07-") == 2);
-    assert (hours(fd) == 7);
+    test (t("07-") == 2);
+    test (hours(fd) == 7);
 
-    assert (t("06:12,7-") == 7);
-    assert (hours(fd) ==  6);
-    assert (mins(fd)  == 12);
-    assert (secs(fd)  == 42);
+    test (t("06:12,7-") == 7);
+    test (hours(fd) ==  6);
+    test (mins(fd)  == 12);
+    test (secs(fd)  == 42);
 
-    assert (t("050403,2+") == 8);
-    assert (hours(fd) ==   5);
-    assert (mins(fd)  ==   4);
-    assert (secs(fd)  ==   3);
-    assert (ms(fd)    == 200);
+    test (t("050403,2+") == 8);
+    test (hours(fd) ==   5);
+    test (mins(fd)  ==   4);
+    test (secs(fd)  ==   3);
+    test (ms(fd)    == 200);
 
-    assert (t("061656-") == 6);
-    assert (hours(fd) ==  6);
-    assert (mins(fd)  == 16);
-    assert (secs(fd)  == 56);
+    test (t("061656-") == 6);
+    test (hours(fd) ==  6);
+    test (mins(fd)  == 16);
+    test (secs(fd)  == 56);
 
     // date and time together
 
@@ -1412,109 +1414,109 @@ unittest {
         return parseDateAndTime(s, fd);
     }
 
-    assert (b("2007-08-09T12:34:56") == 19);
-    assert (years(fd)  == 2007);
-    assert (months(fd) ==    8);
-    assert (days(fd)   ==    9);
-    assert (hours(fd)  ==   12);
-    assert (mins(fd)   ==   34);
-    assert (secs(fd)   ==   56);
+    test (b("2007-08-09T12:34:56") == 19);
+    test (years(fd)  == 2007);
+    test (months(fd) ==    8);
+    test (days(fd)   ==    9);
+    test (hours(fd)  ==   12);
+    test (mins(fd)   ==   34);
+    test (secs(fd)   ==   56);
 
-    assert (b("1985W155T235030,768") == 19);
-    assert (years(fd)  == 1985);
-    assert (months(fd) ==    4);
-    assert (days(fd)   ==   12);
-    assert (hours(fd)  ==   23);
-    assert (mins(fd)   ==   50);
-    assert (secs(fd)   ==   30);
-    assert (ms(fd)     ==  768);
+    test (b("1985W155T235030,768") == 19);
+    test (years(fd)  == 1985);
+    test (months(fd) ==    4);
+    test (days(fd)   ==   12);
+    test (hours(fd)  ==   23);
+    test (mins(fd)   ==   50);
+    test (secs(fd)   ==   30);
+    test (ms(fd)     ==  768);
 
     // time zones
 
-    assert (b("2009-08-07T01:02:03Z") == 20);
-    assert (years(fd)  == 2009);
-    assert (months(fd) ==    8);
-    assert (days(fd)   ==    7);
-    assert (hours(fd)  ==    1);
-    assert (mins(fd)   ==    2);
-    assert (secs(fd)   ==    3);
+    test (b("2009-08-07T01:02:03Z") == 20);
+    test (years(fd)  == 2009);
+    test (months(fd) ==    8);
+    test (days(fd)   ==    7);
+    test (hours(fd)  ==    1);
+    test (mins(fd)   ==    2);
+    test (secs(fd)   ==    3);
 
-    assert (b("2007-08-09T03:02,5+04:56") == 24);
-    assert (years(fd)  == 2007);
-    assert (months(fd) ==    8);
-    assert (days(fd)   ==    8);
-    assert (hours(fd)  ==   22);
-    assert (mins(fd)   ==    6);
-    assert (secs(fd)   ==   30);
+    test (b("2007-08-09T03:02,5+04:56") == 24);
+    test (years(fd)  == 2007);
+    test (months(fd) ==    8);
+    test (days(fd)   ==    8);
+    test (hours(fd)  ==   22);
+    test (mins(fd)   ==    6);
+    test (secs(fd)   ==   30);
 
-    assert (b("20000228T2330-01") == 16);
-    assert (years(fd)  == 2000);
-    assert (months(fd) ==    2);
-    assert (days(fd)   ==   29);
-    assert (hours(fd)  ==    0);
-    assert (mins(fd)   ==   30);
-    assert (secs(fd)   ==    0);
+    test (b("20000228T2330-01") == 16);
+    test (years(fd)  == 2000);
+    test (months(fd) ==    2);
+    test (days(fd)   ==   29);
+    test (hours(fd)  ==    0);
+    test (mins(fd)   ==   30);
+    test (secs(fd)   ==    0);
 
-    assert (b("2007-01-01T00:00+01") == 19);
-    assert (years(fd)  == 2006);
-    assert (months(fd) ==   12);
-    assert (days(fd)   ==   31);
-    assert (hours(fd)  ==   23);
-    assert (mins(fd)   ==    0);
-    assert (secs(fd)   ==    0);
+    test (b("2007-01-01T00:00+01") == 19);
+    test (years(fd)  == 2006);
+    test (months(fd) ==   12);
+    test (days(fd)   ==   31);
+    test (hours(fd)  ==   23);
+    test (mins(fd)   ==    0);
+    test (secs(fd)   ==    0);
 
-    assert (b("2007-12-31T23:00-01") == 19);
-    assert (fd.endOfDay);
-    assert (years(fd)  == 2008);
-    assert (months(fd) ==    1);
-    assert (days(fd)   ==    1);
-    assert (hours(fd)  ==    0);
-    assert (mins(fd)   ==    0);
-    assert (secs(fd)   ==    0);
+    test (b("2007-12-31T23:00-01") == 19);
+    test (fd.endOfDay);
+    test (years(fd)  == 2008);
+    test (months(fd) ==    1);
+    test (days(fd)   ==    1);
+    test (hours(fd)  ==    0);
+    test (mins(fd)   ==    0);
+    test (secs(fd)   ==    0);
 
-    assert (b("2007-12-31T23:01-01") == 19);
-    assert (!fd.endOfDay);
-    assert (years(fd)  == 2008);
-    assert (months(fd) ==    1);
-    assert (days(fd)   ==    1);
-    assert (hours(fd)  ==    0);
-    assert (mins(fd)   ==    1);
-    assert (secs(fd)   ==    0);
+    test (b("2007-12-31T23:01-01") == 19);
+    test (!fd.endOfDay);
+    test (years(fd)  == 2008);
+    test (months(fd) ==    1);
+    test (days(fd)   ==    1);
+    test (hours(fd)  ==    0);
+    test (mins(fd)   ==    1);
+    test (secs(fd)   ==    0);
 
-    assert (b("1902-03-04T1a") == 0);
-    assert (b("1902-03-04T10:aa") == 0);
-    assert (b("1902-03-04T10:1aa") == 0);
-    assert (b("200512-01T10:02") == 0);
-    assert (b("1985-04-1210:15:30+04:00") == 0);
-    assert (b("1985-04-12T10:15:30+0400") == 0);
-    assert (b("19020304T05:06:07") == 0);
-    assert (b("1902-03-04T050607") == 0);
-    assert (b("19020304T05:06:07abcd") == 0);
-    assert (b("1902-03-04T050607abcd") == 0);
+    test (b("1902-03-04T1a") == 0);
+    test (b("1902-03-04T10:aa") == 0);
+    test (b("1902-03-04T10:1aa") == 0);
+    test (b("200512-01T10:02") == 0);
+    test (b("1985-04-1210:15:30+04:00") == 0);
+    test (b("1985-04-12T10:15:30+0400") == 0);
+    test (b("19020304T05:06:07") == 0);
+    test (b("1902-03-04T050607") == 0);
+    test (b("19020304T05:06:07abcd") == 0);
+    test (b("1902-03-04T050607abcd") == 0);
 
-    assert (b("1985-04-12T10:15:30-05:4") == 22);
-    assert (years(fd)  == 1985);
-    assert (months(fd) ==    4);
-    assert (days(fd)   ==   12);
-    assert (hours(fd)  ==   15);
-    assert (mins(fd)   ==   15);
-    assert (secs(fd)   ==   30);
-    assert (b("2009-04-13T23:00-01") == 19);
-    assert (fd.endOfDay);
-    assert (years(fd)  == 2009);
-    assert (months(fd) ==    4);
-    assert (days(fd)   ==   14);
-    assert (hours(fd)  ==    0);
-    assert (mins(fd)   ==    0);
-    assert (secs(fd)   ==    0);
-    assert (b("2009-04-13T24:00Z") == 17);
-    assert (fd.endOfDay);
-    assert (years(fd)  == 2009);
-    assert (months(fd) ==    4);
-    assert (days(fd)   ==   14);
-    assert (hours(fd)  ==    0);
-    assert (mins(fd)   ==    0);
-    assert (secs(fd)   ==    0);
+    test (b("1985-04-12T10:15:30-05:4") == 22);
+    test (years(fd)  == 1985);
+    test (months(fd) ==    4);
+    test (days(fd)   ==   12);
+    test (hours(fd)  ==   15);
+    test (mins(fd)   ==   15);
+    test (secs(fd)   ==   30);
+    test (b("2009-04-13T23:00-01") == 19);
+    test (fd.endOfDay);
+    test (years(fd)  == 2009);
+    test (months(fd) ==    4);
+    test (days(fd)   ==   14);
+    test (hours(fd)  ==    0);
+    test (mins(fd)   ==    0);
+    test (secs(fd)   ==    0);
+    test (b("2009-04-13T24:00Z") == 17);
+    test (fd.endOfDay);
+    test (years(fd)  == 2009);
+    test (months(fd) ==    4);
+    test (days(fd)   ==   14);
+    test (hours(fd)  ==    0);
+    test (mins(fd)   ==    0);
+    test (secs(fd)   ==    0);
 
     // unimplemented: intervals, durations, recurring intervals
 
@@ -1534,67 +1536,67 @@ unittest {
         size_t vt(char[] s) { return valgrind(&t, s); }
         size_t vb(char[] s) { return valgrind(&b, s); }
 
-        assert (vd("1") == 0);
-        assert (vd("19") == 2);
-        assert (vd("199") == 0);
-        assert (vd("1999") == 4);
-        assert (vd("1999-") == 4);
-        assert (vd("1999-W") == 4);
-        assert (vd("1999-W0") == 4);
-        assert (vd("1999-W01") == 8);
-        assert (vd("1999-W01-") == 8);
-        assert (vd("1999-W01-3") == 10);
-        assert (vd("1999W") == 4);
-        assert (vd("1999W0") == 4);
-        assert (vd("1999W01") == 7);
-        assert (vd("1999W01-") == 7);
-        assert (vd("1999W01-3") == 7);
-        assert (vd("1999W013") == 8);
-        assert (vd("1999-0") == 4);
-        assert (vd("1999-01") == 7);
-        assert (vd("1999-01-") == 7);
-        assert (vd("1999-01-0") == 7);
-        assert (vd("1999-01-01") == 10);
-        assert (vd("1999-0101") == 7);
-        assert (vd("1999-365") == 8);
-        assert (vd("1999365") == 7);
+        test (vd("1") == 0);
+        test (vd("19") == 2);
+        test (vd("199") == 0);
+        test (vd("1999") == 4);
+        test (vd("1999-") == 4);
+        test (vd("1999-W") == 4);
+        test (vd("1999-W0") == 4);
+        test (vd("1999-W01") == 8);
+        test (vd("1999-W01-") == 8);
+        test (vd("1999-W01-3") == 10);
+        test (vd("1999W") == 4);
+        test (vd("1999W0") == 4);
+        test (vd("1999W01") == 7);
+        test (vd("1999W01-") == 7);
+        test (vd("1999W01-3") == 7);
+        test (vd("1999W013") == 8);
+        test (vd("1999-0") == 4);
+        test (vd("1999-01") == 7);
+        test (vd("1999-01-") == 7);
+        test (vd("1999-01-0") == 7);
+        test (vd("1999-01-01") == 10);
+        test (vd("1999-0101") == 7);
+        test (vd("1999-365") == 8);
+        test (vd("1999365") == 7);
 
-        assert (vt("1") == 0);
-        assert (vt("15") == 2);
-        assert (vt("15:") == 2);
-        assert (vt("15:3") == 2);
-        assert (vt("15:30") == 5);
-        assert (vt("153") == 2);
-        assert (vt("1530") == 4);
-        assert (vt("1530:") == 4);
-        assert (vt("15304") == 4);
-        assert (vt("153045") == 6);
-        assert (vt("15:30:") == 5);
-        assert (vt("15:30:4") == 5);
-        assert (vt("15:30:45") == 8);
-        assert (vt("T15") == 3);
-        assert (vt("T1") == 0);
-        assert (vt("T") == 0);
-        assert (vt("15,") == 2);
-        assert (vt("15,2") == 4);
-        assert (vt("1530,") == 4);
-        assert (vt("1530,2") == 6);
-        assert (vt("15:30:45,") == 8);
-        assert (vt("15:30:45,2") == 10);
-        assert (vt("153045,") == 6);
-        assert (vt("153045,2") == 8);
-        assert (vt("153045,22") == 9);
-        assert (vt("153045,222") == 10);
-        assert (vt("15Z") == 3);
-        assert (vt("15+") == 2);
-        assert (vt("15-") == 2);
-        assert (vt("15+0") == 2);
-        assert (vt("15+00") == 5);
-        assert (vt("15+00:") == 5);
-        assert (vt("15+00:0") == 5);
-        assert (vt("15+00:00") == 8);
-        assert (vb("1999-01-01") == 0);
-        assert (vb("1999-01-01T") == 0);
-        assert (vb("1999-01-01T15:30:45") == 19);
+        test (vt("1") == 0);
+        test (vt("15") == 2);
+        test (vt("15:") == 2);
+        test (vt("15:3") == 2);
+        test (vt("15:30") == 5);
+        test (vt("153") == 2);
+        test (vt("1530") == 4);
+        test (vt("1530:") == 4);
+        test (vt("15304") == 4);
+        test (vt("153045") == 6);
+        test (vt("15:30:") == 5);
+        test (vt("15:30:4") == 5);
+        test (vt("15:30:45") == 8);
+        test (vt("T15") == 3);
+        test (vt("T1") == 0);
+        test (vt("T") == 0);
+        test (vt("15,") == 2);
+        test (vt("15,2") == 4);
+        test (vt("1530,") == 4);
+        test (vt("1530,2") == 6);
+        test (vt("15:30:45,") == 8);
+        test (vt("15:30:45,2") == 10);
+        test (vt("153045,") == 6);
+        test (vt("153045,2") == 8);
+        test (vt("153045,22") == 9);
+        test (vt("153045,222") == 10);
+        test (vt("15Z") == 3);
+        test (vt("15+") == 2);
+        test (vt("15-") == 2);
+        test (vt("15+0") == 2);
+        test (vt("15+00") == 5);
+        test (vt("15+00:") == 5);
+        test (vt("15+00:0") == 5);
+        test (vt("15+00:00") == 8);
+        test (vb("1999-01-01") == 0);
+        test (vb("1999-01-01T") == 0);
+        test (vb("1999-01-01T15:30:45") == 19);
     }
 }

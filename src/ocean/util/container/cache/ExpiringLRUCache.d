@@ -33,6 +33,8 @@ import ocean.util.container.cache.LRUCache;
 
 import core.stdc.time: time_t;
 
+version(UnitTest) import ocean.core.Test;
+
 /*******************************************************************************
 
     Data cache class template with element life time limitation. Stores items of
@@ -394,39 +396,39 @@ unittest
 
         with (expiring_cache)
         {
-            assert(length == 0);
+            test(length == 0);
 
             *getRefreshOrCreate(1) = data1;
-            assert(length == 1);
-            assert(exists(1));
+            test(length == 1);
+            test(exists(1));
             {
                 auto data = getAndRefresh(1);
-                assert(data !is null);
-                assert((*data)[] == data1);
+                test(data !is null);
+                test((*data)[] == data1);
             }
 
-            assert(t <= 5);
+            test(t <= 5);
             t = 5;
 
             *getRefreshOrCreate(2) = data2;
-            assert(length == 2);
-            assert(exists(2));
+            test(length == 2);
+            test(exists(2));
             {
                 auto data = getAndRefresh(2);
-                assert(data !is null);
-                assert((*data)[] == data2);
+                test(data !is null);
+                test((*data)[] == data2);
             }
 
-            assert(t <= 10);
+            test(t <= 10);
             t = 10;
 
-            assert(!exists(1));
+            test(!exists(1));
 
-            assert(t <= 17);
+            test(t <= 17);
             t = 17;
             {
                 auto data = getAndRefresh(2);
-                assert(data is null);
+                test(data is null);
             }
         }
     }

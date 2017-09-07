@@ -50,6 +50,7 @@ import ocean.transition;
 static import core.stdc.math;
 import ocean.math.IEEE;
 
+version(UnitTest) import ocean.core.Test;
 
 version(TangoNoAsm) {
 
@@ -128,14 +129,14 @@ real abs(ireal y)
 
 unittest
 {
-    assert(isIdentical(0.0L,abs(-0.0L)));
-    assert(isNaN(abs(real.nan)));
-    assert(abs(-real.infinity) == real.infinity);
-    assert(abs(-3.2Li) == 3.2L);
-    assert(abs(71.6Li) == 71.6L);
-    assert(abs(-56) == 56);
-    assert(abs(2321312L)  == 2321312L);
-    assert(abs(-1.0L+1.0Li) == sqrt(2.0L));
+    test(isIdentical(0.0L,abs(-0.0L)));
+    test(isNaN(abs(real.nan)));
+    test(abs(-real.infinity) == real.infinity);
+    test(abs(-3.2Li) == 3.2L);
+    test(abs(71.6Li) == 71.6L);
+    test(abs(-56) == 56);
+    test(abs(2321312L)  == 2321312L);
+    test(abs(-1.0L+1.0Li) == sqrt(2.0L));
 }
 
 /**
@@ -159,9 +160,9 @@ ireal conj(ireal y)
 
 unittest
 {
-    assert(conj(7 + 3i) == 7-3i);
+    test(conj(7 + 3i) == 7-3i);
     ireal z = -3.2Li;
-    assert(conj(z) == -z);
+    test(conj(z) == -z);
 }
 
 private {
@@ -202,10 +203,10 @@ minmaxtype!(T) max(T...)(T arg){
 }
 unittest
 {
-    assert(max('e', 'f')=='f');
-    assert(min(3.5, 3.8)==3.5);
+    test(max('e', 'f')=='f');
+    test(min(3.5, 3.8)==3.5);
     // check implicit conversion to integer.
-    assert(min(3.5, 18)==3.5);
+    test(min(3.5, 18)==3.5);
 
 }
 
@@ -255,12 +256,12 @@ real maxNaN(real x, real y) {
 
 unittest
 {
-    assert(maxNum(NaN(0xABC), 56.1L)== 56.1L);
-    assert(isIdentical(maxNaN(NaN(1389), 56.1L), NaN(1389)));
-    assert(maxNum(28.0, NaN(0xABC))== 28.0);
-    assert(minNum(1e12, NaN(0xABC))== 1e12);
-    assert(isIdentical(minNaN(1e12, NaN(23454)), NaN(23454)));
-    assert(isIdentical(minNum(NaN(489), NaN(23)), NaN(489)));
+    test(maxNum(NaN(0xABC), 56.1L)== 56.1L);
+    test(isIdentical(maxNaN(NaN(1389), 56.1L), NaN(1389)));
+    test(maxNum(28.0, NaN(0xABC))== 28.0);
+    test(minNum(1e12, NaN(0xABC))== 1e12);
+    test(isIdentical(minNaN(1e12, NaN(23454)), NaN(23454)));
+    test(isIdentical(minNum(NaN(489), NaN(23)), NaN(489)));
 }
 
 /*
@@ -297,7 +298,7 @@ real cos(real x) /* intrinsic */
 
 unittest {
     // NaN payloads
-    assert(isIdentical(cos(NaN(314)), NaN(314)));
+    test(isIdentical(cos(NaN(314)), NaN(314)));
 }
 
 /***********************************
@@ -330,7 +331,7 @@ real sin(real x) /* intrinsic */
 
 unittest {
     // NaN payloads
-    assert(isIdentical(sin(NaN(314)), NaN(314)));
+    test(isIdentical(sin(NaN(314)), NaN(314)));
 }
 
 /**
@@ -417,20 +418,20 @@ unittest
         real t = tan(x);
 
         //printf("tan(%Lg) = %Lg, should be %Lg\n", x, t, r);
-        if (!isIdentical(r, t)) assert(fabs(r-t) <= .0000001);
+        if (!isIdentical(r, t)) test(fabs(r-t) <= .0000001);
 
         x = -x;
         r = -r;
         t = tan(x);
         //printf("tan(%Lg) = %Lg, should be %Lg\n", x, t, r);
         if (!isIdentical(r, t) && !(isNaN(r) && isNaN(t)))
-            assert(fabs(r-t) <= .0000001);
+            test(fabs(r-t) <= .0000001);
     }
     // overflow
-    assert(isNaN(tan(real.infinity)));
-    assert(isNaN(tan(-real.infinity)));
+    test(isNaN(tan(real.infinity)));
+    test(isNaN(tan(-real.infinity)));
     // NaN propagation
-    assert(isIdentical( tan(NaN(0x0123L)), NaN(0x0123L) ));
+    test(isIdentical( tan(NaN(0x0123L)), NaN(0x0123L) ));
 }
 
 /*****************************************
@@ -456,10 +457,10 @@ real atanPi(real x)
 }
 
 unittest {
-    assert(isIdentical(sinPi(0.0), 0.0));
-    assert(isIdentical(sinPi(-0.0), -0.0));
-    assert(isIdentical(atanPi(0.0), 0.0));
-    assert(isIdentical(atanPi(-0.0), -0.0));
+    test(isIdentical(sinPi(0.0), 0.0));
+    test(isIdentical(sinPi(-0.0), -0.0));
+    test(isIdentical(atanPi(0.0), 0.0));
+    test(isIdentical(atanPi(-0.0), -0.0));
 }
 
 /***********************************
@@ -484,8 +485,8 @@ ireal sin(ireal y)
 
 unittest
 {
-  assert(sin(0.0+0.0i) == 0.0);
-  assert(sin(2.0+0.0i) == sin(2.0L) );
+  test(sin(0.0+0.0i) == 0.0);
+  test(sin(2.0+0.0i) == sin(2.0L) );
 }
 
 /***********************************
@@ -507,9 +508,9 @@ real cos(ireal y)
 
 unittest
 {
-  assert(cos(0.0+0.0i)==1.0);
-  assert(cos(1.3L+0.0i)==cos(1.3L));
-  assert(cos(5.2Li)== cosh(5.2L));
+  test(cos(0.0+0.0i)==1.0);
+  test(cos(1.3L+0.0i)==cos(1.3L));
+  test(cos(5.2Li)== cosh(5.2L));
 }
 
 /***************
@@ -532,7 +533,7 @@ unittest {
     // NaN payloads
     version(darwin){}
     else {
-        assert(isIdentical(acos(NaN(254)), NaN(254)));
+        test(isIdentical(acos(NaN(254)), NaN(254)));
     }
 }
 
@@ -556,7 +557,7 @@ unittest {
     // NaN payloads
     version(darwin){}
     else{
-        assert(isIdentical(asin(NaN(7249)), NaN(7249)));
+        test(isIdentical(asin(NaN(7249)), NaN(7249)));
     }
 }
 
@@ -578,7 +579,7 @@ real atan(real x)
 unittest
 {
     // NaN payloads
-    assert(isIdentical(atan(NaN(9876)), NaN(9876)));
+    test(isIdentical(atan(NaN(9876)), NaN(9876)));
 }
 
 /***************
@@ -610,8 +611,8 @@ real atan2(real y, real x)
 unittest
 {
     // NaN payloads
-    assert(isIdentical(atan2(5.3, NaN(9876)), NaN(9876)));
-    assert(isIdentical(atan2(NaN(9876), 2.18), NaN(9876)));
+    test(isIdentical(atan2(5.3, NaN(9876)), NaN(9876)));
+    test(isIdentical(atan2(NaN(9876), 2.18), NaN(9876)));
 }
 
 /***********************************
@@ -627,7 +628,7 @@ creal asin(creal z)
 
 unittest
 {
-   assert(asin(sin(0+0i)) == 0 + 0i);
+   test(asin(sin(0+0i)) == 0 + 0i);
 }
 
 /***********************************
@@ -660,7 +661,7 @@ real cosh(real x)
 unittest
 {
     // NaN payloads
-    assert(isIdentical(cosh(NaN(432)), NaN(432)));
+    test(isIdentical(cosh(NaN(432)), NaN(432)));
 }
 
 /***********************************
@@ -688,7 +689,7 @@ real sinh(real x)
 unittest
 {
     // NaN payloads
-    assert(isIdentical(sinh(NaN(0xABC)), NaN(0xABC)));
+    test(isIdentical(sinh(NaN(0xABC)), NaN(0xABC)));
 }
 
 /***********************************
@@ -713,7 +714,7 @@ real tanh(real x)
 unittest
 {
     // NaN payloads
-    assert(isIdentical(tanh(NaN(0xABC)), NaN(0xABC)));
+    test(isIdentical(tanh(NaN(0xABC)), NaN(0xABC)));
 }
 
 /***********************************
@@ -735,7 +736,7 @@ ireal sinh(ireal y)
 
 unittest
 {
-  assert(sinh(4.2L + 0i)==sinh(4.2L));
+  test(sinh(4.2L + 0i)==sinh(4.2L));
 }
 
 /***********************************
@@ -757,7 +758,7 @@ real cosh(ireal y)
 
 unittest
 {
-  assert(cosh(8.3L + 0i)==cosh(8.3L));
+  test(cosh(8.3L + 0i)==cosh(8.3L));
 }
 
 
@@ -784,12 +785,12 @@ real acosh(real x)
 
 unittest
 {
-    assert(isNaN(acosh(0.9)));
-    assert(isNaN(acosh(real.nan)));
-    assert(acosh(1)==0.0);
-    assert(acosh(real.infinity) == real.infinity);
+    test(isNaN(acosh(0.9)));
+    test(isNaN(acosh(real.nan)));
+    test(acosh(1)==0.0);
+    test(acosh(real.infinity) == real.infinity);
     // NaN payloads
-    assert(isIdentical(acosh(NaN(0xABC)), NaN(0xABC)));
+    test(isIdentical(acosh(NaN(0xABC)), NaN(0xABC)));
 }
 
 /***********************************
@@ -821,13 +822,13 @@ real asinh(real x)
 
 unittest
 {
-    assert(isIdentical(0.0L,asinh(0.0)));
-    assert(isIdentical(-0.0L,asinh(-0.0)));
-    assert(asinh(real.infinity) == real.infinity);
-    assert(asinh(-real.infinity) == -real.infinity);
-    assert(isNaN(asinh(real.nan)));
+    test(isIdentical(0.0L,asinh(0.0)));
+    test(isIdentical(-0.0L,asinh(-0.0)));
+    test(asinh(real.infinity) == real.infinity);
+    test(asinh(-real.infinity) == -real.infinity);
+    test(isNaN(asinh(real.nan)));
     // NaN payloads
-    assert(isIdentical(asinh(NaN(0xABC)), NaN(0xABC)));
+    test(isIdentical(asinh(NaN(0xABC)), NaN(0xABC)));
 }
 
 /***********************************
@@ -852,15 +853,15 @@ real atanh(real x)
 
 unittest
 {
-    assert(isIdentical(0.0L, atanh(0.0)));
-    assert(isIdentical(-0.0L,atanh(-0.0)));
-    assert(isIdentical(atanh(-1),-real.infinity));
+    test(isIdentical(0.0L, atanh(0.0)));
+    test(isIdentical(-0.0L,atanh(-0.0)));
+    test(isIdentical(atanh(-1),-real.infinity));
     // Fails with -O because of DMD : https://issues.dlang.org/show_bug.cgi?id=13743
     // Nothing can be done about it without feedback from DMD upstream
     //assert(isIdentical(atanh(1),real.infinity));
-    assert(isNaN(atanh(-real.infinity)));
+    test(isNaN(atanh(-real.infinity)));
     // NaN payloads
-    assert(isIdentical(atanh(NaN(0xABC)), NaN(0xABC)));
+    test(isIdentical(atanh(NaN(0xABC)), NaN(0xABC)));
 }
 
 /** ditto */
@@ -968,10 +969,10 @@ creal sqrt(creal z)
 
 unittest {
     // NaN payloads
-    assert(isIdentical(sqrt(NaN(0xABC)), NaN(0xABC)));
-    assert(sqrt(-1+0i) == 1i);
-    assert(isIdentical(sqrt(0-0i), 0-0i));
-    assert(cfeqrel(sqrt(4+16i)*sqrt(4+16i), 4+16i)>=real.mant_dig-2);
+    test(isIdentical(sqrt(NaN(0xABC)), NaN(0xABC)));
+    test(sqrt(-1+0i) == 1i);
+    test(isIdentical(sqrt(0-0i), 0-0i));
+    test(cfeqrel(sqrt(4+16i)*sqrt(4+16i), 4+16i)>=real.mant_dig-2);
 }
 
 /***************
@@ -992,7 +993,7 @@ real cbrt(real x)
 
 unittest {
     // NaN payloads
-    assert(isIdentical(cbrt(NaN(0xABC)), NaN(0xABC)));
+    test(isIdentical(cbrt(NaN(0xABC)), NaN(0xABC)));
 }
 
 public:
@@ -1374,17 +1375,17 @@ L_was_nan:
 
 unittest {
     // NaN payloads
-    assert(isIdentical(exp(NaN(0xABC)), NaN(0xABC)));
+    test(isIdentical(exp(NaN(0xABC)), NaN(0xABC)));
 }
 
 unittest {
     // NaN payloads
-    assert(isIdentical(expm1(NaN(0xABC)), NaN(0xABC)));
+    test(isIdentical(expm1(NaN(0xABC)), NaN(0xABC)));
 }
 
 unittest {
     // NaN payloads
-    assert(isIdentical(exp2(NaN(0xABC)), NaN(0xABC)));
+    test(isIdentical(exp2(NaN(0xABC)), NaN(0xABC)));
 }
 
 /*
@@ -1408,7 +1409,7 @@ real log(real x)
 
 unittest {
     // NaN payloads
-    assert(isIdentical(log(NaN(0xABC)), NaN(0xABC)));
+    test(isIdentical(log(NaN(0xABC)), NaN(0xABC)));
 }
 
 /******************************************
@@ -1432,7 +1433,7 @@ real log1p(real x)
 
 unittest {
     // NaN payloads
-    assert(isIdentical(log1p(NaN(0xABC)), NaN(0xABC)));
+    test(isIdentical(log1p(NaN(0xABC)), NaN(0xABC)));
 }
 
 /***************************************
@@ -1453,7 +1454,7 @@ real log2(real x)
 
 unittest {
     // NaN payloads
-    assert(isIdentical(log2(NaN(0xABC)), NaN(0xABC)));
+    test(isIdentical(log2(NaN(0xABC)), NaN(0xABC)));
 }
 
 /**************************************
@@ -1473,7 +1474,7 @@ real log10(real x)
 
 unittest {
     // NaN payloads
-    assert(isIdentical(log10(NaN(0xABC)), NaN(0xABC)));
+    test(isIdentical(log10(NaN(0xABC)), NaN(0xABC)));
 }
 
 /***********************************
@@ -1499,13 +1500,13 @@ creal exp(creal z)
 }
 
 unittest {
-    assert(exp(1.3e5Li)==cos(1.3e5L)+sin(1.3e5L)*1i);
-    assert(exp(0.0Li)==1L+0.0Li);
-    assert(exp(7.2 + 0.0i) == exp(7.2L));
+    test(exp(1.3e5Li)==cos(1.3e5L)+sin(1.3e5L)*1i);
+    test(exp(0.0Li)==1L+0.0Li);
+    test(exp(7.2 + 0.0i) == exp(7.2L));
     creal c = exp(ireal.nan);
-    assert(isNaN(c.re) && isNaN(c.im));
+    test(isNaN(c.re) && isNaN(c.im));
     c = exp(ireal.infinity);
-    assert(isNaN(c.re) && isNaN(c.im));
+    test(isNaN(c.re) && isNaN(c.im));
 }
 
 /***********************************
@@ -1543,9 +1544,9 @@ private int cfeqrel(creal a, creal b)
 
 unittest {
 
-  assert(log(3.0L +0i) == log(3.0L)+0i);
-  assert(cfeqrel(log(0.0L-2i),( log(2.0L)-PI_2*1i)) >= real.mant_dig-10);
-  assert(cfeqrel(log(0.0L+2i),( log(2.0L)+PI_2*1i)) >= real.mant_dig-10);
+  test(log(3.0L +0i) == log(3.0L)+0i);
+  test(cfeqrel(log(0.0L-2i),( log(2.0L)-PI_2*1i)) >= real.mant_dig-10);
+  test(cfeqrel(log(0.0L+2i),( log(2.0L)+PI_2*1i)) >= real.mant_dig-10);
 }
 
 /**
@@ -1734,13 +1735,13 @@ unittest
 {
     real x = 46;
 
-    assert(pow(x,0) == 1.0);
-    assert(pow(x,1) == x);
-    assert(pow(x,2) == x * x);
-    assert(pow(x,3) == x * x * x);
-    assert(pow(x,8) == (x * x) * (x * x) * (x * x) * (x * x));
+    test(pow(x,0) == 1.0);
+    test(pow(x,1) == x);
+    test(pow(x,2) == x * x);
+    test(pow(x,3) == x * x * x);
+    test(pow(x,8) == (x * x) * (x * x) * (x * x) * (x * x));
     // NaN payloads
-    assert(isIdentical(pow(NaN(0xABC), 19), NaN(0xABC)));
+    test(isIdentical(pow(NaN(0xABC), 19), NaN(0xABC)));
 }
 
 /***********************************************************************
@@ -1847,11 +1848,11 @@ unittest
         real z = vals[i][2];
         real h = hypot(x, y);
 
-        assert(isIdentical(z, h));
+        test(isIdentical(z, h));
     }
     // NaN payloads
-    assert(isIdentical(hypot(NaN(0xABC), 3.14), NaN(0xABC)));
-    assert(isIdentical(hypot(7.6e39, NaN(0xABC)), NaN(0xABC)));
+    test(isIdentical(hypot(NaN(0xABC), 3.14), NaN(0xABC)));
+    test(isIdentical(hypot(7.6e39, NaN(0xABC)), NaN(0xABC)));
 }
 
 /***********************************
@@ -1946,9 +1947,9 @@ unittest
     real x = 3.1;
     const real[] pp = [56.1L, 32.7L, 6L];
 
-    assert( poly(x, pp) == (56.1L + (32.7L + 6L * x) * x) );
+    test( poly(x, pp) == (56.1L + (32.7L + 6L * x) * x) );
 
-    assert(isIdentical(poly(NaN(0xABC), pp), NaN(0xABC)));
+    test(isIdentical(poly(NaN(0xABC), pp), NaN(0xABC)));
 }
 
 package {
@@ -1972,7 +1973,7 @@ real floor(real x)
 }
 
 unittest {
-    assert(isIdentical(floor(NaN(0xABC)), NaN(0xABC)));
+    test(isIdentical(floor(NaN(0xABC)), NaN(0xABC)));
 }
 
 /**
@@ -1985,7 +1986,7 @@ real ceil(real x)
 }
 
 unittest {
-    assert(isIdentical(ceil(NaN(0xABC)), NaN(0xABC)));
+    test(isIdentical(ceil(NaN(0xABC)), NaN(0xABC)));
 }
 
 /**
@@ -1999,7 +2000,7 @@ real round(real x)
 }
 
 unittest {
-    assert(isIdentical(round(NaN(0xABC)), NaN(0xABC)));
+    test(isIdentical(round(NaN(0xABC)), NaN(0xABC)));
 }
 
 /**
@@ -2013,7 +2014,7 @@ real trunc(real x)
 }
 
 unittest {
-    assert(isIdentical(trunc(NaN(0xABC)), NaN(0xABC)));
+    test(isIdentical(trunc(NaN(0xABC)), NaN(0xABC)));
 }
 
 /**
@@ -2069,23 +2070,23 @@ version(D_InlineAsm_X86)
     unittest
     {
         int r = getIeeeRounding;
-        assert(r==RoundingMode.ROUNDTONEAREST);
+        test(r==RoundingMode.ROUNDTONEAREST);
         real b = 5.5;
         int cnear = ocean.math.Math.rndint(b);
-        assert(cnear == 6);
+        test(cnear == 6);
         auto oldrounding = setIeeeRounding(RoundingMode.ROUNDDOWN);
         scope (exit) setIeeeRounding(oldrounding);
 
-        assert(getIeeeRounding==RoundingMode.ROUNDDOWN);
+        test(getIeeeRounding==RoundingMode.ROUNDDOWN);
 
         int cdown = ocean.math.Math.rndint(b);
-        assert(cdown==5);
+        test(cdown==5);
     }
 
     unittest
     {
         // Check that the previous test correctly restored the rounding mode
-        assert(getIeeeRounding==RoundingMode.ROUNDTONEAREST);
+        test(getIeeeRounding==RoundingMode.ROUNDTONEAREST);
     }
 }
 
@@ -2138,11 +2139,11 @@ unittest
 {
     ulong x = 46;
 
-    assert(pow(x,0UL) == 1);
-    assert(pow(x,1UL) == x);
-    assert(pow(x,2UL) == x * x);
-    assert(pow(x,3UL) == x * x * x);
-    assert(pow(x,8UL) == (x * x) * (x * x) * (x * x) * (x * x));
+    test(pow(x,0UL) == 1);
+    test(pow(x,1UL) == x);
+    test(pow(x,2UL) == x * x);
+    test(pow(x,3UL) == x * x * x);
+    test(pow(x,8UL) == (x * x) * (x * x) * (x * x) * (x * x));
 }
 
 /*******************************************************************************
@@ -2195,28 +2196,28 @@ unittest
         return rndlong(x);
     }
 
-    assert(divRoundEven(-3, 2)  == -2);
-    assert(divRoundEven(3, 2)   == 2);
-    assert(divRoundEven(-3, -2) == 2);
-    assert(divRoundEven(3, -2)  == -2);
+    test(divRoundEven(-3, 2)  == -2);
+    test(divRoundEven(3, 2)   == 2);
+    test(divRoundEven(-3, -2) == 2);
+    test(divRoundEven(3, -2)  == -2);
 
-    assert(divRoundEven(7, 11) == 1);
-    assert(divRoundEven(11, 11) == 1);
-    assert(divRoundEven(16, 11) == 1);
-    assert(divRoundEven(-17, 11) == -2);
-    assert(divRoundEven(-17, 11) == -2);
-    assert(divRoundEven(-16, 11) == -1);
+    test(divRoundEven(7, 11) == 1);
+    test(divRoundEven(11, 11) == 1);
+    test(divRoundEven(16, 11) == 1);
+    test(divRoundEven(-17, 11) == -2);
+    test(divRoundEven(-17, 11) == -2);
+    test(divRoundEven(-16, 11) == -1);
 
-    assert(divRoundEven(17, -11) == -2);
-    assert(divRoundEven(16, -11) == -1);
-    assert(divRoundEven(-17, -11) == 2);
-    assert(divRoundEven(-16, -11) == 1);
+    test(divRoundEven(17, -11) == -2);
+    test(divRoundEven(16, -11) == -1);
+    test(divRoundEven(-17, -11) == 2);
+    test(divRoundEven(-16, -11) == 1);
 
     for (int i = -100; i <= 100; ++i) for (int j = -100; j <= 100; ++j)
     {
         if (j != 0)
         {
-            assert (divRoundEven(i,j) == roundDivCheat(i,j));
+            test (divRoundEven(i,j) == roundDivCheat(i,j));
         }
     }
 }

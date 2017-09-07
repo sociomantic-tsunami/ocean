@@ -32,6 +32,8 @@ import ocean.transition;
 import ocean.core.ExceptionDefinitions;
 import ocean.core.Traits;
 
+version(UnitTest) import ocean.core.Test;
+
 /******************************************************************************
 
     Parse an integer value from the provided 'digits' string.
@@ -59,7 +61,7 @@ int toInt(T) (T[] digits, uint radix=0)
 unittest
 {
     auto x = toInt("42");
-    assert(x == 42);
+    test(x == 42);
 }
 
 /******************************************************************************
@@ -91,7 +93,7 @@ long toLong(T) (T[] digits, uint radix=0)
 unittest
 {
     auto x = toLong("42");
-    assert(x == 42);
+    test(x == 42);
 }
 
 /******************************************************************************
@@ -129,7 +131,7 @@ ulong toUlong(T) (T[] digits, uint radix=0)
 unittest
 {
     auto x = toUlong("42");
-    assert(x == 42);
+    test(x == 42);
 }
 
 /******************************************************************************
@@ -150,7 +152,7 @@ char[] toString (long i, char[] fmt = null)
 unittest
 {
     auto x = toString(42);
-    assert(x == "42");
+    test(x == "42");
 }
 
 /******************************************************************************
@@ -171,7 +173,7 @@ wchar[] toString16 (long i, wchar[] fmt = null)
 unittest
 {
     wchar[] x = toString16(42);
-    assert(x == "42");
+    test(x == "42");
 }
 
 /******************************************************************************
@@ -192,7 +194,7 @@ dchar[] toString32 (long i, dchar[] fmt = null)
 unittest
 {
     dchar[] x = toString32(42);
-    assert(x == "42");
+    test(x == "42");
 }
 
 /*******************************************************************************
@@ -250,11 +252,11 @@ unittest
 {
     char[10] buff;
     auto s = format(buff, 42, "x");
-    assert (s == "2a", s);
+    test (s == "2a", s);
 
     int x = 43;
     s = format(buff, x);
-    assert (s == "43");
+    test (s == "43");
 }
 
 private void decode(T) (T[] fmt, ref char type, out char pre, out int width)
@@ -440,8 +442,8 @@ unittest
 {
     uint ate;
     auto x = parse("-422", 0, &ate);
-    assert (x == -422);
-    assert (ate == 4);
+    test (x == -422);
+    test (ate == 4);
 }
 
 /******************************************************************************
@@ -494,8 +496,8 @@ unittest
 {
     uint ate;
     auto x = convert("422", 10, &ate);
-    assert (x == 422);
-    assert (ate == 3);
+    test (x == 422);
+    test (ate == 3);
 }
 
 /******************************************************************************
@@ -589,9 +591,9 @@ unittest
     bool sign;
     uint radix;
     auto x = trim("  0xFF ", sign, radix);
-    assert (x == 4);
-    assert (sign == false);
-    assert (radix == 16);
+    test (x == 4);
+    test (sign == false);
+    test (radix == 16);
 }
 
 
@@ -641,7 +643,7 @@ unittest
 {
     char[10] buff;
     auto s = itoa(buff, 42);
-    assert (s == "42");
+    test (s == "42");
 }
 
 /******************************************************************************
@@ -704,7 +706,7 @@ T[] consume(T) (T[] src, bool fp=false)
 unittest
 {
     auto s = consume("422 abc");
-    assert (s == "422");
+    test (s == "422");
 }
 
 
@@ -789,117 +791,117 @@ unittest
 {
     char[64] tmp;
 
-    assert (toInt("1") is 1);
-    assert (toLong("1") is 1);
-    assert (toInt("1", 10) is 1);
-    assert (toLong("1", 10) is 1);
-    assert (toUlong("1", 10) is 1);
-    assert (toUlong("18446744073709551615") is ulong.max);
+    test (toInt("1") is 1);
+    test (toLong("1") is 1);
+    test (toInt("1", 10) is 1);
+    test (toLong("1", 10) is 1);
+    test (toUlong("1", 10) is 1);
+    test (toUlong("18446744073709551615") is ulong.max);
 
-    assert (atoi ("12345") is 12345);
-    assert (itoa (tmp, 12345) == "12345");
+    test (atoi ("12345") is 12345);
+    test (itoa (tmp, 12345) == "12345");
 
-    assert(parse( "0"w ) ==  0 );
-    assert(parse( "1"w ) ==  1 );
-    assert(parse( "-1"w ) ==  -1 );
-    assert(parse( "+1"w ) ==  1 );
+    test(parse( "0"w ) ==  0 );
+    test(parse( "1"w ) ==  1 );
+    test(parse( "-1"w ) ==  -1 );
+    test(parse( "+1"w ) ==  1 );
 
     // numerical limits
-    assert(parse( "-2147483648" ) == int.min );
-    assert(parse(  "2147483647" ) == int.max );
-    assert(parse(  "4294967295" ) == uint.max );
+    test(parse( "-2147483648" ) == int.min );
+    test(parse(  "2147483647" ) == int.max );
+    test(parse(  "4294967295" ) == uint.max );
 
-    assert(parse( "-9223372036854775808" ) == long.min );
-    assert(parse( "9223372036854775807" ) == long.max );
-    assert(parse( "18446744073709551615" ) == ulong.max );
+    test(parse( "-9223372036854775808" ) == long.min );
+    test(parse( "9223372036854775807" ) == long.max );
+    test(parse( "18446744073709551615" ) == ulong.max );
 
     // hex
-    assert(parse( "a", 16) == 0x0A );
-    assert(parse( "b", 16) == 0x0B );
-    assert(parse( "c", 16) == 0x0C );
-    assert(parse( "d", 16) == 0x0D );
-    assert(parse( "e", 16) == 0x0E );
-    assert(parse( "f", 16) == 0x0F );
-    assert(parse( "A", 16) == 0x0A );
-    assert(parse( "B", 16) == 0x0B );
-    assert(parse( "C", 16) == 0x0C );
-    assert(parse( "D", 16) == 0x0D );
-    assert(parse( "E", 16) == 0x0E );
-    assert(parse( "F", 16) == 0x0F );
-    assert(parse( "FFFF", 16) == ushort.max );
-    assert(parse( "ffffFFFF", 16) == uint.max );
-    assert(parse( "ffffFFFFffffFFFF", 16u ) == ulong.max );
+    test(parse( "a", 16) == 0x0A );
+    test(parse( "b", 16) == 0x0B );
+    test(parse( "c", 16) == 0x0C );
+    test(parse( "d", 16) == 0x0D );
+    test(parse( "e", 16) == 0x0E );
+    test(parse( "f", 16) == 0x0F );
+    test(parse( "A", 16) == 0x0A );
+    test(parse( "B", 16) == 0x0B );
+    test(parse( "C", 16) == 0x0C );
+    test(parse( "D", 16) == 0x0D );
+    test(parse( "E", 16) == 0x0E );
+    test(parse( "F", 16) == 0x0F );
+    test(parse( "FFFF", 16) == ushort.max );
+    test(parse( "ffffFFFF", 16) == uint.max );
+    test(parse( "ffffFFFFffffFFFF", 16u ) == ulong.max );
     // oct
-    assert(parse( "55", 8) == 5 + 8*5 );
-    assert(parse( "100", 8) == 64 );
+    test(parse( "55", 8) == 5 + 8*5 );
+    test(parse( "100", 8) == 64 );
     // bin
-    assert(parse( "10000", 2) == 0x10 );
+    test(parse( "10000", 2) == 0x10 );
     // trim
-    assert(parse( "    \t20") == 20 );
-    assert(parse( "    \t-20") == -20 );
-    assert(parse( "-    \t 20") == -20 );
+    test(parse( "    \t20") == 20 );
+    test(parse( "    \t-20") == -20 );
+    test(parse( "-    \t 20") == -20 );
     // recognise radix prefix
-    assert(parse( "0xFFFF" ) == ushort.max );
-    assert(parse( "0XffffFFFF" ) == uint.max );
-    assert(parse( "0o55") == 5 + 8*5 );
-    assert(parse( "0O55" ) == 5 + 8*5 );
-    assert(parse( "0b10000") == 0x10 );
-    assert(parse( "0B10000") == 0x10 );
+    test(parse( "0xFFFF" ) == ushort.max );
+    test(parse( "0XffffFFFF" ) == uint.max );
+    test(parse( "0o55") == 5 + 8*5 );
+    test(parse( "0O55" ) == 5 + 8*5 );
+    test(parse( "0b10000") == 0x10 );
+    test(parse( "0B10000") == 0x10 );
 
     // prefix tests
     auto str = "0x";
-    assert(parse( str[0..1] ) ==  0 );
-    assert(parse("0x10", 10) == 0);
-    assert(parse("0b10", 10) == 0);
-    assert(parse("0o10", 10) == 0);
-    assert(parse("0b10") == 0b10);
-    assert(parse("0o10") == 8);
-    assert(parse("0b10", 2) == 0b10);
-    assert(parse("0o10", 8) == 8);
+    test(parse( str[0..1] ) ==  0 );
+    test(parse("0x10", 10) == 0);
+    test(parse("0b10", 10) == 0);
+    test(parse("0o10", 10) == 0);
+    test(parse("0b10") == 0b10);
+    test(parse("0o10") == 8);
+    test(parse("0b10", 2) == 0b10);
+    test(parse("0o10", 8) == 8);
 
     // revised tests
-    assert (format(tmp, 10, "d") == "10");
-    assert (format(tmp, -10, "d") == "-10");
+    test (format(tmp, 10, "d") == "10");
+    test (format(tmp, -10, "d") == "-10");
 
-    assert (format(tmp, 10L, "u") == "10");
-    assert (format(tmp, 10L, "U") == "10");
-    assert (format(tmp, 10L, "g") == "10");
-    assert (format(tmp, 10L, "G") == "10");
-    assert (format(tmp, 10L, "o") == "12");
-    assert (format(tmp, 10L, "O") == "12");
-    assert (format(tmp, 10L, "b") == "1010");
-    assert (format(tmp, 10L, "B") == "1010");
-    assert (format(tmp, 10L, "x") == "a");
-    assert (format(tmp, 10L, "X") == "A");
+    test (format(tmp, 10L, "u") == "10");
+    test (format(tmp, 10L, "U") == "10");
+    test (format(tmp, 10L, "g") == "10");
+    test (format(tmp, 10L, "G") == "10");
+    test (format(tmp, 10L, "o") == "12");
+    test (format(tmp, 10L, "O") == "12");
+    test (format(tmp, 10L, "b") == "1010");
+    test (format(tmp, 10L, "B") == "1010");
+    test (format(tmp, 10L, "x") == "a");
+    test (format(tmp, 10L, "X") == "A");
 
-    assert (format(tmp, 10L, "d+") == "+10");
-    assert (format(tmp, 10L, "d ") == " 10");
-    assert (format(tmp, 10L, "d#") == "10");
-    assert (format(tmp, 10L, "x#") == "0xa");
-    assert (format(tmp, 10L, "X#") == "0XA");
-    assert (format(tmp, 10L, "b#") == "0b1010");
-    assert (format(tmp, 10L, "o#") == "0o12");
+    test (format(tmp, 10L, "d+") == "+10");
+    test (format(tmp, 10L, "d ") == " 10");
+    test (format(tmp, 10L, "d#") == "10");
+    test (format(tmp, 10L, "x#") == "0xa");
+    test (format(tmp, 10L, "X#") == "0XA");
+    test (format(tmp, 10L, "b#") == "0b1010");
+    test (format(tmp, 10L, "o#") == "0o12");
 
-    assert (format(tmp, 10L, "d1") == "10");
-    assert (format(tmp, 10L, "d8") == "00000010");
-    assert (format(tmp, 10L, "x8") == "0000000a");
-    assert (format(tmp, 10L, "X8") == "0000000A");
-    assert (format(tmp, 10L, "b8") == "00001010");
-    assert (format(tmp, 10L, "o8") == "00000012");
+    test (format(tmp, 10L, "d1") == "10");
+    test (format(tmp, 10L, "d8") == "00000010");
+    test (format(tmp, 10L, "x8") == "0000000a");
+    test (format(tmp, 10L, "X8") == "0000000A");
+    test (format(tmp, 10L, "b8") == "00001010");
+    test (format(tmp, 10L, "o8") == "00000012");
 
-    assert (format(tmp, 10L, "d1#") == "10");
-    assert (format(tmp, 10L, "d6#") == "000010");
-    assert (format(tmp, 10L, "x6#") == "0x00000a");
-    assert (format(tmp, 10L, "X6#") == "0X00000A");
+    test (format(tmp, 10L, "d1#") == "10");
+    test (format(tmp, 10L, "d6#") == "000010");
+    test (format(tmp, 10L, "x6#") == "0x00000a");
+    test (format(tmp, 10L, "X6#") == "0X00000A");
 
     char[8] tmp1;
-    assert (format(tmp1, 10L, "b12#") == "0b001010");
-    assert (format(tmp1, 10L, "o12#") == "0o000012");
+    test (format(tmp1, 10L, "b12#") == "0b001010");
+    test (format(tmp1, 10L, "o12#") == "0o000012");
 
-    assert(format(tmp, long.min, "d") == "-9223372036854775808", tmp);
-    assert(format(tmp, long.max, "d") ==  "9223372036854775807", tmp);
-    assert(format(tmp, cast(ubyte) -1, "b") ==  "11111111", tmp);
-    assert(format(tmp, -1, "b") ==  "11111111111111111111111111111111", tmp);
+    test(format(tmp, long.min, "d") == "-9223372036854775808", tmp);
+    test(format(tmp, long.max, "d") ==  "9223372036854775807", tmp);
+    test(format(tmp, cast(ubyte) -1, "b") ==  "11111111", tmp);
+    test(format(tmp, -1, "b") ==  "11111111111111111111111111111111", tmp);
 }
 
 /******************************************************************************

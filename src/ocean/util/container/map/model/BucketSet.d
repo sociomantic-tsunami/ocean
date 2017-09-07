@@ -52,6 +52,8 @@ import ocean.core.BitManip: bsr;
 
 import ocean.util.container.map.model.BucketElementGCAllocator;
 
+version(UnitTest) import ocean.core.Test;
+
 /******************************************************************************
 
     Generic BucketSet base class
@@ -392,7 +394,7 @@ public abstract class BucketSet ( size_t V, K = hash_t ) : IBucketSet
 
     unittest
     {
-        assert(isClearable!(Bucket),
+        test(isClearable!(Bucket),
                Bucket.stringof ~ ".init contains non-zero byte: " ~
                typeof (this).stringof ~ ".clear_() will not work");
     }

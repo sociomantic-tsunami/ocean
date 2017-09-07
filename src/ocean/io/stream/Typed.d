@@ -24,6 +24,8 @@ import ocean.io.device.Conduit;
 
 import ocean.io.stream.Buffered;
 
+version(UnitTest) import ocean.core.Test;
+
 /*******************************************************************************
 
         Type T is the target or destination type.
@@ -134,11 +136,11 @@ unittest
 
     foreach (x; inp)
         oot.write (x);
-    assert (output.slice == "hello world");
+    test (output.slice == "hello world");
 
     auto xx = new TypedInput!(char)(new UtfInput!(char, dchar)(new Array("hello world"d.dup)));
     char[] yy;
     foreach (x; xx)
         yy ~= x;
-    assert (yy == "hello world");
+    test (yy == "hello world");
 }

@@ -31,6 +31,7 @@ module ocean.net.http.consts.CookieAttributeNames;
 
 import ocean.transition;
 
+version(UnitTest) import ocean.core.Test;
 
 /******************************************************************************/
 
@@ -86,7 +87,7 @@ unittest
 
     foreach (i, attribute_name; CookieAttributeNames.Names.tupleof)
     {
-        assert(_CookieAttributeNameList[i] == attribute_name,
+        test(_CookieAttributeNameList[i] == attribute_name,
                "mismatch of CookieAttributeNameList[" ~ i.stringof ~ ']');
     }
 }

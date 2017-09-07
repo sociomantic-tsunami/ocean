@@ -30,6 +30,8 @@ version (Posix)
     private alias strncasecmp memicmp;
 }
 
+version(UnitTest) import ocean.core.Test;
+
 /******************************************************************************
 
     Convert to lowercase. Performs in-place conversion.
@@ -222,19 +224,19 @@ unittest
 {
     char[] tmp;
 
-    assert (toLower("1bac", tmp) == "1bac");
-    assert (toLower("1BAC", tmp) == "1bac");
-    assert (toUpper("1bac", tmp) == "1BAC");
-    assert (toUpper("1BAC", tmp) == "1BAC");
-    assert (icompare ("ABC", "abc") is 0);
-    assert (icompare ("abc", "abc") is 0);
-    assert (icompare ("abcd", "abc") > 0);
-    assert (icompare ("abc", "abcd") < 0);
-    assert (icompare ("ACC", "abc") > 0);
+    test (toLower("1bac", tmp) == "1bac");
+    test (toLower("1BAC", tmp) == "1bac");
+    test (toUpper("1bac", tmp) == "1BAC");
+    test (toUpper("1BAC", tmp) == "1BAC");
+    test (icompare ("ABC", "abc") is 0);
+    test (icompare ("abc", "abc") is 0);
+    test (icompare ("abcd", "abc") > 0);
+    test (icompare ("abc", "abcd") < 0);
+    test (icompare ("ACC", "abc") > 0);
 
-    assert (isearch ("ACC", "abc") is 3);
-    assert (isearch ("ACC", "acc") is 0);
-    assert (isearch ("aACC", "acc") is 1);
+    test (isearch ("ACC", "abc") is 3);
+    test (isearch ("ACC", "acc") is 0);
+    test (isearch ("aACC", "acc") is 1);
 }
 
 debug (Ascii)

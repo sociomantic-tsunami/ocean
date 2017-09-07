@@ -47,6 +47,8 @@ import core.stdc.ctype:  tolower;
 
 import ocean.core.ExceptionDefinitions: ArrayBoundsException;
 
+version(UnitTest) import ocean.core.Test;
+
 /******************************************************************************
 
     Compares each of the the first n characters in s1 and s2 in a
@@ -468,16 +470,16 @@ class ParamSet
 
     unittest
     {
-        assert(strncasecmp("a", "b") < 0);
-        assert(strncasecmp("b", "a") > 0);
-        assert(strncasecmp("hello", "hello") == 0);
-        assert(strncasecmp("hello", "Hello") == 0);
-        assert(strncasecmp("hello", "HELLO") == 0);
-        assert(strncasecmp("hello", "hello there") < 0);
-        assert(strncasecmp("hello there", "hello") > 0);
-        assert(strncasecmp("", "hell0") < 0);
-        assert(strncasecmp("hello", "") > 0);
-        assert(strncasecmp("", "") == 0);
+        test(strncasecmp("a", "b") < 0);
+        test(strncasecmp("b", "a") > 0);
+        test(strncasecmp("hello", "hello") == 0);
+        test(strncasecmp("hello", "Hello") == 0);
+        test(strncasecmp("hello", "HELLO") == 0);
+        test(strncasecmp("hello", "hello there") < 0);
+        test(strncasecmp("hello there", "hello") > 0);
+        test(strncasecmp("", "hell0") < 0);
+        test(strncasecmp("hello", "") > 0);
+        test(strncasecmp("", "") == 0);
     }
 
     /**************************************************************************
@@ -647,13 +649,13 @@ class ParamSet
     {
         char[ulong_dec_length] dec;
 
-        assert (writeUnsigned(dec, 4711)     == "4711");
-        assert (writeUnsigned(dec, 0)        == "0");
+        test (writeUnsigned(dec, 4711)     == "4711");
+        test (writeUnsigned(dec, 0)        == "0");
 
-        assert (writeUnsigned(dec, uint.max) == "4294967295");
-        assert (writeUnsigned(dec, ulong.max) == "18446744073709551615");
+        test (writeUnsigned(dec, uint.max) == "4294967295");
+        test (writeUnsigned(dec, ulong.max) == "18446744073709551615");
 
-        assert (strncasecmp("", "a") < 0);
+        test (strncasecmp("", "a") < 0);
 
     }
 

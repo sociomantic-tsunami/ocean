@@ -57,7 +57,7 @@ import ocean.util.container.AppendBuffer;
 
 import ocean.io.model.IConduit;
 
-
+version(UnitTest) import ocean.core.Test;
 
 
 /*******************************************************************************
@@ -288,7 +288,7 @@ unittest
 
             foreach ( i, f; parsed_fields )
             {
-                assert(f == fields[i]);
+                .test(f == fields[i]);
             }
             return true;
         });

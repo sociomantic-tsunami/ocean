@@ -25,6 +25,7 @@ module ocean.net.util.UrlEncoder;
 import ocean.transition;
 import core.stdc.ctype: isgraph;
 
+version(UnitTest) import ocean.core.Test;
 
 /******************************************************************************
 
@@ -248,7 +249,7 @@ unittest
     {
         for (char c = first; c <= last; c++)
         {
-            assert (EncodeNonUnreserved.unreserved[c],
+            test (EncodeNonUnreserved.unreserved[c],
                     "'" ~ c ~ "' is supposed to be unreserved");
         }
     }
@@ -259,7 +260,7 @@ unittest
 
     foreach (c; "-_.~")
     {
-        assert (EncodeNonUnreserved.unreserved[c],
+        test (EncodeNonUnreserved.unreserved[c],
                 "'" ~ c ~ "' is supposed to be unreserved");
     }
 
@@ -286,7 +287,7 @@ unittest
 
     foreach (chunk; encoder)
     {
-        assert (i < chunks.length);
-        assert (chunks[i++] == chunk);
+        test (i < chunks.length);
+        test (chunks[i++] == chunk);
     }
 }

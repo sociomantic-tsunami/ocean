@@ -20,6 +20,7 @@ module ocean.math.Bessel;
 import ocean.math.Math;
 import ocean.math.IEEE;
 
+version(UnitTest) import ocean.core.Test;
 
 private {   // Rational polynomial approximations to j0, y0, j1, y1.
 
@@ -649,31 +650,31 @@ const real [4][] y1_test_points = [
 ];
 
     foreach(real [4] t; j0_test_points) {
-        assert(feqrel(cylBessel_j0(t[0]), t[1]+t[2]) >=real.mant_dig-3);
+        test(feqrel(cylBessel_j0(t[0]), t[1]+t[2]) >=real.mant_dig-3);
     }
 
     foreach(real [4] t; y0_test_points) {
-        assert(feqrel(cylBessel_y0(t[0]), t[1]+t[2]) >=real.mant_dig-4);
+        test(feqrel(cylBessel_y0(t[0]), t[1]+t[2]) >=real.mant_dig-4);
     }
     foreach(real [4] t; j1_test_points) {
-        assert(feqrel(cylBessel_j1(t[0]), t[1]+t[2]) >=real.mant_dig-3);
+        test(feqrel(cylBessel_j1(t[0]), t[1]+t[2]) >=real.mant_dig-3);
     }
 
     foreach(real [4] t; y1_test_points) {
-        assert(feqrel(cylBessel_y1(t[0]), t[1]+t[2]) >=real.mant_dig-4);
+        test(feqrel(cylBessel_y1(t[0]), t[1]+t[2]) >=real.mant_dig-4);
     }
 
     // Values from MS Excel, of doubtful accuracy.
-    assert(fabs(-0.060_409_940_421_649 - cylBessel_j0(173.5)) < 0.000_000_000_1);
-    assert(fabs(-0.044_733_447_576_5866 - cylBessel_y0(313.25)) < 0.000_000_000_1);
-    assert(fabs(0.00391280088318945 - cylBessel_j1(123.25)) < 0.000_000_000_1);
-    assert(fabs(-0.0648628570878951 - cylBessel_j1(-91)) < 0.000_000_000_1);
-    assert(fabs(-0.0759578537652805 - cylBessel_y1(107.75)) < 0.000_000_000_1);
+    test(fabs(-0.060_409_940_421_649 - cylBessel_j0(173.5)) < 0.000_000_000_1);
+    test(fabs(-0.044_733_447_576_5866 - cylBessel_y0(313.25)) < 0.000_000_000_1);
+    test(fabs(0.00391280088318945 - cylBessel_j1(123.25)) < 0.000_000_000_1);
+    test(fabs(-0.0648628570878951 - cylBessel_j1(-91)) < 0.000_000_000_1);
+    test(fabs(-0.0759578537652805 - cylBessel_y1(107.75)) < 0.000_000_000_1);
 
-    assert(fabs(13.442_456_516_6771-cylBessel_i0(4.2)) < 0.000_001);
-    assert(fabs(1.6500020842093e+28-cylBessel_i0(-68)) < 0.000_001e+28);
-    assert(fabs(4.02746515903173e+10-cylBessel_i1(27)) < 0.000_001e+10);
-    assert(fabs(-2.83613942886386e-02-cylBessel_i1(-0.0567)) < 0.000_000_001e-2);
+    test(fabs(13.442_456_516_6771-cylBessel_i0(4.2)) < 0.000_001);
+    test(fabs(1.6500020842093e+28-cylBessel_i0(-68)) < 0.000_001e+28);
+    test(fabs(4.02746515903173e+10-cylBessel_i1(27)) < 0.000_001e+10);
+    test(fabs(-2.83613942886386e-02-cylBessel_i1(-0.0567)) < 0.000_000_001e-2);
 }
 
 unittest {
@@ -686,7 +687,7 @@ unittest {
       real Jn = cylBessel_jn(n, x);
       real Jmnp1 = cylBessel_jn(-(n + 1), x);
       /* This should be trivially zero.  */
-      assert( fabs(Jnp1 * Jmn + Jn * Jmnp1) == 0);
+      test( fabs(Jnp1 * Jmn + Jn * Jmnp1) == 0);
       if (x < 0.0) {
           x = -x;
           Jn = cylBessel_jn(n, x);
@@ -700,7 +701,7 @@ unittest {
       real w2 = 2.0 / (PI * x);
 
       real reldif = feqrel(w1, w2);
-      assert(reldif >= real.mant_dig-6);
+      test(reldif >= real.mant_dig-6);
     }
 
   real delta;
@@ -715,10 +716,10 @@ unittest {
     }
     delta += .00123456;
   }
-  assert(cylBessel_jn(20, 1e-80)==0);
+  test(cylBessel_jn(20, 1e-80)==0);
 
       // NaN propagation
-    assert(isIdentical(cylBessel_i1(NaN(0xDEF)), NaN(0xDEF)));
-    assert(isIdentical(cylBessel_i0(NaN(0x846)), NaN(0x846)));
+    test(isIdentical(cylBessel_i1(NaN(0xDEF)), NaN(0xDEF)));
+    test(isIdentical(cylBessel_i0(NaN(0x846)), NaN(0x846)));
 
 }

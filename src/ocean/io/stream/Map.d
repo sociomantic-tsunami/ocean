@@ -28,6 +28,8 @@ import Text = ocean.text.Util;
 
 import ocean.io.device.Conduit;
 
+version(UnitTest) import ocean.core.Test;
+
 /*******************************************************************************
 
         Provides load facilities for a properties stream. That is, a file
@@ -218,6 +220,6 @@ unittest
 
     map = map.init;
     input.load (map);
-    assert (map["foo"] == "bar");
-    assert (map["foo2"] == "bar2");
+    test (map["foo"] == "bar");
+    test (map["foo2"] == "bar2");
 }

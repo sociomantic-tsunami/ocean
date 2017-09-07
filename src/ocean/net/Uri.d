@@ -29,6 +29,7 @@ import  Integer = ocean.text.convert.Integer_tango;
 
 import ocean.stdc.string : memchr;
 
+version(UnitTest) import ocean.core.Test;
 
 /*******************************************************************************
 
@@ -971,23 +972,23 @@ unittest
 
     with(uri)
     {
-        assert(scheme == "http");
-        assert(host == "www.example.com");
-        assert(port == InvalidPort);
-        assert(userinfo == null);
-        assert(fragment == null);
-        assert(path == "/click.html/c=37571:RoS_Intern_search-link3_LB_Sky_Rec/b=98983:news-time-search-link_leader_neu/l=68||||de/url=http://ads.ad4max.com/adclick.aspx");
-        assert(query == "id=cf722624-efd5-4b10-ad53-88a5872a8873&pubad=b9c8acc4-e396-4b0b-b665-8bb3078128e6&avid=963171985&adcpc=xrH/+xVeFaPVkbVCMufB5A==&a1v=6972657882&a1lang=de&a1ou=http://ad.search.ch/iframe_ad.html?campaignname=RoS_Intern_search-link3_LB_Sky_Rec%26bannername=news-time-search-link_leader_neu%26iframeid=sl_if1%26content=vZLLbsIwEEX3+Qo3aqUW1XEgkAckSJRuKqEuoDuELD+miSEJyDEE/r7h0cKm6q6SF9bVjH3uzI3vMOaVYdpgPIwrodXGIHPYQGIb2BuyZDt2Vu2hRUh8Nx+/jj5Gc4u0UNAJ95H7jCbAJGi+Zlqix3eoqyfUIhaT3YLtabpVEiXI5pEImRBdDF7k4y53Oea+38Mh554bhO1OCL49+O6qlTTZsa3546pmoNLMHOXIvaoapNIgTnpmzKZPCJNOBUyLzBEZEbkSKyczRU5E4gW9oN2frmf0rTSgS3quw7kqVx6dvNDZ6kCnIAhPojAKvX7Z+MFGFYBvKml+skxL2JI88cOHYPxzJJCtzpP79pXQaCZWqkxppcVvlDsF9b9CqiJNLiB1Xd+QqIKlUBHXSdWnjQbN1heLoRWTcwz+CAlqLCZXg5VzHoEj1gW5XJeVffOcFR8TCKVs8vcF%26crc=ac8cc2fa9ec2e2de9d242345c2d40c25");
+        test(scheme == "http");
+        test(host == "www.example.com");
+        test(port == InvalidPort);
+        test(userinfo == null);
+        test(fragment == null);
+        test(path == "/click.html/c=37571:RoS_Intern_search-link3_LB_Sky_Rec/b=98983:news-time-search-link_leader_neu/l=68||||de/url=http://ads.ad4max.com/adclick.aspx");
+        test(query == "id=cf722624-efd5-4b10-ad53-88a5872a8873&pubad=b9c8acc4-e396-4b0b-b665-8bb3078128e6&avid=963171985&adcpc=xrH/+xVeFaPVkbVCMufB5A==&a1v=6972657882&a1lang=de&a1ou=http://ad.search.ch/iframe_ad.html?campaignname=RoS_Intern_search-link3_LB_Sky_Rec%26bannername=news-time-search-link_leader_neu%26iframeid=sl_if1%26content=vZLLbsIwEEX3+Qo3aqUW1XEgkAckSJRuKqEuoDuELD+miSEJyDEE/r7h0cKm6q6SF9bVjH3uzI3vMOaVYdpgPIwrodXGIHPYQGIb2BuyZDt2Vu2hRUh8Nx+/jj5Gc4u0UNAJ95H7jCbAJGi+Zlqix3eoqyfUIhaT3YLtabpVEiXI5pEImRBdDF7k4y53Oea+38Mh554bhO1OCL49+O6qlTTZsa3546pmoNLMHOXIvaoapNIgTnpmzKZPCJNOBUyLzBEZEbkSKyczRU5E4gW9oN2frmf0rTSgS3quw7kqVx6dvNDZ6kCnIAhPojAKvX7Z+MFGFYBvKml+skxL2JI88cOHYPxzJJCtzpP79pXQaCZWqkxppcVvlDsF9b9CqiJNLiB1Xd+QqIKlUBHXSdWnjQbN1heLoRWTcwz+CAlqLCZXg5VzHoEj1gW5XJeVffOcFR8TCKVs8vcF%26crc=ac8cc2fa9ec2e2de9d242345c2d40c25");
 
 
         parse("psyc://example.net/~marenz?what#_presence");
 
-        assert(scheme == "psyc");
-        assert(host == "example.net");
-        assert(port == InvalidPort);
-        assert(fragment == "_presence");
-        assert(path == "/~marenz");
-        assert(query == "what");
+        test(scheme == "psyc");
+        test(host == "example.net");
+        test(port == InvalidPort);
+        test(fragment == "_presence");
+        test(path == "/~marenz");
+        test(query == "what");
 
     }
 

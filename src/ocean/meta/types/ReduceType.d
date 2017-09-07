@@ -5,6 +5,11 @@
     implementation cornerstone for complex type traits to avoid having to
     rewrite the recursive type reflection boilerplate wherever it's needed.
 
+    NB: because this module is often used as purely compile-time dependency it
+        used built-in asserts instead of `ocean.core.Test` to reduce amount of
+        cyclic imports. `ocean.meta` modules in general are not supposed to
+        import anything outside of `ocean.meta`.
+
     Copyright:
         Copyright (c) 2017 Sociomantic Labs GmbH.
         All rights reserved.

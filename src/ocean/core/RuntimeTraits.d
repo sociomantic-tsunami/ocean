@@ -19,6 +19,8 @@ module ocean.core.RuntimeTraits;
 
 import ocean.transition;
 
+version(UnitTest) import ocean.core.Test;
+
 /// If the given type represents a typedef, return the actual type.
 TypeInfo realType (TypeInfo type)
 {
@@ -70,12 +72,12 @@ unittest
     // stop working for typedef'ed types in D2
     version(D_Version2)
     {
-        assert (realType(ti) == typeid(Type));
-        assert (realType(ti) != typeid(int));
+        test (realType(ti) == typeid(Type));
+        test (realType(ti) != typeid(int));
     }
     else
     {
-        assert (realType(ti) == typeid(int));
+        test (realType(ti) == typeid(int));
     }
 }
 
@@ -100,9 +102,9 @@ unittest
     interface I {}
     class C : I { }
 
-    assert ( asClass(typeid(C)));
-    assert ( asClass(typeid(I)));
-    assert (!asClass(typeid(int)));
+    test ( asClass(typeid(C)));
+    test ( asClass(typeid(I)));
+    test (!asClass(typeid(int)));
 }
 
 /** Returns true iff one type is an ancestor of the other, or if the types are the same.
@@ -124,9 +126,9 @@ unittest
     class B : A { }
     class C { }
 
-    assert ( isDerived(A.classinfo, A.classinfo));
-    assert ( isDerived(B.classinfo, A.classinfo));
-    assert (!isDerived(B.classinfo, C.classinfo));
+    test ( isDerived(A.classinfo, A.classinfo));
+    test ( isDerived(B.classinfo, A.classinfo));
+    test (!isDerived(B.classinfo, C.classinfo));
 }
 
 /** Returns true iff implementor implements the interface described
@@ -149,8 +151,8 @@ unittest
     class C1 : I { }
     class C2 { }
 
-    assert ( implements(C1.classinfo, I.classinfo));
-    assert (!implements(C2.classinfo, I.classinfo));
+    test ( implements(C1.classinfo, I.classinfo));
+    test (!implements(C2.classinfo, I.classinfo));
 }
 
 /** Returns true iff an instance of class test is implicitly castable to target.
@@ -168,9 +170,9 @@ unittest
     class Base { }
     class Deriv : Base, I { }
 
-    assert ( isImplicitly(Deriv.classinfo, Base.classinfo));
-    assert ( isImplicitly(Deriv.classinfo, I.classinfo));
-    assert (!isImplicitly(Base.classinfo, I.classinfo));
+    test ( isImplicitly(Deriv.classinfo, Base.classinfo));
+    test ( isImplicitly(Deriv.classinfo, I.classinfo));
+    test (!isImplicitly(Base.classinfo, I.classinfo));
 }
 
 /** Returns true iff an instance of type test is implicitly castable to target.
@@ -230,16 +232,16 @@ bool isImplicitly (TypeInfo test, TypeInfo target)
 
 unittest
 {
-    assert ( isImplicitly(typeid(int),  typeid(int)));
-    assert ( isImplicitly(typeid(int),  typeid(long)));
-    assert ( isImplicitly(typeid(uint), typeid(long)));
-    assert (!isImplicitly(typeid(long), typeid(int)));
-    assert (!isImplicitly(typeid(long), typeid(char)));
-    assert (!isImplicitly(typeid(int),  typeid(uint)));
+    test ( isImplicitly(typeid(int),  typeid(int)));
+    test ( isImplicitly(typeid(int),  typeid(long)));
+    test ( isImplicitly(typeid(uint), typeid(long)));
+    test (!isImplicitly(typeid(long), typeid(int)));
+    test (!isImplicitly(typeid(long), typeid(char)));
+    test (!isImplicitly(typeid(int),  typeid(uint)));
 
 
-    assert ( isImplicitly(typeid(ubyte[3]), typeid(ubyte[])));
-    assert (!isImplicitly(typeid(ubyte[3]), typeid(byte[])));
+    test ( isImplicitly(typeid(ubyte[3]), typeid(ubyte[])));
+    test (!isImplicitly(typeid(ubyte[3]), typeid(byte[])));
 }
 
 ///
@@ -260,7 +262,7 @@ unittest
     class C : B { }
 
     auto ti_arr = baseClasses(C.classinfo);
-    assert (ti_arr == [ B.classinfo, A.classinfo, Object.classinfo ]);
+    test (ti_arr == [ B.classinfo, A.classinfo, Object.classinfo ]);
 }
 
 /** Returns a list of all interfaces that this type implements, directly
@@ -288,7 +290,7 @@ unittest
     class B : A, I1, I2 { }
 
     auto ti_arr = baseInterfaces(B.classinfo);
-    assert (ti_arr == [ I1.classinfo, I2.classinfo, I3.classinfo]);
+    test (ti_arr == [ I1.classinfo, I2.classinfo, I3.classinfo]);
 }
 
 /** Returns all the interfaces that this type directly implements, including
@@ -331,13 +333,13 @@ unittest
     interface I2 : I1 {}
     class A : I2 {}
 
-    assert (interfaceGraph (A.classinfo) == [ I2.classinfo, I1.classinfo ]);
+    test (interfaceGraph (A.classinfo) == [ I2.classinfo, I1.classinfo ]);
 
     interface I3 {}
     class B1 : I1 {}
     class B2 : B1, I3 {}
 
-    assert (interfaceGraph (B2.classinfo) == [ I3.classinfo ]);
+    test (interfaceGraph (B2.classinfo) == [ I3.classinfo ]);
 }
 
 /** Iterate through all interfaces that type implements, directly or indirectly, including base interfaces. */
@@ -387,7 +389,7 @@ unittest
     foreach (_; applyInterfaces(B.classinfo))
         ++count;
 
-    assert (count == 4);
+    test (count == 4);
 }
 
 ///
@@ -404,7 +406,7 @@ unittest
     class A : I {}
     class B : A {}
 
-    assert (baseTypes(B.classinfo) ==
+    test (baseTypes(B.classinfo) ==
         [ A.classinfo, Object.classinfo, I.classinfo ]);
 }
 
@@ -426,8 +428,8 @@ version (UnitTest)
 unittest
 {
     auto modinfo = moduleOf(Test.classinfo);
-    assert (modinfo);
-    assert (modinfo.name == "ocean.core.RuntimeTraits");
+    test (modinfo);
+    test (modinfo.name == "ocean.core.RuntimeTraits");
 }
 
 /// Returns a list of interfaces that this class directly implements.
@@ -446,7 +448,7 @@ unittest
     class A : I1 {}
     class B : A, I2 {}
 
-    assert (directInterfaces(B.classinfo) == [ I2.classinfo ]);
+    test (directInterfaces(B.classinfo) == [ I2.classinfo ]);
 }
 
 /** Returns a list of all types that are derived from the given type. This does not
@@ -469,7 +471,7 @@ version (UnitTest)
 
 unittest
 {
-    assert (derivedTypes(Test.classinfo) == [ TestDeriv.classinfo ]);
+    test (derivedTypes(Test.classinfo) == [ TestDeriv.classinfo ]);
 }
 
 ///
@@ -489,12 +491,12 @@ bool isDynamicArray (TypeInfo type)
 unittest
 {
     int[] arr;
-    assert (isDynamicArray(typeid(typeof(arr))));
+    test (isDynamicArray(typeid(typeof(arr))));
 
     version (D_Version2)
     {
         auto str = "aaa"d;
-        assert (isDynamicArray(typeid(typeof(str))));
+        test (isDynamicArray(typeid(typeof(str))));
     }
 }
 
@@ -508,13 +510,13 @@ bool isStaticArray (TypeInfo type)
 unittest
 {
     int[5] arr;
-    assert (isStaticArray(typeid(typeof(arr))));
+    test (isStaticArray(typeid(typeof(arr))));
 
     version (D_Version2) { }
     else
     {
         auto str = "aaa"d;
-        assert (isStaticArray(typeid(typeof(str))));
+        test (isStaticArray(typeid(typeof(str))));
     }
 }
 
@@ -528,13 +530,13 @@ bool isArray (TypeInfo type)
 
 unittest
 {
-    assert ( isArray(typeid(int[])));
-    assert ( isArray(typeid(int[2])));
-    assert (!isArray(typeid(int)));
-    assert (!isArray(typeid(int[int])));
+    test ( isArray(typeid(int[])));
+    test ( isArray(typeid(int[2])));
+    test (!isArray(typeid(int)));
+    test (!isArray(typeid(int[int])));
 
     Const!(char[]) arr;
-    assert ( isArray(typeid(typeof(arr))));
+    test ( isArray(typeid(typeof(arr))));
 }
 
 ///
@@ -546,10 +548,10 @@ bool isAssociativeArray (TypeInfo type)
 
 unittest
 {
-    assert (!isAssociativeArray(typeid(int[])));
-    assert (!isAssociativeArray(typeid(int[2])));
-    assert (!isAssociativeArray(typeid(int)));
-    assert ( isAssociativeArray(typeid(int[int])));
+    test (!isAssociativeArray(typeid(int[])));
+    test (!isAssociativeArray(typeid(int[2])));
+    test (!isAssociativeArray(typeid(int)));
+    test ( isAssociativeArray(typeid(int[int])));
 }
 
 ///
@@ -561,10 +563,10 @@ bool isCharacter (TypeInfo type)
 
 unittest
 {
-    assert ( isCharacter(typeid(typeof("a"[0]))));
-    assert ( isCharacter(typeid(char)));
-    assert ( isCharacter(typeid(dchar)));
-    assert (!isCharacter(typeid(ubyte)));
+    test ( isCharacter(typeid(typeof("a"[0]))));
+    test ( isCharacter(typeid(char)));
+    test ( isCharacter(typeid(dchar)));
+    test (!isCharacter(typeid(ubyte)));
 }
 
 ///
@@ -576,14 +578,14 @@ bool isString (TypeInfo type)
 
 unittest
 {
-    assert ( isString(typeid(typeof("aaa"))));
-    assert ( isString(typeid(typeof("aaa"d))));
-    assert ( isString(typeid(char[])));
-    assert (!isString(typeid(ubyte[])));
-    assert (!isString(typeid(int)));
+    test ( isString(typeid(typeof("aaa"))));
+    test ( isString(typeid(typeof("aaa"d))));
+    test ( isString(typeid(char[])));
+    test (!isString(typeid(ubyte[])));
+    test (!isString(typeid(int)));
 
     Const!(char[]) arr;
-    assert ( isString(typeid(typeof(arr))));
+    test ( isString(typeid(typeof(arr))));
 }
 
 ///
@@ -595,9 +597,9 @@ bool isUnsignedInteger (TypeInfo type)
 
 unittest
 {
-    assert ( isUnsignedInteger(typeid(uint)));
-    assert (!isUnsignedInteger(typeid(int)));
-    assert (!isUnsignedInteger(typeid(char)));
+    test ( isUnsignedInteger(typeid(uint)));
+    test (!isUnsignedInteger(typeid(int)));
+    test (!isUnsignedInteger(typeid(char)));
 }
 
 ///
@@ -609,9 +611,9 @@ bool isSignedInteger (TypeInfo type)
 
 unittest
 {
-    assert (!isSignedInteger(typeid(uint)));
-    assert ( isSignedInteger(typeid(int)));
-    assert (!isSignedInteger(typeid(char)));
+    test (!isSignedInteger(typeid(uint)));
+    test ( isSignedInteger(typeid(int)));
+    test (!isSignedInteger(typeid(char)));
 }
 
 ///
@@ -623,9 +625,9 @@ bool isInteger (TypeInfo type)
 
 unittest
 {
-    assert ( isInteger(typeid(uint)));
-    assert ( isInteger(typeid(int)));
-    assert (!isInteger(typeid(char)));
+    test ( isInteger(typeid(uint)));
+    test ( isInteger(typeid(int)));
+    test (!isInteger(typeid(char)));
 }
 
 ///
@@ -637,7 +639,7 @@ bool isBool (TypeInfo type)
 
 unittest
 {
-    assert (isBool(typeid(bool)));
+    test (isBool(typeid(bool)));
 }
 
 ///
@@ -649,11 +651,11 @@ bool isFloat (TypeInfo type)
 
 unittest
 {
-    assert (isFloat (typeid(real)));
-    assert (isFloat (typeid(double)));
-    assert (isFloat (typeid(float)));
-    assert (!isFloat (typeid(creal)));
-    assert (!isFloat (typeid(cdouble)));
+    test (isFloat (typeid(real)));
+    test (isFloat (typeid(double)));
+    test (isFloat (typeid(float)));
+    test (!isFloat (typeid(creal)));
+    test (!isFloat (typeid(cdouble)));
 }
 
 ///
@@ -667,8 +669,8 @@ unittest
 {
     struct S { }
 
-    assert ( isPrimitive(typeid(double)));
-    assert (!isPrimitive(typeid(S)));
+    test ( isPrimitive(typeid(double)));
+    test (!isPrimitive(typeid(S)));
 }
 
 /// Returns true iff the given type represents an interface.
@@ -681,7 +683,7 @@ unittest
 {
     interface I { }
 
-    assert (isInterface(typeid(I)));
+    test (isInterface(typeid(I)));
 }
 
 ///
@@ -693,7 +695,7 @@ bool isPointer (TypeInfo type)
 
 unittest
 {
-    assert (isPointer(typeid(int*)));
+    test (isPointer(typeid(int*)));
 }
 
 /// Returns true iff the type represents a class (false for interfaces).
@@ -707,7 +709,7 @@ unittest
 {
     class C { }
 
-    assert (isClass(typeid(C)));
+    test (isClass(typeid(C)));
 }
 
 ///
@@ -721,7 +723,7 @@ unittest
 {
     struct S { }
 
-    assert (isStruct(typeid(S)));
+    test (isStruct(typeid(S)));
 }
 
 ///
@@ -735,8 +737,8 @@ unittest
 {
     static void foo() {}
 
-    assert (isFunction(typeid(void delegate())));
-    assert (isFunction(typeid(typeof(foo))));
+    test (isFunction(typeid(void delegate())));
+    test (isFunction(typeid(typeof(foo))));
 
     // doesn't work, it is TypeInfo_Pointer :(
     // assert (isFunction(typeid(void function())));
@@ -752,20 +754,20 @@ unittest
 {
     class C {}
 
-    assert (isReferenceType(typeid(C)));
-    assert (isReferenceType(typeid(int*)));
-    assert (isReferenceType(typeid(int[])));
+    test (isReferenceType(typeid(C)));
+    test (isReferenceType(typeid(int*)));
+    test (isReferenceType(typeid(int[])));
 
     version (D_Version2)
     {
-        assert (isReferenceType(typeid(typeof("aaa"))));
+        test (isReferenceType(typeid(typeof("aaa"))));
     }
     else
     {
-        assert (!isReferenceType(typeid(typeof("aaa"))));
+        test (!isReferenceType(typeid(typeof("aaa"))));
     }
 
-    assert (!isReferenceType(typeid(int)));
+    test (!isReferenceType(typeid(int)));
 }
 
 /** Returns true iff the given type represents a user-defined type.
@@ -777,7 +779,7 @@ bool isUserDefined (TypeInfo type)
 
 unittest
 {
-    assert (isUserDefined(typeid(Object))); // true story
+    test (isUserDefined(typeid(Object))); // true story
 }
 
 /** Returns true for all value types, false for all reference types.
@@ -790,19 +792,19 @@ bool isValueType (TypeInfo type)
 
 unittest
 {
-    assert ( isValueType(typeid(int)));
-    assert (!isValueType(typeid(int*)));
-    assert (!isValueType(typeid(int[])));
+    test ( isValueType(typeid(int)));
+    test (!isValueType(typeid(int*)));
+    test (!isValueType(typeid(int[])));
 
     struct S {}
     class  C {}
 
-    assert ( isValueType(typeid(S)));
-    assert (!isValueType(typeid(S*)));
-    assert (!isValueType(typeid(C)));
+    test ( isValueType(typeid(S)));
+    test (!isValueType(typeid(S*)));
+    test (!isValueType(typeid(C)));
 
-    assert (!isValueType(typeid(void function())));
-    assert (!isValueType(typeid(void delegate())));
+    test (!isValueType(typeid(void function())));
+    test (!isValueType(typeid(void delegate())));
 }
 
 /** The key type of the given type. For an array, size_t; for an associative
@@ -820,9 +822,9 @@ TypeInfo keyType (TypeInfo type)
 
 unittest
 {
-    assert (keyType(typeid(int[])) == typeid(size_t));
-    assert (keyType(typeid(int[char])) == typeid(char));
-    assert (keyType(typeid(int[istring])) == typeid(istring));
+    test (keyType(typeid(int[])) == typeid(size_t));
+    test (keyType(typeid(int[char])) == typeid(char));
+    test (keyType(typeid(int[istring])) == typeid(istring));
 }
 
 /** The value type of the given type -- given T[] or T[n], T; given T[U],
@@ -843,9 +845,9 @@ TypeInfo valueType (TypeInfo type)
 
 unittest
 {
-    assert (valueType(typeid(char[])) == typeid(char));
-    assert (valueType(typeid(char[int])) == typeid(char));
-    assert (valueType(typeid(istring[int])) == typeid(istring));
+    test (valueType(typeid(char[])) == typeid(char));
+    test (valueType(typeid(char[int])) == typeid(char));
+    test (valueType(typeid(istring[int])) == typeid(istring));
 }
 
 /** If the given type represents a delegate or function, the return type
@@ -864,13 +866,13 @@ TypeInfo returnType (TypeInfo type)
 
 unittest
 {
-    assert (returnType(typeid(void delegate())) == typeid(void));
+    test (returnType(typeid(void delegate())) == typeid(void));
 
     static int foo() { return int.init; }
-    assert (returnType(typeid(typeof(foo))) == typeid(int));
+    test (returnType(typeid(typeof(foo))) == typeid(int));
 
     // NB: doesn't work, crashes the app!
     // assert (returnType(typeid(int function())) == typeid(int));
 
-    assert (!returnType(typeid(Object)));
+    test (!returnType(typeid(Object)));
 }

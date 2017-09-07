@@ -321,13 +321,13 @@ version (TangoTest)
                 {
                         auto uu = Uuid.random(&Kiss.instance).toString;
                         auto c = uu[19];
-                        assert (c == '9' || c == '8' || c == 'a' || c == 'b', uu);
+                        test (c == '9' || c == '8' || c == 'a' || c == 'b', uu);
                         auto d = uu[14];
-                        assert (d == '4', uu);
+                        test (d == '4', uu);
                 }
 
                 // empty
-                assert (Uuid.empty.toString == "00000000-0000-0000-0000-000000000000", Uuid.empty.toString);
+                test (Uuid.empty.toString == "00000000-0000-0000-0000-000000000000", Uuid.empty.toString);
 
                 ubyte[] bytes = [0x6b, 0xa7, 0xb8, 0x10, 0x9d, 0xad, 0x11, 0xd1,
                                           0x80, 0xb4, 0x00, 0xc0, 0x4f, 0xd4, 0x30, 0xc8];
@@ -336,30 +336,30 @@ version (TangoTest)
                 auto u2 = Uuid.parse(str);
 
                 // toString
-                assert (Uuid(bytes) == u);
-                assert (u2 != u);
+                test (Uuid(bytes) == u);
+                test (u2 != u);
 
-                assert (u2.format == 4);
+                test (u2.format == 4);
 
                 // tryParse
                 Uuid u3;
-                assert (Uuid.tryParse(str, u3));
-                assert (u3 == u2);
+                test (Uuid.tryParse(str, u3));
+                test (u3 == u2);
         }
 
         unittest
         {
                 Uuid fail;
                 // contains 'r'
-                assert (!Uuid.tryParse("fecr0a9b-4d5a-439e-8e4b-9d087ff49ba7", fail));
+                test (!Uuid.tryParse("fecr0a9b-4d5a-439e-8e4b-9d087ff49ba7", fail));
                 // too short
-                assert (!Uuid.tryParse("fec70a9b-4d5a-439e-8e4b-9d087ff49ba", fail));
+                test (!Uuid.tryParse("fec70a9b-4d5a-439e-8e4b-9d087ff49ba", fail));
                 // hyphens matter
-                assert (!Uuid.tryParse("fec70a9b 4d5a-439e-8e4b-9d087ff49ba7", fail));
+                test (!Uuid.tryParse("fec70a9b 4d5a-439e-8e4b-9d087ff49ba7", fail));
                 // hyphens matter (2)
-                assert (!Uuid.tryParse("fec70a9b-4d5a-439e-8e4b-9d08-7ff49ba7", fail));
+                test (!Uuid.tryParse("fec70a9b-4d5a-439e-8e4b-9d08-7ff49ba7", fail));
                 // hyphens matter (3)
-                assert (!Uuid.tryParse("fec70a9b-4d5a-439e-8e4b-9d08-ff49ba7", fail));
+                test (!Uuid.tryParse("fec70a9b-4d5a-439e-8e4b-9d08-ff49ba7", fail));
         }
 
         unittest
@@ -410,7 +410,7 @@ version (TangoTest)
                 // of bytes at that point, so converting to NBO is a noop...
                 auto expected = Uuid.parse("2b1c6704-a43f-5d43-9abb-b13310b4458a");
                 auto generated = Uuid.byName(namespace, name, new Sha1, 5);
-                assert (generated == expected, "\nexpected: " ~ expected.toString ~ "\nbut was:  " ~ generated.toString);
+                test (generated == expected, "\nexpected: " ~ expected.toString ~ "\nbut was:  " ~ generated.toString);
         }
 
         import ocean.util.digest.Md5;
@@ -420,7 +420,7 @@ version (TangoTest)
                 auto name = "hello";
                 auto expected = Uuid.parse("31a2b702-85a8-349a-9b0e-213b1bd753b8");
                 auto generated = Uuid.byName(namespace, name, new Md5, 3);
-                assert (generated == expected, "\nexpected: " ~ expected.toString ~ "\nbut was:  " ~ generated.toString);
+                test (generated == expected, "\nexpected: " ~ expected.toString ~ "\nbut was:  " ~ generated.toString);
         }
         void main(){}
 }

@@ -616,143 +616,143 @@ unittest
     ulong ul;
 
     // basic functionality
-    toByte("1", b); assert(b == 1);
-    toUbyte("1", ub); assert(ub == 1);
-    toShort("1", s); assert(s == 1);
-    toUshort("1", us); assert(us == 1);
-    toInt("1", i); assert(i == 1);
-    toUint("1", ui); assert(ui == 1);
-    toLong("1", l); assert(l == 1);
-    toUlong("1", ul); assert(ul == 1);
+    toByte("1", b); test(b == 1);
+    toUbyte("1", ub); test(ub == 1);
+    toShort("1", s); test(s == 1);
+    toUshort("1", us); test(us == 1);
+    toInt("1", i); test(i == 1);
+    toUint("1", ui); test(ui == 1);
+    toLong("1", l); test(l == 1);
+    toUlong("1", ul); test(ul == 1);
 
     // basic functionality with wide chars
-    toByte("1"w, b); assert(b == 1);
-    toUbyte("1"w, ub); assert(ub == 1);
-    toShort("1"w, s); assert(s == 1);
-    toUshort("1"w, us); assert(us == 1);
-    toInt("1"w, i); assert(i == 1);
-    toUint("1"w, ui); assert(ui == 1);
-    toLong("1"w, l); assert(l == 1);
-    toUlong("1"w, ul); assert(ul == 1);
+    toByte("1"w, b); test(b == 1);
+    toUbyte("1"w, ub); test(ub == 1);
+    toShort("1"w, s); test(s == 1);
+    toUshort("1"w, us); test(us == 1);
+    toInt("1"w, i); test(i == 1);
+    toUint("1"w, ui); test(ui == 1);
+    toLong("1"w, l); test(l == 1);
+    toUlong("1"w, ul); test(ul == 1);
 
     // basic functionality with double chars
-    toByte("1"d, b); assert(b == 1);
-    toUbyte("1"d, ub); assert(ub == 1);
-    toShort("1"d, s); assert(s == 1);
-    toUshort("1"d, us); assert(us == 1);
-    toInt("1"d, i); assert(i == 1);
-    toUint("1"d, ui); assert(ui == 1);
-    toLong("1"d, l); assert(l == 1);
-    toUlong("1"d, ul); assert(ul == 1);
+    toByte("1"d, b); test(b == 1);
+    toUbyte("1"d, ub); test(ub == 1);
+    toShort("1"d, s); test(s == 1);
+    toUshort("1"d, us); test(us == 1);
+    toInt("1"d, i); test(i == 1);
+    toUint("1"d, ui); test(ui == 1);
+    toLong("1"d, l); test(l == 1);
+    toUlong("1"d, ul); test(ul == 1);
 
     // basic signed functionality
-    toByte("+1", b); assert(b == 1);
-    toUbyte("+1", ub); assert(ub == 1);
-    toShort("+1", s); assert(s == 1);
-    toUshort("+1", us); assert(us == 1);
-    toInt("+1", i); assert(i == 1);
-    toUint("+1", ui); assert(ui == 1);
-    toLong("+1", l); assert(l == 1);
-    toUlong("+1", ul); assert(ul == 1);
+    toByte("+1", b); test(b == 1);
+    toUbyte("+1", ub); test(ub == 1);
+    toShort("+1", s); test(s == 1);
+    toUshort("+1", us); test(us == 1);
+    toInt("+1", i); test(i == 1);
+    toUint("+1", ui); test(ui == 1);
+    toLong("+1", l); test(l == 1);
+    toUlong("+1", ul); test(ul == 1);
 
-    toByte("-1", b); assert(b == -1);
-    assert(!toUbyte("-1", ub));
-    toShort("-1", s); assert(s == -1);
-    assert(!toUshort("-1", us));
-    toInt("-1", i); assert(i == -1);
-    assert(!toUint("-1", ui));
-    toLong("-1", l); assert(l == -1);
-    assert(!toUlong("-1", ul));
+    toByte("-1", b); test(b == -1);
+    test(!toUbyte("-1", ub));
+    toShort("-1", s); test(s == -1);
+    test(!toUshort("-1", us));
+    toInt("-1", i); test(i == -1);
+    test(!toUint("-1", ui));
+    toLong("-1", l); test(l == -1);
+    test(!toUlong("-1", ul));
 
     // basic functionality + radix
-    toByte("1", b, 10); assert(b == 1);
-    toUbyte("1", ub, 10); assert(ub == 1);
-    toShort("1", s, 10); assert(s == 1);
-    toUshort("1", us, 10); assert(us == 1);
-    toInt("1", i, 10); assert(i == 1);
-    toUint("1", ui, 10); assert(ui == 1);
-    toLong("1", l, 10); assert(l == 1);
-    toUlong("1", ul, 10); assert(ul == 1);
+    toByte("1", b, 10); test(b == 1);
+    toUbyte("1", ub, 10); test(ub == 1);
+    toShort("1", s, 10); test(s == 1);
+    toUshort("1", us, 10); test(us == 1);
+    toInt("1", i, 10); test(i == 1);
+    toUint("1", ui, 10); test(ui == 1);
+    toLong("1", l, 10); test(l == 1);
+    toUlong("1", ul, 10); test(ul == 1);
 
     // numerical limits
-    toByte("-128", b); assert(b == byte.min);
-    toByte("127", b); assert(b == byte.max);
-    toUbyte("255", ub); assert(ub == ubyte.max);
-    toShort("-32768", s); assert(s == short.min);
-    toShort("32767", s); assert(s == short.max);
-    toUshort("65535", us); assert(us == ushort.max);
-    toInt("-2147483648", i); assert(i == int.min);
-    toInt("2147483647", i); assert(i == int.max);
-    toUint("4294967295", ui); assert(ui == uint.max);
-    toLong("-9223372036854775808", l); assert(l == long.min);
-    toLong("9223372036854775807", l); assert(l == long.max);
-    toUlong("18446744073709551615", ul); assert(ul == ulong.max);
+    toByte("-128", b); test(b == byte.min);
+    toByte("127", b); test(b == byte.max);
+    toUbyte("255", ub); test(ub == ubyte.max);
+    toShort("-32768", s); test(s == short.min);
+    toShort("32767", s); test(s == short.max);
+    toUshort("65535", us); test(us == ushort.max);
+    toInt("-2147483648", i); test(i == int.min);
+    toInt("2147483647", i); test(i == int.max);
+    toUint("4294967295", ui); test(ui == uint.max);
+    toLong("-9223372036854775808", l); test(l == long.min);
+    toLong("9223372036854775807", l); test(l == long.max);
+    toUlong("18446744073709551615", ul); test(ul == ulong.max);
 
     // beyond numerical limits
-    assert(!toByte("-129", b));
-    assert(!toByte("128", b));
-    assert(!toUbyte("256", ub));
-    assert(!toShort("-32769", s));
-    assert(!toShort("32768", s));
-    assert(!toUshort("65536", us));
-    assert(!toInt("-2147483649", i));
-    assert(!toInt("2147483648", i));
-    assert(!toUint("4294967296", ui));
-    assert(!toLong("-9223372036854775809", l));
-    assert(!toLong("9223372036854775808", l));
-    assert(!toUlong("18446744073709551616", ul));
+    test(!toByte("-129", b));
+    test(!toByte("128", b));
+    test(!toUbyte("256", ub));
+    test(!toShort("-32769", s));
+    test(!toShort("32768", s));
+    test(!toUshort("65536", us));
+    test(!toInt("-2147483649", i));
+    test(!toInt("2147483648", i));
+    test(!toUint("4294967296", ui));
+    test(!toLong("-9223372036854775809", l));
+    test(!toLong("9223372036854775808", l));
+    test(!toUlong("18446744073709551616", ul));
 
-    assert(!toLong("-0x12345678123456789", l));
-    assert(!toLong("0x12345678123456789", l));
-    assert(!toUlong("0x12345678123456789", ul));
+    test(!toLong("-0x12345678123456789", l));
+    test(!toLong("0x12345678123456789", l));
+    test(!toUlong("0x12345678123456789", ul));
 
     // hex
-    toInt("a", i, 16); assert(i == 0xa);
-    toInt("b", i, 16); assert(i == 0xb);
-    toInt("c", i, 16); assert(i == 0xc);
-    toInt("d", i, 16); assert(i == 0xd);
-    toInt("e", i, 16); assert(i == 0xe);
-    toInt("f", i, 16); assert(i == 0xf);
-    toInt("A", i, 16); assert(i == 0xa);
-    toInt("B", i, 16); assert(i == 0xb);
-    toInt("C", i, 16); assert(i == 0xc);
-    toInt("D", i, 16); assert(i == 0xd);
-    toInt("E", i, 16); assert(i == 0xe);
-    toInt("F", i, 16); assert(i == 0xf);
+    toInt("a", i, 16); test(i == 0xa);
+    toInt("b", i, 16); test(i == 0xb);
+    toInt("c", i, 16); test(i == 0xc);
+    toInt("d", i, 16); test(i == 0xd);
+    toInt("e", i, 16); test(i == 0xe);
+    toInt("f", i, 16); test(i == 0xf);
+    toInt("A", i, 16); test(i == 0xa);
+    toInt("B", i, 16); test(i == 0xb);
+    toInt("C", i, 16); test(i == 0xc);
+    toInt("D", i, 16); test(i == 0xd);
+    toInt("E", i, 16); test(i == 0xe);
+    toInt("F", i, 16); test(i == 0xf);
 
-    toUlong("FF", ul, 16); assert(ul == ubyte.max);
-    toUlong("FFFF", ul, 16); assert(ul == ushort.max);
-    toUlong("ffffFFFF", ul, 16); assert(ul == uint.max);
-    toUlong("ffffFFFFffffFFFF", ul, 16); assert(ul == ulong.max);
+    toUlong("FF", ul, 16); test(ul == ubyte.max);
+    toUlong("FFFF", ul, 16); test(ul == ushort.max);
+    toUlong("ffffFFFF", ul, 16); test(ul == uint.max);
+    toUlong("ffffFFFFffffFFFF", ul, 16); test(ul == ulong.max);
 
     // oct
-    toInt("55", i, 8); assert(i == 45);
-    toInt("100", i, 8); assert(i == 64);
+    toInt("55", i, 8); test(i == 45);
+    toInt("100", i, 8); test(i == 64);
 
     // bin
-    toInt("10000", i, 2); assert(i == 0b10000);
+    toInt("10000", i, 2); test(i == 0b10000);
 
     // trim
-    toInt("    \t20", i); assert(i == 20);
-    toInt("    \t-20", i); assert(i == -20);
-    toInt("-    \t 20", i); assert(i == -20);
+    toInt("    \t20", i); test(i == 20);
+    toInt("    \t-20", i); test(i == -20);
+    toInt("-    \t 20", i); test(i == -20);
 
     // recognise radix prefix
-    toUlong("0xFFFF", ul); assert(ul == ushort.max);
-    toUlong("0XffffFFFF", ul); assert(ul == uint.max);
-    toUlong("0o55", ul); assert(ul == 45);
-    toUlong("0O100", ul); assert(ul == 64);
-    toUlong("0b10000", ul); assert(ul == 0b10000);
-    toUlong("0B1010", ul); assert(ul == 0b1010);
+    toUlong("0xFFFF", ul); test(ul == ushort.max);
+    toUlong("0XffffFFFF", ul); test(ul == uint.max);
+    toUlong("0o55", ul); test(ul == 45);
+    toUlong("0O100", ul); test(ul == 64);
+    toUlong("0b10000", ul); test(ul == 0b10000);
+    toUlong("0B1010", ul); test(ul == 0b1010);
 
     // recognise wrong radix prefix
-    assert(!toUlong("0x10", ul, 10));
-    assert(!toUlong("0b10", ul, 10));
-    assert(!toUlong("0o10", ul, 10));
+    test(!toUlong("0x10", ul, 10));
+    test(!toUlong("0b10", ul, 10));
+    test(!toUlong("0o10", ul, 10));
 
     // empty string handling (pasring error)
-    assert(!toInt("", i));
-    assert(!toUint("", ui));
-    assert(!toLong("", l));
-    assert(!toUlong("", ul));
+    test(!toInt("", i));
+    test(!toUint("", ui));
+    test(!toLong("", l));
+    test(!toUlong("", ul));
 }
