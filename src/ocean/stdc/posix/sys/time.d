@@ -16,6 +16,7 @@ module ocean.stdc.posix.sys.time;
 
 public import core.sys.posix.sys.time;
 
+deprecated ("ocean.stdc.posix.sys.time.timeradd is deprecated. Use core.sys.posix.sys.time.timeradd instead.")
 void timeradd(timeval* a, timeval* b, timeval* result)
 {
     result.tv_sec = a.tv_sec + b.tv_sec;
@@ -27,6 +28,7 @@ void timeradd(timeval* a, timeval* b, timeval* result)
     }
 }
 
+deprecated ("ocean.stdc.posix.sys.time.timersub is deprecated. Use core.sys.posix.sys.time.timersub instead.")
 void timersub(timeval* a, timeval* b, timeval *result)
 {
     result.tv_sec = a.tv_sec - b.tv_sec;
@@ -37,16 +39,19 @@ void timersub(timeval* a, timeval* b, timeval *result)
     }
 }
 
+deprecated ("ocean.stdc.posix.sys.time.timerclear is deprecated. Use core.sys.posix.sys.time.timerclear instead.")
 void timerclear(timeval* tvp)
 {
     (tvp.tv_sec = tvp.tv_usec = 0);
 }
 
+deprecated ("ocean.stdc.posix.sys.time.timerisset is deprecated. Use core.sys.posix.sys.time.timerisset instead.")
 int timerisset(timeval* tvp)
 {
     return cast(int) (tvp.tv_sec || tvp.tv_usec);
 }
 
+deprecated ("ocean.stdc.posix.sys.time.timercmp is deprecated. Use core.sys.posix.sys.time.timercmp instead.")
 int timercmp (char[] CMP) (timeval* a, timeval* b)
 {
     return cast(int)
