@@ -241,9 +241,10 @@ Const!(T)[] format(T, N) (T[] dst, N i, in T[] fmt = null)
     char    pre,
             type;
     int     width;
+    bool    use_separators;
 
-    decode (fmt, type, pre, width);
-    return formatter (dst, i, type, pre, width);
+    decode (fmt, type, pre, width, use_separators);
+    return formatter (dst, i, type, pre, width, use_separators);
 }
 
 unittest
@@ -257,13 +258,28 @@ unittest
     assert (s == "43");
 }
 
-private void decode(T) (T[] fmt, ref char type, out char pre, out int width)
+/*
+    Params:
+        T = format string base type
+        fmt = the format string
+        type = set to the type string (e.g 'd', 'f')
+        pre = set to string prefix
+        width = set to the padding space that the number should occupy
+*/
+private void decode(T) (T[] fmt, out char type, out char pre, out int width,
+    out bool use_separators)
 {
     if (fmt.length is 0)
         type = 'd';
     else
     {
-        type = cast(char) fmt[0];
+        if (fmt[0] == '_')
+        {
+            use_separators = true;
+            type = 'd';
+        }
+        else
+            type = cast(char) fmt[0];
         if (fmt.length > 1)
         {
             auto p = &fmt[1];
@@ -271,6 +287,10 @@ private void decode(T) (T[] fmt, ref char type, out char pre, out int width)
             {
                 if (*p >= '0' && *p <= '9')
                     width = width * 10 + (*p - '0');
+                else if (*p == '_')
+                {
+                    use_separators = true;
+                }
                 else
                     pre = cast(char) *p;
             }
@@ -283,9 +303,18 @@ private struct _FormatterInfo(T)
     byte    radix;
     T[]     prefix;
     T[]     numbers;
+    DecimalMark decimal_mark;
 }
 
-Const!(T)[] formatter(T, N) (T[] dst, N i_, char type, char pre, int width)
+private struct DecimalMark
+{
+    long  turnover;
+    ubyte len;
+    char  separator;
+}
+
+Const!(T)[] formatter(T, N) (T[] dst, N i_, char type, char pre, int width,
+    bool use_separators = false)
 {
     static assert(isIntegerType!(N),
                   "Integer_tango.formatter only supports integers");
@@ -295,17 +324,22 @@ Const!(T)[] formatter(T, N) (T[] dst, N i_, char type, char pre, int width)
     const Immut!(T)[] lower = "0123456789abcdef";
     const Immut!(T)[] upper = "0123456789ABCDEF";
 
+    const DECIMAL_SEP = DecimalMark(999, 3, ',');
+    const HEX_SEP = DecimalMark(0xFFFF, 4, '_');
+    const OCT_SEP = DecimalMark(511, 3, '_');
+    const BIN_SEP = DecimalMark(15, 4, '_');
+
     alias _FormatterInfo!(Immut!(T)) Info;
 
-    const Info[] formats = [
-        { 10, null, lower},
-        { -10, "-" , lower},
-        { 10, " " , lower},
-        { 10, "+" , lower},
-        {  2, "0b", lower},
-        {  8, "0o", lower},
-        { 16, "0x", lower},
-        { 16, "0X", upper},
+    const Info[] formats = [              // index
+        { 10, null, lower, DECIMAL_SEP},  // 0
+        { -10,"-" , lower, DECIMAL_SEP},  // 1
+        { 10, " " , lower, DECIMAL_SEP},  // 2
+        { 10, "+" , lower, DECIMAL_SEP},  // 3
+        {  2, "0b", lower, BIN_SEP},      // 4
+        {  8, "0o", lower, OCT_SEP},      // 5
+        { 16, "0x", lower, HEX_SEP},      // 6
+        { 16, "0X", upper, HEX_SEP},      // 7
     ];
 
     ubyte index;
@@ -362,6 +396,38 @@ Const!(T)[] formatter(T, N) (T[] dst, N i_, char type, char pre, int width)
         // convert number to text
         auto p = dst.ptr + len;
 
+        if (use_separators)
+        {
+            auto sep_len = info.decimal_mark.len;
+            auto sep_width = sep_len + 1; // Add 1 for separator char
+            auto sep_char = info.decimal_mark.separator;
+            auto sep_turnover = info.decimal_mark.turnover;
+
+            static if (N.min < 0)
+            {
+                ulong v = i == N.min ? N.max + 1UL : abs(i);
+                byte vradix = abs(radix);
+            }
+            else
+            {
+                alias i v;
+                alias radix vradix;
+            }
+            if (len >= sep_width && v > sep_turnover)
+            {
+                do
+                {
+                    for (auto j = 0; j < sep_len; j++, v /= vradix)
+                        *--p = numbers[v % vradix];
+                    *--p = sep_char;
+                }
+                while ((len -= sep_width) >= sep_width && v > sep_turnover);
+            }
+            if (!len)
+                return "{output width too small}";
+            static if (N.min < 0)
+                i = i >= 0 ? cast(N)v : -cast(N)v;
+        }
 
         // Base 10 formatting
         if (index <= 3 && index)
@@ -371,7 +437,7 @@ Const!(T)[] formatter(T, N) (T[] dst, N i_, char type, char pre, int width)
             do
                 *--p = numbers[abs(i % radix)];
             while ((i /= radix) && --len);
-         }
+        }
         else // Those numbers are not signed
         {
             ulong v = reinterpretInteger!(ulong)(i);
@@ -872,6 +938,20 @@ unittest
     assert (format(tmp, 10L, "x") == "a");
     assert (format(tmp, 10L, "X") == "A");
 
+    // Comma tests
+    assert (format(tmp, 16L, "b_") == "1_0000");
+    assert (format(tmp, 4096, "o_") == "10_000");
+    assert (format(tmp, 0xFFFFFFFF, "X_") == "FFFF_FFFF");
+    assert (format(tmp, 0x1234_5678_9ABC_DEF0UL, "x_") == "1234_5678_9abc_def0");
+    assert (format(tmp, 0, "_") == "0");
+    assert (format(tmp, 999L, "_") == "999");
+    assert (format(tmp, -999L, "_") == "-999");
+    assert (format(tmp, 1000L, "_") == "1,000");
+    assert (format(tmp, -1000L, "_") == "-1,000");
+    assert (format(tmp, long.max, "_") == "9,223,372,036,854,775,807");
+    assert (format(tmp, long.min, "_") == "-9,223,372,036,854,775,808");
+    assert (format(tmp, ulong.max, "_") == "18,446,744,073,709,551,615");
+
     assert (format(tmp, 10L, "d+") == "+10");
     assert (format(tmp, 10L, "d ") == " 10");
     assert (format(tmp, 10L, "d#") == "10");
@@ -879,6 +959,9 @@ unittest
     assert (format(tmp, 10L, "X#") == "0XA");
     assert (format(tmp, 10L, "b#") == "0b1010");
     assert (format(tmp, 10L, "o#") == "0o12");
+    assert (format(tmp, 1_000L, "_+") == "+1,000");
+    assert (format(tmp, 1_000L, "_ ") == " 1,000");
+    assert (format(tmp, 1_000L, "_#") == "1,000");
 
     assert (format(tmp, 10L, "d1") == "10");
     assert (format(tmp, 10L, "d8") == "00000010");
@@ -886,6 +969,9 @@ unittest
     assert (format(tmp, 10L, "X8") == "0000000A");
     assert (format(tmp, 10L, "b8") == "00001010");
     assert (format(tmp, 10L, "o8") == "00000012");
+    assert (format(tmp, 1000L, "_4") == "1,000");
+    assert (format(tmp, 1000L, "_8") == "0001,000");
+    assert (format(tmp, 0xFFFF_FFFF_FFFF_FFFFUL, "X_#") == "0XFFFF_FFFF_FFFF_FFFF");
 
     assert (format(tmp, 10L, "d1#") == "10");
     assert (format(tmp, 10L, "d6#") == "000010");
