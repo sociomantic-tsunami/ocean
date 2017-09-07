@@ -31,6 +31,7 @@ module ocean.core.DeepCompare;
 
 import ocean.transition;
 
+version(UnitTest) import ocean.core.Test;
 
 /***************************************************************************
 
@@ -204,27 +205,27 @@ unittest
     }
 
     S0 a, b;
-    assert(deepEquals(a, b));
+    test(deepEquals(a, b));
     S1 a1, b1;
     a1.x = [ 1, 2, 3];
     b1.x = [ 1, 2, 3];
-    assert(a1 !is b1);
-    assert(deepEquals(a1, b1));
-    assert(a1.x == b1.x);
+    test(a1 !is b1);
+    test(deepEquals(a1, b1));
+    test(a1.x == b1.x);
     S2 a2, b2;
     a2.y = [a1];
     b2.y = [b1];
-    assert(deepEquals(a2, b2));
+    test(deepEquals(a2, b2));
     S3 a3, b3;
     a3.z = [a2.y];
     b3.z = [b2.y];
-    assert(deepEquals(a3, b3));
+    test(deepEquals(a3, b3));
     b3.z = [null];
-    assert(!deepEquals(a3, b3));
+    test(!deepEquals(a3, b3));
     S4 a4;
     a4.x = double.nan;
-    assert(deepEquals(a4, a4));
+    test(deepEquals(a4, a4));
     S5 a5;
     a5.x ~= double.nan;
-    assert(deepEquals(a5, a5));
+    test(deepEquals(a5, a5));
 }

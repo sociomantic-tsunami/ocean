@@ -66,23 +66,23 @@ deprecated unittest
     // makes use of the fact literals are always 0-terminated
 
     sptr = toStringz(input);
-    assert (strcmp(sptr, "".ptr) == 0);
+    test (strcmp(sptr, "".ptr) == 0);
 
     input = "aaa".dup;
     sptr = toStringz(input);
-    assert (strcmp(sptr, "aaa".ptr) == 0);
+    test (strcmp(sptr, "aaa".ptr) == 0);
 
     input = "";
     sptr = toStringz(input);
-    assert (strcmp(sptr, "".ptr) == 0);
+    test (strcmp(sptr, "".ptr) == 0);
 
     input = "abcde"[0..2];
     sptr = toStringz(input);
-    assert (strcmp(sptr, "ab".ptr) == 0);
+    test (strcmp(sptr, "ab".ptr) == 0);
 
     char[20] buf;
     sptr = toStringz(input, buf[]);
-    assert (sptr is buf.ptr);
+    test (sptr is buf.ptr);
 }
 
 /*********************************
@@ -119,9 +119,9 @@ deprecated unittest
 
     auto result = toStringz(buf, dst, "one", "two");
 
-    assert (result.ptr is dst.ptr);
-    assert (strcmp(dst[0], "one".ptr) == 0);
-    assert (strcmp(dst[1], "two".ptr) == 0);
+    test (result.ptr is dst.ptr);
+    test (strcmp(dst[0], "one".ptr) == 0);
+    test (strcmp(dst[1], "two".ptr) == 0);
 }
 
 /*********************************
@@ -194,13 +194,13 @@ size_t strlenz(T) (T* s)
 deprecated unittest
 {
     auto p = toStringz("foo");
-    assert(strlenz(p) == 3);
+    test(strlenz(p) == 3);
     auto foo = "abbzxyzzy";
     p = toStringz(foo[3..5]);
-    assert(strlenz(p) == 2);
+    test(strlenz(p) == 2);
 
     auto test = "\0";
     p = toStringz(test);
-    assert(*p == 0);
-    assert(p == test.ptr);
+    test(*p == 0);
+    test(p == test.ptr);
 }

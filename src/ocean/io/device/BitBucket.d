@@ -23,6 +23,8 @@ import ocean.transition;
 
 import ocean.io.device.Conduit;
 
+version(UnitTest) import ocean.core.Test;
+
 /*******************************************************************************
 
         A Conduit that ignores all that is written to it and returns Eof
@@ -55,5 +57,5 @@ unittest
     uint[4] b=0;
     a.read(b);
     foreach (el;b)
-        assert(el==0);
+        test(el==0);
 }

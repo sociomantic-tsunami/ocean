@@ -207,7 +207,7 @@ unittest
     istring r1 = StringC.toDString("Hello".ptr);
     test!("==")(r1, "Hello");
     Const!(char)* const_empty = "".ptr;
-    assert(const_empty !is null);
+    test(const_empty !is null);
     cstring r2 = StringC.toDString(const_empty);
     test!("is")(const_empty, r2.ptr);
 

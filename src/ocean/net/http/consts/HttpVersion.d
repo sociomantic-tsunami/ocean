@@ -24,6 +24,8 @@ module ocean.net.http.consts.HttpVersion;
 import ocean.transition;
 import core.stdc.ctype: isdigit;
 
+version(UnitTest) import ocean.core.Test;
+version(UnitTest) import ocean.core.Test;
 
 /******************************************************************************
 
@@ -207,17 +209,17 @@ struct HttpVersionIds
 
     unittest
     {
-        assert (validSyntax("HTTP/1.1"));
-        assert (validSyntax("HTTP/1.23"));
-        assert (validSyntax("HTTP/123.456"));
-        assert (!validSyntax("HTTP/123456"));
-        assert (!validSyntax("HTTP/.123456"));
-        assert (!validSyntax("HTTP/1,1"));
-        assert (!validSyntax("HTTP/1."));
-        assert (!validSyntax("HTTP/.1"));
-        assert (!validSyntax("HTTP/."));
-        assert (!validSyntax("HTTP/"));
-        assert (!validSyntax(""));
+        test (validSyntax("HTTP/1.1"));
+        test (validSyntax("HTTP/1.23"));
+        test (validSyntax("HTTP/123.456"));
+        test (!validSyntax("HTTP/123456"));
+        test (!validSyntax("HTTP/.123456"));
+        test (!validSyntax("HTTP/1,1"));
+        test (!validSyntax("HTTP/1."));
+        test (!validSyntax("HTTP/.1"));
+        test (!validSyntax("HTTP/."));
+        test (!validSyntax("HTTP/"));
+        test (!validSyntax(""));
     }
 
     /**************************************************************************
@@ -251,26 +253,26 @@ unittest
     static assert(HttpVersionIds.list[HttpVersion.v1_1]     == "HTTP/1.1");
     static assert(HttpVersionIds.list[HttpVersion.v1_0]     == "HTTP/1.0");
 
-    assert(!HttpVersionIds.list[HttpVersion.Undefined].length);
+    test(!HttpVersionIds.list[HttpVersion.Undefined].length);
 
-    assert(HttpVersionIds.list[HttpVersion.v1_1]     == "HTTP/1.1");
-    assert(HttpVersionIds.list[HttpVersion.v1_0]     == "HTTP/1.0");
+    test(HttpVersionIds.list[HttpVersion.v1_1]     == "HTTP/1.1");
+    test(HttpVersionIds.list[HttpVersion.v1_0]     == "HTTP/1.0");
 
-    assert(HttpVersionIds["HTTP/1.1"]     == HttpVersion.v1_1);
-    assert(HttpVersionIds["HTTP/1.0"]     == HttpVersion.v1_0);
-    assert(HttpVersionIds["SPAM"]         == HttpVersion.Undefined);
-    assert(HttpVersionIds[""]             == HttpVersion.Undefined);
-    assert(HttpVersionIds[null]           == HttpVersion.Undefined);
+    test(HttpVersionIds["HTTP/1.1"]     == HttpVersion.v1_1);
+    test(HttpVersionIds["HTTP/1.0"]     == HttpVersion.v1_0);
+    test(HttpVersionIds["SPAM"]         == HttpVersion.Undefined);
+    test(HttpVersionIds[""]             == HttpVersion.Undefined);
+    test(HttpVersionIds[null]           == HttpVersion.Undefined);
 
     HttpVersion* v = "HTTP/1.1" in HttpVersionIds;
-    assert(v);
-    assert(*v == (*v).v1_1);
+    test(v);
+    test(*v == (*v).v1_1);
 
     v = "HTTP/1.0" in HttpVersionIds;
-    assert(v);
-    assert(*v == (*v).v1_0);
+    test(v);
+    test(*v == (*v).v1_0);
 
-    assert(!("SPAM" in HttpVersionIds));
-    assert(!(""     in HttpVersionIds));
-    assert(!(null   in HttpVersionIds));
+    test(!("SPAM" in HttpVersionIds));
+    test(!(""     in HttpVersionIds));
+    test(!(null   in HttpVersionIds));
 }

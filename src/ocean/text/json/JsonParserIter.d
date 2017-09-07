@@ -557,11 +557,11 @@ unittest
     parser.reset(json);
 
     auto val = parser.nextNamed("cost", found);
-    assert(found, "Boolean flag should be set to true");
+    test(found, "Boolean flag should be set to true");
     test!("==")(val, "12.34"[]);
 
     found = false;
     auto uval = parser.nextNamedNumber!(uint)("cost", found);
-    assert(found, "Boolean flag should be set to true");
+    test(found, "Boolean flag should be set to true");
     test!("==")(uval, 42);
 }

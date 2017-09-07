@@ -421,7 +421,7 @@ unittest
         scope s = new AddressIPSocket!();
         // With s.fd == -1 the connect(2) call should fail with EBADF if the
         // inet_pton(3) call succeeds.
-        assert(s.fd == -1);
+        test(s.fd == -1);
 
         errno = 0;
         test!("==")(s.bind("127.0.0.1", 12345), -1);
@@ -450,7 +450,7 @@ unittest
 
     {
         scope s = new AddressIPSocket!(true);
-        assert(s.fd == -1);
+        test(s.fd == -1);
 
         errno = 0;
         // IP address taken from the Linux manual page for inet_pton(3).

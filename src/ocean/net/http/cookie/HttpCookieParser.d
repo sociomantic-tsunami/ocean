@@ -29,6 +29,8 @@ module ocean.net.http.cookie.HttpCookieParser;
 import ocean.transition;
 import ocean.net.util.QueryParams: QueryParamSet;
 
+version(UnitTest) import ocean.core.Test;
+
 /******************************************************************************/
 
 class HttpCookieParser : QueryParamSet
@@ -55,6 +57,6 @@ unittest
 
     cookie.parse(cookie_header_value);
 
-    assert (cookie["test"] == "2649113645");
-    assert (cookie["test-value"] == "1383922851");
+    test (cookie["test"] == "2649113645");
+    test (cookie["test-value"] == "1383922851");
 }

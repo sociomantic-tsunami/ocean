@@ -895,38 +895,38 @@ struct DateTime
 
 unittest
 {
-    assert(TimeSpan.zero > TimeSpan.min);
-    assert(TimeSpan.max  > TimeSpan.zero);
-    assert(TimeSpan.max  > TimeSpan.min);
-    assert(TimeSpan.zero >= TimeSpan.zero);
-    assert(TimeSpan.zero <= TimeSpan.zero);
-    assert(TimeSpan.max >= TimeSpan.max);
-    assert(TimeSpan.max <= TimeSpan.max);
-    assert(TimeSpan.min >= TimeSpan.min);
-    assert(TimeSpan.min <= TimeSpan.min);
+    test(TimeSpan.zero > TimeSpan.min);
+    test(TimeSpan.max  > TimeSpan.zero);
+    test(TimeSpan.max  > TimeSpan.min);
+    test(TimeSpan.zero >= TimeSpan.zero);
+    test(TimeSpan.zero <= TimeSpan.zero);
+    test(TimeSpan.max >= TimeSpan.max);
+    test(TimeSpan.max <= TimeSpan.max);
+    test(TimeSpan.min >= TimeSpan.min);
+    test(TimeSpan.min <= TimeSpan.min);
 
-    assert (TimeSpan.fromSeconds(50).seconds is 50);
-    assert (TimeSpan.fromSeconds(5000).seconds is 5000);
-    assert (TimeSpan.fromMinutes(50).minutes is 50);
-    assert (TimeSpan.fromMinutes(5000).minutes is 5000);
-    assert (TimeSpan.fromHours(23).hours is 23);
-    assert (TimeSpan.fromHours(5000).hours is 5000);
-    assert (TimeSpan.fromDays(6).days is 6);
-    assert (TimeSpan.fromDays(5000).days is 5000);
+    test (TimeSpan.fromSeconds(50).seconds is 50);
+    test (TimeSpan.fromSeconds(5000).seconds is 5000);
+    test (TimeSpan.fromMinutes(50).minutes is 50);
+    test (TimeSpan.fromMinutes(5000).minutes is 5000);
+    test (TimeSpan.fromHours(23).hours is 23);
+    test (TimeSpan.fromHours(5000).hours is 5000);
+    test (TimeSpan.fromDays(6).days is 6);
+    test (TimeSpan.fromDays(5000).days is 5000);
 
-    assert (TimeSpan.fromSeconds(50).time.seconds is 50);
-    assert (TimeSpan.fromSeconds(5000).time.seconds is 5000 % 60);
-    assert (TimeSpan.fromMinutes(50).time.minutes is 50);
-    assert (TimeSpan.fromMinutes(5000).time.minutes is 5000 % 60);
-    assert (TimeSpan.fromHours(23).time.hours is 23);
-    assert (TimeSpan.fromHours(5000).time.hours is 5000 % 24);
+    test (TimeSpan.fromSeconds(50).time.seconds is 50);
+    test (TimeSpan.fromSeconds(5000).time.seconds is 5000 % 60);
+    test (TimeSpan.fromMinutes(50).time.minutes is 50);
+    test (TimeSpan.fromMinutes(5000).time.minutes is 5000 % 60);
+    test (TimeSpan.fromHours(23).time.hours is 23);
+    test (TimeSpan.fromHours(5000).time.hours is 5000 % 24);
 
     auto tod = TimeOfDay (25, 2, 3, 4);
     tod = tod.span.time;
-    assert (tod.hours is 1);
-    assert (tod.minutes is 2);
-    assert (tod.seconds is 3);
-    assert (tod.millis is 4);
+    test (tod.hours is 1);
+    test (tod.minutes is 2);
+    test (tod.seconds is 3);
+    test (tod.millis is 4);
 }
 
 unittest

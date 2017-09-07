@@ -403,17 +403,17 @@ private:
 
 unittest {
     // Radix conversion
-    assert( BigInt("-1_234_567_890_123_456_789"[]).toDecimalString
+    test( BigInt("-1_234_567_890_123_456_789"[]).toDecimalString
         == "-1234567890123456789");
-    assert( BigInt("0x1234567890123456789"[]).toHex == "123_45678901_23456789");
-    assert( BigInt("0x00000000000000000000000000000000000A234567890123456789"[]).toHex
+    test( BigInt("0x1234567890123456789"[]).toHex == "123_45678901_23456789");
+    test( BigInt("0x00000000000000000000000000000000000A234567890123456789"[]).toHex
         == "A23_45678901_23456789");
-    assert( BigInt("0x000_00_000000_000_000_000000000000_000000_"[]).toHex == "0");
+    test( BigInt("0x000_00_000000_000_000_000000000000_000000_"[]).toHex == "0");
 
-    assert(BigInt(-0x12345678).toInt() == -0x12345678);
-    assert(BigInt(-0x12345678).toLong() == -0x12345678);
-    assert(BigInt(0x1234_5678_9ABC_5A5AL).toLong() == 0x1234_5678_9ABC_5A5AL);
-    assert(BigInt(0xF234_5678_9ABC_5A5AL).toLong() == long.max);
-    assert(BigInt(-0x123456789ABCL).toInt() == -int.max);
+    test(BigInt(-0x12345678).toInt() == -0x12345678);
+    test(BigInt(-0x12345678).toLong() == -0x12345678);
+    test(BigInt(0x1234_5678_9ABC_5A5AL).toLong() == 0x1234_5678_9ABC_5A5AL);
+    test(BigInt(0xF234_5678_9ABC_5A5AL).toLong() == long.max);
+    test(BigInt(-0x123456789ABCL).toInt() == -int.max);
 
 }

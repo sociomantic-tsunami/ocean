@@ -294,7 +294,7 @@ public class HashMap ( V ) : Map!(V, hash_t)
         clear();
         foreach (key, val; map)
         {
-            test(false);
+            assert(false);
         }
 
         put(4711, false);   // put
@@ -323,7 +323,7 @@ public class HashMap ( V ) : Map!(V, hash_t)
         clear();
         foreach (key, val; map)
         {
-            test(false);
+            assert(false);
         }
 
         map.put(1);

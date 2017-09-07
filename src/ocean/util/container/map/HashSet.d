@@ -52,6 +52,7 @@ module ocean.util.container.map.HashSet;
 import ocean.util.container.map.Set;
 
 version (UnitTestVerbose) import ocean.io.Stdout;
+version (UnitTest) import ocean.core.Test;
 
 
 
@@ -165,7 +166,7 @@ unittest
 
     bool lengthIs ( size_t expected )
     {
-        assert(set.length == expected);
+        test(set.length == expected);
 
         int c;
         foreach ( k; set )
@@ -179,7 +180,7 @@ unittest
     {
         auto len = set.length;
 
-        assert(!!(key in set) == should_exist);
+        test(!!(key in set) == should_exist);
 
         auto e = set.put(key);
         version ( UnitTestVerbose )
@@ -188,8 +189,8 @@ unittest
             printState();
         }
 
-        assert(key in set);
-        assert(lengthIs(len + (should_exist ? 0 : 1)));
+        test(key in set);
+        test(lengthIs(len + (should_exist ? 0 : 1)));
     }
 
     void remove ( hash_t key, bool should_exist )
@@ -197,7 +198,7 @@ unittest
         auto len = set.length;
         auto pool_len = set.bucket_info.num_buckets;
 
-        assert(!!(key in set) == should_exist);
+        test(!!(key in set) == should_exist);
 
         auto e = set.remove(key);
         version ( UnitTestVerbose )
@@ -206,9 +207,9 @@ unittest
             printState();
         }
 
-        assert(!(key in set));
-        assert(lengthIs(len - (should_exist ? 1 : 0)));
-        assert(pool_len == set.bucket_info.num_buckets);
+        test(!(key in set));
+        test(lengthIs(len - (should_exist ? 1 : 0)));
+        test(pool_len == set.bucket_info.num_buckets);
     }
 
     void clear ( )
@@ -222,9 +223,9 @@ unittest
             printState();
         }
 
-        assert(lengthIs(0));
+        test(lengthIs(0));
 
-        assert(pool_len == set.bucket_info.num_buckets);
+        test(pool_len == set.bucket_info.num_buckets);
     }
 
     put(4711, false);   // put

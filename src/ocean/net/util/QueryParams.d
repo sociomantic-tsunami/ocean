@@ -37,6 +37,8 @@ import ocean.text.util.SplitIterator: ChrSplitIterator;
 
 import ocean.util.container.AppendBuffer: AppendBuffer, IAppendBufferReader;
 
+version(UnitTest) import ocean.core.Test;
+
 /******************************************************************************
 
     The QueryParams class is memory-friendly and therefore suitable for stack
@@ -392,7 +394,7 @@ unittest
 {
     scope qp = new QueryParams(';', '=');
 
-    assert (qp.trim_whitespace);
+    test (qp.trim_whitespace);
 
     {
         uint i = 0;
@@ -402,19 +404,19 @@ unittest
             switch (i++)
             {
                 case 0:
-                    assert (key == "Die Katze");
-                    assert (val == "tritt");
+                    test (key == "Die Katze");
+                    test (val == "tritt");
                     break;
                 case 1:
-                    assert (key == "die");
-                    assert (val == "Treppe");
+                    test (key == "die");
+                    test (val == "Treppe");
                     break;
                 case 2:
-                    assert (key == "krumm.");
-                    assert (!val.length);
+                    test (key == "krumm.");
+                    test (!val.length);
                     break;
                 default:
-                    assert(0);
+                    test(0);
             }
         }
     }
@@ -429,19 +431,19 @@ unittest
             switch (i++)
             {
                 case 0:
-                    assert (key == " Die Katze ");
-                    assert (val == " tritt ");
+                    test (key == " Die Katze ");
+                    test (val == " tritt ");
                     break;
                 case 1:
-                    assert (key == "\n\tdie");
-                    assert (val == " Treppe");
+                    test (key == "\n\tdie");
+                    test (val == " Treppe");
                     break;
                 case 2:
-                    assert (key == "krumm.");
-                    assert (val == " ");
+                    test (key == "krumm.");
+                    test (val == " ");
                     break;
                 default:
-                    assert(0);
+                    test(0);
             }
         }
     }

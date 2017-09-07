@@ -25,6 +25,8 @@ public  import ocean.core.ByteSwap;
 
 public  import ocean.util.digest.Digest;
 
+version(UnitTest) import ocean.core.Test;
+
 /*******************************************************************************
 
         Extending MerkleDamgard to create a custom hash function requires

@@ -46,6 +46,7 @@ import Float = ocean.text.convert.Float,
 
 import ocean.io.model.IConduit : OutputStream;
 
+version(UnitTest) import ocean.core.Test;
 
 /*******************************************************************************
 
@@ -1029,160 +1030,160 @@ version (UnitTest)
 unittest
 {
     // basic layout tests
-    assert( Formatter( "abc" ) == "abc" );
-    assert( Formatter( "{0}", 1 ) == "1" );
-    assert( Formatter( "{0}", -1 ) == "-1" );
-    assert( Formatter( "{}", null ) == "0" );
-    assert( Formatter( "{}", 1 ) == "1" );
-    assert( Formatter( "{} {}", 1, 2) == "1 2" );
-    assert( Formatter( "{} {0} {}", 1, 3) == "1 1 3" );
-    assert( Formatter( "{} {0} {} {}", 1, 3) == "1 1 3 {invalid index}" );
-    assert( Formatter( "{} {0} {} {:x}", 1, 3) == "1 1 3 {invalid index}" );
+    test( Formatter( "abc" ) == "abc" );
+    test( Formatter( "{0}", 1 ) == "1" );
+    test( Formatter( "{0}", -1 ) == "-1" );
+    test( Formatter( "{}", null ) == "0" );
+    test( Formatter( "{}", 1 ) == "1" );
+    test( Formatter( "{} {}", 1, 2) == "1 2" );
+    test( Formatter( "{} {0} {}", 1, 3) == "1 1 3" );
+    test( Formatter( "{} {0} {} {}", 1, 3) == "1 1 3 {invalid index}" );
+    test( Formatter( "{} {0} {} {:x}", 1, 3) == "1 1 3 {invalid index}" );
 
-    assert( Formatter( "{0}", true ) == "true" , Formatter( "{0}", true ));
-    assert( Formatter( "{0}", false ) == "false" );
+    test( Formatter( "{0}", true ) == "true" , Formatter( "{0}", true ));
+    test( Formatter( "{0}", false ) == "false" );
 
-    assert( Formatter( "{0}", cast(byte)-128 ) == "-128" );
-    assert( Formatter( "{0}", cast(byte)127 ) == "127" );
-    assert( Formatter( "{0}", cast(ubyte)255 ) == "255" );
+    test( Formatter( "{0}", cast(byte)-128 ) == "-128" );
+    test( Formatter( "{0}", cast(byte)127 ) == "127" );
+    test( Formatter( "{0}", cast(ubyte)255 ) == "255" );
 
-    assert( Formatter( "{0}", cast(short)-32768  ) == "-32768" );
-    assert( Formatter( "{0}", cast(short)32767 ) == "32767" );
-    assert( Formatter( "{0}", cast(ushort)65535 ) == "65535" );
-    assert( Formatter( "{0:x4}", cast(ushort)0xafe ) == "0afe" );
-    assert( Formatter( "{0:X4}", cast(ushort)0xafe ) == "0AFE" );
+    test( Formatter( "{0}", cast(short)-32768  ) == "-32768" );
+    test( Formatter( "{0}", cast(short)32767 ) == "32767" );
+    test( Formatter( "{0}", cast(ushort)65535 ) == "65535" );
+    test( Formatter( "{0:x4}", cast(ushort)0xafe ) == "0afe" );
+    test( Formatter( "{0:X4}", cast(ushort)0xafe ) == "0AFE" );
 
-    assert( Formatter( "{0}", -2147483648 ) == "-2147483648" );
-    assert( Formatter( "{0}", 2147483647 ) == "2147483647" );
-    assert( Formatter( "{0}", 4294967295 ) == "4294967295" );
+    test( Formatter( "{0}", -2147483648 ) == "-2147483648" );
+    test( Formatter( "{0}", 2147483647 ) == "2147483647" );
+    test( Formatter( "{0}", 4294967295 ) == "4294967295" );
 
     // large integers
-    assert( Formatter( "{0}", -9223372036854775807L) == "-9223372036854775807" );
-    assert( Formatter( "{0}", 0x8000_0000_0000_0000L) == "9223372036854775808" );
-    assert( Formatter( "{0}", 9223372036854775807L ) == "9223372036854775807" );
-    assert( Formatter( "{0:X}", 0xFFFF_FFFF_FFFF_FFFF) == "FFFFFFFFFFFFFFFF" );
-    assert( Formatter( "{0:x}", 0xFFFF_FFFF_FFFF_FFFF) == "ffffffffffffffff" );
-    assert( Formatter( "{0:x}", 0xFFFF_1234_FFFF_FFFF) == "ffff1234ffffffff" );
-    assert( Formatter( "{0:x19}", 0x1234_FFFF_FFFF) == "00000001234ffffffff" );
-    assert( Formatter( "{0}", 18446744073709551615UL ) == "18446744073709551615" );
-    assert( Formatter( "{0}", 18446744073709551615UL ) == "18446744073709551615" );
+    test( Formatter( "{0}", -9223372036854775807L) == "-9223372036854775807" );
+    test( Formatter( "{0}", 0x8000_0000_0000_0000L) == "9223372036854775808" );
+    test( Formatter( "{0}", 9223372036854775807L ) == "9223372036854775807" );
+    test( Formatter( "{0:X}", 0xFFFF_FFFF_FFFF_FFFF) == "FFFFFFFFFFFFFFFF" );
+    test( Formatter( "{0:x}", 0xFFFF_FFFF_FFFF_FFFF) == "ffffffffffffffff" );
+    test( Formatter( "{0:x}", 0xFFFF_1234_FFFF_FFFF) == "ffff1234ffffffff" );
+    test( Formatter( "{0:x19}", 0x1234_FFFF_FFFF) == "00000001234ffffffff" );
+    test( Formatter( "{0}", 18446744073709551615UL ) == "18446744073709551615" );
+    test( Formatter( "{0}", 18446744073709551615UL ) == "18446744073709551615" );
 
     // fragments before and after
-    assert( Formatter( "d{0}d", "s" ) == "dsd" );
-    assert( Formatter( "d{0}d", "1234567890" ) == "d1234567890d" );
+    test( Formatter( "d{0}d", "s" ) == "dsd" );
+    test( Formatter( "d{0}d", "1234567890" ) == "d1234567890d" );
 
     // brace escaping
-    assert( Formatter( "d{0}d", "<string>" ) == "d<string>d");
-    assert( Formatter( "d{{0}d", "<string>" ) == "d{0}d");
-    assert( Formatter( "d{{{0}d", "<string>" ) == "d{<string>d");
-    assert( Formatter( "d{0}}d", "<string>" ) == "d<string>}d");
+    test( Formatter( "d{0}d", "<string>" ) == "d<string>d");
+    test( Formatter( "d{{0}d", "<string>" ) == "d{0}d");
+    test( Formatter( "d{{{0}d", "<string>" ) == "d{<string>d");
+    test( Formatter( "d{0}}d", "<string>" ) == "d<string>}d");
 
     // hex conversions, where width indicates leading zeroes
-    assert( Formatter( "{0:x}", 0xafe0000 ) == "afe0000" );
-    assert( Formatter( "{0:x7}", 0xafe0000 ) == "afe0000" );
-    assert( Formatter( "{0:x8}", 0xafe0000 ) == "0afe0000" );
-    assert( Formatter( "{0:X8}", 0xafe0000 ) == "0AFE0000" );
-    assert( Formatter( "{0:X9}", 0xafe0000 ) == "00AFE0000" );
-    assert( Formatter( "{0:X13}", 0xafe0000 ) == "000000AFE0000" );
-    assert( Formatter( "{0:x13}", 0xafe0000 ) == "000000afe0000" );
+    test( Formatter( "{0:x}", 0xafe0000 ) == "afe0000" );
+    test( Formatter( "{0:x7}", 0xafe0000 ) == "afe0000" );
+    test( Formatter( "{0:x8}", 0xafe0000 ) == "0afe0000" );
+    test( Formatter( "{0:X8}", 0xafe0000 ) == "0AFE0000" );
+    test( Formatter( "{0:X9}", 0xafe0000 ) == "00AFE0000" );
+    test( Formatter( "{0:X13}", 0xafe0000 ) == "000000AFE0000" );
+    test( Formatter( "{0:x13}", 0xafe0000 ) == "000000afe0000" );
 
     // decimal width
-    assert( Formatter( "{0:d6}", 123 ) == "000123" );
-    assert( Formatter( "{0,7:d6}", 123 ) == " 000123" );
-    assert( Formatter( "{0,-7:d6}", 123 ) == "000123 " );
+    test( Formatter( "{0:d6}", 123 ) == "000123" );
+    test( Formatter( "{0,7:d6}", 123 ) == " 000123" );
+    test( Formatter( "{0,-7:d6}", 123 ) == "000123 " );
 
     // width & sign combinations
-    assert( Formatter( "{0:d7}", -123 ) == "-0000123" );
-    assert( Formatter( "{0,7:d6}", 123 ) == " 000123" );
-    assert( Formatter( "{0,7:d7}", -123 ) == "-0000123" );
-    assert( Formatter( "{0,8:d7}", -123 ) == "-0000123" );
-    assert( Formatter( "{0,5:d7}", -123 ) == "-0000123" );
+    test( Formatter( "{0:d7}", -123 ) == "-0000123" );
+    test( Formatter( "{0,7:d6}", 123 ) == " 000123" );
+    test( Formatter( "{0,7:d7}", -123 ) == "-0000123" );
+    test( Formatter( "{0,8:d7}", -123 ) == "-0000123" );
+    test( Formatter( "{0,5:d7}", -123 ) == "-0000123" );
 
     // Negative numbers in various bases
-    assert( Formatter( "{:b}", cast(byte) -1 ) == "11111111" );
-    assert( Formatter( "{:b}", cast(short) -1 ) == "1111111111111111" );
-    assert( Formatter( "{:b}", cast(int) -1 )
+    test( Formatter( "{:b}", cast(byte) -1 ) == "11111111" );
+    test( Formatter( "{:b}", cast(short) -1 ) == "1111111111111111" );
+    test( Formatter( "{:b}", cast(int) -1 )
             == "11111111111111111111111111111111" );
-    assert( Formatter( "{:b}", cast(long) -1 )
+    test( Formatter( "{:b}", cast(long) -1 )
             == "1111111111111111111111111111111111111111111111111111111111111111" );
 
-    assert( Formatter( "{:o}", cast(byte) -1 ) == "377" );
-    assert( Formatter( "{:o}", cast(short) -1 ) == "177777" );
-    assert( Formatter( "{:o}", cast(int) -1 ) == "37777777777" );
-    assert( Formatter( "{:o}", cast(long) -1 ) == "1777777777777777777777" );
+    test( Formatter( "{:o}", cast(byte) -1 ) == "377" );
+    test( Formatter( "{:o}", cast(short) -1 ) == "177777" );
+    test( Formatter( "{:o}", cast(int) -1 ) == "37777777777" );
+    test( Formatter( "{:o}", cast(long) -1 ) == "1777777777777777777777" );
 
-    assert( Formatter( "{:d}", cast(byte) -1 ) == "-1" );
-    assert( Formatter( "{:d}", cast(short) -1 ) == "-1" );
-    assert( Formatter( "{:d}", cast(int) -1 ) == "-1" );
-    assert( Formatter( "{:d}", cast(long) -1 ) == "-1" );
+    test( Formatter( "{:d}", cast(byte) -1 ) == "-1" );
+    test( Formatter( "{:d}", cast(short) -1 ) == "-1" );
+    test( Formatter( "{:d}", cast(int) -1 ) == "-1" );
+    test( Formatter( "{:d}", cast(long) -1 ) == "-1" );
 
-    assert( Formatter( "{:x}", cast(byte) -1 ) == "ff" );
-    assert( Formatter( "{:x}", cast(short) -1 ) == "ffff" );
-    assert( Formatter( "{:x}", cast(int) -1 ) == "ffffffff" );
-    assert( Formatter( "{:x}", cast(long) -1 ) == "ffffffffffffffff" );
+    test( Formatter( "{:x}", cast(byte) -1 ) == "ff" );
+    test( Formatter( "{:x}", cast(short) -1 ) == "ffff" );
+    test( Formatter( "{:x}", cast(int) -1 ) == "ffffffff" );
+    test( Formatter( "{:x}", cast(long) -1 ) == "ffffffffffffffff" );
 
     // argument index
-    assert( Formatter( "a{0}b{1}c{2}", "x", "y", "z" ) == "axbycz" );
-    assert( Formatter( "a{2}b{1}c{0}", "x", "y", "z" ) == "azbycx" );
-    assert( Formatter( "a{1}b{1}c{1}", "x", "y", "z" ) == "aybycy" );
+    test( Formatter( "a{0}b{1}c{2}", "x", "y", "z" ) == "axbycz" );
+    test( Formatter( "a{2}b{1}c{0}", "x", "y", "z" ) == "azbycx" );
+    test( Formatter( "a{1}b{1}c{1}", "x", "y", "z" ) == "aybycy" );
 
     // alignment does not restrict the length
-    assert( Formatter( "{0,5}", "hellohello" ) == "hellohello" );
+    test( Formatter( "{0,5}", "hellohello" ) == "hellohello" );
 
     // alignment fills with spaces
-    assert( Formatter( "->{0,-10}<-", "hello" ) == "->hello     <-" );
-    assert( Formatter( "->{0,10}<-", "hello" ) == "->     hello<-" );
-    assert( Formatter( "->{0,-10}<-", 12345 ) == "->12345     <-" );
-    assert( Formatter( "->{0,10}<-", 12345 ) == "->     12345<-" );
+    test( Formatter( "->{0,-10}<-", "hello" ) == "->hello     <-" );
+    test( Formatter( "->{0,10}<-", "hello" ) == "->     hello<-" );
+    test( Formatter( "->{0,-10}<-", 12345 ) == "->12345     <-" );
+    test( Formatter( "->{0,10}<-", 12345 ) == "->     12345<-" );
 
     // chop at maximum specified length; insert ellipses when chopped
-    assert( Formatter( "->{.5}<-", "hello" ) == "->hello<-" );
-    assert( Formatter( "->{.4}<-", "hello" ) == "->hell...<-" );
-    assert( Formatter( "->{.-3}<-", "hello" ) == "->...llo<-" );
+    test( Formatter( "->{.5}<-", "hello" ) == "->hello<-" );
+    test( Formatter( "->{.4}<-", "hello" ) == "->hell...<-" );
+    test( Formatter( "->{.-3}<-", "hello" ) == "->...llo<-" );
 
     // width specifier indicates number of decimal places
-    assert( Formatter( "{0:f}", 1.23f ) == "1.23" );
-    assert( Formatter( "{0:f4}", 1.23456789L ) == "1.2346" );
-    assert( Formatter( "{0:e4}", 0.0001) == "1.0000e-04");
+    test( Formatter( "{0:f}", 1.23f ) == "1.23" );
+    test( Formatter( "{0:f4}", 1.23456789L ) == "1.2346" );
+    test( Formatter( "{0:e4}", 0.0001) == "1.0000e-04");
 
-    assert( Formatter( "{0:f}", 1.23f*1i ) == "1.23*1i");
-    assert( Formatter( "{0:f4}", 1.23456789L*1i ) == "1.2346*1i" );
-    assert( Formatter( "{0:e4}", 0.0001*1i) == "1.0000e-04*1i");
+    test( Formatter( "{0:f}", 1.23f*1i ) == "1.23*1i");
+    test( Formatter( "{0:f4}", 1.23456789L*1i ) == "1.2346*1i" );
+    test( Formatter( "{0:e4}", 0.0001*1i) == "1.0000e-04*1i");
 
-    assert( Formatter( "{0:f}", 1.23f+1i ) == "1.23+1.00*1i" );
-    assert( Formatter( "{0:f4}", 1.23456789L+1i ) == "1.2346+1.0000*1i" );
-    assert( Formatter( "{0:e4}", 0.0001+1i) == "1.0000e-04+1.0000e+00*1i");
-    assert( Formatter( "{0:f}", 1.23f-1i ) == "1.23-1.00*1i" );
-    assert( Formatter( "{0:f4}", 1.23456789L-1i ) == "1.2346-1.0000*1i" );
-    assert( Formatter( "{0:e4}", 0.0001-1i) == "1.0000e-04-1.0000e+00*1i");
+    test( Formatter( "{0:f}", 1.23f+1i ) == "1.23+1.00*1i" );
+    test( Formatter( "{0:f4}", 1.23456789L+1i ) == "1.2346+1.0000*1i" );
+    test( Formatter( "{0:e4}", 0.0001+1i) == "1.0000e-04+1.0000e+00*1i");
+    test( Formatter( "{0:f}", 1.23f-1i ) == "1.23-1.00*1i" );
+    test( Formatter( "{0:f4}", 1.23456789L-1i ) == "1.2346-1.0000*1i" );
+    test( Formatter( "{0:e4}", 0.0001-1i) == "1.0000e-04-1.0000e+00*1i");
 
     // 'f.' & 'e.' format truncates zeroes from floating decimals
-    assert( Formatter( "{:f4.}", 1.230 ) == "1.23" );
-    assert( Formatter( "{:f6.}", 1.230 ) == "1.23" );
-    assert( Formatter( "{:f1.}", 1.230 ) == "1.2" );
-    assert( Formatter( "{:f.}", 1.233 ) == "1.23" );
-    assert( Formatter( "{:f.}", 1.237 ) == "1.24" );
-    assert( Formatter( "{:f.}", 1.000 ) == "1" );
-    assert( Formatter( "{:f2.}", 200.001 ) == "200");
+    test( Formatter( "{:f4.}", 1.230 ) == "1.23" );
+    test( Formatter( "{:f6.}", 1.230 ) == "1.23" );
+    test( Formatter( "{:f1.}", 1.230 ) == "1.2" );
+    test( Formatter( "{:f.}", 1.233 ) == "1.23" );
+    test( Formatter( "{:f.}", 1.237 ) == "1.24" );
+    test( Formatter( "{:f.}", 1.000 ) == "1" );
+    test( Formatter( "{:f2.}", 200.001 ) == "200");
 
     // array output
     int[] a = [ 51, 52, 53, 54, 55 ];
-    assert( Formatter( "{}", a ) == "[51, 52, 53, 54, 55]" );
-    assert( Formatter( "{:x}", a ) == "[33, 34, 35, 36, 37]" );
-    assert( Formatter( "{,-4}", a ) == "[51  , 52  , 53  , 54  , 55  ]" );
-    assert( Formatter( "{,4}", a ) == "[  51,   52,   53,   54,   55]" );
+    test( Formatter( "{}", a ) == "[51, 52, 53, 54, 55]" );
+    test( Formatter( "{:x}", a ) == "[33, 34, 35, 36, 37]" );
+    test( Formatter( "{,-4}", a ) == "[51  , 52  , 53  , 54  , 55  ]" );
+    test( Formatter( "{,4}", a ) == "[  51,   52,   53,   54,   55]" );
     int[][] b = [ [ 51, 52 ], [ 53, 54, 55 ] ];
-    assert( Formatter( "{}", b ) == "[[51, 52], [53, 54, 55]]" );
+    test( Formatter( "{}", b ) == "[[51, 52], [53, 54, 55]]" );
 
     char[1024] static_buffer;
     static_buffer[0..10] = "1234567890";
 
-    assert (Formatter( "{}", static_buffer[0..10]) == "1234567890");
+    test (Formatter( "{}", static_buffer[0..10]) == "1234567890");
 
     version(X86)
     {
         ushort[3] c = [ cast(ushort)51, 52, 53 ];
-        assert( Formatter( "{}", c ) == "[51, 52, 53]" );
+        test( Formatter( "{}", c ) == "[51, 52, 53]" );
     }
 
     // integer AA
@@ -1190,39 +1191,39 @@ unittest
     d[234] = 2;
     d[345] = 3;
 
-    assert( Formatter( "{}", d ) == "{234 => 2, 345 => 3}" ||
+    test( Formatter( "{}", d ) == "{234 => 2, 345 => 3}" ||
             Formatter( "{}", d ) == "{345 => 3, 234 => 2}");
 
     // bool/string AA
     bool[char[]] e;
     e[ idup("key") ] = true;
     e[ idup("value") ] = false;
-    assert( Formatter( "{}", e ) == "{key => true, value => false}" ||
+    test( Formatter( "{}", e ) == "{key => true, value => false}" ||
             Formatter( "{}", e ) == "{value => false, key => true}");
 
     // string/double AA
     char[][ double ] f;
     f[ 1.0 ] = "one".dup;
     f[ 3.14 ] = "PI".dup;
-    assert( Formatter( "{}", f ) == "{1.00 => one, 3.14 => PI}" ||
+    test( Formatter( "{}", f ) == "{1.00 => one, 3.14 => PI}" ||
             Formatter( "{}", f ) == "{3.14 => PI, 1.00 => one}");
 
     // format()
     char[] buffer;
-    assert( Formatter.format(buffer, "{}", 1) == "1" );
-    assert( buffer == "1" );
+    test( Formatter.format(buffer, "{}", 1) == "1" );
+    test( buffer == "1" );
 
     buffer.length = 0;
     enableStomping(buffer);
-    assert( Formatter.format(buffer, "{}", 1234567890123) == "1234567890123" );
-    assert( buffer == "1234567890123" );
+    test( Formatter.format(buffer, "{}", 1234567890123) == "1234567890123" );
+    test( buffer == "1234567890123" );
 
     auto old_buffer_ptr = buffer.ptr;
     buffer.length = 0;
     enableStomping(buffer);
-    assert( Formatter.format(buffer, "{}", 1.24) == "1.24" );
-    assert( buffer == "1.24" );
-    assert( buffer.ptr == old_buffer_ptr);
+    test( Formatter.format(buffer, "{}", 1.24) == "1.24" );
+    test( buffer == "1.24" );
+    test( buffer.ptr == old_buffer_ptr);
 
     interface I
     {
@@ -1239,8 +1240,8 @@ unittest
     C c = new C;
     I i = c;
 
-    assert ( Formatter("{}", i) == "something" );
-    assert ( Formatter("{}", c) == "something" );
+    test ( Formatter("{}", i) == "something" );
+    test ( Formatter("{}", c) == "something" );
 
     struct S
     {
@@ -1250,25 +1251,25 @@ unittest
         }
     }
 
-    assert ( Formatter("{}", S.init) == "something" );
+    test ( Formatter("{}", S.init) == "something" );
 
     struct S2 { }
-    assert ( Formatter("{}", S2.init) == "{unhandled argument type}" );
+    test ( Formatter("{}", S2.init) == "{unhandled argument type}" );
 
     // Time struct
     // Should result in something similar to "01/01/70 00:00:00" but it's
     // dependent on the system locale so we just make sure that it's handled
-    assert( Formatter( "{}", Time.epoch1970 ) != "{unhandled argument type}");
+    test( Formatter( "{}", Time.epoch1970 ) != "{unhandled argument type}");
 
-    assert ( Formatter("{}", [ "aa", "bb" ] ) == `[aa, bb]` );
-    assert ( Formatter("{}", "aa"w) == "aa" );
+    test ( Formatter("{}", [ "aa", "bb" ] ) == `[aa, bb]` );
+    test ( Formatter("{}", "aa"w) == "aa" );
 
     // sprint is supposed to overwrite provided buffer without changing its length
     // and ignore any remaining formatted data that does not fit
     mstring target;
     Formatter.sprint(target, "{}", 42);
-    assert (target.ptr is null);
+    test (target.ptr is null);
     target.length = 5; target[] = 'a';
     Formatter.sprint(target, "{}", 42);
-    assert (target == "42aaa");
+    test (target == "42aaa");
 }

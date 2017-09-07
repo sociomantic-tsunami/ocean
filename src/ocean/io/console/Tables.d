@@ -140,6 +140,7 @@ import ocean.io.Stdout;
 
 import ocean.io.Terminal;
 
+version(UnitTest) import ocean.core.Test;
 
 /*******************************************************************************
 
@@ -1485,5 +1486,5 @@ const check =
 
     auto result = cast(char[])buffer.slice();
 
-    assert(result == check, result);
+    test(result == check, result);
 }

@@ -37,6 +37,8 @@ import ocean.stdc.posix.sys.types: ssize_t;
 import ocean.io.Stdout;
 import ocean.text.Search: SearchFruct, search;
 
+version(UnitTest) import ocean.core.Test;
+
 /******************************************************************************
 
     Splits a string by occurrences of a delimiter string.
@@ -184,9 +186,9 @@ unittest
         {
             istring[] elements = ["ab", "cd", "efg"];
 
-            assert (split.n);
-            assert (split.n <= elements.length);
-            assert (element == elements[split.n - 1]);
+            test (split.n);
+            test (split.n <= elements.length);
+            test (element == elements[split.n - 1]);
         }
     }
 
@@ -196,25 +198,25 @@ unittest
     {
         istring[] elements = ["ab", "cd", "efg"];
 
-        assert (split.n);
-        assert (split.n <= elements.length);
-        assert (element == elements[split.n - 1]);
+        test (split.n);
+        test (split.n <= elements.length);
+        test (element == elements[split.n - 1]);
     }
 
     foreach (element; split.reset("123" ~ "ab"~ "123" ~ "cd" ~ "123" ~ "efg" ~ "123"))
     {
         istring[] elements = ["", "ab", "cd", "efg", ""];
 
-        assert (split.n);
-        assert (split.n <= elements.length);
-        assert (element == elements[split.n - 1]);
+        test (split.n);
+        test (split.n <= elements.length);
+        test (element == elements[split.n - 1]);
     }
 
     split.reset("ab" ~ "123" ~ "cd" ~ "123" ~ "efg");
 
-    assert (split.next == "ab");
-    assert (split.next == "cd");
-    assert (split.next == "efg");
+    test (split.next == "ab");
+    test (split.next == "cd");
+    test (split.next == "efg");
 }
 
 

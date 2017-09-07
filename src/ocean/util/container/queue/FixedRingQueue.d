@@ -35,6 +35,7 @@ import ocean.util.container.queue.model.IByteQueue;
 
 import ocean.util.container.mem.MemManager;
 
+version(UnitTest) import ocean.core.Test;
 
 
 /*******************************************************************************
@@ -536,49 +537,49 @@ unittest
 
     int n;
 
-    assert (queue.is_empty);
-    assert (!queue.pop());
-    assert (queue.is_empty);
+    test (queue.is_empty);
+    test (!queue.pop());
+    test (queue.is_empty);
 
-    assert (queue.push(1));
-    assert (queue.get_write_to  == pos(1));
-    assert (queue.get_read_from == pos(0));
-    assert (!queue.is_empty);
+    test (queue.push(1));
+    test (queue.get_write_to  == pos(1));
+    test (queue.get_read_from == pos(0));
+    test (!queue.is_empty);
 
-    assert (queue.pop(n));
-    assert (n == 1);
+    test (queue.pop(n));
+    test (n == 1);
 
-    assert (queue.is_empty);
-    assert (!queue.pop());
-    assert (queue.get_write_to == queue.get_read_from);
+    test (queue.is_empty);
+    test (!queue.pop());
+    test (queue.get_write_to == queue.get_read_from);
 
-    assert (queue.push(2));
-    assert (!queue.is_empty);
-    assert (queue.push(3));
-    assert (queue.push(4));
-    assert (!queue.push(5));
-    assert (queue.get_write_to == queue.get_read_from);
+    test (queue.push(2));
+    test (!queue.is_empty);
+    test (queue.push(3));
+    test (queue.push(4));
+    test (!queue.push(5));
+    test (queue.get_write_to == queue.get_read_from);
 
-    assert (queue.pop(n));
-    assert (n == 2);
+    test (queue.pop(n));
+    test (n == 2);
 
-    assert (queue.pop(n));
-    assert (n == 3);
+    test (queue.pop(n));
+    test (n == 3);
 
-    assert (queue.pop(n));
-    assert (n == 4);
+    test (queue.pop(n));
+    test (n == 4);
 
-    assert (queue.is_empty);
-    assert (!queue.pop());
-    assert (queue.get_write_to == queue.get_read_from);
+    test (queue.is_empty);
+    test (!queue.pop());
+    test (queue.get_write_to == queue.get_read_from);
 
-    assert (queue.push(5));
+    test (queue.push(5));
 
-    assert (queue.pop(n));
-    assert (n == 5);
+    test (queue.pop(n));
+    test (n == 5);
 
-    assert (queue.is_empty);
-    assert (!queue.pop());
-    assert (queue.get_write_to == queue.get_read_from);
+    test (queue.is_empty);
+    test (!queue.pop());
+    test (queue.get_write_to == queue.get_read_from);
 }
 

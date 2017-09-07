@@ -26,6 +26,8 @@ import ocean.core.ExceptionDefinitions;
 import ocean.text.Util;
 import Integer = ocean.text.convert.Integer_tango;
 
+version(UnitTest) import ocean.core.Test;
+
 import core.stdc.stdlib;
 import core.stdc.string;
 
@@ -1684,19 +1686,19 @@ unittest
         char[255] buffer;
 
         auto nread = p.stdout.read(buffer);
-        assert(nread != p.stdout.Eof);
-        assert(buffer[0..nread] == message ~ "\n");
+        test(nread != p.stdout.Eof);
+        test(buffer[0..nread] == message ~ "\n");
 
         nread = p.stdout.read(buffer);
-        assert(nread == p.stdout.Eof);
+        test(nread == p.stdout.Eof);
 
         auto result = p.wait();
 
-        assert(result.reason == Process.Result.Exit && result.status == 0);
+        test(result.reason == Process.Result.Exit && result.status == 0);
     }
     catch (ProcessException e)
     {
-        assert(false, getMsg(e));
+        test(false, getMsg(e));
     }
 }
 

@@ -160,11 +160,11 @@ version (Posix)
     unittest
     {
         int c = getUserCulture();
-        assert(compareString(c, "Alphabet", 0, 8, "Alphabet", 0, 8, false) == 0);
-        assert(compareString(c, "Alphabet", 0, 8, "alphabet", 0, 8, true) == 0);
-        assert(compareString(c, "Alphabet", 0, 8, "alphabet", 0, 8, false) != 0);
-        assert(compareString(c, "lphabet", 0, 7, "alphabet", 0, 8, true) != 0);
-        assert(compareString(c, "Alphabet", 0, 8, "lphabet", 0, 7, true) != 0);
-        assert(compareString(c, "Alphabet", 0, 7, "ZAlphabet", 1, 7, false) == 0);
+        test(compareString(c, "Alphabet", 0, 8, "Alphabet", 0, 8, false) == 0);
+        test(compareString(c, "Alphabet", 0, 8, "alphabet", 0, 8, true) == 0);
+        test(compareString(c, "Alphabet", 0, 8, "alphabet", 0, 8, false) != 0);
+        test(compareString(c, "lphabet", 0, 7, "alphabet", 0, 8, true) != 0);
+        test(compareString(c, "Alphabet", 0, 8, "lphabet", 0, 7, true) != 0);
+        test(compareString(c, "Alphabet", 0, 7, "ZAlphabet", 1, 7, false) == 0);
     }
 }

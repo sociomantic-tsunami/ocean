@@ -25,6 +25,8 @@ import  Utf = ocean.text.convert.Utf;
 
 private extern (C) void onUnicodeError (cstring msg, size_t idx = 0);
 
+version(UnitTest) import ocean.core.Test;
+
 /*******************************************************************************
 
      see http://icu.sourceforge.net/docs/papers/forms_of_unicode/#t2
@@ -473,12 +475,12 @@ unittest
     char[256] buf;
 
     auto temp = bom.decode (INPUT, buf, &ate);
-    assert (ate == INPUT.length);
-    assert (bom.encoding == Encoding.UTF_8);
+    test (ate == INPUT.length);
+    test (bom.encoding == Encoding.UTF_8);
 
     temp = bom.decode (INPUT2, buf, &ate);
-    assert (ate == INPUT2.length);
-    assert (bom.encoding == Encoding.UTF_8);
+    test (ate == INPUT2.length);
+    test (bom.encoding == Encoding.UTF_8);
 }
 
 debug (UnicodeBom)

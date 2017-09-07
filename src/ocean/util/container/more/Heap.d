@@ -19,6 +19,8 @@ module ocean.util.container.more.Heap;
 
 import ocean.core.ExceptionDefinitions;
 
+version(UnitTest) import ocean.core.Test;
+
 bool minHeapCompare(T)(T a, T b) {return a <= b;}
 bool maxHeapCompare(T)(T a, T b) {return a >= b;}
 void defaultHeapSwap(T)(T t, size_t index) {}
@@ -278,39 +280,39 @@ template MaxHeap(T)
 unittest
 {
         MinHeap!(size_t) h;
-        assert (h.size is 0);
+        test (h.size is 0);
         h ~= 1;
         h ~= 3;
         h ~= 2;
         h ~= 4;
-        assert (h.size is 4);
+        test (h.size is 4);
 
-        assert (h.peek is 1);
-        assert (h.peek is 1);
-        assert (h.size is 4);
+        test (h.peek is 1);
+        test (h.peek is 1);
+        test (h.size is 4);
         h.pop;
-        assert (h.peek is 2);
-        assert (h.size is 3);
+        test (h.peek is 2);
+        test (h.size is 3);
 }
 
 unittest
 {
         MinHeap!(size_t) h;
-        assert (h.size is 0);
+        test (h.size is 0);
         h ~= 1;
         h ~= 3;
         h ~= 2;
         h ~= 4;
-        assert (h.size is 4);
+        test (h.size is 4);
 
-        assert (h.pop is 1);
-        assert (h.size is 3);
-        assert (h.pop is 2);
-        assert (h.size is 2);
-        assert (h.pop is 3);
-        assert (h.size is 1);
-        assert (h.pop is 4);
-        assert (h.size is 0);
+        test (h.pop is 1);
+        test (h.size is 3);
+        test (h.pop is 2);
+        test (h.size is 2);
+        test (h.pop is 3);
+        test (h.size is 1);
+        test (h.pop is 4);
+        test (h.size is 0);
 }
 
 unittest
@@ -321,10 +323,10 @@ unittest
         h ~= 2;
         h ~= 4;
 
-        assert (h.pop is 4);
-        assert (h.pop is 3);
-        assert (h.pop is 2);
-        assert (h.pop is 1);
+        test (h.pop is 4);
+        test (h.pop is 3);
+        test (h.pop is 2);
+        test (h.pop is 1);
 }
 
 unittest
@@ -335,10 +337,10 @@ unittest
         h ~= 2;
         h ~= 4;
         h.remove(3);
-        assert (h.pop is 4);
-        assert (h.pop is 2);
-        assert (h.pop is 1);
-        assert (h.size == 0);
+        test (h.pop is 4);
+        test (h.pop is 2);
+        test (h.pop is 1);
+        test (h.size == 0);
 }
 
 version (UnitTest)
@@ -370,12 +372,12 @@ unittest
         // percolate down. So you have to swap once when
         // popping at a minimum, and that's if you have only two
         // items in the heap.
-        assert (h.pop is 1);
-        assert (swapped.length == 1, "" ~ cast(char)('a' + swapped.length));
-        assert (swapped[0] == 3);
-        assert (indices[0] == 0);
-        assert (h.pop is 3);
-        assert (swapped.length == 1, "" ~ cast(char)('a' + swapped.length));
+        test (h.pop is 1);
+        test (swapped.length == 1, "" ~ cast(char)('a' + swapped.length));
+        test (swapped[0] == 3);
+        test (indices[0] == 0);
+        test (h.pop is 3);
+        test (swapped.length == 1, "" ~ cast(char)('a' + swapped.length));
 }
 unittest
 {
@@ -392,16 +394,16 @@ unittest
         int n=3; // onMove() called for insertions too
         if (swapped[n] == 0)
         {
-                assert (swapped[n+1] == 1);
-                assert (indices[n+0] == 0);
-                assert (indices[n+1] == 2);
+                test (swapped[n+1] == 1);
+                test (indices[n+0] == 0);
+                test (indices[n+1] == 2);
         }
         else
         {
-                assert (swapped[n+1] == 0);
-                assert (swapped[n+0] == 1);
-                assert (indices[n+0] == 2);
-                assert (indices[n+1] == 0);
+                test (swapped[n+1] == 0);
+                test (swapped[n+0] == 1);
+                test (indices[n+0] == 2);
+                test (indices[n+1] == 0);
         }
 }
 
@@ -414,13 +416,13 @@ unittest
         h ~= 4;
         auto other = h.clone;
 
-        assert (other.pop is 4);
-        assert (other.pop is 3);
-        assert (other.pop is 2);
-        assert (other.pop is 1);
-        assert (h.size is 4, "cloned heap shares data with original heap");
-        assert (h.pop is 4, "cloned heap shares data with original heap");
-        assert (h.pop is 3, "cloned heap shares data with original heap");
-        assert (h.pop is 2, "cloned heap shares data with original heap");
-        assert (h.pop is 1, "cloned heap shares data with original heap");
+        test (other.pop is 4);
+        test (other.pop is 3);
+        test (other.pop is 2);
+        test (other.pop is 1);
+        test (h.size is 4, "cloned heap shares data with original heap");
+        test (h.pop is 4, "cloned heap shares data with original heap");
+        test (h.pop is 3, "cloned heap shares data with original heap");
+        test (h.pop is 2, "cloned heap shares data with original heap");
+        test (h.pop is 1, "cloned heap shares data with original heap");
 }

@@ -57,6 +57,8 @@ module ocean.text.convert.Utf;
 
 import ocean.transition;
 
+version(UnitTest) import ocean.core.Test;
+
 public extern (C) void onUnicodeError (cstring msg, size_t idx = 0);
 
 /*******************************************************************************
@@ -100,7 +102,7 @@ unittest
     const istring original = "Hello \u262F \u0842 \uEFFF";
     cstring r;
     toString(original, (cstring x) { r ~= x; return x.length; });
-    assert(original == r);
+    test(original == r);
 }
 
 /// Ditto
@@ -135,7 +137,7 @@ unittest
     const wchar[] original = "Hello \u262F \u1666 \uEFFF"w;
     cstring r;
     toString(original, (cstring x) { r ~= x; return x.length; });
-    assert("Hello \u262F \u1666 \uEFFF" == r);
+    test("Hello \u262F \u1666 \uEFFF" == r);
 }
 
 /// Ditto
@@ -178,7 +180,7 @@ unittest
     const dchar[] original = "Hello \u262F \u0842 \uE420"d;
     cstring r;
     toString(original, (cstring x) { r ~= x; return x.length; });
-    assert("Hello \u262F \u0842 \uE420" == r);
+    test("Hello \u262F \u0842 \uE420" == r);
 }
 
 

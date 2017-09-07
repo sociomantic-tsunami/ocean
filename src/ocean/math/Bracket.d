@@ -20,6 +20,8 @@ static import tsm = core.stdc.math;
 import ocean.math.Math;
 import ocean.math.IEEE;
 
+version(UnitTest) import ocean.core.Test;
+
 private:
 
 // return true if a and b have opposite sign
@@ -423,14 +425,14 @@ unittest {
     void testFindRoot(real delegate(real) f, real x1, real x2) {
         numCalls=0;
         ++numProblems;
-        assert(!isNaN(x1) && !isNaN(x2));
+        test(!isNaN(x1) && !isNaN(x2));
         auto result = findRoot(f, x1, x2, f(x1), f(x2),
             (BracketResult!(real, real) r){ return r.xhi==nextUp(r.xlo); });
 
         auto flo = f(result.xlo);
         auto fhi = f(result.xhi);
         if (flo!=0) {
-            assert(oppositeSigns(flo, fhi));
+            test(oppositeSigns(flo, fhi));
         }
     }
 
@@ -609,14 +611,14 @@ unittest {
     // present).
     minx = findMinimum(&parab, -sqrt(real.max), sqrt(real.max),
         cast(real)(float.max), minval);
-    assert(minval==18);
-    assert(feqrel(minx,7.14L)>=float.mant_dig);
+    test(minval==18);
+    test(feqrel(minx,7.14L)>=float.mant_dig);
 
      // Problems from Jack Crenshaw's "World's Best Root Finder"
     // http://www.embedded.com/columns/programmerstoolbox/9900609
    // This has a minimum of cbrt(0.5).
    real crenshawcos(real x) { return cos(2*PI*x*x*x); }
    minx = findMinimum(&crenshawcos, 0.0L, 1.0L, 0.1L, minval);
-   assert(feqrel(minx*minx*minx, 0.5L)<=real.mant_dig-4);
+   test(feqrel(minx*minx*minx, 0.5L)<=real.mant_dig-4);
 
 }

@@ -225,6 +225,8 @@ version(DigitalMars)
     version(X86_64) version=DigitalMarsX64;
 }
 
+version(UnitTest) import ocean.core.Test;
+
 /*******************************************************************************
 
   The mutable Text class actually implements the full API, whereas
@@ -1529,45 +1531,45 @@ unittest
 
     auto array = new Array(1024);
     s.write (array);
-    assert (array.slice == "hello");
+    test (array.slice == "hello");
     s.select (1, 0);
-    assert (s.append(array) == "hhelloello");
+    test (s.append(array) == "hhelloello");
 
     s = "hello";
     s.search("hello").next;
-    assert (s.selection == "hello");
+    test (s.selection == "hello");
     s.replace ("1");
-    assert (s.selection == "1");
-    assert (s == "1");
+    test (s.selection == "1");
+    test (s == "1");
 
-    assert (s.clear == "");
+    test (s.clear == "");
 
-    assert (s.format("{}", 12345) == "12345");
-    assert (s.selection == "12345");
+    test (s.format("{}", 12345) == "12345");
+    test (s.selection == "12345");
 
     s ~= "fubar";
-    assert (s.selection == "12345fubar");
-    assert (s.search("5").next);
-    assert (s.selection == "5");
-    assert (s.remove == "1234fubar");
-    assert (s.search("fubar").next);
-    assert (s.selection == "fubar");
-    assert (s.search("wumpus").next is false);
-    assert (s.selection == "");
+    test (s.selection == "12345fubar");
+    test (s.search("5").next);
+    test (s.selection == "5");
+    test (s.remove == "1234fubar");
+    test (s.search("fubar").next);
+    test (s.selection == "fubar");
+    test (s.search("wumpus").next is false);
+    test (s.selection == "");
 
-    assert (s.clear.format("{:f4}", 1.2345) == "1.2345");
+    test (s.clear.format("{:f4}", 1.2345) == "1.2345");
 
-    assert (s.clear.format("{:b}", 0xf0) == "11110000");
+    test (s.clear.format("{:b}", 0xf0) == "11110000");
 
-    assert (s.clear.encode("one"d).toString == "one");
+    test (s.clear.encode("one"d).toString == "one");
 
-    assert (Util.splitLines(s.clear.append("a\nb").slice).length is 2);
+    test (Util.splitLines(s.clear.append("a\nb").slice).length is 2);
 
-    assert (s.select.replace("almost ") == "almost ");
+    test (s.select.replace("almost ") == "almost ");
     foreach (element; Util.patterns ("all cows eat grass", "eat", "chew"))
         s.append (element);
-    assert (s.selection == "almost all cows chew grass");
-    assert (s.clear.format("{}:{}", 1, 2) == "1:2");
+    test (s.selection == "almost all cows chew grass");
+    test (s.clear.format("{}:{}", 1, 2) == "1:2");
 }
 
 debug (Text)

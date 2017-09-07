@@ -796,9 +796,9 @@ T[] reverse (T) (T[] array)
 ///
 unittest
 {
-    assert (reverse((int[]).init) == (int[]).init);
-    assert (reverse([1, 2, 3]) == [3, 2, 1]);
-    assert (reverse([1, 2, 3, 4]) == [4, 3, 2, 1]);
+    test (reverse((int[]).init) == (int[]).init);
+    test (reverse([1, 2, 3]) == [3, 2, 1]);
+    test (reverse([1, 2, 3, 4]) == [4, 3, 2, 1]);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1425,7 +1425,7 @@ unittest
     int found_cb ( ref size_t index, ref int element )
     in
     {
-        assert(n_iterations);
+        test(n_iterations);
     }
     body
     {
@@ -1681,58 +1681,58 @@ unittest
     }
 
     end = .filterInPlace(array, &even);
-    assert(end == 6);
-    assert(inIncluded(3));
-    assert(inIncluded(5));
-    assert(inIncluded(13));
-    assert(inIncluded(21));
-    assert(inIncluded(55));
-    assert(inIncluded(89));
-    assert(inExcluded(2));
-    assert(inExcluded(8));
-    assert(inExcluded(34));
-    assert(inExcluded(144));
+    test(end == 6);
+    test(inIncluded(3));
+    test(inIncluded(5));
+    test(inIncluded(13));
+    test(inIncluded(21));
+    test(inIncluded(55));
+    test(inIncluded(89));
+    test(inExcluded(2));
+    test(inExcluded(8));
+    test(inExcluded(34));
+    test(inExcluded(144));
 
     array    = [2, 4, 6];
     end = .filterInPlace(array, &even);
-    assert(!end);
-    assert(inExcluded(2));
-    assert(inExcluded(4));
-    assert(inExcluded(6));
+    test(!end);
+    test(inExcluded(2));
+    test(inExcluded(4));
+    test(inExcluded(6));
 
     array    = [8];
     end = .filterInPlace(array, &even);
-    assert(!end);
-    assert(array[end] == 8);
+    test(!end);
+    test(array[end] == 8);
 
     array    = [12345];
     end = .filterInPlace(array, &even);
-    assert(end == array.length);
-    assert(array[0] == 12345);
+    test(end == array.length);
+    test(array[0] == 12345);
 
     array = [1, 2, 4, 6];
     end = .filterInPlace(array, &even);
-    assert(end == 1);
-    assert(array[0] == 1);
-    assert(inExcluded(2));
-    assert(inExcluded(4));
-    assert(inExcluded(6));
+    test(end == 1);
+    test(array[0] == 1);
+    test(inExcluded(2));
+    test(inExcluded(4));
+    test(inExcluded(6));
 
     array = [1, 3, 5, 7];
     end = .filterInPlace(array, &even);
-    assert(end == array.length);
-    assert(inIncluded(1));
-    assert(inIncluded(3));
-    assert(inIncluded(5));
-    assert(inIncluded(7));
+    test(end == array.length);
+    test(inIncluded(1));
+    test(inIncluded(3));
+    test(inIncluded(5));
+    test(inIncluded(7));
 
     array = [1, 2, 5, 7];
     end = .filterInPlace(array, &even);
-    assert(end == 3);
-    assert(inIncluded(1));
-    assert(inIncluded(5));
-    assert(inIncluded(7));
-    assert(inExcluded(2));
+    test(end == 3);
+    test(inIncluded(1));
+    test(inIncluded(5));
+    test(inIncluded(7));
+    test(inExcluded(2));
 }
 
 /*******************************************************************************

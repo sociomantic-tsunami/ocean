@@ -34,6 +34,8 @@ import ocean.io.device.Conduit;
 
 import ocean.io.stream.Buffered;
 
+version(UnitTest) import ocean.core.Test;
+
 /*******************************************************************************
 
         A simple way to read binary data from an arbitrary InputStream,
@@ -471,8 +473,8 @@ unittest
     output.int32 (1024);
 
     auto input = new DataInput (buf);
-    assert (input.array(new char[9]) is 9);
-    assert (input.int32 is 1024);
+    test (input.array(new char[9]) is 9);
+    test (input.int32 is 1024);
 }
 
 /*******************************************************************************

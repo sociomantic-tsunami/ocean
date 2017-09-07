@@ -29,6 +29,8 @@ import ocean.text.json.JsonParser;
 
 import Float = ocean.text.convert.Float;
 
+version(UnitTest) import ocean.core.Test;
+
 /*******************************************************************************
 
     Parse json text into a set of inter-related structures. Typical
@@ -1096,7 +1098,7 @@ unittest
             );
 
         auto value = toString();
-        assert (value == `{"edgar":"friendly","count":11.5,"array":[1, 2]}`, value);
+        test (value == `{"edgar":"friendly","count":11.5,"array":[1, 2]}`, value);
     }
 }
 
@@ -1113,7 +1115,7 @@ unittest
             );
 
         auto value = toString ("\t");
-        assert (value == "{\n\t\"edgar\":\"friendly\",\n\t\"count\":11.5,\n\t\"array\":[\n\t\t1, \n\t\t2\n\t]\n}", value);
+        test (value == "{\n\t\"edgar\":\"friendly\",\n\t\"count\":11.5,\n\t\"array\":[\n\t\t1, \n\t\t2\n\t]\n}", value);
     }
 }
 
@@ -1130,7 +1132,7 @@ unittest
             );
 
         auto value = toString ("     ");
-        assert (value == "{\n     \"edgar\":\"friendly\",\n     \"count\":11.5,\n     \"array\":[\n          1, \n          2\n     ]\n}");
+        test (value == "{\n     \"edgar\":\"friendly\",\n     \"count\":11.5,\n     \"array\":[\n          1, \n          2\n     ]\n}");
     }
 }
 

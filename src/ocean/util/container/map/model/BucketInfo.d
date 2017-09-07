@@ -607,7 +607,7 @@ unittest
     void checkNumElements ( int[] expected ... )
     in
     {
-        assert(expected.length == info.num_buckets);
+        test(expected.length == info.num_buckets);
     }
     body
     {

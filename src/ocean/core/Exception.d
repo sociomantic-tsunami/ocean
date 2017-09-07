@@ -87,7 +87,7 @@ unittest
     size_t counter;
     foreach (e; ExceptionChain(e2))
         ++counter;
-    assert (counter == 2);
+    test (counter == 2);
 }
 
 /******************************************************************************
@@ -275,7 +275,7 @@ unittest
     auto e = new SomeReusableException(100);
 
     e.set("message");
-    assert (getMsg(e) == "message");
+    test (getMsg(e) == "message");
     auto old_ptr = e.reused_msg[].ptr;
 
     try
@@ -284,23 +284,23 @@ unittest
         assert (false);
     }
     catch (SomeReusableException) { }
-    assert (getMsg(e) == "immutable");
+    test (getMsg(e) == "immutable");
 
     try
     {
         e.enforce(false, "longer message");
     }
     catch (SomeReusableException) { }
-    assert (getMsg(e) == "longer message");
-    assert (old_ptr is e.reused_msg[].ptr);
+    test (getMsg(e) == "longer message");
+    test (old_ptr is e.reused_msg[].ptr);
 
     try
     {
         e.badName("NAME", 42);
     }
     catch (SomeReusableException) { }
-    assert (getMsg(e) == "Wrong name (NAME) 0x2A 42");
-    assert (old_ptr is e.reused_msg[].ptr);
+    test (getMsg(e) == "Wrong name (NAME) 0x2A 42");
+    test (old_ptr is e.reused_msg[].ptr);
 }
 
 unittest

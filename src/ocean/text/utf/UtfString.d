@@ -71,6 +71,7 @@ import Utf = ocean.text.convert.Utf;
 
 import ocean.transition;
 
+version(UnitTest) import ocean.core.Test;
 
 /*******************************************************************************
 
@@ -600,5 +601,5 @@ unittest
     istring str1 = "hello world ®"; // utf8 encoding
     Const!(dchar)[] str2 = "hello world ®"; // utf32 encoding
 
-    assert(utf_match(str1, str2));
+    test(utf_match(str1, str2));
 }

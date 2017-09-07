@@ -26,6 +26,8 @@ module ocean.math.internal.BignumNoAsm;
 
 import ocean.transition;
 
+version(UnitTest) import ocean.core.Test;
+
 public:
 alias uint BigDigit; // A Bignum is an array of BigDigits.
 
@@ -65,10 +67,10 @@ unittest
     }
     c[19]=0x3333_3333;
     uint carry = multibyteAddSub!('+')(c[0..18], b[0..18], a[0..18], 0);
-    assert(c[0]==0x8000_0003);
-    assert(c[1]==4);
-    assert(c[19]==0x3333_3333); // check for overrun
-    assert(carry==1);
+    test(c[0]==0x8000_0003);
+    test(c[1]==4);
+    test(c[19]==0x3333_3333); // check for overrun
+    test(carry==1);
     for (int i=0; i<a.length; ++i)
     {
         a[i]=b[i]=c[i]=0;
@@ -79,8 +81,8 @@ unittest
     b[10]=0x1D950C84;
     a[5] =0x44444444;
     carry = multibyteAddSub!('-')(a[0..12], a[0..12], b[0..12], 0);
-    assert(a[11]==0);
-    for (int i=0; i<10; ++i) if (i!=5) assert(a[i]==0);
+    test(a[11]==0);
+    for (int i=0; i<10; ++i) if (i!=5) test(a[i]==0);
 
     for (int q=3; q<36;++q) {
         for (int i=0; i<a.length; ++i)
@@ -90,7 +92,7 @@ unittest
         a[q-2]=0x040000;
         b[q-2]=0x040000;
        carry = multibyteAddSub!('-')(a[0..q], a[0..q], b[0..q], 0);
-       assert(a[q-2]==0);
+       test(a[q-2]==0);
     }
 }
 
@@ -157,17 +159,17 @@ unittest
 
     uint [] aa = [0x1222_2223, 0x4555_5556, 0x8999_999A, 0xBCCC_CCCD, 0xEEEE_EEEE];
     multibyteShr(aa[0..$-2], aa, 4);
-	assert(aa[0]==0x6122_2222 && aa[1]==0xA455_5555 && aa[2]==0x0899_9999);
-	assert(aa[3]==0xBCCC_CCCD);
+	test(aa[0]==0x6122_2222 && aa[1]==0xA455_5555 && aa[2]==0x0899_9999);
+	test(aa[3]==0xBCCC_CCCD);
 
     aa = [0x1222_2223, 0x4555_5556, 0x8999_999A, 0xBCCC_CCCD, 0xEEEE_EEEE];
     multibyteShr(aa[0..$-1], aa, 4);
-	assert(aa[0] == 0x6122_2222 && aa[1]==0xA455_5555
+	test(aa[0] == 0x6122_2222 && aa[1]==0xA455_5555
 	    && aa[2]==0xD899_9999 && aa[3]==0x0BCC_CCCC);
 
     aa = [0xF0FF_FFFF, 0x1222_2223, 0x4555_5556, 0x8999_999A, 0xBCCC_CCCD, 0xEEEE_EEEE];
     multibyteShl(aa[1..4], aa[1..$], 4);
-	assert(aa[0] == 0xF0FF_FFFF && aa[1] == 0x2222_2230
+	test(aa[0] == 0xF0FF_FFFF && aa[1] == 0x2222_2230
 	    && aa[2]==0x5555_5561 && aa[3]==0x9999_99A4 && aa[4]==0x0BCCC_CCCD);
 }
 
@@ -190,7 +192,7 @@ unittest
 {
     uint [] aa = [0xF0FF_FFFF, 0x1222_2223, 0x4555_5556, 0x8999_999A, 0xBCCC_CCCD, 0xEEEE_EEEE];
     multibyteMul(aa[1..4], aa[1..4], 16, 0);
-	assert(aa[0] == 0xF0FF_FFFF && aa[1] == 0x2222_2230 && aa[2]==0x5555_5561 && aa[3]==0x9999_99A4 && aa[4]==0x0BCCC_CCCD);
+	test(aa[0] == 0xF0FF_FFFF && aa[1] == 0x2222_2230 && aa[2]==0x5555_5561 && aa[3]==0x9999_99A4 && aa[4]==0x0BCCC_CCCD);
 }
 
 /**
@@ -221,8 +223,8 @@ unittest {
     uint [] aa = [0xF0FF_FFFF, 0x1222_2223, 0x4555_5556, 0x8999_999A, 0xBCCC_CCCD, 0xEEEE_EEEE];
     uint [] bb = [0x1234_1234, 0xF0F0_F0F0, 0x00C0_C0C0, 0xF0F0_F0F0, 0xC0C0_C0C0];
     multibyteMulAdd!('+')(bb[1..$-1], aa[1..$-2], 16, 5);
-	assert(bb[0] == 0x1234_1234 && bb[4] == 0xC0C0_C0C0);
-    assert(bb[1] == 0x2222_2230 + 0xF0F0_F0F0+5 && bb[2] == 0x5555_5561+0x00C0_C0C0+1
+	test(bb[0] == 0x1234_1234 && bb[4] == 0xC0C0_C0C0);
+    test(bb[1] == 0x2222_2230 + 0xF0F0_F0F0+5 && bb[2] == 0x5555_5561+0x00C0_C0C0+1
 	    && bb[3] == 0x9999_99A4+0xF0F0_F0F0 );
 }
 
@@ -267,12 +269,12 @@ unittest {
     for (int i=0; i<aa.length; ++i) aa[i] = 0x8765_4321 * (i+3);
     uint overflow = multibyteMul(aa, aa, 0x8EFD_FCFB, 0x33FF_7461);
     uint r = multibyteDivAssign(aa, 0x8EFD_FCFB, overflow);
-    assert(aa.length <= int.max);
+    test(aa.length <= int.max);
     for (int i = cast(int) aa.length-1; i>=0; --i)
     {
-        assert(aa[i] == 0x8765_4321 * (i+3));
+        test(aa[i] == 0x8765_4321 * (i+3));
     }
-    assert(r==0x33FF_7461);
+    test(r==0x33FF_7461);
 }
 
 // Set dest[2*i..2*i+1]+=src[i]*src[i]

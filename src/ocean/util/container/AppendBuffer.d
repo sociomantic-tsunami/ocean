@@ -36,6 +36,8 @@ import ocean.core.ExceptionDefinitions: onOutOfMemoryError;
 
 import ocean.core.Traits;
 
+version(UnitTest) import ocean.core.Test;
+
 /******************************************************************************
 
     AppendBuffer Base interface.
@@ -1629,67 +1631,67 @@ unittest
 {
     scope ab = new AppendBuffer!(dchar)(10);
 
-    assert (ab.length    == 0);
-    assert (ab.capacity  == 10);
-    assert (ab.dimension == 10 * dchar.sizeof);
+    test (ab.length    == 0);
+    test (ab.capacity  == 10);
+    test (ab.dimension == 10 * dchar.sizeof);
 
     ab[] = "Die Kotze"d;
 
-    assert (ab.length  == "Die Kotze"d.length);
-    assert (ab[]       == "Die Kotze"d);
-    assert (ab.capacity  == 10);
-    assert (ab.dimension == 10 * dchar.sizeof);
+    test (ab.length  == "Die Kotze"d.length);
+    test (ab[]       == "Die Kotze"d);
+    test (ab.capacity  == 10);
+    test (ab.dimension == 10 * dchar.sizeof);
 
     ab[5] =  'a';
-    assert (ab.length  == "Die Katze"d.length);
-    assert (ab[]       == "Die Katze"d);
-    assert (ab[4 .. 9] == "Katze"d);
-    assert (ab.capacity  == 10);
-    assert (ab.dimension == 10 * dchar.sizeof);
+    test (ab.length  == "Die Katze"d.length);
+    test (ab[]       == "Die Katze"d);
+    test (ab[4 .. 9] == "Katze"d);
+    test (ab.capacity  == 10);
+    test (ab.dimension == 10 * dchar.sizeof);
 
     ab ~= ' ';
 
-    assert (ab[]      == "Die Katze "d);
-    assert (ab.length == "Die Katze "d.length);
-    assert (ab.capacity  == 10);
-    assert (ab.dimension == 10 * dchar.sizeof);
+    test (ab[]      == "Die Katze "d);
+    test (ab.length == "Die Katze "d.length);
+    test (ab.capacity  == 10);
+    test (ab.dimension == 10 * dchar.sizeof);
 
     ab ~= "tritt"d;
 
-    assert (ab[]      == "Die Katze tritt"d);
-    assert (ab.length == "Die Katze tritt"d.length);
-    assert (ab.capacity  == "Die Katze tritt"d.length);
-    assert (ab.dimension == "Die Katze tritt"d.length * dchar.sizeof);
+    test (ab[]      == "Die Katze tritt"d);
+    test (ab.length == "Die Katze tritt"d.length);
+    test (ab.capacity  == "Die Katze tritt"d.length);
+    test (ab.dimension == "Die Katze tritt"d.length * dchar.sizeof);
 
     ab.append(" die"d[], " Treppe"d[], " krumm."d[]);
 
-    assert (ab[]      == "Die Katze tritt die Treppe krumm."d);
-    assert (ab.length == "Die Katze tritt die Treppe krumm."d.length);
-    assert (ab.capacity  == "Die Katze tritt die Treppe krumm."d.length);
-    assert (ab.dimension == "Die Katze tritt die Treppe krumm."d.length * dchar.sizeof);
+    test (ab[]      == "Die Katze tritt die Treppe krumm."d);
+    test (ab.length == "Die Katze tritt die Treppe krumm."d.length);
+    test (ab.capacity  == "Die Katze tritt die Treppe krumm."d.length);
+    test (ab.dimension == "Die Katze tritt die Treppe krumm."d.length * dchar.sizeof);
 
-    assert (ab.cut(4) == "umm."d);
+    test (ab.cut(4) == "umm."d);
 
-    assert (ab.length == "Die Katze tritt die Treppe kr"d.length);
-    assert (ab.capacity  == "Die Katze tritt die Treppe krumm."d.length);
-    assert (ab.dimension == "Die Katze tritt die Treppe krumm."d.length * dchar.sizeof);
+    test (ab.length == "Die Katze tritt die Treppe kr"d.length);
+    test (ab.capacity  == "Die Katze tritt die Treppe krumm."d.length);
+    test (ab.dimension == "Die Katze tritt die Treppe krumm."d.length * dchar.sizeof);
 
-    assert (ab.cut() == 'r');
+    test (ab.cut() == 'r');
 
-    assert (ab.length == "Die Katze tritt die Treppe k"d.length);
-    assert (ab.capacity  == "Die Katze tritt die Treppe krumm."d.length);
-    assert (ab.dimension == "Die Katze tritt die Treppe krumm."d.length * dchar.sizeof);
+    test (ab.length == "Die Katze tritt die Treppe k"d.length);
+    test (ab.capacity  == "Die Katze tritt die Treppe krumm."d.length);
+    test (ab.dimension == "Die Katze tritt die Treppe krumm."d.length * dchar.sizeof);
 
     ab.clear();
 
-    assert (!ab.length);
-    assert (ab[] == ""d);
+    test (!ab.length);
+    test (ab[] == ""d);
 
     ab.extend(5);
-    assert (ab.length == 5);
+    test (ab.length == 5);
 
     ab[] = '~';
-    assert (ab[] == "~~~~~"d);
+    test (ab[] == "~~~~~"d);
 }
 
 unittest

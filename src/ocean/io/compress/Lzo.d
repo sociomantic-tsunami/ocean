@@ -34,6 +34,8 @@ import ocean.core.Enforce: enforce;
 
 import ocean.transition;
 
+version(UnitTest) import ocean.core.Test;
+
 /******************************************************************************
 
     Lzo class
@@ -378,9 +380,9 @@ unittest
 
     ulong crc_us = swatch.microsec;
 
-    assert (uncompr_len == data.length,            "uncompressed data length mismatch");
-    assert (uncompressed == data,                  "uncompressed data mismatch");
-    assert (lzo.crc32(uncompressed) == crc32_data, "uncompressed data CRC-32 mismatch");
+    test (uncompr_len == data.length,            "uncompressed data length mismatch");
+    test (uncompressed == data,                  "uncompressed data mismatch");
+    test (lzo.crc32(uncompressed) == crc32_data, "uncompressed data CRC-32 mismatch");
 
     crc_us    -= uncomp_us;
     uncomp_us -= compr_us;

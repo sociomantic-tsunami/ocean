@@ -38,6 +38,8 @@ debug( ZipFolder )
     import ocean.io.Stdout : Stderr;
 }
 
+version(UnitTest) import ocean.core.Test;
+
 // This disables code that is causing heap corruption in Tango 0.99.3
 version = Bug_HeapCorruption;
 
@@ -1674,20 +1676,20 @@ unittest
     istring h,t;
 
     headTail("/a/b/c", h, t);
-    assert( h == "/a" );
-    assert( t == "b/c" );
+    test( h == "/a" );
+    test( t == "b/c" );
 
     headTail("a/b/c", h, t);
-    assert( h == "a" );
-    assert( t == "b/c" );
+    test( h == "a" );
+    test( t == "b/c" );
 
     headTail("a/", h, t);
-    assert( h == "a" );
-    assert( t == "" );
+    test( h == "a" );
+    test( t == "" );
 
     headTail("a", h, t);
-    assert( h == "a" );
-    assert( t == "" );
+    test( h == "a" );
+    test( t == "" );
 }
 
 // ************************************************************************** //

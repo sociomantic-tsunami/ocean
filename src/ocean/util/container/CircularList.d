@@ -25,6 +25,8 @@ public  import ocean.util.container.Container;
 
 import ocean.util.container.model.IContainer;
 
+version(UnitTest) import ocean.core.Test;
+
 /*******************************************************************************
 
         Circular linked list
@@ -1111,7 +1113,7 @@ unittest
     int i = 1;
     foreach(v; list)
     {
-        assert(v == i);
+        test(v == i);
         i++;
     }
 
@@ -1122,7 +1124,7 @@ unittest
     i = 2;
     foreach(v; list)
     {
-        assert(v == i);
+        test(v == i);
         i++;
     }
 
@@ -1135,7 +1137,7 @@ unittest
     i = 0;
     foreach(v; list)
     {
-        assert(v == compareto[i++]);
+        test(v == compareto[i++]);
     }
 }
 

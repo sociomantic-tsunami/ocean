@@ -21,6 +21,8 @@ import ocean.transition;
 
 public import ocean.util.digest.Digest;
 
+version(UnitTest) import ocean.core.Test;
+
 
 /** This class implements the CRC-32 checksum algorithm.
     The digest returned is a little-endian 4 byte string. */
@@ -139,9 +141,9 @@ unittest
     scope c = new Crc32();
     static ubyte[] data = [1,2,3,4,5,6,7,8,9,10];
     c.update(data);
-    assert(c.binaryDigest() == cast(ubyte[]) x"7b572025");
+    test(c.binaryDigest() == cast(ubyte[]) x"7b572025");
     c.update(data);
-    assert(c.crc32Digest == 0x2520577b);
+    test(c.crc32Digest == 0x2520577b);
     c.update(data);
-    assert(c.hexDigest() == "7b572025");
+    test(c.hexDigest() == "7b572025");
 }

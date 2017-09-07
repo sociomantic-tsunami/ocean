@@ -651,14 +651,14 @@ T[] join(T) (in T[][] src, in T[] postfix=null, T[] dst = null)
 
 unittest
 {
-    assert (join([ "aaa", "bbb", "ccc" ], ",") == "aaa,bbb,ccc");
+    test (join([ "aaa", "bbb", "ccc" ], ",") == "aaa,bbb,ccc");
 
     // ensure `join` works with differently qualified arguments
     Const!(char[][]) mut = [ "xxx".dup, "yyy".dup, "zzz" ];
     char[20] buf;
     auto ret = join(mut, " ", buf);
-    assert (ret == "xxx yyy zzz");
-    assert (ret.ptr is buf.ptr);
+    test (ret == "xxx yyy zzz");
+    test (ret.ptr is buf.ptr);
 }
 
 /******************************************************************************
@@ -995,12 +995,12 @@ unittest
     cstring[] arr;
     foreach (match; patterns("aaa..bbb..ccc", ".."))
         arr ~= match;
-    assert (arr == [ "aaa", "bbb", "ccc" ]);
+    test (arr == [ "aaa", "bbb", "ccc" ]);
 
     arr = [ ];
     foreach (match; patterns("aaa..bbb..ccc", "..", "X"))
         arr ~= match;
-    assert (arr == [ "aaa", "X", "bbb", "X", "ccc" ]);
+    test (arr == [ "aaa", "X", "bbb", "X", "ccc" ]);
 }
 
 /******************************************************************************
@@ -1480,185 +1480,185 @@ unittest
 {
     char[64] tmp;
 
-    assert (isSpace (' ') && !isSpace ('d'));
+    test (isSpace (' ') && !isSpace ('d'));
 
-    assert (indexOf ("abc".ptr, 'a', 3) is 0);
-    assert (indexOf ("abc".ptr, 'b', 3) is 1);
-    assert (indexOf ("abc".ptr, 'c', 3) is 2);
-    assert (indexOf ("abc".ptr, 'd', 3) is 3);
-    assert (indexOf ("abcabcabc".ptr, 'd', 9) is 9);
+    test (indexOf ("abc".ptr, 'a', 3) is 0);
+    test (indexOf ("abc".ptr, 'b', 3) is 1);
+    test (indexOf ("abc".ptr, 'c', 3) is 2);
+    test (indexOf ("abc".ptr, 'd', 3) is 3);
+    test (indexOf ("abcabcabc".ptr, 'd', 9) is 9);
 
-    assert (indexOf ("abc"d.ptr, cast(dchar)'c', 3) is 2);
-    assert (indexOf ("abc"d.ptr, cast(dchar)'d', 3) is 3);
+    test (indexOf ("abc"d.ptr, cast(dchar)'c', 3) is 2);
+    test (indexOf ("abc"d.ptr, cast(dchar)'d', 3) is 3);
 
-    assert (indexOf ("abc"w.ptr, cast(wchar)'c', 3) is 2);
-    assert (indexOf ("abc"w.ptr, cast(wchar)'d', 3) is 3);
-    assert (indexOf ("abcdefghijklmnopqrstuvwxyz"w.ptr, cast(wchar)'x', 25) is 23);
+    test (indexOf ("abc"w.ptr, cast(wchar)'c', 3) is 2);
+    test (indexOf ("abc"w.ptr, cast(wchar)'d', 3) is 3);
+    test (indexOf ("abcdefghijklmnopqrstuvwxyz"w.ptr, cast(wchar)'x', 25) is 23);
 
-    assert (mismatch ("abc".ptr, "abc".ptr, 3) is 3);
-    assert (mismatch ("abc".ptr, "abd".ptr, 3) is 2);
-    assert (mismatch ("abc".ptr, "acc".ptr, 3) is 1);
-    assert (mismatch ("abc".ptr, "ccc".ptr, 3) is 0);
+    test (mismatch ("abc".ptr, "abc".ptr, 3) is 3);
+    test (mismatch ("abc".ptr, "abd".ptr, 3) is 2);
+    test (mismatch ("abc".ptr, "acc".ptr, 3) is 1);
+    test (mismatch ("abc".ptr, "ccc".ptr, 3) is 0);
 
-    assert (mismatch ("abc"w.ptr, "abc"w.ptr, 3) is 3);
-    assert (mismatch ("abc"w.ptr, "acc"w.ptr, 3) is 1);
+    test (mismatch ("abc"w.ptr, "abc"w.ptr, 3) is 3);
+    test (mismatch ("abc"w.ptr, "acc"w.ptr, 3) is 1);
 
-    assert (mismatch ("abc"d.ptr, "abc"d.ptr, 3) is 3);
-    assert (mismatch ("abc"d.ptr, "acc"d.ptr, 3) is 1);
+    test (mismatch ("abc"d.ptr, "abc"d.ptr, 3) is 3);
+    test (mismatch ("abc"d.ptr, "acc"d.ptr, 3) is 1);
 
-    assert (matching ("abc".ptr, "abc".ptr, 3));
-    assert (matching ("abc".ptr, "abb".ptr, 3) is false);
+    test (matching ("abc".ptr, "abc".ptr, 3));
+    test (matching ("abc".ptr, "abb".ptr, 3) is false);
 
-    assert (contains ("abc", 'a'));
-    assert (contains ("abc", 'b'));
-    assert (contains ("abc", 'c'));
-    assert (contains ("abc", 'd') is false);
+    test (contains ("abc", 'a'));
+    test (contains ("abc", 'b'));
+    test (contains ("abc", 'c'));
+    test (contains ("abc", 'd') is false);
 
-    assert (containsPattern ("abc", "ab"));
-    assert (containsPattern ("abc", "bc"));
-    assert (containsPattern ("abc", "abc"));
-    assert (containsPattern ("abc", "zabc") is false);
-    assert (containsPattern ("abc", "abcd") is false);
-    assert (containsPattern ("abc", "za") is false);
-    assert (containsPattern ("abc", "cd") is false);
+    test (containsPattern ("abc", "ab"));
+    test (containsPattern ("abc", "bc"));
+    test (containsPattern ("abc", "abc"));
+    test (containsPattern ("abc", "zabc") is false);
+    test (containsPattern ("abc", "abcd") is false);
+    test (containsPattern ("abc", "za") is false);
+    test (containsPattern ("abc", "cd") is false);
 
-    assert (trim ("") == "");
-    assert (trim (" abc  ") == "abc");
-    assert (trim ("   ") == "");
+    test (trim ("") == "");
+    test (trim (" abc  ") == "abc");
+    test (trim ("   ") == "");
 
-    assert (strip ("", '%') == "");
-    assert (strip ("%abc%%%", '%') == "abc");
-    assert (strip ("#####", '#') == "");
-    assert (stripl ("#####", '#') == "");
-    assert (stripl (" ###", ' ') == "###");
-    assert (stripl ("#####", 's') == "#####");
-    assert (stripr ("#####", '#') == "");
-    assert (stripr ("### ", ' ') == "###");
-    assert (stripr ("#####", 's') == "#####");
+    test (strip ("", '%') == "");
+    test (strip ("%abc%%%", '%') == "abc");
+    test (strip ("#####", '#') == "");
+    test (stripl ("#####", '#') == "");
+    test (stripl (" ###", ' ') == "###");
+    test (stripl ("#####", 's') == "#####");
+    test (stripr ("#####", '#') == "");
+    test (stripr ("### ", ' ') == "###");
+    test (stripr ("#####", 's') == "#####");
 
-    assert (replace ("abc".dup, 'b', ':') == "a:c");
-    assert (substitute ("abc", "bc", "x") == "ax");
+    test (replace ("abc".dup, 'b', ':') == "a:c");
+    test (substitute ("abc", "bc", "x") == "ax");
 
-    assert (locate ("abc".dup, 'c', 1) is 2);
+    test (locate ("abc".dup, 'c', 1) is 2);
 
-    assert (locate ("abc", 'c') is 2);
-    assert (locate ("abc", 'a') is 0);
-    assert (locate ("abc", 'd') is 3);
-    assert (locate ("", 'c') is 0);
+    test (locate ("abc", 'c') is 2);
+    test (locate ("abc", 'a') is 0);
+    test (locate ("abc", 'd') is 3);
+    test (locate ("", 'c') is 0);
 
-    assert (locatePrior ("abce".dup, 'c') is 2);
-    assert (locatePrior ("abce", 'a') is 0);
-    assert (locatePrior ("abce", 'd') is 4);
-    assert (locatePrior ("abce", 'c', 3) is 2);
-    assert (locatePrior ("abce", 'c', 2) is 4);
-    assert (locatePrior ("", 'c') is 0);
+    test (locatePrior ("abce".dup, 'c') is 2);
+    test (locatePrior ("abce", 'a') is 0);
+    test (locatePrior ("abce", 'd') is 4);
+    test (locatePrior ("abce", 'c', 3) is 2);
+    test (locatePrior ("abce", 'c', 2) is 4);
+    test (locatePrior ("", 'c') is 0);
 
     auto x = delimit ("::b", ":");
-    assert (x.length is 3 && x[0] == "" && x[1] == "" && x[2] == "b");
+    test (x.length is 3 && x[0] == "" && x[1] == "" && x[2] == "b");
     x = delimit ("a:bc:d", ":");
-    assert (x.length is 3 && x[0] == "a" && x[1] == "bc" && x[2] == "d");
+    test (x.length is 3 && x[0] == "a" && x[1] == "bc" && x[2] == "d");
     x = delimit ("abcd", ":");
-    assert (x.length is 1 && x[0] == "abcd");
+    test (x.length is 1 && x[0] == "abcd");
     x = delimit ("abcd:", ":");
-    assert (x.length is 2 && x[0] == "abcd" && x[1] == "");
+    test (x.length is 2 && x[0] == "abcd" && x[1] == "");
     x = delimit ("a;b$c#d:e@f", ";:$#@");
-    assert (x.length is 6 && x[0]=="a" && x[1]=="b" && x[2]=="c" &&
+    test (x.length is 6 && x[0]=="a" && x[1]=="b" && x[2]=="c" &&
             x[3]=="d" && x[4]=="e" && x[5]=="f");
 
-    assert (locatePattern ("abcdefg".dup, "") is 7);
-    assert (locatePattern ("abcdefg", "g") is 6);
-    assert (locatePattern ("abcdefg", "abcdefg") is 0);
-    assert (locatePattern ("abcdefg", "abcdefgx") is 7);
-    assert (locatePattern ("abcdefg", "cce") is 7);
-    assert (locatePattern ("abcdefg", "cde") is 2);
-    assert (locatePattern ("abcdefgcde", "cde", 3) is 7);
+    test (locatePattern ("abcdefg".dup, "") is 7);
+    test (locatePattern ("abcdefg", "g") is 6);
+    test (locatePattern ("abcdefg", "abcdefg") is 0);
+    test (locatePattern ("abcdefg", "abcdefgx") is 7);
+    test (locatePattern ("abcdefg", "cce") is 7);
+    test (locatePattern ("abcdefg", "cde") is 2);
+    test (locatePattern ("abcdefgcde", "cde", 3) is 7);
 
-    assert (locatePatternPrior ("abcdefg".dup, "") is 7);
-    assert (locatePatternPrior ("abcdefg", "cce") is 7);
-    assert (locatePatternPrior ("abcdefg", "cde") is 2);
-    assert (locatePatternPrior ("abcdefgcde", "cde", 6) is 2);
-    assert (locatePatternPrior ("abcdefgcde", "cde", 4) is 2);
-    assert (locatePatternPrior ("abcdefg", "abcdefgx") is 7);
+    test (locatePatternPrior ("abcdefg".dup, "") is 7);
+    test (locatePatternPrior ("abcdefg", "cce") is 7);
+    test (locatePatternPrior ("abcdefg", "cde") is 2);
+    test (locatePatternPrior ("abcdefgcde", "cde", 6) is 2);
+    test (locatePatternPrior ("abcdefgcde", "cde", 4) is 2);
+    test (locatePatternPrior ("abcdefg", "abcdefgx") is 7);
 
     x = splitLines ("a\nb\n");
-    assert (x.length is 3 && x[0] == "a" && x[1] == "b" && x[2] == "");
+    test (x.length is 3 && x[0] == "a" && x[1] == "b" && x[2] == "");
     x = splitLines ("a\r\n");
-    assert (x.length is 2 && x[0] == "a" && x[1] == "");
+    test (x.length is 2 && x[0] == "a" && x[1] == "");
 
     x = splitLines ("a");
-    assert (x.length is 1 && x[0] == "a");
+    test (x.length is 1 && x[0] == "a");
     x = splitLines ("");
-    assert (x.length is 1);
+    test (x.length is 1);
 
     cstring[] q;
     foreach (element; quotes ("1 'avcc   cc ' 3", " "))
         q ~= element;
-    assert (q.length is 3 && q[0] == "1" && q[1] == "'avcc   cc '" && q[2] == "3");
+    test (q.length is 3 && q[0] == "1" && q[1] == "'avcc   cc '" && q[2] == "3");
 
-    assert (layout (tmp, "%1,%%%c %0", "abc", "efg") == "efg,%c abc");
+    test (layout (tmp, "%1,%%%c %0", "abc", "efg") == "efg,%c abc");
 
     x = split ("one, two, three", ",");
-    assert (x.length is 3 && x[0] == "one" && x[1] == " two" && x[2] == " three");
+    test (x.length is 3 && x[0] == "one" && x[1] == " two" && x[2] == " three");
     x = split ("one, two, three", ", ");
-    assert (x.length is 3 && x[0] == "one" && x[1] == "two" && x[2] == "three");
+    test (x.length is 3 && x[0] == "one" && x[1] == "two" && x[2] == "three");
     x = split ("one, two, three", ",,");
-    assert (x.length is 1 && x[0] == "one, two, three");
+    test (x.length is 1 && x[0] == "one, two, three");
     x = split ("one,,", ",");
-    assert (x.length is 3 && x[0] == "one" && x[1] == "" && x[2] == "");
+    test (x.length is 3 && x[0] == "one" && x[1] == "" && x[2] == "");
 
     istring t, h;
     h =  head ("one:two:three", ":", t);
-    assert (h == "one" && t == "two:three");
+    test (h == "one" && t == "two:three");
     h = head ("one:::two:three", ":::", t);
-    assert (h == "one" && t == "two:three");
+    test (h == "one" && t == "two:three");
     h = head ("one:two:three", "*", t);
-    assert (h == "one:two:three" && t is null);
+    test (h == "one:two:three" && t is null);
 
     t =  tail ("one:two:three", ":", h);
-    assert (h == "one:two" && t == "three");
+    test (h == "one:two" && t == "three");
     t = tail ("one:::two:three", ":::", h);
-    assert (h == "one" && t == "two:three");
+    test (h == "one" && t == "two:three");
     t = tail ("one:two:three", "*", h);
-    assert (t == "one:two:three" && h is null);
+    test (t == "one:two:three" && h is null);
 
-    assert (chopl("hello world", "hello ") == "world");
-    assert (chopl("hello", "hello") == "");
-    assert (chopl("hello world", " ") == "hello world");
-    assert (chopl("hello world", "") == "hello world");
+    test (chopl("hello world", "hello ") == "world");
+    test (chopl("hello", "hello") == "");
+    test (chopl("hello world", " ") == "hello world");
+    test (chopl("hello world", "") == "hello world");
 
-    assert (chopr("hello world", " world") == "hello");
-    assert (chopr("hello", "hello") == "");
-    assert (chopr("hello world", " ") == "hello world");
-    assert (chopr("hello world", "") == "hello world");
+    test (chopr("hello world", " world") == "hello");
+    test (chopr("hello", "hello") == "");
+    test (chopr("hello world", " ") == "hello world");
+    test (chopr("hello world", "") == "hello world");
 
     istring[] foo = ["one", "two", "three"];
     auto j = join (foo);
-    assert (j == "onetwothree");
+    test (j == "onetwothree");
     j = join (foo, ", ");
-    assert (j == "one, two, three");
+    test (j == "one, two, three");
     j = join (foo, " ", tmp);
-    assert (j == "one two three");
-    assert (j.ptr is tmp.ptr);
+    test (j == "one two three");
+    test (j.ptr is tmp.ptr);
 
-    assert (repeat ("abc", 0) == "");
-    assert (repeat ("abc", 1) == "abc");
-    assert (repeat ("abc", 2) == "abcabc");
-    assert (repeat ("abc", 4) == "abcabcabcabc");
-    assert (repeat ("", 4) == "");
+    test (repeat ("abc", 0) == "");
+    test (repeat ("abc", 1) == "abc");
+    test (repeat ("abc", 2) == "abcabc");
+    test (repeat ("abc", 4) == "abcabcabcabc");
+    test (repeat ("", 4) == "");
     char[10] rep;
-    assert (repeat ("abc", 0, rep) == "");
-    assert (repeat ("abc", 1, rep) == "abc");
-    assert (repeat ("abc", 2, rep) == "abcabc");
-    assert (repeat ("", 4, rep) == "");
+    test (repeat ("abc", 0, rep) == "");
+    test (repeat ("abc", 1, rep) == "abc");
+    test (repeat ("abc", 2, rep) == "abcabc");
+    test (repeat ("", 4, rep) == "");
 
-    assert (unescape ("abc") == "abc");
-    assert (unescape ("abc\\") == "abc\\");
-    assert (unescape ("abc\\t") == "abc\t");
-    assert (unescape ("abc\\tc") == "abc\tc");
-    assert (unescape ("\\t") == "\t");
-    assert (unescape ("\\tx") == "\tx");
-    assert (unescape ("\\v\\vx") == "\v\vx");
-    assert (unescape ("abc\\t\\a\\bc") == "abc\t\a\bc");
+    test (unescape ("abc") == "abc");
+    test (unescape ("abc\\") == "abc\\");
+    test (unescape ("abc\\t") == "abc\t");
+    test (unescape ("abc\\tc") == "abc\tc");
+    test (unescape ("\\t") == "\t");
+    test (unescape ("\\tx") == "\tx");
+    test (unescape ("\\v\\vx") == "\v\vx");
+    test (unescape ("abc\\t\\a\\bc") == "abc\t\a\bc");
 }
 
 debug (Util)

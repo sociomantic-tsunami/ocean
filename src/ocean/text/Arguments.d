@@ -620,7 +620,7 @@ import ocean.text.convert.Integer_tango;
 import ocean.util.container.SortedMap;
 import ocean.util.container.more.Stack;
 
-
+version(UnitTest) import ocean.core.Test;
 
 /*******************************************************************************
 
@@ -2505,173 +2505,173 @@ unittest
 
     // basic
     auto x = args['x'];
-    assert(args.parse(""));
+    test(args.parse(""));
     x.required;
-    assert(args.parse("") is false);
-    assert(args.clear.parse("-x"));
-    assert(x.set);
+    test(args.parse("") is false);
+    test(args.clear.parse("-x"));
+    test(x.set);
 
     // alias
     x.aliased('X');
-    assert(args.clear.parse("-X"));
-    assert(x.set);
+    test(args.clear.parse("-X"));
+    test(x.set);
 
     // unexpected arg (with sloppy)
-    assert(args.clear.parse("-y") is false);
-    assert(args.clear.parse("-y") is false);
-    assert(args.clear.parse("-y", true) is false);
-    assert(args['y'].set);
-    assert(args.clear.parse("-x -y", true));
+    test(args.clear.parse("-y") is false);
+    test(args.clear.parse("-y") is false);
+    test(args.clear.parse("-y", true) is false);
+    test(args['y'].set);
+    test(args.clear.parse("-x -y", true));
 
     // parameters
     x.params(0);
-    assert(args.clear.parse("-x param"));
-    assert(x.assigned.length is 0);
-    assert(args(null).assigned.length is 1);
+    test(args.clear.parse("-x param"));
+    test(x.assigned.length is 0);
+    test(args(null).assigned.length is 1);
     x.params(1);
-    assert(args.clear.parse("-x=param"));
-    assert(x.assigned.length is 1);
-    assert(x.assigned[0] == "param");
-    assert(args.clear.parse("-x param"));
-    assert(x.assigned.length is 1);
-    assert(x.assigned[0] == "param");
+    test(args.clear.parse("-x=param"));
+    test(x.assigned.length is 1);
+    test(x.assigned[0] == "param");
+    test(args.clear.parse("-x param"));
+    test(x.assigned.length is 1);
+    test(x.assigned[0] == "param");
 
     // too many args
     x.params(1);
-    assert(args.clear.parse("-x param1 param2"));
-    assert(x.assigned.length is 1);
-    assert(x.assigned[0] == "param1");
-    assert(args(null).assigned.length is 1);
-    assert(args(null).assigned[0] == "param2");
+    test(args.clear.parse("-x param1 param2"));
+    test(x.assigned.length is 1);
+    test(x.assigned[0] == "param1");
+    test(args(null).assigned.length is 1);
+    test(args(null).assigned[0] == "param2");
 
     // now with default params
-    assert(args.clear.parse("param1 param2 -x=blah"));
-    assert(args[null].assigned.length is 2);
-    assert(args(null).assigned.length is 2);
-    assert(x.assigned.length is 1);
+    test(args.clear.parse("param1 param2 -x=blah"));
+    test(args[null].assigned.length is 2);
+    test(args(null).assigned.length is 2);
+    test(x.assigned.length is 1);
     x.params(0);
-    assert(!args.clear.parse("-x=blah"));
+    test(!args.clear.parse("-x=blah"));
 
     // args as parameter
-    assert(args.clear.parse("- -x"));
-    assert(args[null].assigned.length is 1);
-    assert(args[null].assigned[0] == "-");
+    test(args.clear.parse("- -x"));
+    test(args[null].assigned.length is 1);
+    test(args[null].assigned[0] == "-");
 
     // multiple flags, with alias and sloppy
-    assert(args.clear.parse("-xy"));
-    assert(args.clear.parse("-xyX"));
-    assert(x.set);
-    assert(args['y'].set);
-    assert(args.clear.parse("-xyz") is false);
-    assert(args.clear.parse("-xyz", true));
+    test(args.clear.parse("-xy"));
+    test(args.clear.parse("-xyX"));
+    test(x.set);
+    test(args['y'].set);
+    test(args.clear.parse("-xyz") is false);
+    test(args.clear.parse("-xyz", true));
     auto z = args['z'];
-    assert(z.set);
+    test(z.set);
 
     // multiple flags with trailing arg
-    assert(args.clear.parse("-xyz=10"));
-    assert(z.assigned.length is 1);
+    test(args.clear.parse("-xyz=10"));
+    test(z.assigned.length is 1);
 
     // again, but without sloppy param declaration
     z.params(0);
-    assert(!args.clear.parse("-xyz=10"));
-    assert(args.clear.parse("-xzy=10"));
-    assert(args('y').assigned.length is 1);
-    assert(args('x').assigned.length is 0);
-    assert(args('z').assigned.length is 0);
+    test(!args.clear.parse("-xyz=10"));
+    test(args.clear.parse("-xzy=10"));
+    test(args('y').assigned.length is 1);
+    test(args('x').assigned.length is 0);
+    test(args('z').assigned.length is 0);
 
     // x requires y
     x.requires('y');
-    assert(args.clear.parse("-xy"));
-    assert(args.clear.parse("-xz") is false);
+    test(args.clear.parse("-xy"));
+    test(args.clear.parse("-xz") is false);
 
     // defaults
     z.defaults("foo");
-    assert(args.clear.parse("-xy"));
-    assert(z.assigned.length is 1);
+    test(args.clear.parse("-xy"));
+    test(z.assigned.length is 1);
 
     // long names, with params
-    assert(args.clear.parse("-xy --foobar") is false);
-    assert(args.clear.parse("-xy --foobar", true));
-    assert(args["y"].set && x.set);
-    assert(args["foobar"].set);
-    assert(args.clear.parse("-xy --foobar=10"));
-    assert(args["foobar"].assigned.length is 1);
-    assert(args["foobar"].assigned[0] == "10");
+    test(args.clear.parse("-xy --foobar") is false);
+    test(args.clear.parse("-xy --foobar", true));
+    test(args["y"].set && x.set);
+    test(args["foobar"].set);
+    test(args.clear.parse("-xy --foobar=10"));
+    test(args["foobar"].assigned.length is 1);
+    test(args["foobar"].assigned[0] == "10");
 
     // smush argument z, but not others
     z.params;
-    assert(args.clear.parse("-xy -zsmush") is false);
-    assert(x.set);
+    test(args.clear.parse("-xy -zsmush") is false);
+    test(x.set);
     z.smush;
-    assert(args.clear.parse("-xy -zsmush"));
-    assert(z.assigned.length is 1);
-    assert(z.assigned[0] == "smush");
-    assert(x.assigned.length is 0);
+    test(args.clear.parse("-xy -zsmush"));
+    test(z.assigned.length is 1);
+    test(z.assigned[0] == "smush");
+    test(x.assigned.length is 0);
     z.params(0);
 
     // conflict x with z
     x.conflicts(z);
-    assert(args.clear.parse("-xyz") is false);
+    test(args.clear.parse("-xyz") is false);
 
     // word mode, with prefix elimination
     args = new Arguments(null, null, null, null, null, null);
-    assert(args.clear.parse("foo bar wumpus") is false);
-    assert(args.clear.parse("foo bar wumpus wombat", true));
-    assert(args("foo").set);
-    assert(args("bar").set);
-    assert(args("wumpus").set);
-    assert(args("wombat").set);
+    test(args.clear.parse("foo bar wumpus") is false);
+    test(args.clear.parse("foo bar wumpus wombat", true));
+    test(args("foo").set);
+    test(args("bar").set);
+    test(args("wumpus").set);
+    test(args("wombat").set);
 
     // use '/' instead of '-'
     args = new Arguments(null, null, null, null, "/", "/");
-    assert(args.clear.parse("/foo /bar /wumpus") is false);
-    assert(args.clear.parse("/foo /bar /wumpus /wombat", true));
-    assert(args("foo").set);
-    assert(args("bar").set);
-    assert(args("wumpus").set);
-    assert(args("wombat").set);
+    test(args.clear.parse("/foo /bar /wumpus") is false);
+    test(args.clear.parse("/foo /bar /wumpus /wombat", true));
+    test(args("foo").set);
+    test(args("bar").set);
+    test(args("wumpus").set);
+    test(args("wombat").set);
 
     // use '/' for short and '-' for long
     args = new Arguments(null, null, null, null, "/", "-");
-    assert(args.clear.parse("-foo -bar -wumpus -wombat /abc", true));
-    assert(args("foo").set);
-    assert(args("bar").set);
-    assert(args("wumpus").set);
-    assert(args("wombat").set);
-    assert(args("a").set);
-    assert(args("b").set);
-    assert(args("c").set);
+    test(args.clear.parse("-foo -bar -wumpus -wombat /abc", true));
+    test(args("foo").set);
+    test(args("bar").set);
+    test(args("wumpus").set);
+    test(args("wombat").set);
+    test(args("a").set);
+    test(args("b").set);
+    test(args("c").set);
 
     // "--" makes all subsequent be implicit parameters
     args = new Arguments;
     args('f').params(0);
-    assert(args.parse("-f -- -bar -wumpus -wombat --abc"));
-    assert(args('f').assigned.length is 0);
-    assert(args(null).assigned.length is 4);
+    test(args.parse("-f -- -bar -wumpus -wombat --abc"));
+    test(args('f').assigned.length is 0);
+    test(args(null).assigned.length is 4);
 
     // Confirm arguments are stored in a sorted manner
     args = new Arguments;
-    assert(args.clear.parse("--beta --alpha --delta --echo --charlie", true));
+    test(args.clear.parse("--beta --alpha --delta --echo --charlie", true));
     size_t index;
     foreach (arg; args)
     {
         switch ( index++ )
         {
             case 0: continue;
-            case 1: assert("alpha"   == arg.name); continue;
-            case 2: assert("beta"    == arg.name); continue;
-            case 3: assert("charlie" == arg.name); continue;
-            case 4: assert("delta"   == arg.name); continue;
-            case 5: assert("echo"    == arg.name); continue;
-            default: assert(0);
+            case 1: test("alpha"   == arg.name); continue;
+            case 2: test("beta"    == arg.name); continue;
+            case 3: test("charlie" == arg.name); continue;
+            case 4: test("delta"   == arg.name); continue;
+            case 5: test("echo"    == arg.name); continue;
+            default: test(0);
         }
     }
 
     // Test that getInt() works as expected
     args = new Arguments;
     args("num").params(1);
-    assert(args.parse("--num 100"));
-    assert(args.getInt!(uint)("num") == 100);
+    test(args.parse("--num 100"));
+    test(args.getInt!(uint)("num") == 100);
 }
 
 // Test for D2 'static immutable'

@@ -31,6 +31,7 @@ import ocean.math.IEEE;
 import ocean.math.Math;
 import core.stdc.time;
 
+version(UnitTest) import ocean.core.Test;
 
 /*******************************************************************************
 
@@ -431,15 +432,15 @@ unittest
 
     auto avg0 = IrregularMovingAverage!()(0.5, 60, val0, t0);
 
-    assert(avg0.value is val0);
-    assert(avg0.update_time == t0);
+    test(avg0.value is val0);
+    test(avg0.update_time == t0);
 
     /* Without multiple statistics, cannot make
      * predictions about the future
      */
-    assert(avg0.predicted_value(t0) == val0);
-    assert(avg0.predicted_value(time(null)) == val0);
-    assert(avg0.predicted_value(123456789) == val0);
+    test(avg0.predicted_value(t0) == val0);
+    test(avg0.predicted_value(time(null)) == val0);
+    test(avg0.predicted_value(123456789) == val0);
 
 
     // --- test updates where discount coefficient is altered ---
@@ -455,9 +456,9 @@ unittest
     avg1a.update(val1, t1);
 
     // larger data second value ==> increase in the average
-    assert(avg1a.update_time == t1);
-    assert(avg1a.value > val0);
-    assert(avg1a.value < val1);
+    test(avg1a.update_time == t1);
+    test(avg1a.value > val0);
+    test(avg1a.value < val1);
 
     time_t t_future = 1234560;
 
@@ -473,8 +474,8 @@ unittest
     //assert(avg1a.predicted_value(avg1a.update_time) is val1);
 
     // should now have an increasing trend
-    assert(avg1a.predicted_value(t_future) > avg1a.value);
-    assert(avg1a.predicted_value(t_future) > avg1a.predicted_value(t1));
+    test(avg1a.predicted_value(t_future) > avg1a.value);
+    test(avg1a.predicted_value(t_future) > avg1a.predicted_value(t1));
 
     /* Now we create another copy of avg0 and update
      * with a _decreased_ discount coefficient, but
@@ -485,9 +486,9 @@ unittest
     avg1b.update(val1, t1);
 
     // larger second data value ==> increase in the average
-    assert(avg1b.update_time == t1);
-    assert(avg1b.value > val0);
-    assert(avg1b.value < val1);
+    test(avg1b.update_time == t1);
+    test(avg1b.value > val0);
+    test(avg1b.value < val1);
 
     /* Predicted value for update time should
      * be equal to the observed value, but note
@@ -501,13 +502,13 @@ unittest
     //assert(avg1b.predicted_value(avg1b.update_time) is val1);
 
     // should now have an increasing trend
-    assert(avg1b.predicted_value(t_future) > avg1b.value);
-    assert(avg1b.predicted_value(t_future) > avg1b.predicted_value(t1));
+    test(avg1b.predicted_value(t_future) > avg1b.value);
+    test(avg1b.predicted_value(t_future) > avg1b.predicted_value(t1));
 
     /* greater weight to newer records should
      * make for larger values
      */
-    assert(avg1b.value > avg1a.value);
+    test(avg1b.value > avg1a.value);
 
 
     // --- test updates where discount coefficient is not altered ---
@@ -522,18 +523,18 @@ unittest
     avg2a.update(val2, t2);
 
     // smaller second value ==> decrease in the average
-    assert(avg2a.update_time == t2);
-    assert(avg2a.value < val0);
-    assert(avg2a.value > val2);
+    test(avg2a.update_time == t2);
+    test(avg2a.value < val0);
+    test(avg2a.value > val2);
 
     // should now have an decreasing trend
-    assert(avg2a.predicted_value(t_future) < avg2a.value);
-    assert(avg2a.predicted_value(t_future) < avg2a.predicted_value(t2));
+    test(avg2a.predicted_value(t_future) < avg2a.value);
+    test(avg2a.predicted_value(t_future) < avg2a.predicted_value(t2));
 
     /* should get identical results if we repeat
      * the same moving-average update
      */
     auto avg2b = avg0;
     avg2b.update(val2, t2);
-    assert(avg2a == avg2b);
+    test(avg2a == avg2b);
 }

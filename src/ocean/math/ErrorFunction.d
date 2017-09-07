@@ -33,7 +33,13 @@
 module ocean.math.ErrorFunction;
 
 import ocean.math.Math;
-import ocean.math.IEEE;  // only required for unit tests
+
+version(UnitTest)
+{
+    import ocean.core.Test;
+    import ocean.math.IEEE;
+}
+
 
 const real SQRT2PI = 0x1.40d931ff62705966p+1L;    // 2.5066282746310005024
 const real EXP_2  = 0.13533528323661269189L; /* exp(-2) */
@@ -214,27 +220,27 @@ unittest {
     const real erf0_875  = (1-0.215911865234375) - 1.3073705765341685464282101150637224028267E-5;
 
 
-    assert(feqrel(erfc(0.250L), erfc0_250 )>=real.mant_dig-1);
-    assert(feqrel(erfc(0.375L), erfc0_375 )>=real.mant_dig-0);
-    assert(feqrel(erfc(0.500L), erfc0_500 )>=real.mant_dig-1);
-    assert(feqrel(erfc(0.625L), erfc0_625 )>=real.mant_dig-1);
-    assert(feqrel(erfc(0.750L), erfc0_750 )>=real.mant_dig-1);
-    assert(feqrel(erfc(0.875L), erfc0_875 )>=real.mant_dig-4);
-    version(FailsOnLinux) assert(feqrel(erfc(1.000L), erfc1_000 )>=real.mant_dig-0);
-    assert(feqrel(erfc(1.125L), erfc1_125 )>=real.mant_dig-2);
-    assert(feqrel(erf(0.875L), erf0_875 )>=real.mant_dig-1);
+    test(feqrel(erfc(0.250L), erfc0_250 )>=real.mant_dig-1);
+    test(feqrel(erfc(0.375L), erfc0_375 )>=real.mant_dig-0);
+    test(feqrel(erfc(0.500L), erfc0_500 )>=real.mant_dig-1);
+    test(feqrel(erfc(0.625L), erfc0_625 )>=real.mant_dig-1);
+    test(feqrel(erfc(0.750L), erfc0_750 )>=real.mant_dig-1);
+    test(feqrel(erfc(0.875L), erfc0_875 )>=real.mant_dig-4);
+    version(FailsOnLinux) test(feqrel(erfc(1.000L), erfc1_000 )>=real.mant_dig-0);
+    test(feqrel(erfc(1.125L), erfc1_125 )>=real.mant_dig-2);
+    test(feqrel(erf(0.875L), erf0_875 )>=real.mant_dig-1);
     // The DMC implementation of erfc() fails this next test (just)
-    assert(feqrel(erfc(4.1L),0.67000276540848983727e-8L)>=real.mant_dig-4);
+    test(feqrel(erfc(4.1L),0.67000276540848983727e-8L)>=real.mant_dig-4);
 
-    assert(isIdentical(erf(0.0),0.0));
-    assert(isIdentical(erf(-0.0),-0.0));
-    assert(erf(real.infinity) == 1.0);
-    assert(erf(-real.infinity) == -1.0);
-    assert(isIdentical(erf(NaN(0xDEF)),NaN(0xDEF)));
-    assert(isIdentical(erfc(NaN(0xDEF)),NaN(0xDEF)));
-    assert(isIdentical(erfc(real.infinity),0.0));
-    assert(erfc(-real.infinity) == 2.0);
-    assert(erfc(0) == 1.0);
+    test(isIdentical(erf(0.0),0.0));
+    test(isIdentical(erf(-0.0),-0.0));
+    test(erf(real.infinity) == 1.0);
+    test(erf(-real.infinity) == -1.0);
+    test(isIdentical(erf(NaN(0xDEF)),NaN(0xDEF)));
+    test(isIdentical(erfc(NaN(0xDEF)),NaN(0xDEF)));
+    test(isIdentical(erfc(real.infinity),0.0));
+    test(erfc(-real.infinity) == 2.0);
+    test(erfc(0) == 1.0);
 }
 
 /*
@@ -333,8 +339,8 @@ real normalDistributionImpl(real a)
 }
 
 unittest {
-    assert(fabs(normalDistributionImpl(1L) - (0.841344746068543))< 0.0000000000000005);
-    assert(isIdentical(normalDistributionImpl(NaN(0x325)), NaN(0x325)));
+    test(fabs(normalDistributionImpl(1L) - (0.841344746068543))< 0.0000000000000005);
+    test(isIdentical(normalDistributionImpl(NaN(0x325)), NaN(0x325)));
 }
 
 package {
@@ -447,16 +453,16 @@ const real[] Q3 = [ -0x1.74022dd5523e6f84p-34, -0x1.2cb60d61e29ee836p-24,
 unittest {
     // TODO: Use verified test points.
     // The values below are from Excel 2003.
-    assert(fabs(normalDistributionInvImpl(0.001) - (-3.09023230616779))< 0.00000000000005);
-    assert(fabs(normalDistributionInvImpl(1e-50) - (-14.9333375347885))< 0.00000000000005);
-    assert(feqrel(normalDistributionInvImpl(0.999), -normalDistributionInvImpl(0.001))>real.mant_dig-6);
+    test(fabs(normalDistributionInvImpl(0.001) - (-3.09023230616779))< 0.00000000000005);
+    test(fabs(normalDistributionInvImpl(1e-50) - (-14.9333375347885))< 0.00000000000005);
+    test(feqrel(normalDistributionInvImpl(0.999), -normalDistributionInvImpl(0.001))>real.mant_dig-6);
 
     // Excel 2003 gets all the following values wrong!
-    assert(normalDistributionInvImpl(0.0)==-real.infinity);
-    assert(normalDistributionInvImpl(1.0)==real.infinity);
-    assert(normalDistributionInvImpl(0.5)==0);
+    test(normalDistributionInvImpl(0.0)==-real.infinity);
+    test(normalDistributionInvImpl(1.0)==real.infinity);
+    test(normalDistributionInvImpl(0.5)==0);
     // (Excel 2003 returns norminv(p) = -30 for all p < 1e-200).
     // The value tested here is the one the function returned in Jan 2006.
     real unknown1 = normalDistributionInvImpl(1e-250L);
-    assert( fabs(unknown1 -(-33.79958617269L) ) < 0.00000005);
+    test( fabs(unknown1 -(-33.79958617269L) ) < 0.00000005);
 }

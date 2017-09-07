@@ -30,6 +30,8 @@ import ocean.math.Math;
 import ocean.math.IEEE;
 import ocean.math.ErrorFunction;
 
+version(UnitTest) import ocean.core.Test;
+
 //------------------------------------------------------------------
 
 /// The maximum value of x for which gamma(x) < real.infinity.
@@ -150,12 +152,12 @@ real sgnGamma(real x)
 }
 
 unittest {
-    assert(sgnGamma(5.0) == 1.0);
-    assert(isNaN(sgnGamma(-3.0)));
-    assert(sgnGamma(-0.1) == -1.0);
-    assert(sgnGamma(-55.1) == 1.0);
-    assert(isNaN(sgnGamma(-real.infinity)));
-    assert(isIdentical(sgnGamma(NaN(0xABC)), NaN(0xABC)));
+    test(sgnGamma(5.0) == 1.0);
+    test(isNaN(sgnGamma(-3.0)));
+    test(sgnGamma(-0.1) == -1.0);
+    test(sgnGamma(-55.1) == 1.0);
+    test(isNaN(sgnGamma(-real.infinity)));
+    test(isIdentical(sgnGamma(NaN(0xABC)), NaN(0xABC)));
 }
 
 /*****************************************************
@@ -268,31 +270,31 @@ unittest {
     real fact = 1.0L;
     for (int i=1; fact<real.max; ++i) {
         // Require exact equality for small factorials
-        if (i<14) assert(gamma(i*1.0L) == fact);
-        version(FailsOnLinux) assert(feqrel(gamma(i*1.0L), fact) > real.mant_dig-15);
+        if (i<14) test(gamma(i*1.0L) == fact);
+        version(FailsOnLinux) test(feqrel(gamma(i*1.0L), fact) > real.mant_dig-15);
         fact *= (i*1.0L);
     }
-    assert(gamma(0.0) == real.infinity);
-    assert(gamma(-0.0) == -real.infinity);
-    assert(isNaN(gamma(-1.0)));
-    assert(isNaN(gamma(-15.0)));
-    assert(isIdentical(gamma(NaN(0xABC)), NaN(0xABC)));
-    assert(gamma(real.infinity) == real.infinity);
-    assert(gamma(real.max) == real.infinity);
-    assert(isNaN(gamma(-real.infinity)));
-    assert(gamma(min_normal!(real)*real.epsilon) == real.infinity);
-    assert(gamma(MAXGAMMA)< real.infinity);
-    assert(gamma(MAXGAMMA*2) == real.infinity);
+    test(gamma(0.0) == real.infinity);
+    test(gamma(-0.0) == -real.infinity);
+    test(isNaN(gamma(-1.0)));
+    test(isNaN(gamma(-15.0)));
+    test(isIdentical(gamma(NaN(0xABC)), NaN(0xABC)));
+    test(gamma(real.infinity) == real.infinity);
+    test(gamma(real.max) == real.infinity);
+    test(isNaN(gamma(-real.infinity)));
+    test(gamma(min_normal!(real)*real.epsilon) == real.infinity);
+    test(gamma(MAXGAMMA)< real.infinity);
+    test(gamma(MAXGAMMA*2) == real.infinity);
 
     // Test some high-precision values (50 decimal digits)
     const real SQRT_PI = 1.77245385090551602729816748334114518279754945612238L;
 
-    version(FailsOnLinux) assert(feqrel(gamma(0.5L), SQRT_PI) == real.mant_dig);
+    version(FailsOnLinux) test(feqrel(gamma(0.5L), SQRT_PI) == real.mant_dig);
 
-    assert(feqrel(gamma(1.0/3.0L),  2.67893853470774763365569294097467764412868937795730L) >= real.mant_dig-2);
-    assert(feqrel(gamma(0.25L),
+    test(feqrel(gamma(1.0/3.0L),  2.67893853470774763365569294097467764412868937795730L) >= real.mant_dig-2);
+    test(feqrel(gamma(0.25L),
         3.62560990822190831193068515586767200299516768288006L) >= real.mant_dig-1);
-    assert(feqrel(gamma(1.0/5.0L),
+    test(feqrel(gamma(1.0/5.0L),
         4.59084371199880305320475827592915200343410999829340L) >= real.mant_dig-1);
 }
 
@@ -394,15 +396,15 @@ real logGamma(real x)
 }
 
 unittest {
-    assert(isIdentical(logGamma(NaN(0xDEF)), NaN(0xDEF)));
-    assert(logGamma(real.infinity) == real.infinity);
-    assert(logGamma(-1.0) == real.infinity);
-    assert(logGamma(0.0) == real.infinity);
-    assert(logGamma(-50.0) == real.infinity);
-    assert(isIdentical(0.0L, logGamma(1.0L)));
-    assert(isIdentical(0.0L, logGamma(2.0L)));
-    assert(logGamma(min_normal!(real)*real.epsilon) == real.infinity);
-    assert(logGamma(-min_normal!(real)*real.epsilon) == real.infinity);
+    test(isIdentical(logGamma(NaN(0xDEF)), NaN(0xDEF)));
+    test(logGamma(real.infinity) == real.infinity);
+    test(logGamma(-1.0) == real.infinity);
+    test(logGamma(0.0) == real.infinity);
+    test(logGamma(-50.0) == real.infinity);
+    test(isIdentical(0.0L, logGamma(1.0L)));
+    test(isIdentical(0.0L, logGamma(2.0L)));
+    test(logGamma(min_normal!(real)*real.epsilon) == real.infinity);
+    test(logGamma(-min_normal!(real)*real.epsilon) == real.infinity);
 
     // x, correct loggamma(x), correct d/dx loggamma(x).
     static real[] testpoints = [
@@ -425,15 +427,15 @@ unittest {
     ];
    // TODO: test derivatives as well.
     for (int i=0; i<testpoints.length; i+=3) {
-        assert( feqrel(logGamma(testpoints[i]), testpoints[i+1]) > real.mant_dig-5);
+        test( feqrel(logGamma(testpoints[i]), testpoints[i+1]) > real.mant_dig-5);
         if (testpoints[i]<MAXGAMMA) {
-            assert( feqrel(log(fabs(gamma(testpoints[i]))), testpoints[i+1]) > real.mant_dig-5);
+            test( feqrel(log(fabs(gamma(testpoints[i]))), testpoints[i+1]) > real.mant_dig-5);
         }
     }
-    assert(logGamma(-50.2) == log(fabs(gamma(-50.2))));
-    assert(logGamma(-0.008) == log(fabs(gamma(-0.008))));
-    assert(feqrel(logGamma(-38.8),log(fabs(gamma(-38.8)))) > real.mant_dig-4);
-    assert(feqrel(logGamma(1500.0L),log(gamma(1500.0L))) > real.mant_dig-2);
+    test(logGamma(-50.2) == log(fabs(gamma(-50.2))));
+    test(logGamma(-0.008) == log(fabs(gamma(-0.008))));
+    test(feqrel(logGamma(-38.8),log(fabs(gamma(-38.8)))) > real.mant_dig-4);
+    test(feqrel(logGamma(1500.0L),log(gamma(1500.0L))) > real.mant_dig-2);
 }
 
 private {
@@ -457,8 +459,8 @@ real beta(real x, real y)
 }
 
 unittest {
-    assert(isIdentical(beta(NaN(0xABC), 4), NaN(0xABC)));
-    assert(isIdentical(beta(2, NaN(0xABC)), NaN(0xABC)));
+    test(isIdentical(beta(NaN(0xABC), 4), NaN(0xABC)));
+    test(isIdentical(beta(2, NaN(0xABC)), NaN(0xABC)));
 }
 
 /** Incomplete beta integral
@@ -809,31 +811,31 @@ done:
 
 unittest { // also tested by the normal distribution
   // check NaN propagation
-  assert(isIdentical(betaIncomplete(NaN(0xABC),2,3), NaN(0xABC)));
-  assert(isIdentical(betaIncomplete(7,NaN(0xABC),3), NaN(0xABC)));
-  assert(isIdentical(betaIncomplete(7,15,NaN(0xABC)), NaN(0xABC)));
-  assert(isIdentical(betaIncompleteInv(NaN(0xABC),1,17), NaN(0xABC)));
-  assert(isIdentical(betaIncompleteInv(2,NaN(0xABC),8), NaN(0xABC)));
-  assert(isIdentical(betaIncompleteInv(2,3, NaN(0xABC)), NaN(0xABC)));
+  test(isIdentical(betaIncomplete(NaN(0xABC),2,3), NaN(0xABC)));
+  test(isIdentical(betaIncomplete(7,NaN(0xABC),3), NaN(0xABC)));
+  test(isIdentical(betaIncomplete(7,15,NaN(0xABC)), NaN(0xABC)));
+  test(isIdentical(betaIncompleteInv(NaN(0xABC),1,17), NaN(0xABC)));
+  test(isIdentical(betaIncompleteInv(2,NaN(0xABC),8), NaN(0xABC)));
+  test(isIdentical(betaIncompleteInv(2,3, NaN(0xABC)), NaN(0xABC)));
 
-  assert(isNaN(betaIncomplete(-1, 2, 3)));
+  test(isNaN(betaIncomplete(-1, 2, 3)));
 
-  assert(betaIncomplete(1, 2, 0)==0);
-  assert(betaIncomplete(1, 2, 1)==1);
-  assert(isNaN(betaIncomplete(1, 2, 3)));
-  assert(betaIncompleteInv(1, 1, 0)==0);
-  assert(betaIncompleteInv(1, 1, 1)==1);
+  test(betaIncomplete(1, 2, 0)==0);
+  test(betaIncomplete(1, 2, 1)==1);
+  test(isNaN(betaIncomplete(1, 2, 3)));
+  test(betaIncompleteInv(1, 1, 0)==0);
+  test(betaIncompleteInv(1, 1, 1)==1);
 
   // Test some values against Microsoft Excel 2003.
 
-  assert(fabs(betaIncomplete(8, 10, 0.2) - 0.010_934_315_236_957_2L) < 0.000_000_000_5);
-  assert(fabs(betaIncomplete(2, 2.5, 0.9) - 0.989_722_597_604_107L) < 0.000_000_000_000_5);
-  assert(fabs(betaIncomplete(1000, 800, 0.5) - 1.17914088832798E-06L) < 0.000_000_05e-6);
+  test(fabs(betaIncomplete(8, 10, 0.2) - 0.010_934_315_236_957_2L) < 0.000_000_000_5);
+  test(fabs(betaIncomplete(2, 2.5, 0.9) - 0.989_722_597_604_107L) < 0.000_000_000_000_5);
+  test(fabs(betaIncomplete(1000, 800, 0.5) - 1.17914088832798E-06L) < 0.000_000_05e-6);
 
-  assert(fabs(betaIncomplete(0.0001, 10000, 0.0001) - 0.999978059369989L) < 0.000_000_000_05);
+  test(fabs(betaIncomplete(0.0001, 10000, 0.0001) - 0.999978059369989L) < 0.000_000_000_05);
 
-  assert(fabs(betaIncompleteInv(5, 10, 0.2) - 0.229121208190918L) < 0.000_000_5L);
-  assert(fabs(betaIncompleteInv(4, 7, 0.8) - 0.483657360076904L) < 0.000_000_5L);
+  test(fabs(betaIncompleteInv(5, 10, 0.2) - 0.229121208190918L) < 0.000_000_5L);
+  test(fabs(betaIncompleteInv(4, 7, 0.8) - 0.483657360076904L) < 0.000_000_5L);
 
     // Coverage tests. I don't have correct values for these tests, but
     // these values cover most of the code, so they are useful for
@@ -848,26 +850,26 @@ unittest { // also tested by the normal distribution
 //    real testpoint1 = betaIncomplete(1e-10, 5e20, 8e-21);
 //    assert(testpoint1 == 0x1.ffff_ffff_c906_404cp-1L);
 
-    assert(betaIncomplete(0.01, 327726.7, 0.545113) == 1.0);
-    assert(betaIncompleteInv(0.01, 8e-48, 5.45464e-20)==1-real.epsilon);
-    assert(betaIncompleteInv(0.01, 8e-48, 9e-26)==1-real.epsilon);
+    test(betaIncomplete(0.01, 327726.7, 0.545113) == 1.0);
+    test(betaIncompleteInv(0.01, 8e-48, 5.45464e-20)==1-real.epsilon);
+    test(betaIncompleteInv(0.01, 8e-48, 9e-26)==1-real.epsilon);
 
-    assert(betaIncomplete(0.01, 498.437, 0.0121433) == 0x1.ffff_8f72_19197402p-1);
-    assert(1- betaIncomplete(0.01, 328222, 4.0375e-5) == 0x1.5f62926b4p-30);
-    version(FailsOnLinux)  assert(betaIncompleteInv(0x1.b3d151fbba0eb18p+1, 1.2265e-19, 2.44859e-18)==0x1.c0110c8531d0952cp-1);
-    version(FailsOnLinux)  assert(betaIncompleteInv(0x1.ff1275ae5b939bcap-41, 4.6713e18, 0.0813601)==0x1.f97749d90c7adba8p-63);
+    test(betaIncomplete(0.01, 498.437, 0.0121433) == 0x1.ffff_8f72_19197402p-1);
+    test(1- betaIncomplete(0.01, 328222, 4.0375e-5) == 0x1.5f62926b4p-30);
+    version(FailsOnLinux)  test(betaIncompleteInv(0x1.b3d151fbba0eb18p+1, 1.2265e-19, 2.44859e-18)==0x1.c0110c8531d0952cp-1);
+    version(FailsOnLinux)  test(betaIncompleteInv(0x1.ff1275ae5b939bcap-41, 4.6713e18, 0.0813601)==0x1.f97749d90c7adba8p-63);
     real a1;
     a1 = 3.40483;
-    version(FailsOnLinux)  assert(betaIncompleteInv(a1, 4.0640301659679627772e19L, 0.545113)== 0x1.ba8c08108aaf5d14p-109);
+    version(FailsOnLinux)  test(betaIncompleteInv(a1, 4.0640301659679627772e19L, 0.545113)== 0x1.ba8c08108aaf5d14p-109);
     real b1;
     b1= 2.82847e-25;
-    version(FailsOnLinux)  assert(betaIncompleteInv(0.01, b1, 9e-26) == 0x1.549696104490aa9p-830);
+    version(FailsOnLinux)  test(betaIncompleteInv(0.01, b1, 9e-26) == 0x1.549696104490aa9p-830);
 
     // --- Problematic cases ---
     // This is a situation where the series expansion fails to converge
-    assert( isNaN(betaIncompleteInv(0.12167, 4.0640301659679627772e19L, 0.0813601)));
+    test( isNaN(betaIncompleteInv(0.12167, 4.0640301659679627772e19L, 0.0813601)));
     // This next result is almost certainly erroneous.
-    assert(betaIncomplete(1.16251e20, 2.18e39, 5.45e-20)==-real.infinity);
+    test(betaIncomplete(1.16251e20, 2.18e39, 5.45e-20)==-real.infinity);
 }
 
 private {
@@ -1330,21 +1332,21 @@ ihalve:
 
 unittest {
     //Values from Excel's GammaInv(1-p, x, 1)
-    assert(fabs(gammaIncompleteComplInv(1, 0.5) - 0.693147188044814) < 0.00000005);
-    assert(fabs(gammaIncompleteComplInv(12, 0.99) - 5.42818075054289) < 0.00000005);
-    assert(fabs(gammaIncompleteComplInv(100, 0.8) - 91.5013985848288L) < 0.000005);
+    test(fabs(gammaIncompleteComplInv(1, 0.5) - 0.693147188044814) < 0.00000005);
+    test(fabs(gammaIncompleteComplInv(12, 0.99) - 5.42818075054289) < 0.00000005);
+    test(fabs(gammaIncompleteComplInv(100, 0.8) - 91.5013985848288L) < 0.000005);
 
-    assert(gammaIncomplete(1, 0)==0);
-    assert(gammaIncompleteCompl(1, 0)==1);
-    assert(gammaIncomplete(4545, real.infinity)==1);
+    test(gammaIncomplete(1, 0)==0);
+    test(gammaIncompleteCompl(1, 0)==1);
+    test(gammaIncomplete(4545, real.infinity)==1);
 
     // Values from Excel's (1-GammaDist(x, alpha, 1, TRUE))
 
-    assert(fabs(1.0L-gammaIncompleteCompl(0.5, 2) - 0.954499729507309L) < 0.00000005);
-    assert(fabs(gammaIncomplete(0.5, 2) - 0.954499729507309L) < 0.00000005);
+    test(fabs(1.0L-gammaIncompleteCompl(0.5, 2) - 0.954499729507309L) < 0.00000005);
+    test(fabs(gammaIncomplete(0.5, 2) - 0.954499729507309L) < 0.00000005);
     // Fixed Cephes bug:
-    assert(gammaIncompleteCompl(384, real.infinity)==0);
-    assert(gammaIncompleteComplInv(3, 0)==real.infinity);
+    test(gammaIncompleteCompl(384, real.infinity)==0);
+    test(gammaIncompleteComplInv(3, 0)==real.infinity);
 }
 
 /** Digamma function
@@ -1429,19 +1431,19 @@ done:
 
 unittest {
     // Exact values
-    assert(digamma(1)== -EULERGAMMA);
-    assert(feqrel(digamma(0.25), -PI/2 - 3* LN2 - EULERGAMMA)>=real.mant_dig-7);
-    assert(feqrel(digamma(1.0L/6), -PI/2 *sqrt(3.0L) - 2* LN2 -1.5*log(3.0L) - EULERGAMMA)>=real.mant_dig-7);
-    assert(isNaN(digamma(-5)));
-    assert(feqrel(digamma(2.5), -EULERGAMMA - 2*LN2 + 2.0 + 2.0L/3)>=real.mant_dig-9);
-    assert(isIdentical(digamma(NaN(0xABC)), NaN(0xABC)));
+    test(digamma(1)== -EULERGAMMA);
+    test(feqrel(digamma(0.25), -PI/2 - 3* LN2 - EULERGAMMA)>=real.mant_dig-7);
+    test(feqrel(digamma(1.0L/6), -PI/2 *sqrt(3.0L) - 2* LN2 -1.5*log(3.0L) - EULERGAMMA)>=real.mant_dig-7);
+    test(isNaN(digamma(-5)));
+    test(feqrel(digamma(2.5), -EULERGAMMA - 2*LN2 + 2.0 + 2.0L/3)>=real.mant_dig-9);
+    test(isIdentical(digamma(NaN(0xABC)), NaN(0xABC)));
 
     for (int k=1; k<40; ++k) {
         real y=0;
         for (int u=k; u>=1; --u) {
             y+= 1.0L/u;
         }
-        assert(feqrel(digamma(k+1),-EULERGAMMA + y) >=real.mant_dig-2);
+        test(feqrel(digamma(k+1),-EULERGAMMA + y) >=real.mant_dig-2);
     }
 
 //    printf("%d %La %La %d %d\n", k+1, digamma(k+1), -EULERGAMMA + x, feqrel(digamma(k+1),-EULERGAMMA + y), feqrel(digamma(k+1), -EULERGAMMA + x));

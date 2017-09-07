@@ -64,21 +64,21 @@ public alias ocean.core.array.Transformation.remove remove;
 unittest
 {
     Buffer!(char) str;
-    assert (copy(str, "Die Katze tritt die Treppe krumm.") == "Die Katze tritt die Treppe krumm.");
+    test (copy(str, "Die Katze tritt die Treppe krumm.") == "Die Katze tritt die Treppe krumm.");
 
     str.length = 0;
-    assert (concat(str, "Die "[], "Katze "[], "tritt "[], "die "[], "Treppe "[], "krumm."[]) == "Die Katze tritt die Treppe krumm.");
+    test (concat(str, "Die "[], "Katze "[], "tritt "[], "die "[], "Treppe "[], "krumm."[]) == "Die Katze tritt die Treppe krumm.");
 
     mstring nothing = null;
 
     str.length = 0;
-    assert (concat(str, "Die "[], ""[], "Katze "[], "tritt "[], nothing, "die "[], "Treppe "[], "krumm."[]) == "Die Katze tritt die Treppe krumm.");
+    test (concat(str, "Die "[], ""[], "Katze "[], "tritt "[], nothing, "die "[], "Treppe "[], "krumm."[]) == "Die Katze tritt die Treppe krumm.");
 
     str.length = 0;
     append(str, "Die Katze "[]);
-    assert (str[] == "Die Katze ");
+    test (str[] == "Die Katze ");
     append(str, "tritt "[], "die "[]);
-    assert (append(str, "Treppe "[], "krumm."[]) == "Die Katze tritt die Treppe krumm.");
+    test (append(str, "Treppe "[], "krumm."[]) == "Die Katze tritt die Treppe krumm.");
 
     alias bsearch!(long) bs;
 
@@ -86,7 +86,7 @@ unittest
 
     size_t n;
 
-    assert (bs(arr, 5, n));
+    test (bs(arr, 5, n));
 }
 
 version ( UnitTest )

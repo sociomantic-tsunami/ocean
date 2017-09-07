@@ -21,6 +21,8 @@ import ocean.transition;
 
 import ocean.io.stream.Iterator;
 
+version(UnitTest) import ocean.core.Test;
+
 /*******************************************************************************
 
         Iterate over a set of delimited, optionally-quoted, text fields.
@@ -146,7 +148,7 @@ unittest
     auto b = new Array (expected.join (",").dup);
     foreach (i, f; new Quotes!(char)(",", b))
     {
-        assert (i < expected.length, "uhoh: unexpected match");
-        assert (f == expected[i], "uhoh: bad match)");
+        test (i < expected.length, "uhoh: unexpected match");
+        test (f == expected[i], "uhoh: bad match)");
     }
 }

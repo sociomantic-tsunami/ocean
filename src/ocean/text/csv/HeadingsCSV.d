@@ -71,7 +71,7 @@ import ocean.core.Array : contains, find;
 
 import ocean.io.model.IConduit;
 
-
+version(UnitTest) import ocean.core.Test;
 
 /*******************************************************************************
 
@@ -329,8 +329,8 @@ unittest
 
             foreach ( i, f; parsed_fields )
             {
-                assert(f.name == expected_fields[i].name);
-                assert(f.value == expected_fields[i].value);
+                .test(f.name == expected_fields[i].name);
+                .test(f.value == expected_fields[i].value);
             }
 
             return true;

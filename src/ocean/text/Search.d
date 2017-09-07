@@ -21,6 +21,8 @@ import ocean.transition;
 
 import Util = ocean.text.Util;
 
+version(UnitTest) import ocean.core.Test;
+
 /******************************************************************************
 
   Returns a lightweight pattern matcher, good for short patterns
@@ -643,7 +645,7 @@ unittest
 
     // match
     mstring content1 = "bbaaa".dup;
-    assert (
+    test (
         searcher.find(
             searcher.what.ptr, searcher.what.length,
             content1.ptr, content1.length, 0
@@ -652,7 +654,7 @@ unittest
 
     // no match
     mstring content2 = "bbbbb".dup;
-    assert (
+    test (
         searcher.find(
             searcher.what.ptr, searcher.what.length,
             content2.ptr, content2.length, 0
@@ -660,7 +662,7 @@ unittest
         );
 
     // empty text
-    assert (searcher.find(searcher.what.ptr, searcher.what.length,
+    test (searcher.find(searcher.what.ptr, searcher.what.length,
                           null, 0, 0) == 0);
 }
 
@@ -670,7 +672,7 @@ unittest
 
     // match
     mstring content1 = "baaab".dup;
-    assert (
+    test (
         searcher.rfind(
             searcher.what.ptr, searcher.what.length,
             content1.ptr, content1.length, content1.length
@@ -679,7 +681,7 @@ unittest
 
     // no match
     mstring content2 = "bbbbb".dup;
-    assert (
+    test (
         searcher.rfind(
             searcher.what.ptr, searcher.what.length,
             content2.ptr, content2.length, content2.length
@@ -687,6 +689,6 @@ unittest
         );
 
     // empty text
-    assert (searcher.rfind(searcher.what.ptr, searcher.what.length,
+    test (searcher.rfind(searcher.what.ptr, searcher.what.length,
                            null, 0, 0) == 0);
 }

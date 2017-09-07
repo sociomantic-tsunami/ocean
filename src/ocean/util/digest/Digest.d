@@ -23,6 +23,8 @@ import ocean.transition;
 
 import core.stdc.stdlib : alloca;
 
+version(UnitTest) import ocean.core.Test;
+
 /*******************************************************************************
 
         The DigestTransform interface defines the interface of message

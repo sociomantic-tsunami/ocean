@@ -33,6 +33,8 @@ import ocean.util.digest.MerkleDamgard;
 
 public  import ocean.util.digest.Digest;
 
+version(UnitTest) import ocean.core.Test;
+
 /*******************************************************************************
 
 *******************************************************************************/
@@ -390,7 +392,7 @@ unittest
         h.update(cast(ubyte[]) s);
         char[] d = h.hexDigest;
 
-        assert(d == results[i],":("~s~")("~d~")!=("~results[i]~")");
+        test(d == results[i],":("~s~")("~d~")!=("~results[i]~")");
     }
 
     char[] s = new char[1000000];
@@ -399,5 +401,5 @@ unittest
     h.update(cast(ubyte[]) s);
     auto d = h.hexDigest;
 
-    assert(d == result,":(1 million times \"a\")("~d~")!=("~result~")");
+    test(d == result,":(1 million times \"a\")("~d~")!=("~result~")");
 }

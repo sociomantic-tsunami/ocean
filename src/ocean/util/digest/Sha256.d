@@ -28,6 +28,8 @@ public  import ocean.util.digest.Digest;
 
 import ocean.util.digest.MerkleDamgard;
 
+version(UnitTest) import ocean.core.Test;
+
 /*******************************************************************************
 
 *******************************************************************************/
@@ -347,6 +349,6 @@ unittest
     {
         h.update(s);
         char[] d = h.hexDigest();
-        assert(d == results[i],"Cipher:("~s~")("~d~")!=("~results[i]~")");
+        test(d == results[i],"Cipher:("~s~")("~d~")!=("~results[i]~")");
     }
 }

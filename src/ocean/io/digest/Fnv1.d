@@ -27,6 +27,8 @@ import ocean.util.digest.Digest;
 
 import ocean.core.ByteSwap;
 
+version(UnitTest) import ocean.core.Test;
+
 
 /******************************************************************************
 
@@ -809,8 +811,8 @@ unittest
 
          **********************************************************************/
 
-        assert (Fnv1a32.fnv1(tdat.str) == tdat.fnv1a_32, errmsg("Fnv1a32.fnv1", tdat.str, tdat.is_text));
-        assert (Fnv1a64.fnv1(tdat.str) == tdat.fnv1a_64, errmsg("Fnv1a64.fnv1", tdat.str, tdat.is_text));
+        test (Fnv1a32.fnv1(tdat.str) == tdat.fnv1a_32, errmsg("Fnv1a32.fnv1", tdat.str, tdat.is_text));
+        test (Fnv1a64.fnv1(tdat.str) == tdat.fnv1a_64, errmsg("Fnv1a64.fnv1", tdat.str, tdat.is_text));
 
         /**********************************************************************
 
@@ -818,13 +820,13 @@ unittest
 
          **********************************************************************/
 
-        assert (fnv1a32.update(tdat.str).hexDigest == tdat.fnv1a_32_hex, errmsg("Fnv1a32.hexDigest", tdat.str, tdat.is_text));
-        assert (fnv1a64.update(tdat.str).hexDigest == tdat.fnv1a_64_hex, errmsg("Fnv1a64.hexDigest", tdat.str, tdat.is_text));
+        test (fnv1a32.update(tdat.str).hexDigest == tdat.fnv1a_32_hex, errmsg("Fnv1a32.hexDigest", tdat.str, tdat.is_text));
+        test (fnv1a64.update(tdat.str).hexDigest == tdat.fnv1a_64_hex, errmsg("Fnv1a64.hexDigest", tdat.str, tdat.is_text));
     }
 
 
-    assert ( StaticFnv1a32!("myString") == Fnv1a32("myString"[]), "CompileTime Fnv1a32 failed");
-    assert ( StaticFnv1a32!("TEST") == Fnv1a32("TEST"[]), "CompileTime Fnv1a32 failed");
+    test ( StaticFnv1a32!("myString") == Fnv1a32("myString"[]), "CompileTime Fnv1a32 failed");
+    test ( StaticFnv1a32!("TEST") == Fnv1a32("TEST"[]), "CompileTime Fnv1a32 failed");
 
 
     istring d1 = "ABC";
@@ -835,6 +837,6 @@ unittest
 
     auto mhash = Fnv1a(d3, Fnv1a(d2, Fnv1a(d1)));
 
-    assert (chash == mhash, "Combined hash failed");
+    test (chash == mhash, "Combined hash failed");
 }
 

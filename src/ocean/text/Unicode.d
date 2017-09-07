@@ -37,6 +37,7 @@ import ocean.transition;
 import ocean.text.UnicodeData;
 import ocean.text.convert.Utf;
 
+version(UnitTest) import ocean.core.Test;
 
 
 /**
@@ -629,25 +630,25 @@ unittest {
     Immut!(wchar)[] refString1utf16 = "\u00C4\u00D6\u00DC";
     Immut!(dchar)[] refString1utf32 = "\u00C4\u00D6\u00DC";
     char[] resultString1utf8 = toUpper(testString1utf8);
-    assert(resultString1utf8 == refString1utf8);
+    test(resultString1utf8 == refString1utf8);
     wchar[] resultString1utf16 = toUpper(testString1utf16);
-    assert(resultString1utf16 == refString1utf16);
+    test(resultString1utf16 == refString1utf16);
     dchar[] resultString1utf32 = toUpper(testString1utf32);
-    assert(resultString1utf32 == refString1utf32);
+    test(resultString1utf32 == refString1utf32);
 
     // 2) Buffer passed, no resize, no SpecialCase
     char[60] buffer1utf8;
     wchar[30] buffer1utf16;
     dchar[30] buffer1utf32;
     resultString1utf8 = toUpper(testString1utf8,buffer1utf8);
-    assert(resultString1utf8.ptr == buffer1utf8.ptr);
-    assert(resultString1utf8 == refString1utf8);
+    test(resultString1utf8.ptr == buffer1utf8.ptr);
+    test(resultString1utf8 == refString1utf8);
     resultString1utf16 = toUpper(testString1utf16,buffer1utf16);
-    assert(resultString1utf16.ptr == buffer1utf16.ptr);
-    assert(resultString1utf16 == refString1utf16);
+    test(resultString1utf16.ptr == buffer1utf16.ptr);
+    test(resultString1utf16 == refString1utf16);
     resultString1utf32 = toUpper(testString1utf32,buffer1utf32);
-    assert(resultString1utf32.ptr == buffer1utf32.ptr);
-    assert(resultString1utf32 == refString1utf32);
+    test(resultString1utf32.ptr == buffer1utf32.ptr);
+    test(resultString1utf32 == refString1utf32);
 
     // 3/ Buffer passed, resize necessary, no Special case
 
@@ -655,14 +656,14 @@ unittest {
     wchar[2] buffer2utf16;
     dchar[2] buffer2utf32;
     resultString1utf8 = toUpper(testString1utf8,buffer2utf8);
-    assert(resultString1utf8.ptr != buffer2utf8.ptr);
-    assert(resultString1utf8 == refString1utf8);
+    test(resultString1utf8.ptr != buffer2utf8.ptr);
+    test(resultString1utf8 == refString1utf8);
     resultString1utf16 = toUpper(testString1utf16,buffer2utf16);
-    assert(resultString1utf16.ptr != buffer2utf16.ptr);
-    assert(resultString1utf16 == refString1utf16);
+    test(resultString1utf16.ptr != buffer2utf16.ptr);
+    test(resultString1utf16 == refString1utf16);
     resultString1utf32 = toUpper(testString1utf32,buffer2utf32);
-    assert(resultString1utf32.ptr != buffer2utf32.ptr);
-    assert(resultString1utf32 == refString1utf32);
+    test(resultString1utf32.ptr != buffer2utf32.ptr);
+    test(resultString1utf32 == refString1utf32);
 
     // 4) Buffer passed, resize necessary, extensive SpecialCase
 
@@ -674,14 +675,14 @@ unittest {
     Immut!(wchar)[] refString2utf16 = "\u0046\u0046\u0049\u0046\u0046\u004C\u0053\u0054";
     Immut!(dchar)[] refString2utf32 = "\u0046\u0046\u0049\u0046\u0046\u004C\u0053\u0054";
     resultString1utf8 = toUpper(testString2utf8,buffer2utf8);
-    assert(resultString1utf8.ptr != buffer2utf8.ptr);
-    assert(resultString1utf8 == refString2utf8);
+    test(resultString1utf8.ptr != buffer2utf8.ptr);
+    test(resultString1utf8 == refString2utf8);
     resultString1utf16 = toUpper(testString2utf16,buffer2utf16);
-    assert(resultString1utf16.ptr != buffer2utf16.ptr);
-    assert(resultString1utf16 == refString2utf16);
+    test(resultString1utf16.ptr != buffer2utf16.ptr);
+    test(resultString1utf16 == refString2utf16);
     resultString1utf32 = toUpper(testString2utf32,buffer2utf32);
-    assert(resultString1utf32.ptr != buffer2utf32.ptr);
-    assert(resultString1utf32 == refString2utf32);
+    test(resultString1utf32.ptr != buffer2utf32.ptr);
+    test(resultString1utf32 == refString2utf32);
 
 }
 
@@ -696,25 +697,25 @@ unittest {
     Immut!(wchar)[] refString1utf16 = "\u00E4\u00F6\u00FC";
     Immut!(dchar)[] refString1utf32 = "\u00E4\u00F6\u00FC";
     char[] resultString1utf8 = toLower(testString1utf8);
-    assert(resultString1utf8 == refString1utf8);
+    test(resultString1utf8 == refString1utf8);
     wchar[] resultString1utf16 = toLower(testString1utf16);
-    assert(resultString1utf16 == refString1utf16);
+    test(resultString1utf16 == refString1utf16);
     dchar[] resultString1utf32 = toLower(testString1utf32);
-    assert(resultString1utf32 == refString1utf32);
+    test(resultString1utf32 == refString1utf32);
 
     // 2) Buffer passed, no resize, no SpecialCase
     char[60] buffer1utf8;
     wchar[30] buffer1utf16;
     dchar[30] buffer1utf32;
     resultString1utf8 = toLower(testString1utf8,buffer1utf8);
-    assert(resultString1utf8.ptr == buffer1utf8.ptr);
-    assert(resultString1utf8 == refString1utf8);
+    test(resultString1utf8.ptr == buffer1utf8.ptr);
+    test(resultString1utf8 == refString1utf8);
     resultString1utf16 = toLower(testString1utf16,buffer1utf16);
-    assert(resultString1utf16.ptr == buffer1utf16.ptr);
-    assert(resultString1utf16 == refString1utf16);
+    test(resultString1utf16.ptr == buffer1utf16.ptr);
+    test(resultString1utf16 == refString1utf16);
     resultString1utf32 = toLower(testString1utf32,buffer1utf32);
-    assert(resultString1utf32.ptr == buffer1utf32.ptr);
-    assert(resultString1utf32 == refString1utf32);
+    test(resultString1utf32.ptr == buffer1utf32.ptr);
+    test(resultString1utf32 == refString1utf32);
 
     // 3/ Buffer passed, resize necessary, no Special case
 
@@ -722,14 +723,14 @@ unittest {
     wchar[2] buffer2utf16;
     dchar[2] buffer2utf32;
     resultString1utf8 = toLower(testString1utf8,buffer2utf8);
-    assert(resultString1utf8.ptr != buffer2utf8.ptr);
-    assert(resultString1utf8 == refString1utf8);
+    test(resultString1utf8.ptr != buffer2utf8.ptr);
+    test(resultString1utf8 == refString1utf8);
     resultString1utf16 = toLower(testString1utf16,buffer2utf16);
-    assert(resultString1utf16.ptr != buffer2utf16.ptr);
-    assert(resultString1utf16 == refString1utf16);
+    test(resultString1utf16.ptr != buffer2utf16.ptr);
+    test(resultString1utf16 == refString1utf16);
     resultString1utf32 = toLower(testString1utf32,buffer2utf32);
-    assert(resultString1utf32.ptr != buffer2utf32.ptr);
-    assert(resultString1utf32 == refString1utf32);
+    test(resultString1utf32.ptr != buffer2utf32.ptr);
+    test(resultString1utf32 == refString1utf32);
 
     // 4) Buffer passed, resize necessary, extensive SpecialCase
 
@@ -740,24 +741,24 @@ unittest {
     Immut!(wchar)[] refString2utf16 = "\u0069\u0307\u0069\u0307\u0069\u0307";
     Immut!(dchar)[] refString2utf32 = "\u0069\u0307\u0069\u0307\u0069\u0307";
     resultString1utf8 = toLower(testString2utf8,buffer2utf8);
-    assert(resultString1utf8.ptr != buffer2utf8.ptr);
-    assert(resultString1utf8 == refString2utf8);
+    test(resultString1utf8.ptr != buffer2utf8.ptr);
+    test(resultString1utf8 == refString2utf8);
     resultString1utf16 = toLower(testString2utf16,buffer2utf16);
-    assert(resultString1utf16.ptr != buffer2utf16.ptr);
-    assert(resultString1utf16 == refString2utf16);
+    test(resultString1utf16.ptr != buffer2utf16.ptr);
+    test(resultString1utf16 == refString2utf16);
     resultString1utf32 = toLower(testString2utf32,buffer2utf32);
-    assert(resultString1utf32.ptr != buffer2utf32.ptr);
-    assert(resultString1utf32 == refString2utf32);
+    test(resultString1utf32.ptr != buffer2utf32.ptr);
+    test(resultString1utf32 == refString2utf32);
 }
 
 unittest {
     Immut!(char)[] testString1utf8 = "?!Mädchen \u0390\u0390,;";
     Immut!(char)[] testString2utf8 = "?!MÄDCHEN \u03B9\u0308\u0301\u03B9\u0308\u0301,;";
-    assert(toFold(testString1utf8) == toFold(testString2utf8));
+    test(toFold(testString1utf8) == toFold(testString2utf8));
     Immut!(wchar)[] testString1utf16 = "?!Mädchen \u0390\u0390,;";
     Immut!(wchar)[] testString2utf16 = "?!MÄDCHEN \u03B9\u0308\u0301\u03B9\u0308\u0301,;";
-    assert(toFold(testString1utf16) == toFold(testString2utf16));
+    test(toFold(testString1utf16) == toFold(testString2utf16));
     Immut!(wchar)[] testString1utf32 = "?!Mädchen \u0390\u0390,;";
     Immut!(wchar)[] testString2utf32 = "?!MÄDCHEN \u03B9\u0308\u0301\u03B9\u0308\u0301,;";
-    assert(toFold(testString1utf32) == toFold(testString2utf32));
+    test(toFold(testString1utf32) == toFold(testString2utf32));
 }

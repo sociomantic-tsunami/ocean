@@ -31,6 +31,8 @@ import ocean.time.Time: Date, TimeOfDay;
 import core.stdc.time: time_t, tm;
 import core.sys.posix.time: timegm;
 
+version(UnitTest) import ocean.core.Test;
+
 /******************************************************************************
 
     Parses timestamp, which is expected to be a HTTP compliant date/time string,
@@ -106,14 +108,14 @@ unittest
     time_t t;
 
     bool ok = parse("Fri, 06 Mar 1981 08:47:37 GMT", t);
-    assert (ok);
-    assert (t == T);
+    test (ok);
+    test (t == T);
 
     ok = parse("Friday, 06-Mar-81 08:47:37 GMT", t);
-    assert (ok);
-    assert (t == T);
+    test (ok);
+    test (t == T);
 
     ok = parse("Fri Mar  6 08:47:37 1981", t);
-    assert (ok);
-    assert (t == T);
+    test (ok);
+    test (t == T);
 }

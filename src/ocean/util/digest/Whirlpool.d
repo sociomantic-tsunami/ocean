@@ -29,6 +29,8 @@ import ocean.util.digest.MerkleDamgard;
 
 public  import ocean.util.digest.Digest;
 
+version(UnitTest) import ocean.core.Test;
+
 /*******************************************************************************
 
 *******************************************************************************/
@@ -1010,7 +1012,7 @@ unittest
                 h.update(cast(ubyte[]) s);
                 char[] d = h.hexDigest;
 
-                assert(d == results[i],":("~s~")("~d~")!=("~results[i]~")");
+                test(d == results[i],":("~s~")("~d~")!=("~results[i]~")");
                 }
 
         {
@@ -1020,7 +1022,7 @@ unittest
             h.update(cast(ubyte[]) s);
             auto d = h.hexDigest;
 
-            assert(d == result,":(1 million times \"a\")("~d~")!=("~result~")");
+            test(d == result,":(1 million times \"a\")("~d~")!=("~result~")");
         }
     }
 
@@ -1165,7 +1167,7 @@ unittest
                 h.update(data[0..i]);
                 auto d = h.hexDigest;
 
-                assert(d == results[i],":( 0-bytes)("~d~")!=("~results[i]~")");
+                test(d == results[i],":( 0-bytes)("~d~")!=("~results[i]~")");
                 }
 
     }
@@ -1698,7 +1700,7 @@ unittest
                 h.update(data);
                 auto d = h.hexDigest;
 
-                assert(d == results[i*8+j],":( 1-bytes)("~d~")!=("~results[i*8+j]~")");
+                test(d == results[i*8+j],":( 1-bytes)("~d~")!=("~results[i*8+j]~")");
             }
             data[i] = 0;
          }

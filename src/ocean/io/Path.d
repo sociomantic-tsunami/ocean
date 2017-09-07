@@ -72,6 +72,7 @@ public  import ocean.core.ExceptionDefinitions : IOException, IllegalArgumentExc
 
 import core.stdc.string : memmove;
 
+version(UnitTest) import ocean.core.Test;
 
 /*******************************************************************************
 
@@ -872,7 +873,7 @@ struct PathParser
         /***********************************************************************
 
             Comparison to another PathParser, to avoid falling back to
-            auto-generated one 
+            auto-generated one
 
         ***********************************************************************/
 
@@ -1394,16 +1395,16 @@ PathParser parse (mstring path)
 unittest
 {
     auto p = parse ("/foo/bar/file.ext".dup);
-    assert (p == "/foo/bar/file.ext");
-    assert (p.folder == "/foo/bar/");
-    assert (p.path == "/foo/bar/");
-    assert (p.file == "file.ext");
-    assert (p.name == "file");
-    assert (p.suffix == ".ext");
-    assert (p.ext == "ext");
-    assert (p.isChild == true);
-    assert (p.isEmpty == false);
-    assert (p.isAbsolute == true);
+    test (p == "/foo/bar/file.ext");
+    test (p.folder == "/foo/bar/");
+    test (p.path == "/foo/bar/");
+    test (p.file == "file.ext");
+    test (p.name == "file");
+    test (p.suffix == ".ext");
+    test (p.ext == "ext");
+    test (p.isChild == true);
+    test (p.isEmpty == false);
+    test (p.isAbsolute == true);
 }
 
 /******************************************************************************
@@ -1563,25 +1564,25 @@ body
 unittest
 {
     version (Posix)
-        assert(!patternMatch("foo", "Foo"));
+        test(!patternMatch("foo", "Foo"));
 
-    assert(patternMatch("foo", "*"));
-    assert(patternMatch("foo.bar", "*"));
-    assert(patternMatch("foo.bar", "*.*"));
-    assert(patternMatch("foo.bar", "foo*"));
-    assert(patternMatch("foo.bar", "f*bar"));
-    assert(patternMatch("foo.bar", "f*b*r"));
-    assert(patternMatch("foo.bar", "f???bar"));
-    assert(patternMatch("foo.bar", "[fg]???bar"));
-    assert(patternMatch("foo.bar", "[!gh]*bar"));
+    test(patternMatch("foo", "*"));
+    test(patternMatch("foo.bar", "*"));
+    test(patternMatch("foo.bar", "*.*"));
+    test(patternMatch("foo.bar", "foo*"));
+    test(patternMatch("foo.bar", "f*bar"));
+    test(patternMatch("foo.bar", "f*b*r"));
+    test(patternMatch("foo.bar", "f???bar"));
+    test(patternMatch("foo.bar", "[fg]???bar"));
+    test(patternMatch("foo.bar", "[!gh]*bar"));
 
-    assert(!patternMatch("foo", "bar"));
-    assert(!patternMatch("foo", "*.*"));
-    assert(!patternMatch("foo.bar", "f*baz"));
-    assert(!patternMatch("foo.bar", "f*b*x"));
-    assert(!patternMatch("foo.bar", "[gh]???bar"));
-    assert(!patternMatch("foo.bar", "[!fg]*bar"));
-    assert(!patternMatch("foo.bar", "[fg]???baz"));
+    test(!patternMatch("foo", "bar"));
+    test(!patternMatch("foo", "*.*"));
+    test(!patternMatch("foo.bar", "f*baz"));
+    test(!patternMatch("foo.bar", "f*b*x"));
+    test(!patternMatch("foo.bar", "[gh]???bar"));
+    test(!patternMatch("foo.bar", "[!fg]*bar"));
+    test(!patternMatch("foo.bar", "[fg]???baz"));
 }
 
 /*******************************************************************************
@@ -1741,43 +1742,43 @@ mstring normalize (cstring in_path, mstring buf = null)
 
 unittest
 {
-    assert (normalize ("") == "");
-    assert (normalize ("/home/../john/../.tango/.htaccess") == "/.tango/.htaccess");
-    assert (normalize ("/home/../john/../.tango/foo.conf") == "/.tango/foo.conf");
-    assert (normalize ("/home/john/.tango/foo.conf") == "/home/john/.tango/foo.conf");
-    assert (normalize ("/foo/bar/.htaccess") == "/foo/bar/.htaccess");
-    assert (normalize ("foo/bar/././.") == "foo/bar/");
-    assert (normalize ("././foo/././././bar") == "foo/bar");
-    assert (normalize ("/foo/../john") == "/john");
-    assert (normalize ("foo/../john") == "john");
-    assert (normalize ("foo/bar/..") == "foo/");
-    assert (normalize ("foo/bar/../john") == "foo/john");
-    assert (normalize ("foo/bar/doe/../../john") == "foo/john");
-    assert (normalize ("foo/bar/doe/../../john/../bar") == "foo/bar");
-    assert (normalize ("./foo/bar/doe") == "foo/bar/doe");
-    assert (normalize ("./foo/bar/doe/../../john/../bar") == "foo/bar");
-    assert (normalize ("./foo/bar/../../john/../bar") == "bar");
-    assert (normalize ("foo/bar/./doe/../../john") == "foo/john");
-    assert (normalize ("../../foo/bar") == "../../foo/bar");
-    assert (normalize ("../../../foo/bar") == "../../../foo/bar");
-    assert (normalize ("d/") == "d/");
-    assert (normalize ("/home/john/./foo/bar.txt") == "/home/john/foo/bar.txt");
-    assert (normalize ("/home//john") == "/home/john");
+    test (normalize ("") == "");
+    test (normalize ("/home/../john/../.tango/.htaccess") == "/.tango/.htaccess");
+    test (normalize ("/home/../john/../.tango/foo.conf") == "/.tango/foo.conf");
+    test (normalize ("/home/john/.tango/foo.conf") == "/home/john/.tango/foo.conf");
+    test (normalize ("/foo/bar/.htaccess") == "/foo/bar/.htaccess");
+    test (normalize ("foo/bar/././.") == "foo/bar/");
+    test (normalize ("././foo/././././bar") == "foo/bar");
+    test (normalize ("/foo/../john") == "/john");
+    test (normalize ("foo/../john") == "john");
+    test (normalize ("foo/bar/..") == "foo/");
+    test (normalize ("foo/bar/../john") == "foo/john");
+    test (normalize ("foo/bar/doe/../../john") == "foo/john");
+    test (normalize ("foo/bar/doe/../../john/../bar") == "foo/bar");
+    test (normalize ("./foo/bar/doe") == "foo/bar/doe");
+    test (normalize ("./foo/bar/doe/../../john/../bar") == "foo/bar");
+    test (normalize ("./foo/bar/../../john/../bar") == "bar");
+    test (normalize ("foo/bar/./doe/../../john") == "foo/john");
+    test (normalize ("../../foo/bar") == "../../foo/bar");
+    test (normalize ("../../../foo/bar") == "../../../foo/bar");
+    test (normalize ("d/") == "d/");
+    test (normalize ("/home/john/./foo/bar.txt") == "/home/john/foo/bar.txt");
+    test (normalize ("/home//john") == "/home/john");
 
-    assert (normalize("/../../bar/") == "/bar/");
-    assert (normalize("/../../bar/../baz/./") == "/baz/");
-    assert (normalize("/../../bar/boo/../baz/.bar/.") == "/bar/baz/.bar/");
-    assert (normalize("../..///.///bar/..//..//baz/.//boo/..") == "../../../baz/");
-    assert (normalize("./bar/./..boo/./..bar././/") == "bar/..boo/..bar./");
-    assert (normalize("/bar/..") == "/");
-    assert (normalize("bar/") == "bar/");
-    assert (normalize(".../") == ".../");
-    assert (normalize("///../foo") == "/foo");
-    assert (normalize("./foo") == "foo");
+    test (normalize("/../../bar/") == "/bar/");
+    test (normalize("/../../bar/../baz/./") == "/baz/");
+    test (normalize("/../../bar/boo/../baz/.bar/.") == "/bar/baz/.bar/");
+    test (normalize("../..///.///bar/..//..//baz/.//boo/..") == "../../../baz/");
+    test (normalize("./bar/./..boo/./..bar././/") == "bar/..boo/..bar./");
+    test (normalize("/bar/..") == "/");
+    test (normalize("bar/") == "bar/");
+    test (normalize(".../") == ".../");
+    test (normalize("///../foo") == "/foo");
+    test (normalize("./foo") == "foo");
     auto buf = new char[100];
     auto ret = normalize("foo/bar/./baz", buf);
-    assert (ret.ptr == buf.ptr);
-    assert (ret == "foo/bar/baz");
+    test (ret.ptr == buf.ptr);
+    test (ret == "foo/bar/baz");
 }
 
 

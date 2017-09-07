@@ -42,6 +42,7 @@ import ocean.io.model.IConduit : InputStream, OutputStream, IConduit;
 import ocean.text.convert.Integer_tango : toString;
 import ocean.text.util.StringC;
 
+version(UnitTest) import ocean.core.Test;
 
 /* This constant controls the size of the input/output buffers we use
  * internally.  This should be a fairly sane value (it's suggested by the zlib
@@ -918,7 +919,7 @@ unittest
         comp.write (message);
         comp.close;
 
-        assert( comp.written == message_z.length );
+        test( comp.written == message_z.length );
 
         /+
         Stdout("message_z:").newline;
