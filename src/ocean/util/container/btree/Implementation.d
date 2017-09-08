@@ -33,6 +33,7 @@ package struct BTreeMapImplementation (KeyType, ValueType, int tree_degree)
     import ocean.core.array.Search;
     import ocean.core.Enforce;
     import ocean.core.Traits;
+    import ocean.core.Tuple;
     import ocean.core.Verify;
     import ocean.util.container.mem.MemManager;
 
