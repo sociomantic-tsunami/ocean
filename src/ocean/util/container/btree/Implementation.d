@@ -155,14 +155,14 @@ package struct BTreeMapImplementation (KeyType, ValueType, int tree_degree)
         Params:
             key = key to insert
             value = associated value to insert.
+            added = indicator if the element was added
 
         Returns:
-            true if the element with the given key did not exist and it
-            was inserted, false otherwise
+            pointer to the element
 
     ***************************************************************************/
 
-    package bool insert (KeyType key, ValueType el)
+    package ValueType* insert (KeyType key, ValueType el, out bool added)
     {
         verify(this.allocator !is null);
 
@@ -171,16 +171,16 @@ package struct BTreeMapImplementation (KeyType, ValueType, int tree_degree)
             this.root = this.insertNewNode();
         }
 
-        size_t dummy_index;
-        if (this.get(key, dummy_index))
+        if (auto ptr = this.get(key))
         {
-            return false;
+            return ptr;
         }
 
         // unqualed for internal storage only. User will never access it as
         // unqualed reference.
         auto unqualed_el = cast(Unqual!(ValueType))el;
         auto r = this.root;
+        added = true;
         if (this.root.number_of_elements == this.root.elements.length)
         {
             auto node = this.insertNewNode();
@@ -195,16 +195,14 @@ package struct BTreeMapImplementation (KeyType, ValueType, int tree_degree)
             this.splitChild(node, 0, r);
             auto ret = this.insertNonFull(node, key, unqualed_el);
             debug (BTreeMapSanity) check_invariants(*this);
-            if (ret)
-                this.content_version++;
+            this.content_version++;
             return ret;
         }
         else
         {
             auto ret = this.insertNonFull(this.root, key, unqualed_el);
             debug (BTreeMapSanity) check_invariants(*this);
-            if (ret)
-                this.content_version++;
+            this.content_version++;
             return ret;
         }
     }
@@ -497,7 +495,7 @@ package struct BTreeMapImplementation (KeyType, ValueType, int tree_degree)
 
     ***************************************************************************/
 
-    private bool insertNonFull
+    private ValueType* insertNonFull
         (BTreeMapNode* node, KeyType key, StoredValueType value)
     {
         if (node.is_leaf)
@@ -752,7 +750,7 @@ package struct BTreeMapImplementation (KeyType, ValueType, int tree_degree)
 
     ***************************************************************************/
 
-    private static bool insertIntoLeaf(BTreeMapNode* node, KeyType key,
+    private static ValueType* insertIntoLeaf(BTreeMapNode* node, KeyType key,
             StoredValueType value)
     {
         verify(node.is_leaf);
@@ -771,7 +769,7 @@ package struct BTreeMapImplementation (KeyType, ValueType, int tree_degree)
         node.elements[i].value = value;
         node.number_of_elements++;
 
-        return true;
+        return &node.elements[i].value;
     }
 
     /***************************************************************************
@@ -1173,7 +1171,9 @@ version (UnitTest)
             {
                 int element = random.uniformR(to_insert);
                 // don't count double elements (they are not inserted)
-                total_elements += random_tree.insert(element, element)? 1 : 0;
+                bool added;
+                random_tree.insert(element, element, added);
+                total_elements += added? 1 : 0;
                 auto res = random_tree.get(element, found);
                 test(found);
                 test!("==")(res, element);
