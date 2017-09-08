@@ -197,6 +197,28 @@ struct BTreeMap(TreeKeyType, TreeValueType, int tree_degree)
         return this.impl.get(key, found_element);
     }
 
+    /**************************************************************************
+
+        Searches the tree for the element with the given key and returns the
+        pointer to the associated value.
+
+        Params:
+            key =  key to find in a tree.
+
+        Returns:
+            pointer to the value associated with the key, if found, null otherwise.
+
+        Complexity:
+            CPU: O(degree * log_degree(n))
+            Memory:O(log_degree(n))
+
+    ***************************************************************************/
+
+    public ValueType* opIn_r (KeyType key)
+    {
+        return this.impl.get(key);
+    }
+
     /***********************************************************************
 
         Recursive inorder iteration over keys and values. Note that, in case
@@ -320,6 +342,12 @@ unittest
 
     // Let's check that the memory is ready to be reused
     test(buff.ptr !is null);
+
+
+    // Use pointer-returning methods
+    auto x = 5 in map;
+    test(x !is null);
+    test!("==")(*x, MyVal(10));
 }
 
 /*
