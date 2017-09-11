@@ -644,6 +644,7 @@ final class Scheduler
         task.assignTo(fiber);
         // execute the task
         bool had_exception = task.entryPoint();
+        assert (task.finished());
 
         if (task.termination_hooks.length)
         {
@@ -674,6 +675,9 @@ final class Scheduler
         // calls `Task.continueAfterThrow()` and that throws again
         if (had_exception)
             this.processEvents();
+
+        // prevent referencing old worker fiber
+        task.fiber = null;
     }
 
     /***************************************************************************
