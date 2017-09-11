@@ -68,25 +68,7 @@ public void wait ( uint micro_seconds )
     if (.timer is null)
         .timer = new typeof(timer);
 
-    auto scheduled_event =  .timer.schedule(
-        // EventData setup is run from the same fiber so it is ok to reference
-        // variable from this function stack
-        ( ref EventData event )
-        {
-            event.to_resume = task;
-        },
-        // Callback of fired timer is run from epoll context and here it is
-        // only legal to use data captured as EventData field (or other heap
-        // allocated data)
-        ( ref EventData event )
-        {
-            debug_trace("Resuming task <{}> by timer",
-                cast(void*) event.to_resume);
-            event.to_resume.resume();
-        },
-        micro_seconds
-    );
-
+    auto scheduled_event = registerResumeEvent(task, micro_seconds);
     task.terminationHook(&scheduled_event.unregister);
 
     debug_trace("Suspending task <{}> for {} microseconds",
@@ -145,27 +127,9 @@ public bool awaitOrTimeout ( Task task, uint micro_seconds )
     if (.timer is null)
         .timer = new typeof(timer);
 
-    auto scheduled_event = .timer.schedule(
-        // EventData setup is run from the same fiber so it is ok to reference
-        // variable from this function stack
-        ( ref EventData event )
-        {
-            event.to_resume = context;
-        },
-        // Callback of fired timer is run from epoll context and here it is
-        // only legal to use data captured as EventData field (or other heap
-        // allocated data)
-        ( ref EventData event )
-        {
-            debug_trace("Resuming task <{}> because of await timeout",
-                cast(void*) event.to_resume);
-            event.to_resume.resume();
-        },
-        micro_seconds
-    );
-
-    task.terminationHook(&context.resume);
+    auto scheduled_event = registerResumeEvent(context, micro_seconds);
     task.terminationHook(&scheduled_event.unregister);
+    task.terminationHook(&context.resume);
 
     // force async scheduling to avoid checking if this context needs
     // suspend/resume and do it unconditionally
@@ -286,6 +250,43 @@ private TimerSet!(EventData) timer;
 private struct EventData
 {
     Task to_resume;
+}
+
+/*******************************************************************************
+
+    Helper function providing common code to schedule new timer event in a
+    global `.timer` timer set.
+
+    Params:
+        to_resume = task to resume when event fires
+        micro_seconds = time to wait before event fires
+
+    Returns:
+        registered event interface
+
+*******************************************************************************/
+
+private TimerSet!(EventData).IEvent registerResumeEvent (
+    Task to_resume, uint micro_seconds )
+{
+    return .timer.schedule(
+        // EventData setup is run from the same fiber so it is ok to reference
+        // variable from this function stack
+        ( ref EventData event )
+        {
+            event.to_resume = to_resume;
+        },
+        // Callback of fired timer is run from epoll context and here it is
+        // only legal to use data captured as EventData field (or other heap
+        // allocated data)
+        ( ref EventData event )
+        {
+            debug_trace("Resuming task <{}> by timer event",
+                cast(void*) event.to_resume);
+            event.to_resume.resume();
+        },
+        micro_seconds
+    );
 }
 
 private void debug_trace ( T... ) ( cstring format, T args )
