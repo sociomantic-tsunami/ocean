@@ -120,7 +120,7 @@ version (UnitTest)
 unittest
 {
     auto e = new FileException;
-    auto f = fdopen(42, "r".ptr);
+    auto f = fdopen(-1, "r".ptr);
 
     try
     {
