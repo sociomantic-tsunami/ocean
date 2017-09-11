@@ -171,6 +171,7 @@ public mstring snformat (Args...) (mstring buffer, cstring fmt, Args args)
 }
 
 /// ditto
+deprecated("Pass a slice of your buffer instead")
 public mstring snformat (Args...) (ref Buffer!(char) buffer, cstring fmt, Args args)
 {
     return snformat(buffer[], fmt, args);

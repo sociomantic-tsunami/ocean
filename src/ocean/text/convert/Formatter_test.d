@@ -53,12 +53,19 @@ unittest
     test!("==")(format("{}", b), "Hello void");
 }
 
-/// Test for Buffer overloads
+/// Test for Buffer overload
 unittest
 {
     Buffer!(char) buff;
     sformat(buff, "{}", 42);
     test!("==")(buff[], "42");
+}
+
+/// Ditto
+deprecated unittest
+{
+    Buffer!(char) buff;
+    buff.length = 2;
     snformat(buff, "{}", 1000);
     test!("==")(buff[], "10");
 }
