@@ -124,6 +124,149 @@ unittest
 
 /*******************************************************************************
 
+    Similar to `theScheduler.await` but also has waiting timeout. Calling task
+    will be resumed either if awaited task finished or timeout is hit, whichever
+    happens first.
+
+    Params:
+        task = task to await
+        micro_seconds = timeout duration
+
+    Returns:
+        'true' if resumed via timeout, 'false' otherwise
+
+*******************************************************************************/
+
+public bool awaitOrTimeout ( Task task, uint micro_seconds )
+{
+    auto context = Task.getThis();
+    assert (context !is null);
+
+    if (.timer is null)
+        .timer = new typeof(timer);
+
+    auto scheduled_event = .timer.schedule(
+        // EventData setup is run from the same fiber so it is ok to reference
+        // variable from this function stack
+        ( ref EventData event )
+        {
+            event.to_resume = context;
+        },
+        // Callback of fired timer is run from epoll context and here it is
+        // only legal to use data captured as EventData field (or other heap
+        // allocated data)
+        ( ref EventData event )
+        {
+            debug_trace("Resuming task <{}> because of await timeout",
+                cast(void*) event.to_resume);
+            event.to_resume.resume();
+        },
+        micro_seconds
+    );
+
+    task.terminationHook(&context.resume);
+    task.terminationHook(&scheduled_event.unregister);
+
+    // force async scheduling to avoid checking if this context needs
+    // suspend/resume and do it unconditionally
+    theScheduler.queue(task);
+    context.suspend();
+
+    if (task.finished())
+    {
+        // resumed because awaited task has finished
+        // timer was already unregistered by its termination hook, just quit
+        return false;
+    }
+    else
+    {
+        // resumed because of timeout, need to clean up termination hooks of
+        // awaited task to avoid double resume
+        task.removeTerminationHook(&context.resume);
+        task.removeTerminationHook(&scheduled_event.unregister);
+        return true;
+    }
+}
+
+///
+unittest
+{
+    initScheduler(SchedulerConfiguration.init);
+
+    .timer = new typeof(timer);
+
+    static class InfiniteTask : Task
+    {
+        override public void run ( )
+        {
+            for (;;) .wait(100);
+        }
+    }
+
+    static class RootTask : Task
+    {
+        Task to_wait_for;
+
+        override public void run ( )
+        {
+            bool timeout = .awaitOrTimeout(this.to_wait_for, 200);
+            test(timeout);
+
+            // `awaitOrTimeout` itself won't terminate awaited task on timeout,
+            // it will only "detach" it from the current context. If former is
+            /// desired, it can be trivially done at the call site:
+            if (timeout)
+                this.to_wait_for.kill();
+        }
+    }
+
+    auto root = new RootTask;
+    root.to_wait_for = new InfiniteTask;
+
+    theScheduler.schedule(root);
+    theScheduler.eventLoop();
+
+    test(root.finished());
+    test(root.to_wait_for.finished());
+}
+
+unittest
+{
+    initScheduler(SchedulerConfiguration.init);
+
+    static class FiniteTask : Task
+    {
+        override public void run ( )
+        {
+            .wait(100);
+        }
+    }
+
+    static class RootTask : Task
+    {
+        Task to_wait_for;
+
+        override public void run ( )
+        {
+            bool timeout = .awaitOrTimeout(this.to_wait_for, 500);
+            test(!timeout);
+            test(this.to_wait_for.finished());
+        }
+    }
+
+    auto root = new RootTask;
+    root.to_wait_for = new FiniteTask;
+
+    theScheduler.schedule(root);
+    theScheduler.eventLoop();
+
+    test(root.finished());
+    test(root.to_wait_for.finished());
+
+}
+
+/*******************************************************************************
+
     Implements timer event pool together with logic to handle arbitrary
     amount of events using single file descriptor. Allocated lazily when
     functions of this module are called.
