@@ -65,9 +65,6 @@ public void wait ( uint micro_seconds )
     auto task = Task.getThis();
     assert (task !is null);
 
-    if (.timer is null)
-        .timer = new typeof(timer);
-
     auto scheduled_event = registerResumeEvent(task, micro_seconds);
     task.terminationHook(&scheduled_event.unregister);
 
@@ -83,7 +80,29 @@ unittest
 {
     initScheduler(SchedulerConfiguration.init);
 
-    .timer = new typeof(timer);
+    class SimpleTask : Task
+    {
+        override public void run ( )
+        {
+            for (int i = 0; i < 10; ++i)
+                .wait(10);
+        }
+    }
+
+    auto task = new SimpleTask;
+    theScheduler.schedule(task);
+    theScheduler.eventLoop();
+}
+
+unittest
+{
+    // same as previous, but tests allocated event count inside `.timer` object
+
+    initScheduler(SchedulerConfiguration.init);
+
+    // re-create timer event pool to get rid of slots already allocated by other
+    // test cases
+    .timer = new typeof(.timer);
 
     class SimpleTask : Task
     {
@@ -124,9 +143,6 @@ public bool awaitOrTimeout ( Task task, uint micro_seconds )
     auto context = Task.getThis();
     assert (context !is null);
 
-    if (.timer is null)
-        .timer = new typeof(timer);
-
     auto scheduled_event = registerResumeEvent(context, micro_seconds);
     task.terminationHook(&scheduled_event.unregister);
     task.terminationHook(&context.resume);
@@ -156,8 +172,6 @@ public bool awaitOrTimeout ( Task task, uint micro_seconds )
 unittest
 {
     initScheduler(SchedulerConfiguration.init);
-
-    .timer = new typeof(timer);
 
     static class InfiniteTask : Task
     {
@@ -232,8 +246,8 @@ unittest
 /*******************************************************************************
 
     Implements timer event pool together with logic to handle arbitrary
-    amount of events using single file descriptor. Allocated lazily when
-    functions of this module are called.
+    amount of events using single file descriptor. Allocated by
+    `registerResumeEvent` on access.
 
 *******************************************************************************/
 
@@ -257,6 +271,8 @@ private struct EventData
     Helper function providing common code to schedule new timer event in a
     global `.timer` timer set.
 
+    Allocates global `.timer` if not done already.
+
     Params:
         to_resume = task to resume when event fires
         micro_seconds = time to wait before event fires
@@ -269,6 +285,9 @@ private struct EventData
 private TimerSet!(EventData).IEvent registerResumeEvent (
     Task to_resume, uint micro_seconds )
 {
+    if (timer is null)
+        timer = new typeof(timer);
+
     return .timer.schedule(
         // EventData setup is run from the same fiber so it is ok to reference
         // variable from this function stack
