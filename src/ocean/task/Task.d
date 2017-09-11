@@ -174,12 +174,11 @@ public abstract class Task : ISuspendable
 
     /***************************************************************************
 
-        If this flag is set, task will try to kill itself as soon at is
-        resumed by throwing TaskKillException.
+        Bitmask representing internal task state
 
     ***************************************************************************/
 
-    private bool to_kill;
+    private TaskState state_bitmask;
 
     /***************************************************************************
 
@@ -285,6 +284,8 @@ public abstract class Task : ISuspendable
 
     public void assignTo ( WorkerFiber fiber )
     {
+        this.state_bitmask = TaskState.None;
+
         this.fiber = fiber;
         this.fiber.active_task = this;
         if (fiber.state == fiber.state.TERM)
@@ -309,7 +310,7 @@ public abstract class Task : ISuspendable
         debug_trace("<{}> is suspending itself", cast(void*) this);
         this.fiber.yield();
 
-        if (this.to_kill)
+        if (this.state_bitmask & TaskState.ToKill)
             throw Task.kill_exception;
     }
 
@@ -383,7 +384,21 @@ public abstract class Task : ISuspendable
 
     final public bool suspended ( )
     {
+        if (this.fiber is null)
+            return false;
         return this.fiber.state() == core.thread.Fiber.State.HOLD;
+    }
+
+    /***************************************************************************
+
+        Returns:
+            true if this task was started and reached end of `run` method
+
+    ***************************************************************************/
+
+    final public bool finished ( )
+    {
+        return (this.state_bitmask & TaskState.Finished) > 0;
     }
 
     /***************************************************************************
@@ -395,15 +410,16 @@ public abstract class Task : ISuspendable
 
     public void kill ( istring file = __FILE__, int line = __LINE__ )
     {
-        this.to_kill = true;
-
         Task.kill_exception.file = file;
         Task.kill_exception.line = line;
 
         if (this is Task.getThis())
             throw Task.kill_exception;
         else
+        {
+            this.state_bitmask |= TaskState.ToKill;
             this.resume();
+        }
     }
 
     /***************************************************************************
@@ -443,6 +459,9 @@ public abstract class Task : ISuspendable
     {
         debug_trace("<{}> start of main function", cast(void*) this);
 
+        scope(exit)
+            this.state_bitmask |= TaskState.Finished;
+
         try
         {
             assert (this.fiber is core.thread.Fiber.getThis());
@@ -452,6 +471,7 @@ public abstract class Task : ISuspendable
         catch (TaskKillException)
         {
             debug_trace("<{}> termination (killed)", cast(void*) this);
+            this.state_bitmask &= ~TaskState.ToKill;
             return false;
         }
         catch (Exception e)
@@ -525,6 +545,7 @@ unittest
     task.kill();
     test(!task.clean_finish);
     test!("==")(task.fiber.state, core.thread.Fiber.State.TERM);
+    test(task.finished());
 }
 
 unittest
@@ -728,6 +749,18 @@ public class TaskWith ( Extensions... ) : Task
 unittest
 {
     // see tests/examples in ocean.task.extensions.*
+}
+
+/// Values for task state bitmask
+private enum TaskState : ubyte
+{
+    None   = 0b0000_0000,
+
+    /// If this flag is set, task will try to kill itself as soon at is
+    /// resumed by throwing TaskKillException.
+    ToKill     = 0b0000_0001,
+    /// This flag is set when `run` method of the task finishes
+    Finished   = 0b0000_0010,
 }
 
 private void debug_trace ( T... ) ( cstring format, T args )
