@@ -764,8 +764,9 @@ private scope class UnitTestRunner
     {
         // we don't care about freeing anything, is just a few bytes and the program
         // will quite after we are done using these variables
-        char* bin_c = strdup(args[0].ptr);
-        char* prog_c = basename(bin_c);
+        auto prog = args[0].dup;
+        prog ~= '\0'; // Make sure is null-terminated
+        char* prog_c = basename(prog.ptr);
         this.prog = prog_c[0..strlen(prog_c)];
 
         cstring[] unknown;
