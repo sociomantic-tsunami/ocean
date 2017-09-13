@@ -33,9 +33,10 @@ import ocean.util.app.ext.ConfigExt;
 import ocean.util.app.Application;
 
 import ocean.text.Arguments;
+import ocean.text.Util;
 import ocean.util.config.ConfigParser;
 import ocean.io.Stdout;
-import ocean.core.Array: startsWith;
+import ocean.core.Array: startsWith, map;
 
 import ocean.transition;
 import ocean.util.log.Logger;
@@ -133,13 +134,15 @@ class VersionArgsExt : IApplicationExtension, IArgumentsExtExtension,
         Params:
             ver = associative array with the version name as the key and the
                   revision as the value
+            pop = true if the used items should be popped from ver
 
         Returns:
             string with the version information of all libraries
 
     ***************************************************************************/
 
-    protected istring getLibsVersionsString ( istring[istring] ver )
+    protected istring getLibsVersionsString ( istring[istring] ver,
+            bool pop = false )
     {
         const prefix = "lib_";
         istring s;
@@ -148,7 +151,10 @@ class VersionArgsExt : IApplicationExtension, IArgumentsExtExtension,
         foreach (name; sorted_names)
         {
             if (name.startsWith(prefix))
+            {
                 s ~= " " ~ name[prefix.length .. $] ~ ":" ~ ver[name];
+                ver.remove(name);
+            }
         }
         return s;
     }
@@ -169,15 +175,35 @@ class VersionArgsExt : IApplicationExtension, IArgumentsExtExtension,
 
     protected istring getVersionString ( istring app_name, VersionInfo ver )
     {
-        istring get(istring key)
+        // Make a copy, so we can pop the elements we already used
+        VersionInfo ver_copy;
+        foreach (k, v; ver)
+            ver_copy[k] = v;
+
+        istring pop(istring key)
         {
-            auto v = key in ver;
+            auto v = key in ver_copy;
+            scope (exit) ver_copy.remove(key);
             return v is null ? "<unknown>" : *v;
         }
-        return app_name ~ " version " ~ get("version") ~ " (compiled by '" ~
-                get("build_author") ~ "' on " ~ get("build_date") ~ " with " ~
-                get("compiler") ~ " using" ~
-                this.getLibsVersionsString(ver) ~ ")";
+
+        istring s = app_name ~ " version " ~ pop("version") ~ " (compiled by '" ~
+                pop("build_author") ~ "' on " ~ pop("build_date") ~ " with " ~
+                pop("compiler") ~ " using" ~
+                this.getLibsVersionsString(ver_copy, true) ~ ")";
+
+        if (ver_copy.length)
+        {
+            auto sorted_names = ver_copy.keys;
+            sorted_names.sort();
+            s ~= " [" ~
+                    sorted_names
+                        .map((istring n) { return n ~ "='" ~ ver_copy[n] ~ "'"; })
+                        .join(", ") ~
+                "]";
+        }
+
+        return s;
     }
 
 
@@ -469,9 +495,10 @@ unittest
     info["compiler"] = "dmd3";
     info["lib_awesome"] = "v10.0";
     info["lib_sucks"] = "v0.5";
-    info["unknown"] = "hidden";
+    info["extra"] = "useful";
+    info["more"] = "info";
     auto v = new VersionArgsExt(info);
     test!("==")(v.getVersionString("test", info),
             "test version v1.0 (compiled by 'me' on today with dmd3 using " ~
-            "awesome:v10.0 sucks:v0.5)");
+            "awesome:v10.0 sucks:v0.5) [extra='useful', more='info']");
 }
