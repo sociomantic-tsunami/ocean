@@ -453,3 +453,25 @@ unittest
     auto app = new MyApp;
     app.main(["app_name", "--version"]);
 }
+
+/*******************************************************************************
+
+    Test the built version string
+
+*******************************************************************************/
+
+unittest
+{
+    VersionInfo info;
+    info["version"] = "v1.0";
+    info["build_author"] = "me";
+    info["build_date"] = "today";
+    info["compiler"] = "dmd3";
+    info["lib_awesome"] = "v10.0";
+    info["lib_sucks"] = "v0.5";
+    info["unknown"] = "hidden";
+    auto v = new VersionArgsExt(info);
+    test!("==")(v.getVersionString("test", info),
+            "test version v1.0 (compiled by 'me' on today with dmd3 using " ~
+            "awesome:v10.0 sucks:v0.5)");
+}
