@@ -338,7 +338,9 @@ public void testNoAlloc ( lazy void expr, istring file = __FILE__,
 
     enforceImpl!(TestException, bool)(
         used1 == used2 && free1 == free2,
-        "Expression expected to not allocate but GC usage stats have changed",
+        format("Expression expected to not allocate but GC usage stats have " ~
+               "changed from {} (used) / {} (free) to {} / {}",
+               used1, free1, used2, free2),
         file,
         line
     );
