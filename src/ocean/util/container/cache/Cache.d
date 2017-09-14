@@ -600,7 +600,11 @@ class Cache ( size_t ValueSize = 0, bool TrackCreateTimes = false ) : CacheBase!
     ***************************************************************************/
 
     protected override hash_t replaceRemovedItem ( size_t replaced, size_t replace )
-    in
+    out (key)
+    {
+        assert(key == this.items[replaced].key);
+    }
+    body
     {
         assert(replaced != replace);
 
@@ -608,13 +612,7 @@ class Cache ( size_t ValueSize = 0, bool TrackCreateTimes = false ) : CacheBase!
 
         assert(replaced < length);
         assert(replace < length);
-    }
-    out (key)
-    {
-        assert(key == this.items[replaced].key);
-    }
-    body
-    {
+
         CacheItem tmp       = this.items[replace];
         this.items[replace] = this.items[replaced];
 
