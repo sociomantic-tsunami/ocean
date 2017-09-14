@@ -146,6 +146,8 @@ private template ItemType_ ( T )
 
 public abstract class IAggregatePool ( T ) : IPool, IFreeList!(ItemType_!(T))
 {
+    import ocean.core.Verify;
+
     /***************************************************************************
 
         Asserts that T is either a struct or a class.
@@ -365,7 +367,7 @@ public abstract class IAggregatePool ( T ) : IPool, IFreeList!(ItemType_!(T))
 
     public typeof(this) minimize ( size_t num = 0 )
     {
-        assert (!this.unsafe_iterators_open, "cannot minimize pool while iterating over items");
+        verify (!this.unsafe_iterators_open, "cannot minimize pool while iterating over items");
 
         if ( this.num_idle > num )
         {
@@ -379,7 +381,8 @@ public abstract class IAggregatePool ( T ) : IPool, IFreeList!(ItemType_!(T))
 
         Recycles all items in the pool.
 
-        This method is overridden simply in order to add an iteration assert.
+        This method is overridden simply in order to verify that an iteration is
+        not in progress.
 
         Returns:
             this instance
@@ -388,7 +391,7 @@ public abstract class IAggregatePool ( T ) : IPool, IFreeList!(ItemType_!(T))
 
     override public typeof(this) clear ( )
     {
-        assert (!this.unsafe_iterators_open, "cannot clear pool while iterating over items");
+        verify (!this.unsafe_iterators_open, "cannot clear pool while iterating over items");
 
         super.clear();
         return this;
@@ -399,7 +402,8 @@ public abstract class IAggregatePool ( T ) : IPool, IFreeList!(ItemType_!(T))
         Sets the limit of number of items in pool or disables limitation for
         limit = unlimited.
 
-        This method is overridden simply in order to add iteration asserts.
+        This method is overridden simply in order to verify that an iteration is
+        not in progress.
 
         Params:
             limit = new limit of number of items in pool; unlimited disables
@@ -416,8 +420,8 @@ public abstract class IAggregatePool ( T ) : IPool, IFreeList!(ItemType_!(T))
 
     override public size_t setLimit ( size_t limit )
     {
-        assert (!this.safe_iterator_open, "cannot set the limit while iterating over items");
-        assert (!this.unsafe_iterators_open, "cannot set the limit while iterating over items");
+        verify (!this.safe_iterator_open, "cannot set the limit while iterating over items");
+        verify (!this.unsafe_iterators_open, "cannot set the limit while iterating over items");
 
         return super.setLimit(limit);
     }
@@ -454,7 +458,8 @@ public abstract class IAggregatePool ( T ) : IPool, IFreeList!(ItemType_!(T))
         Takes an idle item from the pool or creates a new one if all item are
         busy or the pool is empty.
 
-        This method is overridden simply in order to add an iteration assert.
+        This method is overridden simply in order to verify that an iteration is
+        not in progress.
 
         Params:
             new_item = expression that creates a new Item instance
@@ -470,7 +475,7 @@ public abstract class IAggregatePool ( T ) : IPool, IFreeList!(ItemType_!(T))
 
     override protected Item get_ ( lazy Item new_item )
     {
-        assert (!this.unsafe_iterators_open, "cannot get from pool while iterating over items");
+        verify (!this.unsafe_iterators_open, "cannot get from pool while iterating over items");
 
         return super.get_(new_item);
     }
@@ -479,7 +484,8 @@ public abstract class IAggregatePool ( T ) : IPool, IFreeList!(ItemType_!(T))
 
         Puts item back to the pool.
 
-        This method is overridden simply in order to add an iteration assert.
+        This method is overridden simply in order to verify that an iteration is
+        not in progress.
 
         Params:
             item_in = item to put back
@@ -488,7 +494,7 @@ public abstract class IAggregatePool ( T ) : IPool, IFreeList!(ItemType_!(T))
 
     override protected void recycle_ ( Item item_in )
     {
-        assert (!this.unsafe_iterators_open, "cannot recycle while iterating over items");
+        verify (!this.unsafe_iterators_open, "cannot recycle while iterating over items");
 
         super.recycle_(item_in);
     }
@@ -696,7 +702,7 @@ public abstract class IAggregatePool ( T ) : IPool, IFreeList!(ItemType_!(T))
             {
                 static if (is (T == class))
                 {
-                    assert (item.obj !is null);
+                    verify (item.obj !is null);
 
                     T item_out = cast (T) item.obj;
 
@@ -704,7 +710,7 @@ public abstract class IAggregatePool ( T ) : IPool, IFreeList!(ItemType_!(T))
                 }
                 else
                 {
-                    assert (item.ptr !is null);
+                    verify (item.ptr !is null);
 
                     ret = dg(*cast (T*) item.ptr);
                 }
@@ -775,12 +781,9 @@ public abstract class IAggregatePool ( T ) : IPool, IFreeList!(ItemType_!(T))
         ***********************************************************************/
 
         protected this ( size_t start, size_t end )
-        in
         {
-            assert (!this.outer.safe_iterator_open);
-        }
-        body
-        {
+            verify (!this.outer.safe_iterator_open);
+
             this.outer.safe_iterator_open = true;
             auto slice = this.outer.items[start .. end];
             enableStomping(this.outer.iteration_items);
