@@ -26,6 +26,8 @@ module ocean.io.select.client.FiberTimerEvent;
 
 import ocean.core.MessageFiber;
 
+import ocean.core.Verify;
+
 import ocean.sys.TimerFD;
 
 import ocean.io.select.client.model.IFiberSelectClient;
@@ -139,12 +141,8 @@ public class FiberTimerEvent : IFiberSelectClient
     ***************************************************************************/
 
     public void wait ( double s )
-    in
     {
-        assert(s >= 0); // tolerate +∞
-    }
-    body
-    {
+        verify(s >= 0); // tolerate +∞
         double int_s;
         auto ms = cast(uint)(modf(s, &int_s) * 1000);
         this.wait(cast(uint)int_s, ms);
@@ -188,12 +186,8 @@ public class FiberTimerEvent : IFiberSelectClient
     ***************************************************************************/
 
     public override bool handle ( Event events )
-    in
     {
-        assert (this.fiber.waiting);
-    }
-    body
-    {
+        verify(this.fiber.waiting);
         this.timer.handle();
 
         SelectFiber.Message message = this.fiber.resume(TimerFired, this);

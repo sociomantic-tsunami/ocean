@@ -63,6 +63,8 @@ module ocean.io.serialize.PHPSerializer;
 
 import ocean.core.Array;
 
+import ocean.core.Verify;
+
 import ocean.io.serialize.StructSerializer;
 
 import ocean.core.Traits;
@@ -280,7 +282,7 @@ public class PHPSerializer
         // write length to the first 4 bits
         dpd[0] |= len << 4;
 
-        assert ( len <= 10, "unexpected DPD array length" );
+        verify(len <= 10, "unexpected DPD array length");
 
         output ~= dpd[0 .. len];
     }
@@ -487,7 +489,7 @@ public class PHPSerializer
 
     public void serializeArray ( T ) ( ref ubyte[] output, char[] name, T[] array )
     {
-        assert ( array.length <= uint.max, "Array length doesn't fit into uint");
+        verify(array.length <= uint.max, "Array length doesn't fit into uint");
         uint len = cast(uint) array.length;
 
         output ~= (cast(ubyte*)&len)[0 .. uint.sizeof];

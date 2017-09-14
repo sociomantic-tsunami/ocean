@@ -28,6 +28,8 @@ module ocean.io.stream.Data;
 
 import ocean.transition;
 
+import ocean.core.Verify;
+
 import ocean.core.ByteSwap;
 
 import ocean.io.device.Conduit;
@@ -450,7 +452,7 @@ class DataOutput : OutputFilter
         private final void eat (Const!(void)* src, size_t bytes)
         {
                 auto count = output.write (src[0..bytes]);
-                assert (count is bytes);
+                verify(count == bytes);
         }
 }
 

@@ -37,6 +37,8 @@ module ocean.io.select.client.TimerSet;
 
 import ocean.util.container.pool.ObjectPool;
 
+import ocean.core.Verify;
+
 import ocean.task.Scheduler;
 import ocean.io.select.EpollSelectDispatcher;
 
@@ -318,17 +320,15 @@ public class TimerSet ( EventData ) : TimerEventTimeoutManager
 
     public IEvent schedule ( EventSetupDg setup_dg, EventFiredDg fired_dg,
         ulong schedule_us )
-    in
-    {
-        assert(setup_dg !is null, typeof(this).stringof ~ ".schedule: event setup delegate is null");
-        assert(fired_dg !is null, typeof(this).stringof ~ ".schedule: event fired delegate is null");
-    }
     out ( event )
     {
         assert(event !is null);
     }
     body
     {
+        verify(setup_dg !is null, typeof(this).stringof ~ ".schedule: event setup delegate is null");
+        verify(fired_dg !is null, typeof(this).stringof ~ ".schedule: event fired delegate is null");
+
         auto event = this.events.get(new Event);
         event.fired_dg = fired_dg;
 

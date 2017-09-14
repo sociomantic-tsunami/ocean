@@ -22,6 +22,8 @@ module ocean.io.select.selector.TimeoutSelectedKeysHandler;
 
 *******************************************************************************/
 
+import ocean.core.Verify;
+
 import ocean.io.select.selector.SelectedKeysHandler,
                ocean.io.select.selector.EpollException;
 
@@ -116,7 +118,7 @@ class TimeoutSelectedKeysHandler: SelectedKeysHandler
             {
                 auto client = cast (ISelectClient)timeout_client;
 
-                assert (client !is null, "timeout client is not a select client");
+                verify(client !is null, "timeout client is not a select client");
 
                 debug ( ISelectClient )
                     Stderr.formatln("{} :: Client timed out, unregistering", client).flush();
@@ -144,7 +146,7 @@ class TimeoutSelectedKeysHandler: SelectedKeysHandler
                 {
                     ISelectClient client = cast (ISelectClient) key.data.ptr;
 
-                    assert (client !is null);
+                    verify(client !is null);
 
                     if (!bsearch(cast (void*) client, timed_out_clients.ptr,
                                  timed_out_clients.length, timed_out_clients[0].sizeof, &cmpPtr!(true)))

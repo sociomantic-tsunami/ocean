@@ -33,6 +33,7 @@ module ocean.io.model.SuspendableThrottlerCount;
 *******************************************************************************/
 
 import ocean.transition;
+import ocean.core.Verify;
 
 import ocean.io.model.ISuspendable,
        ocean.io.model.ISuspendableThrottler,
@@ -87,12 +88,9 @@ public class SuspendableThrottlerCount : ISuspendableThrottlerCount
     ***************************************************************************/
 
     public void inc ( )
-    in
     {
-        assert(this.count < this.count.max);
-    }
-    body
-    {
+        verify(this.count < this.count.max);
+
         this.count++;
         super.throttledSuspend();
     }
@@ -116,12 +114,9 @@ public class SuspendableThrottlerCount : ISuspendableThrottlerCount
     ***************************************************************************/
 
     public void add ( size_t n )
-    in
     {
-        assert(this.count <= this.count.max - n);
-    }
-    body
-    {
+        verify(this.count <= this.count.max - n);
+
         this.count += n;
         super.throttledSuspend();
     }
@@ -138,12 +133,9 @@ public class SuspendableThrottlerCount : ISuspendableThrottlerCount
     ***************************************************************************/
 
     public void dec ( )
-    in
     {
-        assert(this.count > 0);
-    }
-    body
-    {
+        verify(this.count > 0);
+
         this.count--;
         super.throttledResume();
     }
@@ -167,12 +159,8 @@ public class SuspendableThrottlerCount : ISuspendableThrottlerCount
     ***************************************************************************/
 
     public void remove ( size_t n )
-    in
     {
-        assert(this.count >= n);
-    }
-    body
-    {
+        verify(this.count >= n);
         this.count -= n;
         super.throttledResume();
     }
@@ -275,7 +263,7 @@ abstract public class ISuspendableThrottlerCount : ISuspendableThrottler
 
     public this ( size_t suspend_point, size_t resume_point )
     {
-        assert(suspend_point > resume_point);
+        verify(suspend_point > resume_point);
 
         this.suspend_point = suspend_point;
         this.resume_point = resume_point;

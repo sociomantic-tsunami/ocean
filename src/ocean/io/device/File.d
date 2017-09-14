@@ -26,6 +26,7 @@ module ocean.io.device.File;
 
 import ArrayMut = ocean.core.array.Mutation;
 import ocean.transition;
+import ocean.core.Verify;
 
 import ocean.sys.Common;
 import ocean.text.util.StringC;
@@ -523,7 +524,7 @@ class File : Device, Device.Seek, Device.Truncate
                     ];
 
             // remember our settings
-            assert(path);
+            verify(path !is null);
             path_ = path;
             style_ = style;
 

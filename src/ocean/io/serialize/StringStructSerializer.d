@@ -61,6 +61,7 @@ module ocean.io.serialize.StringStructSerializer;
 import ocean.transition;
 
 import ocean.core.Array;
+import ocean.core.Verify;
 
 import ocean.io.serialize.StructSerializer;
 
@@ -219,7 +220,7 @@ public class StringStructSerializer ( Char )
 
     public void open ( ref Char[] output, cstring name )
     {
-        assert(this.indent.length == 0, "Non-zero indentation in open");
+        verify(this.indent.length == 0, "Non-zero indentation in open");
 
         sformat(output, "struct {}:\n", name);
         this.increaseIndent();
@@ -261,7 +262,7 @@ public class StringStructSerializer ( Char )
 
     public void serialize ( T ) ( ref Char[] output, ref T item, cstring name )
     {
-        assert(this.indent.length > 0, "Incorrect indentation in serialize");
+        verify(this.indent.length > 0, "Incorrect indentation in serialize");
 
         // TODO: temporary support for unions by casting them to ubyte[]
         static if ( is(T == union) )
@@ -313,7 +314,7 @@ public class StringStructSerializer ( Char )
 
     public void openStruct ( ref Char[] output, cstring name )
     {
-        assert(this.indent.length > 0, "Incorrect indentation in openStruct");
+        verify(this.indent.length > 0, "Incorrect indentation in openStruct");
 
         sformat(output, "{}struct {}:\n", this.indent, name);
         this.increaseIndent();
@@ -353,7 +354,7 @@ public class StringStructSerializer ( Char )
     public void serializeArray ( T ) ( ref Char[] output, cstring name,
         T[] array )
     {
-        assert(this.indent.length > 0,
+        verify(this.indent.length > 0,
             "Incorrect indentation in serializeArray");
 
         sformat(output, "{}{}[] {} (length {}):", this.indent, T.stringof, name,
@@ -396,7 +397,7 @@ public class StringStructSerializer ( Char )
     public void openStructArray ( T ) ( ref Char[] output, cstring name,
         T[] array )
     {
-        assert(this.indent.length > 0,
+        verify(this.indent.length > 0,
             "Incorrect indentation in openStructArray");
 
         sformat(output, "{}{}[] {} (length {}):\n", this.indent, T.stringof,
@@ -448,7 +449,7 @@ public class StringStructSerializer ( Char )
 
     private void decreaseIndent ( )
     {
-        assert(this.indent.length >= indent_size, typeof(this).stringof ~
+        verify(this.indent.length >= indent_size, typeof(this).stringof ~
             ".decreaseIndent - indentation cannot be decreased");
 
         this.indent.length = this.indent.length - indent_size;

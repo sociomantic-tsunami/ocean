@@ -101,6 +101,8 @@ module ocean.io.select.client.EpollProcess;
 
 import ocean.transition;
 
+import ocean.core.Verify;
+
 import ocean.util.container.map.Map;
 
 import ocean.io.select.client.model.ISelectClient;
@@ -300,8 +302,8 @@ public abstract class EpollProcess
 
                 if (pid == -1)
                 {
-                    assert( errno() == ECHILD );
-                    assert( this.processes.length == 0 );
+                    verify(errno() == ECHILD);
+                    verify(this.processes.length == 0);
                     return false;
                 }
 
@@ -553,7 +555,7 @@ public abstract class EpollProcess
 
         protected override void handle_ ( ubyte[] data )
         {
-            assert(!this.outer.stdout_finalized);
+            verify(!this.outer.stdout_finalized);
             this.outer.stdout(data);
         }
     }
@@ -620,7 +622,7 @@ public abstract class EpollProcess
 
         protected override void handle_ ( ubyte[] data )
         {
-            assert(!this.outer.stderr_finalized);
+            verify(!this.outer.stderr_finalized);
             this.outer.stderr(data);
         }
     }
@@ -768,7 +770,7 @@ public abstract class EpollProcess
 
     public void start ( Const!(mstring)[] args_with_command )
     {
-        assert(this.state == State.None); // TODO: error notification?
+        verify(this.state == State.None); // TODO: error notification?
 
         this.stdout_finalized = false;
         this.stderr_finalized = false;
@@ -786,7 +788,7 @@ public abstract class EpollProcess
 
         this.state = State.Running;
 
-        assert(this.process_monitor !is null,
+        verify(this.process_monitor !is null,
                "Implicit singleton process monitor not initialised");
         this.process_monitor.add(this);
     }

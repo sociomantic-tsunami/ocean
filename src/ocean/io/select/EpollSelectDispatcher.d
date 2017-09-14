@@ -36,6 +36,8 @@ module ocean.io.select.EpollSelectDispatcher;
 
 import ocean.transition;
 
+import ocean.core.Verify;
+
 import ocean.io.select.selector.IEpollSelectDispatcherInfo;
 import ocean.io.select.client.model.ISelectClient;
 
@@ -468,16 +470,16 @@ public class EpollSelectDispatcher : IEpollSelectDispatcherInfo
             }
         }
 
-        assert (current.fileHandle == next.fileHandle,
-                typeof (this).stringof ~ ".changeClient: clients are expected to share the same file descriptor");
-        assert (current.is_registered,
-                typeof (this).stringof ~ ".changeClient: current client is expected to be registered");
-        assert (!next.is_registered,
-                typeof (this).stringof ~ ".changeClient: next client is expected not to be registered");
     }
     body
     {
-        assert (current !is next); // should be impossible since current.is_registered != next.is_registered
+        verify(current.fileHandle == next.fileHandle,
+                typeof (this).stringof ~ ".changeClient: clients are expected to share the same file descriptor");
+        verify(current.is_registered,
+                typeof (this).stringof ~ ".changeClient: current client is expected to be registered");
+        verify(!next.is_registered,
+                typeof (this).stringof ~ ".changeClient: next client is expected not to be registered");
+        verify(current !is next); // should be impossible since current.is_registered != next.is_registered
 
         try
         {
@@ -688,12 +690,9 @@ public class EpollSelectDispatcher : IEpollSelectDispatcherInfo
 
     public void eventLoop ( bool delegate ( ) select_cycle_hook = null,
         void delegate (Exception) unhandled_exception_hook  = null )
-    in
     {
-        assert (!this.in_event_loop, "Event loop has already been started.");
-    }
-    body
-    {
+        verify(!this.in_event_loop, "Event loop has already been started.");
+
         this.in_event_loop = true;
         scope ( exit ) this.in_event_loop = false;
 

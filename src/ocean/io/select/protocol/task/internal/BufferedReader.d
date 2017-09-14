@@ -15,6 +15,8 @@
 
 module ocean.io.select.protocol.task.internal.BufferedReader;
 
+import ocean.core.Verify;
+
 class BufferedReader
 {
     /***************************************************************************
@@ -70,12 +72,8 @@ class BufferedReader
     ***************************************************************************/
 
     public this ( size_t read_buffer_size = default_read_buffer_size )
-    in
     {
-        assert(default_read_buffer_size, "zero input buffer size specified");
-    }
-    body
-    {
+        verify(default_read_buffer_size != 0, "zero input buffer size specified");
         this.data = new ubyte[read_buffer_size];
     }
 

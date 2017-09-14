@@ -47,6 +47,8 @@ deprecated module ocean.io.device.ProgressFile;
 
 import ocean.transition;
 
+import ocean.core.Verify;
+
 import ocean.io.device.File;
 
 
@@ -104,12 +106,10 @@ deprecated class ProgressFile : File
     ***************************************************************************/
 
     public this ( ProgressDg progress_dg )
-    in
     {
-        assert(progress_dg !is null, typeof(this).stringof ~ ": progress delegate is null, what's the point?");
-    }
-    body
-    {
+        verify(progress_dg !is null,
+                typeof(this).stringof ~ ": progress delegate is null, what's the point?");
+
         this.progress_dg = progress_dg;
     }
 
@@ -129,12 +129,10 @@ deprecated class ProgressFile : File
     ***************************************************************************/
 
     public this ( ProgressDg progress_dg, char[] path, Style style = ReadExisting )
-    in
     {
-        assert(progress_dg !is null, typeof(this).stringof ~ ": progress delegate is null, what's the point?");
-    }
-    body
-    {
+        verify(progress_dg !is null,
+                typeof(this).stringof ~ ": progress delegate is null, what's the point?");
+
         this(progress_dg);
         this.open(path, style);
     }

@@ -19,6 +19,8 @@ module ocean.io.stream.Format;
 
 import ocean.transition;
 
+import ocean.core.Verify;
+
 import ocean.io.device.Conduit;
 
 import ocean.text.convert.Layout_tango;
@@ -120,8 +122,8 @@ class FormatOutput(T) : OutputFilter
 
         this (Layout!(T) convert, OutputStream output, Const!(T)[] eol = Eol)
         {
-                assert (convert);
-                assert (output);
+                verify(convert !is null);
+                verify(output !is null);
 
                 this.convert = convert;
                 this.eol = eol;
@@ -191,7 +193,8 @@ class FormatOutput(T) : OutputFilter
                                           "{}, {}, {}, {}, {}, {}, {}, {}, " ~
                                           "{}, {}, {}, {}, {}, {}, {}, {}, ";
 
-                assert (_arguments.length <= slice.length/4, "FormatOutput :: too many arguments");
+                verify(_arguments.length <= slice.length/4,
+                        "FormatOutput :: too many arguments");
 
                 if (_arguments.length == 0)
                     sink.flush;

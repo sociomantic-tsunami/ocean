@@ -19,6 +19,8 @@ module ocean.io.vfs.VirtualFolder;
 
 import ocean.transition;
 
+import ocean.core.Verify;
+
 //import std.string;
 
 import ocean.core.ExceptionDefinitions;
@@ -101,7 +103,7 @@ class VirtualFolder : VfsHost
 
         VfsHost mount (VfsFolder folder, istring name = null)
         {
-                assert (folder);
+                .verify(folder !is null);
                 if (name.length is 0)
                     name = folder.name;
 
@@ -158,7 +160,7 @@ class VirtualFolder : VfsHost
                 foreach (key, value; mounts)
                          if (folder is value)
                              name = key;
-                assert (name.ptr);
+                .verify(name !is null);
 
                 // reach up to the root, and initiate tree sweep
                 auto root = this;
@@ -180,7 +182,7 @@ class VirtualFolder : VfsHost
 
         final VfsHost map (VfsFile file, istring name)
         {
-                assert (name);
+                .verify(name !is null);
                 files[name] = file;
                 return this;
         }
@@ -194,7 +196,7 @@ class VirtualFolder : VfsHost
 
         final VfsHost map (VfsFolderEntry folder, istring name)
         {
-                assert (name);
+                .verify(name !is null);
                 folders[name] = folder;
                 return this;
         }
@@ -364,7 +366,7 @@ class VirtualFolder : VfsHost
 
         private final void validate (istring name)
         {
-                assert (name);
+                .verify(name !is null);
                 if (locatePrior(name, '.') != name.length ||
                     locatePrior(name, FileConst.PathSeparatorChar) != name.length)
                     error ("'"~name~"' contains invalid characters");

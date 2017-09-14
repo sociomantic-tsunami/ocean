@@ -19,6 +19,8 @@ module ocean.io.vfs.FileFolder;
 
 import ocean.transition;
 
+import ocean.core.Verify;
+
 import ocean.io.device.File;
 
 import Path = ocean.io.Path;
@@ -78,7 +80,7 @@ class FileFolder : VfsFolder
 
         private this (FileFolder parent, istring name, bool create=false)
         {
-                assert (parent);
+                .verify(parent !is null);
                 auto mpath = Path.join(parent.path, name);
                 this.path = open (assumeUnique(mpath), create);
         }

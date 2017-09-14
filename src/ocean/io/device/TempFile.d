@@ -24,6 +24,7 @@
 module ocean.io.device.TempFile;
 
 import ocean.transition;
+import ocean.core.Verify;
 
 import Path = ocean.io.Path;
 import ocean.math.random.Kiss : Kiss;
@@ -456,7 +457,7 @@ class TempFile : File
 
         foreach( ref c ; junk )
         {
-            assert(JUNK_CHARS.length < uint.max);
+            verify(JUNK_CHARS.length < uint.max);
             c = JUNK_CHARS[Kiss.instance.toInt(cast(uint) $)];
         }
 

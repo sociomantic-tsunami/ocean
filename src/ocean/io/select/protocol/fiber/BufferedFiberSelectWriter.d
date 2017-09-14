@@ -17,6 +17,8 @@ module ocean.io.select.protocol.fiber.BufferedFiberSelectWriter;
 
 import ocean.transition;
 
+import ocean.core.Verify;
+
 import ocean.io.select.protocol.fiber.FiberSelectWriter;
 
 import ocean.io.select.protocol.fiber.model.IFiberSelectProtocol;
@@ -63,12 +65,9 @@ class BufferedFiberSelectWriter : FiberSelectWriter
     public this ( IOutputDevice output, SelectFiber fiber,
                   IOWarning warning_e, IOError error_e,
                   size_t size = default_buffer_size )
-    in
     {
-        assert (size, "zero input buffer size specified");
-    }
-    body
-    {
+        verify(size != 0, "zero input buffer size specified");
+
         super(output, fiber, warning_e, error_e);
         this.buffer = new AppendBuffer!(void)(size, true);
     }
@@ -95,12 +94,9 @@ class BufferedFiberSelectWriter : FiberSelectWriter
      **************************************************************************/
 
     public this ( IFiberSelectProtocol other, size_t size = default_buffer_size )
-    in
     {
-        assert (size, "zero input buffer size specified");
-    }
-    body
-    {
+        verify(size != 0, "zero input buffer size specified");
+
         super(other);
         this.buffer = new AppendBuffer!(void)(size, true);
     }
@@ -188,16 +184,14 @@ class BufferedFiberSelectWriter : FiberSelectWriter
      **************************************************************************/
 
     public size_t buffer_size ( size_t s )
-    in
-    {
-        assert (s, typeof (this).stringof ~ ".buffer_size: 0 specified");
-    }
     out (n)
     {
         assert (n == s);
     }
     body
     {
+        verify(s != 0, typeof (this).stringof ~ ".buffer_size: 0 specified");
+
         if (s < this.buffer.length)
         {
             this.flushBuffer();

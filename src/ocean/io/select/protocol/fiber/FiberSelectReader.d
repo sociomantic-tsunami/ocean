@@ -27,6 +27,8 @@ module ocean.io.select.protocol.fiber.FiberSelectReader;
 
  ******************************************************************************/
 
+import ocean.core.Verify;
+
 import ocean.io.select.protocol.fiber.model.IFiberSelectProtocol;
 
 import ocean.io.device.IODevice: IInputDevice;
@@ -134,12 +136,9 @@ class FiberSelectReader : IFiberSelectProtocol
     public this ( IInputDevice input, SelectFiber fiber,
                   IOWarning warning_e, IOError error_e,
                   size_t buffer_size = this.default_buffer_size )
-    in
     {
-        assert (buffer_size, "zero input buffer size specified");
-    }
-    body
-    {
+        verify(buffer_size > 0, "zero input buffer size specified");
+
         super(this.input = input, Event.EPOLLIN | Event.EPOLLRDHUP,
               fiber, warning_e, error_e);
 
@@ -169,19 +168,16 @@ class FiberSelectReader : IFiberSelectProtocol
 
     public this ( typeof (super) other,
                   size_t buffer_size = this.default_buffer_size )
-    in
     {
-        assert (buffer_size, "zero input buffer size specified");
-    }
-    body
-    {
+        verify(buffer_size > 0, "zero input buffer size specified");
+
         super(other, Event.EPOLLIN | Event.EPOLLRDHUP);
 
         this.data = new ubyte[buffer_size];
 
         this.input = cast (IInputDevice) this.conduit;
 
-        assert (this.input !is null, typeof (this).stringof ~ ": the conduit of "
+        verify(this.input !is null, typeof (this).stringof ~ ": the conduit of "
                 ~ "the other " ~ typeof (super).stringof ~ " instance must be a "
                 ~ IInputDevice.stringof);
     }
@@ -499,16 +495,13 @@ class FiberSelectReader : IFiberSelectProtocol
      **************************************************************************/
 
     protected override bool transmit ( Event events )
-    in
-    {
-        assert (this.available < this.data.length, "requested to receive nothing");
-    }
     out (received)
     {
         assert (received <= data.length, "received length too high");
     }
     body
     {
+        verify(this.available < this.data.length, "requested to receive nothing");
 
         .errno = 0;
 
@@ -563,7 +556,7 @@ class FiberSelectReader : IFiberSelectProtocol
             this.available += n;
         }
 
-        assert (n >= 0);
+        verify(n >= 0);
 
         return !n;
     }

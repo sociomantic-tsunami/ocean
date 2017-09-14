@@ -34,6 +34,8 @@ module ocean.io.select.client.model.ISelectClient;
 
 import ocean.transition;
 
+import ocean.core.Verify;
+
 import ocean.io.select.client.model.ISelectClientInfo;
 
 import ocean.sys.Epoll;
@@ -277,12 +279,9 @@ public abstract class ISelectClient : ITimeoutClient, ISelectable, ISelectClient
      **************************************************************************/
 
     final public void registered ( )
-    in
     {
-        assert (!this.is_registered_, classname(this) ~ ".registered(): already registered");
-    }
-    body
-    {
+        verify(!this.is_registered_, classname(this) ~ ".registered(): already registered");
+
         this.is_registered_ = true;
 
         try if (this.expiry_registration_ !is null)
@@ -303,12 +302,9 @@ public abstract class ISelectClient : ITimeoutClient, ISelectable, ISelectClient
      **************************************************************************/
 
     final public void unregistered ( )
-    in
     {
-        assert (this.is_registered_, classname(this) ~ ".unregistered(): not registered");
-    }
-    body
-    {
+        verify(this.is_registered_, classname(this) ~ ".unregistered(): not registered");
+
         this.is_registered_ = false;
 
         try if (this.expiry_registration_ !is null)

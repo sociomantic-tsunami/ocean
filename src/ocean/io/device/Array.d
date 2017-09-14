@@ -21,6 +21,8 @@ module ocean.io.device.Array;
 
 import ocean.transition;
 
+import ocean.core.Verify;
+
 import ocean.core.ExceptionDefinitions;
 
 import ocean.io.device.Conduit;
@@ -360,7 +362,7 @@ class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
 
         final void[] opSlice (size_t start, size_t end)
         {
-                assert (start <= extent && end <= extent && start <= end);
+                verify(start <= extent && end <= extent && start <= end);
                 return data [start .. end];
         }
 
@@ -623,7 +625,7 @@ class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
                 if (count != IConduit.Eof)
                    {
                    extent += count;
-                   assert (extent <= dimension);
+                   verify(extent <= dimension);
                    }
                 return count;
         }
@@ -656,7 +658,7 @@ class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
                 if (count != IConduit.Eof)
                    {
                    index += count;
-                   assert (index <= extent);
+                   verify(index <= extent);
                    }
                 return count;
         }

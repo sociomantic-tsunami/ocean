@@ -41,6 +41,8 @@ module ocean.io.select.client.SignalEvent;
 
 *******************************************************************************/
 
+import ocean.core.Verify;
+
 import ocean.io.select.client.model.ISelectClient;
 
 import ocean.sys.SignalFD;
@@ -114,7 +116,7 @@ public class SignalEvent : ISelectClient
 
     public this ( Handler handler, int[] signals ... )
     {
-        assert(handler !is null);
+        verify(handler !is null);
 
         this.handler = handler;
 
