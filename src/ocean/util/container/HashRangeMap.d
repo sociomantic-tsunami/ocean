@@ -635,6 +635,7 @@ unittest
 version ( UnitTest )
 {
     import ocean.core.Traits;
+    import ocean.core.Verify;
 
     private template hasAtomicEquality ( T )
     {
@@ -664,12 +665,8 @@ version ( UnitTest )
 
     // Unittest function for put().
     private void testPut (Value) ( Value[] v )
-    in
     {
-        assert(v.length == 8, "You should provide an array of 8 different values");
-    }
-    body
-    {
+        verify(v.length == 8, "You should provide an array of 8 different values");
         static assert(hasEquality!(Value),
                       "Value has to support equality check to run this test function");
         // In order to make notation shorter
@@ -770,12 +767,8 @@ version ( UnitTest )
 
     // Unittest function for remove().
     private void testRemove ( Value ) ( Value[] v)
-    in
     {
-        assert(v.length == 5, "You should provide an array of 5 different values");
-    }
-    body
-    {
+        verify(v.length == 5, "You should provide an array of 5 different values");
         static assert(hasEquality!(Value),
                       "Value has to support equality check to run this test function");
 
@@ -801,12 +794,8 @@ version ( UnitTest )
 
     // Unittest function for opIn_r().
     private void testOpInR ( Value ) ( Value[] v )
-    in
     {
-        assert(v.length == 5, "You should provide an array of 5 different values");
-    }
-    body
-    {
+        verify(v.length == 5, "You should provide an array of 5 different values");
         static assert(hasEquality!(Value),
                       "Value has to support equality check to run this test function");
 

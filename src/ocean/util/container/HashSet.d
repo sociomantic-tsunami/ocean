@@ -60,6 +60,8 @@ class HashSet (V, alias Hash = Container.hash,
                   alias Heap = Container.DefaultCollect)
                   : IContainer!(V)
 {
+        import ocean.core.Verify;
+
         // use this type for Allocator configuration
         public alias Slink!(V)  Type;
 
@@ -438,7 +440,7 @@ class HashSet (V, alias Hash = Container.hash,
 
         final void threshold (float desired)
         {
-                assert (desired > 0.0);
+                verify (desired > 0.0);
                 loadFactor = desired;
                 if (table)
                     checkLoad;
@@ -504,9 +506,9 @@ class HashSet (V, alias Hash = Container.hash,
 
         final HashSet check()
         {
-                assert(!(table is null && count !is 0));
-                assert((table is null || table.length > 0));
-                assert(loadFactor > 0.0f);
+                verify(!(table is null && count !is 0));
+                verify((table is null || table.length > 0));
+                verify(loadFactor > 0.0f);
 
                 if (table)
                    {
@@ -516,11 +518,11 @@ class HashSet (V, alias Hash = Container.hash,
                        for (auto p = table[i]; p; p = p.next)
                            {
                            ++c;
-                           assert(contains(p.value));
-                           assert(Hash (p.value, table.length) is i);
+                           verify(contains(p.value));
+                           verify(Hash (p.value, table.length) is i);
                            }
                        }
-                   assert(c is count);
+                   verify(c is count);
                    }
                 return this;
         }

@@ -74,6 +74,8 @@ class SortedMap (K, V, alias Reap = Container.reap,
                        alias Heap = Container.DefaultCollect)
                        : IContainer!(V)
 {
+        import ocean.core.Verify;
+
         // use this type for Allocator configuration
         public alias RedBlack!(K, V)    Type;
         private alias Type              *Ref;
@@ -672,9 +674,9 @@ class SortedMap (K, V, alias Reap = Container.reap,
 
         final SortedMap check ()
         {
-                assert(cmp !is null);
-                assert(((count is 0) is (tree is null)));
-                assert((tree is null || tree.size() is count));
+                verify(cmp !is null);
+                verify(((count is 0) is (tree is null)));
+                verify((tree is null || tree.size() is count));
 
                 if (tree)
                    {
@@ -685,7 +687,7 @@ class SortedMap (K, V, alias Reap = Container.reap,
                    while (t)
                          {
                          auto v = t.value;
-                         assert((last is K.init || cmp(last, v) <= 0));
+                         verify((last is K.init || cmp(last, v) <= 0));
                          last = v;
                          t = t.successor;
                          }
