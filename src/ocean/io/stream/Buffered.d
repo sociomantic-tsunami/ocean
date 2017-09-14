@@ -20,6 +20,7 @@
 module ocean.io.stream.Buffered;
 
 import ocean.transition;
+import ocean.core.Verify;
 
 public import ocean.io.model.IConduit;
 
@@ -99,7 +100,7 @@ class BufferedInput : InputFilter, InputBuffer
 
         this (InputStream stream)
         {
-                assert (stream);
+                verify(stream !is null);
                 this (stream, stream.conduit.bufferSize);
         }
 
@@ -149,7 +150,7 @@ class BufferedInput : InputFilter, InputBuffer
                       if (source is conduit)
                           break;
                       source = source.input;
-                      assert (source);
+                      verify(source !is null);
                       }
 
                 return new BufferedInput (stream, conduit.bufferSize);
@@ -181,7 +182,7 @@ class BufferedInput : InputFilter, InputBuffer
 
         final void[] opSlice (size_t start, size_t end)
         {
-                assert (start <= extent && end <= extent && start <= end);
+                verify(start <= extent && end <= extent && start <= end);
                 return data [start .. end];
         }
 
@@ -297,7 +298,7 @@ class BufferedInput : InputFilter, InputBuffer
                 if (count != Eof)
                    {
                    index += count;
-                   assert (index <= extent);
+                   verify(index <= extent);
                    }
                 return count;
         }
@@ -329,7 +330,7 @@ class BufferedInput : InputFilter, InputBuffer
                 if (count != Eof)
                    {
                    extent += count;
-                   assert (extent <= dimension);
+                   verify(extent <= dimension);
                    }
                 return count;
         }
@@ -543,7 +544,7 @@ class BufferedInput : InputFilter, InputBuffer
 
         final size_t reserve (size_t space)
         {
-                assert (space < dimension);
+                verify(space < dimension);
 
                 if ((dimension - index) < space)
                      compress;
@@ -597,7 +598,7 @@ class BufferedInput : InputFilter, InputBuffer
 
         final size_t drain (OutputStream dst)
         {
-                assert (dst);
+                verify(dst !is null);
 
                 size_t ret = reader (&dst.write);
                 compress;
@@ -896,7 +897,7 @@ class BufferedOutput : OutputFilter, OutputBuffer
 
         this (OutputStream stream, void delegate() flush_notifier = null)
         {
-                assert (stream);
+                verify(stream !is null);
                 this (stream, stream.conduit.bufferSize, flush_notifier);
         }
 
@@ -951,7 +952,7 @@ class BufferedOutput : OutputFilter, OutputBuffer
                       if (sink is conduit)
                           break;
                       sink = sink.output;
-                      assert (sink);
+                      verify(sink !is null);
                       }
 
                 return new BufferedOutput (stream, conduit.bufferSize);
@@ -1237,7 +1238,7 @@ class BufferedOutput : OutputFilter, OutputBuffer
 
         final size_t drain (OutputStream dst)
         {
-                assert (dst);
+                verify(dst !is null);
 
                 size_t ret = reader (&dst.write);
                 compress;
@@ -1312,7 +1313,7 @@ class BufferedOutput : OutputFilter, OutputBuffer
                 if (count != Eof)
                    {
                    extent += count;
-                   assert (extent <= dimension);
+                   verify(extent <= dimension);
                    }
                 return count;
         }
@@ -1345,7 +1346,7 @@ class BufferedOutput : OutputFilter, OutputBuffer
                 if (count != Eof)
                    {
                    index += count;
-                   assert (index <= extent);
+                   verify(index <= extent);
                    }
                 return count;
         }

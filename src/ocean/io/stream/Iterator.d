@@ -19,6 +19,8 @@ module ocean.io.stream.Iterator;
 
 import ocean.transition;
 
+import ocean.core.Verify;
+
 import ocean.io.stream.Buffered;
 
 package import ocean.io.device.Conduit : InputFilter, InputBuffer, InputStream;
@@ -91,7 +93,7 @@ class Iterator(T) : InputFilter
 
         Iterator set (InputStream stream)
         {
-                assert (stream);
+                verify(stream !is null);
                 source = BufferedInput.create (stream);
                 super.source = source;
                 return this;

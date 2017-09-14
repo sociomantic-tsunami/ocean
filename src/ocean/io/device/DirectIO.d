@@ -68,6 +68,7 @@ module ocean.io.device.DirectIO;
 *******************************************************************************/
 
 import ocean.transition;
+import ocean.core.Verify;
 
 import core.memory;
 
@@ -413,7 +414,7 @@ public class BufferedDirectWriteFile: OutputStream
 
     public void open (cstring path)
     {
-        assert (this.file.fileHandle == -1);
+        verify(this.file.fileHandle == -1);
         this.file.open(path);
         this.free_index = 0;
     }
@@ -469,7 +470,7 @@ public class BufferedDirectWriteFile: OutputStream
 
     public size_t write (Const!(void)[] src)
     {
-        assert (this.file.fileHandle != -1);
+        verify(this.file.fileHandle != -1);
 
         size_t total = src.length;
 
@@ -532,7 +533,7 @@ public class BufferedDirectWriteFile: OutputStream
 
     public size_t flushWithPadding ( ubyte padding_byte = 0 )
     {
-        assert (this.file.fileHandle != -1);
+        verify(this.file.fileHandle != -1);
 
         if (this.free_index == 0)
             return 0;
@@ -563,7 +564,7 @@ public class BufferedDirectWriteFile: OutputStream
 
     public void sync ( )
     {
-        assert (this.file.fileHandle != -1);
+        verify(this.file.fileHandle != -1);
         this.file.sync();
     }
 
@@ -691,7 +692,7 @@ public class BufferedDirectReadFile: InputStream
 
     public void open (cstring path)
     {
-        assert (this.file.fileHandle == -1);
+        verify(this.file.fileHandle == -1);
         this.file.open(path);
         this.free_index = 0;
         this.pending_index = 0;
@@ -734,7 +735,7 @@ public class BufferedDirectReadFile: InputStream
 
     public size_t read (void[] dst)
     {
-        assert (this.file.fileHandle != -1);
+        verify(this.file.fileHandle != -1);
 
         if (dst.length == 0)
             return 0;
@@ -843,7 +844,7 @@ public class BufferedDirectReadFile: InputStream
 
     public void sync ( )
     {
-        assert (this.file.fileHandle != -1);
+        verify(this.file.fileHandle != -1);
         this.file.sync();
     }
 

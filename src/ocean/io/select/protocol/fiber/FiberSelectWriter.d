@@ -27,6 +27,8 @@ module ocean.io.select.protocol.fiber.FiberSelectWriter;
 
 import ocean.transition;
 
+import ocean.core.Verify;
+
 import ocean.io.select.protocol.fiber.model.IFiberSelectProtocol;
 
 import ocean.io.select.client.model.ISelectClient;
@@ -148,7 +150,7 @@ class FiberSelectWriter : IFiberSelectProtocol
 
         this.output = cast (IOutputDevice) this.conduit;
 
-        assert (this.output !is null, typeof (this).stringof ~ ": the conduit of "
+        verify(this.output !is null, typeof (this).stringof ~ ": the conduit of "
                 ~ "the other " ~ typeof (super).stringof ~ " instance must be a "
                 ~ IOutputDevice.stringof);
     }

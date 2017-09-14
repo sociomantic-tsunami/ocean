@@ -62,6 +62,8 @@ module ocean.io.Path;
 
 import ocean.transition;
 
+import ocean.core.Verify;
+
 import ocean.sys.Common;
 
 public  import ocean.time.Time : Time, TimeSpan;
@@ -1451,29 +1453,26 @@ unittest
 ******************************************************************************/
 
 bool patternMatch (cstring filename, cstring pattern)
-in
 {
         // Verify that pattern[] is valid
         bool inbracket = false;
         for (auto i=0; i < pattern.length; i++)
-            {
+        {
             switch (pattern[i])
-                   {
-                   case '[':
-                        assert(!inbracket);
-                        inbracket = true;
-                        break;
-                   case ']':
-                        assert(inbracket);
-                        inbracket = false;
-                        break;
-                   default:
-                        break;
-                   }
+            {
+            case '[':
+                verify(!inbracket);
+                inbracket = true;
+                break;
+            case ']':
+                verify(inbracket);
+                inbracket = false;
+                break;
+            default:
+                break;
             }
-}
-body
-{
+        }
+
         int pi;
         int ni;
         char pc;
@@ -1721,7 +1720,7 @@ mstring normalize (cstring in_path, mstring buf = null)
 
               // Push the start position of the regular segment on the
               // stack
-              assert (nodeStackTop < NodeStackLength);
+              verify(nodeStackTop < NodeStackLength);
               nodeStack[nodeStackTop++] = idx;
 
               // Skip the regular segment and set moveTo to the position

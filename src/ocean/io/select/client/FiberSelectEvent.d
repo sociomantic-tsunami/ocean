@@ -50,6 +50,8 @@ module ocean.io.select.client.FiberSelectEvent;
 
 import ocean.core.MessageFiber;
 
+import ocean.core.Verify;
+
 import ocean.sys.EventFD;
 
 import ocean.io.select.client.model.IFiberSelectClient;
@@ -187,12 +189,9 @@ public class FiberSelectEvent : IFiberSelectClient
     ***************************************************************************/
 
     public override bool handle ( Event events )
-    in
     {
-        assert (super.fiber.waiting);
-    }
-    body
-    {
+        verify(super.fiber.waiting);
+
         this.event.handle();
 
         SelectFiber.Message message = super.fiber.resume(EventFired, this);

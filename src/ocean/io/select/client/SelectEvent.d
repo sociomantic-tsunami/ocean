@@ -57,6 +57,8 @@ module ocean.io.select.client.SelectEvent;
 
 *******************************************************************************/
 
+import ocean.core.Verify;
+
 import ocean.sys.EventFD;
 
 import ocean.io.select.client.model.ISelectClient;
@@ -140,16 +142,11 @@ public abstract class ISelectEvent : IAdvancedSelectClient
     ***************************************************************************/
 
     public override bool handle ( Event event )
-    in
     {
-        assert (event == event.EPOLLIN);
+        verify(event == event.EPOLLIN);
 
-        assert(this.handler !is null);
-    }
-    body
-    {
         auto n = this.event_fd.handle();
-        assert(n > 0);
+        verify(n > 0);
 
         return this.handle_(n);
     }
@@ -251,6 +248,7 @@ public class SelectEvent : ISelectEvent
 
     protected override bool handle_ ( ulong n )
     {
+        verify(this.handler !is null);
         return this.handler();
     }
 }

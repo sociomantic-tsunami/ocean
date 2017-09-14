@@ -26,6 +26,8 @@ module ocean.io.serialize.StructSerializer;
 
 import ocean.transition;
 
+import ocean.core.Verify;
+
 import ocean.io.serialize.SimpleStreamSerializer;
 
 import ocean.core.Exception;
@@ -125,12 +127,8 @@ struct StructSerializer ( bool AllowUnions = false )
     ***************************************************************************/
 
     size_t dump ( S ) ( S* s, void delegate ( void[] data ) receive )
-    in
     {
-        assertStructPtr!("dump")(s);
-    }
-    body
-    {
+        verifyStructPtr!("dump")(s);
         return transmit!(false)(s, receive);
     }
 
@@ -172,12 +170,8 @@ struct StructSerializer ( bool AllowUnions = false )
     ***************************************************************************/
 
     size_t load ( S ) ( S* s, void delegate ( void[] data ) receive )
-    in
     {
-        assertStructPtr!("load")(s);
-    }
-    body
-    {
+        verifyStructPtr!("load")(s);
         return transmit!(true)(s, receive);
     }
 
@@ -204,14 +198,11 @@ struct StructSerializer ( bool AllowUnions = false )
     ***************************************************************************/
 
     size_t transmit ( bool receive, S ) ( S* s, void delegate ( void[] data ) transmit_data )
-    in
     {
-        assert (s, typeof (*this).stringof ~ ".transmit (receive = " ~
+        verify(s !is null, typeof (*this).stringof ~ ".transmit (receive = " ~
                 receive.stringof ~ "): source pointer of type '" ~ S.stringof ~
                 "*' is null");
-    }
-    body
-    {
+
         S s_copy = *s;
 
         S* s_copy_ptr = &s_copy;
@@ -734,7 +725,7 @@ struct StructSerializer ( bool AllowUnions = false )
 
     ***************************************************************************/
 
-    private void assertStructPtr ( istring func, S ) ( S* s )
+    private void verifyStructPtr ( istring func, S ) ( S* s )
     {
         static if (is (S T == T*))
         {
@@ -743,7 +734,7 @@ struct StructSerializer ( bool AllowUnions = false )
                   ~ "' (you probably want '" ~ (T*).stringof ~ "')");
         }
 
-        assert (s, typeof (*this).stringof ~ '.' ~ func ~ ": "
+        verify(s, typeof (*this).stringof ~ '.' ~ func ~ ": "
                ~ "pointer of type '" ~ S.stringof ~ "*' is null");
     }
 

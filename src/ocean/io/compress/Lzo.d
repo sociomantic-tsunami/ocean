@@ -34,6 +34,8 @@ import ocean.core.Enforce: enforce;
 
 import ocean.transition;
 
+import ocean.core.Verify;
+
 version(UnitTest) import ocean.core.Test;
 
 /******************************************************************************
@@ -97,12 +99,10 @@ class Lzo
      **************************************************************************/
 
     size_t compress ( in void[] src, void[] dst )
-    in
     {
-        assert (dst.length >= this.maxCompressedLength(src.length), typeof (this).stringof ~ ".compress: dst buffer too short");
-    }
-    body
-    {
+        verify(dst.length >= this.maxCompressedLength(src.length),
+                typeof (this).stringof ~ ".compress: dst buffer too short");
+
         size_t len;
 
         this.checkStatus(lzo1x_1_compress(cast (Const!(ubyte)*) src.ptr, src.length, cast (ubyte*) dst.ptr, &len, this.workmem.ptr));

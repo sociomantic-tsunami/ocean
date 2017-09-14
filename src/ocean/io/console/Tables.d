@@ -126,6 +126,7 @@ module ocean.io.console.Tables;
 import ocean.transition;
 
 import ocean.core.Array : copy, appendCopy, concat;
+import ocean.core.Verify;
 
 import ocean.text.utf.UtfUtil;
 
@@ -766,7 +767,7 @@ public class Table
                             return;
                     }
 
-                    assert(width >= utf8Length(content_buf), "column not wide enough");
+                    verify(width >= utf8Length(content_buf), "column not wide enough");
 
                     spacing_buf.length = width - utf8Length(content_buf);
                     enableStomping(spacing_buf);
@@ -957,12 +958,9 @@ public class Table
         ***********************************************************************/
 
         public void set ( Cell[] cells ... )
-        in
         {
-            assert(cells.length == this.cells.length, "row length mismatch");
-        }
-        body
-        {
+            verify(cells.length == this.cells.length, "row length mismatch");
+
             foreach ( i, cell; cells )
             {
                 this.cells[i] = cell;
@@ -1015,7 +1013,7 @@ public class Table
         public void display ( Output output, size_t[] column_widths, ref mstring
             content_buf, ref mstring spacing_buf )
         {
-            assert(column_widths.length == this.length);
+            verify(column_widths.length == this.length);
 
             uint merged;
             size_t merged_width;
@@ -1238,12 +1236,9 @@ public class Table
     ***************************************************************************/
 
     private void ensureRowExists ( )
-    in
     {
-        assert(this.num_columns, "num_columns not set, please call init()");
-    }
-    body
-    {
+        verify(this.num_columns > 0, "num_columns not set, please call init()");
+
         if ( this.rows.length <= this.row_index )
         {
             this.rows.length = this.row_index + 1;

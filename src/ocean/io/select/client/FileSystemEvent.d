@@ -26,6 +26,7 @@ module ocean.io.select.client.FileSystemEvent;
 
 *******************************************************************************/
 
+import ocean.core.Verify;
 import ocean.sys.Inotify;
 import core.stdc.string;
 import core.sys.linux.sys.inotify;
@@ -325,7 +326,7 @@ class FileSystemEvent : ISelectClient
 
         if ( auto existing_path = wd in this.watched_files )
         {
-            assert(*existing_path == path);
+            verify(*existing_path == path);
         }
         else
         {
@@ -383,10 +384,10 @@ class FileSystemEvent : ISelectClient
     {
         foreach ( ev; this.fd.readEvents() )
         {
-            assert(ev.mask);
+            verify(ev.mask != typeof(ev.mask).init);
 
             auto path = ev.wd in this.watched_files;
-            assert(path !is null);
+            verify(path !is null);
 
             if (this.handler)
                 this.handler(*path , ev.mask);

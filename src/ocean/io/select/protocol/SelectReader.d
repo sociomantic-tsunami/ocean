@@ -21,6 +21,7 @@ module ocean.io.select.protocol.SelectReader;
 
 *******************************************************************************/
 
+import ocean.core.Verify;
 import ocean.io.select.client.model.ISelectClient;
 import ocean.io.device.IODevice;
 import ocean.io.select.protocol.generic.ErrnoIOException;
@@ -221,7 +222,7 @@ class SelectReader : IAdvancedSelectClient
                 this.buffer[0 .. n], n);
         }
 
-        assert (n >= 0);
+        verify(n >= 0);
 
         if ( n > 0 )
         {

@@ -29,6 +29,8 @@ module ocean.io.select.client.model.IFiberSelectClient;
 
  ******************************************************************************/
 
+import ocean.core.Verify;
+
 import ocean.io.select.client.model.ISelectClient;
 
 import ocean.io.select.fiber.SelectFiber;
@@ -119,7 +121,7 @@ abstract class IFiberSelectClient : IAdvancedSelectClient
 
     public override void finalize ( FinalizeStatus status )
     {
-        assert (!this.fiber.running);
+        verify(!this.fiber.running);
 
         try
         {

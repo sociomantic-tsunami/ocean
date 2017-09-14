@@ -28,6 +28,8 @@ module ocean.io.select.protocol.fiber.FiberSocketConnection;
 
 import ocean.transition;
 
+import ocean.core.Verify;
+
 import ocean.io.select.protocol.fiber.model.IFiberSelectProtocol;
 
 import ocean.io.select.EpollSelectDispatcher;
@@ -710,12 +712,9 @@ public class IFiberSocketConnection : IFiberSelectProtocol
     ***************************************************************************/
 
     protected override bool transmit ( Event events )
-    in
     {
-        assert(this.transmit_calls <= 1);
-    }
-    body
-    {
+        verify(this.transmit_calls <= 1);
+
         scope ( exit ) this.transmit_calls++;
 
         if ( this.transmit_calls > 0 )

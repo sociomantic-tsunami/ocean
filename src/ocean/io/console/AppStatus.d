@@ -60,6 +60,8 @@ module ocean.io.console.AppStatus;
 
 import ocean.transition;
 
+import ocean.core.Verify;
+
 import ocean.io.Terminal;
 
 import ocean.time.model.IMicrosecondsClock;
@@ -591,7 +593,7 @@ public class AppStatus
 
     public typeof(this) formatStaticLine ( uint index, cstring format, ... )
     {
-        assert( index < this.static_lines.length, "adding too many static lines" );
+        verify(index < this.static_lines.length, "adding too many static lines" );
 
         this.static_lines[index].length = 0;
         enableStomping(this.static_lines[index]);
@@ -741,7 +743,7 @@ public class AppStatus
         out uint mins, out uint secs )
     {
         time_t _uptime = time(null) - this.start_time;
-        assert (_uptime < int.max && _uptime > int.min);
+        verify(_uptime < int.max && _uptime > int.min);
         uint uptime = castFrom!(long).to!(int)(_uptime);
 
         uint uptimeFract ( uint denom )

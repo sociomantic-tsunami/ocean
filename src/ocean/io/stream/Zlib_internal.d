@@ -31,6 +31,8 @@ module ocean.io.stream.Zlib_internal;
 
 import ocean.transition;
 
+import ocean.core.Verify;
+
 import ocean.util.compress.c.zlib;
 
 import ocean.core.ExceptionDefinitions : IOException;
@@ -643,7 +645,7 @@ class ZlibOutput : OutputFilter
         // Loop while we are still using up the whole output buffer
         while( zs.avail_out == 0 );
 
-        assert( zs.avail_in == 0, "failed to compress all provided data" );
+        verify(zs.avail_in == 0, "failed to compress all provided data");
 
         return src.length;
     }

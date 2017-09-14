@@ -21,6 +21,7 @@
 
 module ocean.io.select.protocol.task.TaskSelectTransceiver;
 
+import ocean.core.Verify;
 import ocean.io.select.client.model.ISelectClient;
 
 /// ditto
@@ -663,7 +664,7 @@ public int connect ( Socket: IODevice ) ( TaskSelectTransceiver tst,
     bool delegate ( Socket socket ) socket_connect )
 {
     auto socket = cast(Socket)tst.iodev;
-    assert(socket, "connect: Unable to cast the I/O " ~
+    verify(socket !is null, "connect: Unable to cast the I/O " ~
         "device from " ~ classname(tst.iodev) ~ " to " ~ Socket.stringof);
     return connect_(tst, socket_connect(socket));
 }

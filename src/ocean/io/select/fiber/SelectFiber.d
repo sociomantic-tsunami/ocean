@@ -28,6 +28,8 @@ module ocean.io.select.fiber.SelectFiber;
 
 import ocean.core.MessageFiber;
 
+import ocean.core.Verify;
+
 import core.thread;
 
 import ocean.io.select.client.model.ISelectClient;
@@ -140,12 +142,9 @@ public class SelectFiber : MessageFiber
      **************************************************************************/
 
     public bool register ( ISelectClient client )
-    in
     {
-        assert(client !is null);
-    }
-    body
-    {
+        verify(client !is null);
+
         debug ( SelectFiber) Stderr.formatln("{}.register fd {}:",
                 typeof(this).stringof, client.fileHandle);
 

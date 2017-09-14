@@ -18,6 +18,7 @@
 module ocean.io.FilePath;
 
 import ocean.transition;
+import ocean.core.Verify;
 import ocean.io.Path;
 import ocean.io.model.IFile : FileConst, FileInfo;
 
@@ -702,7 +703,7 @@ class FilePath : PathView
             if (len && sub.ptr >= p.fp.ptr+head+len && sub.ptr < p.fp.ptr+p.fp.length)
                {
                char[512] tmp = void;
-               assert (sub.length < tmp.length);
+               verify(sub.length < tmp.length);
                sub = tmp[0..sub.length] = sub;
                }
 
@@ -795,7 +796,7 @@ class FilePath : PathView
             char[512] tmp = void;
 
             auto len = info.path.length + info.name.length;
-            assert (tmp.length - len > 1);
+            verify(tmp.length - len > 1);
 
             // construct full pathname
             tmp [0 .. info.path.length] = info.path;
@@ -986,12 +987,9 @@ class FilePath : PathView
     ***********************************************************************/
 
     final FilePath rename (cstring dst)
-    in
     {
-        assert (dst !is null);
-    }
-    body
-    {
+        verify(dst !is null);
+
         if (dst[$-1] != '\0')
             dst ~= '\0';
 

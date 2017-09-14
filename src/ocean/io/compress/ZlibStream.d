@@ -59,6 +59,8 @@ module ocean.io.compress.ZlibStream;
 
 *******************************************************************************/
 
+import ocean.core.Verify;
+
 import ocean.util.compress.c.zlib;
 
 import ocean.io.stream.Zlib_internal : ZlibException, ZlibInput;
@@ -220,12 +222,9 @@ class ZlibStreamDecompressor
 
     public void decodeChunk ( ubyte[] compressed_chunk,
         void delegate ( ubyte[] decompressed_chunk ) output_dg )
-    in
     {
-        assert(this.stream_valid, typeof(this).stringof ~ ".decodeChunk: stream not started");
-    }
-    body
-    {
+        verify(this.stream_valid, typeof(this).stringof ~ ".decodeChunk: stream not started");
+
         ubyte[1024] buffer; // stack buffer for decoding
 
         // Set stream input chunk.

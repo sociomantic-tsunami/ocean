@@ -26,6 +26,8 @@ module ocean.io.select.protocol.fiber.model.IFiberSelectProtocol;
 
 import ocean.core.MessageFiber;
 
+import ocean.core.Verify;
+
 import ocean.io.select.client.model.IFiberSelectClient;
 
 import ocean.io.select.fiber.SelectFiber;
@@ -147,14 +149,11 @@ abstract class IFiberSelectProtocol : IFiberSelectClient
 
     protected this ( ISelectable conduit, Event events, SelectFiber fiber,
                      IOWarning warning_e, IOError error_e )
-    in
     {
-        assert (conduit !is null);
-        assert (warning_e !is null);
-        assert (error_e !is null);
-    }
-    body
-    {
+        verify(conduit !is null);
+        verify(warning_e !is null);
+        verify(error_e !is null);
+
         super(fiber);
         this.conduit   = conduit;
         this.events_   = events;
@@ -236,12 +235,9 @@ abstract class IFiberSelectProtocol : IFiberSelectClient
      **************************************************************************/
 
     final override protected bool handle ( Event events )
-    in
     {
-        assert (this.fiber.waiting);
-    }
-    body
-    {
+        verify(this.fiber.waiting);
+
         this.events_reported = events;
 
         debug ( SelectFiber ) Stderr.formatln("{}.handle: fd {} fiber resumed",
@@ -268,12 +264,9 @@ abstract class IFiberSelectProtocol : IFiberSelectClient
      **************************************************************************/
 
     protected void transmitLoop ( )
-    in
     {
-        assert (this.fiber.running);
-    }
-    body
-    {
+        verify(this.fiber.running);
+
         // The reported events are reset at this point to avoid using the events
         // set by a previous run of this method.
 

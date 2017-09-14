@@ -19,6 +19,7 @@
 
 module ocean.io.select.protocol.task.TaskSelectClient;
 
+import ocean.core.Verify;
 import ocean.io.select.client.model.ISelectClient;
 
 class TaskSelectClient: ISelectClient
@@ -127,17 +128,15 @@ class TaskSelectClient: ISelectClient
      **************************************************************************/
 
     public Event ioWait ( Event events_expected )
-    in
-    {
-        assert(events_expected);
-        assert(!this.task);
-    }
     out
     {
         assert(!this.task);
     }
     body
     {
+        verify(events_expected != Event.init);
+        verify(this.task is null);
+
         // Based on the current value of this.events_expected do the following:
         // - If this.events_expected is 0 then the I/O device is not registered
         //   with epoll so register it.
@@ -161,9 +160,9 @@ class TaskSelectClient: ISelectClient
         try
         {
             this.task = task.getThis();
-            assert(this.task);
+            verify(this.task !is null);
             this.task.suspend();
-            assert(!this.task);
+            verify(this.task is null);
 
             // At this point handle() has resumed the task and is blocked until
             // the task is suspended again (or terminates). In order to avoid

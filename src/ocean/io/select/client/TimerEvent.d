@@ -27,6 +27,7 @@ import ocean.io.select.client.model.ISelectClient: ISelectClient;
 
 import ocean.sys.TimerFD;
 import ocean.core.Traits;
+import ocean.core.Verify;
 
 import ocean.transition;
 import ocean.io.model.IConduit: ISelectable;
@@ -99,12 +100,8 @@ class TimerEvent : ITimerEvent
     ***************************************************************************/
 
     protected override bool handle_ ( ulong n )
-    in
     {
-        assert(this.handler);
-    }
-    body
-    {
+        verify(this.handler !is null);
         return this.handler();
     }
 
