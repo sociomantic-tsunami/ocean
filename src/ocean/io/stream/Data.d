@@ -476,25 +476,3 @@ unittest
     test (input.array(new char[9]) is 9);
     test (input.int32 is 1024);
 }
-
-/*******************************************************************************
-
-*******************************************************************************/
-
-debug (Data)
-{
-        import ocean.io.device.Array;
-
-        void main()
-        {
-                auto buf = new Array(64);
-
-                auto output = new DataOutput (buf);
-                output.array ("blah blah");
-                output.int32 (1024);
-
-                auto input = new DataInput (buf);
-                assert (input.array.length is 9);
-                assert (input.int32 is 1024);
-        }
-}

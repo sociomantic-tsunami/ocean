@@ -683,25 +683,3 @@ class File : Device, Device.Seek, Device.Truncate
 
         public alias Device.error error;
 }
-
-debug (File)
-{
-        import ocean.io.Stdout;
-
-        void main()
-        {
-                char[10] ff;
-
-                auto file = new File("file.d");
-                auto content = cast(cstring) file.load (file);
-                assert (content.length is file.length);
-                assert (file.read(ff) is file.Eof);
-                assert (file.position is content.length);
-                file.seek (0);
-                assert (file.position is 0);
-                assert (file.read(ff) is 10);
-                assert (file.position is 10);
-                assert (file.seek(0, file.Anchor.Current) is 10);
-                assert (file.seek(0, file.Anchor.Current) is 10);
-        }
-}

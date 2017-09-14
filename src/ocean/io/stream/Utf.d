@@ -225,22 +225,3 @@ class UtfOutput (S, T) : OutputFilter, OutputFilter.Mutator
                    }
         }
 }
-
-
-/*******************************************************************************
-
-*******************************************************************************/
-
-debug (Utf)
-{
-        import ocean.io.Stdout;
-        import ocean.io.device.Array;
-
-        void main()
-        {
-                auto inp = new UtfInput!(dchar, char)(new Array("hello world"));
-                auto oot = new UtfOutput!(dchar, char)(new Array(20));
-                oot.copy(inp);
-                assert (oot.buffer.slice == "hello world");
-        }
-}
