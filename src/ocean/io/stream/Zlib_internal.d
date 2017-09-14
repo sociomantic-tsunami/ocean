@@ -868,11 +868,12 @@ class ZlibException : IOException
 version (UnitTest)
 {
     import ocean.io.device.Array : Array;
+    import ocean.core.Test;
 
     void check_array(istring FILE=__FILE__, int LINE=__LINE__)(
             Const!(ubyte)[] as, ubyte[] bs, lazy istring msg)
     {
-        assert( as.length == bs.length,
+        test( as.length == bs.length,
             FILE ~":"~ toString(LINE) ~ ": " ~ msg()
             ~ "array lengths differ (" ~ toString(as.length)
             ~ " vs " ~ toString(bs.length) ~ ")" );
@@ -881,7 +882,7 @@ version (UnitTest)
         {
             auto b = bs[i];
 
-            assert( a == b,
+            test( a == b,
                 FILE ~":"~ toString(LINE) ~ ": " ~ msg()
                 ~ "arrays differ at " ~ toString(i)
                 ~ " (" ~ toString(cast(int) a)
