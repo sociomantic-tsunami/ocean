@@ -29,6 +29,8 @@ import ocean.util.container.ebtree.c.ebtree: eb_root;
 
 abstract class IEBTree
 {
+    import ocean.core.Verify;
+
     /***************************************************************************
 
         Tree root node.
@@ -104,12 +106,8 @@ abstract class IEBTree
     ***************************************************************************/
 
     protected size_t opSubAssign ( size_t n )
-    in
     {
-        assert (this.count >= n);
-    }
-    body
-    {
+        verify (this.count >= n);
         return this.count -= n;
     }
 

@@ -50,6 +50,8 @@ import ocean.core.Test;
 
 class EBTree128 ( bool signed = false ) : IEBTree
 {
+    import ocean.core.Verify;
+
     /**************************************************************************
 
         false if the 'ucent' surrogate is the key type or true if 'cent'.
@@ -353,16 +355,14 @@ class EBTree128 ( bool signed = false ) : IEBTree
     ***************************************************************************/
 
     private Node* add_ ( Node* node, Key key )
-    in
-    {
-        assert (node !is null, "attempted to add null node (node pool returned null?)");
-    }
     out (node_out)
     {
         assert (node_out !is null);
     }
     body
     {
+        verify (node !is null, "attempted to add null node (node pool returned null?)");
+
         static if (signed)
         {
             eb128i_node_setkey_264(&node.node_, key.lo, key.hi);

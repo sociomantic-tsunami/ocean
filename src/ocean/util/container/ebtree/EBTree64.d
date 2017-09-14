@@ -80,6 +80,8 @@ import ocean.util.container.ebtree.c.ebtree: eb_node, eb_root;
 
 class EBTree64 ( bool signed = false ) : IEBTree
 {
+    import ocean.core.Verify;
+
     /**************************************************************************
 
         false if 'ulong' is the key type or true if it is 'long'.
@@ -418,16 +420,14 @@ class EBTree64 ( bool signed = false ) : IEBTree
     ***************************************************************************/
 
     private Node* add_ ( Node* node, Key key )
-    in
-    {
-        assert (node !is null, "attempted to add null node (node pool returned null?)");
-    }
     out (node_out)
     {
         assert (node_out !is null);
     }
     body
     {
+        verify (node !is null, "attempted to add null node (node pool returned null?)");
+
         node.node_.key_ = key;
 
         static if (signed)
