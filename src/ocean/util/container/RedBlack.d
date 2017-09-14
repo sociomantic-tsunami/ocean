@@ -46,6 +46,8 @@ private
 
 struct RedBlack (V, A = AttributeDummy)
 {
+        import ocean.core.Verify;
+
         alias RedBlack!(V, A) Type;
         alias Type            *Ref;
 
@@ -134,17 +136,17 @@ struct RedBlack (V, A = AttributeDummy)
                 // path from node to leaf has same number of black nodes.
                 // So restrict to the following
 
-                assert(parent is null ||
+                verify(parent is null ||
                        this is parent.left ||
                        this is parent.right);
 
-                assert(left is null ||
+                verify(left is null ||
                        this is left.parent);
 
-                assert(right is null ||
+                verify(right is null ||
                        this is right.parent);
 
-                assert(color is BLACK ||
+                verify(color is BLACK ||
                        (colorOf(left) is BLACK) && (colorOf(right) is BLACK));
 
                 if (left !is null)

@@ -32,6 +32,8 @@ import core.stdc.string;
 
 struct Container
 {
+        import ocean.core.Verify;
+
         /***********************************************************************
 
                default initial number of buckets of a non-empty hashmap
@@ -160,7 +162,7 @@ struct Container
 
                 void collect (T* p)
                 {
-                        assert (p);
+                        verify(p !is null);
                         auto d = cast(Cache*) p;
                         //*p = T.init;
                         d.next = cache;
@@ -320,7 +322,7 @@ struct Container
 
                 void collect (T* p)
                 {
-                        assert (p);
+                        verify(p !is null);
                         auto d = cast(Cache*) p;
                         d.next = cache;
                         cache = d;

@@ -36,6 +36,8 @@ import ocean.core.ExceptionDefinitions: onOutOfMemoryError;
 
 import ocean.core.Traits;
 
+import ocean.core.Verify;
+
 version(UnitTest) import ocean.core.Test;
 
 /******************************************************************************
@@ -549,12 +551,9 @@ public class AppendBuffer ( T, Base: AppendBufferImpl ): Base, IAppendBufferRead
          **********************************************************************/
 
         T cut ( )
-        in
         {
-            assert (this.length, "cannot cut last element: content is empty");
-        }
-        body
-        {
+            verify (this.length > 0, "cannot cut last element: content is empty");
+
             size_t n = this.length - 1;
 
             scope (success) this.length = n;
@@ -816,12 +815,9 @@ private abstract class AppendBufferImpl: IAppendBufferBase
      **************************************************************************/
 
     protected this ( size_t e, size_t n = 0 )
-    in
     {
-        assert (e, typeof (this).stringof ~ ": element size must be at least 1");
-    }
-    body
-    {
+        verify (e > 0, typeof (this).stringof ~ ": element size must be at least 1");
+
         this.e = e;
 
         if (n)
@@ -1100,13 +1096,10 @@ private abstract class AppendBufferImpl: IAppendBufferBase
      **************************************************************************/
 
     protected void[] slice_ ( size_t start, size_t end )
-    in
     {
-        assert (start <= end, typeof (this).stringof ~ ": slice start behind end index");
-        assert (end <= this.n, typeof (this).stringof ~ ": slice end out of range");
-    }
-    body
-    {
+        verify (start <= end, typeof (this).stringof ~ ": slice start behind end index");
+        verify (end <= this.n, typeof (this).stringof ~ ": slice end out of range");
+
         return this.content[start * this.e .. end * this.e];
     }
 
@@ -1123,12 +1116,9 @@ private abstract class AppendBufferImpl: IAppendBufferBase
      **************************************************************************/
 
     protected void* index_ ( size_t i )
-    in
     {
-        assert (i <= this.n, typeof (this).stringof ~ ": index out of range");
-    }
-    body
-    {
+        verify (i <= this.n, typeof (this).stringof ~ ": index out of range");
+
         return this.content.ptr + i * this.e;
     }
 
@@ -1147,10 +1137,6 @@ private abstract class AppendBufferImpl: IAppendBufferBase
      **************************************************************************/
 
     protected void[] copy_ ( Const!(void)[] src )
-    in
-    {
-        assert (!(src.length % this.e), typeof (this).stringof ~ ": data alignment mismatch");
-    }
     out (dst)
     {
         if (this.limited_)
@@ -1164,11 +1150,13 @@ private abstract class AppendBufferImpl: IAppendBufferBase
     }
     body
     {
+        verify (!(src.length % this.e), typeof (this).stringof ~ ": data alignment mismatch");
+
         this.n = 0;
 
         void[] dst = this.extendBytes(src.length);
 
-        assert (dst.ptr is this.content.ptr);
+        verify (dst.ptr is this.content.ptr);
 
         return dst[] = src[0 .. dst.length];
     }
@@ -1188,15 +1176,12 @@ private abstract class AppendBufferImpl: IAppendBufferBase
      **************************************************************************/
 
     protected void[] copy_ ( Const!(void)[] chunk, size_t start, size_t end )
-    in
     {
-        assert (!(chunk.length % this.e), typeof (this).stringof ~ ": data alignment mismatch");
-        assert (start <= end,             typeof (this).stringof ~ ": slice start behind end index");
-        assert (end <= this.n,            typeof (this).stringof ~ ": slice end out of range");
-        assert (chunk.length == (end - start) * this.e, typeof (this).stringof ~ ": length mismatch of data to copy");
-    }
-    body
-    {
+        verify (!(chunk.length % this.e), typeof (this).stringof ~ ": data alignment mismatch");
+        verify (start <= end,             typeof (this).stringof ~ ": slice start behind end index");
+        verify (end <= this.n,            typeof (this).stringof ~ ": slice end out of range");
+        verify (chunk.length == (end - start) * this.e, typeof (this).stringof ~ ": length mismatch of data to copy");
+
         return this.content[start * this.e .. end * this.e] = cast (ubyte[]) chunk[];
     }
 
@@ -1246,10 +1231,6 @@ private abstract class AppendBufferImpl: IAppendBufferBase
      **************************************************************************/
 
     protected void[] extendBytes ( size_t extent )
-    in
-    {
-        assert (!(extent % this.e));
-    }
     out (slice)
     {
         assert (!(slice.length % this.e));
@@ -1265,6 +1246,8 @@ private abstract class AppendBufferImpl: IAppendBufferBase
     }
     body
     {
+        verify (!(extent % this.e));
+
         size_t oldlen = this.n * this.e,
                newlen = oldlen + extent;
 
@@ -1324,16 +1307,14 @@ private abstract class AppendBufferImpl: IAppendBufferBase
      **************************************************************************/
 
     protected void[] newContent ( size_t n )
-    in
-    {
-        assert (n, typeof (this).stringof ~ ".newContent: attempted to allocate zero bytes");
-    }
     out (content_)
     {
         assert (content_.length == n);
     }
     body
     {
+        verify (n > 0, typeof (this).stringof ~ ".newContent: attempted to allocate zero bytes");
+
         return new ubyte[n];
     }
 
@@ -1377,13 +1358,10 @@ private abstract class AppendBufferImpl: IAppendBufferBase
      **************************************************************************/
 
     protected void deleteContent ( ref void[] content_ )
-    in
     {
-        assert (content_,
+        verify (content_ !is null,
                 typeof (this).stringof ~ ".deleteContent: content_ is null");
-    }
-    body
-    {
+
         delete content_;
     }
 
@@ -1446,12 +1424,9 @@ private abstract class MallocAppendBufferImpl: AppendBufferImpl
      **************************************************************************/
 
     protected override void[] newContent ( size_t n )
-    in
     {
-        assert (n, typeof (this).stringof ~ ".newContent: attempted to allocate zero bytes");
-    }
-    body
-    {
+        verify (n > 0, typeof (this).stringof ~ ".newContent: attempted to allocate zero bytes");
+
         return this.newArray(n);
     }
 
@@ -1562,12 +1537,9 @@ private abstract class MallocAppendBufferImpl: AppendBufferImpl
      **************************************************************************/
 
     private static void[] newArray_ ( size_t n )
-    in
     {
-        assert (n);
-    }
-    body
-    {
+        verify (n > 0);
+
         void* ptr = malloc(n);
 
         if (ptr)

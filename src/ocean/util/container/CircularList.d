@@ -79,6 +79,8 @@ class CircularList (V, alias Reap = Container.reap,
                        alias Heap = Container.DefaultCollect)
                        : IContainer!(V)
 {
+        import ocean.core.Verify;
+
         // use this type for Allocator configuration
         public alias Clink!(V)  Type;
 
@@ -791,22 +793,22 @@ class CircularList (V, alias Reap = Container.reap,
 
         final CircularList check()
         {
-                assert(((count is 0) is (list is null)));
-                assert((list is null || list.size is count));
+                verify(((count is 0) is (list is null)));
+                verify((list is null || list.size is count));
 
                 if (list)
                    {
                    size_t c = 0;
                    auto p = list;
                    do {
-                      assert(p.prev.next is p);
-                      assert(p.next.prev is p);
-                      assert(instances(p.value) > 0);
-                      assert(contains(p.value));
+                      verify(p.prev.next is p);
+                      verify(p.next.prev is p);
+                      verify(instances(p.value) > 0);
+                      verify(contains(p.value));
                       p = p.next;
                       ++c;
                       } while (p !is list);
-                   assert(c is size);
+                   verify(c is size);
                    }
                 return this;
         }

@@ -79,6 +79,8 @@ class LinkedList (V, alias Reap = Container.reap,
                      alias Heap = Container.DefaultCollect)
                      : IContainer!(V)
 {
+        import ocean.core.Verify;
+
         // use this type for Allocator configuration
         private alias Slink!(V) Type;
 
@@ -744,17 +746,17 @@ class LinkedList (V, alias Reap = Container.reap,
 
         final LinkedList check ()
         {
-                assert(((count is 0) is (list is null)));
-                assert((list is null || list.count is size));
+                verify(((count is 0) is (list is null)));
+                verify((list is null || list.count is size));
 
                 size_t c = 0;
                 for (Ref p = list; p; p = p.next)
                     {
-                    assert(instances(p.value) > 0);
-                    assert(contains(p.value));
+                    verify(instances(p.value) > 0);
+                    verify(contains(p.value));
                     ++c;
                     }
-                assert(c is count);
+                verify(c is count);
                 return this;
         }
 
