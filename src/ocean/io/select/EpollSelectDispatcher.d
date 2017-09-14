@@ -450,7 +450,6 @@ public class EpollSelectDispatcher : IEpollSelectDispatcherInfo
      **************************************************************************/
 
     public bool changeClient ( ISelectClient current, ISelectClient next )
-    in
     {
         debug ( ISelectClient )
         {
@@ -470,9 +469,6 @@ public class EpollSelectDispatcher : IEpollSelectDispatcherInfo
             }
         }
 
-    }
-    body
-    {
         verify(current.fileHandle == next.fileHandle,
                 typeof (this).stringof ~ ".changeClient: clients are expected to share the same file descriptor");
         verify(current.is_registered,
