@@ -80,6 +80,8 @@ private template ItemType_ ( T )
 
 public class FreeList ( T ) : IFreeList!(ItemType_!(T))
 {
+    import ocean.core.Verify;
+
     /***************************************************************************
 
         Free lists of static arrays are not allowed. Likewise a free list of an
@@ -136,7 +138,7 @@ public class FreeList ( T ) : IFreeList!(ItemType_!(T))
         {
             ItemType item;
             auto popped = this.free_list.pop(item);
-            assert(popped, "Item failed to be popped from non-empty free list");
+            verify(popped, "Item failed to be popped from non-empty free list");
             return item;
         }
         else

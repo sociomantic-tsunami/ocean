@@ -62,6 +62,8 @@ import ocean.core.Exception;
 
 public abstract class IPool : IPoolInfo, ILimitable
 {
+    import ocean.core.Verify;
+
     /***************************************************************************
 
         Pool item union. The list of pool items is an array of Item; the
@@ -372,7 +374,7 @@ public abstract class IPool : IPoolInfo, ILimitable
             foreach ( ref item; this.items[old_len .. $] )
             {
                 item = new_item();
-                assert (!this.isNull(item));
+                verify (!this.isNull(item));
             }
         }
 
@@ -429,7 +431,7 @@ public abstract class IPool : IPoolInfo, ILimitable
         {
             item = this.items[this.num_busy_];
 
-            assert (!this.isNull(item));
+            verify (!this.isNull(item));
         }
         else
         {
@@ -440,7 +442,7 @@ public abstract class IPool : IPoolInfo, ILimitable
 
             this.items ~= item;
 
-            assert (!this.isNull(item));
+            verify (!this.isNull(item));
         }
 
         this.setItemIndex(item, this.num_busy_++);
@@ -479,22 +481,17 @@ public abstract class IPool : IPoolInfo, ILimitable
     ***************************************************************************/
 
     protected void recycle_ ( Item item_in )
-    in
     {
-        assert (this.num_busy_, "nothing is busy so there is nothing to recycle");
+        verify (this.num_busy_ > 0, "nothing is busy so there is nothing to recycle");
 
         size_t index = this.getItemIndex(item_in);
 
-        assert (index < this.items.length,
+        verify (index < this.items.length,
                 "index of recycled item out of range");
 
-        assert (this.isSame(item_in, this.items[index]), "wrong index in recycled item");
+        verify (this.isSame(item_in, this.items[index]), "wrong index in recycled item");
 
-        assert (index < this.num_busy_, "recycled item is idle");
-    }
-    body
-    {
-        size_t index = this.getItemIndex(item_in);
+        verify (index < this.num_busy_, "recycled item is idle");
 
         Item* item            = this.items.ptr + index,
               first_idle_item = this.items.ptr + --this.num_busy_;
@@ -599,7 +596,7 @@ public abstract class IPool : IPoolInfo, ILimitable
 
     protected void truncate ( size_t remove )
     {
-        assert(remove <= this.num_idle);
+        verify(remove <= this.num_idle);
 
         foreach ( ref item; this.items[this.items.length - remove .. $] )
         {
