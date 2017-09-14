@@ -263,6 +263,8 @@ template CacheBase ( bool TrackCreateTimes = false )
 
 class Cache ( size_t ValueSize = 0, bool TrackCreateTimes = false ) : CacheBase!(TrackCreateTimes)
 {
+    import ocean.core.Verify;
+
     /***************************************************************************
 
         Mixin the type definition for the values.
@@ -551,12 +553,9 @@ class Cache ( size_t ValueSize = 0, bool TrackCreateTimes = false ) : CacheBase!
     ***************************************************************************/
 
     protected override hash_t keyByIndex ( size_t index )
-    in
     {
-        assert (index <= this.length);
-    }
-    body
-    {
+        verify (index <= this.length);
+
         return this.items[index].key;
     }
 
@@ -600,21 +599,19 @@ class Cache ( size_t ValueSize = 0, bool TrackCreateTimes = false ) : CacheBase!
     ***************************************************************************/
 
     protected override hash_t replaceRemovedItem ( size_t replaced, size_t replace )
-    in
-    {
-        assert(replaced != replace);
-
-        size_t length = this.length;
-
-        assert(replaced < length);
-        assert(replace < length);
-    }
     out (key)
     {
         assert(key == this.items[replaced].key);
     }
     body
     {
+        verify(replaced != replace);
+
+        size_t length = this.length;
+
+        verify(replaced < length);
+        verify(replace < length);
+
         CacheItem tmp       = this.items[replace];
         this.items[replace] = this.items[replaced];
 
@@ -775,14 +772,11 @@ class Cache ( size_t ValueSize = 0, bool TrackCreateTimes = false ) : CacheBase!
     static if (!is_dynamic)
     {
         protected void enableGcValueScanning ( )
-        in
         {
-            assert(this.items,
+            verify(this.items !is null,
                    "please call enableGcValueScanning() *after* the super
                     constructor");
-        }
-        body
-        {
+
             GC.clrAttr(this.items.ptr, GC.BlkAttr.NO_SCAN);
         }
     }

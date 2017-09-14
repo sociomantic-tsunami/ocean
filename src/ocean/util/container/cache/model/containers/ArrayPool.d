@@ -71,6 +71,8 @@ class ArrayPool ( T ) : GenericArrayPool
 
 class GenericArrayPool
 {
+    import ocean.core.Verify;
+
     /***************************************************************************
 
         Byte length of each element.
@@ -107,12 +109,9 @@ class GenericArrayPool
     ***********************************************************************/
 
     public this ( size_t n, size_t element_size )
-    in
     {
-        assert(element_size, "zero element size specified");
-    }
-    body
-    {
+        verify(element_size > 0, "zero element size specified");
+
         n *= (this.element_size = element_size);
 
         auto elements_buf = malloc(n);

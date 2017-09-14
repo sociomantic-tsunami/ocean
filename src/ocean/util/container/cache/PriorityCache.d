@@ -115,6 +115,8 @@ import core.stdc.time: time_t, time;
 
 class PriorityCache(T) : ICacheInfo
 {
+    import ocean.core.Verify;
+
     /***************************************************************************
 
         A wrapper around the stored item
@@ -902,7 +904,7 @@ class PriorityCache(T) : ICacheInfo
             // Find the item with lowest (ie oldest) update time.
             TimeToIndex.Node* oldest_time_node = this.time_to_index.first;
 
-            assert (oldest_time_node !is null);
+            verify (oldest_time_node !is null);
 
             // Get the item index and check if the time of the last access is
             // less than the current time. If not, notify the subclass because
@@ -956,7 +958,6 @@ class PriorityCache(T) : ICacheInfo
     ***************************************************************************/
 
     private void remove_ ( hash_t dst_key, ref TimeToIndex.Node dst_node )
-    in
     {
         /*
          * If the caller passes a dereferenced pointer as dst_node the
@@ -971,10 +972,8 @@ class PriorityCache(T) : ICacheInfo
          * If that happens &dst_node is `null` in this function.
          */
 
-        assert(&dst_node, "ref argument is a dereferenced null pointer");
-    }
-    body
-    {
+        verify(&dst_node !is null, "ref argument is a dereferenced null pointer");
+
         /*
          * Remove item in items list by copying the last item to the item to
          * remove and decrementing the insert index which reflects the
@@ -1008,11 +1007,11 @@ class PriorityCache(T) : ICacheInfo
 
             TimeToIndex.Node** src_node_in_map = src_key in this.key_to_node;
 
-            assert (src_node_in_map !is null, "Null src_node_in_map found");
+            verify (src_node_in_map !is null, "Null src_node_in_map found");
 
             TimeToIndex.Node* src_node = *src_node_in_map;
 
-            assert (src_node !is null, "Null src_node found");
+            verify (src_node !is null, "Null src_node found");
 
             TimeToIndex.Key src_node_key = src_node.key;
 
