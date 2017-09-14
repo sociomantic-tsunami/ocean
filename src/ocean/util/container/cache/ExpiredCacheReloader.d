@@ -48,6 +48,8 @@ import core.stdc.time: time_t, time;
 
 class ExpiredCacheReloader ( S )
 {
+    import ocean.core.Verify;
+
     /***************************************************************************
 
         The struct of data stored in the cache.
@@ -84,12 +86,9 @@ class ExpiredCacheReloader ( S )
          **********************************************************************/
 
         static typeof(this) opCall ( void[] data )
-        in
         {
-            assert (data.length == typeof(*this).sizeof);
-        }
-        body
-        {
+            verify (data.length == typeof(*this).sizeof);
+
             return cast(typeof(this))data.ptr;
         }
     }

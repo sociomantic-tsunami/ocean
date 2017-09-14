@@ -50,6 +50,8 @@ version (UnitTest)
 class ExpiringCache ( size_t ValueSize = 0 ) : Cache!(ValueSize, true),
                                                IExpiringCacheInfo
 {
+    import ocean.core.Verify;
+
     /***************************************************************************
 
         Life time for all items in seconds; may be changed at any time.
@@ -80,13 +82,10 @@ class ExpiringCache ( size_t ValueSize = 0 ) : Cache!(ValueSize, true),
     ***************************************************************************/
 
     public this ( size_t max_items, time_t lifetime )
-    in
     {
-        assert (lifetime > 0,
+        verify (lifetime > 0,
                 "cache element lifetime is expected to be at least 1");
-    }
-    body
-    {
+
         super(max_items);
 
         this.lifetime = lifetime;
@@ -292,11 +291,6 @@ class ExpiringCache ( size_t ValueSize = 0 ) : Cache!(ValueSize, true),
 
     private ValueRef getExpiringOrCreate ( hash_t key, out bool existed,
                                            bool create = false )
-    in
-    {
-        assert (this.lifetime > 0,
-                "cache element lifetime is expected to be at least 1");
-    }
     out (val)
     {
         if (create)
@@ -310,6 +304,9 @@ class ExpiringCache ( size_t ValueSize = 0 ) : Cache!(ValueSize, true),
     }
     body
     {
+        verify (this.lifetime > 0,
+                "cache element lifetime is expected to be at least 1");
+
         TimeToIndex.Node** node = key in this;
 
         // opIn_r may return null but never a pointer to null.

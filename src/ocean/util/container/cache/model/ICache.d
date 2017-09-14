@@ -32,6 +32,8 @@ import core.stdc.time: time_t, time;
 
 abstract class ICache : ICacheInfo
 {
+    import ocean.core.Verify;
+
     /***************************************************************************
 
         Alias required by the subclasses.
@@ -440,7 +442,7 @@ abstract class ICache : ICacheInfo
             // Find the item with lowest (ie oldest) update time.
             TimeToIndex.Node* oldest_time_node = this.time_to_index.first;
 
-            assert (oldest_time_node !is null);
+            verify (oldest_time_node !is null);
 
             // Get the item index and check if the time of the last access is
             // less than the current time. If not, notify the subclass because
@@ -558,11 +560,11 @@ abstract class ICache : ICacheInfo
 
             TimeToIndex.Node** src_node_in_map = src_key in this.key_to_node;
 
-            assert (src_node_in_map !is null, "Null src_node_in_map found");
+            verify (src_node_in_map !is null, "Null src_node_in_map found");
 
             TimeToIndex.Node* src_node = *src_node_in_map;
 
-            assert (src_node !is null, "Null src_node found");
+            verify (src_node !is null, "Null src_node found");
 
             TimeToIndex.Key src_node_key = src_node.key;
 

@@ -50,6 +50,8 @@ version(UnitTest) import ocean.core.Test;
 
 class ExpiringLRUCache(T = void[]) : LRUCache!(T, true), IExpiringCacheInfo
 {
+    import ocean.core.Verify;
+
     /***************************************************************************
 
         Life time for all items in seconds; may be changed at any time.
@@ -80,13 +82,10 @@ class ExpiringLRUCache(T = void[]) : LRUCache!(T, true), IExpiringCacheInfo
     ***************************************************************************/
 
     public this ( size_t max_items, time_t lifetime )
-    in
     {
-        assert (lifetime > 0,
+        verify (lifetime > 0,
                 "cache element lifetime is expected to be at least 1");
-    }
-    body
-    {
+
         super(max_items);
 
         this.lifetime = lifetime;
@@ -300,11 +299,6 @@ class ExpiringLRUCache(T = void[]) : LRUCache!(T, true), IExpiringCacheInfo
 
     private T* getExpiringOrCreate ( hash_t key, out bool existed,
                                      bool create = false )
-    in
-    {
-        assert (this.lifetime > 0,
-                "cache element lifetime is expected to be at least 1");
-    }
     out (val)
     {
         if (create)
@@ -318,6 +312,9 @@ class ExpiringLRUCache(T = void[]) : LRUCache!(T, true), IExpiringCacheInfo
     }
     body
     {
+        verify (this.lifetime > 0,
+                "cache element lifetime is expected to be at least 1");
+
         Value* item;
 
         time_t new_access_time;
