@@ -943,6 +943,8 @@ public abstract class IAggregatePool ( T ) : IPool, IFreeList!(ItemType_!(T))
 
 version ( UnitTest )
 {
+    import ocean.core.Test;
+
     /***************************************************************************
 
         Agrregate pool tester base class. Tests all methods of IAggregatePool.
@@ -1022,8 +1024,8 @@ version ( UnitTest )
         override protected void lengthCheck ( size_t expected_busy,
             size_t expected_idle )
         {
-            assert(this.pool.num_busy == expected_busy, "AggregatePool busy items wrong");
-            assert(this.pool.length == expected_busy + expected_idle, "AggregatePool length was wrong");
+            .test!("==")(this.pool.num_busy, expected_busy, "AggregatePool busy items wrong");
+            .test!("==")(this.pool.length, expected_busy + expected_idle, "AggregatePool length was wrong");
 
             super.lengthCheck(expected_busy, expected_idle);
         }
@@ -1051,7 +1053,7 @@ version ( UnitTest )
                 this.pool.get(this.newItem());
                 this.lengthCheck(++busy_count, idle_count);
             }
-            assert(idle_count == 0, "idle count mismatch");
+            .test!("==")(idle_count, 0, "idle count mismatch");
 
             // Check that getting another item is prevented
             bool get_prevented;
@@ -1063,7 +1065,7 @@ version ( UnitTest )
             {
                 get_prevented = true;
             }
-            assert(get_prevented, "AggregatePool limitation failed");
+            .test(get_prevented, "AggregatePool limitation failed");
             this.lengthCheck(busy_count, idle_count);
 
             // Recycle all items (clear)
@@ -1090,7 +1092,7 @@ version ( UnitTest )
                 if ( idle_count ) idle_count--;
                 this.lengthCheck(++busy_count, idle_count);
             }
-            assert(idle_count == 0, "idle count mismatch");
+            .test!("==")(idle_count, 0, "idle count mismatch");
         }
 
 
@@ -1110,7 +1112,7 @@ version ( UnitTest )
                 this.setItem(item, i);
                 this.lengthCheck(++busy_count, idle_count);
             }
-            assert(idle_count == 0, "idle count mismatch");
+            .test!("==")(idle_count, 0, "idle count mismatch");
 
             // Check safe busy items iterator
             {
@@ -1121,7 +1123,7 @@ version ( UnitTest )
                     this.checkIteratorItem(item, i);
                     count++;
                 }
-                assert(count == this.pool.num_busy, "iterator count wrong");
+                .test!("==")(count, this.pool.num_busy, "iterator count wrong");
             }
 
             // Check read-only busy items iterator
@@ -1133,7 +1135,7 @@ version ( UnitTest )
                     this.checkIteratorItem(item, i);
                     count++;
                 }
-                assert(count == this.pool.num_busy, "iterator count wrong");
+                .test!("==")(count, this.pool.num_busy, "iterator count wrong");
             }
 
             {
@@ -1159,7 +1161,7 @@ version ( UnitTest )
                     }
                     count++;
                 }
-                assert(count == this.pool.length, "iterator count wrong");
+                .test!("==")(count, this.pool.length, "iterator count wrong");
             }
 
             // Check safe idle items iterator
@@ -1171,7 +1173,7 @@ version ( UnitTest )
                     this.checkIteratorItem(item, this.num_items - (i + 1));
                     count++;
                 }
-                assert(count == this.pool.num_idle, "iterator count wrong");
+                .test!("==")(count, this.pool.num_idle, "iterator count wrong");
             }
 
             // Check read-only idle items iterator
@@ -1183,7 +1185,7 @@ version ( UnitTest )
                     this.checkIteratorItem(item, this.num_items - (i + 1));
                     count++;
                 }
-                assert(count == this.pool.num_idle, "iterator count wrong");
+                .test!("==")(count, this.pool.num_idle, "iterator count wrong");
             }
 
             // Check safe all items iterator
@@ -1198,7 +1200,7 @@ version ( UnitTest )
                     this.checkIteratorItem(item, num);
                     count++;
                 }
-                assert(count == this.pool.length, "iterator count wrong");
+                .test!("==")(count, this.pool.length, "iterator count wrong");
             }
 
             // Check read-only all items iterator
@@ -1213,7 +1215,7 @@ version ( UnitTest )
                     this.checkIteratorItem(item, num);
                     count++;
                 }
-                assert(count == this.pool.length, "iterator count wrong");
+                .test!("==")(count, this.pool.length, "iterator count wrong");
             }
 
             // TODO: the iterator checks could be expanded to also check that
@@ -1234,8 +1236,8 @@ version ( UnitTest )
 
         private void limitCheck ( bool limited, size_t limit = 0 )
         {
-            assert(this.pool.is_limited == limited, "AggregatePool limit flag wrong");
-            assert(this.pool.limit == (limited ? limit : this.pool.unlimited),
+            .test!("==")(this.pool.is_limited, limited, "AggregatePool limit flag wrong");
+            .test!("==")(this.pool.limit, (limited ? limit : this.pool.unlimited),
                 "AggregatePool limit wrong");
         }
 
@@ -1244,7 +1246,7 @@ version ( UnitTest )
 
             Checks the value of the passed item (from an iterator) against the
             value which can be deterministically derived from the passed
-            integer. The method should assert on failure.
+            integer. The method should throw TestException on failure.
 
             Params:
                 item = iterated item to check value of

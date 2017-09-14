@@ -111,6 +111,7 @@ public interface IFreeList ( T ) : IFreeListInfo
 
 version ( UnitTest )
 {
+    import ocean.core.Test;
     import ocean.core.Array : pop;
 
 
@@ -186,11 +187,11 @@ version ( UnitTest )
                 busy_items ~= this.fl.get(this.newItem());
                 this.lengthCheck(busy_items.length, idle_count);
             }
-            assert(idle_count == 0, "idle count mismatch");
+            .test!("==")(idle_count, 0, "idle count mismatch");
 
             // Recycle them
             this.recycle(busy_items, idle_count);
-            assert(idle_count == this.num_items);
+            .test!("==")(idle_count, this.num_items);
 
             // Get some items and store something in them
             for ( int i; i < this.num_items; i++ )
@@ -202,11 +203,11 @@ version ( UnitTest )
 
                 this.lengthCheck(busy_items.length, --idle_count);
             }
-            assert(idle_count == 0, "idle count mismatch");
+            .test!("==")(idle_count, 0, "idle count mismatch");
 
             // Recycle them
             this.recycle(busy_items, idle_count);
-            assert(idle_count == this.num_items, "idle count mismatch");
+            .test!("==")(idle_count, this.num_items, "idle count mismatch");
 
             // Get them again and check the contents are as expected
             for ( int i; i < this.num_items; i++ )
@@ -218,11 +219,11 @@ version ( UnitTest )
 
                 this.lengthCheck(busy_items.length, --idle_count);
             }
-            assert(idle_count == 0, "idle count mismatch");
+            .test!("==")(idle_count, 0, "idle count mismatch");
 
             // Recycle them
             this.recycle(busy_items, idle_count);
-            assert(idle_count == this.num_items, "idle count mismatch");
+            .test!("==")(idle_count, this.num_items, "idle count mismatch");
 
             // Fill
             this.fl.fill(this.num_items * 2, this.newItem());
@@ -250,7 +251,7 @@ version ( UnitTest )
 
         protected void lengthCheck ( size_t expected_busy, size_t expected_idle )
         {
-            assert(this.fl.num_idle == expected_idle, "FreeList idle items wrong");
+            .test!("==")(this.fl.num_idle, expected_idle, "FreeList idle items wrong");
         }
 
 
@@ -282,7 +283,7 @@ version ( UnitTest )
 
             Checks the value of the passed item against the value which can be
             deterministically derived from the passed integer. The method should
-            assert on failure.
+            throw TestException on failure.
 
             Params:
                 item = item to check value of
@@ -310,7 +311,7 @@ version ( UnitTest )
             {
                 Item item;
                 auto popped = busy_items.pop(item);
-                assert(popped, "pop from list of busy items failed");
+                .test(popped, "pop from list of busy items failed");
 
                 this.fl.recycle(item);
                 this.lengthCheck(busy_items.length, ++idle_count);
