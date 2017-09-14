@@ -536,8 +536,6 @@ abstract class ICache : ICacheInfo
          * actual number of items.
          */
 
-        this.insert--;
-
         size_t index = dst_node.key.lo;
 
         // Remove the tree map entry of the removed cache item.
@@ -546,9 +544,9 @@ abstract class ICache : ICacheInfo
         // Remove key -> item mapping
         this.key_to_node.remove(dst_key);
 
-        if ( index != this.insert )
+        if ( index != this.insert - 1)
         {
-            hash_t src_key = this.replaceRemovedItem(index, this.insert);
+            hash_t src_key = this.replaceRemovedItem(index, this.insert - 1);
 
             /*
              * Obtain the time-to-mapping entry for the copied cache item.
@@ -570,6 +568,8 @@ abstract class ICache : ICacheInfo
 
             *src_node_in_map = this.time_to_index.update(*src_node, src_node_key);
         }
+
+        this.insert--;
     }
 
     /***************************************************************************
