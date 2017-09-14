@@ -110,6 +110,8 @@ version ( UnitTest )
         }
     }
 
+    import ocean.core.Test;
+
     alias StructPool!(Struct) MyPool;
     class StructPoolTester : IAggregatePoolTester!(Struct)
     {
@@ -132,9 +134,9 @@ version ( UnitTest )
 
         protected override void checkItem ( ref Item item, size_t i )
         {
-            assert(item.i == i, "item integer wrong");
-            assert(item.s.length == 1, "item string length wrong");
-            assert(item.s[0] == cast(char)(i + 32), "item string content wrong");
+            .test!("==")(item.i, i, "item integer wrong");
+            .test!("==")(item.s.length, 1, "item string length wrong");
+            .test!("==")(item.s[0], cast(char)(i + 32), "item string content wrong");
         }
     }
 }
