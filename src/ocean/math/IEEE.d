@@ -36,6 +36,7 @@
 module ocean.math.IEEE;
 
 import ocean.transition;
+import ocean.core.Verify;
 
 version(UnitTest) import ocean.core.Test;
 
@@ -321,7 +322,7 @@ private:
               tmpval &=0xFFFF_FC00;
               asm { ld tmpval, %fsr; }
             */
-           assert(0, "Not yet supported");
+           throw new SanityException("Not yet supported");
         }
     }
 public:
@@ -380,7 +381,7 @@ RoundingMode setIeeeRounding(RoundingMode roundingmode) {
             fldcw cont;
         }
     } else {
-           assert(0, "Not yet supported");
+           throw new SanityException("Not yet supported");
     }
 }
 
@@ -397,7 +398,7 @@ RoundingMode getIeeeRounding() {
             and AX, cont;
         }
     } else {
-           assert(0, "Not yet supported");
+           throw new SanityException("Not yet supported");
     }
 }
 
@@ -451,7 +452,7 @@ PrecisionControl reduceRealPrecision(PrecisionControl prec) {
             fldcw cont;
         }
     } else {
-           assert(0, "Not yet supported");
+           throw new SanityException("Not yet supported");
     }
 }
 
