@@ -19,6 +19,7 @@ module ocean.math.Bessel;
 
 import ocean.math.Math;
 import ocean.math.IEEE;
+import ocean.core.Verify;
 
 version(UnitTest) import ocean.core.Test;
 
@@ -267,11 +268,10 @@ real cylBessel_j1(real x)
  * zero, of the argument.
  */
 real cylBessel_y1(real x)
-in {
-    assert(x>=0.0);
-    // TODO: should it return -infinity for x<0 ?
-}
-body {
+{
+verify(x>=0.0);
+
+// TODO: should it return -infinity for x<0 ?
 /* The domain is divided into the intervals [0, 4.5>, [4.5,9> and
  * [9, infinity). In the first interval a rational approximation
  * R(x) is employed to compute y0(x)  = R(x) + 2/pi * log(x) * j0(x).
@@ -446,10 +446,9 @@ real cylBessel_jn(int n, real x )
  * directly.
  */
 real cylBessel_yn(int n, real x)
-in {
-    assert(x>0); // TODO: should it return -infinity for x<=0 ?
-}
-body {
+{
+    verify(x>0); // TODO: should it return -infinity for x<=0 ?
+
     real an, r;
     int k, sign;
 

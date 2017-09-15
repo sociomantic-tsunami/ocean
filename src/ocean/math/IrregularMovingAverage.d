@@ -31,6 +31,8 @@ import ocean.math.IEEE;
 import ocean.math.Math;
 import core.stdc.time;
 
+import ocean.core.Verify;
+
 version(UnitTest) import ocean.core.Test;
 
 /*******************************************************************************
@@ -182,33 +184,31 @@ public struct IrregularMovingAverage (Time = time_t, Value = real)
 
     public static This opCall (Value beta, Time expected_time_interval,
                                Value first_value, Time first_value_time)
-    in
-    {
-        assert(!isNaN(beta));
-        assert(!isInfinity(beta));
-        assert(0.0 < beta);
-        assert(beta < 1.0);
-
-        assert(!isNaN(first_value));
-        assert(!isInfinity(first_value));
-
-        static if (isFloatingPointType!(Time))
-        {
-            assert(!isNaN(expected_time_interval));
-            assert(!isInfinity(expected_time_interval));
-
-            assert(!isNaN(first_value_time));
-            assert(!isInfinity(first_value_time));
-        }
-
-        assert(expected_time_interval > 0);
-    }
     out (ima)
     {
         assert(&ima); // confirm the invariant holds
     }
     body
     {
+        verify(!isNaN(beta));
+        verify(!isInfinity(beta));
+        verify(0.0 < beta);
+        verify(beta < 1.0);
+
+        verify(!isNaN(first_value));
+        verify(!isInfinity(first_value));
+
+        static if (isFloatingPointType!(Time))
+        {
+            verify(!isNaN(expected_time_interval));
+            verify(!isInfinity(expected_time_interval));
+
+            verify(!isNaN(first_value_time));
+            verify(!isInfinity(first_value_time));
+        }
+
+        verify(expected_time_interval > 0);
+
         // cast to real is necessary to satisfy 'pow' overrides
         Value beta_pow = pow(beta, cast(real) expected_time_interval);
         Value alpha_start = 1.0 - beta_pow;
@@ -244,19 +244,16 @@ public struct IrregularMovingAverage (Time = time_t, Value = real)
     ***************************************************************************/
 
     public void update (Value value, Time value_time)
-    in
     {
-        assert(!isNaN(value));
-        assert(!isInfinity(value));
+        verify(!isNaN(value));
+        verify(!isInfinity(value));
 
         static if (isFloatingPointType!(Time))
         {
-            assert(!isNaN(value_time));
-            assert(!isInfinity(value_time));
+            verify(!isNaN(value_time));
+            verify(!isInfinity(value_time));
         }
-    }
-    body
-    {
+
         enforce(value_time > this.update_time,
                 "Cannot incorporate data point from the past!");
 
@@ -363,18 +360,15 @@ public struct IrregularMovingAverage (Time = time_t, Value = real)
     ***************************************************************************/
 
     private Time update_time (Time t)
-    in
     {
         static if (isFloatingPointType!(Time))
         {
-            assert(!isNaN(value_time));
-            assert(!isInfinity(value_time));
+            verify(!isNaN(value_time));
+            verify(!isInfinity(value_time));
         }
 
-        assert(t > this.update_time_);
-    }
-    body
-    {
+        verify(t > this.update_time_);
+
         return this.update_time_ = t;
     }
 
@@ -410,15 +404,12 @@ public struct IrregularMovingAverage (Time = time_t, Value = real)
     ***************************************************************************/
 
     public Value beta (Value b)
-    in
     {
-        assert(!isNaN(b));
-        assert(!isInfinity(b));
-        assert(0 < b);
-        assert(b < 1);
-    }
-    body
-    {
+        verify(!isNaN(b));
+        verify(!isInfinity(b));
+        verify(0 < b);
+        verify(b < 1);
+
         return this.beta_ = b;
     }
 }

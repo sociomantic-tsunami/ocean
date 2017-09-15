@@ -25,6 +25,7 @@
 module ocean.math.internal.BignumNoAsm;
 
 import ocean.transition;
+import ocean.core.Verify;
 
 version(UnitTest) import ocean.core.Test;
 
@@ -178,7 +179,7 @@ unittest
  */
 uint multibyteMul(uint[] dest, Const!(uint)[] src, uint multiplier, uint carry)
 {
-    assert(dest.length==src.length);
+    verify(dest.length==src.length);
     ulong c = carry;
     for(int i=0; i<src.length; ++i){
         c += cast(ulong)(src[i]) * multiplier;
@@ -201,7 +202,7 @@ unittest
  */
 uint multibyteMulAdd(char op)(uint [] dest, Const!(uint)[] src, uint multiplier, uint carry)
 {
-    assert(dest.length == src.length);
+    verify(dest.length == src.length);
     ulong c = carry;
     for(int i = 0; i < src.length; ++i){
         static if(op=='+') {

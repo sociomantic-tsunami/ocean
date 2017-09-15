@@ -33,6 +33,7 @@
 module ocean.math.internal.BiguintCore;
 
 import ocean.transition;
+import ocean.core.Verify;
 
 version(UnitTest) import ocean.core.Test;
 
@@ -291,7 +292,7 @@ bool fromHexString(cstring s)
     uint part = 0;
     uint sofar = 0;
     uint partcount = 0;
-    assert(s.length>0);
+    verify(s.length>0);
     for (long i = s.length - 1; i>=firstNonZero; --i) {
         assert(i>=0);
         char c = s[i];
@@ -351,7 +352,7 @@ bool fromDecimalString(cstring s)
 // return x >> y
 BigUint opShr(ulong y)
 {
-    assert(y>0);
+    verify(y>0);
     uint bits = cast(uint)y & BIGDIGITSHIFTMASK;
     if ((y>>LG2BIGDIGITBITS) >= data.length) return BigUint(ZERO);
     uint words = cast(uint)(y >> LG2BIGDIGITBITS);
@@ -368,10 +369,10 @@ BigUint opShr(ulong y)
 // return x << y
 BigUint opShl(ulong y)
 {
-    assert(y>0);
+    verify(y>0);
     if (isZero()) return *this;
     uint bits = cast(uint)y & BIGDIGITSHIFTMASK;
-    assert ((y>>LG2BIGDIGITBITS) < cast(ulong)(uint.max));
+    verify ((y>>LG2BIGDIGITBITS) < cast(ulong)(uint.max));
     uint words = cast(uint)(y >> LG2BIGDIGITBITS);
     BigDigit [] result = new BigDigit[data.length + words+1];
     result[0..words] = 0;
@@ -473,7 +474,7 @@ static BigUint mul(BigUint x, BigUint y)
 static BigUint divInt(BigUint x, uint y) {
     uint [] result = new BigDigit[x.data.length];
     if ((y&(-y))==y) {
-        assert(y!=0, "BigUint division by zero");
+        verify(y!=0, "BigUint division by zero");
         // perfect power of 2
         uint b = 0;
         for (;y!=1; y>>=1) {
@@ -489,7 +490,7 @@ static BigUint divInt(BigUint x, uint y) {
 
 // return x%y
 static uint modInt(BigUint x, uint y) {
-    assert(y!=0);
+    verify(y!=0);
     if ((y & (-y)) == y) { // perfect power of 2
         return x.data[0]&(y-1);
     } else {
@@ -549,7 +550,7 @@ static BigUint pow(BigUint x, ulong y)
     bool singledigit = ((x.data.length - firstnonzero) == 1);
     // If true, then x0 is that digit, and we must calculate x0 ^^ y0.
     BigDigit x0 = x.data[firstnonzero];
-    assert(x0 !=0);
+    verify(x0 !=0);
     size_t xlength = x.data.length;
     ulong y0;
     uint evenbits = 0; // number of even bits in the bottom of x
@@ -780,7 +781,7 @@ T intpow(T)(T x, ulong n)
 //  returns the maximum power of x that will fit in a uint.
 int highestPowerBelowUintMax(uint x)
 {
-     assert(x>1);
+     verify(x>1);
      const maxpwr = [31, 20, 15, 13, 12, 11, 10, 10, 9, 9,
                                  8, 8, 8, 8, 7, 7, 7, 7, 7, 7, 7, 7];
      if (x<24) return maxpwr[x-2];
@@ -795,7 +796,7 @@ int highestPowerBelowUintMax(uint x)
 //  returns the maximum power of x that will fit in a ulong.
 int highestPowerBelowUlongMax(uint x)
 {
-     assert(x>1);
+     verify(x>1);
      const maxpwr = [63, 40, 31, 27, 24, 22, 21, 20, 19, 18,
                                  17, 17, 16, 16, 15, 15, 15, 15, 14, 14,
                                  14, 14, 13, 13, 13, 13, 13, 13, 13, 12,
@@ -938,9 +939,9 @@ BigDigit [] subInt(Const!(BigDigit)[] x, ulong y)
  */
 void mulInternal(BigDigit[] result, Const!(BigDigit)[] x, Const!(BigDigit)[] y)
 {
-    assert( result.length == x.length + y.length );
-    assert( y.length > 0 );
-    assert( x.length >= y.length);
+    verify( result.length == x.length + y.length );
+    verify( y.length > 0 );
+    verify( x.length >= y.length);
     if (y.length <= KARATSUBALIMIT) {
         // Small multiplier, we'll just use the asm classic multiply.
         if (y.length==1) { // Trivial case, no cache effects to worry about
@@ -1052,7 +1053,7 @@ void squareInternal(BigDigit[] result, Const!(BigDigit)[] x)
 {
   // TODO: Squaring is potentially half a multiply, plus add the squares of
   // the diagonal elements.
-  assert(result.length == 2*x.length);
+  verify(result.length == 2*x.length);
   if (x.length <= KARATSUBASQUARELIMIT) {
       if (x.length==1) {
          result[1] = multibyteMul(result[0..1], x, x[0], 0);
@@ -1073,10 +1074,10 @@ import ocean.core.BitManip : bsr;
 void divModInternal(BigDigit [] quotient, BigDigit[] remainder, Const!(BigDigit)[] u,
     Const!(BigDigit)[] v)
 {
-    assert(quotient.length == u.length - v.length + 1);
-    assert(remainder==null || remainder.length == v.length);
-    assert(v.length > 1);
-    assert(u.length >= v.length);
+    verify(quotient.length == u.length - v.length + 1);
+    verify(remainder==null || remainder.length == v.length);
+    verify(v.length > 1);
+    verify(u.length >= v.length);
 
     // Normalize by shifting v left just enough so that
     // its high-order bit is on, and shift u left the
@@ -1274,22 +1275,20 @@ private:
 
 // Classic 'schoolbook' multiplication.
 void mulSimple(BigDigit[] result, Const!(BigDigit)[] left, Const!(BigDigit)[] right)
-in {
-    assert(result.length == left.length + right.length);
-    assert(right.length>1);
-}
-body {
+{
+    verify(result.length == left.length + right.length);
+    verify(right.length>1);
+
     result[left.length] = multibyteMul(result[0..left.length], left, right[0], 0);
     multibyteMultiplyAccumulate(result[1..$], left, right[1..$]);
 }
 
 // Classic 'schoolbook' squaring
 void squareSimple(BigDigit[] result, Const!(BigDigit)[] x)
-in {
-    assert(result.length == 2*x.length);
-    assert(x.length>1);
-}
-body {
+{
+    verify(result.length == 2*x.length);
+    verify(x.length>1);
+
     multibyteSquare(result, x);
 }
 
@@ -1298,12 +1297,11 @@ body {
 // as the larger length.
 // Returns carry (0 or 1).
 uint addSimple(BigDigit [] result, BigDigit [] left, BigDigit [] right)
-in {
-    assert(result.length == left.length);
-    assert(left.length >= right.length);
-    assert(right.length>0);
-}
-body {
+{
+    verify(result.length == left.length);
+    verify(left.length >= right.length);
+    verify(right.length>0);
+
     uint carry = multibyteAdd(result[0..right.length],
             left[0..right.length], right, 0);
     if (right.length < left.length) {
@@ -1316,12 +1314,11 @@ body {
 //  result = left - right
 // returns carry (0 or 1)
 BigDigit subSimple(BigDigit [] result, BigDigit [] left, BigDigit [] right)
-in {
-    assert(result.length == left.length);
-    assert(left.length >= right.length);
-    assert(right.length>0);
-}
-body {
+{
+    verify(result.length == left.length);
+    verify(left.length >= right.length);
+    verify(right.length>0);
+
     BigDigit carry = multibyteSub(result[0..right.length],
             left[0..right.length], right, 0);
     if (right.length < left.length) {
@@ -1337,7 +1334,7 @@ body {
 */
 BigDigit subAssignSimple(BigDigit [] result, BigDigit [] right)
 {
-    assert(result.length >= right.length);
+    verify(result.length >= right.length);
     uint c = multibyteSub(result[0..right.length], result[0..right.length], right, 0);
     if (c && result.length > right.length) c = multibyteIncrementAssign!('-')(result[right.length .. $], c);
     return c;
@@ -1347,7 +1344,7 @@ BigDigit subAssignSimple(BigDigit [] result, BigDigit [] right)
 */
 BigDigit addAssignSimple(BigDigit [] result, BigDigit [] right)
 {
-    assert(result.length >= right.length);
+    verify(result.length >= right.length);
     uint c = multibyteAdd(result[0..right.length], result[0..right.length], right, 0);
     if (c && result.length > right.length) {
        c = multibyteIncrementAssign!('+')(result[right.length .. $], c);
@@ -1367,7 +1364,7 @@ BigDigit addOrSubAssignSimple(BigDigit [] result, BigDigit [] right, bool wantSu
 // return true if x<y, considering leading zeros
 bool less(Const!(BigDigit)[] x, Const!(BigDigit)[] y)
 {
-    assert(x.length >= y.length);
+    verify(x.length >= y.length);
     long k = x.length-1;
     while(x[k]==0 && k>=y.length) --k;
     if (k>=y.length) return false;
@@ -1378,7 +1375,7 @@ bool less(Const!(BigDigit)[] x, Const!(BigDigit)[] y)
 // Set result = abs(x-y), return true if result is negative(x<y), false if x<=y.
 bool inplaceSub(BigDigit[] result, Const!(BigDigit)[] x, Const!(BigDigit)[] y)
 {
-    assert(result.length == (x.length >= y.length) ? x.length : y.length);
+    verify(!!(result.length == (x.length >= y.length) ? x.length : y.length));
 
     size_t minlen;
     bool negative;
@@ -1423,14 +1420,14 @@ uint karatsubaRequiredBuffSize(uint xlen)
 void mulKaratsuba(BigDigit [] result, Const!(BigDigit)[] x,
     Const!(BigDigit)[] y, BigDigit[] scratchbuff)
 {
-    assert(x.length >= y.length);
-	  assert(result.length < uint.max, "Operands too large");
-    assert(result.length == x.length + y.length);
+    verify(x.length >= y.length);
+	  verify(result.length < uint.max, "Operands too large");
+    verify(result.length == x.length + y.length);
     if (x.length <= KARATSUBALIMIT) {
         return mulSimple(result, x, y);
     }
     // Must be almost square (otherwise, a schoolbook iteration is better)
-    assert(2L * y.length * y.length > (x.length-1) * (x.length-1),
+    verify(2L * y.length * y.length > (x.length-1) * (x.length-1),
         "Bigint Internal Error: Asymmetric Karatsuba");
 
     // The subtractive version of Karatsuba multiply uses the following result:
@@ -1523,8 +1520,8 @@ void squareKaratsuba(BigDigit [] result, Const!(BigDigit)[] x, BigDigit [] scrat
 {
     // See mulKaratsuba for implementation comments.
     // Squaring is simpler, since it never gets asymmetric.
-	  assert(result.length < uint.max, "Operands too large");
-    assert(result.length == 2*x.length);
+	  verify(result.length < uint.max, "Operands too large");
+    verify(result.length == 2*x.length);
     if (x.length <= KARATSUBASQUARELIMIT) {
         return squareSimple(result, x);
     }
@@ -1576,11 +1573,11 @@ void squareKaratsuba(BigDigit [] result, Const!(BigDigit)[] x, BigDigit [] scrat
  */
 void schoolbookDivMod(BigDigit [] quotient, BigDigit [] u, in BigDigit [] v)
 {
-    assert(quotient.length == u.length - v.length);
-    assert(v.length > 1);
-    assert(u.length >= v.length);
-    assert((v[$-1]&0x8000_0000)!=0);
-    assert(u[$-1] < v[$-1]);
+    verify(quotient.length == u.length - v.length);
+    verify(v.length > 1);
+    verify(u.length >= v.length);
+    verify((v[$-1]&0x8000_0000)!=0);
+    verify(u[$-1] < v[$-1]);
     // BUG: This code only works if BigDigit is uint.
     uint vhi = v[$-1];
     uint vlo = v[$-2];
@@ -1667,7 +1664,7 @@ private:
 // or 0 if left[]==right[]
 ptrdiff_t highestDifferentDigit(Const!(BigDigit)[] left, Const!(BigDigit)[] right)
 {
-    assert(left.length == right.length);
+    verify(left.length == right.length);
     for (ptrdiff_t i=left.length-1; i>0; --i) {
         if (left[i]!=right[i]) return i;
     }
@@ -1680,7 +1677,7 @@ ptrdiff_t firstNonZeroDigit(Const!(BigDigit)[] x)
     ptrdiff_t k = 0;
     while (x[k]==0) {
         ++k;
-        assert(k<x.length);
+        verify(k<x.length);
     }
     return k;
 }
@@ -1699,16 +1696,15 @@ Returns:
 */
 void recursiveDivMod(BigDigit[] quotient, BigDigit[] u, in BigDigit[] v,
                      BigDigit[] scratch)
-in {
-    assert(quotient.length == u.length - v.length);
-    assert(u.length <= 2 * v.length, "Asymmetric division"); // use base-case division to get it to this situation
-    assert(v.length > 1);
-    assert(u.length >= v.length);
-    assert((v[$ - 1] & 0x8000_0000) != 0);
-    assert(scratch.length >= quotient.length);
+{
+    verify(quotient.length == u.length - v.length);
+    verify(u.length <= 2 * v.length, "Asymmetric division"); // use base-case division to get it to this situation
+    verify(v.length > 1);
+    verify(u.length >= v.length);
+    verify((v[$ - 1] & 0x8000_0000) != 0);
+    verify(scratch.length >= quotient.length);
 
-}
-body {
+
     if(quotient.length < FASTDIVLIMIT) {
         return schoolbookDivMod(quotient, u, v);
     }
@@ -1729,7 +1725,7 @@ body {
 void adjustRemainder(BigDigit[] quot, BigDigit[] rem, in BigDigit[] v, int k,
                      BigDigit[] scratch)
 {
-    assert(rem.length == v.length);
+    verify(rem.length == v.length);
     mulInternal(scratch, quot, v[0 .. k]);
     uint carry = subAssignSimple(rem, scratch);
     while(carry) {
@@ -1741,10 +1737,10 @@ void adjustRemainder(BigDigit[] quot, BigDigit[] rem, in BigDigit[] v, int k,
 // Cope with unbalanced division by performing block schoolbook division.
 void fastDivMod(BigDigit [] quotient, BigDigit [] u, in BigDigit [] v)
 {
-    assert(quotient.length == u.length - v.length);
-    assert(v.length > 1);
-    assert(u.length >= v.length);
-    assert((v[$-1] & 0x8000_0000)!=0);
+    verify(quotient.length == u.length - v.length);
+    verify(v.length > 1);
+    verify(u.length >= v.length);
+    verify((v[$-1] & 0x8000_0000)!=0);
     BigDigit [] scratch = new BigDigit[v.length];
 
     // Perform block schoolbook division, with 'v.length' blocks.

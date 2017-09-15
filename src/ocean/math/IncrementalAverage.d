@@ -17,6 +17,7 @@
 
 module ocean.math.IncrementalAverage;
 
+import ocean.core.Verify;
 
 /*******************************************************************************
 
@@ -165,7 +166,7 @@ public struct IncrementalAverage
         if (this.count_ < 2)
             return 0;
 
-        assert(this.count_ > correction_factor, "Correction factor is same "
+        verify(this.count_ > correction_factor, "Correction factor is same "
                ~ "size or bigger than the number of elements added.");
 
         return this.mean_of_square / (this.count_ - correction_factor);

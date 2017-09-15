@@ -188,6 +188,7 @@ import ocean.math.random.NormalSource;
 import ocean.math.random.ExpSource;
 import ocean.math.Math;
 import ocean.core.Traits;
+import ocean.core.Verify;
 
 // ----- templateFu begin --------
 /// compile time integer power
@@ -440,8 +441,8 @@ final class RandomG(SourceT=DefaultEngine)
     /// uniform distribution on the range [0;to$(RPAREN) for integer types, and on
     /// the (0;to) range for floating point types. Same caveat as uniform(T) apply
     T uniformR(T,bool boundCheck=true)(T to)
-    in { assert(to>0,"empty range");}
-    body {
+    {
+        verify(to>0,"empty range");
         static if (is(T==uint) || is(T==int) || is(T==short) || is(T==ushort)
             || is(T==char) || is(T==byte) || is(T==ubyte))
         {
@@ -488,8 +489,8 @@ final class RandomG(SourceT=DefaultEngine)
     /// In here there is probably one of the few cases where c handling of modulo of negative
     /// numbers is handy
     T uniformRSymm(T,bool boundCheck=true, bool excludeZero=isFloat!(T))(T to,int iter=2000)
-    in { assert(to>0,"empty range");}
-    body {
+    {
+        verify(to>0,"empty range");
         static if (is(T==int)|| is(T==short) || is(T==byte)){
             int d=int.max/to,dTo=to*d;
             int nV=cast(int)source.next;
@@ -665,13 +666,11 @@ final class RandomG(SourceT=DefaultEngine)
     /// (it could be worked around using long aritmethic for int, and doing a carry by hand for long,
     /// but I think it is seldomly needed, for int you are better off using long when needed)
     T uniformR2(T,bool boundCheck=true)(T from,T to)
-    in {
-        assert(to>from,"empy range in uniformR2");
+    {
+        verify(to>from,"empy range in uniformR2");
         static if (is(T==int) || is(T==long)){
-            assert(from>T.min/2&&to<T.max/2," from..to range too big");
+            verify(from>T.min/2&&to<T.max/2," from..to range too big");
         }
-    }
-    body {
         static if (is(T==int)||is(T==long)||is(T==uint)||is(T==ulong)){
             return from+uniformR(to-from);
         } else static if (is(T==char) || is(T==byte) || is(T==ubyte) || is(T==short) || is(T==ushort)){
@@ -690,7 +689,7 @@ final class RandomG(SourceT=DefaultEngine)
     }
     /// returns a random element of the given array (which must be non empty)
     T uniformEl(T)(T[] arr){
-        assert(arr.length>0,"array has to be non empty");
+        verify(arr.length>0,"array has to be non empty");
         return arr[uniformR(arr.length)];
     }
 
@@ -750,8 +749,8 @@ final class RandomG(SourceT=DefaultEngine)
     *************************************************************************/
 
     U randomizeUniformR(U,V,bool boundCheck=true)(ref U a,V to)
-    in { assert((cast(BaseTypeOfArrays!(U))to)>0,"empty range");}
-    body {
+    {
+        verify((cast(BaseTypeOfArrays!(U))to)>0,"empty range");
         alias BaseTypeOfArrays!(U) T;
         static assert(is(V:T),"incompatible a and to type "~U.stringof~" "~V.stringof);
         static if (is(U S:S[])){
@@ -808,14 +807,12 @@ final class RandomG(SourceT=DefaultEngine)
     *************************************************************************/
 
     U randomizeUniformR2(U,V,W,bool boundCheck=true)(ref U a,V from, W to)
-    in {
+    {
         alias BaseTypeOfArrays!(U) T;
-        assert((cast(T)to)>(cast(T)from),"empy range in uniformR2");
+        verify((cast(T)to)>(cast(T)from),"empy range in uniformR2");
         static if (is(T==int) || is(T==long)){
-            assert(from>T.min/2&&to<T.max/2," from..to range too big");
+            verify(from>T.min/2&&to<T.max/2," from..to range too big");
         }
-    }
-    body {
         alias BaseTypeOfArrays!(U) T;
         static assert(is(V:T),"incompatible a and from type "~U.stringof~" "~V.stringof);
         static assert(is(W:T),"incompatible a and to type "~U.stringof~" "~W.stringof);
@@ -857,9 +854,9 @@ final class RandomG(SourceT=DefaultEngine)
     /// random numbers and speedwise)
     U randomizeUniformRSymm(U,V,bool boundCheck=true, bool excludeZero=isFloat!(BaseTypeOfArrays!(U)))
         (ref U a,V to)
-    in { assert((cast(BaseTypeOfArrays!(U))to)>0,"empty range");}
-    body {
+    {
         alias BaseTypeOfArrays!(U) T;
+        verify((cast(T)to)>0,"empty range");
         static assert(is(V:T),"incompatible a and to type "~U.stringof~" "~V.stringof);
         static if (is(U S:S[])){
             static if (is(T==int)|| is(T==byte)){
@@ -1043,7 +1040,7 @@ final class RandomG(SourceT=DefaultEngine)
             res.r=r;
             res.alpha=alpha;
             res.theta=theta;
-            assert(alpha>=cast(T)1,"implemented only for alpha>=1");
+            verify(alpha>=cast(T)1,"implemented only for alpha>=1");
             return res;
         }
         /// chainable call style initialization of variables (thorugh a call to randomize)
@@ -1053,8 +1050,8 @@ final class RandomG(SourceT=DefaultEngine)
         }
         /// returns a single random number
         T getRandom(T a=alpha,T t=theta)
-        in { assert(a>=cast(T)1,"implemented only for alpha>=1"); }
-        body {
+        {
+            verify(a>=cast(T)1,"implemented only for alpha>=1");
             T d=a-(cast(T)1)/(cast(T)3);
             T c=(cast(T)1)/sqrt(d*cast(T)9);
             auto n=r.normalSource!(T)();
@@ -1207,8 +1204,8 @@ final class RandomG(SourceT=DefaultEngine)
     /// from Marsaglia and Tsang, ACM Transaction on Mathematical Software, Vol. 26, N. 3
     /// 2000, p 363-372
     T gamma(T)(T alpha=cast(T)1,T sigma=cast(T)1)
-    in { assert(alpha>=cast(T)1,"implemented only for alpha>=1"); }
-    body {
+    {
+        verify(alpha>=cast(T)1,"implemented only for alpha>=1");
         auto n=normalSource!(T);
         T d=alpha-(cast(T)1)/(cast(T)3);
         T c=(cast(T)1)/sqrt(d*cast(T)9);

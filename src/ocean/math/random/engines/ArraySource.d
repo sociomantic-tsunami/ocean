@@ -16,6 +16,8 @@
 *******************************************************************************/
 module ocean.math.random.engines.ArraySource;
 
+import ocean.core.Verify;
+
 /*******************************************************************************
 
     very simple array based source (use with care, some methods in non uniform
@@ -30,15 +32,15 @@ struct ArraySource{
     const int canSeed=false;
 
     static ArraySource opCall(uint[] a,size_t i=0)
-    in { assert(a.length>0,"array needs at least one element"); }
-    body {
+    {
+        verify(a.length>0,"array needs at least one element");
         ArraySource res;
         res.a=a;
         res.i=i;
         return res;
     }
     uint next(){
-        assert(a.length>i,"error, array out of bounds");
+        verify(a.length>i,"error, array out of bounds");
         uint el=a[i];
         i=(i+1)%a.length;
         return el;

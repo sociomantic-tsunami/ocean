@@ -49,6 +49,7 @@ import ocean.transition;
 
 static import core.stdc.math;
 import ocean.math.IEEE;
+import ocean.core.Verify;
 
 version(UnitTest) import ocean.core.Test;
 
@@ -1866,12 +1867,9 @@ unittest
  *      x =  point in which to evaluate polynomial
  */
 T poly(T)(T x, T[] A)
-in
 {
-    assert(A.length > 0);
-}
-body
-{
+    verify(A.length > 0);
+
   version (Naked_D_InlineAsm_X86) {
       const bool Use_D_InlineAsm_X86 = true;
   } else const bool Use_D_InlineAsm_X86 = false;

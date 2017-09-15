@@ -17,6 +17,7 @@
 module ocean.math.random.engines.KISS;
 import ocean.transition;
 import Integer = ocean.text.convert.Integer_tango;
+import ocean.core.Verify;
 
 /+ Kiss99 random number generator, by Marisaglia
 + a simple RNG that passes all statistical tests
@@ -91,22 +92,22 @@ struct Kiss99{
             Integer.format(res[i..i+8],val,"x8");
             i+=8;
         }
-        assert(i==res.length,"unexpected size");
+        verify(i==res.length,"unexpected size");
         return assumeUnique(res);
     }
     /// reads the current status from a string (that should have been trimmed)
     /// returns the number of chars read
     size_t fromString(cstring s){
         size_t i=0;
-        assert(s[i..i+4]=="KISS","unexpected kind, expected KISS");
-        assert(s[i+4..i+7]=="99_","unexpected version, expected 99");
+        verify(s[i..i+4]=="KISS","unexpected kind, expected KISS");
+        verify(s[i+4..i+7]=="99_","unexpected version, expected 99");
         i+=6;
         foreach (val;[&kiss_x,&kiss_y,&kiss_z,&kiss_c,&nBytes,&restB]){
-            assert(s[i]=='_',"no separator _ found");
+            verify(s[i]=='_',"no separator _ found");
             ++i;
             uint ate;
             *val=cast(uint)Integer.convert(s[i..i+8],16,&ate);
-            assert(ate==8,"unexpected read size");
+            verify(ate==8,"unexpected read size");
             i+=8;
         }
         return i;

@@ -29,6 +29,7 @@ import ocean.transition;
 import ocean.math.Math;
 import ocean.math.IEEE;
 import ocean.math.ErrorFunction;
+import ocean.core.Verify;
 
 version(UnitTest) import ocean.core.Test;
 
@@ -1094,11 +1095,10 @@ real betaDistPowerSeries(real a, real b, real x )
  * values of a and x.
  */
 real gammaIncomplete(real a, real x )
-in {
-   assert(x >= 0);
-   assert(a > 0);
-}
-body {
+{
+    verify(x >= 0);
+    verify(a > 0);
+
     /* left tail of incomplete gamma function:
      *
      *          inf.      k
@@ -1137,11 +1137,10 @@ body {
 
 /** ditto */
 real gammaIncompleteCompl(real a, real x )
-in {
-   assert(x >= 0);
-   assert(a > 0);
-}
-body {
+{
+    verify(x >= 0);
+    verify(a > 0);
+
     if (x==0)
        return 1.0L;
     if ( (x < 1.0L) || (x < a) )
@@ -1217,11 +1216,10 @@ body {
  * root of incompleteGammaCompl(a,x) - p = 0.
  */
 real gammaIncompleteComplInv(real a, real p)
-in {
-  assert(p>=0 && p<= 1);
-  assert(a>0);
-}
-body {
+{
+    verify(p>=0 && p<= 1);
+    verify(a>0);
+
     if (p==0) return real.infinity;
 
     real y0 = p;

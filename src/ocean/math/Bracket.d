@@ -19,6 +19,7 @@ import ocean.transition;
 static import tsm = core.stdc.math;
 import ocean.math.Math;
 import ocean.math.IEEE;
+import ocean.core.Verify;
 
 version(UnitTest) import ocean.core.Test;
 
@@ -80,12 +81,11 @@ private:
  */
 BracketResult!(T, R) findRoot(T,R)(R delegate(T) f, T ax, T bx, R fax, R fbx,
     bool delegate(BracketResult!(T,R) r) tolerance)
-in {
-    assert(ax<=bx, "Parameters ax and bx out of order.");
-    assert(!tsm.isnan(ax) && !tsm.isnan(bx), "Limits must not be NaN");
-    assert(oppositeSigns(fax,fbx), "Parameters must bracket the root.");
-}
-body {
+{
+    verify(ax<=bx, "Parameters ax and bx out of order.");
+    verify(!tsm.isnan(ax) && !tsm.isnan(bx), "Limits must not be NaN");
+    verify(oppositeSigns(fax,fbx), "Parameters must bracket the root.");
+
 // This code is (heavily) modified from TOMS748 (www.netlib.org). Some ideas
 // were borrowed from the Boost Mathematics Library.
 
@@ -321,13 +321,12 @@ public:
  */
 T findMinimum(T,R)(R delegate(T) func, T xlo, T xhi, T xinitial,
      out R funcMin)
-in {
-    assert(xlo <= xhi);
-    assert(xinitial >= xlo);
-    assert(xinitial <= xhi);
-    assert(func(xinitial) <= func(xlo) && func(xinitial) <= func(xhi));
-}
-body{
+{
+    verify(xlo <= xhi);
+    verify(xinitial >= xlo);
+    verify(xinitial <= xhi);
+    verify(func(xinitial) <= func(xlo) && func(xinitial) <= func(xhi));
+
     // Based on the original Algol code by R.P. Brent.
     const real GOLDENRATIO = 0.3819660112501051; // (3 - sqrt(5))/2 = 1 - 1/phi
 
