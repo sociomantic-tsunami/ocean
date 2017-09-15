@@ -33,11 +33,11 @@
 module ocean.math.ErrorFunction;
 
 import ocean.math.Math;
+import ocean.math.IEEE;
 
 version(UnitTest)
 {
     import ocean.core.Test;
-    import ocean.math.IEEE;
 }
 
 
