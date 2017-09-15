@@ -20,4 +20,3 @@ indent_size = 2
 # Makefiles need to use tab for indentation
 [{Makefile,**.mak}]
 indent_style = tab
-tab_width = none
