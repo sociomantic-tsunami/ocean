@@ -453,7 +453,7 @@ final class RandomG(SourceT=DefaultEngine)
                     nV=source.next;
                     if (nV<dTo) break;
                 }
-                assert(nV<dTo,"this is less probable than 1.e-301, something is wrong with the random number generator");
+                verify(nV<dTo,"this is less probable than 1.e-301, something is wrong with the random number generator");
             }
             return cast(T)(nV%to);
         } else static if (is(T==ulong) || is(T==long)){
@@ -464,7 +464,7 @@ final class RandomG(SourceT=DefaultEngine)
                     nV=source.nextL;
                     if (nV<dTo) break;
                 }
-                assert(nV<dTo,"this is less probable than 1.e-301, something is wrong with the random number generator");
+                verify(nV<dTo,"this is less probable than 1.e-301, something is wrong with the random number generator");
             }
             return cast(T)(nV%to);
         } else static if (is(T==float)|| is(T==double)||is(T==real)){
@@ -506,7 +506,7 @@ final class RandomG(SourceT=DefaultEngine)
                     nV=cast(int)source.next;
                     if (nV<dTo && nV>-dTo) break;
                 }
-                assert(nV<dTo && nV>-dTo,"this is less probable than 1.e-301, something is wrong with the random number generator");
+                verify(nV<dTo && nV>-dTo,"this is less probable than 1.e-301, something is wrong with the random number generator");
                 return cast(T)(nV%to);
             }
         } else static if (is(T==long)){
@@ -524,7 +524,7 @@ final class RandomG(SourceT=DefaultEngine)
                     nV=source.nextL;
                     if (nV<dTo && nV>-dTo) break;
                 }
-                assert(nV<dTo && nV>-dTo,"this is less probable than 1.e-301, something is wrong with the random number generator");
+                verify(nV<dTo && nV>-dTo,"this is less probable than 1.e-301, something is wrong with the random number generator");
                 return nV%to;
             }
         } else static if (is(T==float)||is(T==double)||is(T==real)){
@@ -538,7 +538,7 @@ final class RandomG(SourceT=DefaultEngine)
                     static if (boundCheck){
                         if (res!=to) return (1-2*cast(int)(nV&1u))*res;
                         // to due to rounding (~3.e-8), 0 impossible with normal to values
-                        assert(iter>0,"error with the generator, probability < 10^(-8*2000)");
+                        verify(iter>0,"error with the generator, probability < 10^(-8*2000)");
                         return uniformRSymm(to,iter-1);
                     } else {
                         return (1-2*cast(int)(nV&1u))*res;
@@ -553,7 +553,7 @@ final class RandomG(SourceT=DefaultEngine)
                     T res=(cast(T)nV+cast(T)nV2*fact32)*scale*to;
                     static if (excludeZero){
                         if (res!=cast(T)0) return (1-2*cast(int)(nV&1u))*res;
-                        assert(iter>0,"error with the generator, probability < 10^(-8*2000)");
+                        verify(iter>0,"error with the generator, probability < 10^(-8*2000)");
                         return uniformRSymm(to,iter-1); // 0 due to underflow (<1.e-38), 1 impossible
                     } else {
                         return (1-2*cast(int)(nV&1u))*res;
@@ -569,7 +569,7 @@ final class RandomG(SourceT=DefaultEngine)
                     static if (boundCheck){
                         if (res!=to) return (1-2*cast(int)(nV&1UL))*res;
                         // to due to rounding (<1.e-16), 0 impossible with normal to values
-                        assert(iter>0,"error with the generator, probability < 10^(-16*2000)");
+                        verify(iter>0,"error with the generator, probability < 10^(-16*2000)");
                         return uniformRSymm(to,iter-1);
                     } else {
                         return (1-2*cast(int)(nV&1UL))*res;
@@ -592,7 +592,7 @@ final class RandomG(SourceT=DefaultEngine)
                         static if (excludeZero){
                             if (res!=cast(T)0) return (1-2*cast(int)(nV2&1UL))*res;
                             // 0 due to underflow (<1.e-307)
-                            assert(iter>0,"error with the generator, probability < 10^(-16*2000)");
+                            verify(iter>0,"error with the generator, probability < 10^(-16*2000)");
                             return uniformRSymm(to,iter-1);
                         } else {
                             return (1-2*cast(int)(nV2&1UL))*res;
@@ -610,7 +610,7 @@ final class RandomG(SourceT=DefaultEngine)
                     static if (boundCheck){
                         if (res!=to) return (1-2*cast(int)(nL&1UL))*res;
                         // 1 due to rounding (<1.e-16), 0 impossible with normal to values
-                        assert(iter>0,"error with the generator, probability < 10^(-16*2000)");
+                        verify(iter>0,"error with the generator, probability < 10^(-16*2000)");
                         return uniformRSymm(to,iter-1);
                     } else {
                         return (1-2*cast(int)(nL&1UL))*res;
@@ -627,7 +627,7 @@ final class RandomG(SourceT=DefaultEngine)
                     static if (excludeZero){
                         if (res!=cast(T)0) return ((nL&1UL)?res:-res);
                         // 0 due to underflow (<1.e-4932), 1 impossible
-                        assert(iter>0,"error with the generator, probability < 10^(-16*2000)");
+                        verify(iter>0,"error with the generator, probability < 10^(-16*2000)");
                         return uniformRSymm(to,iter-1);
                     } else {
                         return ((nL&1UL)?res:-res);
@@ -652,7 +652,7 @@ final class RandomG(SourceT=DefaultEngine)
                 static if (boundCheck){
                     if (res!=to && res!=cast(T)0) return ((nL&1UL)?res:-res);
                     // 1 due to rounding (<1.e-16), 0 impossible with normal to values
-                    assert(iter>0,"error with the generator, probability < 10^(-16*2000)");
+                    verify(iter>0,"error with the generator, probability < 10^(-16*2000)");
                     return uniformRSymm(to,iter-1);
                 } else {
                     return ((nL&1UL)?res:-res);
@@ -766,7 +766,7 @@ final class RandomG(SourceT=DefaultEngine)
                             nV=source.next;
                             if (nV<dTo) break;
                         }
-                        assert(nV<dTo,"this is less probable than 1.e-301, something is wrong with the random number generator");
+                        verify(nV<dTo,"this is less probable than 1.e-301, something is wrong with the random number generator");
                         *aPtr=cast(T)(nV % cast(uint)to);
                     }
                 }
@@ -782,7 +782,7 @@ final class RandomG(SourceT=DefaultEngine)
                             nV=source.nextL;
                             if (nV<dTo) break;
                         }
-                        assert(nV<dTo,"this is less probable than 1.e-301, something is wrong with the random number generator");
+                        verify(nV<dTo,"this is less probable than 1.e-301, something is wrong with the random number generator");
                         el=cast(T)(nV% cast(ulong)to);
                     }
                 }
@@ -876,7 +876,7 @@ final class RandomG(SourceT=DefaultEngine)
                             nV=cast(int)source.next;
                             if (nV<dTo&&nV>-dTo) break;
                         }
-                        assert(nV<dTo && nV>-dTo,"this is less probable than 1.e-301, something is wrong with the random number generator");
+                        verify(nV<dTo && nV>-dTo,"this is less probable than 1.e-301, something is wrong with the random number generator");
                         *aPtr=cast(T)(nV% cast(int)to);
                     }
                 }
@@ -897,7 +897,7 @@ final class RandomG(SourceT=DefaultEngine)
                             nV=source.nextL;
                             if (nV<dTo && nV>-dTo) break;
                         }
-                        assert(nV<dTo && nV>-dTo,"this is less probable than 1.e-301, something is wrong with the random number generator");
+                        verify(nV<dTo && nV>-dTo,"this is less probable than 1.e-301, something is wrong with the random number generator");
                         *aPtr=nV% cast(T)to;
                     }
                 }
