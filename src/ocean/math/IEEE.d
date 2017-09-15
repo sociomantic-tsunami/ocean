@@ -303,7 +303,7 @@ private:
                asm { st %fsr, retval; }
                return retval;
             */
-           assert(0, "Not yet supported");
+           static assert(0, "Not yet supported");
        }
     }
     static void resetIeeeFlags()
@@ -567,7 +567,7 @@ real frexp(real value, out int exp)
     }
     return value;
   }else { //static if(real.mant_dig==106) // doubledouble
-        assert(0, "Unsupported");
+        static assert(0, "Unsupported");
   }
 }
 
@@ -1221,7 +1221,7 @@ real nextUp(real x)
         }
         return x;
     } else { // doubledouble
-        assert(0, "Not implemented");
+        static assert(0, "Not implemented");
     }
 }
 
@@ -1515,7 +1515,7 @@ int feqrel(X)(X x, X y)
         return (bitsdiff == 0 && !((pa[F.EXPPOS_SHORT] ^ pb[F.EXPPOS_SHORT])& F.EXPMASK)) ? 1 : 0;
      }
  } else {
-    assert(0, "Unsupported");
+    static assert(0, "Unsupported");
  }
 }
 
@@ -1711,7 +1711,7 @@ body {
         m |= ((*xl) & 0x8000_0000);
         *ul = m;
     } else {
-        assert(0, "Not implemented");
+        static assert(0, "Not implemented");
     }
     return u;
 }
