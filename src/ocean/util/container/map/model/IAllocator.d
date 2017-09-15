@@ -133,6 +133,8 @@ abstract class IAllocator
 
     static abstract /* scope */ class IParkingStack
     {
+        import ocean.core.Verify;
+
         /**********************************************************************
 
             Maximum number of objects as passed to the constructor.
@@ -190,12 +192,9 @@ abstract class IAllocator
          **********************************************************************/
 
         public void* push ( void* object )
-        in
         {
-            assert(this.n < this._max_length);
-        }
-        body
-        {
+            verify(this.n < this._max_length);
+
             this.push_(object, this.n++);
 
             return object;

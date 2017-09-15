@@ -29,6 +29,8 @@ debug (BucketInfo) import ocean.io.Stdout;
 
 class BucketInfo
 {
+    import ocean.core.Verify;
+
     /**************************************************************************
 
         Information about a non-empty bucket.
@@ -305,15 +307,6 @@ class BucketInfo
     ***************************************************************************/
 
     package void create ( size_t bucket_index )
-    in
-    {
-        assert (this);
-
-        assert (this.n_filled < this.buckets.length,
-                "create: one element or more in each bucket");
-
-        debug (BucketInfo) this.print("cre ", bucket_index);
-    }
     out
     {
         assert (this);
@@ -323,16 +316,23 @@ class BucketInfo
     }
     body
     {
+        assert (this); // call invariant
+
+        verify (this.n_filled < this.buckets.length,
+                "create: one element or more in each bucket");
+
+        debug (BucketInfo) this.print("cre ", bucket_index);
+
         with (this.buckets[this.n_filled])
         {
-            assert(index >= this.buckets.length);
+            verify(index >= this.buckets.length);
             index  = bucket_index;
 
-            assert(!length);
+            verify(!length);
             length = 1;
         }
 
-        assert(this.bucket_list_indices[bucket_index] >= this.n_filled);
+        verify(this.bucket_list_indices[bucket_index] >= this.n_filled);
         this.bucket_list_indices[bucket_index] = this.n_filled++;
 
         this.n_elements++;
@@ -353,18 +353,6 @@ class BucketInfo
     ***************************************************************************/
 
     package void update ( size_t bucket_index )
-    in
-    {
-        assert (this);
-
-        assert (this.n_elements, "update: no element in map");
-
-        assert (this.buckets[this.bucket_list_indices[bucket_index]].length,
-                "attempted to update an empty bucket info: use create()/put() "
-                ~ "instead");
-
-        debug (BucketInfo) this.print("upd ", bucket_index);
-    }
     out
     {
         assert (this);
@@ -374,6 +362,16 @@ class BucketInfo
     }
     body
     {
+        assert (this); // call invariant
+
+        verify (this.n_elements > 0, "update: no element in map");
+
+        verify (this.buckets[this.bucket_list_indices[bucket_index]].length > 0,
+                "attempted to update an empty bucket info: use create()/put() "
+                ~ "instead");
+
+        debug (BucketInfo) this.print("upd ", bucket_index);
+
         this.buckets[this.bucket_list_indices[bucket_index]].length++;
 
         this.n_elements++;
@@ -395,17 +393,6 @@ class BucketInfo
     ***************************************************************************/
 
     package void remove ( size_t bucket_index )
-    in
-    {
-        assert (this);
-
-        assert (this.n_elements, "remove: no element in map");
-
-        assert (this.buckets[this.bucket_list_indices[bucket_index]].length,
-                "remove: attempted to remove an element from an empty bucket");
-
-        debug (BucketInfo) this.print("rem ", bucket_index);
-    }
     out
     {
         assert (this);
@@ -414,6 +401,15 @@ class BucketInfo
     }
     body
     {
+        assert (this); // call invariant
+
+        verify (this.n_elements > 0, "remove: no element in map");
+
+        verify (this.buckets[this.bucket_list_indices[bucket_index]].length > 0,
+                "remove: attempted to remove an element from an empty bucket");
+
+        debug (BucketInfo) this.print("rem ", bucket_index);
+
         size_t* bucket_info_index = &this.bucket_list_indices[bucket_index];
 
         Bucket* info_to_remove = &this.buckets[*bucket_info_index];
@@ -444,7 +440,7 @@ class BucketInfo
                  * empty bucket to buckets.length.
                  */
 
-                assert (last_info.length, "last bucket info is empty");
+                verify (last_info.length > 0, "last bucket info is empty");
 
                 *info_to_remove = *last_info;
 
@@ -493,12 +489,9 @@ class BucketInfo
     ***************************************************************************/
 
     public size_t opIndex ( size_t bucket_index )
-    in
     {
-        assert (bucket_index < this.bucket_list_indices.length);
-    }
-    body
-    {
+        verify (bucket_index < this.bucket_list_indices.length);
+
         size_t index = this.bucket_list_indices[bucket_index];
 
         return (index < this.n_filled)? this.buckets[index].length : 0;

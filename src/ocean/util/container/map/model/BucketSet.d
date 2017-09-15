@@ -62,6 +62,8 @@ version(UnitTest) import ocean.core.Test;
 
 public abstract class IBucketSet
 {
+    import ocean.core.Verify;
+
     /**************************************************************************
 
         Convenience type alias for subclasses.
@@ -215,12 +217,9 @@ public abstract class IBucketSet
     ***************************************************************************/
 
     public typeof (this) redistribute ( float load_factor = 0.75 )
-    in
     {
-        assert (load_factor > 0);
-    }
-    body
-    {
+        verify (load_factor > 0);
+
         return this.setNumBuckets(this.calcNumBucketsExp2(this.bucket_info.length, load_factor));
     }
 
@@ -275,12 +274,9 @@ public abstract class IBucketSet
     ***************************************************************************/
 
     public static uint calcNumBucketsExp2 ( size_t n, float load_factor = 0.75 )
-    in
     {
-        assert (load_factor > 0);
-    }
-    body
-    {
+        verify (load_factor > 0);
+
         return n? bsr(cast(size_t)(n / load_factor)) + 1 : 0;
     }
 }
@@ -297,6 +293,8 @@ public abstract class IBucketSet
 
 public abstract class BucketSet ( size_t V, K = hash_t ) : IBucketSet
 {
+    import ocean.core.Verify;
+
     /**************************************************************************
 
         Bucket type
@@ -405,7 +403,7 @@ public abstract class BucketSet ( size_t V, K = hash_t ) : IBucketSet
 
         Params:
             key        = key to look up mapping for
-            must_exist = true: assert that the mapping exists, false: the
+            must_exist = true: verify that the mapping exists, false: the
                          mapping may or may not exist
 
         Returns:
@@ -443,11 +441,12 @@ public abstract class BucketSet ( size_t V, K = hash_t ) : IBucketSet
 
         if (element)
         {
-            assert (element.key == key, "key mismatch");
+            // cast(bool) to handle Key==Object: opEquals returns int
+            verify (cast(bool)(element.key == key), "key mismatch");
         }
         else
         {
-            assert (!must_exist, "element not found");
+            verify (!must_exist, "element not found");
         }
 
         return element;
@@ -503,9 +502,10 @@ public abstract class BucketSet ( size_t V, K = hash_t ) : IBucketSet
                 return cast (Bucket.Element*) this.bucket_element_allocator.get();
             }());
 
-            assert (element !is null);
+            verify (element !is null);
 
-            assert (element.key == key, "key mismatch");
+            // cast(bool) to handle Key==Object: opEquals returns int
+            verify (cast(bool)(element.key == key), "key mismatch");
 
             return element;
         }
@@ -628,12 +628,9 @@ public abstract class BucketSet ( size_t V, K = hash_t ) : IBucketSet
     ***************************************************************************/
 
     public override typeof (this) setNumBuckets ( uint exp2 )
-    in
     {
-        assert (exp2 < size_t.sizeof * 8);
-    }
-    body
-    {
+        verify (exp2 < size_t.sizeof * 8);
+
         size_t n_prev = this.buckets.length,
         n_new  = 1 << exp2;
 
@@ -671,12 +668,12 @@ public abstract class BucketSet ( size_t V, K = hash_t ) : IBucketSet
 
                     if (this.bucket_info[bucket_index])
                     {
-                        assert (this.buckets[bucket_index].has_element,
+                        verify (this.buckets[bucket_index].has_element,
                                 "bucket with non-zero length has no element");
                     }
                     else
                     {
-                        assert (!this.bucket_info[bucket_index],
+                        verify (!this.bucket_info[bucket_index],
                                 "bucket with zero length has an element");
                     }
 
@@ -707,10 +704,6 @@ public abstract class BucketSet ( size_t V, K = hash_t ) : IBucketSet
     ***************************************************************************/
 
     protected override void clearBuckets ( void[] val_init = null )
-    in
-    {
-        assert (!val_init.length || val_init.length == V);
-    }
     out
     {
         foreach(bucket; this.buckets)
@@ -720,6 +713,8 @@ public abstract class BucketSet ( size_t V, K = hash_t ) : IBucketSet
     }
     body
     {
+        verify (!val_init.length || val_init.length == V);
+
         // Recycle all bucket elements.
 
         scope Iterator it = this.new Iterator(true);
@@ -894,7 +889,7 @@ public abstract class BucketSet ( size_t V, K = hash_t ) : IBucketSet
                 with (this.outer.buckets[info.index])
                 {
                     size_t bucket_element_counter = 0;
-                    assert (has_element);
+                    verify (has_element);
 
                     for ( auto element = first; element !is null; )
                     {

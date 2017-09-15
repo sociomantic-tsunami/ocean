@@ -136,6 +136,8 @@ public BucketElementFreeList!(Map.Bucket.Element) instantiateAllocator ( Map ) (
 
 abstract class IBucketElementFreeList: IAllocator
 {
+    import ocean.core.Verify;
+
     /**************************************************************************
 
         First free element.
@@ -270,12 +272,9 @@ abstract class IBucketElementFreeList: IAllocator
      **************************************************************************/
 
     protected override void deallocate ( void* old_object )
-    in
     {
-        assert (old_object !is null);
-    }
-    body
-    {
+        verify (old_object !is null);
+
         scope (success) this.n_free++;
 
         this.recycle_(old_object);
@@ -333,12 +332,9 @@ abstract class IBucketElementFreeList: IAllocator
      **************************************************************************/
 
     private void* get_ ( )
-    in
     {
-        assert (this.first !is null);
-    }
-    body
-    {
+        verify (this.first !is null);
+
         void* element = this.first;
 
         this.first = this.getNext(element);
@@ -410,12 +406,9 @@ abstract class IBucketElementFreeList: IAllocator
          **********************************************************************/
 
         private this ( size_t max_length )
-        in
         {
-            assert (!this.outer.parking_stack_open);
-        }
-        body
-        {
+            verify (!this.outer.parking_stack_open);
+
             this.outer.parking_stack_open = true;
             super(max_length);
         }
