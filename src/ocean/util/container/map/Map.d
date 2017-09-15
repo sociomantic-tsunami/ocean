@@ -731,6 +731,8 @@ public abstract class Map ( V, K ) : BucketSet!(V.sizeof, K)
 
 public abstract class Map ( size_t V, K ) : BucketSet!(V, K)
 {
+    import ocean.core.Verify;
+
     /***************************************************************************
 
         V check.
@@ -1009,12 +1011,9 @@ public abstract class Map ( size_t V, K ) : BucketSet!(V, K)
     ***************************************************************************/
 
     public void[] opIndexAssign ( void[] val, K key )
-    in
     {
-        assert (val.length == V, "expected a value of length " ~ V.stringof);
-    }
-    body
-    {
+        verify (val.length == V, "expected a value of length " ~ V.stringof);
+
         bool added;
 
         this.put_(key, added).val[] = val[];
@@ -1147,13 +1146,10 @@ public abstract class Map ( size_t V, K ) : BucketSet!(V, K)
      **************************************************************************/
 
     public typeof(this) clear ( void[] val_init = null )
-    in
     {
-        assert (!val_init.length || val_init.length == V,
+        verify (!val_init.length || val_init.length == V,
                 "val_init.length expected to be 0 or " ~ V);
-    }
-    body
-    {
+
         this.clear_(val_init);
 
         return this;

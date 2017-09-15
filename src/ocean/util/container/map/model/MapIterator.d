@@ -191,6 +191,8 @@ public template IteratorClass ( alias ParentIterator, alias IteratorTemplate )
 
 template MapIterator ( V, K = hash_t )
 {
+    import ocean.core.Verify;
+
     /**************************************************************************
 
         Kref type alias definition: A dynamic array of the base type of K if K
@@ -344,7 +346,8 @@ template MapIterator ( V, K = hash_t )
 
         scope (success)
         {
-            assert (*key_ptr == element.key,
+            // cast(bool) to handle Key==Object: opEquals returns int
+            verify (cast(bool)(*key_ptr == element.key),
                     "attempted to change the key during iteration");
         }
 
@@ -360,7 +363,7 @@ template MapIterator ( V, K = hash_t )
 
             scope (success)
             {
-                assert (val.length == vlen,
+                verify (val.length == vlen,
                         "attempted to change the length of a static array "
                       ~ "during iteration");
             }
