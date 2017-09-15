@@ -15,7 +15,7 @@
 
 *******************************************************************************/
 
-module ocean.core._util.console;
+deprecated module ocean.core._util.console;
 
 // D1 has all this in runtime
 version (D_Version2):

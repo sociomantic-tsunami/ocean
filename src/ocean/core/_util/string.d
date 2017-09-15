@@ -15,7 +15,7 @@
 
 *******************************************************************************/
 
-module ocean.core._util.string;
+deprecated module ocean.core._util.string;
 
 // D1 has it in runtime
 version (D_Version2):
