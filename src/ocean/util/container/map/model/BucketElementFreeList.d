@@ -413,10 +413,10 @@ abstract class IBucketElementFreeList: IAllocator
         in
         {
             assert (!this.outer.parking_stack_open);
-            this.outer.parking_stack_open = true;
         }
         body
         {
+            this.outer.parking_stack_open = true;
             super(max_length);
         }
 
@@ -427,12 +427,8 @@ abstract class IBucketElementFreeList: IAllocator
          **********************************************************************/
 
         ~this ( )
-        out
         {
-            this.outer.parking_stack_open = false;
-        }
-        body
-        {
+            scope ( exit ) this.outer.parking_stack_open = false;
             while (this.pop()) { }
         }
 
