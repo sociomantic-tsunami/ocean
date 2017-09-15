@@ -25,6 +25,7 @@ version(solaris){ version=has_urandom; }
 version(has_urandom) {
     import Integer = ocean.text.convert.Integer_tango;
     import ocean.io.device.File; // use stdc read/write?
+    import ocean.core.Verify;
 
     /// basic source that takes data from system random device
     /// This is an engine, do not use directly, use RandomG!(Urandom)
@@ -91,7 +92,7 @@ version(has_urandom) {
         /// returns the number of chars read
         size_t fromString(cstring s){
             auto r="URandom";
-            assert(s[0.. r.length]==r,"unxepected string instad of URandom:"~s);
+            verify(s[0.. r.length]==r,"unxepected string instad of URandom:"~idup(s));
             return r.length;
         }
     }

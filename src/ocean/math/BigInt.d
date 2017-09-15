@@ -179,7 +179,7 @@ public:
     }
     ///
     BigInt opDiv(T:int)(T y) {
-        assert(y!=0, "Division by zero");
+        verify(y!=0, "Division by zero");
         BigInt r;
         uint u = y < 0 ? -y : y;
         r.data = BigUint.divInt(data, u);
@@ -188,7 +188,7 @@ public:
     }
     ///
     BigInt opDivAssign(T: int)(T y) {
-        assert(y!=0, "Division by zero");
+        verify(y!=0, "Division by zero");
         uint u = y < 0 ? -y : y;
         data = BigUint.divInt(data, u);
         sign = data.isZero()? false : sign ^ (y<0);
@@ -205,7 +205,7 @@ public:
     }
     ///
     int opMod(T:int)(T y) {
-        assert(y!=0);
+        verify(y!=0);
         uint u = y < 0 ? -y : y;
         int rem = BigUint.modInt(data, u);
         // x%y always has the same sign as x.
@@ -214,7 +214,7 @@ public:
     }
     ///
     BigInt opModAssign(T:int)(T y) {
-        assert(y!=0);
+        verify(y!=0);
         uint u = y < 0 ? -y : y;
         data = BigUint.modInt(data, u);
         // x%y always has the same sign as x.
@@ -352,7 +352,7 @@ public:
 package:
     /// BUG: For testing only, this will be removed eventually
     BigInt sliceHighestBytes(uint numbytes) {
-        assert(numbytes<=numBytes());
+        verify(numbytes<=numBytes());
         BigInt x;
         x.sign = sign;
         x.data = data.sliceHighestBytes(numbytes);

@@ -17,6 +17,7 @@
 module ocean.math.random.engines.CMWC;
 import ocean.transition;
 import Integer=ocean.text.convert.Integer_tango;
+import ocean.core.Verify;
 
 /+ CMWC a random number generator,
 + Marisaglia, Journal of Modern Applied Statistical Methods (2003), vol.2,No.1,p 2-13
@@ -120,7 +121,7 @@ struct CMWC(uint cmwc_r=1024U,ulong cmwc_a=987769338UL){
             Integer.format(res[i..i+8],val,"x8");
             i+=8;
         }
-        assert(i==res.length,"unexpected size");
+        verify(i==res.length,"unexpected size");
         return assumeUnique(res);
     }
     /// reads the current status from a string (that should have been trimmed)
@@ -128,28 +129,28 @@ struct CMWC(uint cmwc_r=1024U,ulong cmwc_a=987769338UL){
     size_t fromString(cstring s){
         char[16] tmpC;
         size_t i=0;
-        assert(s[i..i+4]=="CMWC","unexpected kind, expected CMWC");
+        verify(s[i..i+4]=="CMWC","unexpected kind, expected CMWC");
         i+=4;
-        assert(s[i..i+16]==Integer.format(tmpC,cmwc_a,"x16"),"unexpected cmwc_a");
+        verify(s[i..i+16]==Integer.format(tmpC,cmwc_a,"x16"),"unexpected cmwc_a");
         i+=16;
-        assert(s[i]=='_',"unexpected format, expected _");
+        verify(s[i]=='_',"unexpected format, expected _");
         i++;
-        assert(s[i..i+8]==Integer.format(tmpC,cmwc_r,"x8"),"unexpected cmwc_r");
+        verify(s[i..i+8]==Integer.format(tmpC,cmwc_r,"x8"),"unexpected cmwc_r");
         i+=8;
         foreach (ref val;cmwc_q){
-            assert(s[i]=='_',"no separator _ found");
+            verify(s[i]=='_',"no separator _ found");
             ++i;
             uint ate;
             val=cast(uint)Integer.convert(s[i..i+8],16,&ate);
-            assert(ate==8,"unexpected read size");
+            verify(ate==8,"unexpected read size");
             i+=8;
         }
         foreach (val;[&cmwc_i,&cmwc_c,&nBytes,&restB]){
-            assert(s[i]=='_',"no separator _ found");
+            verify(s[i]=='_',"no separator _ found");
             ++i;
             uint ate;
             *val=cast(uint)Integer.convert(s[i..i+8],16,&ate);
-            assert(ate==8,"unexpected read size");
+            verify(ate==8,"unexpected read size");
             i+=8;
         }
         return i;

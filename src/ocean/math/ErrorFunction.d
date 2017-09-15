@@ -34,6 +34,7 @@ module ocean.math.ErrorFunction;
 
 import ocean.math.Math;
 import ocean.math.IEEE;
+import ocean.core.Verify;
 
 version(UnitTest)
 {
@@ -358,11 +359,9 @@ package {
  * where w = p - 0.5 .
  */
 real normalDistributionInvImpl(real p)
-in {
-  assert(p>=0.0L && p<=1.0L, "Domain error");
-}
-body
 {
+verify(p>=0.0L && p<=1.0L, "Domain error");
+
 const real[] P0 = [ -0x1.758f4d969484bfdcp-7, 0x1.53cee17a59259dd2p-3,
    -0x1.ea01e4400a9427a2p-1,  0x1.61f7504a0105341ap+1, -0x1.09475a594d0399f6p+2,
     0x1.7c59e7a0df99e3e2p+1, -0x1.87a81da52edcdf14p-1,  0x1.1fb149fd3f83600cp-7

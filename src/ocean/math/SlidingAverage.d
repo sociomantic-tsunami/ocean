@@ -30,6 +30,7 @@
 module ocean.math.SlidingAverage;
 
 
+import ocean.core.Verify;
 
 /*******************************************************************************
 
@@ -88,12 +89,9 @@ public class SlidingAverage ( T )
     ***************************************************************************/
 
     public this ( size_t window_size )
-    in
     {
-        assert(window_size > 1, "SlidingAverage, window_size parameter must be > 1");
-    }
-    body
-    {
+        verify(window_size > 1, "SlidingAverage, window_size parameter must be > 1");
+
         this.window = new T[window_size];
         this.index = this.index.max;
     }

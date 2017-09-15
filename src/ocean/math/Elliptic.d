@@ -53,6 +53,7 @@ module ocean.math.Elliptic;
 
 import ocean.math.Math;
 import ocean.math.IEEE;
+import ocean.core.Verify;
 
 version(UnitTest) import ocean.core.Test;
 
@@ -237,10 +238,8 @@ done:
  */
 
 real ellipticKComplete(real x)
-in {
-//    assert(x>=0.0L && x<=1.0L);
-}
-body{
+{
+//    verify(x>=0.0L && x<=1.0L);
 
 const real [] P = [
    0x1.62e42fefa39ef35ap+0, // 1.3862943611198906189
@@ -301,10 +300,8 @@ const real [] Q = [
  */
 
 real ellipticEComplete(real x)
-in {
- assert(x>=0 && x<=1.0);
-}
-body {
+{
+verify(x>=0 && x<=1.0);
 const real [] P = [
    0x1.c5c85fdf473f78f2p-2, // 0.44314718055994670505
    0x1.d1591f9e9a66477p-5,  // 0.056805192715569305834
@@ -404,9 +401,7 @@ real ellipticPi(real phi, real m, real n)
  *  Complete elliptic integral of the third kind
  */
 real ellipticPiComplete(real m, real n)
-in {
- assert(m>=-1.0 && m<=1.0);
-}
-body {
+{
+    verify(m>=-1.0 && m<=1.0);
     return ellipticPi(PI_2, m, n);
 }

@@ -23,6 +23,7 @@ module ocean.math.Range;
 
 
 import ocean.transition;
+import ocean.core.Verify;
 
 version ( UnitTest )
 {
@@ -323,13 +324,13 @@ public struct Range ( T )
 
         static if (boundaries[0] == '(')
         {
-            assert(min < T.max);
+            verify(min < T.max);
             ++min;
         }
 
         static if (boundaries[1] == ')')
         {
-            assert(max > T.min);
+            verify(max > T.min);
             --max;
         }
 
@@ -1293,14 +1294,11 @@ public struct Range ( T )
 
     private static void sortEndpoints ( This first, This second,
                                         RangeEndpoint[] array )
-    in
     {
-        assert(!first.is_empty);
-        assert(!second.is_empty);
-        assert(array.length == 4);
-    }
-    body
-    {
+        verify(!first.is_empty);
+        verify(!second.is_empty);
+        verify(array.length == 4);
+
         // N.B!  the initial order is sufficient
         // being that stable sort preserve order of equal elements
         array[0] = RangeEndpoint(first.min_, 0);

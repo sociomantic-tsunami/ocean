@@ -21,6 +21,7 @@
 module ocean.math.random.engines.Twister;
 import ocean.transition;
 import Integer = ocean.text.convert.Integer_tango;
+import ocean.core.Verify;
 
 /*******************************************************************************
 
@@ -169,26 +170,26 @@ struct Twister
             Integer.format(res[i..i+8],val,"x8");
             i+=8;
         }
-        assert(i==res.length,"unexpected size");
+        verify(i==res.length,"unexpected size");
         return assumeUnique(res);
     }
     /// reads the current status from a string (that should have been trimmed)
     /// returns the number of chars read
     size_t fromString(cstring s){
         size_t i;
-        assert(s[0..7]=="Twister","unexpected kind, expected Twister");
+        verify(s[0..7]=="Twister","unexpected kind, expected Twister");
         i+=7;
-        assert(s[i]=='_',"no separator _ found");
+        verify(s[i]=='_',"no separator _ found");
         ++i;
         uint ate;
         mti=cast(uint)Integer.convert(s[i..i+8],16,&ate);
-        assert(ate==8,"unexpected read size");
+        verify(ate==8,"unexpected read size");
         i+=8;
         foreach (ref val;mt){
-            assert(s[i]=='_',"no separator _ found");
+            verify(s[i]=='_',"no separator _ found");
             ++i;
             val=cast(uint)Integer.convert(s[i..i+8],16,&ate);
-            assert(ate==8,"unexpected read size");
+            verify(ate==8,"unexpected read size");
             i+=8;
         }
         return i;

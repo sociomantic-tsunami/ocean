@@ -1639,12 +1639,11 @@ unittest
  *
  */
 T ieeeMean(T)(T x, T y)
-in {
+{
     // both x and y must have the same sign, and must not be NaN.
-    assert(signbit(x) == signbit(y));
-    assert(!tsm.isnan(x) && !tsm.isnan(y));
-}
-body {
+    verify(signbit(x) == signbit(y));
+    verify(!tsm.isnan(x) && !tsm.isnan(y));
+
     // Runtime behaviour for contract violation:
     // If signs are opposite, or one is a NaN, return 0.
     if (!((x>=0 && y>=0) || (x<=0 && y<=0))) return 0.0;
@@ -1812,7 +1811,7 @@ real NaN(ulong payload)
  */
 ulong getNaNPayload(real x)
 {
-    assert(isNaN(x));
+    verify(!!isNaN(x));
     static if (real.mant_dig == 53) {
         ulong m = *cast(ulong *)(&x);
         // Make it look like an 80-bit significand.

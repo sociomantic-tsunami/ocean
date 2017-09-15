@@ -18,6 +18,7 @@
 module ocean.math.random.engines.KissCmwc;
 import ocean.transition;
 import Integer = ocean.text.convert.Integer_tango;
+import ocean.core.Verify;
 
 /+ CMWC and KISS random number generators combined, for extra security wrt. plain CMWC and
 + Marisaglia, Journal of Modern Applied Statistical Methods (2003), vol.2,No.1,p 2-13
@@ -151,7 +152,7 @@ struct KissCmwc(uint cmwc_r=1024U,ulong cmwc_a=987769338UL){
             Integer.format(res[i..i+8],val,"x8");
             i+=8;
         }
-        assert(i==res.length,"unexpected size");
+        verify(i==res.length,"unexpected size");
         return assumeUnique(res);
     }
     /// reads the current status from a string (that should have been trimmed)
@@ -159,28 +160,28 @@ struct KissCmwc(uint cmwc_r=1024U,ulong cmwc_a=987769338UL){
     size_t fromString(cstring s){
         char[16] tmpC;
         size_t i=0;
-        assert(s[i..i+11]=="CMWC+KISS99","unexpected kind, expected CMWC+KISS99");
+        verify(s[i..i+11]=="CMWC+KISS99","unexpected kind, expected CMWC+KISS99");
         i+=11;
-        assert(s[i..i+16]==Integer.format(tmpC,cmwc_a,"x16"),"unexpected cmwc_a");
+        verify(s[i..i+16]==Integer.format(tmpC,cmwc_a,"x16"),"unexpected cmwc_a");
         i+=16;
-        assert(s[i]=='_',"unexpected format, expected _");
+        verify(s[i]=='_',"unexpected format, expected _");
         i++;
-        assert(s[i..i+8]==Integer.format(tmpC,cmwc_r,"x8"),"unexpected cmwc_r");
+        verify(s[i..i+8]==Integer.format(tmpC,cmwc_r,"x8"),"unexpected cmwc_r");
         i+=8;
         foreach (ref val;cmwc_q){
-            assert(s[i]=='_',"no separator _ found");
+            verify(s[i]=='_',"no separator _ found");
             ++i;
             uint ate;
             val=cast(uint)Integer.convert(s[i..i+8],16,&ate);
-            assert(ate==8,"unexpected read size");
+            verify(ate==8,"unexpected read size");
             i+=8;
         }
         foreach (val;[&cmwc_i,&cmwc_c,&nBytes,&restB,&kiss_x,&kiss_y,&kiss_z,&kiss_c]){
-            assert(s[i]=='_',"no separator _ found");
+            verify(s[i]=='_',"no separator _ found");
             ++i;
             uint ate;
             *val=cast(uint)Integer.convert(s[i..i+8],16,&ate);
-            assert(ate==8,"unexpected read size");
+            verify(ate==8,"unexpected read size");
             i+=8;
         }
         return i;

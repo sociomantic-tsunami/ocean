@@ -38,6 +38,7 @@ static import ocean.math.ErrorFunction;
 import ocean.math.GammaFunction;
 import ocean.math.Math;
 import ocean.math.IEEE;
+import ocean.core.Verify;
 
 version(UnitTest) import ocean.core.Test;
 
@@ -126,10 +127,9 @@ unittest {
  * with -t instead of t.
  */
 real studentsTDistribution(int nu, real t)
-in{
-   assert(nu>0);
-}
-body{
+{
+   verify(nu>0);
+
   /* Based on code from Cephes Math Library Release 2.3:  January, 1995
      Copyright 1984, 1995 by Stephen L. Moshier
  */
@@ -203,12 +203,10 @@ body{
  * p  = probability. 0 < p < 1
  */
 real studentsTDistributionInv(int nu, real p )
-in {
-   assert(nu>0);
-   assert(p>=0.0L && p<=1.0L);
-}
-body
 {
+    verify(nu>0);
+    verify(p>=0.0L && p<=1.0L);
+
     if (p==0) return -real.infinity;
     if (p==1) return real.infinity;
 
@@ -300,11 +298,10 @@ unittest {
  *  x  = Must be >= 0
  */
 real fDistribution(int df1, int df2, real x)
-in {
- assert(df1>=1 && df2>=1);
- assert(x>=0);
-}
-body{
+{
+    verify(df1>=1 && df2>=1);
+    verify(x>=0);
+
     real a = cast(real)(df1);
     real b = cast(real)(df2);
     real w = a * x;
@@ -314,11 +311,10 @@ body{
 
 /** ditto */
 real fDistributionCompl(int df1, int df2, real x)
-in {
- assert(df1>=1 && df2>=1);
- assert(x>=0);
-}
-body{
+{
+    verify(df1>=1 && df2>=1);
+    verify(x>=0);
+
     real a = cast(real)(df1);
     real b = cast(real)(df2);
     real w = b / (b + a * x);
@@ -347,11 +343,10 @@ body{
 
 /** ditto */
 real fDistributionComplInv(int df1, int df2, real p )
-in {
- assert(df1>=1 && df2>=1);
- assert(p>=0 && p<=1.0);
-}
-body{
+{
+    verify(df1>=1 && df2>=1);
+    verify(p>=0 && p<=1.0);
+
     real a = df1;
     real b = df2;
     /* Compute probability for x = 0.5.  */
@@ -398,21 +393,19 @@ unittest {
  *
  */
 real chiSqrDistribution(real v, real x)
-in {
- assert(x>=0);
- assert(v>=1.0);
-}
-body{
+{
+   verify(x>=0);
+   verify(v>=1.0);
+
    return gammaIncomplete( 0.5*v, 0.5*x);
 }
 
 /** ditto */
 real chiSqrDistributionCompl(real v, real x)
-in {
- assert(x>=0);
- assert(v>=1.0);
-}
-body{
+{
+    verify(x>=0);
+    verify(v>=1.0);
+
     return gammaIncompleteCompl( 0.5L*v, 0.5L*x );
 }
 
@@ -429,12 +422,10 @@ body{
  *
  */
 real chiSqrDistributionComplInv(real v, real p)
-in {
-  assert(p>=0 && p<=1.0L);
-  assert(v>=1.0L);
-}
-body
 {
+   verify(p>=0 && p<=1.0L);
+   verify(v>=1.0L);
+
    return  2.0 * gammaIncompleteComplInv( 0.5*v, p);
 }
 
@@ -455,19 +446,17 @@ unittest {
  * x must be greater than 0.
  */
 real gammaDistribution(real a, real b, real x)
-in {
-   assert(x>=0);
-}
-body {
+{
+   verify(x>=0);
+
    return gammaIncomplete(b, a*x);
 }
 
 /** ditto */
 real gammaDistributionCompl(real a, real b, real x )
-in {
-   assert(x>=0);
-}
-body {
+{
+   verify(x>=0);
+
    return gammaIncompleteCompl( b, a * x );
 }
 
@@ -544,31 +533,28 @@ unittest {
  * The arguments must both be positive.
  */
 real poissonDistribution(int k, real m )
-in {
-  assert(k>=0);
-  assert(m>0);
-}
-body {
+{
+    verify(k>=0);
+    verify(m>0);
+
     return gammaIncompleteCompl( k+1.0, m );
 }
 
 /** ditto */
 real poissonDistributionCompl(int k, real m )
-in {
-  assert(k>=0);
-  assert(m>0);
-}
-body {
+{
+  verify(k>=0);
+  verify(m>0);
+
   return gammaIncomplete( k+1.0, m );
 }
 
 /** ditto */
 real poissonDistributionInv( int k, real p )
-in {
-  assert(k>=0);
-  assert(p>=0.0 && p<=1.0);
-}
-body {
+{
+    verify(k>=0);
+    verify(p>=0.0 && p<=1.0);
+
     return gammaIncompleteComplInv(k+1, p);
 }
 
@@ -599,11 +585,10 @@ unittest {
  * The arguments must be positive, with p ranging from 0 to 1, and k<=n.
  */
 real binomialDistribution(int k, int n, real p )
-in {
-   assert(p>=0 && p<=1.0); // domain error
-   assert(k>=0 && k<=n);
-}
-body{
+{
+    verify(p>=0 && p<=1.0); // domain error
+    verify(k>=0 && k<=n);
+
     real dk, dn, q;
     if( k == n )
         return 1.0L;
@@ -628,11 +613,10 @@ unittest {
 
  /** ditto */
 real binomialDistributionCompl(int k, int n, real p )
-in {
-   assert(p>=0 && p<=1.0); // domain error
-   assert(k>=0 && k<=n);
-}
-body{
+{
+    verify(p>=0 && p<=1.0); // domain error
+    verify(k>=0 && k<=n);
+
     if ( k == n ) {
         return 0;
     }
@@ -672,11 +656,10 @@ unittest {
  * The arguments must be positive, with 0 <= y <= 1, and k <= n.
  */
 real binomialDistributionInv( int k, int n, real y )
-in {
-   assert(y>=0 && y<=1.0); // domain error
-   assert(k>=0 && k<=n);
-}
-body{
+{
+    verify(y>=0 && y<=1.0); // domain error
+    verify(k>=0 && k<=n);
+
     real dk, p;
     real dn = n - k;
     if ( k == 0 ) {
@@ -731,22 +714,20 @@ unittest {
  */
 
 real negativeBinomialDistribution(int k, int n, real p )
-in {
-   assert(p>=0 && p<=1.0); // domain error
-   assert(k>=0);
-}
-body{
+{
+    verify(p>=0 && p<=1.0); // domain error
+    verify(k>=0);
+
     if ( k == 0 ) return pow( p, n );
     return betaIncomplete( n, k + 1, p );
 }
 
 /** ditto */
 real negativeBinomialDistributionInv(int k, int n, real p )
-in {
-   assert(p>=0 && p<=1.0); // domain error
-   assert(k>=0);
-}
-body{
+{
+    verify(p>=0 && p<=1.0); // domain error
+    verify(k>=0);
+
     return betaIncompleteInv(n, k + 1, p);
 }
 
