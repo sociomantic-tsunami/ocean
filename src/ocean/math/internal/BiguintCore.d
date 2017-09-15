@@ -294,7 +294,7 @@ bool fromHexString(cstring s)
     uint partcount = 0;
     verify(s.length>0);
     for (long i = s.length - 1; i>=firstNonZero; --i) {
-        assert(i>=0);
+        verify(i>=0);
         char c = s[i];
         if (s[i]=='_') continue;
         uint x = (c>='0' && c<='9') ? c - '0'
@@ -599,7 +599,7 @@ static BigUint pow(BigUint x, ulong y)
     ulong estimatelength = singledigit ? firstnonzero*y + y0*1 + 2 + ((evenbits*y) >> LG2BIGDIGITBITS)
         : x.data.length * y; // estimated length in BigDigits
     // (Estimated length can overestimate by a factor of 2, if x.data.length ~ 2).
-    if (estimatelength > uint.max/(4*BigDigit.sizeof)) assert(0, "Overflow in BigInt.pow");
+    if (estimatelength > uint.max/(4*BigDigit.sizeof)) verify(0, "Overflow in BigInt.pow");
 
     // The result buffer includes space for all the trailing zeros
     BigDigit [] resultBuffer = new BigDigit[cast(size_t)estimatelength];
@@ -999,14 +999,14 @@ void mulInternal(BigDigit[] result, Const!(BigDigit)[] x, Const!(BigDigit)[] y)
             // Every chunk will either have size chunksize, or chunksize+1.
             maxchunk = chunksize + 1;
             paddingY = true;
-            assert(chunksize + extra + chunksize *(numchunks-1) == x.length );
+            verify(chunksize + extra + chunksize *(numchunks-1) == x.length );
         } else  {
             // the extra bit is large enough that it's worth making a new chunk.
             // (This means we're padding x with zeros, when doing the first one).
             maxchunk = chunksize;
             ++numchunks;
             paddingY = false;
-            assert(extra + chunksize *(numchunks-1) == x.length );
+            verify(extra + chunksize *(numchunks-1) == x.length );
         }
         // We make the buffer a bit bigger so we have space for the partial sums.
         BigDigit [] scratchbuff =

@@ -19,6 +19,7 @@ import ocean.math.Bracket:findRoot;
 import ocean.math.Math:abs;
 import ocean.math.ErrorFunction:erfc;
 import ocean.core.Traits;
+import ocean.core.Verify;
 
 /// ziggurat method for decreasing distributions.
 /// Marsaglia, Tsang, Journal of Statistical Software, 2000
@@ -46,7 +47,7 @@ struct Ziggurat(RandG,T,alias probDensityF,alias tailGenerator,bool hasNegative=
                 fAtt+=v/pAtt;
                 if (fAtt>fMax) return fAtt+(i-1)*fMax;
                 pAtt=invProbDensityF(fAtt);
-                assert(pAtt>=0,"invProbDensityF is supposed to return positive values");
+                verify(pAtt>=0,"invProbDensityF is supposed to return positive values");
             }
             return fAtt+v/pAtt-fMax;
         }
@@ -84,21 +85,21 @@ struct Ziggurat(RandG,T,alias probDensityF,alias tailGenerator,bool hasNegative=
             fVal[1]=cast(T)fAtt;
             for (int i=2;i<nBlocks;++i){
                 fAtt+=v/pAtt;
-                assert(fAtt<=fMax,"Ziggurat contruction shoot out");
+                verify(fAtt<=fMax,"Ziggurat contruction shoot out");
                 pAtt=invProbDensityF(fAtt);
-                assert(pAtt>=0,"invProbDensityF is supposed to return positive values");
+                verify(pAtt>=0,"invProbDensityF is supposed to return positive values");
                 posBlock[i]=cast(T)pAtt;
                 fVal[i]=cast(T)fAtt;
             }
             posBlock[nBlocks]=0.0L;
             fVal[nBlocks]=cast(T)probDensityF(0.0L);
             real error=fAtt+v/pAtt-probDensityF(0.0L);
-            assert((!check_error) || error<real.epsilon*10000.0,"Ziggurat error larger than expected");
+            verify((!check_error) || error<real.epsilon*10000.0,"Ziggurat error larger than expected");
             posBlock[0]=cast(T)(xLast*(1.0L+cumProbDensityFCompl(xLast)/probDensityF(xLast)));
             fVal[0]=0.0L;
             for (int i=0;i<nBlocks;++i){
-                assert(posBlock[i]>=posBlock[i+1],"decresing posBlock");
-                assert(fVal[i]<=fVal[i+1],"increasing probabilty density function");
+                verify(posBlock[i]>=posBlock[i+1],"decresing posBlock");
+                verify(fVal[i]<=fVal[i+1],"increasing probabilty density function");
             }
         }
         return res;

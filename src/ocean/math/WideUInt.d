@@ -20,6 +20,7 @@ module ocean.math.WideUInt;
 import ocean.transition;
 import ocean.core.Test;
 import ocean.core.Enforce;
+import ocean.core.Verify;
 
 import core.stdc.math;
 import ocean.math.IEEE : feqrel;
@@ -382,11 +383,11 @@ public struct WideUInt ( size_t N )
             remainder = (remainder << 32) + this.payload[idx];
             ulong result = remainder / rhs;
             remainder -= rhs * result;
-            assert(result <= uint.max);
+            verify(result <= uint.max);
             this.payload[idx] = cast(uint) result;
         }
 
-        assert(remainder <= uint.max);
+        verify(remainder <= uint.max);
         return cast(uint) remainder;
     }
 
