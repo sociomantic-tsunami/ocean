@@ -37,6 +37,8 @@ TEST_FILTER_OUT += \
 	$C/src/ocean/text/convert/Memory.d \
 	$C/src/ocean/stdc/stringz.d \
 	$C/src/ocean/io/stream/Snoop.d \
+	$C/src/ocean/core/_util/console.d \
+	$C/src/ocean/core/_util/string.d \
 	$(shell find $C/src/ocean/text/locale -type f)
 
 # integration test which is disabled by default because it depends on Collectd
