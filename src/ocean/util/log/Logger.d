@@ -987,3 +987,61 @@ unittest
     test!("==")(appender.result[1].level, Logger.Level.Error);
     test!("==")(appender.result[1].message, TestStr);
 }
+
+// Test that the logger does not allocate if the Appender does not
+unittest
+{
+    static class StaticBuffer : Appender
+    {
+        public struct Event { Logger.Level level; cstring message; char[128] buffer; }
+
+        private Event[6] buffers;
+        private size_t index;
+
+        public override Mask mask () { Mask m = 42; return m; }
+        public override cstring name () { return "StaticBufferAppender"; }
+        public override void append (LogEvent e)
+        {
+            assert(this.index < this.buffers.length);
+            auto str =snformat(this.buffers[this.index].buffer, "{}", e.toString());
+            this.buffers[this.index].message = str;
+            this.buffers[this.index++].level = e.level;
+        }
+    }
+
+    scope appender = new StaticBuffer;
+    auto log = Log.lookup("ocean.util.log.Logger.TestLogAlloc").additive(false)
+        .add(appender);
+
+    testNoAlloc({
+            scope obj = new Object;
+            log.trace("If you can keep your head when all about you, {}",
+                      "Are losing theirs and blaming it on you;");
+            log.info("If you can trust yourself when all men doubt you,");
+            log.warn("But make {} for their {} too;", "allowance", "doubting");
+            log.error("You'll have to google for the rest I'm afraid");
+            log.fatal("{} - {} - {} - {}",
+                      "This is some arg fmt", 42, obj, 1337.0f);
+            log.format(Logger.Level.Info, "Just some {}", "more allocation tests");
+    }());
+
+    test!("==")(appender.buffers[0].level, Logger.Level.Trace);
+    test!("==")(appender.buffers[1].level, Logger.Level.Info);
+    test!("==")(appender.buffers[2].level, Logger.Level.Warn);
+    test!("==")(appender.buffers[3].level, Logger.Level.Error);
+    test!("==")(appender.buffers[4].level, Logger.Level.Fatal);
+    test!("==")(appender.buffers[5].level, Logger.Level.Info);
+
+    test!("==")(appender.buffers[0].message,
+                "If you can keep your head when all about you, " ~
+                "Are losing theirs and blaming it on you;");
+    test!("==")(appender.buffers[1].message,
+                "If you can trust yourself when all men doubt you,");
+    test!("==")(appender.buffers[2].message,
+                "But make allowance for their doubting too;");
+    test!("==")(appender.buffers[3].message,
+                "You'll have to google for the rest I'm afraid");
+    test!("==")(appender.buffers[4].message,
+                "This is some arg fmt - 42 - object.Object - 1337.00");
+    test!("==")(appender.buffers[5].message, "Just some more allocation tests");
+}
