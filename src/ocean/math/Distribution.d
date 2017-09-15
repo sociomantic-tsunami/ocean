@@ -295,13 +295,6 @@ public class Distribution ( T )
 
         auto index = cast(size_t)(fraction * (this.values.length - 1));
 
-        assert(index < this.values.length, "index greater than or equal to length of value list");
-
-        if ( index >= this.values.length )
-        {
-            index = this.values.length - 1;
-        }
-
         return this.values[index];
     }
 
