@@ -30,6 +30,8 @@ import ocean.core.ExceptionDefinitions : ArrayBoundsException;
 
 struct Stack (V, int Size = 0)
 {
+        import ocean.core.Verify;
+
         alias nth              opIndex;
         alias slice            opSlice;
         alias rotateRight      opShrAssign;
@@ -79,7 +81,7 @@ struct Stack (V, int Size = 0)
 
         size_t unused ()
         {
-                assert (stack.length >= depth);
+                verify (stack.length >= depth);
                 return stack.length - depth;
         }
 

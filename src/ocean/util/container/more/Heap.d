@@ -47,6 +47,8 @@ void defaultHeapSwap(T)(T t, size_t index) {}
 
 struct Heap (T, alias Compare = minHeapCompare!(T), alias Move = defaultHeapSwap!(T))
 {
+        import ocean.core.Verify;
+
         alias pop       remove;
         alias push      opCatAssign;
 
@@ -141,7 +143,7 @@ struct Heap (T, alias Compare = minHeapCompare!(T), alias Move = defaultHeapSwap
         /** Gets the value at the top of the heap without removing it. */
         T peek ()
         {
-                assert (next > 0);
+                verify (next > 0);
                 return heap[0];
         }
 
@@ -193,7 +195,7 @@ struct Heap (T, alias Compare = minHeapCompare!(T), alias Move = defaultHeapSwap
         // Get the index of the parent for the element at the given index.
         private size_t parent (size_t index)
         {
-                assert (index > 0);
+                verify (index > 0);
                 return (index - 1) / 2;
         }
 
