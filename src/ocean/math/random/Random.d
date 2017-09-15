@@ -1293,6 +1293,7 @@ version (UnitTest)
     import ocean.math.random.engines.KISS;
     import ocean.math.random.engines.CMWC;
     import core.stdc.stdio:printf;
+    import ocean.core.Test;
 
     /// very simple statistal test, mean within maxOffset, and maximum/minimum at least minmax/maxmin
     bool checkMean(T)(T[] a, real maxmin, real minmax, real expectedMean, real maxOffset,bool alwaysPrint=false,bool checkB=false){
@@ -1302,7 +1303,7 @@ version (UnitTest)
             minV=a[0];
             maxV=a[0];
             foreach (el;a){
-                assert(!checkB || (cast(T)0<el && el<cast(T)1),"el out of bounds");
+                test(!checkB || (cast(T)0<el && el<cast(T)1),"el out of bounds");
                 if (el<minV) minV=el;
                 if (el>maxV) maxV=el;
                 meanV+=cast(real)el;
@@ -1352,11 +1353,11 @@ version (UnitTest)
             int count=10_000;
             for (int i=count;i!=0;--i){
                 float f=r.uniform!(float);
-                assert(0<f && f<1,"float out of bounds");
+                test(0<f && f<1,"float out of bounds");
                 double d=r.uniform!(double);
-                assert(0<d && d<1,"double out of bounds");
+                test(0<d && d<1,"double out of bounds");
                 real rr=r.uniform!(real);
-                assert(0<rr && rr<1,"double out of bounds");
+                test(0<rr && rr<1,"double out of bounds");
             }
             // checkpoint status (str)
             auto status=r.toString();
@@ -1468,13 +1469,13 @@ version (UnitTest)
             r.seed({ return 2*(seed++); });
             auto v2 = r.uniform!(int)();
 
-            assert(v1 == v2, "Re-seed failure: " ~ RandS.stringof);
+            test!("==")(v1, v2, "Re-seed failure: " ~ RandS.stringof);
 
             r.fromString(status);
-            assert(r.uniform!(uint)==tVal,"restoring of status from str failed");
-            assert(r.uniform!(ubyte)==t2Val,"restoring of status from str failed");
-            assert(r.uniform!(ulong)==t3Val,"restoring of status from str failed");
-            assert(!gFail,"Random.d failure");
+            test!("==")(r.uniform!(uint),tVal,"restoring of status from str failed");
+            test!("==")(r.uniform!(ubyte),t2Val,"restoring of status from str failed");
+            test!("==")(r.uniform!(ulong),t3Val,"restoring of status from str failed");
+            test(!gFail,"Random.d failure");
         } catch(Exception e) {
             throw e;
         }
