@@ -62,7 +62,7 @@ public:
         } else {
             ok = r.data.fromDecimalString(s);
         }
-        assert(ok);
+        verify(ok);
         if (r.isZero()) neg = false;
         r.sign = neg;
         return r;
