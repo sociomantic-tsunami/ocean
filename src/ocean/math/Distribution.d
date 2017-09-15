@@ -105,6 +105,7 @@ import ocean.core.Array : bsearch, sort;
 
 import ocean.util.container.AppendBuffer;
 
+version(UnitTest) import ocean.core.Test;
 
 
 /*******************************************************************************
@@ -469,7 +470,7 @@ private void appendDist ( T ) ( Distribution!(T) dist, T[] values )
     Params:
         dg = a delegate that calls an error throwing function
         error = whether an error should have been thrown or not
-        msg = the error message should the assert fail
+        msg = the error message should the test fail
 
 *******************************************************************************/
 
@@ -487,7 +488,7 @@ private void testForError ( bool dummy = false )
         caught = true;
     }
 
-    assert(error == caught, "Error " ~ (!error ? "not " : "")  ~ "expected: " ~ msg);
+    test(error == caught, "Error " ~ (!error ? "not " : "")  ~ "expected: " ~ msg);
 }
 
 
@@ -510,7 +511,7 @@ private void percentValueTests ( T ) ( T[] values, T middle_value )
     auto dist = new Distribution!(T);
 
     // test that percentValue always returns 0 for empty distributions regardless of type
-    assert(dist.percentValue(0.25) == 0, "percentValue should always return 0 for an empty distribution");
+    test!("==")(dist.percentValue(0.25), 0, "percentValue should always return 0 for an empty distribution");
 
     appendDist!(T)(dist, values);
 
@@ -519,7 +520,7 @@ private void percentValueTests ( T ) ( T[] values, T middle_value )
     testForError({ dist.percentValue(2.0); }, true, "fraction > 1 is out of bounds");
 
     // test middle value
-    assert(dist.percentValue(0.5) == middle_value, "");
+    test!("==")(dist.percentValue(0.5), middle_value);
 }
 
 
@@ -542,12 +543,12 @@ private void meanTests ( T ) ( T[] values, T average_value )
     auto dist = new Distribution!(T);
 
     // test that mean always returns 0 for empty distributions regardless of type
-    assert(dist.mean() == 0, "mean should always return 0 for an empty distribution");
+    test!("==")(dist.mean(), 0, "mean should always return 0 for an empty distribution");
 
     appendDist!(T)(dist, values);
 
     // test average value
-    assert(dist.mean() == average_value, "mean returned the wrong average value");
+    test!("==")(dist.mean(), average_value, "mean returned the wrong average value");
 }
 
 
@@ -570,10 +571,10 @@ private void medianTests ( T ) ( T[] values, double median_value )
     auto dist = new Distribution!(T);
 
     // test that median always returns 0 for empty distributions regardless of type
-    assert(dist.median() == 0, "median should always return 0 for an empty distribution");
+    test!("==")(dist.median(), 0, "median should always return 0 for an empty distribution");
 
     appendDist!(T)(dist, values);
 
     // test median value
-    assert(dist.median() == median_value, "median returned the wrong median value");
+    test!("==")(dist.median(), median_value, "median returned the wrong median value");
 }

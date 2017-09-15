@@ -130,29 +130,29 @@ private void testConversions ( T ) ( )
     long long_result;
 
     // Check that converting a NaN always fails
-    assert(!roundToInt(T.nan, int_result), "Error converting NaN");
-    assert(!roundToLong(T.nan, long_result), "Error converting NaN");
+    test(!roundToInt(T.nan, int_result), "Error converting NaN");
+    test(!roundToLong(T.nan, long_result), "Error converting NaN");
 
     // Check conversion of a negative number (should fail for the unsigneds)
-    assert(roundToInt(cast(T)-4.2, int_result), "Error converting " ~ T.stringof);
-    assert(int_result == -4, "Incorrect " ~ T.stringof ~ " conversion");
+    test(roundToInt(cast(T)-4.2, int_result), "Error converting " ~ T.stringof);
+    test!("==")(int_result, -4, "Incorrect " ~ T.stringof ~ " conversion");
 
-    assert(roundToLong(cast(T)-4.2, long_result), "Error converting " ~ T.stringof);
-    assert(int_result == -4, "Incorrect " ~ T.stringof ~ " conversion");
+    test(roundToLong(cast(T)-4.2, long_result), "Error converting " ~ T.stringof);
+    test!("==")(int_result, -4, "Incorrect " ~ T.stringof ~ " conversion");
 
     // Check conversion of x.5, should round up
-    assert(roundToInt(cast(T)6.5, int_result), "Error converting " ~ T.stringof);
-    assert(int_result == 7, "Incorrect " ~ T.stringof ~ " conversion");
+    test(roundToInt(cast(T)6.5, int_result), "Error converting " ~ T.stringof);
+    test!("==")(int_result, 7, "Incorrect " ~ T.stringof ~ " conversion");
 
-    assert(roundToLong(cast(T)6.5, long_result), "Error converting " ~ T.stringof);
-    assert(long_result == 7, "Incorrect " ~ T.stringof ~ " conversion");
+    test(roundToLong(cast(T)6.5, long_result), "Error converting " ~ T.stringof);
+    test!("==")(long_result, 7, "Incorrect " ~ T.stringof ~ " conversion");
 
     // Check conversion of x.4 should round down
-    assert(roundToInt(cast(T)9.49, int_result), "Error converting " ~ T.stringof);
-    assert(int_result == 9, "Incorrect " ~ T.stringof ~ " conversion");
+    test(roundToInt(cast(T)9.49, int_result), "Error converting " ~ T.stringof);
+    test!("==")(int_result, 9, "Incorrect " ~ T.stringof ~ " conversion");
 
-    assert(roundToLong(cast(T)9.49, long_result), "Error converting " ~ T.stringof);
-    assert(long_result == 9, "Incorrect " ~ T.stringof ~ " conversion");
+    test(roundToLong(cast(T)9.49, long_result), "Error converting " ~ T.stringof);
+    test!("==")(long_result, 9, "Incorrect " ~ T.stringof ~ " conversion");
 }
 
 
