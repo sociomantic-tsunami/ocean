@@ -325,13 +325,25 @@ unittest
     TestSmartUnion u;
     u.a = 1;
 
-    with (TestSmartUnion.Active) final switch (u.active)
+    const switch_string_head = "with (TestSmartUnion.Active)";
+    const switch_string_tail = "switch (u.active)
     {
         case a:
         case b:
             break;
 
         mixin(TestSmartUnion.handleInvalidCases);
+    }";
+
+
+    version (D_Version2)
+    {
+         mixin (switch_string_head ~ "final "
+          ~ switch_string_tail);
+    }
+    else
+    {
+         mixin(switch_string_head ~ switch_string_tail);
     }
 }
 
