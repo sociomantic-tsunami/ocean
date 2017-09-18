@@ -500,7 +500,7 @@ class Uri : UriView
                 s.length = 256, s.length = 0;
                 enableStomping(s);
 
-                produce ((Const!(void)[] v) {return s ~= v, v.length;});
+                produce ((Const!(void)[] v) {s ~= v; return v.length;});
                 auto result = cast(mstring) s;
 
                 return assumeUnique(result);
@@ -552,7 +552,7 @@ class Uri : UriView
         static mstring encode (cstring text, int flags)
         {
                 void[] s;
-                encode ((Const!(void)[] v) {return s ~= v, v.length;}, text, flags);
+                encode ((Const!(void)[] v) {s ~= v; return  v.length;}, text, flags);
                 return cast(mstring) s;
         }
 
