@@ -45,6 +45,8 @@ static this ( )
 
 public class FlexibleFileQueue : IByteQueue
 {
+    import ocean.core.Verify;
+
     /***************************************************************************
 
         Header for queue items
@@ -267,13 +269,10 @@ public class FlexibleFileQueue : IByteQueue
     ***************************************************************************/
 
     public bool push ( ubyte[] item )
-    in
     {
-        assert ( item.length <= this.size,
+        verify ( item.length <= this.size,
                  "Read buffer too small to process this item");
-    }
-    body
-    {
+
         this.handleSliceBuffer();
 
         if (item.length == 0) return false;
@@ -347,7 +346,7 @@ public class FlexibleFileQueue : IByteQueue
 
             h = *Header.fromSlice(this.ext_in.slice(Header.sizeof, false));
 
-            assert (h.length <= this.size, "Unrealistic size");
+            verify (h.length <= this.size, "Unrealistic size");
 
             if (h.length + Header.sizeof > this.ext_in.readable() &&
                 this.fill() == 0)
@@ -565,13 +564,10 @@ public class FlexibleFileQueue : IByteQueue
     ***************************************************************************/
 
     private bool filePush ( in ubyte[] item )
-    in
     {
-        assert(item.length <= this.size, "Pushed item will not fit read buffer");
-        assert(item.length > 0, "denied push of item of size zero");
-    }
-    body
-    {
+        verify(item.length <= this.size, "Pushed item will not fit read buffer");
+        verify(item.length > 0, "denied push of item of size zero");
+
         try
         {
             if (!this.files_open)
@@ -683,19 +679,16 @@ public class FlexibleFileQueue : IByteQueue
     ***************************************************************************/
 
     private void closeExternal ( )
-    in
     {
-        assert(this.ext_in.readable() == 0,
+        verify(this.ext_in.readable() == 0,
                "Still unread data in input buffer");
 
-        assert(this.bytes_in_file - this.ext_in.readable() == 0,
+        verify(this.bytes_in_file - this.ext_in.readable() == 0,
                "Still bytes in the file");
 
-        assert(this.items_in_file - this.ext_in.readable() == 0,
+        verify(this.items_in_file - this.ext_in.readable() == 0,
                "Still items in the file");
-    }
-    body
-    {
+
         this.ext_in.clear();
         this.ext_out.clear();
         this.file_out.close();

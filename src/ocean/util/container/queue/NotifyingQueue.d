@@ -129,6 +129,8 @@ version ( UnitTest )
 
 class NotifyingByteQueue : ISuspendable, IQueueInfo
 {
+    import ocean.core.Verify;
+
     /***************************************************************************
 
         Type of the delegate used for notifications
@@ -301,16 +303,13 @@ class NotifyingByteQueue : ISuspendable, IQueueInfo
     ***************************************************************************/
 
     public bool ready ( NotificationDg notifier )
-    in
     {
         debug foreach ( waiting_notifier; this.notifiers[] )
         {
-            assert (waiting_notifier !is notifier,
+            verify (waiting_notifier !is notifier,
                     "RequestQueue.ready: notifier already registered");
         }
-    }
-    body
-    {
+
         if (!this.is_empty() && this.enabled)
         {
             notifier();
