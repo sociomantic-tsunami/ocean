@@ -46,6 +46,8 @@ version(UnitTest) import ocean.core.Test;
 
 class FixedRingQueue ( T ) : FixedRingQueueBase!(IQueue!(T))
 {
+    import ocean.core.Verify;
+
     /***************************************************************************
 
         Constructor
@@ -159,6 +161,8 @@ class FixedRingQueue ( T ) : FixedRingQueueBase!(IQueue!(T))
 
 class FixedByteRingQueue : FixedRingQueueBase!(IByteQueue)
 {
+    import ocean.core.Verify;
+
     /***************************************************************************
 
         Constructor
@@ -187,12 +191,9 @@ class FixedByteRingQueue : FixedRingQueueBase!(IByteQueue)
     ***************************************************************************/
 
     bool push ( ubyte[] element )
-    in
     {
-        assert (element.length == super.element_size, "element size mismatch");
-    }
-    body
-    {
+        verify (element.length == super.element_size, "element size mismatch");
+
         auto element_in_queue = super.push_();
 
         if (element_in_queue)
@@ -259,12 +260,9 @@ class FixedByteRingQueue : FixedRingQueueBase!(IByteQueue)
     ***************************************************************************/
 
     bool pop ( ubyte[] element )
-    in
     {
-        assert (element.length == super.element_size, "element size mismatch");
-    }
-    body
-    {
+        verify (element.length == super.element_size, "element size mismatch");
+
         auto element_in_queue = cast(ubyte[])super.pop_();
 
         if (element_in_queue)
@@ -287,6 +285,8 @@ class FixedByteRingQueue : FixedRingQueueBase!(IByteQueue)
 
 abstract class FixedRingQueueBase ( IBaseQueue ) : IRingQueue!(IBaseQueue)
 {
+    import ocean.core.Verify;
+
     /***************************************************************************
 
         Maximum number of elements in queue
@@ -360,13 +360,10 @@ abstract class FixedRingQueueBase ( IBaseQueue ) : IRingQueue!(IBaseQueue)
     ***************************************************************************/
 
     this ( size_t max_items, size_t element_size )
-    in
     {
-        assert (element_size);
-        assert (max_items);
-    }
-    body
-    {
+        verify (element_size > 0);
+        verify (max_items > 0);
+
         super((this.element_size = element_size) * (this.max_items = max_items));
     }
 

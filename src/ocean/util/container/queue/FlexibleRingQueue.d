@@ -51,6 +51,7 @@ debug import ocean.io.Stdout;
 
 class FlexibleByteRingQueue : IRingQueue!(IByteQueue)
 {
+    import ocean.core.Verify;
     import ocean.core.Enforce: enforce;
 
     import Integer = ocean.text.convert.Integer_tango: toString;
@@ -137,12 +138,9 @@ class FlexibleByteRingQueue : IRingQueue!(IByteQueue)
     ***************************************************************************/
 
     public this ( size_t dimension )
-    in
     {
-        assert(dimension > 0, typeof(this).stringof ~ ": cannot construct a 0-length queue");
-    }
-    body
-    {
+        verify(dimension > 0, typeof(this).stringof ~ ": cannot construct a 0-length queue");
+
         super(dimension);
     }
 
@@ -588,10 +586,9 @@ class FlexibleByteRingQueue : IRingQueue!(IByteQueue)
         ExportMetadata meta;
         size_t end = restore((&meta)[0 .. 1], this.data);
 
-        assert(end <= this.data.length,
-               classname(this) ~ ".save(): restore callback expected to " ~
-               "return at most " ~ itoa(this.data.length) ~ ", not" ~ itoa(end));
-
+        verify(end <= this.data.length,
+               idup(classname(this) ~ ".save(): restore callback expected to " ~
+               "return at most " ~ itoa(this.data.length) ~ ", not" ~ itoa(end)));
 
         this.validate(meta, this.data[0 .. end]);
 
@@ -610,11 +607,6 @@ class FlexibleByteRingQueue : IRingQueue!(IByteQueue)
     ***************************************************************************/
 
     private ubyte[] push_ ( size_t size )
-    in
-    {
-        assert(this); // invariant
-        assert(this.willFit(size), classname(this) ~ ".push_: item will not fit");
-    }
     out (slice)
     {
         assert(slice !is null,
@@ -625,6 +617,9 @@ class FlexibleByteRingQueue : IRingQueue!(IByteQueue)
     }
     body
     {
+        assert(this); // invariant
+        verify(this.willFit(size), classname(this) ~ ".push_: item will not fit");
+
         auto push_size = this.pushSize(size);
 
         /*
@@ -647,7 +642,7 @@ class FlexibleByteRingQueue : IRingQueue!(IByteQueue)
 
         if (this.read_from < this.write_to)
         {
-            assert(this.gap == this.write_to);
+            verify(this.gap == this.write_to);
 
             // Case 3: Check if the record fits in data[write_to .. $] ...
             if (this.data.length - this.write_to < push_size)
@@ -657,7 +652,7 @@ class FlexibleByteRingQueue : IRingQueue!(IByteQueue)
                  * the record does fit so there must be enough space in
                  * data[0 .. read_from].
                  */
-                assert(push_size <= this.read_from);
+                verify(push_size <= this.read_from);
                 this.write_to = 0;
             }
         }
@@ -688,11 +683,6 @@ class FlexibleByteRingQueue : IRingQueue!(IByteQueue)
     ***************************************************************************/
 
     private ubyte[] pop_ ( )
-    in
-    {
-        assert(this); // invariant
-        assert(this.items, classname(this) ~ ".pop_: no items in the queue");
-    }
     out (buffer)
     {
         assert(buffer, classname(this) ~ ".pop_: returned a null buffer");
@@ -700,6 +690,8 @@ class FlexibleByteRingQueue : IRingQueue!(IByteQueue)
     }
     body
     {
+        assert(this); // invariant
+        verify(this.items > 0, classname(this) ~ ".pop_: no items in the queue");
 
         auto position = this.read_from;
         this.read_from += Header.sizeof;
@@ -712,7 +704,7 @@ class FlexibleByteRingQueue : IRingQueue!(IByteQueue)
 
         position = this.read_from;
         this.read_from += header.length;
-        assert(this.read_from <= this.gap); // The invariant ensures that
+        verify(this.read_from <= this.gap); // The invariant ensures that
                                             // this.gap is not 0.
 
         this.items--; // The precondition prevents decrementing 0.
@@ -734,13 +726,13 @@ class FlexibleByteRingQueue : IRingQueue!(IByteQueue)
                      *     write_to must be 0.
                      */
 
-                    assert(this.items || !this.write_to);
+                    verify(this.items || !this.write_to);
                     this.gap = this.write_to;
                 }
             }
             else // Popped the last record.
             {
-                assert(this.read_from == this.write_to);
+                verify(this.read_from == this.write_to);
                 this.read_from = 0;
                 this.write_to  = 0;
                 this.gap       = 0;
@@ -785,7 +777,7 @@ class FlexibleByteRingQueue : IRingQueue!(IByteQueue)
 
             for (typeof(meta.items) i = 0; i < meta.items; i++)
             {
-                assert(pos <= data.length);
+                verify(pos <= data.length);
 
                 try
                 {
@@ -822,7 +814,7 @@ class FlexibleByteRingQueue : IRingQueue!(IByteQueue)
                 }
             }
 
-            assert(pos <= data.length);
+            verify(pos <= data.length);
 
             enforce!(ValidationError)(
                 pos >= data.length,
