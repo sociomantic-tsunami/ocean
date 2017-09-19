@@ -315,13 +315,6 @@ public Layout newLayout ( cstring layout_str )
     return layout;
 }
 
-/// Hack because DMD1 applies extern(C) to the delegate type as well...
-private alias extern(D) Appender delegate (istring, Appender.Layout)
-    AppenderExternD;
-/// Ditto
-private alias extern(D) Layout delegate (cstring)
-    MakeLayoutExternD;
-
 ///
 unittest
 {
