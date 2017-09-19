@@ -570,9 +570,10 @@ version(UnitTest)
 
 unittest
 {
-    auto t = new NamedTest("struct serializer test");
+    // empty struct
+
     auto serializer = new StringStructSerializer!(char);
-    char[] buffer;
+    mstring buffer;
 
     struct EmptyStruct
     {
@@ -582,9 +583,16 @@ unittest
 
     serializer.serialize(buffer, e);
 
-    t.test!("==")(buffer.length, 20);
-    t.test(buffer == "struct EmptyStruct:\n",
-        "Incorrect string serializer result");
+    test!("==")(buffer.length, 20);
+    test!("==")(buffer, "struct EmptyStruct:\n");
+}
+
+unittest
+{
+    // regular arbitrary struct
+
+    auto serializer = new StringStructSerializer!(char);
+    mstring buffer;
 
     struct TextFragment
     {
@@ -596,16 +604,20 @@ unittest
     text_fragment.text = "eins".dup;
     text_fragment.type = 1;
 
-    buffer.length = 0;
-    enableStomping(buffer);
     serializer.serialize(buffer, text_fragment);
 
-    t.test!("==")(buffer.length, 69);
-    t.test(buffer == "struct TextFragment:\n" ~
+    test!("==")(buffer.length, 69);
+    test!("==")(buffer, "struct TextFragment:\n" ~
                      "   char[] text (length 4): eins\n" ~
-                     "   int type : 1\n",
-        "Incorrect string serializer result");
+                     "   int type : 1\n");
+}
 
+unittest
+{
+    // struct with timestamp fields
+
+    auto serializer = new StringStructSerializer!(char);
+    mstring buffer;
     cstring[] timestamp_fields = ["lastseen", "timestamp", "update_time"];
 
     struct TextFragmentTime
@@ -621,31 +633,41 @@ unittest
     text_fragment_time.text = "eins".dup;
     text_fragment_time.time = 1456829726;
 
-    buffer.length = 0;
-    enableStomping(buffer);
     serializer.serialize(buffer, text_fragment_time, timestamp_fields);
 
-    t.test!("==")(buffer.length, 207);
-    t.test(buffer == "struct TextFragmentTime:\n" ~
+    test!("==")(buffer.length, 207);
+    test!("==")(buffer, "struct TextFragmentTime:\n" ~
                      "   char[] text (length 4): eins\n" ~
                      "   long time : 1456829726\n" ~
                      `   char[] lastseen (length 0): ""` ~ "\n" ~
                      "   long timestamp : 0 (1970-01-01 00:00:00)\n" ~
-                     "   long update_time : 0 (1970-01-01 00:00:00)\n",
-        "Incorrect string serializer result");
+                     "   long update_time : 0 (1970-01-01 00:00:00)\n");
 
     buffer.length = 0;
     enableStomping(buffer);
     serializer.serialize(buffer, text_fragment_time);
 
-    t.test!("==")(buffer.length, 163);
-    t.test(buffer == "struct TextFragmentTime:\n" ~
+    test!("==")(buffer.length, 163);
+    test!("==")(buffer, "struct TextFragmentTime:\n" ~
                      "   char[] text (length 4): eins\n" ~
                      "   long time : 1456829726\n" ~
                      `   char[] lastseen (length 0): ""` ~ "\n" ~
                      "   long timestamp : 0\n" ~
-                     "   long update_time : 0\n",
-        "Incorrect string serializer result");
+                     "   long update_time : 0\n");
+}
+
+unittest
+{
+    // struct with multi-dimensional array field
+
+    auto serializer = new StringStructSerializer!(char);
+    mstring buffer;
+
+    struct TextFragment
+    {
+        char[] text;
+        int type;
+    }
 
     struct MultiDimensionalArray
     {
@@ -656,12 +678,10 @@ unittest
     multi_dimensional_array.text_fragments ~= [[TextFragment("eins".dup, 1)],
         [TextFragment("zwei".dup, 2), TextFragment("drei".dup, 3)]];
 
-    buffer.length = 0;
-    enableStomping(buffer);
     serializer.serialize(buffer, multi_dimensional_array);
 
-    t.test!("==")(buffer.length, 461);
-    t.test(buffer == "struct MultiDimensionalArray:\n" ~
+    test!("==")(buffer.length, 461);
+    test!("==")(buffer, "struct MultiDimensionalArray:\n" ~
                      "   TextFragment[][] text_fragments (length 2):\n" ~
                      "      TextFragment[] text_fragments (length 1):\n" ~
                      "         struct TextFragment:\n" ~
@@ -673,8 +693,15 @@ unittest
                      "            int type : 2\n" ~
                      "         struct TextFragment:\n" ~
                      "            char[] text (length 4): drei\n" ~
-                     "            int type : 3\n",
-        "Incorrect string serializer result");
+                     "            int type : 3\n");
+}
+
+unittest
+{
+    // struct with nested struct field
+
+    auto serializer = new StringStructSerializer!(char);
+    mstring buffer;
 
     struct OuterStruct
     {
@@ -690,16 +717,21 @@ unittest
     s.outer_a = 100;
     s.s.inner_a = 200;
 
-    buffer.length = 0;
-    enableStomping(buffer);
     serializer.serialize(buffer, s);
 
-    t.test!("==")(buffer.length, 78);
-    t.test(buffer == "struct OuterStruct:\n" ~
+    test!("==")(buffer.length, 78);
+    test!("==")(buffer, "struct OuterStruct:\n" ~
                      "   int outer_a : 100\n" ~
                      "   struct s:\n" ~
-                     "      int inner_a : 200\n",
-        "Incorrect string serializer result");
+                     "      int inner_a : 200\n");
+}
+
+unittest
+{
+    // struct with floating point fields
+
+    auto serializer = new StringStructSerializer!(char);
+    mstring buffer;
 
     struct StructWithFloatingPoints
     {
@@ -712,16 +744,21 @@ unittest
     sf.a = 10.00;
     sf.b = 23.42;
 
-    buffer.length = 0;
-    enableStomping(buffer);
     serializer.serialize(buffer, sf);
 
-    t.test!("==")(buffer.length, 85);
-    t.test(buffer == "struct StructWithFloatingPoints:\n" ~
+    test!("==")(buffer.length, 85);
+    test!("==")(buffer, "struct StructWithFloatingPoints:\n" ~
                      "   float a : 10\n" ~
                      "   double b : 23.42\n" ~
-                     "   real c : nan\n",
-        "Incorrect string serializer result");
+                     "   real c : nan\n");
+}
+
+unittest
+{
+    // struct with nested union field
+
+    auto serializer = new StringStructSerializer!(char);
+    mstring buffer;
 
     struct StructWithUnion
     {
@@ -738,14 +775,11 @@ unittest
     StructWithUnion su;
     su.u.a = 100;
 
-    buffer.length = 0;
-    enableStomping(buffer);
     serializer.serialize(buffer, su);
 
-    t.test!("==")(buffer.length, 66);
-    t.test(buffer == "struct StructWithUnion:\n" ~
-                     "   union U u : [100, 0, 0, 0, 0, 0, 0, 0]\n",
-        "Incorrect string serializer result");
+    test!("==")(buffer.length, 66);
+    test!("==")(buffer, "struct StructWithUnion:\n" ~
+                     "   union U u : [100, 0, 0, 0, 0, 0, 0, 0]\n");
 
     su.u.b = 'a';
 
@@ -753,10 +787,17 @@ unittest
     enableStomping(buffer);
     serializer.serialize(buffer, su);
 
-    t.test!("==")(buffer.length, 65);
-    t.test(buffer == "struct StructWithUnion:\n" ~
-                     "   union U u : [97, 0, 0, 0, 0, 0, 0, 0]\n",
-        "Incorrect string serializer result");
+    test!("==")(buffer.length, 65);
+    test!("==")(buffer, "struct StructWithUnion:\n" ~
+                     "   union U u : [97, 0, 0, 0, 0, 0, 0, 0]\n");
+}
+
+unittest
+{
+    // struct with individual char fields
+
+    auto serializer = new StringStructSerializer!(char);
+    mstring buffer;
 
     struct StructWithChars
     {
@@ -785,12 +826,10 @@ unittest
     sc.c9 = '\v';
 
     // Generation of friendly string representations of characters disabled
-    buffer.length = 0;
-    enableStomping(buffer);
     serializer.serialize(buffer, sc);
 
-    t.test!("==")(buffer.length, 174);
-    t.test(buffer == "struct StructWithChars:\n" ~
+    test!("==")(buffer.length, 174);
+    test!("==")(buffer, "struct StructWithChars:\n" ~
                      "   char c0 : g\n" ~
                      "   char c1 : k\n" ~
                      "   char c2 : \0\n" ~
@@ -800,16 +839,15 @@ unittest
                      "   char c6 : \n\n" ~
                      "   char c7 : \r\n" ~
                      "   char c8 : \t\n" ~
-                     "   char c9 : \v\n",
-        "Incorrect string serializer result");
+                     "   char c9 : \v\n");
 
     // Generation of friendly string representations of characters enabled
     buffer.length = 0;
     enableStomping(buffer);
     serializer.serialize(buffer, sc, [""], true);
 
-    t.test!("==")(buffer.length, 198);
-    t.test(buffer == "struct StructWithChars:\n" ~
+    test!("==")(buffer.length, 198);
+    test!("==")(buffer, "struct StructWithChars:\n" ~
                      "   char c0 : g\n" ~
                      "   char c1 : k\n" ~
                      "   char c2 : '\\0'\n" ~
@@ -819,8 +857,15 @@ unittest
                      "   char c6 : '\\n'\n" ~
                      "   char c7 : '\\r'\n" ~
                      "   char c8 : '\\t'\n" ~
-                     "   char c9 : '\\v'\n",
-        "Incorrect string serializer result");
+                     "   char c9 : '\\v'\n");
+}
+
+unittest
+{
+    // struct with regular int arrays
+
+    auto serializer = new StringStructSerializer!(char);
+    mstring buffer;
 
     struct StructWithIntArrays
     {
@@ -831,15 +876,20 @@ unittest
     StructWithIntArrays sia;
     sia.a = [10, 20, 30];
 
-    buffer.length = 0;
-    enableStomping(buffer);
     serializer.serialize(buffer, sia);
 
-    t.test!("==")(buffer.length, 90);
-    t.test(buffer == "struct StructWithIntArrays:\n" ~
+    test!("==")(buffer.length, 90);
+    test!("==")(buffer, "struct StructWithIntArrays:\n" ~
                      "   int[] a (length 3): [10, 20, 30]\n" ~
-                     "   int[] b (length 0): []\n",
-        "Incorrect string serializer result");
+                     "   int[] b (length 0): []\n");
+}
+
+unittest
+{
+    // struct with individual typedef field
+
+    auto serializer = new StringStructSerializer!(char);
+    mstring buffer;
 
     mixin(Typedef!(hash_t, "AdskilletId"));
 
@@ -851,22 +901,18 @@ unittest
     StructWithTypedef st;
     st.a = cast(AdskilletId)1000;
 
-    buffer.length = 0;
-    enableStomping(buffer);
     serializer.serialize(buffer, st);
 
     version (D_Version2)
     {
-        t.test!("==")(buffer.length, 50);
-        t.test(buffer == "struct StructWithTypedef:\n" ~
-                         "   AdskilletId a : 1000\n",
-            "Incorrect string serializer result");
+        test!("==")(buffer.length, 50);
+        test!("==")(buffer, "struct StructWithTypedef:\n" ~
+                         "   AdskilletId a : 1000\n");
     }
     else
     {
-        t.test!("==")(buffer.length, 44);
-        t.test(buffer == "struct StructWithTypedef:\n" ~
-                         "   ulong a : 1000\n",
-            "Incorrect string serializer result");
+        test!("==")(buffer.length, 44);
+        test!("==")(buffer, "struct StructWithTypedef:\n" ~
+                         "   ulong a : 1000\n");
     }
 }
