@@ -26,8 +26,6 @@ module ocean.io.serialize.StructSerializer;
 
 import ocean.transition;
 
-import ocean.core.Verify;
-
 import ocean.io.serialize.SimpleStreamSerializer;
 
 import ocean.core.Exception;
@@ -45,16 +43,16 @@ import ocean.core.Traits;
 
 class SerializerException : Exception
 {
-    mixin DefaultExceptionCtor;
-
+    mixin ReusableExceptionImplementation!();
     alias .LengthMismatch LengthMismatch;
 }
 
-/***************************************************************************
+/*******************************************************************************
 
     StructSerializer Exception
+    Reusable exception instance.
 
-***************************************************************************/
+*******************************************************************************/
 
 class LengthMismatch : SerializerException
 {
@@ -63,11 +61,23 @@ class LengthMismatch : SerializerException
     this ( size_t bytes_expected, size_t bytes_got,
            istring msg, istring file, typeof(__LINE__) line )
     {
-        super(msg, file, line);
-
+        this.set(msg, file, line);
         this.bytes_expected = bytes_expected;
         this.bytes_got      = bytes_got;
     }
+ }
+
+/*******************************************************************************
+
+    Reusable exception instance.
+
+*******************************************************************************/
+
+private SerializerException serializer_exception;
+
+static this ()
+{
+    .serializer_exception = new SerializerException();
 }
 
 /*******************************************************************************
@@ -128,7 +138,7 @@ struct StructSerializer ( bool AllowUnions = false )
 
     size_t dump ( S ) ( S* s, void delegate ( void[] data ) receive )
     {
-        verifyStructPtr!("dump")(s);
+        enforceStructPtr!("dump")(s);
         return transmit!(false)(s, receive);
     }
 
@@ -171,7 +181,7 @@ struct StructSerializer ( bool AllowUnions = false )
 
     size_t load ( S ) ( S* s, void delegate ( void[] data ) receive )
     {
-        verifyStructPtr!("load")(s);
+        enforceStructPtr!("load")(s);
         return transmit!(true)(s, receive);
     }
 
@@ -199,7 +209,8 @@ struct StructSerializer ( bool AllowUnions = false )
 
     size_t transmit ( bool receive, S ) ( S* s, void delegate ( void[] data ) transmit_data )
     {
-        verify(s !is null, typeof (*this).stringof ~ ".transmit (receive = " ~
+        .serializer_exception.enforce(s !is null,
+                typeof (*this).stringof ~ ".transmit (receive = " ~
                 receive.stringof ~ "): source pointer of type '" ~ S.stringof ~
                 "*' is null");
 
@@ -725,7 +736,7 @@ struct StructSerializer ( bool AllowUnions = false )
 
     ***************************************************************************/
 
-    private void verifyStructPtr ( istring func, S ) ( S* s )
+    private void enforceStructPtr ( istring func, S ) ( S* s )
     {
         static if (is (S T == T*))
         {
@@ -734,7 +745,7 @@ struct StructSerializer ( bool AllowUnions = false )
                   ~ "' (you probably want '" ~ (T*).stringof ~ "')");
         }
 
-        verify(s, typeof (*this).stringof ~ '.' ~ func ~ ": "
+        .serializer_exception.enforce(s, typeof (*this).stringof ~ '.' ~ func ~ ": "
                ~ "pointer of type '" ~ S.stringof ~ "*' is null");
     }
 
