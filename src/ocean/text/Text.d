@@ -199,7 +199,7 @@
 
 *******************************************************************************/
 
-module ocean.text.Text;
+deprecated module ocean.text.Text;
 
 import ocean.transition;
 
@@ -234,7 +234,7 @@ version(UnitTest) import ocean.core.Test;
 
  *******************************************************************************/
 
-class Text(T) : TextView!(T)
+deprecated class Text(T) : TextView!(T)
 {
     public  alias set               opAssign;
     public  alias append            opCatAssign;
@@ -1335,7 +1335,7 @@ class Text(T) : TextView!(T)
 
  *******************************************************************************/
 
-class TextView(T) : UniText
+deprecated class TextView(T) : UniText
 {
     public alias ptrdiff_t delegate (T[] a, T[] b) Comparator;
 
@@ -1500,7 +1500,7 @@ class TextView(T) : UniText
 
  *******************************************************************************/
 
-class UniText
+deprecated class UniText
 {
     abstract cstring toString  (char[]  dst);
 
@@ -1524,7 +1524,7 @@ version (UnitTest)
     import ocean.io.device.Array;
 }
 
-unittest
+deprecated unittest
 {
     auto s = new Text!(char);
     s = "hello";
@@ -1570,45 +1570,4 @@ unittest
         s.append (element);
     test (s.selection == "almost all cows chew grass");
     test (s.clear.format("{}:{}", 1, 2) == "1:2");
-}
-
-debug (Text)
-{
-    void main()
-    {
-        auto t = new Text!(char);
-        t = "hello world";
-        auto s = t.search ("o");
-        assert (s.next);
-        assert (t.selection == "o");
-        assert (t.point is 4);
-        assert (s.next);
-        assert (t.selection == "o");
-        assert (t.point is 7);
-        assert (!s.next);
-
-        t.point = 9;
-        assert (s.prev);
-        assert (t.selection == "o");
-        assert (t.point is 7);
-        assert (s.prev);
-        assert (t.selection == "o");
-        assert (t.point is 4);
-        assert (s.next);
-        assert (t.point is 7);
-        assert (s.prev);
-        assert (t.selection == "o");
-        assert (t.point is 4);
-        assert (!s.prev);
-        assert (s.count is 2);
-        s.replace ('O');
-        assert (t.slice == "hellO wOrld");
-        assert (s.count is 0);
-
-        t.point = 0;
-        assert (t.search("hellO").next);
-        assert (t.selection == "hellO");
-        assert (t.search("hellO").next);
-        assert (t.selection == "hellO");
-    }
 }
