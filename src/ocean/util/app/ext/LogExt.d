@@ -245,11 +245,3 @@ class LogExt : IConfigExtExtension
         return LogUtil.newLayout(name);
     }
 }
-
-
-/// Hack because DMD1 applies extern(C) to the delegate type as well...
-private alias extern(D) Appender delegate (istring, Appender.Layout)
-    AppenderExternD;
-/// Ditto
-private alias extern(D) Appender.Layout delegate (cstring)
-    MakeLayoutExternD;
