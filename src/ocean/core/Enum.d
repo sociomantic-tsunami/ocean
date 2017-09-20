@@ -130,7 +130,7 @@ module ocean.core.Enum;
 
 
 import ocean.transition;
-
+import ocean.core.Test;
 
 /*******************************************************************************
 
@@ -707,7 +707,7 @@ version ( UnitTest )
 {
     /***************************************************************************
 
-        Runs a series of asserts to check that the specified enum type contains
+        Runs a series of tests to check that the specified enum type contains
         members with the specified names and values. The name and value lists
         are assumed to be in the same order (i.e. names[i] corresponds to
         values[i]).
@@ -722,45 +722,40 @@ version ( UnitTest )
     ***************************************************************************/
 
     void checkEnum ( E : IEnum ) ( istring[] names, int[] values )
-    in
     {
-        assert(names.length == values.length);
-        assert(names.length);
-    }
-    body
-    {
-        // Internal name/value lists
-        assert(E.names == names);
-        assert(E.values == values);
+        test(names.length == values.length);
+        test(names.length);
+        test(E.names == names);
+        test(E.values == values);
 
         // opIn_r lookup by name
         foreach ( i, n; names )
         {
-            assert(n in E());
-            assert(*(n in E()) == values[i]);
+            test(n in E());
+            test(*(n in E()) == values[i]);
         }
 
         // opIn_r lookup by value
         foreach ( i, v; values )
         {
-            assert(v in E());
-            assert(*(v in E()) == names[i]);
+            test(v in E());
+            test(*(v in E()) == names[i]);
         }
 
         // opIndex lookup by name
         foreach ( i, n; names )
         {
-            assert(E()[n] == values[i]);
+            test(E()[n] == values[i]);
         }
 
         // opIndex lookup by value
         foreach ( i, v; values )
         {
-            assert(E()[v] == names[i]);
+            test(E()[v] == names[i]);
         }
 
         // length
-        assert(E().length == names.length);
+        test(E().length == names.length);
 
         // Check min & max
         int min = int.max;
@@ -770,23 +765,23 @@ version ( UnitTest )
             if ( v < min ) min = v;
             if ( v > max ) max = v;
         }
-        assert(E().min == min);
-        assert(E().max == max);
+        test(E().min == min);
+        test(E().max == max);
 
         // opApply 1
         size_t i;
         foreach ( n, v; E() )
         {
-            assert(n == names[i]);
-            assert(v == values[i]);
+            test(n == names[i]);
+            test(v == values[i]);
             i++;
         }
 
         // opApply 2
         foreach ( i, n, v; E() )
         {
-            assert(n == names[i]);
-            assert(v == values[i]);
+            test(n == names[i]);
+            test(v == values[i]);
         }
     }
 
