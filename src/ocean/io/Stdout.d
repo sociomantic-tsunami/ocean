@@ -35,14 +35,8 @@ import ocean.io.stream.Format;
 
 import ocean.io.Console;
 
-import ocean.text.convert.Layout_tango;
+import ocean.text.convert.Formatter;
 
-import core.stdc.stdarg;
-
-alias void* Arg;
-alias va_list ArgList;
-
-version (X86_64) version = DigitalMarsX64;
 
 /*******************************************************************************
 
@@ -122,29 +116,21 @@ public class TerminalOutput : FormatOutput
         super(output, eol);
     }
 
-    /***************************************************************************
-
-        Layout using the provided formatting specification.
-
-    ***************************************************************************/
-
-    public typeof(this) format ( cstring fmt, ... )
+    /// See `FormatOutput.format`
+    public typeof(this) format (Args...) (cstring fmt, Args args)
     {
-        super._transitional_format(fmt, _arguments, _argptr);
+        // FIXME_IN_D2: Use TemplateThisParam in FormatOutput and kill this
+        sformat(&this.emit, fmt, args);
         return this;
     }
 
-    /***************************************************************************
-
-        Layout using the provided formatting specification, and append a
-        newline.
-
-    ***************************************************************************/
-
-    public typeof(this) formatln ( cstring fmt, ... )
+    /// See `FormatOutput.formatln`
+    public typeof(this) formatln (Args...) (cstring fmt, Args args)
     {
-        super._transitional_format(fmt, _arguments, _argptr);
-        return this.newline;
+        // FIXME_IN_D2: Use TemplateThisParam in FormatOutput and kill this
+        sformat(&this.emit, fmt, args);
+        this.newline;
+        return this;
     }
 
 
@@ -229,8 +215,7 @@ public class TerminalOutput : FormatOutput
 
     public typeof(this) endrow ( )
     {
-        auto layout = Layout!(char).instance;
-        this.sink.write(layout("{}{};1H", Terminal.CSI, Terminal.rows));
+        this.sink.write(.format("{}{};1H", Terminal.CSI, Terminal.rows));
         return this;
     }
 
