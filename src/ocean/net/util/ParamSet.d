@@ -640,7 +640,7 @@ class ParamSet
             }
         }
 
-        assert (false, typeof (this).stringof ~ ".writeUnsigned: dst too short");
+        assert(false);
     }
 
     unittest
