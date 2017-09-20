@@ -56,15 +56,11 @@
 
 module ocean.core.MessageFiber;
 
-
 import ocean.transition;
-
+import ocean.core.Verify;
 import ocean.core.Thread : Fiber;
-
 import ocean.core.Array: copy;
-
 import ocean.core.SmartUnion;
-
 import ocean.io.digest.Fnv1;
 
 debug ( MessageFiber )
@@ -464,10 +460,6 @@ class MessageFiber
      **************************************************************************/
 
     public Message start ( Message msg = Message.init )
-    in
-    {
-        assert (this.fiber.state != this.fiber.State.EXEC, "attempt to start an active fiber");
-    }
     out (_msg_out)
     {
         auto msg_out = cast(Unqual!(typeof(_msg_out))) _msg_out;
@@ -478,6 +470,11 @@ class MessageFiber
     }
     body
     {
+        verify(
+            this.fiber.state != this.fiber.State.EXEC,
+            "attempt to start an active fiber"
+        );
+
         debug (MessageFiber)
         {
             Stdout.formatln(
@@ -486,7 +483,7 @@ class MessageFiber
                 cast(void*) Fiber.getThis()
             ).flush();
         }
-     
+
         if (this.fiber.state == this.fiber.State.TERM)
         {
             this.fiber.reset();
@@ -526,11 +523,6 @@ class MessageFiber
      **************************************************************************/
 
     public Message suspend ( Token token, Object identifier = null, Message msg = Message.init )
-    in
-    {
-        assert (this.fiber.state == this.fiber.State.EXEC, "attempt to suspend an inactive fiber");
-        with (msg) if (active == active.exc) assert (exc !is null);
-    }
     out (_msg_out)
     {
         auto msg_out = cast(Unqual!(typeof(_msg_out))) _msg_out;
@@ -538,6 +530,13 @@ class MessageFiber
     }
     body
     {
+        verify (
+            this.fiber.state == this.fiber.State.EXEC,
+            "attempt to suspend an inactive fiber"
+        );
+
+        verify(msg.active != msg.active.exc || msg.exc !is null);
+
         if (!msg.active)
         {
             msg.num = 0;
@@ -599,12 +598,8 @@ class MessageFiber
      **************************************************************************/
 
     public Message suspend ( Token token, Exception e )
-    in
     {
-        assert (e !is null);
-    }
-    body
-    {
+        verify(e !is null);
         return this.suspend(token, null, Message(e));
     }
 
@@ -635,10 +630,6 @@ class MessageFiber
      **************************************************************************/
 
     public Message resume ( Token token, Object identifier = null, Message msg = Message.init )
-    in
-    {
-        assert (this.fiber.state == this.fiber.State.HOLD, "attempt to resume a non-held fiber");
-    }
     out (_msg_out)
     {
         auto msg_out = cast(Unqual!(typeof(_msg_out))) _msg_out;
@@ -649,6 +640,11 @@ class MessageFiber
     }
     body
     {
+        verify(
+            this.fiber.state == this.fiber.State.HOLD,
+            "attempt to resume a non-held fiber"
+        );
+
         if (!msg.active)
         {
             msg.num = 0;
@@ -696,13 +692,13 @@ class MessageFiber
      **************************************************************************/
 
     public void kill ( istring file = __FILE__, long line = __LINE__ )
-    in
     {
-        assert (this.fiber.state == this.fiber.State.HOLD, "attempt to kill a non-held fiber");
-        assert (!this.killed);
-    }
-    body
-    {
+        verify(
+            this.fiber.state == this.fiber.State.HOLD,
+            "attempt to kill a non-held fiber"
+        );
+        verify(!this.killed);
+
         debug (MessageFiber)
         {
             Stdout.formatln(
@@ -823,13 +819,16 @@ class MessageFiber
      **************************************************************************/
 
     private void suspend_ ( )
-    in
     {
-        assert (this.fiber.state == this.fiber.State.EXEC, "attempt to suspend a non-active fiber");
-        assert (this.fiber is Fiber.getThis, "attempt to suspend fiber externally");
-    }
-    body
-    {
+        verify(
+            this.fiber.state == this.fiber.State.EXEC,
+            "attempt to suspend a non-active fiber"
+        );
+        verify(
+            this.fiber is Fiber.getThis,
+            "attempt to suspend fiber externally"
+        );
+
         this.fiber.yield();
 
         if (this.killed)

@@ -19,6 +19,7 @@ module ocean.core.BitArray;
 import ocean.transition;
 
 import ocean.core.BitManip;
+import ocean.core.Verify;
 
 version(UnitTest) import ocean.core.Test;
 
@@ -185,12 +186,9 @@ struct BitArray
      *  -------------------
      */
     BitArray opSliceAssign(BitArray rhs)
-    in
     {
-        assert(rhs.len == len);
-    }
-    body
-    {
+        verify(rhs.len == len);
+
         auto dimension = this.dim();
         this.ptr[0..dimension] = rhs.ptr[0..dimension];
         return *this;
@@ -206,13 +204,10 @@ struct BitArray
      *  numbits = The number of bits to map in target.
      */
     void init( void[] target, size_t numbits )
-    in
     {
-        assert( numbits <= target.length * 8 );
-        assert( (target.length & 3) == 0 );
-    }
-    body
-    {
+        verify(numbits <= target.length * 8);
+        verify((target.length & 3) == 0);
+
         ptr = cast(uint*)target.ptr;
         len = numbits;
     }
@@ -572,12 +567,8 @@ struct BitArray
      *  The value of the bit at pos.
      */
     bool opIndex( size_t pos )
-    in
     {
-        assert( pos < len );
-    }
-    body
-    {
+        verify(pos < len);
         return cast(bool)bt( cast(size_t*)ptr, pos );
     }
 
@@ -631,12 +622,9 @@ struct BitArray
      *  the supplied array.
      */
     BitArray opAnd( BitArray rhs )
-    in
     {
-        assert( len == rhs.length );
-    }
-    body
-    {
+        verify(len == rhs.length);
+
         auto dim = this.dim();
 
         BitArray result;
@@ -677,12 +665,9 @@ struct BitArray
      *  the supplied array.
      */
     BitArray opOr( BitArray rhs )
-    in
     {
-        assert( len == rhs.length );
-    }
-    body
-    {
+        verify(len == rhs.length);
+
         auto dim = this.dim();
 
         BitArray result;
@@ -723,12 +708,9 @@ struct BitArray
      *  the supplied array.
      */
     BitArray opXor( BitArray rhs )
-    in
     {
-        assert( len == rhs.length );
-    }
-    body
-    {
+        verify(len == rhs.length);
+
         auto dim = this.dim();
 
         BitArray result;
@@ -768,12 +750,9 @@ struct BitArray
      *  A new array which is the result of this array minus the supplied array.
      */
     BitArray opSub( BitArray rhs )
-    in
     {
-        assert( len == rhs.length );
-    }
-    body
-    {
+        verify(len == rhs.length);
+
         auto dim = this.dim();
 
         BitArray result;
@@ -884,12 +863,9 @@ struct BitArray
      *  The new value of the bit at pos.
      */
     bool opIndexAssign( bool b, size_t pos )
-    in
     {
-        assert( pos < len );
-    }
-    body
-    {
+        verify(pos < len);
+
         if( b )
             bts( cast(size_t*)ptr, pos );
         else
@@ -912,12 +888,9 @@ struct BitArray
      *  A shallow copy of this array.
      */
     BitArray opAndAssign( BitArray rhs )
-    in
     {
-        assert( len == rhs.length );
-    }
-    body
-    {
+        verify(len == rhs.length);
+
         auto dim = this.dim();
 
         for( size_t i = 0; i < dim; ++i )
@@ -952,12 +925,9 @@ struct BitArray
      *  A shallow copy of this array.
      */
     BitArray opOrAssign( BitArray rhs )
-    in
     {
-        assert( len == rhs.length );
-    }
-    body
-    {
+        verify(len == rhs.length);
+
         auto dim = this.dim();
 
         for( size_t i = 0; i < dim; ++i )
@@ -993,12 +963,9 @@ struct BitArray
      *  A shallow copy of this array.
      */
     BitArray opXorAssign( BitArray rhs )
-    in
     {
-        assert( len == rhs.length );
-    }
-    body
-    {
+        verify(len == rhs.length);
+
         auto dim = this.dim();
 
         for( size_t i = 0; i < dim; ++i )
@@ -1034,12 +1001,9 @@ struct BitArray
      *  A shallow copy of this array.
      */
     BitArray opSubAssign( BitArray rhs )
-    in
     {
-        assert( len == rhs.length );
-    }
-    body
-    {
+        verify(len == rhs.length);
+
         auto dim = this.dim();
 
         for( size_t i = 0; i < dim; ++i )
