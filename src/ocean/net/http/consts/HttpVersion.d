@@ -26,7 +26,6 @@ import ocean.core.Verify;
 import core.stdc.ctype: isdigit;
 
 version(UnitTest) import ocean.core.Test;
-version(UnitTest) import ocean.core.Test;
 
 /******************************************************************************
 
