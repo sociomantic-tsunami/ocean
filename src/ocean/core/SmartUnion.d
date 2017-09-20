@@ -1,7 +1,7 @@
 /******************************************************************************
 
-    Template for a union that knows its active field and uses contracts to
-    assert that always the active field is read.
+    Template for a union that knows its active field and ensures the active
+    field is read.
 
     Copyright:
         Copyright (c) 2009-2016 Sociomantic Labs GmbH.
@@ -250,7 +250,7 @@ public void callWithActive ( alias Callable, SU ) ( SU smart_union )
         return;
 
     auto active_i = smart_union._.active - 1;
-    assert(active_i < U.tupleof.length);
+    verify(active_i < U.tupleof.length);
 
     // "static foreach", unrolls into the equivalent of a switch
     foreach ( i, ref field; smart_union._.u.tupleof )
@@ -458,12 +458,6 @@ private template MemberList ( uint i, size_t len, U )
         //     my_smart_union.u.y
 
         char[] y()
-        in
-        {
-            assert(my_smart_union.active == my_smart_union.active.y,
-                   "UniStruct: \"y\" not active");
-        }
-        body
         {
             return my_smart_union.u.y;
         }

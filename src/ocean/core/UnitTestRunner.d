@@ -51,6 +51,7 @@ module ocean.core.UnitTestRunner;
 import ocean.transition;
 
 
+import ocean.core.Verify;
 import ocean.stdc.string: strdup, strlen, strncmp;
 import core.sys.posix.unistd: unlink;
 import core.sys.posix.sys.time: gettimeofday, timeval;
@@ -185,7 +186,7 @@ private scope class UnitTestRunner
 
     private int run ( )
     {
-        assert (prog);
+        verify(prog.length > 0);
 
         timeval start_time = this.now();
 
@@ -650,7 +651,7 @@ private scope class UnitTestRunner
             version (D_Version2)
                 e.toString((d) { err ~= d; });
             else
-                err = sformat(err, "{}:{}: test error: {}", e.file, e.line, getMsg(e));
+                err = sformat(err, "{}:{}: test failure: {}", e.file, e.line, getMsg(e));
             return Result.Fail;
         }
         catch (AssertException e)
@@ -659,6 +660,13 @@ private scope class UnitTestRunner
                 e.toString((d) { err ~= d; });
             else
                 err = sformat(err, "{}:{}: assert error: {}", e.file, e.line, getMsg(e));
+        }
+        catch (SanityException e)
+        {
+            version (D_Version2)
+                e.toString((d) { err ~= d; });
+            else
+                err = sformat(err, "{}:{}: sanity exception: {}", e.file, e.line, getMsg(e));
         }
         catch (Exception e)
         {
@@ -705,7 +713,7 @@ private scope class UnitTestRunner
     {
         timeval t;
         int e = gettimeofday(&t, null);
-        assert (e == 0, "gettimeofday returned != 0");
+        verify(e == 0, "gettimeofday returned != 0");
 
         return t;
     }

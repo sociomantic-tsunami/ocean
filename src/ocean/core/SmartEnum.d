@@ -119,6 +119,7 @@ public import ocean.core.Enforce;
 
 import ocean.core.Traits;
 import ocean.core.Tuple;
+import ocean.core.Verify;
 
 version (UnitTest)
 {
@@ -1223,7 +1224,7 @@ public struct TwoWayMap ( A )
         foreach ( a, b; this.a_to_b )
         {
             auto index = this.indexOf(a);
-            assert(index);
+            verify(index !is null);
 
             res = dg(*index, a, b);
         }
