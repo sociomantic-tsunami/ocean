@@ -18,6 +18,7 @@
 module ocean.util.compress.Zip;
 
 import ocean.transition;
+import ocean.core.Verify;
 
 /*
 
@@ -609,12 +610,9 @@ class ZipBlockReader : ZipReader
      * IConduit.Seek interface.
      */
     this(InputStream source)
-    in
     {
-        assert( cast(IConduit.Seek) source.conduit, "source stream must be seekable" );
-    }
-    body
-    {
+        verify( (cast(IConduit.Seek) source.conduit) !is null,
+                "source stream must be seekable" );
         this.source = source;
         this.seeker = source; //cast(IConduit.Seek) source;
     }
@@ -656,7 +654,7 @@ class ZipBlockReader : ZipReader
         {
             case State.Init:
                 read_cd;
-                assert( state == State.Open );
+                verify( state == State.Open );
                 return more;
 
             case State.Open:
@@ -742,12 +740,6 @@ private:
      * or spanned archives aren't supported.
      */
     void read_cd()
-    in
-    {
-        assert( state == State.Init );
-        assert( headers is null );
-        assert( cd_data is null );
-    }
     out
     {
         assert( state == State.Open );
@@ -757,6 +749,10 @@ private:
     }
     body
     {
+        verify( state == State.Init );
+        verify( headers is null );
+        verify( cd_data is null );
+
         //Stderr.formatln("ZipReader.read_cd()");
 
         // First, we need to locate the end of cd record, so that we know
@@ -796,7 +792,7 @@ private:
             }
 
             auto used = header.map(cd_data[4..$]);
-            assert( used <= (size_t.max-4) );
+            verify( used <= (size_t.max-4) );
             cd_data = cd_data[4+cast(size_t)used..$];
 
             // Update offset for next record
@@ -825,19 +821,16 @@ private:
      * find it, we'll throw an exception.
      */
     EndOfCDRecord read_eocd_record()
-    in
     {
-        assert( state == State.Init );
-    }
-    body
-    {
+        verify( state == State.Init );
+
         //Stderr.formatln("read_eocd_record()");
 
         // Signature + record + max. comment length
         const max_chunk_len = 4 + EndOfCDRecord.Data.sizeof + ushort.max;
 
         auto file_len = seeker.seek(0, seeker.Anchor.End);
-        assert( file_len <= size_t.max );
+        verify( file_len <= size_t.max );
 
         // We're going to need min(max_chunk_len, file_len) bytes.
         size_t chunk_len = max_chunk_len;
@@ -994,13 +987,10 @@ class ZipBlockWriter : ZipWriter
      * IConduit.Seek interface.
      */
     this(OutputStream output)
-    in
     {
-        assert( output !is null );
-        assert( (cast(IConduit.Seek) output.conduit) !is null );
-    }
-    body
-    {
+        verify( output !is null );
+        verify( (cast(IConduit.Seek) output.conduit) !is null );
+
         this.output = output;
         this.seeker = output; // cast(IConduit.Seek) output;
 
@@ -1113,9 +1103,9 @@ private:
             ZipException.cdtoolong;
 
         {
-            assert( entries.length < ushort.max );
-            assert( cd_len < uint.max );
-            assert( cd_pos < uint.max );
+            verify( entries.length < ushort.max );
+            verify( cd_len < uint.max );
+            verify( cd_pos < uint.max );
 
             EndOfCDRecord eocdr;
             eocdr.data.central_directory_entries_on_this_disk =
@@ -1188,13 +1178,13 @@ private:
             // Count number of bytes coming in from the source file
             scope in_counter = new CounterInput(in_chain);
             in_chain = in_counter;
-            assert( in_counter.count <= typeof(uncompressed_size).max );
+            verify( in_counter.count <= typeof(uncompressed_size).max );
             scope(success) uncompressed_size = cast(uint) in_counter.count;
 
             // Count the number of bytes going out to the archive
             scope out_counter = new CounterOutput(out_chain);
             out_chain = out_counter;
-            assert( out_counter.count <= typeof(compressed_size).max );
+            verify( out_counter.count <= typeof(compressed_size).max );
             scope(success) compressed_size = cast(uint) out_counter.count;
 
             // Add crc
@@ -1364,7 +1354,7 @@ private:
         header.put(output);
 
         // Save the header
-        assert( header_pos <= int.max );
+        verify( header_pos <= int.max );
         Entry entry;
         entry.data.fromLocal(header.data);
         entry.filename = header.file_name;
@@ -1803,13 +1793,10 @@ private:
 class ZipEntryVerifier : InputStream
 {
     this(ZipEntry entry, InputStream source)
-    in
     {
-        assert( entry !is null );
-        assert( source !is null );
-    }
-    body
-    {
+        verify( entry !is null );
+        verify( source !is null );
+
         this.entry = entry;
         this.digest = new Crc32;
         this.source = new DigestInput(source, digest);
@@ -2314,12 +2301,9 @@ class CounterInput : InputStream
 {
     ///
     this(InputStream input)
-    in
     {
-        assert( input !is null );
-    }
-    body
-    {
+        verify( input !is null );
+
         this.source = input;
     }
 
@@ -2376,12 +2360,8 @@ class CounterOutput : OutputStream
 {
     ///
     this(OutputStream output)
-    in
     {
-        assert( output !is null );
-    }
-    body
-    {
+        verify( output !is null );
         this.sink = output;
     }
 
@@ -2465,15 +2445,12 @@ class SliceSeekInputStream : InputStream
      * starting at position begin, for length bytes.
      */
     this(InputStream source, long begin, long length)
-    in
     {
-        assert( source !is null );
-        assert( (cast(IConduit.Seek) source.conduit) !is null );
-        assert( begin >= 0 );
-        assert( length >= 0 );
-    }
-    body
-    {
+        verify( source !is null );
+        verify( (cast(IConduit.Seek) source.conduit) !is null );
+        verify( begin >= 0 );
+        verify( length >= 0 );
+
         this.source = source;
         this.seeker = source; //cast(IConduit.Seek) source;
         this.begin = begin;
@@ -2583,13 +2560,10 @@ class SliceInputStream : InputStream
      * starting at the current seek position for length bytes.
      */
     this(InputStream source, long length)
-    in
     {
-        assert( source !is null );
-        assert( length >= 0 );
-    }
-    body
-    {
+        verify( source !is null );
+        verify( length >= 0 );
+
         this.source = source;
         this._length = length;
     }
@@ -2672,14 +2646,11 @@ class SliceSeekOutputStream : OutputStream
      * starting at position begin, for length bytes.
      */
     this(OutputStream source, long begin, long length)
-    in
     {
-        assert( (cast(IConduit.Seek) source.conduit) !is null );
-        assert( begin >= 0 );
-        assert( length >= 0 );
-    }
-    body
-    {
+        verify( (cast(IConduit.Seek) source.conduit) !is null );
+        verify( begin >= 0 );
+        verify( length >= 0 );
+
         this.source = source;
         this.seeker = source; //cast(IConduit.Seek) source;
         this.begin = begin;
@@ -2811,13 +2782,10 @@ class WrapSeekInputStream : InputStream
      * Create a new wrap stream from the given source.
      */
     this(InputStream source)
-    in
     {
-        assert( source !is null );
-        assert( (cast(IConduit.Seek) source.conduit) !is null );
-    }
-    body
-    {
+        verify( source !is null );
+        verify( (cast(IConduit.Seek) source.conduit) !is null );
+
         this.source = source;
         this.seeker = source; //cast(IConduit.Seek) source;
         this._position = seeker.seek(0, Anchor.Current);
@@ -2825,12 +2793,9 @@ class WrapSeekInputStream : InputStream
 
     /// ditto
     this(InputStream source, long position)
-    in
     {
-        assert( position >= 0 );
-    }
-    body
-    {
+        verify( position >= 0 );
+
         this(source);
         this._position = position;
     }
@@ -2908,12 +2873,9 @@ class WrapSeekOutputStream : OutputStream
      * Create a new wrap stream from the given source.
      */
     this(OutputStream source)
-    in
     {
-        assert( (cast(IConduit.Seek) source.conduit) !is null );
-    }
-    body
-    {
+        verify( (cast(IConduit.Seek) source.conduit) !is null );
+
         this.source = source;
         this.seeker = source; //cast(IConduit.Seek) source;
         this._position = seeker.seek(0, Anchor.Current);
@@ -2921,12 +2883,8 @@ class WrapSeekOutputStream : OutputStream
 
     /// ditto
     this(OutputStream source, long position)
-    in
     {
-        assert( position >= 0 );
-    }
-    body
-    {
+        verify( position >= 0 );
         this(source);
         this._position = position;
     }

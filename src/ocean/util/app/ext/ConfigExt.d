@@ -29,6 +29,7 @@ import ocean.text.Arguments;
 import ocean.io.Stdout : Stderr;
 
 import ocean.transition;
+import ocean.core.Verify;
 import ocean.text.Util : join, locate, locatePrior, trim;
 import ocean.core.ExceptionDefinitions : IOException;
 
@@ -208,7 +209,7 @@ class ConfigExt : IApplicationExtension, IArgumentsExtExtension
         foreach (opt; args("override-config").assigned)
         {
             auto error = this.parseOverride(opt, category, key, value);
-            assert (error is null,
+            verify (error is null,
                     "Unexpected error while processing overrides, errors " ~
                     "should have been caught by the validateArgs() method");
 

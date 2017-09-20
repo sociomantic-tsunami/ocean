@@ -21,6 +21,8 @@ module ocean.util.digest.Digest;
 
 import ocean.transition;
 
+import ocean.core.Verify;
+
 import core.stdc.stdlib : alloca;
 
 version(UnitTest) import ocean.core.Test;
@@ -136,7 +138,7 @@ abstract class Digest
                     ubyte[] buf = (cast(ubyte *) alloca(ds))[0..ds];
                 }
                 ubyte[] ret = binaryDigest(buf);
-                assert(ret.ptr == buf.ptr);
+                verify(ret.ptr == buf.ptr);
 
                 static istring hexdigits = "0123456789abcdef";
                 int i = 0;

@@ -45,6 +45,7 @@ import ocean.util.app.ext.model.ILogExtExtension;
 import ocean.util.app.ext.model.ISignalExtExtension;
 
 import ocean.transition;
+import ocean.core.Verify;
 
 /// ditto
 public abstract class DaemonApp : Application,
@@ -398,10 +399,10 @@ public abstract class DaemonApp : Application,
 
     public void startEventHandling ( EpollSelectDispatcher epoll )
     {
-        assert(epoll !is null);
-        assert(this.epoll is null,
+        verify(epoll !is null);
+        verify(this.epoll is null,
             "Either pass epoll to the ctor or startEventHandling, not both");
-        assert(this.timer_ext is null);
+        verify(this.timer_ext is null);
 
         this.epoll = epoll;
 

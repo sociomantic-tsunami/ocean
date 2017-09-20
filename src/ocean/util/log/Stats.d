@@ -40,6 +40,8 @@ module ocean.util.log.Stats;
 
 
 import ocean.transition;
+import ocean.core.Verify;
+import ocean.core.Verify;
 import ocean.core.Enforce;
 import ocean.core.ExceptionDefinitions;
 import ocean.core.Traits : FieldName;
@@ -345,17 +347,14 @@ public class StatsLog
     public this ( Config config,
         Appender delegate ( istring file, Appender.Layout layout ) new_appender,
         istring name = "Stats" )
-    in
     {
         if (config.socket_path.length)
         {
-            assert(config.hostname.length);
-            assert(config.app_name.length);
-            assert(config.default_type.length);
+            verify(config.hostname.length != 0);
+            verify(config.app_name.length != 0);
+            verify(config.default_type.length != 0);
         }
-    }
-    body
-    {
+
         // logger via which error messages can be emitted
         this.error_log = Log.lookup("ocean.util.log.Stats.StatsLog");
 
@@ -423,16 +422,13 @@ public class StatsLog
 
     public typeof(this) addObject (istring category, T)
         (cstring instance, T values)
-    in
     {
         static assert (is(T == struct) || is(T == class),
                        "Parameter to add must be a struct or a class");
         static assert(category.length,
                       "Template parameter 'category' should not be null");
-        assert (instance.length, "Object name should not be null");
-    }
-    body
-    {
+        verify (instance.length != 0, "Object name should not be null");
+
         this.format!(category)(values, instance);
         if (this.collectd !is null)
             this.sendToCollectd!(category)(values, instance);
@@ -511,13 +507,13 @@ public class StatsLog
 
             static if (category.length)
             {
-                assert(instance.length);
+                verify(instance.length != 0);
                 this.layout(category, '/', instance, '/', value_name, ':',
                     fmtd_value);
             }
             else
             {
-                assert(!instance.length);
+                verify(!instance.length);
                 this.layout(value_name, ':', fmtd_value);
             }
 
@@ -556,14 +552,11 @@ public class StatsLog
 
     private void sendToCollectd (istring category, T) (ref T values,
                                                        cstring instance)
-    in
     {
-        assert(this.collectd !is null);
+        verify(this.collectd !is null);
         static if (!category.length)
-            assert(!instance.length);
-    }
-    body
-    {
+            verify(!instance.length);
+
         // It's a value type (struct), do a copy
         auto id = this.identifier;
         static if (category.length)

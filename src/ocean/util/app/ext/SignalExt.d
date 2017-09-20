@@ -92,6 +92,7 @@ module ocean.util.app.ext.SignalExt;
 
 
 import ocean.transition;
+import ocean.core.Verify;
 
 import ocean.util.app.model.IApplicationExtension;
 import ocean.util.app.model.ExtensibleClassMixin;
@@ -409,7 +410,7 @@ public class SignalExt : IApplicationExtension
         {
             this.old_signals[signal] = sigaction_t.init;
             sigaction_t* old_handler = signal in this.old_signals;
-            assert(old_handler !is null);
+            verify(old_handler !is null);
 
             if (sigaction(signal, &sa, old_handler) == -1)
             {

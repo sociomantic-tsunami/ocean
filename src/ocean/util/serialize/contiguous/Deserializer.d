@@ -18,6 +18,7 @@ module ocean.util.serialize.contiguous.Deserializer;
 
 
 import ocean.transition;
+import ocean.core.Verify;
 
 import ocean.util.serialize.contiguous.Contiguous;
 
@@ -274,7 +275,7 @@ struct Deserializer
             enableStomping(src);
         }
 
-        assert(src.length >= data_len);
+        verify(src.length >= data_len);
 
         This.handleBranching!(S)(
             src[0 .. data_len],
@@ -362,7 +363,7 @@ struct Deserializer
         dst.data[0 .. end_copy] = src[0 .. end_copy];
         (cast(ubyte[]) dst.data)[end_copy .. $] = 0;
 
-        assert(dst.data.length >= data_len);
+        verify(dst.data.length >= data_len);
 
         /*
          * Adjust the dynamic array instances in dst to slice the data in the
@@ -830,10 +831,6 @@ struct Deserializer
 
     private static size_t sliceArrays ( S ) ( ref S s, void[] data,
         ref void[] slices_buffer )
-    in
-    {
-        assert(slices_buffer !is null);
-    }
     out
     {
         debug (DeserializationTrace)
@@ -845,6 +842,8 @@ struct Deserializer
     }
     body
     {
+        verify(slices_buffer !is null);
+
         debug (DeserializationTrace)
         {
             nesting++;
@@ -882,7 +881,7 @@ struct Deserializer
                         static assert (is(Element == void));
                         auto orig_length = field.length;
                         deserialize!(T)(*pfield);
-                        assert (orig_length == field.length);
+                        verify (orig_length == field.length);
                     }
 
                     pos += increment;
@@ -917,10 +916,6 @@ struct Deserializer
 
     private static size_t sliceArray ( T ) ( out T[] array, void[] data,
         ref void[] slices_buffer )
-    in
-    {
-        assert (slices_buffer !is null);
-    }
     out(size)
     {
         debug (DeserializationTrace)
@@ -932,6 +927,8 @@ struct Deserializer
     }
     body
     {
+        verify (slices_buffer !is null);
+
         debug (DeserializationTrace)
         {
             nesting++;
@@ -987,7 +984,7 @@ struct Deserializer
             array = cast (T[]) data[len.sizeof .. pos];
         }
 
-        assert (array.length == len);
+        verify (array.length == len);
 
         static if (!hasIndirections!(T))
         {
@@ -1029,10 +1026,6 @@ struct Deserializer
 
     private static size_t sliceSubArrays ( QualT )
                                   ( QualT[] array, void[] data, ref void[] slices_buffer )
-    in
-    {
-        assert (slices_buffer !is null);
-    }
     out(size)
     {
         debug (DeserializationTrace)
@@ -1045,6 +1038,8 @@ struct Deserializer
     }
     body
     {
+        verify (slices_buffer !is null);
+
         debug (DeserializationTrace)
         {
             nesting++;

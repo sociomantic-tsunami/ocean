@@ -17,6 +17,7 @@ module ocean.util.log.AppendSysLog;
 
 
 import ocean.transition;
+import ocean.core.Verify;
 import ocean.util.log.Appender;
 import ocean.util.log.Event;
 import ocean.util.log.model.ILogger;
@@ -222,12 +223,9 @@ public class AppendSysLog : Appender
     ***************************************************************************/
 
     private int priority ( LogEvent event )
-    in
     {
-        assert(event.level != event.level.None);
-    }
-    body
-    {
+        verify(event.level != event.level.None);
+
         with (ILogger.Level) switch (event.level)
         {
             case Trace:

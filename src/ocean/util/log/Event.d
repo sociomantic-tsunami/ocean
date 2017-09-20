@@ -24,6 +24,7 @@
 module ocean.util.log.Event;
 
 import ocean.transition;
+import ocean.core.Verify;
 import ocean.time.Clock;
 import ocean.util.log.model.ILogger;
 
@@ -98,7 +99,7 @@ public struct LogEvent
     /// Convert a time value (in milliseconds) to ascii
     static mstring toMilli (mstring s, TimeSpan time)
     {
-        assert (s.length > 0);
+        verify (s.length > 0);
         long ms = time.millis;
 
         auto len = s.length;

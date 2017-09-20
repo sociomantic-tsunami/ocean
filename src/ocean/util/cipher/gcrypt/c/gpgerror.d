@@ -29,6 +29,7 @@ module ocean.util.cipher.gcrypt.c.gpgerror;
 public import ocean.util.cipher.gcrypt.c.libversion;
 
 import ocean.transition;
+import ocean.core.Verify;
 
 extern (C):
 
@@ -660,12 +661,9 @@ int gpg_strerror_r(gpg_error_t err, char* buf, size_t buflen);
 import ocean.stdc.string;
 
 extern (D) int gpg_strerror_r(uint err, ref char[] msg)
-in
 {
-    assert(msg.length);
-}
-body
-{
+    verify(msg.length != 0);
+
     scope (exit)
         msg = msg[0 .. strlen(msg.ptr)];
 

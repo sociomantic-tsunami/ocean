@@ -125,6 +125,8 @@ module ocean.util.config.ConfigFiller;
 
 import ocean.transition;
 
+import ocean.core.Verify;
+
 public import ocean.util.config.ConfigParser: ConfigException;
 
 import ocean.core.Traits;
@@ -750,12 +752,9 @@ public bool enable_loose_parsing ( bool state = true )
 
 public T fill ( T, Source = ConfigParser )
               ( cstring group, Source config )
-in
 {
-    assert(config !is null, "ConfigFiller.fill: Cannot use null config");
-}
-body
-{
+    verify(config !is null, "ConfigFiller.fill: Cannot use null config");
+
     T reference;
     return fill(group, reference, config);
 }
@@ -788,12 +787,9 @@ body
 
 public T fill ( T, Source = ConfigParser )
               ( cstring group, ref T reference, Source config )
-in
 {
-    assert(config !is null, "ConfigFiller.fill: Cannot use null config");
-}
-body
-{
+    verify(config !is null, "ConfigFiller.fill: Cannot use null config");
+
     static if (is (T: Object))
     {
         if ( reference is null )
@@ -1015,12 +1011,9 @@ struct ClassIterator ( T, Source = ConfigParser )
 
 public ClassIterator!(T) iterate ( T, Source = ConfigParser )
                                  ( istring root, Source config )
-in
 {
-    assert(config !is null, "ConfigFiller.iterate: Cannot use null config");
-}
-body
-{
+    verify(config !is null, "ConfigFiller.iterate: Cannot use null config");
+
     return ClassIterator!(T, Source)(config, root);
 }
 
@@ -1040,12 +1033,9 @@ body
 
 private void readFieldsImpl ( T, Source )
                           ( cstring group, ref T reference, Source config )
-in
 {
-    assert ( config !is null, "ConfigFiller.readFields: Cannot use null config");
-}
-body
-{
+    verify( config !is null, "ConfigFiller.readFields: Cannot use null config");
+
     foreach ( si, field; reference.tupleof )
     {
         alias BaseType!(typeof(field)) Type;

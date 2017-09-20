@@ -21,6 +21,7 @@
 module ocean.util.log.Appender;
 
 import ocean.transition;
+import ocean.core.Verify;
 import ocean.core.ExceptionDefinitions;
 import ocean.io.model.IConduit;
 import ocean.util.log.Event;
@@ -143,7 +144,7 @@ public class Appender
 
     void layout (Layout how)
     {
-        assert(generic !is null);
+        verify(generic !is null);
         layout_ = how ? how : generic;
     }
 
@@ -222,7 +223,7 @@ public class AppendStream : Appender
     ///Create with the given stream and layout
     this (OutputStream stream, bool flush = false, Appender.Layout how = null)
     {
-        assert (stream);
+        verify (stream !is null);
 
         mask_ = register (name);
         stream_ = stream;

@@ -21,6 +21,8 @@ module ocean.util.digest.MerkleDamgard;
 
 import ocean.transition;
 
+import ocean.core.Verify;
+
 public  import ocean.core.ByteSwap;
 
 public  import ocean.util.digest.Digest;
@@ -302,7 +304,7 @@ abstract package class MerkleDamgard : Digest
 
         static protected final void littleEndian32(ubyte[] input, uint[] output)
         {
-                assert(output.length == input.length/4);
+                verify(output.length == input.length/4);
                 output[] = cast(uint[]) input;
 
                 version (BigEndian)
@@ -324,7 +326,7 @@ abstract package class MerkleDamgard : Digest
 
         static protected final void bigEndian32(ubyte[] input, uint[] output)
         {
-                assert(output.length == input.length/4);
+                verify(output.length == input.length/4);
                 output[] = cast(uint[]) input;
 
                 version(LittleEndian)
@@ -346,7 +348,7 @@ abstract package class MerkleDamgard : Digest
 
         static protected final void littleEndian64(ubyte[] input, ulong[] output)
         {
-                assert(output.length == input.length/8);
+                verify(output.length == input.length/8);
                 output[] = cast(ulong[]) input;
 
                 version (BigEndian)
@@ -367,7 +369,7 @@ abstract package class MerkleDamgard : Digest
 
         static protected final void bigEndian64(ubyte[] input, ulong[] output)
         {
-                assert(output.length == input.length/8);
+                verify(output.length == input.length/8);
                 output[] = cast(ulong[]) input;
 
                 version (LittleEndian)
