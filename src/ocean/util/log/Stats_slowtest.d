@@ -29,7 +29,7 @@ unittest
 
         void test()
         {
-            .test!("==")(this.layout[], `x:10`[]);
+            .test!("==")(this.buffer[], `x:10`[]);
         }
     }
 
@@ -63,7 +63,7 @@ unittest
         void test()
         {
             .test!("==")(
-                this.layout[],
+                this.buffer[],
                 `workers_hired:420 workers_injured:0`
                 ~ ` production_line/samsung/phone_built:10000`
                 ~ ` production_line/samsung/laptop_built:200`
