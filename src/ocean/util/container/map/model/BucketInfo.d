@@ -16,11 +16,6 @@
 
 module ocean.util.container.map.model.BucketInfo;
 
-/*******************************************************************************
-
-    Imports
-
-*******************************************************************************/
 
 import ocean.transition;
 debug (BucketInfo) import ocean.io.Stdout;

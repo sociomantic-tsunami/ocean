@@ -16,11 +16,6 @@
 
 module ocean.util.container.map.model.BucketElementGCAllocator;
 
-/*******************************************************************************
-
-    Imports
-
-*******************************************************************************/
 
 import ocean.util.container.map.model.IBucketElementGCAllocator;
 

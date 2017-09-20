@@ -15,11 +15,6 @@
 
 module ocean.net.http.consts.HttpVersion;
 
-/******************************************************************************
-
-    Imports
-
- ******************************************************************************/
 
 import ocean.transition;
 import core.stdc.ctype: isdigit;

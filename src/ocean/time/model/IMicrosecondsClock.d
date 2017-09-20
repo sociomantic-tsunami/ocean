@@ -17,11 +17,6 @@ module ocean.time.model.IMicrosecondsClock;
 
 
 
-/*******************************************************************************
-
-    Imports
-
-*******************************************************************************/
 
 import ocean.stdc.posix.sys.time : timeval;
 import core.stdc.time : tm, time_t;

@@ -42,11 +42,6 @@
 
 module ocean.net.server.unix.UnixConnectionHandler;
 
-/*******************************************************************************
-
-    Imports
-
-*******************************************************************************/
 
 import ocean.net.server.connection.IFiberConnectionHandler;
 

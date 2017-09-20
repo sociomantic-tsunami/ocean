@@ -15,11 +15,6 @@
 
 module ocean.io.compress.Lzo;
 
-/******************************************************************************
-
-    Imports
-
- ******************************************************************************/
 
 import ocean.io.compress.lzo.c.lzo1x: lzo1x_1_compress,
                                       lzo1x_decompress, lzo1x_decompress_safe,

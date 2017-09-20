@@ -36,11 +36,6 @@
 module ocean.util.container.ebtree.c.eb128tree;
 
 
-/*******************************************************************************
-
-    Imports
-
-*******************************************************************************/
 
 import ocean.transition;
 import ocean.util.container.ebtree.c.ebtree: eb_root, eb_node;

@@ -20,11 +20,6 @@
 
 module ocean.net.http.cookie.HttpCookieParser;
 
-/******************************************************************************
-
-    Imports
-
- ******************************************************************************/
 
 import ocean.transition;
 import ocean.net.util.QueryParams: QueryParamSet;

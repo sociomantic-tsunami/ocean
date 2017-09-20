@@ -28,11 +28,6 @@
 
 module ocean.io.console.readline.History;
 
-/*******************************************************************************
-
-    Imports
-
-*******************************************************************************/
 
 import C = ocean.io.console.readline.c.history;
 import ocean.text.util.StringC;

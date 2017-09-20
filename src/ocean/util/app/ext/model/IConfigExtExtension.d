@@ -17,11 +17,6 @@ module ocean.util.app.ext.model.IConfigExtExtension;
 
 
 
-/*******************************************************************************
-
-    Imports
-
-*******************************************************************************/
 
 public import ocean.util.app.model.IApplication;
 public import ocean.util.config.ConfigParser : ConfigParser;

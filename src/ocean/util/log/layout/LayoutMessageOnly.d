@@ -18,11 +18,6 @@ module ocean.util.log.layout.LayoutMessageOnly;
 
 
 
-/*******************************************************************************
-
-    Imports
-
-*******************************************************************************/
 
 import ocean.transition;
 import ocean.util.log.Appender;

@@ -16,11 +16,6 @@
 
 module ocean.util.container.cache.CachingStructLoader_test;
 
-/******************************************************************************
-
-    Imports
-
-******************************************************************************/
 
 import ocean.util.container.cache.CachingStructLoader,
        ocean.util.container.cache.ExpiringCache;

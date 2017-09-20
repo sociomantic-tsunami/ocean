@@ -34,11 +34,6 @@
 
 module ocean.util.container.map.model.Bucket;
 
-/*******************************************************************************
-
-    Imports
-
-*******************************************************************************/
 
 import ocean.core.Traits: isStaticArrayType;
 

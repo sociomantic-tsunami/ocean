@@ -15,11 +15,6 @@
 
 module ocean.net.server.unix.UnixListener;
 
-/*******************************************************************************
-
-    Imports
-
-*******************************************************************************/
 
 import ocean.net.server.unix.UnixConnectionHandler;
 import ocean.net.server.SelectListener;

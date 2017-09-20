@@ -17,11 +17,6 @@ module ocean.util.container.queue.model.IQueue;
 
 
 
-/*******************************************************************************
-
-    Imports
-
-*******************************************************************************/
 
 import ocean.util.container.queue.model.IQueueInfo;
 

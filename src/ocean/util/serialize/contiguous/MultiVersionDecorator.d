@@ -17,11 +17,6 @@
 
 module ocean.util.serialize.contiguous.MultiVersionDecorator;
 
-/*******************************************************************************
-
-    Imports
-
-*******************************************************************************/
 
 import ocean.transition;
 

@@ -20,11 +20,6 @@
 
 module ocean.task.extensions.SelectFiberSupport;
 
-/******************************************************************************
-
-    Imports
-
-******************************************************************************/
 
 import ocean.task.Task;
 import ocean.task.Scheduler;

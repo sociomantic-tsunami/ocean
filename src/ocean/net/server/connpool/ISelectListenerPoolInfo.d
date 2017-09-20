@@ -18,11 +18,6 @@ module ocean.net.server.connpool.ISelectListenerPoolInfo;
 
 
 
-/*******************************************************************************
-
-    Imports
-
-*******************************************************************************/
 
 import ocean.net.server.connection.IConnectionHandlerInfo;
 

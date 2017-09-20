@@ -31,11 +31,6 @@
 module ocean.util.container.pool.FreeList;
 
 
-/*******************************************************************************
-
-    Imports
-
-*******************************************************************************/
 
 import ocean.util.container.pool.model.IFreeList;
 

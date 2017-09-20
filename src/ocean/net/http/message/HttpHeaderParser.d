@@ -21,11 +21,6 @@
 
 module ocean.net.http.message.HttpHeaderParser;
 
-/******************************************************************************
-
-    Imports
-
- ******************************************************************************/
 
 import ocean.transition;
 import ocean.core.Enforce;

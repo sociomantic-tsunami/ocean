@@ -18,11 +18,6 @@
 
 module ocean.util.cipher.gcrypt.PBKDF2;
 
-/*******************************************************************************
-
-    Imports
-
-*******************************************************************************/
 
 import ocean.util.cipher.gcrypt.core.KeyDerivationCore;
 

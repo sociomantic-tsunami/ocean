@@ -17,11 +17,6 @@
 
 module ocean.io.select.client.TimerEvent;
 
-/*******************************************************************************
-
-    Imports
-
-*******************************************************************************/
 
 import ocean.io.select.client.model.ISelectClient: ISelectClient;
 

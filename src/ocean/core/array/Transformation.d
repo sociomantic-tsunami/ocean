@@ -21,11 +21,6 @@
 
 module ocean.core.array.Transformation;
 
-/*******************************************************************************
-
-    Imports
-
-*******************************************************************************/
 
 import ocean.transition;
 import ocean.core.Traits;

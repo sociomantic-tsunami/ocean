@@ -18,11 +18,6 @@ module ocean.io.select.selector.RegisteredClients;
 
 
 
-/*******************************************************************************
-
-    Imports
-
-*******************************************************************************/
 
 import ocean.io.select.client.model.ISelectClient;
 

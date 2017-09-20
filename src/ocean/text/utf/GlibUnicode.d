@@ -19,11 +19,6 @@
 
 module ocean.text.utf.GlibUnicode;
 
-/******************************************************************************
-
-    Imports
-
- ******************************************************************************/
 
 import ocean.text.utf.c.glib_unicode: g_unichar_to_utf8,
                                       g_unichar_tolower,

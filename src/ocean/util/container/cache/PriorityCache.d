@@ -92,11 +92,6 @@
 
 module ocean.util.container.cache.PriorityCache;
 
-/*******************************************************************************
-
-    Imports
-
-*******************************************************************************/
 
 import ocean.util.container.cache.model.ICacheInfo;
 

@@ -16,11 +16,6 @@
 
 module ocean.net.util.UrlEncoder;
 
-/**************************************************************************
-
-    Imports
-
- **************************************************************************/
 
 import ocean.transition;
 import core.stdc.ctype: isgraph;

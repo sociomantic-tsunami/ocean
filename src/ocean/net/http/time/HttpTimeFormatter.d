@@ -19,11 +19,6 @@
 
 module ocean.net.http.time.HttpTimeFormatter;
 
-/******************************************************************************
-
-    Imports
-
- ******************************************************************************/
 
 import ocean.transition;
 import core.stdc.time:       time_t, tm, time;

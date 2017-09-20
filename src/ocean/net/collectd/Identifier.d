@@ -29,11 +29,6 @@
 module ocean.net.collectd.Identifier;
 
 
-/*******************************************************************************
-
-    Imports
-
-*******************************************************************************/
 
 import ocean.transition;
 import ocean.core.ExceptionDefinitions; // IllegalArgumentException

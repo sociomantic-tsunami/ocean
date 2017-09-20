@@ -106,11 +106,6 @@
 
 module ocean.util.container.map.model.BucketElementMallocAllocator;
 
-/*******************************************************************************
-
-    Imports
-
-*******************************************************************************/
 
 import ocean.util.container.map.model.IAllocator;
 

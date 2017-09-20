@@ -25,11 +25,6 @@
 
 module ocean.util.container.MallocArray;
 
-/*******************************************************************************
-
-    Imports.
-
-*******************************************************************************/
 
 import ocean.core.ExceptionDefinitions; // onOutOfMemoryError;
 import core.stdc.stdlib; // malloc, free, realloc;

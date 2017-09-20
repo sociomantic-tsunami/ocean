@@ -20,11 +20,6 @@
 
 module ocean.io.device.MemoryDevice;
 
-/*******************************************************************************
-
-    Imports
-
-*******************************************************************************/
 
 import ocean.transition;
 import ocean.io.model.IConduit;

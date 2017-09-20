@@ -15,11 +15,6 @@
 
 module ocean.util.container.cache.model.ICache;
 
-/*******************************************************************************
-
-    Imports
-
-*******************************************************************************/
 
 import ocean.util.container.cache.model.ICacheInfo;
 

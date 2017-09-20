@@ -17,11 +17,6 @@ module ocean.net.server.connection.IConnectionHandler;
 
 
 
-/*******************************************************************************
-
-    Imports
-
-*******************************************************************************/
 
 import ocean.io.select.EpollSelectDispatcher;
 

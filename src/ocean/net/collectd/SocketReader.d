@@ -20,11 +20,6 @@
 module ocean.net.collectd.SocketReader;
 
 
-/*******************************************************************************
-
-    Imports
-
-*******************************************************************************/
 
 import ocean.transition;
 import ocean.stdc.posix.sys.types; // ssize_t

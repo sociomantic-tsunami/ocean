@@ -59,11 +59,6 @@ module ocean.util.container.FixedKeyMap;
 
 
 
-/*******************************************************************************
-
-    Imports
-
-*******************************************************************************/
 
 import ocean.transition;
 import ocean.core.Array;

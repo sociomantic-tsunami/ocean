@@ -16,11 +16,6 @@
 module ocean.util.app.ext.ConfigExt;
 
 
-/*******************************************************************************
-
-    Imports
-
-*******************************************************************************/
 
 import ocean.util.app.model.ExtensibleClassMixin;
 import ocean.util.app.model.IApplicationExtension;

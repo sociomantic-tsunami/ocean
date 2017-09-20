@@ -20,11 +20,6 @@
 module ocean.util.container.HashRangeMap;
 
 
-/*******************************************************************************
-
-    Imports
-
-*******************************************************************************/
 
 import ocean.core.Enforce;
 import ocean.math.Range;

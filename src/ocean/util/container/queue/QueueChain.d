@@ -28,11 +28,6 @@ module ocean.util.container.queue.QueueChain;
 
 
 
-/*******************************************************************************
-
-    Imports
-
-*******************************************************************************/
 
 import ocean.util.container.queue.model.IByteQueue;
 

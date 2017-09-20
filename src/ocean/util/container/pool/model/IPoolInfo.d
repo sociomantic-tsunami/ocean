@@ -18,11 +18,6 @@ module ocean.util.container.pool.model.IPoolInfo;
 
 
 
-/*******************************************************************************
-
-    Imports
-
-*******************************************************************************/
 
 import ocean.util.container.pool.model.IFreeList;
 import ocean.util.container.pool.model.ILimitable;

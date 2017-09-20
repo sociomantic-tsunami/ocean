@@ -40,11 +40,6 @@ module ocean.util.container.pool.ObjectPool;
 
 
 
-/*******************************************************************************
-
-    Imports
-
-*******************************************************************************/
 
 import ocean.util.container.pool.model.IAggregatePool;
 import ocean.util.container.pool.model.IResettable;

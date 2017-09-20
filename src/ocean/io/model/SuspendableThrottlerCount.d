@@ -26,11 +26,6 @@
 module ocean.io.model.SuspendableThrottlerCount;
 
 
-/*******************************************************************************
-
-    Imports
-
-*******************************************************************************/
 
 import ocean.transition;
 import ocean.core.Verify;

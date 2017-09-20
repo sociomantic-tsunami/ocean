@@ -21,11 +21,6 @@
 
 module ocean.net.util.UrlDecoder;
 
-/******************************************************************************
-
-    Imports and library function declarations
-
- ******************************************************************************/
 
 import ocean.transition;
 

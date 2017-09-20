@@ -18,11 +18,6 @@
 
 module ocean.io.select.protocol.fiber.model.IFiberSelectProtocol;
 
-/******************************************************************************
-
-    Imports
-
- ******************************************************************************/
 
 import ocean.core.MessageFiber;
 

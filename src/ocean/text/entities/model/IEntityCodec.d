@@ -21,11 +21,6 @@ module ocean.text.entities.model.IEntityCodec;
 
 
 
-/*******************************************************************************
-
-    Imports
-
-*******************************************************************************/
 
 import ocean.text.entities.model.IEntitySet;
 

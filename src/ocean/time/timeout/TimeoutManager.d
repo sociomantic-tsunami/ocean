@@ -36,11 +36,6 @@
 
 module ocean.time.timeout.TimeoutManager;
 
-/*******************************************************************************
-
-    Imports
-
-*******************************************************************************/
 
 import ocean.time.timeout.model.ITimeoutManager,
        ocean.time.timeout.model.ITimeoutClient,

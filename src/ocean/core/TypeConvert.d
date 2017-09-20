@@ -16,11 +16,6 @@
 module ocean.core.TypeConvert;
 
 
-/*******************************************************************************
-
-    Imports
-
-*******************************************************************************/
 
 import ocean.transition;
 version ( UnitTest ) import ocean.core.Test;

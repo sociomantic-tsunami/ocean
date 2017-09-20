@@ -86,11 +86,6 @@
 
 module ocean.util.container.queue.NotifyingQueue;
 
-/*******************************************************************************
-
-    General Private Imports
-
-*******************************************************************************/
 
 import ocean.util.container.queue.FlexibleRingQueue;
 

@@ -17,11 +17,6 @@
 
 module ocean.util.container.cache.model.containers.TimeToIndex;
 
-/*******************************************************************************
-
-    Imports
-
-*******************************************************************************/
 
 import ocean.util.container.ebtree.EBTree128;
 import ocean.util.container.ebtree.nodepool.NodePool;
