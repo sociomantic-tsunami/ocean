@@ -18,11 +18,6 @@
 
 module ocean.util.container.map.model.IBucketElementGCAllocator;
 
-/*******************************************************************************
-
-    Imports
-
-*******************************************************************************/
 
 import ocean.util.container.map.model.IAllocator;
 

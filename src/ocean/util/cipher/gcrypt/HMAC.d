@@ -24,11 +24,6 @@
 
 module ocean.util.cipher.gcrypt.HMAC;
 
-/*******************************************************************************
-
-    Imports
-
-*******************************************************************************/
 
 import ocean.util.cipher.gcrypt.core.MessageDigestCore;
 import ocean.transition;

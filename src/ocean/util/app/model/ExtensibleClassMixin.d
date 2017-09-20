@@ -15,21 +15,6 @@
 
 module ocean.util.app.model.ExtensibleClassMixin;
 
-
-
-/*******************************************************************************
-
-    Imports
-
-    Do not import stuff that's used inside the mixin implementation, see the
-    comment in ExtensibleClassMixin for more details.
-
-*******************************************************************************/
-
-// TODO: import ocean.util.app.model.IExtension;
-
-
-
 /*******************************************************************************
 
     Mixin for classes that support extensions.

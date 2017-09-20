@@ -25,11 +25,6 @@
 module ocean.time.timeout.model.IExpiryRegistration;
 
 
-/*******************************************************************************
-
-    Imports
-
-*******************************************************************************/
 
 import ocean.transition;
 import ocean.time.timeout.model.ITimeoutClient;

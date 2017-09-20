@@ -21,11 +21,6 @@
 
 module ocean.util.container.cache.model.containers.ArrayPool;
 
-/*******************************************************************************
-
-    Imports
-
-*******************************************************************************/
 
 import core.stdc.stdlib: malloc, free;
 

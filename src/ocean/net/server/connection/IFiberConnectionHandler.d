@@ -16,11 +16,6 @@
 
 module ocean.net.server.connection.IFiberConnectionHandler;
 
-/*******************************************************************************
-
-    Imports
-
-*******************************************************************************/
 
 import ocean.io.select.protocol.fiber.model.IFiberSelectProtocol,
        ocean.io.select.protocol.fiber.FiberSelectReader,

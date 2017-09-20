@@ -19,11 +19,6 @@ module ocean.util.app.ext.model.ISignalExtExtension;
 
 
 
-/*******************************************************************************
-
-    Imports
-
-*******************************************************************************/
 
 public import ocean.util.app.model.IApplication;
 

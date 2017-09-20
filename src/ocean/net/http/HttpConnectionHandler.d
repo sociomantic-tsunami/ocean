@@ -21,11 +21,6 @@
 
 module ocean.net.http.HttpConnectionHandler;
 
-/******************************************************************************
-
-    Imports
-
- ******************************************************************************/
 
 import ocean.transition;
 import ocean.net.http.HttpRequest,

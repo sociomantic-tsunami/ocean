@@ -21,11 +21,6 @@
 
 module ocean.util.cipher.gcrypt.core.KeyDerivationCore;
 
-/*******************************************************************************
-
-    Imports
-
-*******************************************************************************/
 
 import ocean.transition;
 import ocean.util.cipher.gcrypt.c.kdf;

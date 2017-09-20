@@ -15,11 +15,6 @@
 
 module ocean.util.log.AppendSysLog;
 
-/*******************************************************************************
-
-    Imports
-
-*******************************************************************************/
 
 import ocean.transition;
 import ocean.util.log.Appender;

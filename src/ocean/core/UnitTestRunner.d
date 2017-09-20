@@ -50,11 +50,6 @@ module ocean.core.UnitTestRunner;
 
 import ocean.transition;
 
-/*******************************************************************************
-
-    Imports
-
-*******************************************************************************/
 
 import ocean.stdc.string: strdup, strlen, strncmp;
 import core.sys.posix.unistd: unlink;

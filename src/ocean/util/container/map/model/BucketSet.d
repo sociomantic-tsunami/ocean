@@ -36,11 +36,6 @@
 
 module ocean.util.container.map.model.BucketSet;
 
-/*******************************************************************************
-
-    Imports
-
-*******************************************************************************/
 
 import ocean.util.container.map.model.Bucket,
        ocean.util.container.map.model.BucketInfo,

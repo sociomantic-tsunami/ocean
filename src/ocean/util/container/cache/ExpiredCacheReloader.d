@@ -17,11 +17,6 @@
 
 module ocean.util.container.cache.ExpiredCacheReloader;
 
-/*******************************************************************************
-
-    Imports
-
-*******************************************************************************/
 
 import ocean.util.container.cache.ExpiringLRUCache,
        ocean.util.container.cache.model.IExpiringCacheInfo;

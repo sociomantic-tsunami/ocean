@@ -37,11 +37,6 @@
 
 module ocean.io.console.readline.Readline;
 
-/*******************************************************************************
-
-    Imports
-
-*******************************************************************************/
 
 import C = ocean.io.console.readline.c.readline;
 import ocean.core.Array : copy;

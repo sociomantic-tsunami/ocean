@@ -26,11 +26,6 @@
 module ocean.util.cipher.gcrypt.core.Gcrypt;
 
 
-/*******************************************************************************
-
-    Imports
-
-*******************************************************************************/
 
 import ocean.util.cipher.gcrypt.c.gcrypt;
 import ocean.transition;

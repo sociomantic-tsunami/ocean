@@ -21,11 +21,6 @@
 
 module ocean.net.http.cookie.CookiesHttpResponse;
 
-/******************************************************************************
-
-    Imports
-
- ******************************************************************************/
 
 import ocean.net.http.HttpResponse;
 import ocean.net.http.cookie.HttpCookieGenerator;

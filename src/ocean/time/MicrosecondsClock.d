@@ -15,11 +15,6 @@
 
 module ocean.time.MicrosecondsClock;
 
-/******************************************************************************
-
-    Imports
-
- ******************************************************************************/
 
 import ocean.time.Time;
 import ocean.stdc.posix.sys.time: timeval, gettimeofday;

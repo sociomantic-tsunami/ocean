@@ -17,11 +17,6 @@ module ocean.net.server.connpool.SelectListenerPool;
 
 
 
-/*******************************************************************************
-
-    Imports
-
-*******************************************************************************/
 
 import ocean.net.server.connpool.ISelectListenerPoolInfo;
 

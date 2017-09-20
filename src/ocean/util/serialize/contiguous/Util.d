@@ -15,11 +15,6 @@
 
 module ocean.util.serialize.contiguous.Util;
 
-/******************************************************************************
-
-    Imports
-
-*******************************************************************************/
 
 import ocean.util.serialize.contiguous.Contiguous;
 import ocean.util.serialize.contiguous.Serializer;

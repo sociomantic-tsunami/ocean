@@ -35,11 +35,6 @@ module ocean.util.container.pool.StructPool;
 
 
 
-/*******************************************************************************
-
-    Imports
-
-*******************************************************************************/
 
 import ocean.util.container.pool.model.IAggregatePool;
 

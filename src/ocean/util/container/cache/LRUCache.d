@@ -199,11 +199,6 @@
 
 module ocean.util.container.cache.LRUCache;
 
-/*******************************************************************************
-
-    Imports
-
-*******************************************************************************/
 
 import ocean.util.container.cache.PriorityCache;
 import core.stdc.time: time_t, time;

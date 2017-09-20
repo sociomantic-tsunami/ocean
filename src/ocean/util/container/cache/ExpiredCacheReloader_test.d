@@ -16,11 +16,6 @@
 
 module ocean.util.container.cache.ExpiredCacheReloader_test;
 
-/******************************************************************************
-
-    Imports
-
-******************************************************************************/
 
 import ocean.util.container.cache.ExpiredCacheReloader;
 import ocean.util.serialize.contiguous.package_;

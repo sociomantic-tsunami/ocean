@@ -24,11 +24,6 @@ module ocean.text.entities.model.IEntitySet;
 
 
 
-/*******************************************************************************
-
-    Imports
-
-*******************************************************************************/
 
 import ocean.text.utf.UtfString : InvalidUnicode, utf_match;
 

@@ -28,11 +28,6 @@
 
 module ocean.util.serialize.Version;
 
-/*******************************************************************************
-
-    Imports
-
-*******************************************************************************/
 
 import ocean.transition;
 version(UnitTest) import ocean.core.Test;

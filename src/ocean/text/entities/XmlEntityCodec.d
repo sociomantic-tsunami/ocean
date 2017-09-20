@@ -35,11 +35,6 @@ module ocean.text.entities.XmlEntityCodec;
 
 
 
-/*******************************************************************************
-
-    Imports
-
-*******************************************************************************/
 
 import ocean.text.entities.model.MarkupEntityCodec;
 

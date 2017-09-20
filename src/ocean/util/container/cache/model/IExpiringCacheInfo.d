@@ -17,11 +17,6 @@ module ocean.util.container.cache.model.IExpiringCacheInfo;
 
 
 
-/*******************************************************************************
-
-    Imports
-
-*******************************************************************************/
 
 import ocean.util.container.cache.model.ICacheInfo;
 

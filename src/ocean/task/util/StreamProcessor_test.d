@@ -16,11 +16,6 @@
 
 module ocean.task.util.StreamProcessor_test;
 
-/*******************************************************************************
-
-    Imports
-
-*******************************************************************************/
 
 import ocean.task.Task;
 import ocean.task.Scheduler;

@@ -17,11 +17,6 @@
 
 module ocean.util.container.cache.model.containers.KeyToNode;
 
-/*******************************************************************************
-
-    Imports
-
-*******************************************************************************/
 
 import ocean.util.container.map.HashMap;
 import ocean.util.container.map.model.BucketElementFreeList;

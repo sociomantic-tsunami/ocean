@@ -21,11 +21,6 @@ module ocean.util.container.queue.FixedRingQueue;
 
 
 
-/*******************************************************************************
-
-    Imports
-
-*******************************************************************************/
 
 import ocean.util.container.queue.model.IRingQueue;
 

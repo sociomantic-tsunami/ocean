@@ -16,11 +16,6 @@
 
 module ocean.task.ThrottledTaskPool_test;
 
-/*******************************************************************************
-
-    Imports
-
-*******************************************************************************/
 
 import ocean.task.Task;
 import ocean.task.Scheduler;

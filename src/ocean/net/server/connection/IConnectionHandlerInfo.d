@@ -17,11 +17,6 @@ module ocean.net.server.connection.IConnectionHandlerInfo;
 
 
 
-/*******************************************************************************
-
-    Imports
-
-*******************************************************************************/
 
 import ocean.io.model.IConduit: ISelectable;
 

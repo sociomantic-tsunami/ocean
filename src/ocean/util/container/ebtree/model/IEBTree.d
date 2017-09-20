@@ -17,11 +17,6 @@
 
 module ocean.util.container.ebtree.model.IEBTree;
 
-/******************************************************************************
-
-    Imports
-
- ******************************************************************************/
 
 import ocean.util.container.ebtree.c.ebtree: eb_root;
 

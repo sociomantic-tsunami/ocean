@@ -17,11 +17,6 @@
 
 module ocean.util.container.cache.CachingStructLoader;
 
-/*******************************************************************************
-
-    Imports
-
-*******************************************************************************/
 
 import ocean.util.container.cache.ExpiringCache,
        ocean.util.container.cache.model.IExpiringCacheInfo;

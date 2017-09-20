@@ -16,11 +16,6 @@
 module ocean.util.app.ext.RefuseRootExt;
 
 
-/*******************************************************************************
-
-    Imports
-
-*******************************************************************************/
 
 import ocean.transition;
 import ocean.util.app.ext.model.IArgumentsExtExtension;

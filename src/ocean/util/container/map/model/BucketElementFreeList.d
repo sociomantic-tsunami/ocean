@@ -17,11 +17,6 @@
 
 module ocean.util.container.map.model.BucketElementFreeList;
 
-/******************************************************************************
-
-    Imports
-
- ******************************************************************************/
 
 import ocean.util.container.map.model.IAllocator;
 

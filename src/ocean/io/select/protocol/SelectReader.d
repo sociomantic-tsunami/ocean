@@ -15,11 +15,6 @@
 
 module ocean.io.select.protocol.SelectReader;
 
-/*******************************************************************************
-
-    Imports
-
-*******************************************************************************/
 
 import ocean.core.Verify;
 import ocean.io.select.client.model.ISelectClient;

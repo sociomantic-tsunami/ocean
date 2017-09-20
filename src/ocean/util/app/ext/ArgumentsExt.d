@@ -17,11 +17,6 @@ module ocean.util.app.ext.ArgumentsExt;
 
 
 
-/*******************************************************************************
-
-    Imports
-
-*******************************************************************************/
 
 import ocean.util.app.model.ExtensibleClassMixin;
 import ocean.util.app.model.IApplicationExtension;

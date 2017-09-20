@@ -16,11 +16,6 @@
 
 module ocean.util.log.AppendStderrStdout;
 
-/*******************************************************************************
-
-    Imports
-
-*******************************************************************************/
 
 import ocean.transition;
 import ocean.util.log.Appender;

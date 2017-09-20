@@ -20,11 +20,6 @@ module ocean.io.select.client.FileSystemEvent;
 
 
 
-/*******************************************************************************
-
-    Imports
-
-*******************************************************************************/
 
 import ocean.core.Verify;
 import ocean.sys.Inotify;
