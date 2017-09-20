@@ -346,6 +346,7 @@ void resetIeeeFlags() { IeeeFlags.resetIeeeFlags; }
 /** IEEE rounding modes.
  * The default mode is ROUNDTONEAREST.
  */
+deprecated
 enum RoundingMode : short {
     ROUNDTONEAREST = 0x0000,
     ROUNDDOWN      = 0x0400,
@@ -364,6 +365,7 @@ enum RoundingMode : short {
     scope (exit) setIeeeRounding(oldrounding);
 ---
  */
+deprecated
 RoundingMode setIeeeRounding(RoundingMode roundingmode) {
    version(D_InlineAsm_X86) {
         // TODO: For SSE/SSE2, do we also need to set the SSE rounding mode?
@@ -386,6 +388,7 @@ RoundingMode setIeeeRounding(RoundingMode roundingmode) {
 /** Get the IEEE rounding mode which is in use.
  *
  */
+deprecated
 RoundingMode getIeeeRounding() {
    version(D_InlineAsm_X86) {
         // TODO: For SSE/SSE2, do we also need to check the SSE rounding mode?
@@ -425,6 +428,7 @@ unittest {
 }
 
 // Note: Itanium supports more precision options than this. SSE/SSE2 does not support any.
+deprecated
 enum PrecisionControl : short {
     PRECISION80 = 0x300,
     PRECISION64 = 0x200,
@@ -436,6 +440,7 @@ enum PrecisionControl : short {
  * Returns: the old precision.
  * This is not supported on all platforms.
  */
+deprecated
 PrecisionControl reduceRealPrecision(PrecisionControl prec) {
    version(D_InlineAsm_X86) {
         short cont;
