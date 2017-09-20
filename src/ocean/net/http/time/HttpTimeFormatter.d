@@ -21,6 +21,7 @@ module ocean.net.http.time.HttpTimeFormatter;
 
 
 import ocean.transition;
+import ocean.core.Verify;
 import core.stdc.time:       time_t, tm, time;
 import core.sys.posix.time: gmtime_r, localtime_r;
 import core.stdc.stdlib:     lldiv;
@@ -123,12 +124,9 @@ struct HttpTimeFormatter
     **************************************************************************/
 
     public static mstring format ( mstring dst, time_t t )
-    in
     {
-        assert (dst.length == ResultLength);
-    }
-    body
-    {
+        verify(dst.length == ResultLength);
+
         tm  datetime;
 
         tm* datetimep = gmtime_r(&t, &datetime);
@@ -189,16 +187,14 @@ struct HttpTimeFormatter
     **************************************************************************/
 
     private static void fmt ( mstring dst, long n )
-    in
-    {
-       assert (n >= 0);
-    }
     out
     {
         assert (!n, "decimal formatting overflow");
     }
     body
     {
+        verify(n >= 0);
+
         foreach_reverse (ref c; dst)
         {
             with (lldiv(n, 10))

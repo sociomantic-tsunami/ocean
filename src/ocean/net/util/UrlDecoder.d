@@ -24,6 +24,8 @@ module ocean.net.util.UrlDecoder;
 
 import ocean.transition;
 
+import ocean.core.Verify;
+
 import ocean.text.util.SplitIterator: ChrSplitIterator;
 
 import ocean.stdc.string: memmove;
@@ -146,7 +148,7 @@ class UrlDecoder
 
                 if (decoded.length)
                 {
-                    assert (read_pos);
+                    verify(read_pos != 0);
 
                     auto original = this.source[0 .. read_pos];
 
@@ -157,7 +159,7 @@ class UrlDecoder
                 }
                 else                                           // decoding error
                 {
-                    assert (!read_pos);
+                    verify(!read_pos);
 
                     result = callDg("%");
                 }
@@ -202,10 +204,6 @@ class UrlDecoder
     ***************************************************************************/
 
     public static mstring decodeCharacter ( mstring dst, cstring source, ref size_t pos )
-    in
-    {
-        assert(pos <= source.length, typeof (this).stringof ~ ".decodeCharacter (in): offset out of array bounds");
-    }
     out (slice)
     {
         assert (slice.ptr is dst.ptr, typeof (this).stringof ~ ".decodeCharacter: bad returned slice");
@@ -213,6 +211,12 @@ class UrlDecoder
     }
     body
     {
+        verify(
+            pos <= source.length,
+            typeof (this).stringof ~
+                ".decodeCharacter (in): offset out of array bounds"
+        );
+
         auto src = source[pos .. $];
 
         size_t read    = 0,
@@ -353,7 +357,7 @@ class UrlDecoder
                     continue;
                 }
 
-                assert (written <= read);
+                verify(written <= read);
 
                 // written = 0 => error: Pass through the erroneous sequence,
                 // prepending the '%' that was skipped by the iterator.
@@ -453,17 +457,15 @@ class UrlDecoder
     ***************************************************************************/
 
     static mstring hex4 ( cstring hex, mstring utf8_buf )
-    in
-    {
-        assert (hex.length == 4);
-        assert (utf8_buf.length >= 6);
-    }
     out (utf8)
     {
         assert (utf8_buf.ptr is utf8.ptr);
     }
     body
     {
+        verify (hex.length == 4);
+        verify (utf8_buf.length >= 6);
+
         int hihi = g_ascii_xdigit_value(hex[0]),
             hilo = g_ascii_xdigit_value(hex[1]),
             lohi = g_ascii_xdigit_value(hex[2]),

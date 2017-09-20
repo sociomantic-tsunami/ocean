@@ -18,6 +18,7 @@ module ocean.net.util.UrlEncoder;
 
 
 import ocean.transition;
+import ocean.core.Verify;
 import core.stdc.ctype: isgraph;
 
 version(UnitTest) import ocean.core.Test;
@@ -203,7 +204,7 @@ class PercentEncoder
         {
             if (this.encode(c))
             {
-                assert (start <= i);
+                verify(start <= i);
 
                 if (start < i)
                 {
@@ -221,7 +222,7 @@ class PercentEncoder
             }
         }
 
-        assert (start <= this.source.length);
+        verify(start <= this.source.length);
 
         return (start < this.source.length)?
                 callDg(this.source[start .. $]) : result;

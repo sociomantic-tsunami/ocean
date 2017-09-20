@@ -18,6 +18,8 @@ module ocean.net.server.connection.IConnectionHandler;
 
 
 
+import ocean.core.Verify;
+
 import ocean.io.select.EpollSelectDispatcher;
 
 import ocean.net.server.connection.IConnectionHandlerInfo;
@@ -159,7 +161,7 @@ abstract class IConnectionHandler : IConnectionHandlerInfo,
     protected this ( ISocket socket, FinalizeDg finalize_dg_ = null,
         ErrorDg error_dg_ = null )
     {
-        assert(socket !is null);
+        verify(socket !is null);
 
         this.finalize_dg_ = finalize_dg_;
         this.error_dg_ = error_dg_;
@@ -265,12 +267,10 @@ abstract class IConnectionHandler : IConnectionHandlerInfo,
     ***************************************************************************/
 
     public void assign ( ISelectable listening_socket )
-    in
     {
-        assert (!this.connected, "client connection was open before assigning");
-    }
-    body
-    {
+        verify(!this.connected,
+            "client connection was open before assigning");
+
         debug ( ConnectionHandler ) Stderr.formatln("[{}]: New connection", this.connection_id);
 
         if (this.socket.accept(listening_socket, true) < 0)

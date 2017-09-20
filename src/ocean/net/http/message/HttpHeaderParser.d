@@ -24,6 +24,7 @@ module ocean.net.http.message.HttpHeaderParser;
 
 import ocean.transition;
 import ocean.core.Enforce;
+import ocean.core.Verify;
 import ocean.text.util.SplitIterator: ChrSplitIterator, ISplitIterator;
 
 import ocean.net.http.HttpException: HttpParseException;
@@ -213,12 +214,12 @@ class HttpHeaderParser : IHttpHeaderParser
          **************************************************************************/
 
         public override size_t locateDelim ( cstring str, size_t start = 0 )
-        in
         {
-            assert (start < str.length, typeof (this).stringof ~ ".locateDelim: start index out of range");
-        }
-        body
-        {
+            verify(
+                start < str.length,
+                typeof (this).stringof ~
+                    ".locateDelim: start index out of range"
+            );
             char* item = g_strstr_len(str.ptr + start, str.length - start, this.EndOfHeaderLine.ptr);
 
             return item? item - str.ptr : str.length;
@@ -239,12 +240,8 @@ class HttpHeaderParser : IHttpHeaderParser
          **************************************************************************/
 
         protected override size_t skipDelim ( cstring str )
-        in
         {
-            assert (str.length >= this.EndOfHeaderLine.length);
-        }
-        body
-        {
+            verify(str.length >= this.EndOfHeaderLine.length);
             return this.EndOfHeaderLine.length;
         }
     }
@@ -568,12 +565,9 @@ class HttpHeaderParser : IHttpHeaderParser
      **************************************************************************/
 
     public cstring parse ( cstring content )
-    in
     {
-        assert (!this.finished, "parse() called after finished");
-    }
-    body
-    {
+        verify(!this.finished, "parse() called after finished");
+
         cstring msg_body_start = null;
 
         scope split_header = new SplitHeaderLines;
@@ -636,16 +630,14 @@ class HttpHeaderParser : IHttpHeaderParser
      **************************************************************************/
 
     private cstring appendContent ( cstring chunk )
-    in
-    {
-        assert (this.content_length <= this.content.length);
-    }
     out (remaining)
     {
         assert (remaining.length <= chunk.length);
     }
     body
     {
+        verify(this.content_length <= this.content.length);
+
         size_t max_len  = this.content.length - this.content_length,
                consumed = chunk.length;
 
@@ -667,7 +659,7 @@ class HttpHeaderParser : IHttpHeaderParser
 
             consumed = (header_end - chunk.ptr) + end_of_header.length;
 
-            assert (chunk[consumed - end_of_header.length .. consumed] == end_of_header);
+            verify(chunk[consumed - end_of_header.length .. consumed] == end_of_header);
         }
 
         // Append chunk to this.content.
@@ -813,7 +805,7 @@ unittest
         }
         catch (HttpParseException e)
         {
-            assert (false);
+            test(false);
         }
 
         parser.reset();

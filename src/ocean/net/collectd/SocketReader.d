@@ -22,6 +22,7 @@ module ocean.net.collectd.SocketReader;
 
 
 import ocean.transition;
+import ocean.core.Verify;
 import ocean.stdc.posix.sys.types; // ssize_t
 import ocean.sys.ErrnoException;
 import ocean.sys.socket.model.ISocket;
@@ -103,7 +104,7 @@ package struct SocketReader (size_t MAX_FIELD_SIZE = 512, size_t FIELDS = 16)
             if (this.start_idx + off > this.buffer.length)
             {
                 auto p1len = this.buffer.length - this.start_idx;
-                assert(p1len < off);
+                verify(p1len < off);
 
                 this.field_buffer[0 .. p1len]
                     = this.buffer[this.start_idx .. this.buffer.length];
@@ -170,12 +171,9 @@ package struct SocketReader (size_t MAX_FIELD_SIZE = 512, size_t FIELDS = 16)
     ***************************************************************************/
 
     private ssize_t recv (ISocket socket, int flags)
-    in
     {
-        assert(socket !is null, "Cannot recv with a null socket");
-    }
-    body
-    {
+        verify(socket !is null, "Cannot recv with a null socket");
+
         auto start = this.calc(this.start_idx, this.length);
         auto end   = start < this.start_idx ? this.start_idx : this.buffer.length;
 
@@ -186,7 +184,7 @@ package struct SocketReader (size_t MAX_FIELD_SIZE = 512, size_t FIELDS = 16)
             return ret;
 
         this.length += ret;
-        assert(this.length <= this.buffer.length);
+        verify(this.length <= this.buffer.length);
 
         return ret;
     }

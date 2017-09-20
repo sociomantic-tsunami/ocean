@@ -26,6 +26,8 @@ module ocean.net.util.QueryParams;
 
 import ocean.transition;
 
+import ocean.core.Verify;
+
 import ocean.net.util.ParamSet;
 
 import ocean.text.util.SplitIterator: ChrSplitIterator;
@@ -182,7 +184,7 @@ class QueryParams
                 return dg(key, value);
             }
 
-            assert (!split_param.n);
+            verify(!split_param.n);
 
             return dg(param, value);
         });
