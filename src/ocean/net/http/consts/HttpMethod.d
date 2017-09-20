@@ -114,12 +114,8 @@ struct HttpMethodNames
      **************************************************************************/
 
     static istring opIndex ( HttpMethod method )
-    in
     {
         static assert (method.max < List.length);
-    }
-    body
-    {
         return (method <= method.max)? List[method] : null;
     }
 
