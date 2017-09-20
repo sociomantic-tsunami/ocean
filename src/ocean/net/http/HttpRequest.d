@@ -59,6 +59,7 @@ import ocean.net.http.consts.HttpVersion: HttpVersionIds;
 import ocean.net.http.HttpException: HttpException, HeaderParameterException;
 
 import ocean.core.Enforce;
+import ocean.core.Verify;
 import ocean.net.Uri: Uri;
 
 import ocean.net.http.HttpConst: HttpResponseCode;
@@ -381,7 +382,7 @@ class HttpRequest : HttpHeader
             }
         }
 
-        assert (consumed == content.length || this.finished);
+        verify(consumed == content.length || this.finished);
 
         return consumed;
     }

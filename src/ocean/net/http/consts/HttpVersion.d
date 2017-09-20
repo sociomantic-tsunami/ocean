@@ -22,6 +22,7 @@ module ocean.net.http.consts.HttpVersion;
  ******************************************************************************/
 
 import ocean.transition;
+import ocean.core.Verify;
 import core.stdc.ctype: isdigit;
 
 version(UnitTest) import ocean.core.Test;
@@ -73,19 +74,13 @@ struct HttpVersionIds
          Returns:
              HTTP version identifier string corresponding to val
 
-         Throws:
-             assert()s that ver is in range and not HttpVersion.Undefined.
-
      **************************************************************************/
 
     static istring opIndex ( HttpVersion ver )
-    in
     {
-        assert (ver,            "no version id for HttpVersion.Undefined");
-        assert (ver <= ver.max, "invalid HttpVersion enumerator value");
-    }
-    body
-    {
+        verify(ver != 0, "no version id for HttpVersion.Undefined");
+        verify(ver <= ver.max, "invalid HttpVersion enumerator value");
+
         return list[ver];
     }
 

@@ -41,6 +41,8 @@ import ocean.transition;
 
 import ocean.core.TypeConvert;
 
+import ocean.core.Verify;
+
 import ocean.text.util.SplitIterator: ISplitIterator;
 
 import core.stdc.ctype:  tolower;
@@ -280,7 +282,8 @@ class ParamSet
     {
         Element* element = this.get_(key);
 
-        assert (element !is null, "cannot assign to unknown key \"" ~ key ~ "\"");
+        verify(element !is null, "cannot assign to unknown key \""
+            ~ idup(key) ~ "\"");
 
         return element.val = val;
     }

@@ -94,6 +94,7 @@ unittest
 
 import ocean.transition;
 import ocean.core.Enforce;
+import ocean.core.Verify;
 import ocean.core.Exception;
 import ocean.core.Traits;
 import ocean.stdc.posix.sys.un;
@@ -414,14 +415,11 @@ public final class Collectd
     ***************************************************************************/
 
     private void formatIdentifier (ref Const!(Identifier) identifier)
-    in
     {
-        assert(identifier.host.length, "No host for identifier");
-        assert(identifier.plugin.length, "No plugin for identifier");
-        assert(identifier.type.length, "No type for identifier");
-    }
-    body
-    {
+        verify(identifier.host.length != 0, "No host for identifier");
+        verify(identifier.plugin.length != 0, "No plugin for identifier");
+        verify(identifier.type.length != 0, "No type for identifier");
+
         auto pi = identifier.plugin_instance.length ? "-" : null;
         auto ti = identifier.type_instance.length ? "-" : null;
 

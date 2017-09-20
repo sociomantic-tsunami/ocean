@@ -30,6 +30,7 @@ module ocean.net.server.SelectListener;
  ******************************************************************************/
 
 import ocean.transition;
+import ocean.core.Verify;
 
 import ocean.io.select.client.model.ISelectClient;
 import ocean.net.server.connection.IConnectionHandler;
@@ -472,13 +473,10 @@ public class SelectListener ( T : IConnectionHandler, Args ... ) : ISelectListen
      **************************************************************************/
 
     public override size_t connection_limit ( size_t limit )
-    in
     {
-        assert (!(limit && limit < this.poolInfo.num_busy),
+        verify(!(limit && limit < this.poolInfo.num_busy),
                 typeof(this).stringof ~ ".connection_limit: limit already exceeded");
-    }
-    body
-    {
+
         if (limit)
         {
             this.receiver_pool.setLimit(limit);
@@ -607,13 +605,10 @@ public class SelectListener ( T : IConnectionHandler, Args ... ) : ISelectListen
      **************************************************************************/
 
     private void returnToPool ( IConnectionHandler connection )
-    in
     {
-        assert (cast (T) connection !is null,
+        verify(cast (T) connection !is null,
                 typeof(this).stringof ~ ".returnToPool: connection is null");
-    }
-    body
-    {
+
         debug ( ConnectionHandler )
             log.trace("[{}]: Returning to pool", connection.connection_id);
 

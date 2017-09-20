@@ -29,6 +29,7 @@ module ocean.net.http.message.HttpHeader;
 import ocean.transition;
 
 import ocean.core.TypeConvert;
+import ocean.core.Verify;
 
 import ocean.net.http.consts.HeaderFieldNames,
        ocean.net.http.consts.HttpVersion;
@@ -89,13 +90,10 @@ abstract class HttpHeader : ParamSet
      **************************************************************************/
 
     public HttpVersion http_version ( HttpVersion v )
-    in
     {
-        assert (v,          "HTTP version undefined");
-        assert (v <= v.max, "invalid HttpVersion enumerator value");
-    }
-    body
-    {
+        verify(v != 0, "HTTP version undefined");
+        verify(v <= v.max, "invalid HttpVersion enumerator value");
+
         this.http_version_ = v;
 
         return v;

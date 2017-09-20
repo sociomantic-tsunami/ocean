@@ -48,6 +48,8 @@ module ocean.net.http.HttpResponse;
 
 import ocean.transition;
 
+import ocean.core.Verify;
+
 import ocean.net.http.HttpConst : HttpResponseCode;
 
 import ocean.net.http.message.HttpHeader;
@@ -172,13 +174,10 @@ class HttpResponse : HttpHeader
 
     public cstring render ( HttpResponseCode status, cstring msg_body = null,
         bool head = false )
-    in
     {
-        assert (100 <= status, "invalid HTTP status code (below 100)");
-        assert (status < 1000, "invalid HTTP status code (1000 or above)");
-    }
-    body
-    {
+        verify(100 <= status, "invalid HTTP status code (below 100)");
+        verify(status < 1000, "invalid HTTP status code (1000 or above)");
+
         bool append_msg_body = this.setContentLength(status, msg_body);
 
         this.content.clear();
@@ -271,7 +270,7 @@ class HttpResponse : HttpHeader
                 if (code >= 200)
                 {
                     bool b = super.set("Content-Length", msg_body.length, this.dec_content_length);
-                    assert (b);
+                    verify(b);
 
                     return true;
                 }
@@ -279,7 +278,7 @@ class HttpResponse : HttpHeader
 
             case HttpResponseCode.NoContent:
                 bool b = super.set("Content-Length", "0");
-                assert(b);
+                verify(b);
 
                 return false;
 
@@ -301,12 +300,9 @@ class HttpResponse : HttpHeader
      **************************************************************************/
 
     private cstring setStatusLine ( HttpResponseCode status )
-    in
     {
-        assert (this.http_version_, "HTTP version undefined");
-    }
-    body
-    {
+        verify(this.http_version_ != 0, "HTTP version undefined");
+
         char[3] status_dec;
 
         return this.content.append(HttpVersionIds[this.http_version_],  " "[],
@@ -442,13 +438,9 @@ class HttpResponse : HttpHeader
              ******************************************************************/
 
             this ( cstring name )
-            in
             {
-                assert (!this.outer.occupied);
+                verify(!this.outer.occupied);
                 this.outer.occupied = true;
-            }
-            body
-            {
                 this.outer.content.append(name, ": "[]);
             }
 

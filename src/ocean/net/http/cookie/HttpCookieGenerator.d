@@ -28,6 +28,8 @@ module ocean.net.http.cookie.HttpCookieGenerator;
 
 import ocean.transition;
 
+import ocean.core.Verify;
+
 import ocean.net.util.ParamSet;
 
 import ocean.net.http.consts.CookieAttributeNames;
@@ -96,12 +98,8 @@ class HttpCookieGenerator : ParamSet
          **********************************************************************/
 
         public time_t opAssign ( time_t t )
-        in
         {
-            assert (t >= 0, "negative time value");
-        }
-        body
-        {
+            verify(t >= 0, "negative time value");
             this.is_set_ = true;
             return this.t = t;
         }
