@@ -17,6 +17,8 @@
 
 module ocean.util.test.DirectorySandbox;
 
+import ocean.core.Verify;
+
 /// ditto
 class DirectorySandbox
 {
@@ -75,13 +77,9 @@ class DirectorySandbox
     ***************************************************************************/
 
     public void exitSandbox ()
-    in
     {
-        assert(this.old_cwd.length);
+        verify(this.old_cwd.length != 0);
 
-    }
-    body
-    {
         this.exception.enforceRetCode!(chdir).call(
                 StringC.toCString(this.old_cwd));
     }

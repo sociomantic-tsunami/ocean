@@ -86,6 +86,7 @@
 module ocean.util.log.Log;
 
 import ocean.transition;
+import ocean.core.Verify;
 
 import ocean.sys.Common;
 
@@ -363,7 +364,7 @@ public struct Log
 
         static istring convert (int level)
         {
-            assert (level >= Level.Trace && level <= Level.None);
+            verify (level >= Level.Trace && level <= Level.None);
             Level l = cast(Level) level;
             return ILogger.convert(l);
         }
@@ -726,7 +727,7 @@ public class Logger : ILogger
         // Not deprecated: Triggers wrong deprecation messages
         final Logger add (AP.Appender another)
         {
-                assert (another);
+                verify (another !is null);
                 another.next = appender_;
                 appender_ = another;
                 return this;

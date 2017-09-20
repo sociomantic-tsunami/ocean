@@ -38,6 +38,7 @@
 module ocean.util.encode.Base16;
 
 import ocean.transition;
+import ocean.core.Verify;
 
 version(UnitTest) import ocean.core.Test;
 
@@ -91,13 +92,10 @@ size_t allocateEncodeSize(size_t length)
 *******************************************************************************/
 
 char[] encode(ubyte[] data, char[] buff)
-in
 {
-    assert(data);
-    assert(buff.length >= allocateEncodeSize(data));
-}
-body
-{
+    verify(data !is null);
+    verify(buff.length >= allocateEncodeSize(data));
+
     size_t i;
     foreach (ubyte j; data) {
         buff[i++] = _encodeTable[j >> 4];
@@ -125,12 +123,9 @@ body
 
 
 char[] encode(ubyte[] data)
-in
 {
-    assert(data);
-}
-body
-{
+    verify(data !is null);
+
     auto rtn = new char[allocateEncodeSize(data)];
     return encode(data, rtn);
 }
@@ -159,12 +154,9 @@ body
 *******************************************************************************/
 
 ubyte[] decode(cstring data)
-in
 {
-    assert(data);
-}
-body
-{
+    verify(data !is null);
+
     auto rtn = new ubyte[data.length+1/2];
     return decode(data, rtn);
 }
@@ -194,12 +186,9 @@ body
 *******************************************************************************/
 
 ubyte[] decode(cstring data, ubyte[] buff)
-in
 {
-    assert(data);
-}
-body
-{
+    verify(data !is null);
+
     bool even=true;
     size_t i;
     foreach (c; data) {
@@ -214,7 +203,7 @@ body
         }
         even = !even; // Switch mode for next iteration
     }
-    assert(even, "Non-even amount of hex characters in input.");
+    verify(even, "Non-even amount of hex characters in input.");
     return buff[0..i];
 }
 

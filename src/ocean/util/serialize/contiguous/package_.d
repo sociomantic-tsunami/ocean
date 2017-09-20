@@ -146,6 +146,7 @@ version(UnitTest):
 
 import ocean.transition;
 import ocean.core.Test;
+import ocean.core.Verify;
 import ocean.core.StructConverter;
 import ocean.core.DeepCompare;
 
@@ -904,12 +905,8 @@ unittest
 
 static Const!(Struct)* trivialDeserialize ( Struct )
     ( Const!(void)[] serializer_output )
-in
 {
-    assert(serializer_output.length >= Struct.sizeof);
-}
-body
-{
+    verify(serializer_output.length >= Struct.sizeof);
     return cast(Const!(Struct)*)serializer_output.ptr;
 }
 

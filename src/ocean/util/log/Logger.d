@@ -57,6 +57,7 @@
 module ocean.util.log.Logger;
 
 import ocean.transition;
+import ocean.core.Verify;
 import ocean.core.ExceptionDefinitions;
 import ocean.io.model.IConduit;
 import ocean.sys.Common;
@@ -677,7 +678,7 @@ public final class Logger : ILogger
 
     public Logger add (Appender another)
     {
-        assert(another);
+        verify(another !is null);
         another.next = appender_;
         this.appender_ = another;
         return this;

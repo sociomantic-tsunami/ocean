@@ -30,6 +30,7 @@
 module ocean.util.encode.Base64;
 
 import ocean.transition;
+import ocean.core.Verify;
 
 version (UnitTest) import ocean.core.Test;
 
@@ -227,13 +228,10 @@ public int encodeChunk (istring table = defaultEncodeTable)
 
 public mstring encode (istring table = defaultEncodeTable)
     (in ubyte[] data, mstring buff, bool pad = true)
-in
 {
-    assert(data);
-    assert(buff.length >= allocateEncodeSize(data));
-}
-body
-{
+    verify(data !is null);
+    verify(buff.length >= allocateEncodeSize(data));
+
     static assert(validateEncodeTable(table) is null,
                   validateEncodeTable(table));
 
@@ -295,12 +293,9 @@ body
 
 public mstring encode (istring table = defaultEncodeTable)
     (in ubyte[] data, bool pad = true)
-in
 {
-    assert(data);
-}
-body
-{
+    verify(data !is null);
+
     auto rtn = new char[allocateEncodeSize(data)];
     return encode!(table)(data, rtn, pad);
 }
@@ -350,12 +345,9 @@ public ubyte[] decode () (cstring data)
 
 /// Ditto
 public ubyte[] decode (Table...) (cstring data)
-in
 {
-    assert(data);
-}
-body
-{
+    verify(data !is null);
+
     auto rtn = new ubyte[data.length];
     return decode!(Table)(data, rtn);
 }
@@ -398,12 +390,9 @@ public ubyte[] decode () (cstring data, ubyte[] buff)
 
 /// Ditto
 public ubyte[] decode (Table...) (cstring data, ubyte[] buff)
-in
 {
-    assert(data);
-}
-body
-{
+    verify(data !is null);
+
     static assert(Table.length == 1,
                   "A single argument is expected, not: " ~ Table.stringof);
     static assert(validateDecodeTable(Table[0]) == null,
@@ -463,7 +452,7 @@ body
         if (paddedPos >= 2)
         {
             auto padded = data[($ - paddedPos) .. $];
-            assert (padded.length <= 4);
+            verify (padded.length <= 4);
 
             // Fill the missing paddings if needed
             base64Quad[padded.length .. $] = BASE64_PAD;

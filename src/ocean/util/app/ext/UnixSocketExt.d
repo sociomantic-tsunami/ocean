@@ -27,6 +27,7 @@
 module ocean.util.app.ext.UnixSocketExt;
 
 import ocean.transition;
+import ocean.core.Verify;
 
 import ocean.core.Enforce;
 import ocean.io.select.EpollSelectDispatcher;
@@ -69,7 +70,7 @@ public class UnixSocketExt : IApplicationExtension, IConfigExtExtension
 
     public void initializeSocket ( EpollSelectDispatcher epoll )
     {
-        assert(this.unix_listener is null);
+        verify(this.unix_listener is null);
         if ( this.path.length > 0 )
         {
             this.unix_listener =

@@ -38,6 +38,7 @@
 module ocean.util.encode.Base32;
 
 import ocean.transition;
+import ocean.core.Verify;
 
 version(UnitTest) import ocean.core.Test;
 
@@ -94,13 +95,10 @@ size_t allocateEncodeSize(size_t length)
 *******************************************************************************/
 
 char[] encode(ubyte[] data, char[] buff, bool pad=true)
-in
 {
-    assert(data);
-    assert(buff.length >= allocateEncodeSize(data));
-}
-body
-{
+    verify(data !is null);
+    verify(buff.length >= allocateEncodeSize(data));
+
     uint i = 0;
     ushort remainder; // Carries overflow bits to next char
     byte remainlen;  // Tracks bits in remainder
@@ -142,12 +140,9 @@ body
 
 
 char[] encode(ubyte[] data, bool pad=true)
-in
 {
-    assert(data);
-}
-body
-{
+    verify(data !is null);
+
     auto rtn = new char[allocateEncodeSize(data)];
     return encode(data, rtn, pad);
 }
@@ -176,12 +171,9 @@ body
 *******************************************************************************/
 
 ubyte[] decode(cstring data)
-in
 {
-    assert(data);
-}
-body
-{
+    verify(data !is null);
+
     auto rtn = new ubyte[data.length];
     return decode(data, rtn);
 }
@@ -210,12 +202,9 @@ body
 
 *******************************************************************************/
 ubyte[] decode(cstring data, ubyte[] buff)
-in
 {
-    assert(data);
-}
-body
-{
+    verify(data !is null);
+
     ushort remainder;
     byte remainlen;
     size_t oIndex;

@@ -17,6 +17,7 @@ module ocean.util.cipher.misc.Padding;
 
 
 import ocean.transition;
+import ocean.core.Verify;
 
 version ( UnitTest )
 {
@@ -46,13 +47,10 @@ version ( UnitTest )
 *******************************************************************************/
 
 ubyte[] padPKCS7 ( ref ubyte[] buffer, size_t pad_len )
-in
 {
-    assert(pad_len >= buffer.length);
-    assert(pad_len - buffer.length <= ubyte.max);
-}
-body
-{
+    verify(pad_len >= buffer.length);
+    verify(pad_len - buffer.length <= ubyte.max);
+
     enableStomping(buffer);
 
     ubyte pad_byte = cast(ubyte)(pad_len - buffer.length);
@@ -93,14 +91,10 @@ unittest
 *******************************************************************************/
 
 ubyte[] padPKCS5 ( ref ubyte[] buffer )
-in
 {
-    assert(buffer.length <= 8);
-}
-body
-{
-    const PKCS5_BLOCK_SIZE = 8;
+    verify(buffer.length <= 8);
 
+    const PKCS5_BLOCK_SIZE = 8;
     return padPKCS7(buffer, PKCS5_BLOCK_SIZE);
 }
 

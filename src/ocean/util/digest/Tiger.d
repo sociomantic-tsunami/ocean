@@ -22,6 +22,8 @@ module ocean.util.digest.Tiger;
 
 import ocean.transition;
 
+import ocean.core.Verify;
+
 import ocean.core.ByteSwap;
 
 import ocean.util.digest.MerkleDamgard;
@@ -283,7 +285,7 @@ final class Tiger : MerkleDamgard
 
         private static void pass(ref ulong a, ref ulong b, ref ulong c, ulong[] x, ulong mul)
         {
-                assert(x.length == 8);
+                verify(x.length == 8);
 
                 round(a,b,c,x[0],mul);
                 round(b,c,a,x[1],mul);
@@ -301,7 +303,7 @@ final class Tiger : MerkleDamgard
 
         private static void keySchedule(ulong[] x)
         {
-                assert(x.length == 8);
+                verify(x.length == 8);
 
                 x[0] -= x[7] ^ 0xA5A5A5A5A5A5A5A5;
                 x[1] ^= x[0];

@@ -18,6 +18,7 @@ module ocean.util.serialize.contiguous.Contiguous;
 
 
 import ocean.transition;
+import ocean.core.Verify;
 
 import ocean.core.Enforce,
        ocean.core.Traits;
@@ -78,12 +79,9 @@ struct Contiguous( S )
     /**************************************************************************/
 
     public S* ptr ( )
-    in
     {
-        assert((this.data.length == 0) || (this.data.length >= S.sizeof));
-    }
-    body
-    {
+        verify((this.data.length == 0) || (this.data.length >= S.sizeof));
+
         if (this.data.length == 0)
             return null;
 

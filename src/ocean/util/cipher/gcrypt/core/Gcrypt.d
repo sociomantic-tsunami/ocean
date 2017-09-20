@@ -29,6 +29,7 @@ module ocean.util.cipher.gcrypt.core.Gcrypt;
 
 import ocean.util.cipher.gcrypt.c.gcrypt;
 import ocean.transition;
+import ocean.core.Verify;
 
 version (UnitTest)
 {
@@ -486,7 +487,7 @@ public class GcryptWithIV ( Algorithm algorithm, Mode mode )
 
     public void encrypt ( mstring buffer, in void[] iv )
     {
-        assert(this.handle);
+        verify(this.handle !is null);
 
         if ( !buffer.length )
             return;
@@ -513,7 +514,7 @@ public class GcryptWithIV ( Algorithm algorithm, Mode mode )
 
     public void decrypt ( mstring buffer, in void[] iv )
     {
-        assert(this.handle);
+        verify(this.handle !is null);
 
         if ( !buffer.length )
             return;
@@ -720,7 +721,7 @@ public class GcryptNoIV ( Algorithm algorithm, Mode mode )
 
     public void encrypt ( mstring buffer )
     {
-        assert(this.handle);
+        verify(this.handle !is null);
 
         if ( !buffer.length )
             return;
@@ -744,7 +745,7 @@ public class GcryptNoIV ( Algorithm algorithm, Mode mode )
 
     public void decrypt ( mstring buffer )
     {
-        assert(this.handle);
+        verify(this.handle !is null);
 
         if ( !buffer.length )
             return;

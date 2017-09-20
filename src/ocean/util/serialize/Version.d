@@ -30,6 +30,7 @@ module ocean.util.serialize.Version;
 
 
 import ocean.transition;
+import ocean.core.Verify;
 version(UnitTest) import ocean.core.Test;
 
 /*******************************************************************************
@@ -173,12 +174,9 @@ struct Version
     ***************************************************************************/
 
     static void[] extract ( void[] data, ref Version.Type ver )
-    in
     {
-        assert (data.length > Version.Type.sizeof);
-    }
-    body
-    {
+        verify (data.length > Version.Type.sizeof);
+
         ver = *(cast(Version.Type*) data.ptr);
         return data[Version.Type.sizeof .. $];
     }

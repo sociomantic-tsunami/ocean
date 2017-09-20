@@ -27,6 +27,8 @@
 
 module ocean.util.app.ext.TimerExt;
 
+import ocean.core.Verify;
+
 
 /*******************************************************************************
 
@@ -187,8 +189,8 @@ public class TimerExt : IApplicationExtension
 
     public void register ( EventDg dg, double period_s )
     {
-        assert(dg);
-        assert(period_s >= 0.0);
+        verify(dg !is null);
+        verify(period_s >= 0.0);
         this.registerMicrosec(dg, secToMicrosec(period_s), secToMicrosec(period_s));
     }
 
@@ -207,9 +209,9 @@ public class TimerExt : IApplicationExtension
 
     public void register ( EventDg dg, double init_s, double period_s )
     {
-        assert(dg);
-        assert(init_s >= 0.0);
-        assert(period_s >= 0.0);
+        verify(dg !is null);
+        verify(init_s >= 0.0);
+        verify(period_s >= 0.0);
 
         this.registerMicrosec(dg, secToMicrosec(init_s), secToMicrosec(period_s));
     }
@@ -233,7 +235,7 @@ public class TimerExt : IApplicationExtension
 
     public void registerMicrosec ( EventDg dg, ulong init_microsec, ulong period_microsec )
     {
-        assert(dg);
+        verify(dg !is null);
 
         this.timer_set.schedule(
             ( ref EventData event )

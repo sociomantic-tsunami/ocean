@@ -25,6 +25,7 @@ module ocean.util.log.InsertConsole;
 
 
 import ocean.transition;
+import ocean.core.Verify;
 
 import ocean.io.Terminal;
 
@@ -75,7 +76,7 @@ public class InsertConsole: Appender
 
     this ( OutputStream stream, bool flush = false, Appender.Layout how = null )
     {
-        assert (stream);
+        verify (stream !is null);
 
         mask_ = register(name ~ stream.classinfo.name);
         stream_ = stream;

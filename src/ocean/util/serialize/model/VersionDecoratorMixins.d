@@ -47,6 +47,7 @@ version (UnitTest) import ocean.core.Test;
 template StoreMethod(Serializer)
 {
     import ocean.transition;
+    import ocean.core.Verify;
 
     /***************************************************************************
 
@@ -81,7 +82,7 @@ template StoreMethod(Serializer)
         auto unversioned = Version.inject(*buffer_untyped, VInfo.number);
         Serializer.serialize(input, unversioned);
 
-        assert(unversioned.ptr is (buffer.ptr + Version.Type.sizeof));
+        verify(unversioned.ptr is (buffer.ptr + Version.Type.sizeof));
 
         return buffer;
     }

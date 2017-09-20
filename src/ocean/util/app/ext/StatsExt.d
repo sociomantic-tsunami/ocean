@@ -53,6 +53,7 @@ import ocean.util.log.Stats;
 import ConfigFiller = ocean.util.config.ConfigFiller;
 
 import ocean.transition;
+import ocean.core.Verify;
 import ocean.io.device.File;
 
 
@@ -114,7 +115,7 @@ class StatsExt : IConfigExtExtension
         if (!this.config.default_type.length)
             this.config.default_type = this.config.app_name ~ "_stats";
 
-        assert(this.config.app_name.length);
+        verify(this.config.app_name.length != 0);
 
         this.stats_log = this.newStatsLog(app, this.config);
     }
