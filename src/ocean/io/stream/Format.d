@@ -23,14 +23,8 @@ import ocean.core.Verify;
 
 import ocean.io.device.Conduit;
 
-import ocean.text.convert.Layout_tango;
+import ocean.text.convert.Formatter;
 
-version(DigitalMars)
-{
-    version(X86_64) version=DigitalMarsX64;
-
-    import core.stdc.stdarg;
-}
 
 /*******************************************************************************
 
@@ -76,7 +70,6 @@ class FormatOutput : OutputFilter
         public  alias OutputFilter.flush flush;
 
         private cstring         eol;
-        private Layout!(char)   convert;
         private bool            flushLines;
 
         public alias newline    nl;             /// nl -> newline
@@ -92,7 +85,6 @@ class FormatOutput : OutputFilter
 
         this (OutputStream output, cstring eol = Eol)
         {
-            this.convert = Layout!(char).instance;
             this.eol = eol;
             super (output);
 
@@ -100,26 +92,45 @@ class FormatOutput : OutputFilter
 
         /**********************************************************************
 
-                Layout using the provided formatting specification.
+            Format the provided arguments to the stream according to the format
+            string
+
+            Params:
+                Args = Variadic template arguments
+                fmt  = Format string to use (see `ocean.text.convert.Formatter`
+                args = Arguments to format
+
+            Returns:
+                `this`, for easy chaining
 
         **********************************************************************/
 
-        final FormatOutput format (cstring fmt, ...)
+        public typeof(this) format (Args...) (cstring fmt, Args args)
         {
-            this.convert(&this.emit, _arguments, _argptr, fmt);
+            sformat(&this.emit, fmt, args);
             return this;
         }
 
         /**********************************************************************
 
-                Layout using the provided formatting specification.
+            Format the provided arguments to the stream according to the format
+            string, and append a newline to the output.
+
+            Params:
+                Args = Variadic template arguments
+                fmt  = Format string to use (see `ocean.text.convert.Formatter`
+                args = Arguments to format
+
+            Returns:
+                `this`, for easy chaining
 
         **********************************************************************/
 
-        final FormatOutput formatln (cstring fmt, ...)
+        public typeof(this) formatln (Args...) (cstring fmt, Args args)
         {
-            this.convert(&this.emit, _arguments, _argptr, fmt);
-            return this.newline;
+            sformat(&this.emit, fmt, args);
+            this.newline;
+            return this;
         }
 
         /***********************************************************************
@@ -178,17 +189,10 @@ class FormatOutput : OutputFilter
 
         **********************************************************************/
 
-        private final size_t emit (cstring s)
+        protected void emit (cstring s)
         {
                 auto count = sink.write (s);
                 if (count is Eof)
                     conduit.error ("FormatOutput :: unexpected Eof");
-                return count;
-        }
-
-        /// Used by derived classes to avoid deprecations - deprecated, remove in v4.0.0
-        protected final void _transitional_format (cstring fmt, TypeInfo[] arguments, ArgList args)
-        {
-            this.convert(&this.emit, arguments, args, fmt);
         }
 }

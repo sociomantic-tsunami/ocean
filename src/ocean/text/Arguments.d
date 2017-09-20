@@ -611,7 +611,6 @@ import ocean.io.stream.Format : FormatOutput;
 import ocean.math.Math;
 import ocean.text.Util;
 import ocean.text.convert.Formatter;
-static import ocean.text.convert.Layout_tango;
 import ocean.text.convert.Integer_tango;
 import ocean.util.container.SortedMap;
 import ocean.util.container.more.Stack;
@@ -1098,8 +1097,7 @@ public class Arguments
         {
             if (arg.error)
             {
-                // TODO: Replace with `sformat` in v4.0.0
-                ocean.text.convert.Layout_tango.Layout!(char).instance.sprint(
+                sformat(
                     result, msgs[arg.error-1], arg.name,
                     arg.values.length, arg.min, arg.max, arg.bogus,
                     arg.options);
