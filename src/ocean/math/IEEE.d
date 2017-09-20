@@ -309,13 +309,11 @@ private:
     }
     static void resetIeeeFlags()
     {
-        version(InlineAsm_X86_Any)
-        {
-            asm
-            {
-                fnclex;
-            }
-        } else {
+        version (D_InlineAsm_X86)
+            asm {fnclex;}
+        else version (D_InlineAsm_X86_64)
+            asm {fnclex;}
+        else {
             /* SPARC:
               int tmpval;
               asm { st %fsr, tmpval; }
@@ -402,25 +400,25 @@ RoundingMode getIeeeRounding() {
     }
 }
 
-version(D_InlineAsm_X86) { // Won't work for anything else yet
-    unittest {
-        real a = 3.5;
-        resetIeeeFlags();
-        test(!ieeeFlags.divByZero);
-        a /= 0.0L;
-        test(ieeeFlags.divByZero);
-        test(a == real.infinity);
-        a *= 0.0L;
-        test(ieeeFlags.invalid);
-        test(isNaN(a));
-        a = real.max;
-        a *= 2;
-        test(ieeeFlags.overflow);
-        a = min_normal!(real) * real.epsilon;
-        a /= 99;
-        test(ieeeFlags.underflow);
-        test(ieeeFlags.inexact);
+unittest {
+    real a = 3.5;
+    resetIeeeFlags();
+    test(!ieeeFlags.divByZero);
+    a /= 0.0L;
+    test(ieeeFlags.divByZero);
+    test(a == real.infinity);
+    a *= 0.0L;
+    test(ieeeFlags.invalid);
+    test(isNaN(a));
+    a = real.max;
+    a *= 2;
+    test(ieeeFlags.overflow);
+    a = min_normal!(real) * real.epsilon;
+    a /= 99;
+    test(ieeeFlags.underflow);
+    test(ieeeFlags.inexact);
 
+    version(D_InlineAsm_X86) { // Won't work for anything else yet
         int r = getIeeeRounding;
         test(r == RoundingMode.ROUNDTONEAREST);
     }
