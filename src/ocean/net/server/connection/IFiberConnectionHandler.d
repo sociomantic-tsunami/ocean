@@ -163,11 +163,6 @@ abstract class IFiberConnectionHandlerBase : IConnectionHandler
     ***************************************************************************/
 
     public override void handleConnection ( )
-    in
-    {
-        assert (!this.fiber.running);
-    }
-    body
     {
         this.fiber.start();
     }
