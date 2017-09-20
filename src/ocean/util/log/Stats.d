@@ -51,7 +51,8 @@ import ocean.io.select.client.TimerEvent;
 import ocean.net.collectd.Collectd;
 import core.stdc.time : time_t;
 import ocean.sys.ErrnoException;
-import ocean.text.convert.Layout: StringLayout;
+import ocean.text.convert.Formatter;
+import ocean.util.container.AppendBuffer;
 import ocean.util.log.layout.LayoutStatsLog;
 import ocean.util.log.Appender;
 import ocean.util.log.Logger;
@@ -297,7 +298,7 @@ public class StatsLog
 
     ***************************************************************************/
 
-    protected StringLayout!() layout;
+    protected AppendBuffer!(char) buffer;
 
 
     /***************************************************************************
@@ -369,7 +370,7 @@ public class StatsLog
         // where the root logger is configured to not output level 'info'.
         this.logger.level = this.logger.Level.Trace;
 
-        this.layout = new StringLayout!();
+        this.buffer = new AppendBuffer!(char);
 
         if (config.socket_path.length)
         {
@@ -444,9 +445,9 @@ public class StatsLog
 
     public void flush ( )
     {
-        this.logger.info(this.layout[]);
+        this.logger.info(this.buffer[]);
         this.add_separator = false;
-        this.layout.clear();
+        this.buffer.clear();
     }
 
 
@@ -483,6 +484,7 @@ public class StatsLog
 
     private void format ( istring category, T ) ( ref T values, cstring instance )
     {
+        scope sink = (cstring v) { this.buffer ~= v; };
         foreach ( i, value; values.tupleof )
         {
             auto value_name = FieldName!(i, T);
@@ -502,19 +504,19 @@ public class StatsLog
             // only "somename"
             if (this.add_separator)
             {
-                this.layout(' ');
+                this.buffer ~= ' ';
             }
 
             static if (category.length)
             {
                 verify(instance.length != 0);
-                this.layout(category, '/', instance, '/', value_name, ':',
-                    fmtd_value);
+                sformat(sink, "{}/{}/{}:{}",
+                        category, instance, value_name,  fmtd_value);
             }
             else
             {
                 verify(!instance.length);
-                this.layout(value_name, ':', fmtd_value);
+                sformat(sink, "{}:{}", value_name, fmtd_value);
             }
 
             this.add_separator = true;

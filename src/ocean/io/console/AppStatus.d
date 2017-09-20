@@ -64,10 +64,10 @@ import ocean.io.Console;
 import ocean.io.Stdout;
 import ocean.io.Terminal;
 import ocean.text.convert.Formatter;
-import ocean.text.convert.Layout;
 import ocean.time.model.IMicrosecondsClock;
 import ocean.time.MicrosecondsClock;
 import ocean.transition;
+import ocean.util.container.AppendBuffer;
 import ocean.util.log.Event;
 import ocean.util.log.InsertConsole;
 import ocean.util.log.layout.LayoutMessageOnly;
@@ -77,6 +77,15 @@ import ocean.util.log.model.ILogger;
 /// Ditto
 public class AppStatus
 {
+    /// Simplifies AppendBuffer usage by providing the sink
+    private final class StringBuffer : AppendBuffer!(char)
+    {
+        public void sink (cstring chunk)
+        {
+            this ~= chunk;
+        }
+    }
+
     /***************************************************************************
 
         Message buffer used for formatting streaming lines. The buffer is public
@@ -87,7 +96,7 @@ public class AppStatus
 
     ***************************************************************************/
 
-    public StringLayout!(char) msg;
+    public StringBuffer msg;
 
 
     /***************************************************************************
@@ -310,7 +319,7 @@ public class AppStatus
             new LayoutMessageOnly);
         this.old_terminal_size = Terminal.rows;
 
-        this.msg = new StringLayout!(char);
+        this.msg = new StringBuffer;
     }
 
 
@@ -581,39 +590,19 @@ public class AppStatus
         Print a formatted streaming line above the static lines.
 
         Params:
+            Args = Tuple of arguments to format
             format = format string of the streaming line
-            ... = list of any extra arguments for the streaming line
+            args = Arguments for the streaming line
 
         Returns:
             this object for method chaining
 
     ***************************************************************************/
 
-    public typeof(this) displayStreamingLine ( cstring format, ... )
-    {
-        return this.displayStreamingLine(format, _arguments, _argptr);
-    }
-
-
-    /***************************************************************************
-
-        Print a formatted streaming line above the static lines.
-
-        Params:
-            format = format string of the streaming line
-            arguments = typeinfos of any extra arguments for the streaming line
-            argptr = pointer to list of extra arguments for the streaming line
-
-        Returns:
-            this object for method chaining
-
-    ***************************************************************************/
-
-    public typeof(this) displayStreamingLine ( cstring format,
-        TypeInfo[] arguments, va_list argptr )
+    public typeof(this) displayStreamingLine (Args...) ( cstring format, Args args )
     {
         this.msg.length = 0;
-        this.msg.vformat(format, arguments, argptr);
+        sformat(&this.msg.sink, format, args);
 
         return this.displayStreamingLine();
     }
@@ -628,7 +617,7 @@ public class AppStatus
 
     ***************************************************************************/
 
-    public typeof(this) displayStreamingLine ( )
+    public typeof(this) displayStreamingLine () ( )
     {
         if ( Cout.redirected )
         {
@@ -646,50 +635,6 @@ public class AppStatus
 
         return this;
     }
-
-
-    /***************************************************************************
-
-        Print a list of arguments as a streaming line above the static lines.
-        Each argument is printed using its default format.
-
-        Params:
-            ... = list of arguments for the streaming line
-
-        Returns:
-            this object for method chaining
-
-    ***************************************************************************/
-
-    public typeof(this) displayStreamingLineArgs ( ... )
-    {
-        return this.displayStreamingLineArgs(_arguments, _argptr);
-    }
-
-
-    /***************************************************************************
-
-        Print a list of arguments as a streaming line above the static lines.
-        Each argument is printed using its default format.
-
-        Params:
-            arguments = typeinfos of arguments for the streaming line
-            argptr = pointer to list of arguments for the streaming line
-
-        Returns:
-            this object for method chaining
-
-    ***************************************************************************/
-
-    public typeof(this) displayStreamingLineArgs ( TypeInfo[] arguments,
-        va_list argptr )
-    {
-        this.msg.length = 0;
-        this.msg.vwrite(arguments, argptr);
-
-        return this.displayStreamingLine();
-    }
-
 
     /***************************************************************************
 
