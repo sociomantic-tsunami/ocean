@@ -73,3 +73,37 @@ public struct AAElementType ( TKey, TValue )
     alias TKey Key;
     alias TValue Value;
 }
+
+/*******************************************************************************
+
+    Params:
+        T = any type
+
+    Returns:
+        If T is static or dynamic array, evaluates to single type which is the
+        element type of that array. If such element type would also be an array,
+        evaluates to its element type instead and so on recursively. In all
+        other cases evaluates to just T.
+
+*******************************************************************************/
+
+public template StripAllArrays ( T )
+{
+    static if (isArrayType!(T) == ArrayKind.Dynamic
+            || isArrayType!(T) == ArrayKind.Static)
+    {
+        alias StripAllArrays!(ElementTypeOf!(T)) StripAllArrays;
+    }
+    else
+    {
+        alias T StripAllArrays;
+    }
+}
+
+///
+unittest
+{
+    static assert (is(StripAllArrays!(int[][4][][]) == int));
+    static assert (is(StripAllArrays!(int[float][4][][]) == int[float]));
+    static assert (is(StripAllArrays!(double) == double));
+}
