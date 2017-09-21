@@ -544,6 +544,7 @@ struct StructSerializer ( bool AllowUnions = false )
             alias typeof(field) T;
             const field_name = FieldName!(i, S);
 
+            // imitate D1 style formatting for D2 typedef struct
             static if ( is(T == struct) && !isTypedef!(T) )
             {
                 serializer.openStruct(data, field_name);
@@ -554,8 +555,10 @@ struct StructSerializer ( bool AllowUnions = false )
             {
                 // slice array (passing a static array as ref is not allowed)
                 U[] array = field;
+                alias StripAllArrays!(U) Element;
 
-                static if ( is(StripAllArrays!(U) == struct) )
+                // imitate D1 style formatting for arrays of D2 typedef structs
+                static if ( is(Element == struct) && !isTypedef!(Element) )
                 {
                     serializeStructArray(array, field_name, serializer, data);
                 }
