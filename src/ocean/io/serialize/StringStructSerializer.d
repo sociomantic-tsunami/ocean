@@ -916,3 +916,32 @@ unittest
                          "   ulong a : 1000\n");
     }
 }
+
+unittest
+{
+    // struct with array of typedefs
+
+    auto serializer = new StringStructSerializer!(char);
+    mstring buffer;
+
+    mixin(Typedef!(hash_t, "AdskilletId"));
+
+    struct StructWithTypedefArray
+    {
+        AdskilletId[] ids;
+    }
+
+    StructWithTypedefArray sta;
+
+    sta.ids = new AdskilletId[](4);
+
+    foreach (idx, ref element; sta.ids)
+    {
+        element = cast(AdskilletId)(64 + idx);
+    }
+
+    serializer.serialize(buffer, sta);
+
+    test!("==")(buffer, "struct StructWithTypedefArray:\n" ~
+                     "   AdskilletId[] ids (length 4): [64, 65, 66, 67]\n");
+}
