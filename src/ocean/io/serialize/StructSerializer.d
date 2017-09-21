@@ -27,7 +27,13 @@ import ocean.core.Exception;
 
 import ocean.io.model.IConduit: IOStream, InputStream, OutputStream;
 
-import ocean.core.Traits;
+import ocean.meta.traits.Basic;
+import ocean.meta.traits.Indirections : hasIndirections;
+import ocean.meta.types.Arrays : ElementTypeOf, StripAllArrays;
+import ocean.meta.types.Typedef : castToBase;
+
+import ocean.core.Traits : FieldName, FieldType, GetField;
+
 
 
 /*******************************************************************************
@@ -91,9 +97,6 @@ static this ()
 
 struct StructSerializer ( bool AllowUnions = false )
 {
-    import ocean.core.Traits : ContainsDynamicArray, FieldName, FieldType, GetField;
-    import ocean.core.Traits : isAssocArrayType;
-
     static:
 
     /***************************************************************************
@@ -478,7 +481,7 @@ struct StructSerializer ( bool AllowUnions = false )
 
         static if (is (T == struct))                                            // recurse into substruct
         {                                                                       // if it contains dynamic
-            const RecurseIntoStruct = ContainsDynamicArray!(typeof (T.tupleof));// arrays
+            const RecurseIntoStruct = hasIndirections!(typeof (T.tupleof));// arrays
         }
         else
         {
@@ -541,23 +544,24 @@ struct StructSerializer ( bool AllowUnions = false )
             alias typeof(field) T;
             const field_name = FieldName!(i, S);
 
-            static if ( is(T == struct) && !is(T.IsTypedef) )
+            static if ( is(T == struct) && !isTypedef!(T) )
             {
                 serializer.openStruct(data, field_name);
                 serialize_(&field, serializer, data);                            // recursive call
                 serializer.closeStruct(data, field_name);
             }
-            else static if( is(T U : U[]) )
+            else static if ( is(T U : U[]) )
             {
                 // slice array (passing a static array as ref is not allowed)
                 U[] array = field;
 
-                static if ( is(BaseTypeOfArrays!(U) == struct) )
+                static if ( is(StripAllArrays!(U) == struct) )
                 {
                     serializeStructArray(array, field_name, serializer, data);
                 }
-                else static if ( isStaticArrayType!(T) &&
-                                 is ( typeof(serializer.serializeStaticArray!(T)) ) )
+                else static if (
+                       isArrayType!(T) == ArrayKind.Static
+                    && is(typeof(serializer.serializeStaticArray!(T))) )
                 {
                     serializer.serializeStaticArray(data, field_name, array);
                 }
@@ -570,18 +574,15 @@ struct StructSerializer ( bool AllowUnions = false )
             {
                 mixin AssertSupportedType!(T, S, i);
 
-                static if (isTypedef!(T))
+                static if ( isTypedef!(T) == TypedefKind.Keyword )
                 {
-                    mixin(`
-                    static if ( is(T B == typedef) )
-                    {
-                        serializer.serialize(data, cast(B)(field), field_name);
-                    }
-                    `);
+                    auto lvalue = castToBase(field);
+                    serializer.serialize(data, lvalue, field_name);
                 }
                 else static if ( is(T B == enum) )
                 {
-                    serializer.serialize(data, cast(B)(field), field_name);
+                    auto lvalue = cast(B)(field);
+                    serializer.serialize(data, lvalue, field_name);
                 }
                 else
                 {
@@ -691,7 +692,7 @@ struct StructSerializer ( bool AllowUnions = false )
             {
                 mixin AssertSupportedType!(T, S, i);
 
-                static if (isTypedef!(T))
+                static if ( isTypedef!(T) == TypedefKind.Keyword )
                 {
                     mixin(`
                     else static if ( is(T B == typedef) )
@@ -746,38 +747,6 @@ struct StructSerializer ( bool AllowUnions = false )
 
     /***************************************************************************
 
-        Tells whether T is a reference type. That is
-
-            - pointer, dynamic array, associative array,
-            - class, interface
-            - delegate, function reference
-
-        Template parameter:
-            T = type to check
-
-        Evaluates to:
-            true if T is a reference type or false otherwise
-
-    ***************************************************************************/
-
-    template isReferenceType ( T )
-    {
-        static if (is (T U == U[]) || is (T U == U*))                           // dynamic array or pointer
-        {
-            const isReferenceType = true;
-        }
-        else
-        {
-            const isReferenceType = is (T == class)      ||
-                                    is (T == interface)  ||
-                                    isAssocArrayType!(T) ||
-                                    is (T == delegate)   ||
-                                    is (T == function);
-        }
-    }
-
-    /***************************************************************************
-
         Asserts that T, which is the type of the i-th field of S, is a supported
         field type for struct serialization; typedefs and unions are currently
         not supported.
@@ -797,7 +766,7 @@ struct StructSerializer ( bool AllowUnions = false )
                       ~ "(affects " ~ FieldInfo!(T, S, i) ~ ") -- use AllowUnions "
                       ~ "template flag to enable shallow serialization of unions");
 
-        static if (isAssocArrayType!(T))
+        static if (isArrayType!(T) == ArrayKind.Associative)
             pragma (msg, typeof (*this).stringof ~
                     ~ " - Warning: content of associative array will be discarded "
                     ~ "(affects " ~ FieldInfo!(T, S, i) ~ ')');
