@@ -116,7 +116,7 @@ class Pipe
         }
         else
         {
-            assert(false, "Unknown platform");
+            static assert(false, "Unknown platform");
         }
     }
 
@@ -142,7 +142,7 @@ class Pipe
         }
         else
         {
-            assert(false, "Currently only supported on Posix");
+            static assert(false, "Currently only supported on Posix");
         }
     }
 
