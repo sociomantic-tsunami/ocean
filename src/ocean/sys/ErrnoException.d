@@ -126,7 +126,7 @@ public class ErrnoException : Exception
                 "extra",
                 "FUNCTION"
             );
-            assert (false);
+            test(false);
         }
         catch (ErrnoException e)
         {
@@ -208,7 +208,7 @@ public class ErrnoException : Exception
         try
         {
             (new ErrnoException).enforceRetPtr!(func).call();
-            assert (false);
+            test(false);
         }
         catch (ErrnoException e)
         {
@@ -255,7 +255,7 @@ public class ErrnoException : Exception
         try
         {
             (new ErrnoException).enforceRetCode!(func)().call(41, 43);
-            assert (false);
+            test(false);
         }
         catch (ErrnoException e)
         {
