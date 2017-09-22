@@ -23,7 +23,7 @@
 module ocean.sys.HomeFolder;
 
 import ocean.transition;
-
+import ocean.core.Verify;
 import TextUtil = ocean.text.Util;
 import Path = ocean.io.Path;
 import ocean.sys.Environment;
@@ -129,13 +129,10 @@ version (Posix)
     ******************************************************************************/
 
     private cstring expandFromEnvironment(cstring path)
-    in
     {
-        assert(path.length >= 1);
-        assert(path[0] == '~');
-    }
-    body
-    {
+        verify(path.length >= 1);
+        verify(path[0] == '~');
+
         // Get HOME and use that to replace the tilde.
         char[] home = homeFolder;
         if (home is null)
@@ -157,8 +154,8 @@ version (Posix)
 
     private cstring expandFromDatabase(cstring path)
     {
-        assert(path.length > 2 || (path.length == 2 && path[1] != '/'));
-        assert(path[0] == '~');
+        verify(path.length > 2 || (path.length == 2 && path[1] != '/'));
+        verify(path[0] == '~');
 
         // Extract username, searching for path separator.
         cstring username;
@@ -173,7 +170,7 @@ version (Posix)
             username = path[1..last_char] ~ '\0';
         }
 
-        assert(last_char > 1);
+        verify(last_char > 1);
 
         // Reserve C memory for the getpwnam_r() function.
         passwd result;

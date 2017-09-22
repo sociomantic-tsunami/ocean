@@ -16,7 +16,7 @@
 module ocean.sys.Process;
 
 import ocean.transition;
-
+import ocean.core.Verify;
 import ocean.core.Array : copy;
 import ocean.io.model.IFile;
 import ocean.io.Console;
@@ -322,12 +322,8 @@ class Process
      *            variables; the variable name must be the key of each entry.
      */
     public this(cstring command, istring[istring] env)
-    in
     {
-        assert(command.length > 0);
-    }
-    body
-    {
+        verify(command.length > 0);
         _args = splitArgs(command);
         _env = env;
     }
@@ -360,13 +356,9 @@ class Process
      *            variables; the variable name must be the key of each entry.
      */
     public this(Const!(mstring)[] args, istring[istring] env)
-    in
     {
-        assert(args.length > 0);
-        assert(args[0].length > 0);
-    }
-    body
-    {
+        verify(args.length > 0);
+        verify(args[0].length > 0);
         _args.copy(args);
         _env = env;
     }
@@ -862,13 +854,10 @@ class Process
      * not be empty before calling this method.
      */
     public Process execute()
-    in
     {
-        assert(!_running);
-        assert(_args.length > 0 && _args[0] !is null);
-    }
-    body
-    {
+        verify(!_running);
+        verify(_args.length > 0 && _args[0] !is null);
+
         version (Posix)
         {
             // We close the pipes that could have been left open from a previous
@@ -1267,7 +1256,7 @@ class Process
             {
                 int rc;
 
-                assert(_pid > 0);
+                verify(_pid > 0);
 
                 if (.kill(_pid, SIGTERM) != -1)
                 {
@@ -1322,13 +1311,13 @@ class Process
      * e.g. first "second param" third
      */
     protected static cstring[] splitArgs(cstring command, cstring delims = " \t\r\n")
-    in
     {
-        assert(!contains(delims, '"'),
-               "The argument delimiter string cannot contain a double quotes ('\"') character");
-    }
-    body
-    {
+        verify(
+            !contains(delims, '"'),
+            "The argument delimiter string cannot contain a double "
+                ~ "quotes ('\"') character"
+        );
+
         enum State
         {
             Start,
@@ -1545,12 +1534,10 @@ class Process
          * calls.
          */
         protected static int execvpe(cstring filename, char*[] argv, char*[] envp)
-        in
-        {
-            assert(filename.length > 0);
-        }
         body
         {
+            verify(filename.length > 0);
+
             int rc = -1;
             char* str;
 
