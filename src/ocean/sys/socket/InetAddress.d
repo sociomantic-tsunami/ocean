@@ -61,6 +61,8 @@ import core.stdc.errno: errno, EAFNOSUPPORT;
 
 import ocean.core.TypeConvert;
 
+import ocean.core.Verify;
+
 /******************************************************************************
 
     Flags supported by getnameinfo().
@@ -273,13 +275,12 @@ struct InetAddress ( bool IPv6 = false )
      **************************************************************************/
 
     mstring inet_ntop ( mstring dst )
-    in
     {
-        assert (dst.length >= this.addrstrlen,
-                "dst.length expected to be at least addrstrlen");
-    }
-    body
-    {
+        verify(
+            dst.length >= this.addrstrlen,
+            "dst.length expected to be at least addrstrlen"
+        );
+
         auto address_p = .inet_ntop(this.family, this.address_n.ptr, dst.ptr,
             castFrom!(size_t).to!(int)(dst.length));
 
@@ -370,12 +371,8 @@ struct InetAddress ( bool IPv6 = false )
      **************************************************************************/
 
     public sockaddr* opAssign ( Addr* addr )
-    in
     {
-        assert (addr !is null);
-    }
-    body
-    {
+        verify(addr !is null);
         this.addr = *addr;
 
         return cast (sockaddr*) &this.addr;

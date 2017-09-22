@@ -33,6 +33,8 @@ import ocean.core.Array: concat;
 
 import ocean.core.TypeConvert;
 
+import ocean.core.Verify;
+
 /*******************************************************************************
 
     Address information struct as returned by getaddrinfo().
@@ -139,31 +141,40 @@ struct addrinfo
     ***************************************************************************/
 
     mstring ipAddress ( mstring dst )
-    in
-    {
-        assert (this.ai_addr !is null);
-
-        switch (this.ai_family)
-        {
-            case AF_INET:
-                assert (dst.length >= INET_ADDRSTRLEN,
-                        "dst.length expected to be at least " ~ INET_ADDRSTRLEN.stringof);
-                break;
-
-            case AF_INET6:
-                assert (dst.length >= INET6_ADDRSTRLEN,
-                        "dst.length expected to be at least " ~ INET6_ADDRSTRLEN.stringof);
-                break;
-
-            default: // will fail with EAFNOSUPPORT anyway
-        }
-    }
     out (result)
     {
         if (result.length) assert (result.ptr is dst.ptr);
     }
     body
     {
+        void sanity_check ( )
+        {
+            verify(this.ai_addr !is null);
+
+            switch (this.ai_family)
+            {
+                case AF_INET:
+                    verify(
+                        dst.length >= INET_ADDRSTRLEN,
+                        "dst.length expected to be at least "
+                            ~ INET_ADDRSTRLEN.stringof
+                    );
+                    break;
+
+                case AF_INET6:
+                    verify(
+                        dst.length >= INET6_ADDRSTRLEN,
+                        "dst.length expected to be at least "
+                            ~ INET6_ADDRSTRLEN.stringof
+                    );
+                    break;
+
+                default: // will fail with EAFNOSUPPORT anyway
+            }
+        }
+
+        sanity_check();
+
         void* addr;
 
         switch (this.ai_family)
@@ -206,12 +217,8 @@ struct addrinfo
      **************************************************************************/
 
     ushort port ( )
-    in
     {
-        assert (this.ai_addr !is null);
-    }
-    body
-    {
+        verify(this.ai_addr !is null);
         .errno = 0;
 
         switch (this.ai_family)

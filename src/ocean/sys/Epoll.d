@@ -17,6 +17,7 @@ module ocean.sys.Epoll;
 
 
 import ocean.transition;
+import ocean.core.Verify;
 import core.sys.posix.unistd: close;
 
 /*****************************************************************************
@@ -697,16 +698,13 @@ struct Epoll
      **************************************************************************/
 
     public int wait ( epoll_event_t[] events, int timeout_ms = -1 )
-    in
-    {
-        assert (events.length <= int.max);
-    }
     out (n)
     {
         assert (n <= cast (int) events.length);
     }
     body
     {
+        verify(events.length <= int.max);
         return epoll_wait(this.fd, events.ptr, cast (int) events.length, timeout_ms);
     }
 
