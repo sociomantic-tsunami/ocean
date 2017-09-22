@@ -152,7 +152,7 @@ version=discrete;
 class Document(T_) : PullParser!(T_)
 {
         public alias NodeImpl*  Node;
-        
+
         private alias Const!(T_)     T;
         private alias T_             MutT;
         private alias XmlPath!(MutT) XmlPathT;
@@ -2080,6 +2080,99 @@ public class XmlPath(T)
                 freelist[freeIndex] = node;
                 return ++freeIndex;
         }
+}
+
+version ( UnitTest )
+{
+    import ocean.core.Test;
+    import ocean.text.xml.DocPrinter;
+}
+
+unittest
+{
+    auto doc = new Document!(char);
+    auto printer = new DocPrinter!(char);
+    mstring buffer;
+
+    auto doc1 = `
+<root>123456789
+  <second>second</second>
+  <third>third</third>
+</root>`;
+
+    auto doc2 = `
+<root>12345
+  <one>one</one>
+  <two>two</two>
+</root>`;
+
+    void generateBasicXML (cstring root_value, cstring node1, cstring value1,
+        cstring node2, cstring value2)
+    {
+        // A single text buffer is used to hold the elements to test that the
+        // elements do not just slice the input but actually copy it to the
+        // elements.
+        Array.copy(buffer, root_value);
+
+        auto root = doc.tree.element(null, "root", buffer);
+
+        Array.copy(buffer, node1);
+        root.element(null, node1, buffer);
+
+        Array.copy(buffer, node2);
+        root.element(null, node2, buffer);
+    }
+
+    // Test basic XML file generation.
+    generateBasicXML("123456789", "second", "second", "third", "third");
+    auto result1 = printer.print(doc);
+    test!("==")(result1, doc1);
+
+    // Now do a second document generation that re-uses the same root doc and
+    // check for no memory allocations.
+    testNoAlloc({
+        doc.reset();
+        generateBasicXML("12345", "one", "one", "two", "two");
+    }());
+
+    auto result2 = printer.print(doc);
+    test!("==")(result2, doc2);
+}
+
+unittest
+{
+    auto doc = new Document!(char);
+    auto printer = new DocPrinter!(char);
+    mstring buffer;
+
+    auto complex_doc = `
+<VAST version="3.0">
+  <InLine>
+    <AdTitle>VAST 3.0 Instream Test</AdTitle>
+    <Creatives>
+      <Creative id="123456" adId="654321"/>
+    </Creatives>
+  </InLine>
+</VAST>`;
+
+    // Generate a more complex XML document.
+    auto root = doc.tree.element(null, "VAST").attribute(null, "version", "3.0");
+
+    auto inline = root.element(null, "InLine");
+
+    Array.copy(buffer, "VAST 3.0 Instream Test");
+    inline.element(null, "AdTitle", buffer);
+
+    auto creatives = inline.element(null, "Creatives");
+
+    Array.copy(buffer, "123456");
+    auto creative = creatives.element(null, `Creative`).
+        attribute(null, `id`, buffer);
+    Array.copy(buffer, "654321");
+    creative.attribute(null, `adId`, buffer);
+
+    auto complex_result = printer.print(doc);
+    test!("==")(complex_result, complex_doc);
 }
 
 
