@@ -17,6 +17,7 @@
 
 module ocean.text.xml.Document;
 
+import Array = ocean.core.Array;
 import ocean.transition;
 
 package import ocean.text.xml.PullParser;
@@ -409,9 +410,12 @@ else
                 p.lastChild =
                 p.firstAttr =
                 p.lastAttr = null;
-                p.rawValue =
-                p.localName =
-                p.prefixed = null;
+                p.rawValue.length = 0;
+                enableStomping(p.rawValue);
+                p.localName.length = 0;
+                enableStomping(p.localName);
+                p.prefixed.length = 0;
+                enableStomping(p.prefixed);
 }
                 return p;
         }
@@ -588,9 +592,9 @@ version (Filter)
                 public void*            user;           /// open for usage
                 package Document        doc;            // owning document
                 package XmlNodeType     id;             // node type
-                package T[]             prefixed;       // namespace
-                package T[]             localName;      // name
-                package T[]             rawValue;       // data value
+                package MutT[]          prefixed;       // namespace
+                package MutT[]          localName;      // name
+                package MutT[]          rawValue;       // data value
 
                 package Node            host,           // parent node
                                         prevSibling,    // prior
@@ -688,7 +692,7 @@ version (Filter)
 
                 Node prefix (T[] replace)
                 {
-                        prefixed = replace;
+                        Array.copy(this.prefixed, replace);
                         return this;
                 }
 
@@ -711,7 +715,7 @@ version (Filter)
 
                 Node name (T[] replace)
                 {
-                        localName = replace;
+                        Array.copy(this.localName, replace);
                         return this;
                 }
 
@@ -749,7 +753,7 @@ version(discrete)
                                      if (child.id is XmlNodeType.Data)
                                          return child.value (val);
 }
-                        rawValue = val;
+                        Array.copy(this.rawValue, val);
                         mutate;
                 }
 
@@ -992,7 +996,7 @@ version(discrete)
 }
 else
 {
-                        node.rawValue = value;
+                        Array.copy(node.rawValue, value);
 }
                         return node;
                 }
@@ -1141,8 +1145,8 @@ else
 
                 private Node set (T[] prefix, T[] local)
                 {
-                        this.localName = local;
-                        this.prefixed = prefix;
+                        Array.copy(this.localName, local);
+                        Array.copy(this.prefixed, prefix);
                         return this;
                 }
 
@@ -1155,7 +1159,7 @@ else
                 private Node create (XmlNodeType type, T[] value)
                 {
                         auto node = document.allocate;
-                        node.rawValue = value;
+                        Array.copy(node.rawValue, value);
                         node.id = type;
                         return node;
                 }
