@@ -272,7 +272,24 @@ version(d)
 
         ***********************************************************************/
 
-        final Document header (Immut!(T)[] encoding = null)
+        final Document header ()
+        {
+                const header = `xml version="1.0" encoding="UTF-8"`;
+                root.prepend (root.create(XmlNodeType.PI, header));
+                return this;
+        }
+
+        /***********************************************************************
+
+                Prepend an XML header to the document tree. Note that this
+                method currently allocates.
+
+                Params:
+                    encoding = the encoding of the xml document
+
+        ***********************************************************************/
+
+        final Document header (Immut!(T)[] encoding)
         {
                 if (encoding.length)
                     encoding = `xml version="1.0" encoding="`~encoding~`"`;
