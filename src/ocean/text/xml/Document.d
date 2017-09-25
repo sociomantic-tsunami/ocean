@@ -2111,13 +2111,13 @@ unittest
     auto printer = new DocPrinter!(char);
     mstring buffer;
 
-    auto doc1 = `
+    auto doc1 = `<?xml version="1.0" encoding="UTF-8"?>
 <root>123456789
   <second>second</second>
   <third>third</third>
 </root>`;
 
-    auto doc2 = `
+    auto doc2 = `<?xml version="1.0" encoding="UTF-8"?>
 <root>12345
   <one>one</one>
   <two>two</two>
@@ -2130,6 +2130,8 @@ unittest
         // elements do not just slice the input but actually copy it to the
         // elements.
         Array.copy(buffer, root_value);
+
+        doc.header();
 
         auto root = doc.tree.element(null, "root", buffer);
 
