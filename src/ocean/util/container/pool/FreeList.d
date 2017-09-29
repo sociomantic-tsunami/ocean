@@ -39,6 +39,11 @@ import ocean.core.Array : pop;
 import ocean.core.Traits;
 
 import ocean.transition;
+import ocean.core.Buffer;
+import ocean.core.TypeConvert;
+
+version (UnitTest)
+    import ocean.core.Test;
 
 /*******************************************************************************
 
@@ -312,6 +317,36 @@ version ( UnitTest )
         }
     }
 
+    /***************************************************************************
+
+        Buffer free list tester.
+
+    ***************************************************************************/
+
+    alias FreeList!(Buffer!(void)) BufferFreeList;
+    class BufferFreeListTester : FreeListTester!(BufferFreeList.ItemType)
+    {
+        public this ( ) { super(new BufferFreeList); }
+
+        protected override Item newItem ( )
+        {
+            return new Buffer!(void);
+        }
+
+        protected override void setItem ( ref Item item, size_t i )
+        {
+            *item ~= 40;
+            *item ~= 41;
+            *item ~= 42;
+        }
+
+        protected override void checkItem ( ref Item item, size_t i )
+        {
+            void[] a = (*item)[];
+            void[] b = arrayOf!(ubyte)(40, 41, 42);
+            .test!("==")(a, b);
+        }
+    }
 
     /***************************************************************************
 
@@ -368,6 +403,12 @@ unittest
     // Struct free list test
     {
         scope fl = new StructFreeListTester;
+        fl.test();
+    }
+
+    // Buffer free list test
+    {
+        scope fl = new BufferFreeListTester;
         fl.test();
     }
 
