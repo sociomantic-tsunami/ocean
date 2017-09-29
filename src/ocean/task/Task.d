@@ -287,6 +287,7 @@ public abstract class Task : ISuspendable
     {
         this.fiber = fiber;
         this.fiber.active_task = this;
+        this.to_kill = false;
         if (fiber.state == fiber.state.TERM)
         {
             // cast to ignore return value
