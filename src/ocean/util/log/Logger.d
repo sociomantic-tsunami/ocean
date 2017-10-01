@@ -975,7 +975,7 @@ unittest
     const TestStr = "Ce qui se conçoit bien s'énonce clairement - Et les mots pour le dire arrivent aisément";
     scope appender = new Buffer();
     char[32] log_buffer;
-    Logger log = Log.lookup("ocean.util.log.Logger.TestLogTrim")
+    Logger log = (new Logger(Log.hierarchy(), "dummy"))
         .additive(false).add(appender).buffer(log_buffer);
     log.info("{}", TestStr);
     log.error(TestStr);

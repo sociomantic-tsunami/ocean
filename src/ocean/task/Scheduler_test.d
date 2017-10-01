@@ -134,10 +134,19 @@ unittest
         }
     }
 
+    static class MainTask : Task
+    {
+        override void run ( )
+        {
+            theScheduler.schedule(new DummyTask);
+            testThrown!(SuspendQueueFullException)(
+                theScheduler.processEvents());
+        }
+    }
+
     SchedulerConfiguration config;
     config.suspended_task_limit = 1;
     initScheduler(config);
-    theScheduler.schedule(new DummyTask);
-    testThrown!(SuspendQueueFullException)(
-        theScheduler.schedule(new DummyTask));
+    theScheduler.schedule(new MainTask);
+    theScheduler.eventLoop();
 }
