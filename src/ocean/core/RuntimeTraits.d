@@ -34,7 +34,7 @@ TypeInfo realType (TypeInfo type)
         // makes use of realType to strip away qualifiers instead of adding
         // workaround to all other functions
 
-        auto def = cast(TypeInfo_Typedef) type;
+        auto def = cast(TypeInfo_Enum) type;
         if (def !is null)
         {
             return def.base;
