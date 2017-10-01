@@ -822,8 +822,12 @@ class Layout(T)
         if (cast(TypeInfo_Enum) tinfo)
             return dispatch (result, format, (cast(TypeInfo_Enum) tinfo).base, p);
 
-        if (cast(TypeInfo_Typedef) tinfo)
-            return dispatch (result, format, (cast(TypeInfo_Typedef) tinfo).base, p);
+        version (D_Version2) {}
+        else
+        {
+            if (cast(TypeInfo_Typedef) tinfo)
+                return dispatch (result, format, (cast(TypeInfo_Typedef) tinfo).base, p);
+        }
 
         if (auto s = cast(TypeInfo_Struct) tinfo)
         {
