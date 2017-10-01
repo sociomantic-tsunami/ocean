@@ -283,6 +283,7 @@ public abstract class Task : ISuspendable
 
         this.fiber = fiber;
         this.fiber.active_task = this;
+        this.to_kill = false;
         if (fiber.state == fiber.state.TERM)
         {
             // cast to ignore return value
@@ -477,7 +478,16 @@ public abstract class Task : ISuspendable
             Task.task_pending_cleanup = this;
             this.fiber.yieldAndThrow(e);
             Task.task_pending_cleanup = null;
-            return true;
+
+            // if task was resumed with `kill` from 'pending cleanup' state
+            // just quit the method as if it was originally terminated by kill
+            if (this.to_kill)
+            {
+                debug_trace("<{}> termination (killed)", cast(void*) this);
+                return false;
+            }
+            else
+                return true;
         }
 
         debug_trace("<{}> termination (end of main function)", cast(void*) this);
