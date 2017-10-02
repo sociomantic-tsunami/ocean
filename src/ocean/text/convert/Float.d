@@ -125,6 +125,7 @@ char[] toString (NumType d, uint decimals=Dec, int e=Exp)
 
  ******************************************************************************/
 
+deprecated("Format for wchar/dchar is deprecated")
 wchar[] toString16 (NumType d, uint decimals=Dec, int e=Exp)
 {
     wchar[64] tmp = void;
@@ -141,6 +142,7 @@ wchar[] toString16 (NumType d, uint decimals=Dec, int e=Exp)
 
  ******************************************************************************/
 
+deprecated("Format for wchar/dchar is deprecated")
 dchar[] toString32 (NumType d, uint decimals=Dec, int e=Exp)
 {
     dchar[64] tmp = void;
