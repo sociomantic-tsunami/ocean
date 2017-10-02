@@ -57,8 +57,6 @@ module ocean.text.convert.Utf;
 
 import ocean.transition;
 
-version(UnitTest) import ocean.core.Test;
-
 public extern (C) void onUnicodeError (cstring msg, size_t idx = 0);
 
 /*******************************************************************************
@@ -96,15 +94,6 @@ public void toString (Const!(char)[] input, size_t delegate(cstring) dg)
     dg(input);
 }
 
-// Need to use assert to not create circular dependency
-unittest
-{
-    const istring original = "Hello \u262F \u0842 \uEFFF";
-    cstring r;
-    toString(original, (cstring x) { r ~= x; return x.length; });
-    test(original == r);
-}
-
 /// Ditto
 public void toString (Const!(wchar)[] input, size_t delegate(cstring) dg)
 {
@@ -129,15 +118,6 @@ public void toString (Const!(wchar)[] input, size_t delegate(cstring) dg)
         else
             onUnicodeError("Unicode.toString : Surrogate pair not supported");
     }
-}
-
-// Need to use assert to not create circular dependency
-unittest
-{
-    const wchar[] original = "Hello \u262F \u1666 \uEFFF"w;
-    cstring r;
-    toString(original, (cstring x) { r ~= x; return x.length; });
-    test("Hello \u262F \u1666 \uEFFF" == r);
 }
 
 /// Ditto
@@ -172,15 +152,6 @@ public void toString (Const!(dchar)[] input, size_t delegate(cstring) dg)
         else
             onUnicodeError("Unicode.toString : invalid dchar", idx);
     }
-}
-
-// Need to use assert to not create circular dependency
-unittest
-{
-    const dchar[] original = "Hello \u262F \u0842 \uE420"d;
-    cstring r;
-    toString(original, (cstring x) { r ~= x; return x.length; });
-    test("Hello \u262F \u0842 \uE420" == r);
 }
 
 
@@ -816,16 +787,6 @@ Const!(T)[] fromString8 (T) (cstring s, T[] dst)
         return .toString32 (s, dst);
     else
         static assert (false);
-}
-
-unittest
-{
-    auto s1 = fromString8!(char)("abc", null);
-    auto s2 = fromString8!(wchar)("abc", null);
-    auto s3 = fromString8!(dchar)("abc", null);
-
-    char[5] buff;
-    auto s4 = fromString8("abc", buff);
 }
 
 /*******************************************************************************

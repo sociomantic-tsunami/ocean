@@ -37,8 +37,6 @@ import ocean.math.IEEE;
 static import tsm = core.stdc.math;
 static import Integer = ocean.text.convert.Integer_tango;
 
-version(UnitTest) import ocean.core.Test;
-
 private alias real NumType;
 
 /******************************************************************************
@@ -263,23 +261,6 @@ public Const!(T)[] format (T, V) (T[] output, V v, in T[] fmt)
 
     return format!(T)(output, v, dec, exp, pad);
 }
-
-
-unittest
-{
-    char[64] buff;
-
-    test(format(buff, 1.23f, cstring.init ) == "1.23" );
-    test(format(buff, 1.23f, "f" ) == "1.23" );
-    test(format(buff, 1.23456789L, "f4") == "1.2346" );
-    test(format(buff, 0.0001, "e4") == "1.0000e-04");
-    test(format(buff, 0.0001, "e4") == "1.0000e-04");
-
-    // Unlike Layout.floater, 'x' and 'X' aren't handled.
-    //assert(format(buff, 8400.0, "X") == "0X40C0680000000000");
-    test(format(buff, 8400.0, "X") == "8400.00");
-}
-
 
 /******************************************************************************
 
@@ -650,26 +631,6 @@ private NumType pow10 (uint exp)
 /******************************************************************************
 
  ******************************************************************************/
-
-unittest
-{
-    char[164] tmp;
-
-    auto f = parse ("nan");
-    test (format(tmp, f) == "nan");
-    f = parse ("inf");
-    test (format(tmp, f) == "inf");
-    f = parse ("-nan");
-    test (format(tmp, f) == "-nan");
-    f = parse (" -inf");
-    test (format(tmp, f) == "-inf");
-
-    test (format (tmp, 3.14159, 6) == "3.14159");
-    test (format (tmp, 3.14159, 4) == "3.1416");
-    test (parse ("3.5") == 3.5);
-    test (format(tmp, parse ("3.14159"), 6) == "3.14159");
-    test (format(tmp, 0.09999, 2,  0, true) == "1.00e-01");
-}
 
 debug (Float)
 {
