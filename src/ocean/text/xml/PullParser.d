@@ -27,6 +27,11 @@ import Integer = ocean.text.convert.Integer_tango;
 
 import Utf = ocean.text.convert.Utf : toString;
 
+version (UnitTest)
+{
+    import ocean.core.Test;
+}
+
 /*******************************************************************************
 
         Use -version=whitespace to retain whitespace as data nodes. We
@@ -704,60 +709,51 @@ version (UnitTest)
 
 	void testParser(Ch)(PullParser!(Ch) itr)
 	{
-	  /*      assert(itr.next);
-	        assert(itr.value == "");
-	        assert(itr.type == XmlTokenType.Declaration, Integer.toString(itr.type));
-	        assert(itr.next);
-	        assert(itr.value == "version");
-	        assert(itr.next);
-	        assert(itr.value == "1.0");*/
-	        assert(itr.next);
-	        assert(itr.value == "element [ <!ELEMENT element (#PCDATA)>]");
-	        assert(itr.type == XmlTokenType.Doctype);
-	        assert(itr.next);
-	        assert(itr.localName == "element");
-	        assert(itr.type == XmlTokenType.StartElement);
-	        assert(itr.depth == 0);
-	        assert(itr.next);
-	        assert(itr.localName == "attr");
-	        assert(itr.value == "1");
-	        assert(itr.next);
-	        assert(itr.type == XmlTokenType.Attribute);
-	        assert(itr.localName == "attr2");
-	        assert(itr.value == "two");
-	        assert(itr.next);
-	        assert(itr.value == "comment");
-	        assert(itr.next);
-	        assert(itr.rawValue == "test&amp;&#x5a;");
-	        assert(itr.next);
-	        assert(itr.prefix == "qual");
-	        assert(itr.localName == "elem");
-	        assert(itr.next);
-	        assert(itr.type == XmlTokenType.EndEmptyElement);
-	        assert(itr.next);
-	        assert(itr.localName == "el2");
-	        assert(itr.depth == 1);
-	        assert(itr.next);
-	        assert(itr.localName == "attr3");
-	        assert(itr.value == "3three", itr.value);
-	        assert(itr.next);
-	        assert(itr.rawValue == "sdlgjsh");
-	        assert(itr.next);
-	        assert(itr.localName == "el3");
-	        assert(itr.depth == 2);
-	        assert(itr.next);
-	        assert(itr.type == XmlTokenType.EndEmptyElement);
-	        assert(itr.next);
-	        assert(itr.value == "data");
-	        assert(itr.next);
-	      //  assert(itr.qvalue == "pi", itr.qvalue);
-	      //  assert(itr.value == "test");
-	        assert(itr.rawValue == "pi test", itr.rawValue);
-	        assert(itr.next);
-	        assert(itr.localName == "el2");
-	        assert(itr.next);
-	        assert(itr.localName == "element");
-	        assert(!itr.next);
+	        test(itr.next);
+	        test(itr.value == "element [ <!ELEMENT element (#PCDATA)>]");
+	        test(itr.type == XmlTokenType.Doctype);
+	        test(itr.next);
+	        test(itr.localName == "element");
+	        test(itr.type == XmlTokenType.StartElement);
+	        test(itr.depth == 0);
+	        test(itr.next);
+	        test(itr.localName == "attr");
+	        test(itr.value == "1");
+	        test(itr.next);
+	        test(itr.type == XmlTokenType.Attribute);
+	        test(itr.localName == "attr2");
+	        test(itr.value == "two");
+	        test(itr.next);
+	        test(itr.value == "comment");
+	        test(itr.next);
+	        test(itr.rawValue == "test&amp;&#x5a;");
+	        test(itr.next);
+	        test(itr.prefix == "qual");
+	        test(itr.localName == "elem");
+	        test(itr.next);
+	        test(itr.type == XmlTokenType.EndEmptyElement);
+	        test(itr.next);
+	        test(itr.localName == "el2");
+	        test(itr.depth == 1);
+	        test(itr.next);
+	        test(itr.localName == "attr3");
+	        test(itr.value == "3three", itr.value);
+	        test(itr.next);
+	        test(itr.rawValue == "sdlgjsh");
+	        test(itr.next);
+	        test(itr.localName == "el3");
+	        test(itr.depth == 2);
+	        test(itr.next);
+	        test(itr.type == XmlTokenType.EndEmptyElement);
+	        test(itr.next);
+	        test(itr.value == "data");
+	        test(itr.next);
+	        test(itr.rawValue == "pi test", itr.rawValue);
+	        test(itr.next);
+	        test(itr.localName == "el2");
+	        test(itr.next);
+	        test(itr.localName == "element");
+	        test(!itr.next);
 	}
 
 
