@@ -268,39 +268,3 @@ void escape(T, TC) (T[] src, void delegate(TC[]) emit)
         else
            emit (t [0 .. e - t]);
 }
-
-
-/******************************************************************************
-
-******************************************************************************/
-
-debug (JsonEscape)
-{
-        import ocean.io.Stdout;
-
-        void main()
-        {
-                escape ("abc");
-                assert (escape ("abc") == "abc");
-                assert (escape ("/abc") == `\/abc`, escape ("/abc"));
-                assert (escape ("ab\\c") == `ab\\c`, escape ("ab\\c"));
-                assert (escape ("abc\"") == `abc\"`);
-                assert (escape ("abc/") == `abc\/`);
-                assert (escape ("\n\t\r\b\f") == `\n\t\r\b\f`);
-
-                unescape ("abc");
-                unescape ("abc\\u0020x", (char[] p){Stdout(p);});
-                assert (unescape ("abc") == "abc");
-                assert (unescape ("abc\\") == "abc\\");
-                assert (unescape ("abc\\t") == "abc\t");
-                assert (unescape ("abc\\tc") == "abc\tc");
-                assert (unescape ("\\t") == "\t");
-                assert (unescape ("\\tx") == "\tx");
-                assert (unescape ("\\r\\rx") == "\r\rx");
-                assert (unescape ("abc\\t\\n\\bc") == "abc\t\n\bc");
-
-                assert (unescape ("abc\"\\n\\bc") == "abc\"\n\bc");
-                assert (unescape ("abc\\u002bx") == "abc+x");
-        }
-
-}
