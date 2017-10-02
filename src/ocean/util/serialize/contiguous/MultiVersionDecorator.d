@@ -17,37 +17,29 @@
 
 module ocean.util.serialize.contiguous.MultiVersionDecorator;
 
-
 import ocean.transition;
-
-import ocean.stdc.string : memmove;
-import ocean.math.Math;
-
-import ocean.core.Enforce,
-       ocean.util.container.ConcatBuffer,
-       ocean.core.StructConverter : structConvert;
-
-import ocean.util.serialize.Version,
-       ocean.util.serialize.model.VersionDecoratorMixins;
-
-import ocean.util.serialize.contiguous.Serializer,
-       ocean.util.serialize.contiguous.Deserializer,
-       ocean.util.serialize.contiguous.Contiguous,
-       ocean.util.serialize.contiguous.model.LoadCopyMixin;
 
 import ocean.core.Buffer;
 import ocean.core.Verify;
 import ocean.core.Exception;
+import ocean.core.Enforce;
+import ocean.core.StructConverter : structConvert;
+
+import ocean.stdc.string : memmove;
+import ocean.math.Math : abs;
+import ocean.util.container.ConcatBuffer;
+
+import ocean.util.serialize.Version;
+import ocean.util.serialize.contiguous.Serializer;
+import ocean.util.serialize.contiguous.Deserializer;
+import ocean.util.serialize.contiguous.Contiguous;
 
 version (UnitTest)
 {
-    import core.memory;
-
-    import ocean.core.Array;
+    import ocean.core.array.Search : rfind;
     import ocean.core.Test;
     import ocean.text.convert.Formatter;
 }
-
 
 /*******************************************************************************
 
@@ -62,46 +54,21 @@ version (UnitTest)
 
 class VersionDecorator
 {
-    /***************************************************************************
-
-        Convenience shortcut
-
-    ***************************************************************************/
-
+    /// Convenience shortcut
     public alias VersionDecorator This;
 
-    /***************************************************************************
-
-        Reused exception instance
-
-    ***************************************************************************/
-
+    /// Reused exception instance
     protected VersionHandlingException e;
 
-    /***************************************************************************
-
-        Allowed difference between struct versions to be converted in one go
-
-    ***************************************************************************/
-
+    /// Allowed difference between struct versions to be converted in one go
     private size_t conversion_limit;
 
-    /***************************************************************************
-
-        Persistent buffer reused for temporary allocations needed for struct
-        conversions between different versions
-
-    ***************************************************************************/
-
+    /// Persistent buffer reused for temporary allocations needed for struct
+    /// conversions between different versions
     private ConcatBuffer!(void) convert_buffer;
 
-    /***************************************************************************
-
-        Struct buffer for copy of deserialized data needed for in-place
-        deserialization with conversion
-
-    ***************************************************************************/
-
+    /// Struct buffer for copy of deserialized data needed for in-place
+    /// deserialization with conversion
     private Buffer!(void) struct_buffer;
 
     /***************************************************************************
@@ -116,7 +83,7 @@ class VersionDecorator
 
     ***************************************************************************/
 
-    public this (size_t limit = 10, size_t buffer_size = 512)
+    public this ( size_t limit = 10, size_t buffer_size = 512 )
     {
         this.e = new VersionHandlingException;
         this.conversion_limit =limit;
@@ -137,7 +104,7 @@ class VersionDecorator
 
     ***************************************************************************/
 
-    public static void[] store(S)(S input, ref Buffer!(void) buffer)
+    public static void[] store ( S ) ( S input, ref Buffer!(void) buffer )
     {
         alias Version.Info!(S) VInfo;
 
@@ -158,7 +125,7 @@ class VersionDecorator
     }
 
     /// ditto
-    public static void[] store(S, D)(S input, ref D[] buffer)
+    public static void[] store ( S, D ) ( S input, ref D[] buffer )
     {
         static assert (D.sizeof == 1,
             "buffer can't be interpreted as void[]");
@@ -183,7 +150,7 @@ class VersionDecorator
 
     ***************************************************************************/
 
-    public Contiguous!(S) load(S)(ref Buffer!(void) buffer)
+    public Contiguous!(S) load ( S ) ( ref Buffer!(void) buffer )
     {
         static assert (
             Version.Info!(S).exists,
@@ -227,7 +194,8 @@ class VersionDecorator
 
     ***************************************************************************/
 
-    public Contiguous!(S) loadCopy(S)(in void[] buffer, ref Contiguous!(S) copy_buffer)
+    public Contiguous!(S) loadCopy ( S ) ( in void[] buffer,
+        ref Contiguous!(S) copy_buffer )
     {
         static assert (
             Version.Info!(S).exists,
@@ -268,8 +236,8 @@ class VersionDecorator
 
     ***************************************************************************/
 
-    protected Contiguous!(S) handleVersion(S)
-        (ref Buffer!(void) buffer, Version.Type input_version)
+    protected Contiguous!(S) handleVersion ( S )
+        ( ref Buffer!(void) buffer, Version.Type input_version )
     {
         alias Version.Info!(S) VInfo;
 
@@ -316,8 +284,8 @@ class VersionDecorator
     }
 
     /// ditto
-    public Contiguous!(S) handleVersion(S)
-        (ref void[] buffer, Version.Type input_version)
+    public Contiguous!(S) handleVersion ( S )
+        ( ref void[] buffer, Version.Type input_version )
     {
         return handleVersion!(S)(*cast(Buffer!(void)*) &buffer,
             input_version);
@@ -340,7 +308,7 @@ class VersionDecorator
 
     ***************************************************************************/
 
-    public Contiguous!(S) convert (S, Source) (ref Buffer!(void) buffer)
+    public Contiguous!(S) convert ( S, Source ) ( ref Buffer!(void) buffer )
     {
         scope(exit)
         {
@@ -363,7 +331,7 @@ class VersionDecorator
     }
 
     /// ditto
-    public Contiguous!(S) convert (S, Source) (ref void[] buffer)
+    public Contiguous!(S) convert ( S, Source ) ( ref void[] buffer )
     {
         return convert!(S, Source)(*cast(Buffer!(void)*) &buffer);
     }
@@ -395,8 +363,8 @@ public class VersionHandlingException : Exception
 
     ***************************************************************************/
 
-    void enforceInputLength(S)(size_t input_length,
-        istring file = __FILE__, int line = __LINE__)
+    void enforceInputLength ( S ) ( size_t input_length,
+        istring file = __FILE__, int line = __LINE__ )
     {
         if (input_length <= Version.Type.sizeof)
         {
@@ -429,8 +397,8 @@ public class VersionHandlingException : Exception
 
     ***************************************************************************/
 
-    void throwCantConvert(S)(Version.Type input_version, istring file = __FILE__,
-        int line = __LINE__)
+    void throwCantConvert ( S ) ( Version.Type input_version,
+        istring file = __FILE__, int line = __LINE__ )
     {
         this.set("Got version ")
             .append(input_version)
