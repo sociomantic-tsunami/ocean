@@ -34,6 +34,8 @@ import ocean.transition;
 
 import ocean.core.ExceptionDefinitions;
 import ocean.math.IEEE;
+import ocean.core.Verify;
+
 static import tsm = core.stdc.math;
 static import Integer = ocean.text.convert.Integer_tango;
 
@@ -403,7 +405,7 @@ private Const!(char)* convertl (char* buf, real value, int ndigit,
         while (value <  0.1) { value *= 10;  --exp10; }
         while (value >= 1.0) { value /= 10;  ++exp10; }
     }
-    assert(isZero(value) || (0.1 <= value && value < 1.0));
+    verify(isZero(value) || (0.1 <= value && value < 1.0));
     //auto zero = pad ? int.max : 1;
     auto zero = 1;
     if (fflag)
@@ -579,7 +581,7 @@ NumType parse(T) (in T[] src, uint* ate=null)
     if (ate)
     {
         ptrdiff_t diff = p - src.ptr;
-        assert (diff >= 0 && diff <= uint.max);
+        verify (diff >= 0 && diff <= uint.max);
         *ate = cast(uint) diff;
     }
 

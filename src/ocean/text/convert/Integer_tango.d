@@ -31,6 +31,7 @@ module ocean.text.convert.Integer_tango;
 import ocean.transition;
 import ocean.core.ExceptionDefinitions;
 import ocean.core.Traits;
+import ocean.core.Verify;
 
 /******************************************************************************
 
@@ -319,7 +320,7 @@ Const!(T)[] formatter(T, N) (T[] dst, N i_, char type, char pre, int width)
         // Base 10 formatting
         if (index <= 3 && index)
         {
-            assert((i >= 0 && radix > 0) || (i < 0 && radix < 0));
+            verify((i >= 0 && radix > 0) || (i < 0 && radix < 0));
 
             do
                 *--p = numbers[abs(i % radix)];
@@ -639,13 +640,12 @@ T[] consume(T) (T[] src, bool fp=false)
 *******************************************************************************/
 
 private T abs (T) (T x)
-in
 {
     static if (T.min < 0)
-        assert(x != T.min, "abs cannot be called with x == " ~ T.stringof ~ ".min");
-}
-body
-{
+    {
+        verify(x != T.min,
+            "abs cannot be called with x == " ~ T.stringof ~ ".min");
+    }
     return x >= 0 ? x : -x;
 }
 

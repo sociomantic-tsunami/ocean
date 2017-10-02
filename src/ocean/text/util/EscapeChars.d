@@ -19,6 +19,7 @@ module ocean.text.util.EscapeChars;
 import ocean.transition;
 
 import ocean.core.Array: concat;
+import ocean.core.Verify;
 version (UnitTest) import ocean.core.Test;
 
 import ocean.stdc.string: strcspn, memmove, memcpy, memchr, strlen;
@@ -78,8 +79,8 @@ struct EscapeChars
 
             scope (exit)
             {
-                assert (str.length);
-                assert (!str[$ - 1]);
+                verify (str.length > 0);
+                verify (!str[$ - 1]);
                 str.length = str.length - 1;
                 enableStomping(str);
             }
@@ -125,12 +126,6 @@ struct EscapeChars
      **************************************************************************/
 
     private void copyTokens ( cstring tokens )
-    in
-    {
-        assert (tokens);
-        assert (!memchr(tokens.ptr, '\0', tokens.length),
-                typeof (*this).stringof ~ ": NUL characters not allowed in tokens");
-    }
     out
     {
         assert (this.tokens.length);
@@ -139,6 +134,9 @@ struct EscapeChars
     }
     body
     {
+        verify (tokens.ptr !is null);
+        verify (!memchr(tokens.ptr, '\0', tokens.length),
+                typeof (*this).stringof ~ ": NUL characters not allowed in tokens");
         this.tokens.concat(tokens, "\0"[]);
     }
 }

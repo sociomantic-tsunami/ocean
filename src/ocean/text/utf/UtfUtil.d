@@ -44,6 +44,7 @@ import ocean.core.ExceptionDefinitions: onUnicodeError;
 import ocean.stdc.string: memrchr;
 
 import ocean.core.Array: append, copy;
+import ocean.core.Verify;
 
 import ocean.math.IEEE: isNaN;
 
@@ -160,9 +161,9 @@ public size_t utf8Length ( cstring str, void delegate ( size_t ) error_dg )
 
     if ( i > str.length )
     {
-        assert(i >= stride, "i should be stride or greater");
+        verify(i >= stride, "i should be stride or greater");
         i -= stride;
-        assert(i < str.length, "i - stride should be less than str.length");
+        verify(i < str.length, "i - stride should be less than str.length");
         error_dg(i);
     }
 
@@ -311,12 +312,9 @@ unittest
 *******************************************************************************/
 
 public mstring truncateAppendEnding ( ref mstring str, size_t n, cstring ending = "...")
-in
 {
-    assert (n >= ending.length);
-}
-body
-{
+    verify (n >= ending.length);
+
     bool valid_utf8 = g_utf8_validate(str.ptr, str.length, null);
 
     auto utf8_len = valid_utf8 ? utf8Length(str) : str.length;
@@ -481,19 +479,6 @@ unittest
 
 public mstring truncateAtN(cstring src, size_t n, ref mstring buffer,
     cstring ending = ellipsis, float fill_ratio = 0.75)
-in
-{
-    size_t ending_length = 0;   // Ending's number of Unicode characters
-    foreach ( dchar c; ending )
-    {
-        ++ending_length;
-    }
-
-    assert(n > ending_length);
-
-    assert(!isNaN(fill_ratio));
-    assert(fill_ratio>=0 && fill_ratio<=1);
-}
 out (result)
 {
     size_t result_length = 0;
@@ -506,6 +491,19 @@ out (result)
 }
 body
 {
+    {
+        size_t ending_length = 0;   // Ending's number of Unicode characters
+        foreach ( dchar c; ending )
+        {
+            ++ending_length;
+        }
+
+        verify(n > ending_length);
+
+        verify(!isNaN(fill_ratio));
+        verify(fill_ratio>=0 && fill_ratio<=1);
+    }
+
     size_t ending_length = 0;   // Ending's number of Unicode characters
     foreach ( size_t i, dchar c; ending )
     {

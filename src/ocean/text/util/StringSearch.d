@@ -19,6 +19,7 @@ module ocean.text.util.StringSearch;
 
 
 import ocean.transition;
+import ocean.core.Verify;
 
 import c_stddef = core.stdc.stddef: wchar_t;
 import c_wctype = core.stdc.wctype;
@@ -254,12 +255,9 @@ struct StringSearch ( bool wide_char = false )
      *      the last examined element + 1
      */
     size_t locateChar ( in Char[] str, Char value, size_t start, size_t length )
-    in
     {
-        assert (start <= str.length, "locateChar: start index out of range");
-    }
-    body
-    {
+        verify (start <= str.length, "locateChar: start index out of range");
+
         length = min(length, str.length);
 
         void* item = pLocateBinChar(str.ptr + start, value, length - start);
@@ -314,12 +312,9 @@ struct StringSearch ( bool wide_char = false )
      *      true if str contains value or false otherwise
      */
     bool containsChar ( in Char[] str, Char value, size_t start, size_t length )
-    in
     {
-        assert (start <= str.length, "containsChar: start index out of range");
-    }
-    body
-    {
+        verify (start <= str.length, "containsChar: start index out of range");
+
         length = min(length, str.length);
 
         return !!pLocateBinChar(str.ptr + start, value, length - start);
@@ -399,12 +394,9 @@ struct StringSearch ( bool wide_char = false )
      *      otherwise.
      */
     size_t locatePatternT ( istring pattern ) ( in Char[] str, size_t start = 0 )
-    in
     {
-        assert (start <= str.length, "locatePatternT: start index out of range");
-    }
-    body
-    {
+        verify (start <= str.length,
+            "locatePatternT: start index out of range");
         if (str.length)
         {
             start = min(start, str.length - 1);
@@ -444,12 +436,10 @@ struct StringSearch ( bool wide_char = false )
      **************************************************************************/
 
     bool containsPattern ( in Char[] str, in Char[] pattern, size_t start = 0 )
-    in
     {
-        assert (start <= str.length, "containsPattern: start index out of range");
-    }
-    body
-    {
+        verify (start <= str.length,
+            "containsPattern: start index out of range");
+
         return !!pLocatePattern((str ~ TERM).ptr + start, (pattern ~ TERM).ptr);
     }
 
@@ -481,12 +471,10 @@ struct StringSearch ( bool wide_char = false )
     **************************************************************************/
 
     size_t locateCharSet ( in Char[] str, in Char[] charset, size_t start = 0 )
-    in
     {
-        assert (start <= str.length, "locateCharSet: start index out of range");
-    }
-    body
-    {
+        verify(start <= str.length,
+            "locateCharSet: start index out of range");
+
         size_t item = pLocateFirstInSet((str ~ TERM).ptr + start, (charset ~ TERM).ptr);
 
         return item + start;
@@ -510,12 +498,9 @@ struct StringSearch ( bool wide_char = false )
     **************************************************************************/
 
     size_t locateCharSetT ( istring charset ) ( in Char[] str, size_t start = 0 )
-    in
     {
-        assert (start <= str.length, "locateCharSetT: start index out of range");
-    }
-    body
-    {
+        verify (start <= str.length,
+            "locateCharSetT: start index out of range");
         return pLocateFirstInSet((str ~ TERM).ptr + start, charset.ptr);
     }
 
@@ -540,17 +525,14 @@ struct StringSearch ( bool wide_char = false )
      **************************************************************************/
 
     Char[] shiftString ( ref Char[] str, size_t dst_pos, size_t src_pos, size_t length )
-    in
     {
         const PREFIX = "shiftString(): ";
 
-        assert (src_pos <= str.length, PREFIX ~ "source start out of range");
-        assert (dst_pos <= str.length, PREFIX ~ "destination start out of range");
-        assert (src_pos + length <= str.length, PREFIX ~ "source end out of range");
-        assert (dst_pos + length <= str.length, PREFIX ~ "destination end out of range");
-    }
-    body
-    {
+        verify (src_pos <= str.length, PREFIX ~ "source start out of range");
+        verify (dst_pos <= str.length, PREFIX ~ "destination start out of range");
+        verify (src_pos + length <= str.length, PREFIX ~ "source end out of range");
+        verify (dst_pos + length <= str.length, PREFIX ~ "destination end out of range");
+
         pMemMove(str.ptr + dst_pos, str.ptr + src_pos, length);
 
         return str;
@@ -586,7 +568,7 @@ struct StringSearch ( bool wide_char = false )
      ***************************************************************************/
     void assertTerm ( istring func ) ( in Char[] str )
     {
-        assert (hasTerm(str), msgFunc!(func) ~ ": unterminated string");
+        verify (hasTerm(str), msgFunc!(func) ~ ": unterminated string");
     }
 
 

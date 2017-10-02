@@ -36,6 +36,7 @@ module ocean.text.Unicode;
 import ocean.transition;
 import ocean.text.UnicodeData;
 import ocean.text.convert.Utf;
+import ocean.core.Verify;
 
 version(UnitTest) import ocean.core.Test;
 
@@ -62,9 +63,7 @@ char[] toUpper(Const!(char)[] input, char[] output = null) {
         UnicodeData *d = getUnicodeData(ch);
         if(d !is null && (d.generalCategory & UnicodeData.GeneralCategory.SpecialMapping)) {
             SpecialCaseData *s = getSpecialCaseData(ch);
-            debug {
-                assert(s !is null);
-            }
+            verify(s !is null);
             if(s.upperCaseMapping !is null) {
                 // To speed up, use worst case for memory prealocation
                 // since the length of an UpperCaseMapping list is at most 4
@@ -73,10 +72,8 @@ char[] toUpper(Const!(char)[] input, char[] output = null) {
                 if(produced + s.upperCaseMapping.length * 4 >= output.length)
                         output.length = output.length + output.length / 2 +  s.upperCaseMapping.length * 4;
                 auto res = toString(s.upperCaseMapping, output[produced..output.length], &ate);
-                debug {
-                    assert(ate == s.upperCaseMapping.length);
-                    assert(res.ptr == output[produced..output.length].ptr);
-                }
+                verify(ate == s.upperCaseMapping.length);
+                verify(res.ptr == output[produced..output.length].ptr);
                 produced += res.length;
                 continue;
             }
@@ -86,10 +83,8 @@ char[] toUpper(Const!(char)[] input, char[] output = null) {
             output.length = output.length + output.length / 2 + 4;
         buf[0] = d is null ? ch:d.simpleUpperCaseMapping;
         auto res = toString(buf, output[produced..output.length], &ate);
-        debug {
-            assert(ate == 1);
-            assert(res.ptr == output[produced..output.length].ptr);
-        }
+        verify(ate == 1);
+        verify(res.ptr == output[produced..output.length].ptr);
         produced += res.length;
     }
     return output[0..produced];
@@ -118,9 +113,7 @@ wchar[] toUpper(Const!(wchar)[] input, wchar[] output = null) {
         UnicodeData *d = getUnicodeData(ch);
         if(d !is null && (d.generalCategory & UnicodeData.GeneralCategory.SpecialMapping)) {
             SpecialCaseData *s = getSpecialCaseData(ch);
-            debug {
-                assert(s !is null);
-            }
+            verify(s !is null);
             if(s.upperCaseMapping !is null) {
                 // To speed up, use worst case for memory prealocation
                 // Make sure no relocation is made in the toString16 Method
@@ -128,10 +121,8 @@ wchar[] toUpper(Const!(wchar)[] input, wchar[] output = null) {
                 if(produced + s.upperCaseMapping.length * 2 >= output.length)
                     output.length = output.length + output.length / 2 +  s.upperCaseMapping.length * 3;
                 auto res = toString16(s.upperCaseMapping, output[produced..output.length], &ate);
-                debug {
-                    assert(ate == s.upperCaseMapping.length);
-                    assert(res.ptr == output[produced..output.length].ptr);
-                }
+                verify(ate == s.upperCaseMapping.length);
+                verify(res.ptr == output[produced..output.length].ptr);
                 produced += res.length;
                 continue;
             }
@@ -141,10 +132,8 @@ wchar[] toUpper(Const!(wchar)[] input, wchar[] output = null) {
             output.length = output.length + output.length / 2 + 3;
         buf[0] = d is null ? ch:d.simpleUpperCaseMapping;
         auto res = toString16(buf, output[produced..output.length], &ate);
-        debug {
-            assert(ate == 1);
-            assert(res.ptr == output[produced..output.length].ptr);
-        }
+        verify(ate == 1);
+        verify(res.ptr == output[produced..output.length].ptr);
         produced += res.length;
     }
     return output[0..produced];
@@ -171,9 +160,7 @@ dchar[] toUpper(Const!(dchar)[] input, dchar[] output = null) {
             UnicodeData *d = getUnicodeData(orig);
             if(d !is null && (d.generalCategory & UnicodeData.GeneralCategory.SpecialMapping)) {
                 SpecialCaseData *s = getSpecialCaseData(orig);
-                debug {
-                    assert(s !is null);
-                }
+                verify(s !is null);
                 if(s.upperCaseMapping !is null) {
                     // Better resize strategy ???
                     if(produced + s.upperCaseMapping.length  > output.length)
@@ -214,9 +201,7 @@ char[] toLower(Const!(char)[] input, char[] output = null) {
         UnicodeData *d = getUnicodeData(ch);
         if(d !is null && (d.generalCategory & UnicodeData.GeneralCategory.SpecialMapping)) {
             SpecialCaseData *s = getSpecialCaseData(ch);
-            debug {
-                assert(s !is null);
-            }
+            verify(s !is null);
             if(s.lowerCaseMapping !is null) {
                 // To speed up, use worst case for memory prealocation
                 // since the length of an LowerCaseMapping list is at most 4
@@ -225,10 +210,8 @@ char[] toLower(Const!(char)[] input, char[] output = null) {
                 if(produced + s.lowerCaseMapping.length * 4 >= output.length)
                         output.length = output.length + output.length / 2 +  s.lowerCaseMapping.length * 4;
                 auto res = toString(s.lowerCaseMapping, output[produced..output.length], &ate);
-                debug {
-                    assert(ate == s.lowerCaseMapping.length);
-                    assert(res.ptr == output[produced..output.length].ptr);
-                }
+                verify(ate == s.lowerCaseMapping.length);
+                verify(res.ptr == output[produced..output.length].ptr);
                 produced += res.length;
                 continue;
             }
@@ -238,10 +221,8 @@ char[] toLower(Const!(char)[] input, char[] output = null) {
             output.length = output.length + output.length / 2 + 4;
         buf[0] = d is null ? ch:d.simpleLowerCaseMapping;
         auto res = toString(buf, output[produced..output.length], &ate);
-        debug {
-            assert(ate == 1);
-            assert(res.ptr == output[produced..output.length].ptr);
-        }
+        verify(ate == 1);
+        verify(res.ptr == output[produced..output.length].ptr);
         produced += res.length;
     }
     return output[0..produced];
@@ -270,9 +251,7 @@ wchar[] toLower(Const!(wchar)[] input, wchar[] output = null) {
         UnicodeData *d = getUnicodeData(ch);
         if(d !is null && (d.generalCategory & UnicodeData.GeneralCategory.SpecialMapping)) {
             SpecialCaseData *s = getSpecialCaseData(ch);
-            debug {
-                assert(s !is null);
-            }
+            verify(s !is null);
             if(s.lowerCaseMapping !is null) {
                 // To speed up, use worst case for memory prealocation
                 // Make sure no relocation is made in the toString16 Method
@@ -280,10 +259,8 @@ wchar[] toLower(Const!(wchar)[] input, wchar[] output = null) {
                 if(produced + s.lowerCaseMapping.length * 2 >= output.length)
                     output.length = output.length + output.length / 2 +  s.lowerCaseMapping.length * 3;
                 auto res = toString16(s.lowerCaseMapping, output[produced..output.length], &ate);
-                debug {
-                    assert(ate == s.lowerCaseMapping.length);
-                    assert(res.ptr == output[produced..output.length].ptr);
-                }
+                verify(ate == s.lowerCaseMapping.length);
+                verify(res.ptr == output[produced..output.length].ptr);
                 produced += res.length;
                 continue;
             }
@@ -293,10 +270,8 @@ wchar[] toLower(Const!(wchar)[] input, wchar[] output = null) {
             output.length = output.length + output.length / 2 + 3;
         buf[0] = d is null ? ch:d.simpleLowerCaseMapping;
         auto res = toString16(buf, output[produced..output.length], &ate);
-        debug {
-            assert(ate == 1);
-            assert(res.ptr == output[produced..output.length].ptr);
-        }
+        verify(ate == 1);
+        verify(res.ptr == output[produced..output.length].ptr);
         produced += res.length;
     }
     return output[0..produced];
@@ -324,9 +299,7 @@ dchar[] toLower(Const!(dchar)[] input, dchar[] output = null) {
             UnicodeData *d = getUnicodeData(orig);
             if(d !is null && (d.generalCategory & UnicodeData.GeneralCategory.SpecialMapping)) {
                 SpecialCaseData *s = getSpecialCaseData(orig);
-                debug {
-                    assert(s !is null);
-                }
+                verify(s !is null);
                 if(s.lowerCaseMapping !is null) {
                     // Better resize strategy ???
                     if(produced + s.lowerCaseMapping.length  > output.length)
@@ -372,10 +345,8 @@ char[] toFold(Const!(char)[] input, char[] output = null) {
             if(produced + s.mapping.length * 4 >= output.length)
                 output.length = output.length + output.length / 2 +  s.mapping.length * 4;
             auto res = toString(s.mapping, output[produced..output.length], &ate);
-            debug {
-                assert(ate == s.mapping.length);
-                assert(res.ptr == output[produced..output.length].ptr);
-            }
+            verify(ate == s.mapping.length);
+            verify(res.ptr == output[produced..output.length].ptr);
             produced += res.length;
             continue;
         }
@@ -384,10 +355,8 @@ char[] toFold(Const!(char)[] input, char[] output = null) {
             output.length = output.length + output.length / 2 + 4;
         buf[0] = ch;
         auto res = toString(buf, output[produced..output.length], &ate);
-        debug {
-            assert(ate == 1);
-            assert(res.ptr == output[produced..output.length].ptr);
-        }
+        verify(ate == 1);
+        verify(res.ptr == output[produced..output.length].ptr);
         produced += res.length;
     }
     return output[0..produced];
@@ -420,10 +389,8 @@ wchar[] toFold(Const!(wchar)[] input, wchar[] output = null) {
             if(produced + s.mapping.length * 2 >= output.length)
                 output.length = output.length + output.length / 2 +  s.mapping.length * 3;
             auto res = toString16(s.mapping, output[produced..output.length], &ate);
-            debug {
-                assert(ate == s.mapping.length);
-                assert(res.ptr == output[produced..output.length].ptr);
-            }
+            verify(ate == s.mapping.length);
+            verify(res.ptr == output[produced..output.length].ptr);
             produced += res.length;
             continue;
         }
@@ -432,10 +399,8 @@ wchar[] toFold(Const!(wchar)[] input, wchar[] output = null) {
             output.length = output.length + output.length / 2 + 3;
         buf[0] = ch;
         auto res = toString16(buf, output[produced..output.length], &ate);
-        debug {
-            assert(ate == 1);
-            assert(res.ptr == output[produced..output.length].ptr);
-        }
+        verify(ate == 1);
+        verify(res.ptr == output[produced..output.length].ptr);
         produced += res.length;
     }
     return output[0..produced];

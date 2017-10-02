@@ -34,6 +34,8 @@ import ocean.core.array.Search : find;
 
 import ocean.math.Math;
 
+import ocean.core.Verify;
+
 
 /*******************************************************************************
 
@@ -208,7 +210,7 @@ public bool floatStringToInt ( T = ulong ) ( cstring float_str, out T value,
 {
     const MaxDecimal = 16;
 
-    assert(decimal_points <= MaxDecimal);
+    verify(decimal_points <= MaxDecimal);
 
     T multiplier = pow(cast(T)10, decimal_points);
     char[MaxDecimal] zeros_suffix_buf = '0';

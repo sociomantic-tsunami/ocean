@@ -48,6 +48,8 @@ import ocean.io.model.IConduit : OutputStream;
 
 import core.stdc.stdarg;
 
+import ocean.core.Verify;
+
 version(UnitTest) import ocean.core.Test;
 
 /*******************************************************************************
@@ -322,8 +324,8 @@ class Layout(T)
     {
         version (LinuxVarArgs)
         {
-            assert (formatStr, "null format specifier");
-            assert (arguments.length < 64, "too many args in Layout.convert");
+            verify(formatStr.ptr !is null, "null format specifier");
+            verify(arguments.length < 64, "too many args in Layout.convert");
 
             union ArgU {int i; byte b; long l; short s; void[] a;
                 real r; float f; double d;
@@ -419,12 +421,13 @@ class Layout(T)
                             arglist[i] = &(storedArgs[i].l);
                             break;
                         case 16:
-                            assert((void[]).sizeof==16,"Structure size not supported");
+                            verify((void[]).sizeof==16,"Structure size not supported");
                             storedArgs[i].a = va_arg!(void[])(args);
                             arglist[i] = &(storedArgs[i].a);
                             break;
                         default:
-                            assert (false, "Unknown size: " ~ Integer.toString (arg.tsize));
+                            verify(false, "Unknown size: "
+                                ~ idup(Integer.toString(arg.tsize)));
                     }
                 }
             }
@@ -691,7 +694,7 @@ class Layout(T)
                                 else if (size == 4)
                                     emit (Utf.fromString32 (*cast(dchar[]*) _arg, result));
                                 else
-                                    assert(false, _ti.toString());
+                                    verify(false, _ti.toString());
                             }
                             else
                             {
@@ -808,14 +811,14 @@ class Layout(T)
         if (cast(TypeInfo_Class) tinfo)
         {
             auto c = *cast(Object*) p;
-            assert (c !is null);
+            verify (c !is null);
             return Utf.fromString8 (c.toString, result);
         }
 
         if (cast(TypeInfo_Interface) tinfo)
         {
             auto x = *cast(void**) p;
-            assert (x !is null);
+            verify (x !is null);
             auto pi = **cast(Interface ***) x;
             auto o = cast(Object)(*cast(void**)p - pi.offset);
             return Utf.fromString8 (o.toString, result);
@@ -1008,7 +1011,7 @@ class Layout(T)
 
     private Const!(T)[] floatingTail (T[] result, real val, Const!(T)[] format, Const!(T)[] tail)
     {
-        assert (result.length > tail.length);
+        verify (result.length > tail.length);
 
         auto res = floater (result[0..$-tail.length], val, format);
         auto len=res.length;

@@ -42,6 +42,8 @@ import ocean.text.entities.XmlEntitySet;
 
 import ocean.transition;
 
+import ocean.core.Verify;
+
 /*******************************************************************************
 
     Class to en/decode xml entities.
@@ -67,14 +69,14 @@ version ( UnitTest )
         if ( codec.containsUnencoded(str) )
         {
             codec.encode(str, encoded);
-            assert(codec.containsEncoded(encoded));
+            verify(codec.containsEncoded(encoded));
         }
         else
         {
             encoded = str.dup;
         }
 
-        assert(encoded == expected_result);
+        verify(encoded == expected_result);
     }
 
     void decodeTest ( Char ) ( XmlEntityCodec codec, Const!(Char)[] str,
@@ -91,7 +93,7 @@ version ( UnitTest )
             decoded = str.dup;
         }
 
-        assert(decoded == expected_result);
+        verify(decoded == expected_result);
     }
 
     // Perform tests for various char types

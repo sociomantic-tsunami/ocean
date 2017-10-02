@@ -40,6 +40,7 @@ import ocean.text.util.StringC;
 import ocean.time.chrono.Calendar;
 import ocean.time.chrono.Gregorian;
 import ocean.transition;
+import ocean.core.Verify;
 
 import core.sys.posix.time; // timezone
 
@@ -267,7 +268,7 @@ struct DateTimeLocale
 
     cstring abbreviatedMonthName (int month)
     {
-        assert (month > 0 && month < 13);
+        verify(month > 0 && month < 13);
         return abbreviatedMonthNames [month - 1];
     }
 
@@ -279,7 +280,7 @@ struct DateTimeLocale
 
     cstring monthName (int month)
     {
-        assert (month > 0 && month < 13);
+        verify(month > 0 && month < 13);
         return monthNames [month - 1];
     }
 
@@ -383,7 +384,7 @@ struct DateTimeLocale
 
             void put(cstring str)
             {
-                assert((len+str.length) <= ret.length);
+                verify((len+str.length) <= ret.length);
                 ret[len..len+str.length] = str;
                 len += str.length;
             }
@@ -394,7 +395,7 @@ struct DateTimeLocale
 
                 if (c != '%')
                 {
-                    assert((len+1) <= ret.length);
+                    verify((len+1) <= ret.length);
                     ret[len] = c;
                     len += 1;
                     continue;
@@ -943,7 +944,7 @@ private struct Result
     private void opCatAssign (cstring rhs)
     {
         auto end = index + rhs.length;
-        assert (end < target_.length);
+        verify(end < target_.length);
 
         target_[index .. end] = rhs;
         index = end;
@@ -955,7 +956,7 @@ private struct Result
 
     private void opCatAssign (char rhs)
     {
-        assert (index < target_.length);
+        verify(index < target_.length);
         target_[index++] = rhs;
     }
 

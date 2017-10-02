@@ -52,6 +52,8 @@ import ocean.util.container.AppendBuffer;
 
 import ocean.io.model.IConduit;
 
+import ocean.core.Verify;
+
 version(UnitTest) import ocean.core.Test;
 
 
@@ -145,13 +147,10 @@ public class CSV
     ***************************************************************************/
 
     public void parse ( InputStream stream, RowDg row_dg )
-    in
     {
-        assert(stream !is null, "InputStream is null");
-        assert(row_dg !is null, "Row delegate is null");
-    }
-    body
-    {
+        verify(stream !is null, "InputStream is null");
+        verify(row_dg !is null, "Row delegate is null");
+
         char[512] buf;
         this.row.length = 0;
 

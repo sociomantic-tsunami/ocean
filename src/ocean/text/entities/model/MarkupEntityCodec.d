@@ -59,7 +59,7 @@ import Math = ocean.math.Math: min;
 
 import Integer = ocean.text.convert.Integer_tango: toInt;
 
-
+import ocean.core.Verify;
 
 
 /*******************************************************************************
@@ -315,21 +315,12 @@ public class MarkupEntityCodec ( E : IEntitySet ) : IEntityCodec!(E)
             entity = entity content to convert; trailing '&' and terminating ';'
                 are expected
 
-        Throws:
-            asserts that the passed entity is > 2 characters long, and has a '&'
-            in the first position and a ';' in the last
-
         Returns:
             the unicode character or InvalidUnicode on failure
 
     ***************************************************************************/
 
     public dchar decodeEntity ( Char ) ( Char[] entity )
-    in
-    {
-        assert(this.isEncodedEntity(entity, true), This.stringof ~ ".decodeEntity - invalid character entity");
-    }
-    body
     {
         static assert(
             is(Unqual!(Char) == char)
@@ -337,6 +328,9 @@ public class MarkupEntityCodec ( E : IEntitySet ) : IEntityCodec!(E)
                 || is(Unqual!(Char) == dchar),
             This.stringof ~ " template parameter Char must be one of {char, wchar, dchar}, not " ~ Char.stringof
         );
+
+        verify(this.isEncodedEntity(entity, true),
+            This.stringof ~ ".decodeEntity - invalid character entity");
 
         dchar unicode = InvalidUnicode;
 

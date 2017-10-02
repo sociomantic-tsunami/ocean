@@ -19,6 +19,7 @@ module ocean.text.xml.Document;
 
 import Array = ocean.core.Array;
 import ocean.transition;
+import ocean.core.Verify;
 
 package import ocean.text.xml.PullParser;
 
@@ -174,7 +175,7 @@ class Document(T_) : PullParser!(T_)
 
         this (uint nodes = 1000)
         {
-                assert (nodes > 50);
+                verify (nodes > 50);
                 super (null);
                 xpath = new XmlPathT;
 
@@ -310,7 +311,7 @@ version(d)
 
         final void parse(T[] xml)
         {
-                assert (xml);
+                verify (xml.ptr ! is null);
                 reset;
                 super.reset (xml);
                 auto cur = root;
@@ -323,7 +324,7 @@ version(d)
                              {
                              case XmlTokenType.EndElement:
                              case XmlTokenType.EndEmptyElement:
-                                  assert (cur.host);
+                                  verify (cur !is null);
                                   cur.end = text.point;
                                   cur = cur.host;
                                   break;
@@ -882,7 +883,7 @@ version(discrete)
 
                 Node copy (Node tree)
                 {
-                        assert (tree);
+                        verify (tree !is null);
                         tree = tree.clone;
                         tree.migrate (document);
 
@@ -1100,7 +1101,7 @@ else
 
                 private void attrib (Node node)
                 {
-                        assert (node.parent is null);
+                        verify (node.parent is null);
                         node.host = this;
                         if (lastAttr)
                            {
@@ -1121,7 +1122,7 @@ else
 
                 private void append (Node node)
                 {
-                        assert (node.parent is null);
+                        verify (node.parent is null);
                         node.host = this;
                         if (lastChild)
                            {
@@ -1142,7 +1143,7 @@ else
 
                 private void prepend (Node node)
                 {
-                        assert (node.parent is null);
+                        verify (node.parent is null);
                         node.host = this;
                         if (firstChild)
                            {
@@ -1204,7 +1205,7 @@ else
                         else
                            if (nextSibling)
                               {
-                              debug assert(host.firstChild == this);
+                              verify(host.firstChild == this);
                               parent.firstChild = nextSibling;
                               nextSibling.prevSibling = null;
                               nextSibling = null;
@@ -1215,7 +1216,7 @@ else
                                  {
                                  if (prevSibling)
                                     {
-                                    debug assert(host.lastChild == this);
+                                    verify(host.lastChild == this);
                                     host.lastChild = prevSibling;
                                     prevSibling.nextSibling = null;
                                     prevSibling = null;
@@ -1223,8 +1224,8 @@ else
                                     }
                                  else
                                     {
-                                    debug assert(host.firstChild == this);
-                                    debug assert(host.lastChild == this);
+                                    verify(host.firstChild == this);
+                                    verify(host.lastChild == this);
                                     host.firstChild = null;
                                     host.lastChild = null;
                                     host = null;
@@ -1234,7 +1235,7 @@ else
                                  {
                                  if (prevSibling)
                                     {
-                                    debug assert(host.lastAttr == this);
+                                    verify(host.lastAttr == this);
                                     host.lastAttr = prevSibling;
                                     prevSibling.nextSibling = null;
                                     prevSibling = null;
@@ -1242,8 +1243,8 @@ else
                                     }
                                  else
                                     {
-                                    debug assert(host.firstAttr == this);
-                                    debug assert(host.lastAttr == this);
+                                    verify(host.firstAttr == this);
+                                    verify(host.lastAttr == this);
                                     host.firstAttr = null;
                                     host.lastAttr = null;
                                     host = null;
@@ -2079,7 +2080,7 @@ public class XmlPath(T)
 
         private Node[] slice (uint mark)
         {
-                assert (mark <= freeIndex);
+                verify (mark <= freeIndex);
                 return freelist [mark .. freeIndex];
         }
 

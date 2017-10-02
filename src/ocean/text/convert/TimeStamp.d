@@ -47,6 +47,8 @@ import ocean.time.chrono.Gregorian;
 
 import Integer = ocean.text.convert.Integer_tango;
 
+import ocean.core.Verify;
+
 version(UnitTest) import ocean.core.Test;
 
 /******************************************************************************
@@ -141,7 +143,7 @@ Const!(T)[] format(T) (T[] output, Time t)
         return Integer.formatter!(T) (tmp, i, 'u', 0, 8);
     }
 
-    assert (output.length >= 29);
+    verify (output.length >= 29);
     if (t is t.max)
         throw new IllegalArgumentException ("TimeStamp.format :: invalid Time argument");
 
@@ -191,7 +193,7 @@ Const!(T)[] format8601(T) (T[] output, Time t)
     }
 
 
-    assert (output.length >= 29);
+    verify (output.length >= 29);
     if (t is t.max)
         throw new IllegalArgumentException ("TimeStamp.format :: invalid Time argument");
 

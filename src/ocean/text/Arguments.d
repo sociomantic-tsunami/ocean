@@ -614,6 +614,7 @@ import ocean.text.convert.Formatter;
 import ocean.text.convert.Integer_tango;
 import ocean.util.container.SortedMap;
 import ocean.util.container.more.Stack;
+import ocean.core.Verify;
 
 version(UnitTest) import ocean.core.Test;
 
@@ -1144,7 +1145,7 @@ public class Arguments
         }
         else
         {
-            assert (false);
+            verify(false);
         }
 
         return this;
@@ -1916,7 +1917,7 @@ public class Arguments
         {
             if ( auto arg = cast(cstring)((&name)[0..1]) in this.outer.aliases )
             {
-                assert(
+                verify(
                     false,
                     "Argument '" ~ this.name ~ "' cannot " ~
                         "be assigned alias '" ~ name ~ "' as it has " ~
