@@ -33,23 +33,11 @@ module ocean.text.convert.Float;
 import ocean.transition;
 
 import ocean.core.ExceptionDefinitions;
+import ocean.math.IEEE;
 static import tsm = core.stdc.math;
 static import Integer = ocean.text.convert.Integer_tango;
 
 version(UnitTest) import ocean.core.Test;
-
-/******************************************************************************
-
-  select an internal version
-
- ******************************************************************************/
-
-version = float_internal;
-
-version(float_internal)
-{
-    import ocean.math.IEEE;
-}
 
 private alias real NumType;
 
@@ -319,17 +307,7 @@ T[] format(T) (T[] dst, NumType x, int decimals=Dec, int e=Exp, bool pad=Pad)
     if (exp <= -e || exp >= e)
         mode = 2, ++decimals;
 
-    version (float_internal)
-        str = convertl (buf.ptr, x, decimals, &exp, &sign, mode is 5);
-    version (float_dtoa)
-        str = dtoa (x, mode, decimals, &exp, &sign, &end);
-    version (float_lib)
-    {
-        if (mode is 5)
-            str = fconvert (x, decimals, &exp, &sign);
-        else
-            str = econvert (x, decimals, &exp, &sign);
-    }
+    str = convertl (buf.ptr, x, decimals, &exp, &sign, mode is 5);
 
     auto p = dst.ptr;
     if (sign)
@@ -420,78 +398,75 @@ T[] format(T) (T[] dst, NumType x, int decimals=Dec, int e=Exp, bool pad=Pad)
 
  ******************************************************************************/
 
-version (float_internal)
+private Const!(char)* convertl (char* buf, real value, int ndigit,
+    int *decpt, int *sign, int fflag)
 {
-    private Const!(char)* convertl (char* buf, real value, int ndigit,
-        int *decpt, int *sign, int fflag)
+    if ((*sign = negative(value)) != 0)
+        value = -value;
+
+    *decpt = 9999;
+    if (tsm.isnan(value))
+        return "nan\0".ptr;
+
+    if (isInfinity(value))
+        return "inf\0".ptr;
+
+    int exp10 = (value == 0) ? !fflag : cast(int) ceill(log10l(value));
+    if (exp10 < -4931)
+        exp10 = -4931;
+    value *= powl (10.0, -exp10);
+    if (value)
     {
-        if ((*sign = negative(value)) != 0)
-            value = -value;
-
-        *decpt = 9999;
-        if (tsm.isnan(value))
-            return "nan\0".ptr;
-
-        if (isInfinity(value))
-            return "inf\0".ptr;
-
-        int exp10 = (value == 0) ? !fflag : cast(int) ceill(log10l(value));
-        if (exp10 < -4931)
-            exp10 = -4931;
-        value *= powl (10.0, -exp10);
-        if (value)
-        {
-            while (value <  0.1) { value *= 10;  --exp10; }
-            while (value >= 1.0) { value /= 10;  ++exp10; }
-        }
-        assert(isZero(value) || (0.1 <= value && value < 1.0));
-        //auto zero = pad ? int.max : 1;
-        auto zero = 1;
-        if (fflag)
-        {
-            // if (! pad)
-            zero = exp10;
-            if (ndigit + exp10 < 0)
-            {
-                *decpt= -ndigit;
-                return "\0".ptr;
-            }
-            ndigit += exp10;
-        }
-        *decpt = exp10;
-        int ptr = 1;
-
-        if (ndigit > real.dig)
-            ndigit = real.dig;
-        //printf ("< flag %d, digits %d, exp10 %d, decpt %d\n", fflag, ndigit, exp10, *decpt);
-        while (ptr <= ndigit)
-        {
-            real i = void;
-            value = modfl (value * 10, &i);
-            buf [ptr++]= cast(char) ('0' + cast(int) i);
-        }
-
-        if (value >= 0.5)
-            while (--ptr && ++buf[ptr] > '9')
-                buf[ptr] = (ptr > zero) ? '\0' : '0';
-        else
-            for (auto i=ptr; i && --i > zero && buf[i] is '0';)
-                buf[i] = '\0';
-
-        if (ptr)
-        {
-            buf [ndigit + 1] = '\0';
-            return buf + 1;
-        }
-        if (fflag)
-        {
-            ++ndigit;
-        }
-        buf[0]= '1';
-        ++*decpt;
-        buf[ndigit]= '\0';
-        return buf;
+        while (value <  0.1) { value *= 10;  --exp10; }
+        while (value >= 1.0) { value /= 10;  ++exp10; }
     }
+    assert(isZero(value) || (0.1 <= value && value < 1.0));
+    //auto zero = pad ? int.max : 1;
+    auto zero = 1;
+    if (fflag)
+    {
+        // if (! pad)
+        zero = exp10;
+        if (ndigit + exp10 < 0)
+        {
+            *decpt= -ndigit;
+            return "\0".ptr;
+        }
+        ndigit += exp10;
+    }
+    *decpt = exp10;
+    int ptr = 1;
+
+    if (ndigit > real.dig)
+        ndigit = real.dig;
+    //printf ("< flag %d, digits %d, exp10 %d, decpt %d\n", fflag, ndigit, exp10, *decpt);
+    while (ptr <= ndigit)
+    {
+        real i = void;
+        value = modfl (value * 10, &i);
+        buf [ptr++]= cast(char) ('0' + cast(int) i);
+    }
+
+    if (value >= 0.5)
+        while (--ptr && ++buf[ptr] > '9')
+            buf[ptr] = (ptr > zero) ? '\0' : '0';
+    else
+        for (auto i=ptr; i && --i > zero && buf[i] is '0';)
+            buf[i] = '\0';
+
+    if (ptr)
+    {
+        buf [ndigit + 1] = '\0';
+        return buf + 1;
+    }
+    if (fflag)
+    {
+        ++ndigit;
+    }
+    buf[0]= '1';
+    ++*decpt;
+    buf[ndigit]= '\0';
+    return buf;
 }
 
 
