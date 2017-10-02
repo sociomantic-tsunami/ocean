@@ -256,8 +256,8 @@ version ( UnitTest )
 
     ***************************************************************************/
 
-    alias FreeList!(char[]) StringFreeList;
-    class StringFreeListTester : FreeListTester!(StringFreeList.ItemType)
+    private alias FreeList!(char[]) StringFreeList;
+    private class StringFreeListTester : FreeListTester!(StringFreeList.ItemType)
     {
         public this ( ) { super(new StringFreeList); }
 
@@ -286,14 +286,14 @@ version ( UnitTest )
 
     ***************************************************************************/
 
-    struct Struct
+    private struct Struct
     {
         size_t i;
         char[] s;
     }
 
-    alias FreeList!(Struct) StructFreeList;
-    class StructFreeListTester : FreeListTester!(StructFreeList.ItemType)
+    private alias FreeList!(Struct) StructFreeList;
+    private class StructFreeListTester : FreeListTester!(StructFreeList.ItemType)
     {
         public this ( ) { super(new StructFreeList); }
 
@@ -323,8 +323,8 @@ version ( UnitTest )
 
     ***************************************************************************/
 
-    alias FreeList!(Buffer!(void)) BufferFreeList;
-    class BufferFreeListTester : FreeListTester!(BufferFreeList.ItemType)
+    private alias FreeList!(Buffer!(void)) BufferFreeList;
+    private class BufferFreeListTester : FreeListTester!(BufferFreeList.ItemType)
     {
         public this ( ) { super(new BufferFreeList); }
 
@@ -354,7 +354,7 @@ version ( UnitTest )
 
     ***************************************************************************/
 
-    class Class
+    private class Class
     {
         mixin(genOpEquals(`
         {
@@ -366,8 +366,8 @@ version ( UnitTest )
         char[] s;
     }
 
-    alias FreeList!(Class) ClassFreeList;
-    class ClassFreeListTester : FreeListTester!(ClassFreeList.ItemType)
+    private alias FreeList!(Class) ClassFreeList;
+    private class ClassFreeListTester : FreeListTester!(ClassFreeList.ItemType)
     {
         public this ( ) { super(new ClassFreeList); }
 
