@@ -46,6 +46,7 @@ import Float = ocean.text.convert.Float,
 
 import ocean.io.model.IConduit : OutputStream;
 
+import core.stdc.stdarg;
 
 /*******************************************************************************
 
