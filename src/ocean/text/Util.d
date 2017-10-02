@@ -107,6 +107,7 @@
 module ocean.text.Util;
 
 import ocean.transition;
+import ocean.core.Verify;
 
 version (UnitTest) import ocean.core.Test;
 
@@ -310,7 +311,7 @@ size_t count(T) (T[] source, T[] match)
 
         foreach (s; patterns (source, match))
                     ++c;
-        assert(c > 0);
+        verify(c > 0);
         return c - 1;
 }
 
@@ -807,8 +808,6 @@ bool matching(T1, T2) (T1* s1, T2* s2, size_t length)
 
 size_t indexOf(T) (T* str, T match, size_t length)
 {
-        //assert (str);
-
         static if (T.sizeof == 1)
                    enum : size_t {m1 = cast(size_t) 0x0101010101010101,
                                   m2 = cast(size_t) 0x8080808080808080}
@@ -878,7 +877,7 @@ size_t mismatch(T1, T2) (T1* s1, T2* s2, size_t length)
         static assert (is(Unqual!(T1) == Unqual!(T2)));
         alias T1 T;
 
-        assert (s1 && s2);
+        verify(s1 && s2);
 
         static if (T.sizeof < size_t.sizeof)
         {

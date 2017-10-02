@@ -24,6 +24,8 @@ import ocean.transition;
 
 import ocean.core.Array;
 
+import ocean.core.Verify;
+
 version (Posix)
 {
     import ocean.stdc.string: strncasecmp, memcmp;
@@ -199,8 +201,8 @@ static int isearch (in cstring src, in cstring pattern)
     ];
 
 
-    assert(src.ptr);
-    assert(pattern.ptr);
+    verify(src.ptr !is null);
+    verify(pattern.ptr !is null);
 
     for (int i1=0, i2; i1 <= cast(int)(src.length - pattern.length); ++i1)
     {

@@ -126,6 +126,8 @@ import ocean.time.chrono.Hijri,
        ocean.time.chrono.Gregorian,
        ocean.time.chrono.ThaiBuddhist;
 
+import ocean.core.Verify;
+
 version (Posix)
     import ocean.text.locale.Posix;
 
@@ -1734,7 +1736,7 @@ version(Clone)
    * Returns: The Calendar determining the calendar used by the current culture. For example, the Gregorian.
    */
   public final Calendar calendar() {
-    assert(calendar_ !is null);
+    verify(calendar_ !is null);
     return calendar_;
   }
   /**
@@ -1862,7 +1864,7 @@ version(Clone)
    * Returns: The string designator for hours before noon. For example, "AM".
    */
   public final istring amDesignator() {
-    assert(amDesignator_ !is null);
+    verify(amDesignator_ !is null);
     return amDesignator_;
   }
   /**
@@ -1880,7 +1882,7 @@ version(Clone)
    * Returns: The string designator for hours after noon. For example, "PM".
    */
   public final istring pmDesignator() {
-    assert(pmDesignator_ !is null);
+    verify(pmDesignator_ !is null);
     return pmDesignator_;
   }
   /**
@@ -1898,7 +1900,7 @@ version(Clone)
    * Returns: The format pattern for a short date value.
    */
   public final istring shortDatePattern() {
-    assert(shortDatePattern_ !is null);
+    verify(shortDatePattern_ !is null);
     return shortDatePattern_;
   }
   /**
@@ -1940,7 +1942,7 @@ version(Clone)
    * Returns: The format pattern for a long date value.
    */
   public final istring longDatePattern() {
-    assert(longDatePattern_ !is null);
+    verify(longDatePattern_ !is null);
     return longDatePattern_;
   }
   /**
@@ -1961,7 +1963,7 @@ version(Clone)
    * Returns: The format pattern for a long time value.
    */
   public final istring longTimePattern() {
-    assert(longTimePattern_ !is null);
+    verify(longTimePattern_ !is null);
     return longTimePattern_;
   }
   /**
@@ -1999,7 +2001,7 @@ version(Clone)
    * Returns: The format pattern for a year and month value.
    */
   public final istring yearMonthPattern() {
-    assert(yearMonthPattern_ !is null);
+    verify(yearMonthPattern_ !is null);
     return yearMonthPattern_;
   }
   /**

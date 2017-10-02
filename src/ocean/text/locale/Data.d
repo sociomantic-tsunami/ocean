@@ -53,7 +53,7 @@ package int compareString(cstring strA, cstring strB) {
   if (result == 0)
   {
     auto _result = strALength - strBLength;
-    assert (_result <= int.max && _result >= int.min);
+    verify (_result <= int.max && _result >= int.min);
     result = cast(int) _result;
   }
   return result;

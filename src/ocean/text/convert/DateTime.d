@@ -32,6 +32,8 @@ import ocean.core.Array : contains;
 
 import ocean.time.chrono.Gregorian;
 
+import ocean.core.Verify;
+
 
 /*******************************************************************************
 
@@ -135,12 +137,8 @@ public bool timeToUnixTime ( cstring str, ref time_t time,
 
 private bool getDateTimeForISO8601Format ( cstring buff, size_t orig_str_len,
     ref tm datetime, ref DateConversion conversion_type )
-in
 {
-    assert(buff[$ - 1] == '\0', "Input string must be null-terminated");
-}
-body
-{
+    verify(buff[$ - 1] == '\0', "Input string must be null-terminated");
     char separator;
 
     // Initialise the time and the day of the month to 0 and 1 respectively
@@ -251,12 +249,8 @@ body
 *******************************************************************************/
 
 private bool getDateTimeForInternetMsgFormat ( cstring buff, ref tm datetime )
-in
 {
-    assert(buff[$ - 1] == '\0', "Input string must be null-terminated");
-}
-body
-{
+    verify(buff[$ - 1] == '\0', "Input string must be null-terminated");
     return
         strptime(buff.ptr, "%A, %d %b %Y %H:%M:%S %Z".ptr, &datetime) !is null;
 }

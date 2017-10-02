@@ -23,6 +23,7 @@ module ocean.text.util.SplitIterator;
 import ocean.transition;
 
 import ocean.core.Array: concat, copy;
+import ocean.core.Verify;
 
 import ocean.stdc.string: strlen, memchr, strcspn;
 import core.stdc.ctype: isspace;
@@ -157,7 +158,7 @@ class StrSplitIterator : ISplitIterator
 
     protected override size_t skipDelim ( cstring str )
     {
-        assert (str.length >= this.delim.length);
+        verify (str.length >= this.delim.length);
 
         return this.sf.match.length;
     }
@@ -261,12 +262,12 @@ class ChrSplitIterator : ISplitIterator
      **************************************************************************/
 
     public override size_t locateDelim ( cstring str, size_t start = 0 )
-    in
     {
-        assert (start < str.length, typeof (this).stringof ~ ".locateDelim: start index out of range");
-    }
-    body
-    {
+        verify(
+            start < str.length,
+            typeof (this).stringof ~ ".locateDelim: start index out of range"
+        );
+
         char* item = cast (char*) memchr(str.ptr + start, this.delim, str.length - start);
 
         return item? item - str.ptr : str.length;
@@ -287,12 +288,9 @@ class ChrSplitIterator : ISplitIterator
      **************************************************************************/
 
     protected override size_t skipDelim ( cstring str )
-    in
     {
-        assert (str.length >= 1);
-    }
-    body
-    {
+        verify(str.length >= 1);
+
         return 1;
     }
 }
@@ -522,13 +520,9 @@ abstract class ISplitIterator
      **************************************************************************/
 
     public size_t locateDelim ( size_t start = 0 )
-    in
     {
-        assert (start <= this.content.length,
-                typeof (this).stringof ~ ".locateDelim(): start index out of range");
-    }
-    body
-    {
+        verify (start <= this.content.length,
+            typeof (this).stringof ~ ".locateDelim(): start index out of range");
         return this.locateDelim(this.content, start);
     }
 
@@ -649,7 +643,7 @@ abstract class ISplitIterator
                     {
                         result = dg.with_pos(next, segment);
 
-                        assert (next <= this.content.length,
+                        verify (next <= this.content.length,
                                 typeof (this).stringof ~ ": iteration delegate "
                                 ~ "set the position out of range");
 

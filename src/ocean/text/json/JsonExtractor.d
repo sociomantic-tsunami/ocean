@@ -163,6 +163,7 @@ import ocean.text.json.JsonParserIter;
 import ocean.core.Array;
 import ocean.core.Enforce : enforce;
 import ocean.core.Test;
+import ocean.core.Verify;
 import ocean.util.ReusableException;
 
 
@@ -767,7 +768,7 @@ struct JsonExtractor
         public this ( Parser json, Type start_type, Type end_type,
                       bool skip_null = false )
         {
-            assert(json !is null);
+            verify(json !is null);
             this.start_type = start_type;
             this.end_type   = end_type;
             this.json       = json;

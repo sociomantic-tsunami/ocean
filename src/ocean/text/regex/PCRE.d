@@ -59,6 +59,7 @@ import ocean.core.TypeConvert;
 import core.stdc.stdlib : free;
 import ocean.text.convert.Formatter;
 
+import ocean.core.Verify;
 
 
 /*******************************************************************************
@@ -234,10 +235,11 @@ public class PCRE
         public void compile ( cstring pattern, bool case_sens = true )
         out
         {
-            assert(this.pcre_object);
+            assert(this.pcre_object !is null);
         }
         body
         {
+
             this.cleanup();
 
             char* errmsg;
@@ -307,12 +309,9 @@ public class PCRE
         ***********************************************************************/
 
         public cstring findFirst ( cstring subject )
-        in
         {
-            assert(this.pcre_object);
-        }
-        body
-        {
+            verify(this.pcre_object !is null);
+
             // This method supports only one capture so size 3 is enough.
             // 2/3 for the positions and 1/3 for a internal buffer
             int[3] ovector;
@@ -375,12 +374,9 @@ public class PCRE
         ***********************************************************************/
 
         public cstring[] findAll ( cstring subject, ref cstring[] matches_buffer )
-        in
         {
-            assert(this.pcre_object);
-        }
-        body
-        {
+            verify(this.pcre_object !is null);
+
             ptrdiff_t pos;
 
             while ( pos < subject.length )
@@ -416,12 +412,9 @@ public class PCRE
         ***********************************************************************/
 
         public void study ( )
-        in
         {
-            assert(this.pcre_object);
-        }
-        body
-        {
+            verify(this.pcre_object !is null);
+
             char* errmsg;
             auto res = pcre_study(this.pcre_object, 0, &errmsg);
             if ( errmsg )

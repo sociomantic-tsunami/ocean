@@ -28,6 +28,7 @@ import ocean.core.Buffer;
 import Integer = ocean.text.convert.Integer_tango;
 import Float = ocean.text.convert.Float;
 import UTF = ocean.text.convert.Utf;
+import ocean.core.Verify;
 
 /*******************************************************************************
 
@@ -284,7 +285,7 @@ private void widthSink (FormatterSink sink, cstring str, ref Const!(FormatInfo) 
             }
             else
             {
-                assert(f.flags & Flags.AlignRight);
+                verify((f.flags & Flags.AlignRight) != 0);
                 if (str.length > f.width)
                 {
                     sink(str[0 .. f.width]);
@@ -303,7 +304,7 @@ private void widthSink (FormatterSink sink, cstring str, ref Const!(FormatInfo) 
             }
             else
             {
-                assert(f.flags & Flags.AlignRight);
+                verify((f.flags & Flags.AlignRight) != 0);
                 writeSpace(sink, f.width - str.length);
                 sink(str);
             }
@@ -765,11 +766,6 @@ private FormatInfo consume (FormatterSink sink, ref cstring fmt)
 *******************************************************************************/
 
 private cstring forwardSlice (ref cstring s, Const!(char)* p)
-in
-{
-    assert(s.ptr <= p);
-    assert(s.ptr + s.length >= p);
-}
 out (ret)
 {
     assert(s.ptr == p);
@@ -777,6 +773,9 @@ out (ret)
 }
 body
 {
+    verify(s.ptr <= p);
+    verify(s.ptr + s.length >= p);
+
     cstring old = s.ptr[0 .. cast(size_t) (p - s.ptr)];
     s = s[old.length .. $];
     return old;
@@ -822,7 +821,7 @@ private void writeSpace (FormatterSink s, size_t n)
     s(Spaces32[0 .. n % Spaces32.length]);
     n -= n % Spaces32.length;
 
-    assert((n % Spaces32.length) == 0);
+    verify((n % Spaces32.length) == 0);
 
     while (n != 0)
     {

@@ -66,6 +66,8 @@ import Utf = ocean.text.convert.Utf;
 
 import ocean.transition;
 
+import ocean.core.Verify;
+
 version(UnitTest) import ocean.core.Test;
 
 /*******************************************************************************
@@ -318,12 +320,10 @@ public struct UtfString ( Char = char, bool pull_dchars = false )
     ***************************************************************************/
 
     public OutType opIndex ( size_t index )
-    in
     {
-        assert(this.string.length, This.stringof ~ ".opIndex - attempted to index into an empty string");
-    }
-    body
-    {
+        verify(this.string.length > 0,
+            This.stringof ~ ".opIndex - attempted to index into an empty string");
+
         size_t i;
         size_t count;
         OutType c;
@@ -358,12 +358,9 @@ public struct UtfString ( Char = char, bool pull_dchars = false )
     ***************************************************************************/
 
     public ArrayOutType opSlice ( size_t start, size_t end )
-    in
     {
-        assert(end > start, typeof(this).stringof ~ ".opSlice - end <= start!");
-    }
-    body
-    {
+        verify(end > start, typeof(this).stringof ~ ".opSlice - end <= start!");
+
         static if ( pull_dchars )
         {
             return this.sliceCopy(start, end, this.slice_string);

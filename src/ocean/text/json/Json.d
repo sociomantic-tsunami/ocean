@@ -21,6 +21,8 @@ import ocean.transition;
 
 import ocean.core.Vararg;
 
+import ocean.core.Verify;
+
 import ocean.io.model.IConduit;
 
 import ocean.text.json.JsonEscape;
@@ -906,7 +908,7 @@ class Json(T) : JsonParser!(T)
 
                     case Type.Object:
                     auto obj = val.toObject;
-                    debug assert(obj !is null);
+                    verify(obj !is null);
                     printObject (val.toObject);
                     break;
 

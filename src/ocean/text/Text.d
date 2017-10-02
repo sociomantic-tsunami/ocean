@@ -219,6 +219,8 @@ import  Integer = ocean.text.convert.Integer_tango;
 
 import ocean.stdc.string : memmove;
 
+import ocean.core.Verify;
+
 version(DigitalMars)
 {
     import ocean.core.Vararg;
@@ -621,7 +623,7 @@ deprecated class Text(T) : TextView!(T)
                 break;
 
             // check to ensure UTF conversion is ok
-            assert ((len & (T.sizeof-1)) is 0);
+            verify ((len & (T.sizeof-1)) is 0);
             append (tmp [0 .. len/T.sizeof]);
         }
         return this;

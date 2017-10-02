@@ -26,6 +26,8 @@ import ocean.core.Enforce;
 
 import ocean.core.Array : copy;
 
+import ocean.core.Verify;
+
 import core.stdc.time : strftime, time_t, tm;
 
 import ocean.text.convert.Formatter;
@@ -62,12 +64,9 @@ import ocean.text.convert.Formatter;
 
 public mstring formatTime ( time_t timestamp, mstring output,
     cstring format_string = "%F %T\0" )
-in
 {
-    assert(!format_string[$ - 1], "Format string must be null-terminated");
-}
-body
-{
+    verify(!format_string[$ - 1], "Format string must be null-terminated");
+
     tm time;
     size_t len;
 

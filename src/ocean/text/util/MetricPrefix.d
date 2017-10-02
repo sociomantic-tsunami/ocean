@@ -21,7 +21,7 @@ module ocean.text.util.MetricPrefix;
 
 import core.stdc.math;
 
-
+import ocean.core.Verify;
 
 
 /*******************************************************************************
@@ -130,12 +130,9 @@ public struct MetricPrefix
     **************************************************************************/
 
     typeof (this) dec ( T : float ) ( T n, int e = 0 )
-    in
     {
-        assert (-5 < e && e < 5);
-    }
-    body
-    {
+        verify (-5 < e && e < 5);
+
         this.scaled = n;
 
         int i = 4;
@@ -208,7 +205,7 @@ public struct MetricPrefix
 public void splitBinaryPrefix ( ulong n, void delegate ( char prefix, uint order, ulong order_val ) output_dg )
 {
     auto length = MetricPrefix.BinaryPrefixes.length;
-    assert (length < int.max);
+    verify (length < int.max);
     for ( int order = cast(int) length - 1;  order >= 0; order-- )
     {
         auto shift = order * 10;
