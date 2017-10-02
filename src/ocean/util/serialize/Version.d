@@ -31,6 +31,8 @@ module ocean.util.serialize.Version;
 
 import ocean.transition;
 import ocean.core.Verify;
+import ocean.core.Buffer;
+
 version(UnitTest) import ocean.core.Test;
 
 /*******************************************************************************
@@ -227,16 +229,22 @@ struct Version
 
     ***************************************************************************/
 
-    static void[] inject ( ref void[] data, Version.Type ver )
+    static void[] inject ( ref Buffer!(void) data, Version.Type ver )
     {
         if (data.length < Version.Type.sizeof)
         {
             data.length = Version.Type.sizeof;
         }
 
-        *(cast(Version.Type*) data.ptr) = ver;
+        *(cast(Version.Type*) data[].ptr) = ver;
 
-        return data[Version.Type.sizeof .. $];
+        return data[Version.Type.sizeof .. data.length];
+    }
+
+    /// ditto
+    static void[] inject ( ref void[] data, Version.Type ver )
+    {
+        return inject(*cast(Buffer!(void)*) &data, ver);
     }
 
     unittest
