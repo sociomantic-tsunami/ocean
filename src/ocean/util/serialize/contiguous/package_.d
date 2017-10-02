@@ -149,6 +149,7 @@ import ocean.core.Test;
 import ocean.core.Verify;
 import ocean.core.StructConverter;
 import ocean.core.DeepCompare;
+import ocean.core.Buffer;
 
 /******************************************************************************
 
@@ -851,6 +852,24 @@ unittest
 
     s3.ptr.inner.enforceIntegrity();
     test!("==")(s3.ptr.inner.ptr.s, "abcd");
+}
+
+unittest
+{
+    static struct S
+    {
+        mstring s;
+    }
+
+    auto s = S("abcd".dup);
+
+    Buffer!(void) src;
+    Contiguous!(S) dst;
+
+    Serializer.serialize(s, src);
+    Deserializer.deserialize(src[], dst);
+
+    test!("==")(dst.ptr.s, "abcd");
 }
 
 /*******************************************************************************
