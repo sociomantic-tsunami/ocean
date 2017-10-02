@@ -482,27 +482,3 @@ unittest
     test (ate == INPUT2.length);
     test (bom.encoding == Encoding.UTF_8);
 }
-
-debug (UnicodeBom)
-{
-    import ocean.io.Stdout;
-
-    void main()
-    {
-            void[] INPUT2 = "abc\xE3\x81\x82\xE3\x81\x84\xE3\x81\x86";
-            void[] INPUT = x"efbbbf" ~ INPUT2;
-            auto bom = new UnicodeBom!(char)(Encoding.Unknown);
-            size_t ate;
-            char[256] buf;
-
-            auto temp = bom.decode (INPUT, buf, &ate);
-            assert (temp == INPUT2);
-            assert (ate == INPUT.length);
-            assert (bom.encoding == Encoding.UTF_8);
-
-            temp = bom.decode (INPUT2, buf, &ate);
-            assert (temp == INPUT2);
-            assert (ate == INPUT2.length);
-            assert (bom.encoding == Encoding.UTF_8);
-    }
-}

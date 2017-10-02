@@ -779,27 +779,3 @@ unittest
     auto text2 = format(tmp2, time);
     test (text2 == "Wed, 11 Jun 2008 17:22:07 GMT");
 }
-
-/******************************************************************************
-
- ******************************************************************************/
-
-debug (TimeStamp)
-{
-    void main()
-    {
-        Time t;
-
-        auto dos = "12-31-06 08:49AM";
-        auto iso = "2006-01-31 14:49:30,001";
-        assert (dostime(dos, t) == dos.length);
-        assert (iso8601(iso, t) == iso.length);
-
-        wchar[30] tmp;
-        wchar[] test = "Sun, 06 Nov 1994 08:49:37 GMT";
-
-        auto time = parse (test);
-        auto text = format (tmp, time);
-        assert (text == test);
-    }
-}
