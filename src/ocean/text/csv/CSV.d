@@ -44,7 +44,7 @@
 module ocean.text.csv.CSV;
 
 
-
+import ocean.core.Enforce;
 
 import ocean.transition;
 
@@ -209,6 +209,13 @@ public class CSV
         Params:
             row_dg = delegate to receive parsed rows
 
+        Throws:
+            Exception if quoted field is not delimited by separator
+
+            FIXME: if we need to be able to successfully parse
+            fields like `"hello"world,` then we'll need to come
+            up with something clever here instead of this enforcement.
+
     ***************************************************************************/
 
     private bool parseRow ( RowDg row_dg )
@@ -225,10 +232,7 @@ public class CSV
             {
                 if ( in_quote )
                 {
-                    // FIXME: if we need to be able to successfully parse
-                    // fields like `"hello"world,` then we'll need to come
-                    // up with something clever here instead of this assert.
-                    assert(i == row.length - 1 || row[i + 1] == this.separator,
+                    enforce(i == row.length - 1 || row[i + 1] == this.separator,
                         "Quoted field not delimited by separator");
                     field_start++; // Skip leading "
                     field_was_quoted = true;
