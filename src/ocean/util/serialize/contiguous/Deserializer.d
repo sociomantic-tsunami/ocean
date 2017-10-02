@@ -24,6 +24,7 @@ import ocean.util.serialize.contiguous.Contiguous;
 
 import ocean.core.Exception;
 import ocean.core.Enforce;
+import ocean.core.Buffer;
 import ocean.meta.traits.Indirections;
 
 debug (DeserializationTrace) import ocean.io.Stdout;
@@ -228,33 +229,34 @@ struct Deserializer
             src = data buffer previously created by Serializer
 
         Returns:
-            src wrapped in Contiguous, ready to use data
+            src wrapped in Contiguous, ready to use data. Must not outlive
+            src origin.
 
     ***************************************************************************/
 
-    public static Contiguous!(S) deserialize ( S ) ( ref void[] src )
+    public static Contiguous!(S) deserialize ( S ) ( ref Buffer!(void) src )
     out (_s)
     {
         auto s = cast(Contiguous!(S)) _s;
 
-        assert (s.data.ptr is src.ptr);
+        assert (s.data.ptr is src[].ptr);
 
         debug (DeserializationTrace)
         {
             Stdout.formatln("< deserialize!({})({}) : {}", S.stringof,
-                src.ptr, s.ptr);
+                src[].ptr, s.ptr);
         }
     }
     body
     {
         debug (DeserializationTrace)
         {
-            Stdout.formatln("> deserialize!({})({})", S.stringof, src.ptr);
+            Stdout.formatln("> deserialize!({})({})", S.stringof, src[].ptr);
             nesting = 0;
             scope (exit) nesting = 0;
         }
         size_t slices_len = 0,
-               data_len   = This.countRequiredSize!(S)(src, slices_len);
+               data_len   = This.countRequiredSize!(S)(src[], slices_len);
 
         debug (DeserializationTrace)
             Stdout.formatln("  data_len = {}, slices_len = {}", data_len, slices_len);
@@ -262,10 +264,7 @@ struct Deserializer
         size_t total_length = data_len + slices_len;
 
         if (src.length < total_length)
-        {
             src.length = total_length;
-            enableStomping(src);
-        }
 
         verify(src.length >= data_len);
 
@@ -274,7 +273,13 @@ struct Deserializer
             src[data_len .. total_length]
         );
 
-        return Contiguous!(S)(src);
+        return Contiguous!(S)(src[]);
+    }
+
+    /// ditto
+    public static Contiguous!(S) deserialize ( S ) ( ref void[] src )
+    {
+        return deserialize!(S)(* cast(Buffer!(void)*) &src);
     }
 
     /***************************************************************************
