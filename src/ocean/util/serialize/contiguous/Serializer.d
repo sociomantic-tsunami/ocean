@@ -23,6 +23,10 @@ import ocean.util.serialize.contiguous.Contiguous;
 import ocean.meta.traits.Indirections;
 import ocean.core.Test;
 
+import ocean.core.Buffer;
+
+import core.memory;
+
 debug(SerializationTrace) import ocean.io.Stdout;
 
 /******************************************************************************
@@ -62,25 +66,24 @@ struct Serializer
 
     ***************************************************************************/
 
-    public static void[] serialize ( S, D ) ( ref S src, ref D[] dst )
+    public static void[] serialize ( S ) ( ref S src, ref Buffer!(void) dst )
     out (data)
     {
         debug (SerializationTrace)
         {
             Stdout.formatln("< serialize!({})(<src>, {}) : {}", S.stringof,
-                dst.ptr, data.ptr);
+                dst[].ptr, data.ptr);
         }
     }
     body
     {
         debug (SerializationTrace)
         {
-            Stdout.formatln("> serialize!({})(<src>, {})", S.stringof, dst.ptr);
+            Stdout.formatln("> serialize!({})(<src>, {})",
+                S.stringof, dst[].ptr);
         }
 
-        static assert (D.sizeof == 1, "dst buffer can't be interpreted as void[]");
-        void[]* dst_untyped = cast (void[]*) &dst;
-        auto data = This.resize(*dst_untyped, This.countRequiredSize(src));
+        auto data = This.resize(dst, This.countRequiredSize(src));
 
         data[0 .. S.sizeof] = (cast(void*) &src)[0 .. S.sizeof];
         auto s_root = cast(Unqual!(S)*) data.ptr;
@@ -98,6 +101,14 @@ struct Serializer
 
             return data[0 .. src.sizeof];
         }
+    }
+
+    /// ditto
+    public static void[] serialize ( S, D ) ( ref S src, ref D[] dst )
+    {
+        static assert (D.sizeof == 1,
+            "dst buffer can't be interpreted as void[]");
+        return serialize!(S)(src, *cast(Buffer!(void)*) &dst);
     }
 
     /***************************************************************************
@@ -179,15 +190,15 @@ struct Serializer
 
     ***************************************************************************/
 
-    private static void[] resize ( ref void[] buffer, size_t len )
+    private static void[] resize ( ref Buffer!(void) buffer, size_t len )
     out (buffer_out)
     {
-        assert (buffer_out.ptr is buffer.ptr);
+        assert (buffer_out.ptr is buffer[].ptr);
         assert (buffer_out.length == buffer.length);
 
         debug (SerializationTrace)
         {
-            Stdout.formatln("< resize({}, {}) : ", buffer.ptr, len,
+            Stdout.formatln("< resize({}, {}) : ", buffer[].ptr, len,
                 buffer_out.ptr);
         }
     }
@@ -195,26 +206,21 @@ struct Serializer
     {
         debug (SerializationTrace)
         {
-            Stdout.formatln("> resize({}, {})", buffer.ptr, len);
+            Stdout.formatln("> resize({}, {})", buffer[].ptr, len);
         }
 
         if (len > buffer.length)
         {
-            if (buffer is null)
+            if (buffer[].ptr is null)
             {
-                buffer = new ubyte[len];
+                buffer.length = len;
+                GC.setAttr(buffer[].ptr, GC.BlkAttr.NO_SCAN);
             }
             else
-            {
-                // Since len > buffer.length, we defensively enable stomping
-                // before in case it hasn't been done by the caller
-                enableStomping(buffer);
                 buffer.length = len;
-                enableStomping(buffer);
-            }
         }
 
-        return buffer;
+        return buffer[];
     }
 
     /**************************************************************************
