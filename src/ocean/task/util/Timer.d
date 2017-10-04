@@ -283,6 +283,8 @@ private TimerSet!(EventData).IEvent registerResumeEvent (
     if (timer is null)
         timer = new typeof(timer);
 
+    assert(to_resume !is null);
+
     return .timer.schedule(
         // EventData setup is run from the same fiber so it is ok to reference
         // variable from this function stack
