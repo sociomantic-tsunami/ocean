@@ -17,13 +17,19 @@
 
 module ocean.LibFeatures;
 
-const has_features_3_5 = true;
-const has_features_2_9 = true;
-const has_features_2_8 = true;
-const has_features_2_7 = true;
-const has_features_2_6 = true;
-const has_features_2_5 = true;
-const has_features_2_4 = true;
-const has_features_2_3 = true;
-const has_features_2_1 = true;
-const has_features_2_0 = true;
+const has_features_3_5  = true;
+const has_features_3_4  = true;
+const has_features_3_3  = true;
+const has_features_3_2  = true;
+const has_features_3_1  = true;
+const has_features_3_0  = true;
+const has_features_2_10 = true;
+const has_features_2_9  = true;
+const has_features_2_8  = true;
+const has_features_2_7  = true;
+const has_features_2_6  = true;
+const has_features_2_5  = true;
+const has_features_2_4  = true;
+const has_features_2_3  = true;
+const has_features_2_1  = true;
+const has_features_2_0  = true;
