@@ -77,7 +77,6 @@ else
     import core.sys.posix.sys.time: timersub;
 }
 
-import ocean.core.Runtime: Runtime;
 import ocean.core.ExceptionDefinitions : AssertException;
 import ocean.io.Stdout: Stdout, Stderr;
 import ocean.io.stream.Format: FormatOutput;
@@ -87,7 +86,7 @@ import ocean.text.xml.DocPrinter: DocPrinter;
 import ocean.text.convert.Formatter;
 import ocean.core.Test: TestException, test;
 import core.memory;
-
+import core.runtime: Runtime;
 
 
 /******************************************************************************

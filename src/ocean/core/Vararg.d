@@ -16,7 +16,8 @@
  * Authors: Hauke Duden, Walter Bright
  *
  */
-module ocean.core.Vararg;
+deprecated module ocean.core.Vararg;
 
+pragma(msg, "Import core.stdc.stdarg instead of ocean.core.Vararg");
 
 public import core.stdc.stdarg;

@@ -13,7 +13,7 @@
 
 *******************************************************************************/
 
-module ocean.core.VersionIdentifiers;
+deprecated module ocean.core.VersionIdentifiers;
 
 
 import ocean.transition;
@@ -29,6 +29,7 @@ import ocean.transition;
 
 *******************************************************************************/
 
+deprecated("Use MakD's Version module to get this information")
 public void versionIdentifiers ( void delegate ( istring version_name ) dg )
 {
     mixin(Version!("DigitalMars", "dg"));
@@ -98,4 +99,3 @@ private template Version ( istring version_name, istring func_name )
     const Version = "version(" ~ version_name ~ ")"
         ~ func_name ~ `("` ~ version_name ~ `");`;
 }
-

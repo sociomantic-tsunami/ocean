@@ -13,6 +13,8 @@
  * Authors: Sean Kelly
  *
  */
-module ocean.core.Runtime;
+deprecated module ocean.core.Runtime;
+
+pragma(msg, "Import core.runtime instead of ocean.core.Runtime");
 
 public import core.runtime;

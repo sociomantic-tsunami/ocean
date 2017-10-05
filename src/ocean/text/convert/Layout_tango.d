@@ -60,7 +60,7 @@ version(UnitTest) import ocean.core.Test;
 
 version(DigitalMars)
 {
-    import ocean.core.Vararg;
+    import core.stdc.stdarg;
     alias void* Arg;
     alias va_list ArgList;
 

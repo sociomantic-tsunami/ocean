@@ -20,7 +20,8 @@
  * Authors: Sean Kelly, Fawzi Mohamed
  *
  */
-module ocean.core.Thread;
+deprecated module ocean.core.Thread;
+
+pragma(msg, "Import core.thread instead of ocean.core.Thread");
 
 public import core.thread;
-

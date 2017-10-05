@@ -17,12 +17,11 @@
 
 module ocean.io.device.Conduit;
 
-import ocean.transition;
-
-import ocean.core.Thread;
 import ocean.core.ExceptionDefinitions;
+import ocean.transition;
+public import ocean.io.model.IConduit;
 
-public  import ocean.io.model.IConduit;
+import core.thread;
 
 /*******************************************************************************
 

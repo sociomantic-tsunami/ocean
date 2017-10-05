@@ -100,7 +100,7 @@ import ocean.text.convert.Format;
 
 import ocean.util.log.model.ILogger;
 
-import ocean.core.Vararg;
+import core.stdc.stdarg;
 
 import AP = ocean.util.log.Appender;
 import EV = ocean.util.log.Event;

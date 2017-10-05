@@ -45,38 +45,16 @@ import ocean.util.container.AppendBuffer;
 
 import TangoLayout = ocean.text.convert.Layout_tango;
 
-import core.stdc.stdarg;
+/*
+ * va_list/_start/_arg/_end must be public imported because they are used in
+ * the vaArg template, which is instantiated in other modules as well.
+ */
+public import core.stdc.stdarg;
 
-/*******************************************************************************
-
-    Platform issues ...
-
-*******************************************************************************/
-
-version (DigitalMars) version (X86_64)
-{
-    version = DigitalMarsX86_64;
-}
-
-version (DigitalMarsX86_64)
-{
-
-    /*
-     * va_list/_start/_arg/_end must be public imported because they are used in
-     * the vaArg template, which is instantiated in other modules as well.
-     */
-
-    public import ocean.core.Vararg: va_arg, va_list,
-                               // implicitly referenced by the compiler... YEAH!
-                                     __va_argsave_t;
-}
-else static assert (false, "only Digital Mars x86-64 supported");
-
-/*******************************************************************************
+version = DigitalMarsX86_64;
 
 
-
-*******************************************************************************/
+/******************************************************************************/
 
 abstract class Layout ( T = char )
 {

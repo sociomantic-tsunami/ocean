@@ -32,10 +32,10 @@ import core.sys.posix.unistd;
 import ocean.stdc.posix.stdlib : mkdtemp;
 import core.stdc.stdio;
 import ocean.math.Math;
-import ocean.core.Thread;
 import ocean.core.Time;
 import ocean.stdc.string;
 import core.stdc.errno;
+import core.thread;
 
 import ocean.text.util.StringC;
 

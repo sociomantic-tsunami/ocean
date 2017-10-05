@@ -23,7 +23,6 @@ import ocean.transition;
 
 import ocean.core.Enforce: enforce;
 import Ocean = ocean.core.Test;
-import ocean.core.Thread;
 import ocean.core.Time: seconds;
 import ocean.io.select.EpollSelectDispatcher;
 import core.stdc.errno: ECONNREFUSED;
@@ -35,6 +34,7 @@ import ocean.sys.socket.UnixSocket;
 import ocean.stdc.posix.sys.un;
 import core.sys.posix.sys.socket;
 import core.stdc.stdlib;
+import core.thread;
 
 import test.selectlistener.UnixServer;
 
