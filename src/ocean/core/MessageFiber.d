@@ -73,7 +73,7 @@ debug ( MessageFiberDump )
 {
     import ocean.time.Clock;
     import ocean.core.Array;
-    import ocean.core.Memory;
+    import core.memory;
     import ocean.io.Stdout;
     debug = MessageFiberToken;
 }
