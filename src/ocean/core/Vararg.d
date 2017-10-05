@@ -18,22 +18,5 @@
  */
 module ocean.core.Vararg;
 
-version (DigitalMars) version (X86_64) version = DigitalMarsX64;
-version (X86)
-{
-    alias void* va_list;
 
-    template va_arg(T)
-    {
-        T va_arg(ref va_list _argptr)
-        {
-            T arg = *cast(T*)_argptr;
-            _argptr = _argptr + ((T.sizeof + int.sizeof - 1) & ~(int.sizeof - 1));
-            return arg;
-        }
-    }
-}
-else
-{
-    public import core.stdc.stdarg;
-}
+public import core.stdc.stdarg;
