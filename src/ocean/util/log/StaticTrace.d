@@ -35,40 +35,12 @@ import ocean.io.model.IConduit;
 
 import ocean.io.Console;
 
-/*******************************************************************************
+import core.stdc.stdarg;
 
- Platform issues ...
+alias void* Arg;
+alias va_list ArgList;
 
-*******************************************************************************/
-
-version (GNU)
-{
-    import ocean.core.Vararg;
-
-    alias void* Arg;
-    alias va_list ArgList;
-}
-else version (LDC)
-{
-    import ocean.core.Vararg;
-
-    alias void* Arg;
-    alias va_list ArgList;
-}
-else version (DigitalMars)
-{
-    import ocean.core.Vararg;
-
-    alias void* Arg;
-    alias va_list ArgList;
-
-    version (X86_64) version = DigitalMarsX64;
-}
-else
-{
-    alias void* Arg;
-    alias void* ArgList;
-}
+version (X86_64) version = DigitalMarsX64;
 
 /*******************************************************************************
 
@@ -108,7 +80,7 @@ public class StaticSyncPrint
 
     ***************************************************************************/
 
-    private typeof(find(cstring.init)) finder; 
+    private typeof(find(cstring.init)) finder;
 
     /***************************************************************************
 
@@ -218,4 +190,3 @@ public class StaticSyncPrint
         return this;
     }
 }
-

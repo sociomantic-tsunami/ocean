@@ -37,42 +37,12 @@ import ocean.io.Console;
 
 import ocean.text.convert.Layout_tango;
 
+import core.stdc.stdarg;
 
+alias void* Arg;
+alias va_list ArgList;
 
-/*******************************************************************************
-
- Platform issues ...
-
-*******************************************************************************/
-
-version (GNU)
-{
-    import ocean.core.Vararg;
-
-    alias void* Arg;
-    alias va_list ArgList;
-}
-else version (LDC)
-{
-    import ocean.core.Vararg;
-
-    alias void* Arg;
-    alias va_list ArgList;
-}
-else version (DigitalMars)
-{
-    import ocean.core.Vararg;
-
-    alias void* Arg;
-    alias va_list ArgList;
-
-    version (X86_64) version = DigitalMarsX64;
-}
-else
-{
-    alias void* Arg;
-    alias void* ArgList;
-}
+version (X86_64) version = DigitalMarsX64;
 
 /*******************************************************************************
 

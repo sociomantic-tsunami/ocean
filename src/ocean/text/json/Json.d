@@ -19,7 +19,7 @@ module ocean.text.json.Json;
 
 import ocean.transition;
 
-import ocean.core.Vararg;
+import core.stdc.stdarg;
 
 import ocean.core.Verify;
 

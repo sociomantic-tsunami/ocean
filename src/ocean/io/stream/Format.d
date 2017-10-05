@@ -29,7 +29,7 @@ version(DigitalMars)
 {
     version(X86_64) version=DigitalMarsX64;
 
-    import ocean.core.Vararg;
+    import core.stdc.stdarg;
 }
 
 /*******************************************************************************

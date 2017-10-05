@@ -27,7 +27,11 @@ clean += .*.lst
 TEST_FILTER_OUT += \
 	$C/src/ocean/io/Stdout_tango.d \
 	$C/src/ocean/io/FilePath_tango.d \
+	$C/src/ocean/core/Runtime.d \
+	$C/src/ocean/core/Thread.d \
 	$C/src/ocean/core/Traits_tango.d \
+	$C/src/ocean/core/Vararg.d \
+	$C/src/ocean/core/VersionIdentifiers.d \
 	$C/src/ocean/core/Exception_tango.d \
 	$C/src/ocean/io/device/SerialPort.d \
 	$C/src/ocean/io/device/ProgressFile.d \
