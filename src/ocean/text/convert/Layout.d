@@ -45,6 +45,7 @@ import ocean.util.container.AppendBuffer;
 
 import TangoLayout = ocean.text.convert.Layout_tango;
 
+import core.stdc.stdarg;
 
 /*******************************************************************************
 
