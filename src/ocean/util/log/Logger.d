@@ -1011,7 +1011,8 @@ unittest
     }
 
     scope appender = new StaticBuffer;
-    auto log = Log.lookup("ocean.util.log.Logger.TestLogAlloc").additive(false)
+    Logger log = (new Logger(Log.hierarchy(), "dummy"))
+        .additive(false)
         .add(appender);
 
     testNoAlloc({
