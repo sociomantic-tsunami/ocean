@@ -450,7 +450,8 @@ public abstract class Task : ISuspendable
 
     ***************************************************************************/
 
-    package final bool entryPoint ( )
+    /* package(ocean.task) */
+    public final bool entryPoint ( )
     {
         debug_trace("<{}> start of main function", cast(void*) this);
 
