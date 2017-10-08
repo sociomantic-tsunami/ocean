@@ -185,8 +185,7 @@ public abstract class Task : ISuspendable
 
     ***************************************************************************/
 
-    /* package(ocean.task) */
-    public Buffer!(void delegate()) termination_hooks;
+    private Buffer!(void delegate()) termination_hooks;
 
     /***************************************************************************
 
