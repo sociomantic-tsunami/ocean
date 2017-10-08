@@ -27,7 +27,6 @@ import ocean.transition;
 import ocean.core.Enforce;
 import ocean.core.Verify;
 import ocean.core.Traits;
-import ocean.core.array.Mutation : reverse;
 import ocean.io.select.EpollSelectDispatcher;
 import ocean.util.container.queue.FixedRingQueue;
 
@@ -639,31 +638,6 @@ final class Scheduler
         task.assignTo(fiber);
         // execute the task
         bool had_exception = task.entryPoint();
-        assert (task.finished());
-
-        if (task.termination_hooks.length)
-        {
-            debug_trace("Calling {} termination_hooks for task <{}>",
-                task.termination_hooks.length, cast(void*) task);
-
-            auto hooks = reverse(task.termination_hooks[]);
-            task.termination_hooks.reset();
-
-            foreach (hook; hooks)
-            {
-                hook();
-                assert(
-                    task.termination_hooks.length == 0,
-                    "Adding new hooks while running existing ones is not" ~
-                        "supported"
-                );
-            }
-        }
-
-        // allow task to recycle any shared resources it may have (or recycle
-        // task instance itself)
-        debug_trace("Recycling task <{}>", cast(void*) task);
-        task.recycle();
 
         // in case task was resumed after unhandled exception, delay further
         // execution for one cycle to avoid situation where exception handler

@@ -27,7 +27,7 @@ module ocean.task.Task;
 static import core.thread;
 
 import ocean.transition;
-import ocean.core.array.Mutation : moveToEnd;
+import ocean.core.array.Mutation : moveToEnd, reverse;
 import ocean.core.Test;
 import ocean.core.Buffer;
 import ocean.core.Verify;
@@ -456,7 +456,38 @@ public abstract class Task : ISuspendable
         debug_trace("<{}> start of main function", cast(void*) this);
 
         scope(exit)
+        {
             this.state_bitmask |= TaskState.Finished;
+
+            if (this.termination_hooks.length)
+            {
+                debug_trace("Calling {} termination_hooks for task <{}>",
+                    this.termination_hooks.length, cast(void*) this);
+
+                auto hooks = reverse(this.termination_hooks[]);
+                this.termination_hooks.reset();
+
+                foreach (hook; hooks)
+                {
+                    hook();
+                    assert(
+                        this.termination_hooks.length == 0,
+                        "Adding new hooks while running existing " ~
+                            "ones is not supported"
+                    );
+                }
+            }
+
+            // allow task to recycle any shared resources it may have
+            // (or recycle task instance itself)
+            //
+            // NB: this must be the final part of the method and relies
+            // on assumption that no other fiber will have any chance
+            // to start executing this task until it actually reaches
+            // end of the method
+            debug_trace("Recycling task <{}>", cast(void*) this);
+            this.recycle();
+        }
 
         try
         {
