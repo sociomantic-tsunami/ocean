@@ -150,3 +150,37 @@ unittest
     theScheduler.schedule(new MainTask);
     theScheduler.eventLoop();
 }
+
+
+unittest
+{
+    static class DummyTask : Task
+    {
+        int counter;
+
+        override void run ( )
+        {
+            ++this.counter;
+
+            auto stats = theScheduler.getStats();
+            test!("==")(stats.worker_fiber_busy, 0);
+        }
+    }
+
+    SchedulerConfiguration config;
+    with (config)
+    {
+        specialized_pools = [
+            PoolDescription(DummyTask.classinfo, 10240)
+        ];
+    }
+
+    initScheduler(config);
+
+    auto task = new DummyTask;
+    theScheduler.schedule(task);
+    test!("==")(task.counter, 1);
+    test(task.finished());
+
+    theScheduler.eventLoop();
+}
