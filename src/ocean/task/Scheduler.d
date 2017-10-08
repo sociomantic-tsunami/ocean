@@ -32,6 +32,7 @@ import ocean.util.container.queue.FixedRingQueue;
 
 import ocean.task.Task;
 import ocean.task.internal.FiberPoolWithQueue;
+import ocean.task.internal.SpecializedPools;
 
 version (UnitTest)
 {
@@ -69,6 +70,16 @@ struct SchedulerConfiguration
     /// maximum amount of tasks that can be suspended via
     /// `theScheduler.processEvents` in between scheduler dispatch cycles
     size_t suspended_task_limit = 16;
+
+    /// optional array that defines specialized worker fiber pools to be
+    /// used for handling specific task kinds. Scheduled task is checked
+    /// against this array every time thus it is not recommended to configure
+    /// it to more than a few dedicated extra pools
+    PoolDescription[] specialized_pools;
+
+    /// specialized worker fiber pool description. Tasks handled by such pools
+    /// won't be queued at all and go to the dedicated pool immediately
+    alias .PoolDescription PoolDescription;
 }
 
 /*******************************************************************************
@@ -149,6 +160,15 @@ final class Scheduler
     ***************************************************************************/
 
     private EpollSelectDispatcher _epoll;
+
+    /***************************************************************************
+
+        Optional mapping from some Task ClasInfo's to dedicated worker
+        fiber pools.
+
+    ***************************************************************************/
+
+    private SpecializedPools specialized_pools;
 
     /***************************************************************************
 
@@ -281,6 +301,8 @@ final class Scheduler
             &this.processEvents
         );
 
+        this.specialized_pools = new SpecializedPools(config.specialized_pools);
+
         this.suspended_tasks = new FixedRingQueue!(Task)(config.suspended_task_limit);
     }
 
@@ -370,7 +392,8 @@ final class Scheduler
 
         try
         {
-            this.fiber_pool.runOrQueue(task);
+            if (!this.specialized_pools.run(task))
+                this.fiber_pool.runOrQueue(task);
         }
         catch (Exception e)
         {
@@ -574,6 +597,7 @@ final class Scheduler
         scope iterator = this.fiber_pool.new BusyItemsIterator;
         foreach (ref fiber; iterator)
             fiber.active_task.kill();
+        this.specialized_pools.kill();
 
         verify(this.fiber_pool.num_busy() == 0);
         verify(this.fiber_pool.queued_tasks.length() == 0);
