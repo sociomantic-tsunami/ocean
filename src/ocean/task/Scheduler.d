@@ -31,7 +31,7 @@ import ocean.io.select.EpollSelectDispatcher;
 import ocean.util.container.queue.FixedRingQueue;
 
 import ocean.task.Task;
-import ocean.task.internal.FiberPool;
+import ocean.task.internal.FiberPoolWithQueue;
 
 version (UnitTest)
 {
@@ -127,15 +127,6 @@ final class Scheduler
 
     /***************************************************************************
 
-        Thrown when all fibers are busy, task queue is full and no custom
-        delegate to handle queue overflow is supplied.
-
-    ***************************************************************************/
-
-    private TaskQueueFullException queue_full_e;
-
-    /***************************************************************************
-
         Thrown when task is being added for later resuming via
         Scheduler.processEvents but matching queue is full
 
@@ -149,7 +140,7 @@ final class Scheduler
 
     ***************************************************************************/
 
-    private FiberPool fiber_pool;
+    private FiberPoolWithQueue fiber_pool;
 
     /***************************************************************************
 
@@ -177,11 +168,27 @@ final class Scheduler
 
     /***************************************************************************
 
-        Queue of tasks awaiting idle worker fiber to be executed in
+        Set delegate to call each time task is attempted to be queue but size
+        limit is reached. Both the queue and the task will be supplied as
+        arguments.
 
     ***************************************************************************/
 
-    private FixedRingQueue!(Task) queued_tasks;
+    public void task_queue_full_cb ( TaskQueueFullCB dg )
+    {
+        this.fiber_pool.task_queue_full_cb = dg;
+    }
+
+    /***************************************************************************
+
+        Gets current callback for case of full queue
+
+    ***************************************************************************/
+
+    public TaskQueueFullCB task_queue_full_cb ( )
+    {
+        return this.fiber_pool.task_queue_full_cb;
+    }
 
     /***************************************************************************
 
@@ -190,15 +197,6 @@ final class Scheduler
     ***************************************************************************/
 
     private FixedRingQueue!(Task) suspended_tasks;
-
-    /***************************************************************************
-
-        Called each time task is attempted to be queue but size limit is
-        reached. Both the queue and the task will be supplied as arguments.
-
-    ***************************************************************************/
-
-    public void delegate ( Task, FixedRingQueue!(Task) ) task_queue_full_cb;
 
     /***************************************************************************
 
@@ -263,7 +261,6 @@ final class Scheduler
             config.suspended_task_limit
         );
 
-        this.queue_full_e = new TaskQueueFullException;
         this.suspend_queue_full_e = new SuspendQueueFullException;
 
         verify(
@@ -277,12 +274,13 @@ final class Scheduler
         else
             this._epoll = epoll;
 
-        this.fiber_pool = new FiberPool(
+        this.fiber_pool = new FiberPoolWithQueue(
+            config.task_queue_limit,
             config.worker_fiber_stack_size,
-            config.worker_fiber_limit
+            config.worker_fiber_limit,
+            &this.processEvents
         );
 
-        this.queued_tasks = new FixedRingQueue!(Task)(config.task_queue_limit);
         this.suspended_tasks = new FixedRingQueue!(Task)(config.suspended_task_limit);
     }
 
@@ -298,12 +296,15 @@ final class Scheduler
 
     public void shutdown ( )
     {
-        debug_trace("Shutting down initiated. {} queued tasks will be " ~
-            " discardead, {} suspended tasks will be killed",
-            this.queued_tasks.length(), this.suspended_tasks.length());
+        debug_trace(
+            "Shutting down initiated. {} queued tasks will be " ~
+                " discardead, {} suspended tasks will be killed",
+            this.fiber_pool.queued_tasks.length(),
+            this.suspended_tasks.length()
+        );
 
         this.state = State.Shutdown;
-        this.queued_tasks.clear();
+        this.fiber_pool.queued_tasks.clear();
 
         Task task;
         while (this.suspended_tasks.pop(task))
@@ -329,8 +330,8 @@ final class Scheduler
     public SchedulerStats getStats ( )
     {
         SchedulerStats stats =  {
-            task_queue_busy : this.queued_tasks.length(),
-            task_queue_total : this.queued_tasks.maxItems(),
+            task_queue_busy : this.fiber_pool.queued_tasks.length(),
+            task_queue_total : this.fiber_pool.queued_tasks.maxItems(),
             suspended_queue_busy : this.suspended_tasks.length(),
             suspended_queue_total : this.suspended_tasks.maxItems(),
             worker_fiber_busy : this.fiber_pool.num_busy(),
@@ -367,18 +368,16 @@ final class Scheduler
                 caller_task.kill();
         }
 
-        if (this.fiber_pool.num_busy() >= this.fiber_pool.limit())
+        try
         {
-            this.queue(task);
+            this.fiber_pool.runOrQueue(task);
         }
-        else
+        catch (Exception e)
         {
-            auto fiber = this.fiber_pool.get();
-            debug_trace("running task <{}> via worker fiber <{}>",
-                cast(void*) task, cast(void*) fiber);
-            fiber.reset(&this.worker_fiber_method);
-            task.assignTo(fiber);
-            this.resumeTask(task);
+            if (this.exception_handler !is null)
+                this.exception_handler(task, e);
+            else
+                throw e;
         }
     }
 
@@ -398,24 +397,14 @@ final class Scheduler
                 task to execute
 
         Throws:
-            TaskQueueFullException if task queue is at full capacity
+            TaskQueueFullException if task queue is at full capacity AND
+            if no custom `task_queue_full_cb` is set.
 
     ***************************************************************************/
 
     public void queue ( Task task )
     {
-        if (!this.queued_tasks.push(task))
-        {
-            debug_trace("trying to queue a task while task queue is full");
-            if (this.task_queue_full_cb !is null)
-                this.task_queue_full_cb(task, this.queued_tasks);
-            else
-                enforce(this.queue_full_e, false);
-        }
-        else
-        {
-            debug_trace("task '{}' queued for delayed execution", cast(void*) task);
-        }
+        this.fiber_pool.queue(task);
     }
 
     /***************************************************************************
@@ -577,7 +566,8 @@ final class Scheduler
         // handles corner case which is likely to only happen in synthetic
         // tests - when there are no/few events and tasks keep calling
         // `processEvents` in a loop
-        while (this.suspended_tasks.length || this.queued_tasks.length);
+        while (this.suspended_tasks.length
+            || this.fiber_pool.queued_tasks.length);
 
         // cleans up any stalled worker fibers left after deregistration
         // of all events.
@@ -586,7 +576,7 @@ final class Scheduler
             fiber.active_task.kill();
 
         verify(this.fiber_pool.num_busy() == 0);
-        verify(this.queued_tasks.length() == 0);
+        verify(this.fiber_pool.queued_tasks.length() == 0);
         verify(this.suspended_tasks.length() == 0);
     }
 
@@ -619,72 +609,6 @@ final class Scheduler
         debug_trace("task <{}> will be resumed after processing pending events",
             cast(void*) task);
         task.suspend();
-    }
-
-    /***************************************************************************
-
-        Params:
-            worker = reference to worker fiber item
-            task   = task to run
-
-        Throws:
-            SanityException on attempt to run new task from the very
-            same fiber which would result in fiber resetting own state.
-
-    ***************************************************************************/
-
-    private void runTask ( WorkerFiber fiber, Task task )
-    {
-        task.assignTo(fiber);
-        // execute the task
-        bool had_exception = task.entryPoint();
-
-        // in case task was resumed after unhandled exception, delay further
-        // execution for one cycle to avoid situation where exception handler
-        // calls `Task.continueAfterThrow()` and that throws again
-        if (had_exception)
-            this.processEvents();
-
-        // prevent referencing old worker fiber
-        task.fiber = null;
-    }
-
-    /***************************************************************************
-
-        Set in schedule() as a "real" fiber entry method when a task is
-        assigned to a worker fiber.
-
-        Takes care of:
-        - recycling both task and worker fiber after main task method finishes
-        - reusing current worker fiber to run new scheduled tasks if there are
-            any
-
-    ***************************************************************************/
-
-    private void worker_fiber_method ( )
-    {
-        auto fiber = cast(WorkerFiber) Fiber.getThis();
-        enforce(fiber !is null);
-        auto task = fiber.activeTask();
-        enforce(task !is null);
-
-        runTask(fiber, task);
-
-        while (this.queued_tasks.pop(task) && this.state != State.Shutdown)
-        {
-            // there are some scheduled tasks in the queue. it is best for
-            // latency and performance to start one of those immediately in
-            // current fiber instead of going through recycle+get again
-            debug_trace("Reusing worker fiber <{}> to run scheduled task <{}>",
-                cast(void*) fiber, cast(void*) task);
-
-            runTask(fiber, task);
-        }
-
-        // there are no scheduled tasks right now, can simply recycle
-        // worker fiber for future usage
-        debug_trace("Recycling worker fiber <{}>", cast(void*) fiber);
-        this.fiber_pool.recycle(fiber);
     }
 
     /***************************************************************************
@@ -725,11 +649,11 @@ final class Scheduler
         bool queued = false;
 
         while (this.fiber_pool.num_busy() < this.fiber_pool.limit()
-            && this.queued_tasks.length)
+            && this.fiber_pool.queued_tasks.length)
         {
             queued = true;
             Task task;
-            auto success = this.queued_tasks.pop(task);
+            auto success = this.fiber_pool.queued_tasks.pop(task);
             assert(success);
             this.schedule(task);
         }
@@ -939,7 +863,7 @@ public void initScheduler ( SchedulerConfiguration config,
     {
         return _scheduler.fiber_pool.num_busy() == 0
             && _scheduler.suspended_tasks.length() == 0
-            && _scheduler.queued_tasks.length() == 0;
+            && _scheduler.fiber_pool.queued_tasks.length() == 0;
     }
 
     if (_scheduler !is null)
@@ -956,20 +880,8 @@ public void initScheduler ( SchedulerConfiguration config,
 
 private Scheduler _scheduler;
 
-/******************************************************************************
-
-    Exception thrown when scheduled task queue overflows
-
-******************************************************************************/
-
-public class TaskQueueFullException : Exception
-{
-    this ( )
-    {
-        super("Attempt to schedule a task when all worker fibers are busy "
-            ~ " and delayed execution task queue is full");
-    }
-}
+public alias ocean.task.internal.FiberPoolWithQueue.TaskQueueFullException
+    TaskQueueFullException;
 
 /******************************************************************************
 
