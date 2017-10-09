@@ -44,10 +44,8 @@ class DeserializationException : Exception
 
         Ensures length `len` does not exceed hard size limit `max`
 
-        Template_Params:
-            S   = type of the struct which is currently loaded
-
         Params:
+            S   = type of the struct which is currently loaded
             len  = length of a dynamic array to deserialize
             max  = allowed maximum dynamic array length
             file = file where size limit is enforced
@@ -78,10 +76,8 @@ class DeserializationException : Exception
 
         Throws this instance if len is not at lest required.
 
-        Template_Params:
-            S = type of the struct that is currently loaded
-
         Params:
+            S = type of the struct that is currently loaded
             len      = provided number of data bytes
             required = required number of data bytes
             file = file where size limit is enforced
@@ -230,10 +226,8 @@ struct Deserializer
         src will be increased to be able to store those.
 
         Params:
-            src = data buffer previously created by Serializer
-
-        Template_Params:
             S = struct type expected
+            src = data buffer previously created by Serializer
 
         Returns:
             src wrapped in Contiguous, ready to use data
@@ -292,11 +286,9 @@ struct Deserializer
         Contiguous wrapper.
 
         Params:
+            S = struct type `src` is assumed to contain
             src = buffer previously created by Serializer, unchanged
             dst = buffer to store deserialized data
-
-        Template_Params:
-            S = struct type `src` is assumed to contain
 
         Returns:
             dst by value
@@ -382,10 +374,8 @@ struct Deserializer
         Calculates total amount of bytes needed for an array to store
         deserialized S instance.
 
-        Template_Params:
-            S = struct type `instance` is assumed to contain
-
         Params:
+            S = struct type `instance` is assumed to contain
             instance = serialized struct buffer to calculate data for
 
         Returns:
@@ -426,10 +416,8 @@ struct Deserializer
         This is the private version used internally as public one does not
         make that distinction and only return single size.
 
-        Template_Params:
-            S = struct type
-
         Params:
+            S = struct type
             data        = struct slice to calculate data for
             extra_bytes = extra space needed for branched arrays, this number
                 is consequently accumulated through recursive calls to count*
@@ -488,10 +476,8 @@ struct Deserializer
         be called recursively for any nested struct type, given a proper
         sub-slice
 
-        Template_Params:
-            S = struct type
-
         Params:
+            S = struct type
             data = slice of a serialized struct where array dumps are
                 stored. This can also be any recursive array dump, not
                 just the very first one.
@@ -579,10 +565,8 @@ struct Deserializer
         If there are no branched arrays available via T, amount of extra
         bytes is always expected to be 0
 
-        Template_Params:
-            T = array element type
-
          Params:
+             T = array element type
              data  = slice of serialized buffer where array data starts
              extra_bytes = incremented by the number of bytes required to
                 store branched arrays
@@ -678,10 +662,8 @@ struct Deserializer
         If no branched arrays are transitively stored in T, `extra_bytes` is not
         supposed to be incremeneted
 
-        Template_Params:
-            T = array element type
-
          Params:
+             T = array element type
              len   = array length
              data  = data of top-most array elements
              bytes = incremented by the number of bytes required by
@@ -759,10 +741,8 @@ struct Deserializer
         resized so it is legal to use sub-slice of original buffer (unused
         memory part) as `slices_buffer` argument.
 
-        Template_Params:
-            S = struct type to deserialize
-
         Params:
+            S = struct type to deserialize
             src = buffer that is expected to contain serialized S
             slices_buffer = place to store expanded branched array slices
 

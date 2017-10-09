@@ -184,7 +184,7 @@ struct eb128_node
 
         Gets the key.
 
-        Template_Params:
+        Params:
             signed = true: the key was originally a Cent, false: it was a UCent
 
         Returns:

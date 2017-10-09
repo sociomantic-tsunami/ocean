@@ -99,7 +99,7 @@ static this ()
 
     String struct serializer
 
-    Template_Params:
+    Params:
         Char = character type of output string
 
 *******************************************************************************/
@@ -271,10 +271,8 @@ public class StringStructSerializer ( Char )
         Note: the main method to use from the outside is the first serialize()
         method above. This method is for the use of the StructSerializer.
 
-        Template_Params:
-            T = type of item
-
         Params:
+            T = type of item
             output = string to serialize struct data to
             item = item to append
             name = name of item
@@ -364,10 +362,8 @@ public class StringStructSerializer ( Char )
 
         Appends a named array to the output string
 
-        Template_Params:
-            T = base type of array
-
         Params:
+            T = base type of array
             output = string to serialize struct data to
             array = array to append
             name = name of array item
@@ -407,10 +403,8 @@ public class StringStructSerializer ( Char )
 
         Called before a struct array is serialized.
 
-        Template_Params:
-            T = base type of array
-
         Params:
+            T = base type of array
             output = string to serialize struct data to
             name = name of struct item
             array = array to append
@@ -433,10 +427,8 @@ public class StringStructSerializer ( Char )
 
         Called after a struct array is serialized.
 
-        Template_Params:
-            T = base type of array
-
         Params:
+            T = base type of array
             output = string to serialize struct data to
             name = name of struct item
             array = array to append

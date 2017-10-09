@@ -36,7 +36,7 @@ import core.stdc.time: time_t, time;
     CachingStructLoader so that last accessed element won't become invalidated
     between context switches
 
-    Template_Params:
+    Params:
         S = type of the deserialized struct expected in contiguous buffer
 
 *******************************************************************************/

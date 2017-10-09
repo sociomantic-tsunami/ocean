@@ -28,7 +28,7 @@ public import ocean.meta.types.Typedef;
 
     Checks (non-transitively) if type is mutable
 
-    Template_Params:
+    Params:
         T = any plain type
 
 *******************************************************************************/
@@ -94,7 +94,7 @@ void enableStomping(T)(ref T[] array)
     preserving octal notation is really important for readability and those
     can't be simply replace with decimal/hex ones.
 
-    Template_Params:
+    Params:
         literal = octal number literal as string
 
 *******************************************************************************/
@@ -206,7 +206,7 @@ unittest
     make its meaning more obvious. This is a trivial template wrapper that
     unifies the naming.
 
-    Template_Params:
+    Params:
         T = any floating point type
 
     Return:

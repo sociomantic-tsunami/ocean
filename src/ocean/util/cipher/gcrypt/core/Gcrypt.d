@@ -187,7 +187,7 @@ public class GcryptException : Exception
 
     Gcrypt algorithm base class template.
 
-    Template_Params:
+    Params:
         algorithm = algorithm which this class uses for en/decryption
         mode  = algorithm mode which this class uses for en/decryption
 

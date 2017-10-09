@@ -119,7 +119,7 @@ version ( UnitTest )
 
         Free list tester base class. Tests all methods of IFreeList.
 
-        Template_Params:
+        Params:
             I = type of item stored in free list
 
     ***************************************************************************/

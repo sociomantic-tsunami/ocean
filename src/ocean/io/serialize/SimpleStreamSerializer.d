@@ -66,7 +66,7 @@ public alias SimpleStreamSerializerT!(false) SimpleStreamSerializer;
 
     Simple serializer struct - just a namespace, all methods are static.
 
-    Template_Params:
+    Params:
         SerializeDynArrays = true: dynamic arrays in structs will be serialized
                              false: not.
 
@@ -85,10 +85,8 @@ static:
         If data is a pointer to a struct or union, it is dereferenced
         automatically.
 
-        Template_Params:
-            T = type of data to write
-
         Params:
+            T = type of data to write
             output = output stream to write to
             data = data to write
 
@@ -162,10 +160,8 @@ static:
         If data is a pointer to a struct or union, it is dereferenced
         automatically.
 
-        Template_Params:
-            T = type of data to read
-
         Params:
+            T = type of data to read
             input = input stream to read from
             data = data to read
 
@@ -237,11 +233,9 @@ static:
         If data is a pointer to a struct or union, it is dereferenced
         automatically.
 
-        Template_Params:
+        Params:
             Stream = type of stream; must be either InputStream or OutputStream
             T = type of data to transmit
-
-        Params:
             stream = stream to read from / write to
             data = data to transmit
 
@@ -326,10 +320,8 @@ static:
         Reads/writes data from/to an io stream, populating/consuming
         data[0 .. bytes].
 
-        Template_Params:
-            Stream = type of stream; must be either InputStream or OutputStream
-
         Params:
+            Stream = type of stream; must be either InputStream or OutputStream
             stream = stream to read from / write to
             data   = pointer to data buffer
             bytes  = data buffer length (bytes)
@@ -354,10 +346,8 @@ static:
         Reads/writes data from/to an io stream, populating/consuming data to its
         entirety.
 
-        Template_Params:
-            Stream = type of stream; must be either InputStream or OutputStream
-
         Params:
+            Stream = type of stream; must be either InputStream or OutputStream
             stream = stream to read from / write to
             data = pointer to data buffer
 

@@ -598,7 +598,7 @@ public enum TypedefKind
 
     Determines if T is a typedef of some kind
 
-    Template_Params:
+    Params:
         T = type to check
 
     Evaluates to:

@@ -146,10 +146,8 @@ template KeylessMethods ( Node, alias eb_first, alias eb_last )
         Library function call wrapper. Invokes eb_func with this &this.root
         as first argument.
 
-        Template_Params:
-            eb_func = library function
-
         Params:
+            eb_func = library function
             args = additional eb_func arguments
 
         Returns:

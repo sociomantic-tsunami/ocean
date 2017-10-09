@@ -88,7 +88,7 @@ public void versionIdentifiers ( void delegate ( istring version_name ) dg )
     with the name of the version identifier specified as the parameter, in the
     case where the program is compiled with that version identifier.
 
-    Template_Params:
+    Params:
         version_name = name of version identifier to check
         func_name = name of function to call if version identifier is active
 

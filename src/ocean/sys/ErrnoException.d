@@ -148,10 +148,8 @@ public class ErrnoException : Exception
         Presence of additional wrapper struct is dictated by limitations
         of dmd1 type inference in method/function signatures.
 
-        Template_Params:
-            Func = function alias, usually C library function
-
         Params:
+            Func = function alias, usually C library function
             verify = lambda that takes return value of Func and returns
                 `true` itself if result is considered successful
             file = file where the expr is evaluated

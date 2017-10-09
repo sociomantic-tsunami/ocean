@@ -115,14 +115,12 @@ unittest
     Verifies that given expression throws exception instance of expected type.
 
     Params:
+        E = exception type to expect, Exception by default
         expr = expression that is expected to throw during evaluation
         strict = if 'true', accepts only exact exception type, disallowing
             polymorphic conversion
         file = file of origin
         line = line of origin
-
-    Template_Params:
-        E = exception type to expect, Exception by default
 
     Throws:
         `TestException` if nothing has been thrown from `expr`

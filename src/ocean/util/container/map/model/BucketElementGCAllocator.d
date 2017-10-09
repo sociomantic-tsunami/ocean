@@ -63,7 +63,7 @@ public class BucketElementGCAllocator(Bucket) : IBucketElementGCAllocator
     Creates an instance of BucketElementGCAllocator which is suitable for usage
     with the Map type passed as a template parameter.
 
-    Template_Params:
+    Params:
         Map = the type to create the allocator according to
 
     Returns:

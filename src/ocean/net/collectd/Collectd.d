@@ -489,7 +489,7 @@ public final class Collectd
 
         Also reset the formatting buffer.
 
-        Template_Params:
+        Params:
             reqname = Name of the request that is started, for more informative
                       error message.
 

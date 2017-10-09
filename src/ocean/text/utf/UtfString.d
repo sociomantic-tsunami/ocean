@@ -84,11 +84,9 @@ public const dchar InvalidUnicode = cast(dchar)0xffffffff;
 
     Encoding agnostic string compare function.
 
-    Template_Params:
+    Params:
         Char1 = character type of first string to compare
         Char2 = character type of second string to compare
-
-    Params:
         str1 = first string to compare
         str2 = second string to compare
 
@@ -132,7 +130,7 @@ bool utf_match ( Char1, Char2 ) ( Char1[] str1, Char2[] str2 )
 
     UtfString template struct
 
-    Template_Params:
+    Params:
         Char = type of strings to process
         pull_dchars = determines the output type of the struct's methods. If
             true they will all output dchars (ie unicode / utf32 characters),

@@ -169,7 +169,7 @@ interface IAppendBufferReader ( T ) : IAppendBufferBase
 
     AppendBuffer class template
 
-    Template_Params:
+    Params:
         T          = array element type
         use_malloc = true:  use malloc()/realloc()/free() to (re/de)allocate
                             the content buffer
@@ -193,7 +193,7 @@ public template AppendBuffer ( T, bool use_malloc = false )
 
     AppendBuffer class template
 
-    Template_Params:
+    Params:
         T    = array element type
         Base = base class
 
@@ -1461,10 +1461,8 @@ private abstract class MallocAppendBufferImpl: AppendBufferImpl
 
         Allocates a new dynamic array of n elements using malloc().
 
-        Template_Params:
-            T = element type
-
         Params:
+            T = element type
             n = length of the new array
 
         Returns:

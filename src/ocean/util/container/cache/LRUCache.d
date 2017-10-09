@@ -210,7 +210,7 @@ import Traits = ocean.core.Traits;
 
     Creates an extra create_time field depending on the template parameter.
 
-    Template_Params:
+    Params:
         T = the type of value to store
         TrackCreateTimes = flags whether a create_time field should be created
 
@@ -230,7 +230,7 @@ private struct ValueT(T,  bool TrackCreateTimes)
     Data cache class template. Stores items of raw data, either of fixed or
     dynamic size.
 
-    Template_Params:
+    Params:
         T = type of item to store in cache
         TrackCreateTimes = if true, each cache item is stored with its create
             time, in addition to its last access time

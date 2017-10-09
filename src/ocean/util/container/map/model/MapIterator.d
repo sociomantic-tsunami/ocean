@@ -25,7 +25,7 @@ import ocean.util.container.map.model.Bucket;
     Mixin that adds an iterator class and a member variable of it.
     Note that this.iterator still has to be initialized by the constructor.
 
-    Template_Params:
+    Params:
         ParentIterator = parent class to inherit from
         IteratorTemplate = Instance of the MapIterator template
 
@@ -183,7 +183,7 @@ public template IteratorClass ( alias ParentIterator, alias IteratorTemplate )
     If the value type is 'void', the iteration delegate will only have a key
     argument.
 
-    Template_Params:
+    Params:
         V = value type; 'void' indicates that there are no values at all.
         K = key type
 

@@ -177,12 +177,10 @@ class TimeoutSelectedKeysHandler: SelectedKeysHandler
 
         Compares the pointer referred to by a_ to that referred to by b_.
 
-        Template_Params:
+        Params:
             searching = false: a_ points to the pointer to compare (called from
                         qsort()), true: a_ is the pointer to compare (called
                         from bsearch).
-
-        Params:
             a_ = either the pointer (searching = true) or a pointer to the
                  pointer (searching = false) to compare against the pointer
                  pointed to by b_

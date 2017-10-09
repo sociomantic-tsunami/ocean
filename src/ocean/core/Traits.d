@@ -149,7 +149,7 @@ public bool isIdentifier ( cstring input )
 
     If T is enum, aliases to its base type. Otherwise aliases to T.
 
-    Template_Params
+    Params:
         T = any type
 
 *******************************************************************************/
@@ -192,7 +192,7 @@ unittest
     ``void`` is a primitive type. Imaginary and complex numbers are considered
     primitive types, too, which may be subject to discussion.
 
-    Template_Params:
+    Params:
         T = type to check
 
 *******************************************************************************/
@@ -220,7 +220,7 @@ public template isPrimitiveType ( T )
 
     If T is empty then the result is false.
 
-    Template_Params:
+    Params:
         T = types to check (with no type the result is false)
 
 *******************************************************************************/
@@ -301,7 +301,7 @@ unittest
       - a dynamic or static array or
       - a struct or a union.
 
-    Template_Params:
+    Params:
         T = type to check
 
     Returns:
@@ -427,7 +427,7 @@ unittest
     Template which evaluates to true if the specified type is a compound type
     (ie a class, struct or union).
 
-    Template_Params:
+    Params:
         T = type to check
 
     Evaluates to:
@@ -458,7 +458,7 @@ unittest
 
     Template to get the type tuple of compound type T.
 
-    Template_Params:
+    Params:
         T = type to get type tuple of
 
     Evaluates to:
@@ -486,7 +486,7 @@ unittest
 
     Template to get the type of the ith data member struct/class T.
 
-    Template_Params:
+    Params:
         T = type to get field of
 
     Evaluates to:
@@ -514,7 +514,7 @@ unittest
 
     Gets a pointer to the ith member of a struct/class.
 
-    Template_Params:
+    Params:
         i = index of member to get
         T = type of compound to get member from
 
@@ -543,7 +543,7 @@ unittest
 
     Gets a pointer to the ith member of a struct/class.
 
-    Template_Params:
+    Params:
         i = index of member to get
         M = type of member
         T = type of compound to get member from
@@ -678,10 +678,8 @@ unittest
     (This is not actually true with current versions of the compiler, but
     anyway.)
 
-    Template_Params:
-        T = type of instances to copy fields from and to
-
     Params:
+        T = type of instances to copy fields from and to
         dst = instance of type T to be copied into
         src = instance of type T to be copied from
 
@@ -749,10 +747,8 @@ unittest
     (This is not actually true with current versions of the compiler, but
     anyway.)
 
-    Template_Params:
-        T = type of instances to initialise
-
     Params:
+        T = type of instances to initialise
         o = instance of type T to be initialised
 
 *******************************************************************************/
@@ -847,10 +843,8 @@ unittest
     Typedef has been removed in D2 and this template will always evaluate to
     false if compiled with version = D_Version2.
 
-    Template_Params:
-        T = type to check
-
     Evaluates to:
+        T = type to check
         true if T is a typedef, false otherwise
 
 *******************************************************************************/
@@ -908,7 +902,7 @@ unittest
     Typedef has been removed in D2 and this template is a no-op if compiled
     with version = D_Version2.
 
-    Template_Params:
+    Params:
         T = type to strip of typedef
 
     Evaluates to:
@@ -1267,7 +1261,7 @@ unittest
     Check if a class, struct, interface, or union type contains a method with
     the given method name, and has the same signature as the given delegate.
 
-    Template_Params:
+    Params:
         T = The type to check
         name = The name of the method to look up
         Dg = The delegate type with the signature of the method to look for
@@ -1368,7 +1362,7 @@ unittest
 
     Returns "name" (identifier) of a given symbol as string
 
-    Template_Params:
+    Params:
         Sym = any symbol alias
 
 *******************************************************************************/
@@ -2350,7 +2344,7 @@ unittest
     In D1 most common idiom is to simply check for `is(typeof(T.something))` but
     in D2 it can backfire because of UFCS as global names are checked too
 
-    Template_Params:
+    Params:
         T = aggregate type to check
         name = method/field name to look for
 
