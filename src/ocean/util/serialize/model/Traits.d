@@ -42,7 +42,7 @@ private struct _Dummy
         2. define static `countRequiredSize` method that estimates needed size of
             destination buffer for serialization
 
-    Template_Params:
+    Params:
         T = type to check
 
 *******************************************************************************/
@@ -97,7 +97,7 @@ version(UnitTest)
         2. define static `countRequiredSize` method that calculates size of the
             buffer needed to store deserialized struct instance
 
-    Template_Params:
+    Params:
         T = type to check
 
 *******************************************************************************/
@@ -166,7 +166,7 @@ version(UnitTest)
         3. define two `load` methods that mirror Deserializer.deserialize method
             signatures
 
-    Template_Params:
+    Params:
         T = type to check
 
 *******************************************************************************/
@@ -236,7 +236,7 @@ version(UnitTest)
     implementations like Decorator. Because return type may depend on input struct
     type such relation can't be expressed via trivial typeof one-liner
 
-    Template_Params:
+    Params:
         D = Deserializer type
         S = deserialized struct type
 

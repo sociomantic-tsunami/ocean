@@ -435,10 +435,8 @@ class JsonParserIter(bool AllowNaN = false) : JsonParser!(char, AllowNaN)
         and all iterations are cumulative. The iteration position is reset using
         the 'reset' method (in super).
 
-        Template_Params:
-            T = numerical type to return
-
         Params:
+            T = numerical type to return
             name = name to search for
             found = output value, set to true if named value was found
 

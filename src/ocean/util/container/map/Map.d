@@ -127,7 +127,7 @@ version ( UnitTestVerbose )
       which do not implement toHash(), pointers, function references, delegates,
       associative arrays) are not supported by this class template.
 
-    Template_Params:
+    Params:
         V = type to store in values of map
         K = type to store in keys of map
 
@@ -205,7 +205,7 @@ public class StandardKeyHashingMap ( V, K ) : Map!(V, K)
       which do not implement toHash(), pointers, function references, delegates,
       associative arrays) are not supported by this class template.
 
-    Template_Params:
+    Params:
         V = byte length of the values to store in the map, must be at least 1
         K = type to store in keys of map
 
@@ -272,7 +272,7 @@ public class StandardKeyHashingMap ( size_t V, K ) : Map!(V, K)
     from K to V, leaving the hash function implementation to the subclass
     (abstract BucketSet.toHash()).
 
-    Template_Params:
+    Params:
         V = type to store in values of map
         K = type to store in keys of map
 
@@ -718,7 +718,7 @@ public abstract class Map ( V, K ) : BucketSet!(V.sizeof, K)
     Since static arrays cannot be returned, the access methods return a void[]
     slice to the value.
 
-    Template_Params:
+    Params:
         V = byte length of the values to store in the map, must be at least 1
         K = type to store in keys of map
 

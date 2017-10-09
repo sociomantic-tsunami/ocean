@@ -1054,7 +1054,7 @@ public class AppStatus
         when displaying the next streaming line or when formatting the next
         static line.
 
-        Template_Params:
+        Params:
             is_foreground = true if the given colour is for the foreground,
                             false if it is for the background
             colour = the colour to be saved (this is a string from the

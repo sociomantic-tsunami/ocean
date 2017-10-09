@@ -72,10 +72,8 @@ public abstract class IEntitySet
 
         Gets the unicode character associated with the passed name.
 
-        Template_Params:
-            Char = character type of name
-
         Params:
+            Char = character type of name
             name = name to check
 
         Returns:

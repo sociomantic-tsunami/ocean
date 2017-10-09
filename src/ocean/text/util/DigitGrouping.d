@@ -72,10 +72,8 @@ public class DigitGrouping
         Note: this method is faster than generating the string then checking its
         .length property.
 
-        Template_Params:
-            T = type of number
-
         Params:
+            T = type of number
             num = number to work out length of
 
         Returns:
@@ -120,10 +118,8 @@ public class DigitGrouping
 
         Formats a number to a string, with comma separation every 3 digits
 
-        Template_Params:
-            T = type of number
-
         Params:
+            T = type of number
             num = number to be formatted
             output = string in which to store the formatted number
 

@@ -57,12 +57,10 @@ struct Serializer
         Serializes the data in s
 
         Params:
+            S = type of the struct to dump
             src = struct to serialize
             dst = buffer to write to. It is only extended if needed and
                 never shrunk
-
-        Template_Params:
-            S = type of the struct to dump
 
     ***************************************************************************/
 
@@ -131,10 +129,8 @@ struct Serializer
 
         Return the serialized length of input
 
-        Template_Params:
-            type of the struct
-
         Params:
+            S = type of the struct
             input = struct to get the serialized length of
 
         Returns:
@@ -617,10 +613,8 @@ struct Serializer
         Serializes the static array, also handles static arrays of static
         arrays and similar recursive cases.
 
-        Template_Params:
-            T = array element type
-
         Params:
+            T = array element type
             array = slice of static array to serialize
             data = destination buffer
 

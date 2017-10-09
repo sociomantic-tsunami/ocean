@@ -125,7 +125,7 @@ import ocean.transition;
     This tracking of the objects can be explicitly disabled through passing
     the appropriate flag to the class constructor.
 
-    Template_Params:
+    Params:
         Bucket = the bucket-element type
 
 *******************************************************************************/
@@ -336,10 +336,8 @@ public class BucketElementMallocAllocator (Bucket) : IAllocator
     Returns a new instance of type BucketElementMallocAllocator suitable to be
     used with the Map passed as template parameter.
 
-    Template_Params:
-        Map = the map to create the allocator according to
-
     Params:
+        Map = the map to create the allocator according to
         attempt_gc_track = if set to true and if the Bucket element contains
             reference items (e.g class or arrays) then the allocated values
             are added to the GC scan range.

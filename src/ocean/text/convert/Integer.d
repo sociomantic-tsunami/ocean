@@ -47,12 +47,10 @@ import ocean.core.Verify;
     (where present). When radix is set to zero, conversion will default to
     decimal.
 
-    Template_Params:
+    Params:
         C = char type of string
         T = type of integer to parse (must be byte, ubyte, short, ushort,
             int, uint, long or ulong)
-
-    Params:
         digits = string to parse
         value = receives parsed integer
         radix = specifies which radix to interpret the string as
@@ -113,10 +111,8 @@ public bool toInteger ( C, T ) ( C[] digits, out T value, uint radix = 0 )
     (where present). When radix is set to zero, conversion will default to
     decimal.
 
-    Template_Params:
-        T = char type of string
-
     Params:
+        T = char type of string
         digits = string to parse
         value = receives parsed integer
         radix = specifies which radix to interpret the string as
@@ -315,11 +311,9 @@ unittest
     (where present). When radix is set to zero, conversion will default to
     decimal.
 
-    Template_Params:
+    Params:
         T = char type of string
         I = type of integer to extract
-
-    Params:
         digits = string to parse
         value = receives parsed integer
         radix = specifies which radix to interpret the string as
@@ -387,11 +381,9 @@ private bool toSignedInteger ( T, I ) ( T[] digits, out I value, uint radix = 0 
     (where present). When radix is set to zero, conversion will default to
     decimal.
 
-    Template_Params:
+    Params:
         T = char type of string
         U = type of unsigned integer to extract
-
-    Params:
         digits = string to parse
         value = receives parsed unsigned integer
         radix = specifies which radix to interpret the string as
@@ -456,10 +448,8 @@ private bool toUnsignedInteger ( T, U ) ( T[] digits, out U value, uint radix = 
     Parsing fails (returning false) if 'digits' represents an integer of greater
     magnitude than the type T can store.
 
-    Template_Params:
-        T = char type of string
-
     Params:
+        T = char type of string
         digits = string to parse
         value = receives parsed integer
         eaten = receives the number of characters parsed
@@ -518,10 +508,8 @@ private bool convert ( T ) ( T[] digits, out ulong value, out uint eaten,
     and does not match an explicit prefix, the latter will remain unconsumed.
     Otherwise, radix will default to 10.
 
-    Template_Params:
-        T = char type of string
-
     Params:
+        T = char type of string
         digits = string to parse
         negative = set to true if the string indicates a negative number
         radix = receives the radix parsed form the string

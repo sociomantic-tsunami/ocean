@@ -46,7 +46,7 @@ import ocean.core.Traits : hasMethod;
 
     Manages a pool of struct instances of type T.
 
-    Template_Params:
+    Params:
         T = type stored in pool
 
 *******************************************************************************/

@@ -49,7 +49,7 @@ version (UnitTest)
 
     Template to determine the internal item type of a free list.
 
-    Template_Params:
+    Params:
         T = item type to be stored in free list
 
 *******************************************************************************/
@@ -73,7 +73,7 @@ private template ItemType_ ( T )
 
     Free list class template.
 
-    Template_Params:
+    Params:
         T = item type to be stored in free list
 
 *******************************************************************************/

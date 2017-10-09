@@ -85,7 +85,7 @@ static this ()
 
     Struct serializer
 
-    Template_Params:
+    Params:
         AllowUnions = if true, unions will be serialized as raw bytes, without
             checking whether the union contains dynamic arrays. Otherwise unions
             cause a compile-time error.
@@ -266,12 +266,10 @@ struct StructSerializer ( bool AllowUnions = false )
 
         See ocean.io.serialize.JsonStructSerializer for an example.
 
-        Template_Params:
+        Params:
             S = type of struct to serialize
             Serializer = type of serializer object
             D = tuple of data parameters passed to the serializer
-
-        Params:
             s    = struct instance (pointer)
             serializer = object to do the serialization
             data = parameters for serializer
@@ -525,12 +523,10 @@ struct StructSerializer ( bool AllowUnions = false )
         serializer object. See the description of the dump() method above for a
         full description of how the serializer object should behave.
 
-        Template_Params:
+        Params:
             S = type of struct to serialize
             Serializer = type of serializer object
             D = tuple of data parameters passed to the serializer
-
-        Params:
             s = struct instance (pointer)
             serializer = object to do the serialization
             data = parameters for serializer
@@ -602,13 +598,11 @@ struct StructSerializer ( bool AllowUnions = false )
         description of the dump() method above for a full description of how the
         serializer object should behave.
 
-        Template_Params:
+        Params:
             T = array base type, should be a struct or a (possibly
                 multi-dimensional) array of structs
             Serializer = type of serializer object
             D = tuple of data parameters passed to the serializer
-
-        Params:
             array = array to serialize
             field_name = the name of the struct field that contains the array
             serializer = object to do the serialization
@@ -724,10 +718,8 @@ struct StructSerializer ( bool AllowUnions = false )
         The s != null checking is done in assert() fashion; that is, it is not
         done in release mode.
 
-        Template_Params:
-            func = invoking function (for message generation)
-
         Params:
+            func = invoking function (for message generation)
             s = pointer to a source or destination struct; shall not be null
 
         Throws:

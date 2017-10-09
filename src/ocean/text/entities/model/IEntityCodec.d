@@ -32,7 +32,7 @@ import ocean.transition;
 
     Abstract entity codec template class. Provides
 
-    Template_Params:
+    Params:
         E = entity set the codec deals with
 
 *******************************************************************************/
@@ -155,10 +155,8 @@ public abstract class IEntityCodec ( E : IEntitySet )
 
         Static template method to convert from a char to another type.
 
-        Template_Params:
-            Char = type to convert to
-
         Params:
+            Char = type to convert to
             c = character to convert
 
         Returns:
@@ -178,10 +176,8 @@ public abstract class IEntityCodec ( E : IEntitySet )
 
         Static template method to convert from a char[] to another type.
 
-        Template_Params:
-            Char = type to convert to
-
         Params:
+            Char = type to convert to
             text = string to convert
             output = buffer to write the output to
 
@@ -218,10 +214,8 @@ public abstract class IEntityCodec ( E : IEntitySet )
 
         Static template method to convert from a dchar to another type.
 
-        Template_Params:
-            Char = type to convert to
-
         Params:
+            Char = type to convert to
             c = character to convert
             output = buffer to write the output to
 
@@ -241,10 +235,8 @@ public abstract class IEntityCodec ( E : IEntitySet )
 
         Static template method to convert from a dchar[] to another type.
 
-        Template_Params:
-            Char = type to convert to
-
         Params:
+            Char = type to convert to
             text = string to convert
             output = buffer to write the output to
 

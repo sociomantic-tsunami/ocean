@@ -38,7 +38,7 @@ version(UnitTest) import ocean.core.Test;
     time, has expired, it is removed automatically on the next
     getAndRefreshValue()/exists() access.
 
-    Template_Params:
+    Params:
         T = the type of data that will be stored
 
 *******************************************************************************/

@@ -282,7 +282,7 @@ public interface IEnum
     in client code - See IEnum and EnumBase for template / interface you
     should use.
 
-    Template_Params:
+    Params:
         T = tuple:
             T[0] must be an array of strings
             T[1] must be an array of ints
@@ -320,7 +320,7 @@ public template EnumValues ( size_t i, T ... )
     in client code - See IEnum and EnumBase for template / interface you
     should use.
 
-    Template_Params:
+    Params:
         i = recursion index over T
         T = type tuple
 
@@ -353,7 +353,7 @@ public template SuperClassIndex ( size_t i, T ... )
     Note that the [0..$] which is used in places in this method is a workaround
     for various weird compiler issues / segfaults.
 
-    Template_Params:
+    Params:
         T = tuple:
             T[0] must be an associative array of type int[char[]]
         (Note that the template accepts a tuple purely as a workaround for the
@@ -712,7 +712,7 @@ version ( UnitTest )
         are assumed to be in the same order (i.e. names[i] corresponds to
         values[i]).
 
-        Template_Params:
+        Params:
             E = enum type to check
 
         Params:

@@ -33,7 +33,7 @@ version (UnitTest)
     Refers to extensions types as `Extensions[i]` instead of actual name to
     avoid issue with missing imports in the mixin context.
 
-    Template_params:
+    Params:
         Extensions = variadic template argument list of struct types
 
 ******************************************************************************/

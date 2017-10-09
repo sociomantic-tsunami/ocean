@@ -81,10 +81,8 @@ public class PHPSerializer
 
         Convenience method to serialize a struct.
 
-        Template_Params:
-            T = type of struct to serialize
-
         Params:
+            T = type of struct to serialize
             output = string to serialize struct data to
             item = struct to serialize
 
@@ -139,10 +137,8 @@ public class PHPSerializer
         Note: the main method to use from the outside is the first serialize()
         method above. This method is for the use of the StructSerializer.
 
-        Template_Params:
-            T = type of item
-
         Params:
+            T = type of item
             output = string to serialize struct data to
             item = item to append
             name = name of item
@@ -447,10 +443,8 @@ public class PHPSerializer
         than uint.max can't be used.
         This is done because php doesn't support ulongs (only longs)
 
-        Template_Params:
-            T = base type of array
-
         Params:
+            T = base type of array
             output = string to serialize struct data to
             array = array to append
             name = name of array item
@@ -472,10 +466,8 @@ public class PHPSerializer
         than uint.max can't be used.
         This is done because php doesn't support ulongs (only longs)
 
-        Template_Params:
-            T = base type of array
-
         Params:
+            T = base type of array
             output = string to serialize struct data to
             array = array to append
             name = name of array item
@@ -496,10 +488,8 @@ public class PHPSerializer
 
         Called before a struct array is serialized.
 
-        Template_Params:
-            T = base type of array
-
         Params:
+            T = base type of array
             output = string to serialize struct data to
             name = name of struct item
             array = array to append
@@ -516,10 +506,8 @@ public class PHPSerializer
 
         Called after a struct array is serialized.
 
-        Template_Params:
-            T = base type of array
-
         Params:
+            T = base type of array
             output = string to serialize struct data to
             name = name of struct item
             array = array to append

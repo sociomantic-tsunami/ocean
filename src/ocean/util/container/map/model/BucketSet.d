@@ -280,7 +280,7 @@ public abstract class IBucketSet
 
     Bucket set class template.
 
-    Template_Params:
+    Params:
         V = value size (.sizeof of the value type), may be 0 to store no value
         K = key type
 

@@ -53,7 +53,7 @@ import ocean.transition;
     Does not create the items ("new T") internally but receives them as lazy
     arguments in get().
 
-    Template_Params:
+    Params:
         T = type stored in pool
 
 *******************************************************************************/
@@ -93,7 +93,7 @@ public class ObjectPool ( T ) : IAggregatePool!(T)
     Extends ObjectPool by creating items (instances of T) automatically with
     "new T(Args)".
 
-    Template_Params:
+    Params:
         T = type stored in pool
         Args = tuple of T constructor argument types.
 

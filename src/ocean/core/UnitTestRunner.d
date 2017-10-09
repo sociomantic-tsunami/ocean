@@ -378,10 +378,8 @@ private scope class UnitTestRunner
 
         Add a failed test node to the XML document
 
-        Template_Params:
-            type = type of failure (either "failure" or "error")
-
         Params:
+            type = type of failure (either "failure" or "error")
             name = name of the test to add to the XML document
             tv = time it took the test to run
             msg = reason why the test failed

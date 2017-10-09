@@ -68,7 +68,7 @@ import ocean.util.container.ebtree.c.ebtree: eb_node, eb_root;
 
     EBTree64 class template.
 
-    Template_Params:
+    Params:
         signed = false: use 'ulong' as key type, true: use 'long'.
 
 *******************************************************************************/

@@ -52,7 +52,7 @@ import ocean.core.Traits: isStaticArrayType;
     Element struct has certain members. As it's purely internal, we can live
     with this.
 
-    Template_Params:
+    Params:
         V = value size (.sizeof of the value type), may be 0 to store no value
         K = key type
 

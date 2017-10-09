@@ -73,12 +73,10 @@ class HttpException : HttpServerException
         Custom enforce for using an HTTP status code together with a set of
         messages that should be appended.
 
-        Template_Params:
+        Params:
             file = The filename
             line = The line number
             T = Types of messages to append
-
-        Params:
             ok = The condition to enforce
             code = The status code
             messages = The messages

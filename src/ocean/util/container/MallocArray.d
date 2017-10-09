@@ -36,10 +36,8 @@ import core.stdc.string; // memmove;
     Allocate an array of the given type and length whose buffer is allocated by
     malloc().
 
-    Template_Params:
-        Item = the type of items making up the array
-
     Params:
+        Item = the type of items making up the array
         num_elements = the number of array elements to allocate
 
     Returns:
@@ -71,10 +69,8 @@ public Item[] allocate (Item) (size_t num_elements)
     It's also safe to specify the new_length of an array to be 0, the array
     would be deallocated.
 
-    Template_Params:
-        Item = the type of items making up the array
-
     Params:
+        Item = the type of items making up the array
         arr_to_resize = the array that should be resized
         new_length = the new length that the item should be resize to
 
@@ -108,10 +104,8 @@ public void resize (Item) (ref Item[] arr_to_resize, size_t new_length)
 
     Deallocate an array whose buffer was allocated by malloc().
 
-    Template_Params:
-        Item = the type of items making up the array
-
     Params:
+        Item = the type of items making up the array
         arr_to_deallocate = the array to deallocate
 
 *******************************************************************************/

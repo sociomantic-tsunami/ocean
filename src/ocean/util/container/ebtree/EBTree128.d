@@ -38,7 +38,7 @@ import ocean.core.Test;
 
     EBTree64 class template.
 
-    Template_Params:
+    Params:
         signed = false: use the 'ucent' surrogate as key type, true: 'cent'.
 
 *******************************************************************************/

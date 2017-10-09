@@ -1279,10 +1279,8 @@ public class Arguments
         an argument. This is valid only if the argument has been assigned
         exactly one parameter.
 
-        Template_Params:
-            T = type of integer to return
-
         Params:
+            T = type of integer to return
             name = name of the argument
 
         Returns:

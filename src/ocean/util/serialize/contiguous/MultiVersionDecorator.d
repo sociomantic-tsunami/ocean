@@ -124,10 +124,8 @@ class VersionDecorator
 
         You can override this method to change version converting logic.
 
-        Template_Params:
-            S = final struct version to get
-
         Params:
+            S = final struct version to get
             buffer = input buffer after version bytes have been stripped off,
                 will contain resulting struct data after this method exits
             input_version = version that was extracted from buffer

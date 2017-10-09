@@ -29,7 +29,7 @@ import ocean.core.Test;
 
     An interface for a FIFO queue with items of a specific type.
 
-    Template_Params:
+    Params:
         T = Type of items to be stored in the queue
 
 *******************************************************************************/
@@ -108,10 +108,8 @@ public interface ITypedQueue ( T )
     If this is not desired, the caller class is to call `push()` method of
     `ITypedQueue` and apply desired logic on returned pointer.
 
-    Template_Params:
-        T = type of items stored in queue
-
     Params:
+        T = type of items stored in queue
         q = A queue to push into
         t = An item to push into q
 
@@ -138,10 +136,8 @@ public bool push ( T ) ( ITypedQueue!(T) q, T t )
     `ITypedQueue` and apply desired logic on returned pointer and then call
     `discardTop()`.
 
-    Template_Params:
-        T = type of items stored in queue
-
     Params:
+        T = type of items stored in queue
         q = A queue to pop from
         t = if pop succeeds, will hold item popped from q, when function ends
 

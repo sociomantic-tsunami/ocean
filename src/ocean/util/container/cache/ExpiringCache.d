@@ -41,7 +41,7 @@ version (UnitTest)
     time, has expired, it is removed automatically on the next getRaw()/exists()
     access.
 
-    Template_Params:
+    Params:
         ValueSize = size of a data item. If 0 is specified (the default), the
             items stored in the cache are of variable (dynamic) size
 

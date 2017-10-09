@@ -59,7 +59,7 @@ debug import ocean.text.convert.Formatter;
     registered to epoll with the time until the soonest scheduled event. When
     the last scheduled event fires, the timer event is unregistered from epoll.
 
-    Template_Params:
+    Params:
         EventData = type of data to be stored along with each event
 
     TODO: could probably be adapted to a version which allows simple events

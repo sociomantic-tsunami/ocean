@@ -39,8 +39,7 @@ public import ocean.util.container.queue.model.ITypedQueue: push, pop;
     manager, to avoid the GC from not so efficiently going over the linked list
     (see explanation at LinkedListQueue.heap below).
 
-    Template_Params:
-
+    Params:
         T = Type of values stored in the linked list queue
         gc_tracking_policy = defines the GC tracking policy for T (see
             GCTrackingPolicy struct below)

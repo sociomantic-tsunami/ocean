@@ -74,7 +74,7 @@ version(UnitTest) import ocean.core.Test;
 
     Fixed key map class template.
 
-    Template_Params:
+    Params:
         K = mapping key type
         V = mapping value type
 

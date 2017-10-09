@@ -388,7 +388,7 @@ abstract class ISelectListener : ISelectClient
     The additional T constructor argument parameters must appear after those for
     the mandatory IConnectionHandler constructor.
 
-    Template_Params:
+    Params:
         T    = connection handler class
         Args = additional constructor arguments for T
 

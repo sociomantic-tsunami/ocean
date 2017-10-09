@@ -39,7 +39,7 @@ version (UnitTest) import ocean.core.Test;
     It is completely self-contained and does not expect anything from the host
     class
 
-    Template_Params:
+    Params:
         Serializer = serializer implementation to use
 
 *******************************************************************************/
@@ -96,7 +96,7 @@ template StoreMethod(Serializer)
     on remaining buffer which is supposed to take care of converting between
     versions.
 
-    Template_Params:
+    Params:
         Deserializer = deserializer implementation to use
         exception_field = host exception object that has `enforceInputLength`
             method
@@ -151,7 +151,7 @@ template LoadMethod (Deserializer, alias exception_field)
     decrement and calls `this.convert` to proceed with actual struct conversion
     for two deduced types.
 
-    Template_Params:
+    Params:
         Deserializer = deserializer implementation to use
         exception_field = host exception object that has `throwCantConvert`
             method
@@ -166,10 +166,8 @@ template HandleVersionMethod(Deserializer, alias exception_field)
         struct version. Converted struct will be stored in the same buffer
         replacing old data.
 
-        Template_Params:
-            S = final struct version to get
-
         Params:
+            S = final struct version to get
             buffer = input buffer after version bytes have been stripped off,
                 will contain resulting struct data after this method exits
             input_version = version that was extracted from buffer
@@ -247,11 +245,9 @@ template ConvertMethod(Serializer, Deserializer)
 
         Uses this.convert_buffer for temporary allocations
 
-        Template_Params:
+        Params:
             S = needed struct type
             Source = struct type seralized into buffer
-
-        Params:
             buffer = contains serialized Source instance, will be modified to
                 store deserialized S instance instead.
 
@@ -295,7 +291,7 @@ template ConvertMethod(Serializer, Deserializer)
     This class serves exclusively as example of usage of mixins defines in this
     module. It is not intended to be used or derived from.
 
-    Template_Params:
+    Params:
         Srlz  = Serializer to use
         Dsrlz = Deserializer to use
 
@@ -434,12 +430,10 @@ class VersionHandlingException : Exception
         bytes and some offset.
 
         Params:
+            S = struct type that was attempted to be loaded
             input_length = size of input buffer
             file = inferred
             line = inferred
-
-        Template_Params:
-            S = struct type that was attempted to be loaded
 
     ***************************************************************************/
 
@@ -468,12 +462,10 @@ class VersionHandlingException : Exception
         buffer
 
         Params:
+            S = struct type that was attempted to be loaded
             input_version = version found in input buffer
             file = inferred
             line = inferred
-
-        Template_Params:
-            S = struct type that was attempted to be loaded
 
     ***************************************************************************/
 

@@ -639,7 +639,7 @@ unittest
 
     `Task` descendant which supports extensions that alter the semantics of
     suspending and resuming the task. An arbitrary number of extensions may be
-    specified (see Template_params).
+    specified (see Params).
 
     Each extension must be a struct which defines one or more of the following
     methods:
@@ -659,7 +659,7 @@ unittest
     `this.resume` in the reverse order that they are supplied via the template
     argument list.
 
-    Template_params:
+    Params:
         Extensions = variadic template argument list of extensions to use
 
 *******************************************************************************/

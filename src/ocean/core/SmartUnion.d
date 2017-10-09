@@ -413,7 +413,7 @@ private struct SmartUnionIntern ( U )
 
     Evaluates to a ',' separated list of the names of the members of U.
 
-    Template_Params:
+    Params:
         i   = U member start index
         len = number of members in U
         U = aggregate to iterate over
@@ -480,7 +480,7 @@ private template MemberList ( uint i, size_t len, U )
     Methods.get and Methods.set evaluate to only the getter or setter
     method, respectively.
 
-    Template_Params:
+    Params:
         pre = prefix for U instance "u"
         i   = index of U instance "u" member
 
@@ -521,7 +521,7 @@ private template Methods ( U, uint i )
 
     Evaluates to code defining a getter and setter method for each U member.
 
-    Template_Params:
+    Params:
         u_pre = prefix for U instance "u"
         pre   = method definition code prefix, code will be appended to pre
         i     = U instance "u" member start index

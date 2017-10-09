@@ -387,11 +387,9 @@ class StringLayout ( T = char ) : AppendBuffer!(T)
 
     ---
 
-    Template_Params:
+    Params:
         R = dg return type
         A = types of additional arguments for dg
-
-    Params:
         dg      = callback delegate
         dg_args = additional arguments for dg
 
