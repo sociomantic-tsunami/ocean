@@ -123,7 +123,7 @@ void run_test ( istring socket_path )
     if (pid == 0)  // child
     {
         run_client(socket_path);
-        return;
+        _Exit(0);
     }
 
     epoll.eventLoop();
