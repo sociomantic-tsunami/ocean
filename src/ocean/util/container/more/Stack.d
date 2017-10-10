@@ -321,6 +321,77 @@ unittest
     testThrown!(StackBoundsException)(stack.pop());
 }
 
+version(UnitTest)
+{
+    static void runTests ( T ) ( NamedTest t, T stack )
+    {
+        t.test!("==")(stack.size(), 0);
+        testThrown!(StackBoundsException)(stack.pop());
+        stack.push(42);
+        t.test!("==")(stack.size(), 1);
+        stack.clear();
+        t.test!("==")(stack.size(), 0);
+
+        stack.push(100);
+        t.test!("==")(stack.dup(), 100);
+        t.test!("==")(stack[], [ 100, 100 ]);
+
+        auto clone = stack.clone();
+        foreach (idx, ref field; clone.tupleof)
+            t.test!("==")(field, stack.tupleof[idx]);
+
+        stack.clear();
+        stack.append(1, 2, 3, 4);
+        t.test!("==")(stack[], [ 1, 2, 3, 4 ]);
+
+        t.test!("==")(stack.top(), 4);
+        t.test!("==")(stack.pop(), 4);
+        t.test!("==")(stack.top(), 3);
+        t.test!("==")(stack[0], 3);
+        t.test!("==")(stack[2], 1);
+        testThrown!(StackBoundsException)(stack[10]);
+
+        stack.swap();
+        t.test!("==")(stack[], [ 1, 3, 2 ]);
+        stack.clear();
+        testThrown!(StackBoundsException)(stack.swap());
+
+        stack.append(1, 2, 3);
+        stack.rotateLeft(2);
+        t.test!("==")(stack[], [ 1, 3, 2 ]);
+        stack.rotateRight(2);
+        t.test!("==")(stack[], [ 1, 2, 3 ]);
+        testThrown!(StackBoundsException)(stack.rotateLeft(40));
+        testThrown!(StackBoundsException)(stack.rotateRight(40));
+    }
+}
+
+unittest
+{
+    // common tests
+    runTests(new NamedTest("Dynamic size"), Stack!(int).init);
+    runTests(new NamedTest("Static size"),  Stack!(int, 10).init);
+}
+
+unittest
+{
+    // fixed size specific tests
+    Stack!(int, 3) stack;
+    test!("==")(stack.unused(), 3);
+
+    stack.push(1);
+    stack.push(1);
+    stack.push(1);
+    testThrown!(StackBoundsException)(stack.push(1));
+}
+
+unittest
+{
+    // dynamic size specific tests
+    Stack!(int) stack;
+    test!("==")(stack.unused(), 0);
+}
+
 /*******************************************************************************
 
     Exception that indicates any kind of out of bound access in stack, for
