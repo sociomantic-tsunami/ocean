@@ -244,7 +244,10 @@ struct Stack (V, int Size = 0)
                    auto p = &stack[depth-d];
                    auto t = *p;
                    while (--d)
-                          *p++ = *(p+1);
+                      {
+                          *p = *(p+1);
+                          p++;
+                      }
                    *p = t;
                    }
                 else
@@ -267,7 +270,10 @@ struct Stack (V, int Size = 0)
                    auto p = &stack[depth-1];
                    auto t = *p;
                    while (--d)
-                          *p-- = *(p-1);
+                      {
+                          *p = *(p-1);
+                          p--;
+                      }
                    *p = t;
                    }
                 else
