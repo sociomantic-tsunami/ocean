@@ -1,317 +1,322 @@
 /*******************************************************************************
 
-        Copyright:
-            Copyright (c) 2008 Kris Bell.
-            Some parts copyright (c) 2009-2016 Sociomantic Labs GmbH.
-            All rights reserved.
+    Copyright:
+        Copyright (c) 2008 Kris Bell.
+        Some parts copyright (c) 2009-2017 sociomantic Labs GmbH.
+        All rights reserved.
 
-        License:
-            Tango Dual License: 3-Clause BSD License / Academic Free License v3.0.
-            See LICENSE_TANGO.txt for details.
-
-        Version: Initial release: April 2008
-
-        Authors: Kris
+    License:
+        Tango Dual License: 3-Clause BSD License / Academic Free License v3.0.
+        See LICENSE_TANGO.txt for details.
 
 *******************************************************************************/
 
 module ocean.util.container.more.Stack;
 
 import ocean.core.Enforce;
+
 version (UnitTest)
-    import ocean.core.Test;
-
-/******************************************************************************
-
-        A stack of the given value-type V, with maximum depth Size. Note
-        that this does no memory allocation of its own when Size != 0, and
-        does heap allocation when Size == 0. Thus you can have a fixed-size
-        low-overhead instance, or a heap oriented instance.
-
-******************************************************************************/
-
-struct Stack (V, int Size = 0)
 {
-        import ocean.core.Verify;
+    import ocean.core.Test;
+}
 
-        alias nth              opIndex;
-        alias slice            opSlice;
-        alias rotateRight      opShrAssign;
-        alias rotateLeft       opShlAssign;
-        alias push             opCatAssign;
+/*******************************************************************************
 
+    A stack of the given value-type V, with maximum depth Size. Note
+    that this does no memory allocation of its own when Size != 0, and
+    does heap allocation when Size == 0. Thus you can have a fixed-size
+    low-overhead instance, or a heap oriented instance.
 
+*******************************************************************************/
+
+public struct Stack ( V, int Size = 0 )
+{
+    public alias nth         opIndex;
+    public alias slice       opSlice;
+    public alias rotateRight opShrAssign;
+    public alias rotateLeft  opShlAssign;
+    public alias push        opCatAssign;
+
+    static if (Size == 0)
+    {
+        private uint depth;
+        private V[]  stack;
+    }
+    else
+    {
+        private uint     depth;
+        private V[Size]  stack;
+    }
+
+    /***************************************************************************
+
+        Clear the stack
+
+        Returns: pointer to itself for chaining calls
+
+    ***************************************************************************/
+
+    Stack* clear ( )
+    {
+        depth = 0;
+        return this;
+    }
+
+    /***************************************************************************
+
+        Returns: depth of the stack
+
+    ***************************************************************************/
+
+    size_t size ( )
+    {
+        return depth;
+    }
+
+    /***************************************************************************
+
+        Returns: remaining unused slots
+
+    ***************************************************************************/
+
+    size_t unused  ( )
+    {
+        enforce(.e_bounds, stack.length >= depth);
+        return stack.length - depth;
+    }
+
+    /***************************************************************************
+
+        Returns: a (shallow) clone of this stack, on the stack
+
+    ***************************************************************************/
+
+    Stack clone ( )
+    {
+        Stack s;
         static if (Size == 0)
-                  {
-                  private uint depth;
-                  private V[]  stack;
-                  }
-               else
-                  {
-                  private uint     depth;
-                  private V[Size]  stack;
-                  }
+            s.stack.length = stack.length;
+        s.stack[] = stack;
+        s.depth = depth;
+        return s;
+    }
 
-        /***********************************************************************
+    /***************************************************************************
 
-                Clear the stack
+        Pushes shallow copy of topmost element
 
-        ***********************************************************************/
+        Returns: pushed copy
 
-        Stack* clear ()
+    ***************************************************************************/
+
+    V dup ( )
+    {
+        auto v = top;
+        push (v);
+        return v;
+    }
+
+    /***************************************************************************
+
+        Params:
+            value = valush to push on top of the stack
+
+        Returns: pointer to itself for call chaining
+
+        Throws: StackBoundsException when the stack is full
+
+    ***************************************************************************/
+
+    Stack* push ( V value )
+    {
+        static if (Size == 0)
         {
-                depth = 0;
-                return this;
+            if (depth >= stack.length)
+                stack.length = stack.length + 64;
+            stack[depth++] = value;
         }
-
-        /***********************************************************************
-
-                Return depth of the stack
-
-        ***********************************************************************/
-
-        size_t size ()
+        else
         {
-                return depth;
+            enforce(.e_bounds, depth < stack.length);
+            stack[depth++] = value;
         }
+        return this;
+    }
 
-        /***********************************************************************
+    /***************************************************************************
 
-                Return remaining unused slots
+        Params:
+            value = array of values to push onto the stack
 
-        ***********************************************************************/
+        Returns: pointer to itself for call chaining
 
-        size_t unused ()
+        Throws: StackBoundsException when the stack is full
+
+    ***************************************************************************/
+
+    Stack* append ( V[] value... )
+    {
+        foreach (v; value)
+            push (v);
+        return this;
+    }
+
+    /***************************************************************************
+
+        Removes most recent stack element
+
+        Return: most recent stack element before popping
+
+        Throws: StackBoundsException when the stack is full
+
+    ***************************************************************************/
+
+    V pop ( )
+    {
+        enforce(.e_bounds, depth > 0);
+        return stack[--depth];
+    }
+
+    /***************************************************************************
+
+        Returns: most recent stack element
+
+        Throws: StackBoundsException when the stack is full
+
+    ***************************************************************************/
+
+    V top ( )
+    {
+        enforce(.e_bounds, depth > 0);
+        return stack[depth-1];
+    }
+
+    /***************************************************************************
+
+        Swaps the top two entries
+
+        Returns: the top element after swapping
+
+        Throws: StackBoundsException when the stack has insufficient entries
+
+    ***************************************************************************/
+
+    V swap ( )
+    {
+        auto p = stack.ptr + depth;
+        enforce(.e_bounds, p - 2 >= stack.ptr);
+
+        p -= 2;
+        auto v = p[0];
+        p[0] = p[1];
+        return p[1] = v;
+    }
+
+    /***************************************************************************
+
+        Params:
+            i = entry index
+
+        Returns:
+            stack entry with index `i`, where a zero index represents the
+            newest stack entry (the top).
+
+        Throws: StackBoundsException when the given index is out of range
+
+    ***************************************************************************/
+
+    V nth ( uint i )
+    {
+        enforce(.e_bounds, i < depth);
+        return stack [depth-i-1];
+    }
+
+    /***************************************************************************
+
+        Rotate the given number of stack entries
+
+        Params:
+            d = number of entries
+
+        Returns: pointer to itself for call chaining
+
+        Throws: StackBoundsException when the number is out of range
+
+    ***************************************************************************/
+
+    Stack* rotateLeft ( uint d )
+    {
+        enforce(.e_bounds, d <= depth);
+        auto p = &stack[depth-d];
+        auto t = *p;
+        while (--d)
         {
-                verify (stack.length >= depth);
-                return stack.length - depth;
+            *p = *(p+1);
+            p++;
         }
+        *p = t;
+        return this;
+    }
 
-        /***********************************************************************
+    /***************************************************************************
 
-                Returns a (shallow) clone of this stack, on the stack
+        Rotate the given number of stack entries
 
-        ***********************************************************************/
+        Params:
+            d = number of entries
 
-        Stack clone ()
+        Returns: pointer to itself for call chaining
+
+        Throws: StackBoundsException when the number is out of range
+
+    ***************************************************************************/
+
+    Stack* rotateRight ( uint d )
+    {
+        enforce(.e_bounds, d <= depth);
+        auto p = &stack[depth-1];
+        auto t = *p;
+        while (--d)
         {
-                Stack s;
-                static if (Size == 0)
-                           s.stack.length = stack.length;
-                s.stack[] = stack;
-                s.depth = depth;
-                return s;
+            *p = *(p-1);
+            p--;
         }
+        *p = t;
+        return this;
+    }
 
-        /***********************************************************************
+    /***************************************************************************
 
-                Push and return a (shallow) copy of the topmost element
+        Returns:
+            The stack as an array of values, where the first
+            array entry represents the oldest value.
 
-        ***********************************************************************/
+            Doing a foreach() on the returned array will traverse in
+            the opposite direction of foreach() upon a stack.
 
-        V dup ()
-        {
-                auto v = top;
-                push (v);
-                return v;
-        }
 
-        /**********************************************************************
+    ***************************************************************************/
 
-                Push a value onto the stack.
+    V[] slice ( )
+    {
+        return stack[0 .. depth];
+    }
 
-                Throws an exception when the stack is full
+    /***************************************************************************
 
-        **********************************************************************/
+        Iterate from the most recent to the oldest stack entries
 
-        Stack* push (V value)
-        {
-                static if (Size == 0)
-                          {
-                          if (depth >= stack.length)
-                              stack.length = stack.length + 64;
-                          stack[depth++] = value;
-                          }
-                       else
-                          {
-                          if (depth < stack.length)
-                              stack[depth++] = value;
-                          else
-                              enforce(.e_bounds, false);
-                          }
-                return this;
-        }
+    ***************************************************************************/
 
-        /**********************************************************************
+    int opApply ( int delegate(ref V value) dg )
+    {
+        int result;
 
-                Push a series of values onto the stack.
+        for (int i=depth; i-- && result is 0;)
+            result = dg (stack[i]);
 
-                Throws an exception when the stack is full
-
-        **********************************************************************/
-
-        Stack* append (V[] value...)
-        {
-                foreach (v; value)
-                         push (v);
-                return this;
-        }
-
-        /**********************************************************************
-
-                Remove and return the most recent addition to the stack.
-
-                Throws an exception when the stack is empty
-
-        **********************************************************************/
-
-        V pop ()
-        {
-                if (depth)
-                    return stack[--depth];
-
-                enforce(.e_bounds, false);
-                assert(false);
-        }
-
-        /**********************************************************************
-
-                Return the most recent addition to the stack.
-
-                Throws an exception when the stack is empty
-
-        **********************************************************************/
-
-        V top ()
-        {
-                if (depth)
-                    return stack[depth-1];
-
-                enforce(.e_bounds, false);
-                assert(false);
-        }
-
-        /**********************************************************************
-
-                Swaps the top two entries, and return the top
-
-                Throws an exception when the stack has insufficient entries
-
-        **********************************************************************/
-
-        V swap ()
-        {
-                auto p = stack.ptr + depth;
-                if ((p -= 2) >= stack.ptr)
-                   {
-                   auto v = p[0];
-                   p[0] = p[1];
-                   return p[1] = v;
-                   }
-
-                enforce(.e_bounds, false);
-                assert(false);
-        }
-
-        /**********************************************************************
-
-                Index stack entries, where a zero index represents the
-                newest stack entry (the top).
-
-                Throws an exception when the given index is out of range
-
-        **********************************************************************/
-
-        V nth (uint i)
-        {
-                if (i < depth)
-                    return stack [depth-i-1];
-
-                enforce(.e_bounds, false);
-                assert(false);
-        }
-
-        /**********************************************************************
-
-                Rotate the given number of stack entries
-
-                Throws an exception when the number is out of range
-
-        **********************************************************************/
-
-        Stack* rotateLeft (uint d)
-        {
-                if (d <= depth)
-                   {
-                   auto p = &stack[depth-d];
-                   auto t = *p;
-                   while (--d)
-                      {
-                          *p = *(p+1);
-                          p++;
-                      }
-                   *p = t;
-                   }
-                else
-                   enforce(.e_bounds, false);
-                return this;
-        }
-
-        /**********************************************************************
-
-                Rotate the given number of stack entries
-
-                Throws an exception when the number is out of range
-
-        **********************************************************************/
-
-        Stack* rotateRight (uint d)
-        {
-                if (d <= depth)
-                   {
-                   auto p = &stack[depth-1];
-                   auto t = *p;
-                   while (--d)
-                      {
-                          *p = *(p-1);
-                          p--;
-                      }
-                   *p = t;
-                   }
-                else
-                   enforce(.e_bounds, false);
-                return this;
-        }
-
-        /**********************************************************************
-
-                Return the stack as an array of values, where the first
-                array entry represents the oldest value.
-
-                Doing a foreach() on the returned array will traverse in
-                the opposite direction of foreach() upon a stack
-
-        **********************************************************************/
-
-        V[] slice ()
-        {
-                return stack [0 .. depth];
-        }
-
-        /***********************************************************************
-
-                Iterate from the most recent to the oldest stack entries
-
-        ***********************************************************************/
-
-        int opApply (int delegate(ref V value) dg)
-        {
-                        int result;
-
-                        for (int i=depth; i-- && result is 0;)
-                             result = dg (stack[i]);
-                        return result;
-        }
+        return result;
+    }
 }
 
 ///
@@ -416,7 +421,7 @@ public class StackBoundsException : ExceptionBase
 // so different bases are used for smoother migration.
 version (D_Version2)
     private alias Exception ExceptionBase;
-else
+    else
 {
     import ocean.core.ExceptionDefinitions : ArrayBoundsException;
     private alias ArrayBoundsException ExceptionBase;
@@ -431,43 +436,43 @@ static this ( )
 
 /*******************************************************************************
 
-*******************************************************************************/
+ *******************************************************************************/
 
 debug (Stack)
 {
-        import ocean.io.Stdout;
+    import ocean.io.Stdout;
 
-        void main()
-        {
-                Stack!(int) v;
-                v.push(1);
+    void main()
+    {
+        Stack!(int) v;
+        v.push(1);
 
-                Stack!(int, 10) s;
+        Stack!(int, 10) s;
 
-                Stdout.formatln ("push four");
-                s.push (1);
-                s.push (2);
-                s.push (3);
-                s.push (4);
-                foreach (v; s)
-                         Stdout.formatln ("{}", v);
-                s <<= 4;
-                s >>= 4;
-                foreach (v; s)
-                         Stdout.formatln ("{}", v);
+        Stdout.formatln ("push four");
+        s.push (1);
+        s.push (2);
+        s.push (3);
+        s.push (4);
+        foreach (v; s)
+            Stdout.formatln ("{}", v);
+        s <<= 4;
+        s >>= 4;
+        foreach (v; s)
+            Stdout.formatln ("{}", v);
 
-                s = s.clone;
-                Stdout.formatln ("pop one: {}", s.pop);
-                foreach (v; s)
-                         Stdout.formatln ("{}", v);
-                Stdout.formatln ("top: {}", s.top);
+        s = s.clone;
+        Stdout.formatln ("pop one: {}", s.pop);
+        foreach (v; s)
+            Stdout.formatln ("{}", v);
+        Stdout.formatln ("top: {}", s.top);
 
-                Stdout.formatln ("pop three");
-                s.pop;
-                s.pop;
-                s.pop;
-                foreach (v; s)
-                         Stdout.formatln ("> {}", v);
-        }
+        Stdout.formatln ("pop three");
+        s.pop;
+        s.pop;
+        s.pop;
+        foreach (v; s)
+            Stdout.formatln ("> {}", v);
+    }
 }
 
