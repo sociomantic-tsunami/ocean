@@ -128,7 +128,7 @@ class HttpException : HttpServerException
             auto path = "/path/with/errors";
             e.enforce(false, HttpResponseCode.NotFound, "Unable to locate URI path:", path);
         }
-        catch
+        catch (Exception)
         {
             test!("==")(e.status, HttpResponseCode.NotFound);
             test!("==")(getMsg(e), "Not Found Unable to locate URI path: /path/with/errors");
