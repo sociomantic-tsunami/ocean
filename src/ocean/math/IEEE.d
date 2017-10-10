@@ -404,7 +404,7 @@ RoundingMode getIeeeRounding() {
 }
 
 unittest {
-    real a = 3.5;
+    static real a = 3.5;
     resetIeeeFlags();
     test(!ieeeFlags.divByZero);
     a /= 0.0L;
