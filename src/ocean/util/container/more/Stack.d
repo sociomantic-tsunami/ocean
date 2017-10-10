@@ -17,7 +17,9 @@
 
 module ocean.util.container.more.Stack;
 
-import ocean.core.ExceptionDefinitions : ArrayBoundsException;
+import ocean.core.Enforce;
+version (UnitTest)
+    import ocean.core.Test;
 
 /******************************************************************************
 
@@ -133,7 +135,7 @@ struct Stack (V, int Size = 0)
                           if (depth < stack.length)
                               stack[depth++] = value;
                           else
-                             error (__LINE__);
+                              enforce(.e_bounds, false);
                           }
                 return this;
         }
@@ -166,7 +168,8 @@ struct Stack (V, int Size = 0)
                 if (depth)
                     return stack[--depth];
 
-                return error (__LINE__);
+                enforce(.e_bounds, false);
+                assert(false);
         }
 
         /**********************************************************************
@@ -182,7 +185,8 @@ struct Stack (V, int Size = 0)
                 if (depth)
                     return stack[depth-1];
 
-                return error (__LINE__);
+                enforce(.e_bounds, false);
+                assert(false);
         }
 
         /**********************************************************************
@@ -203,7 +207,8 @@ struct Stack (V, int Size = 0)
                    return p[1] = v;
                    }
 
-                return error (__LINE__);
+                enforce(.e_bounds, false);
+                assert(false);
         }
 
         /**********************************************************************
@@ -220,7 +225,8 @@ struct Stack (V, int Size = 0)
                 if (i < depth)
                     return stack [depth-i-1];
 
-                return error (__LINE__);
+                enforce(.e_bounds, false);
+                assert(false);
         }
 
         /**********************************************************************
@@ -242,7 +248,7 @@ struct Stack (V, int Size = 0)
                    *p = t;
                    }
                 else
-                   error (__LINE__);
+                   enforce(.e_bounds, false);
                 return this;
         }
 
@@ -265,7 +271,7 @@ struct Stack (V, int Size = 0)
                    *p = t;
                    }
                 else
-                   error (__LINE__);
+                   enforce(.e_bounds, false);
                 return this;
         }
 
@@ -284,17 +290,6 @@ struct Stack (V, int Size = 0)
                 return stack [0 .. depth];
         }
 
-        /**********************************************************************
-
-                Throw an exception
-
-        **********************************************************************/
-
-        private V error (size_t line)
-        {
-                throw new ArrayBoundsException (__FILE__, line);
-        }
-
         /***********************************************************************
 
                 Iterate from the most recent to the oldest stack entries
@@ -311,6 +306,49 @@ struct Stack (V, int Size = 0)
         }
 }
 
+///
+unittest
+{
+    Stack!(int) stack;
+    stack.push(42);
+    test!("==")(stack.pop(), 42);
+    testThrown!(StackBoundsException)(stack.pop());
+}
+
+/*******************************************************************************
+
+    Exception that indicates any kind of out of bound access in stack, for
+    example, trying to pop from empty one.
+
+*******************************************************************************/
+
+public class StackBoundsException : ExceptionBase
+{
+    this ( )
+    {
+        version (D_Version2)
+            super("Out of bounds access attempt to stack struct");
+        else
+            super("", 0);
+    }
+}
+
+// HACK: some D1 code may be trying to catch ArrayBoundsException specifically
+// so different bases are used for smoother migration.
+version (D_Version2)
+    private alias Exception ExceptionBase;
+else
+{
+    import ocean.core.ExceptionDefinitions : ArrayBoundsException;
+    private alias ArrayBoundsException ExceptionBase;
+}
+
+private StackBoundsException e_bounds;
+
+static this ( )
+{
+    e_bounds = new StackBoundsException;
+}
 
 /*******************************************************************************
 
