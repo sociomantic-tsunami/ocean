@@ -18,6 +18,7 @@
 module ocean.util.DeepReset;
 
 
+import ocean.transition;
 import ocean.core.Array;
 import ocean.core.Traits;
 version(UnitTest) import ocean.core.Test;
@@ -85,6 +86,7 @@ public void DynamicArrayDeepReset ( T ) ( ref T[] dst )
 {
     ArrayDeepReset(dst);
     dst.length = 0;
+    enableStomping(dst);
 }
 
 

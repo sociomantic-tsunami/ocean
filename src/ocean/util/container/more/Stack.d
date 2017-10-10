@@ -17,7 +17,9 @@
 
 module ocean.util.container.more.Stack;
 
-import ocean.core.ExceptionDefinitions : ArrayBoundsException;
+import ocean.core.Enforce;
+version (UnitTest)
+    import ocean.core.Test;
 
 /******************************************************************************
 
@@ -93,7 +95,7 @@ struct Stack (V, int Size = 0)
 
         Stack clone ()
         {
-                Stack s = void;
+                Stack s;
                 static if (Size == 0)
                            s.stack.length = stack.length;
                 s.stack[] = stack;
@@ -135,7 +137,7 @@ struct Stack (V, int Size = 0)
                           if (depth < stack.length)
                               stack[depth++] = value;
                           else
-                             error (__LINE__);
+                              enforce(.e_bounds, false);
                           }
                 return this;
         }
@@ -168,7 +170,8 @@ struct Stack (V, int Size = 0)
                 if (depth)
                     return stack[--depth];
 
-                return error (__LINE__);
+                enforce(.e_bounds, false);
+                assert(false);
         }
 
         /**********************************************************************
@@ -184,7 +187,8 @@ struct Stack (V, int Size = 0)
                 if (depth)
                     return stack[depth-1];
 
-                return error (__LINE__);
+                enforce(.e_bounds, false);
+                assert(false);
         }
 
         /**********************************************************************
@@ -205,7 +209,8 @@ struct Stack (V, int Size = 0)
                    return p[1] = v;
                    }
 
-                return error (__LINE__);
+                enforce(.e_bounds, false);
+                assert(false);
         }
 
         /**********************************************************************
@@ -222,7 +227,8 @@ struct Stack (V, int Size = 0)
                 if (i < depth)
                     return stack [depth-i-1];
 
-                return error (__LINE__);
+                enforce(.e_bounds, false);
+                assert(false);
         }
 
         /**********************************************************************
@@ -240,11 +246,14 @@ struct Stack (V, int Size = 0)
                    auto p = &stack[depth-d];
                    auto t = *p;
                    while (--d)
-                          *p++ = *(p+1);
+                      {
+                          *p = *(p+1);
+                          p++;
+                      }
                    *p = t;
                    }
                 else
-                   error (__LINE__);
+                   enforce(.e_bounds, false);
                 return this;
         }
 
@@ -263,11 +272,14 @@ struct Stack (V, int Size = 0)
                    auto p = &stack[depth-1];
                    auto t = *p;
                    while (--d)
-                          *p-- = *(p-1);
+                      {
+                          *p = *(p-1);
+                          p--;
+                      }
                    *p = t;
                    }
                 else
-                   error (__LINE__);
+                   enforce(.e_bounds, false);
                 return this;
         }
 
@@ -286,17 +298,6 @@ struct Stack (V, int Size = 0)
                 return stack [0 .. depth];
         }
 
-        /**********************************************************************
-
-                Throw an exception
-
-        **********************************************************************/
-
-        private V error (size_t line)
-        {
-                throw new ArrayBoundsException (__FILE__, line);
-        }
-
         /***********************************************************************
 
                 Iterate from the most recent to the oldest stack entries
@@ -313,6 +314,120 @@ struct Stack (V, int Size = 0)
         }
 }
 
+///
+unittest
+{
+    Stack!(int) stack;
+    stack.push(42);
+    test!("==")(stack.pop(), 42);
+    testThrown!(StackBoundsException)(stack.pop());
+}
+
+version(UnitTest)
+{
+    static void runTests ( T ) ( NamedTest t, T stack )
+    {
+        t.test!("==")(stack.size(), 0);
+        testThrown!(StackBoundsException)(stack.pop());
+        stack.push(42);
+        t.test!("==")(stack.size(), 1);
+        stack.clear();
+        t.test!("==")(stack.size(), 0);
+
+        stack.push(100);
+        t.test!("==")(stack.dup(), 100);
+        t.test!("==")(stack[], [ 100, 100 ]);
+
+        auto clone = stack.clone();
+        foreach (idx, ref field; clone.tupleof)
+            t.test!("==")(field, stack.tupleof[idx]);
+
+        stack.clear();
+        stack.append(1, 2, 3, 4);
+        t.test!("==")(stack[], [ 1, 2, 3, 4 ]);
+
+        t.test!("==")(stack.top(), 4);
+        t.test!("==")(stack.pop(), 4);
+        t.test!("==")(stack.top(), 3);
+        t.test!("==")(stack[0], 3);
+        t.test!("==")(stack[2], 1);
+        testThrown!(StackBoundsException)(stack[10]);
+
+        stack.swap();
+        t.test!("==")(stack[], [ 1, 3, 2 ]);
+        stack.clear();
+        testThrown!(StackBoundsException)(stack.swap());
+
+        stack.append(1, 2, 3);
+        stack.rotateLeft(2);
+        t.test!("==")(stack[], [ 1, 3, 2 ]);
+        stack.rotateRight(2);
+        t.test!("==")(stack[], [ 1, 2, 3 ]);
+        testThrown!(StackBoundsException)(stack.rotateLeft(40));
+        testThrown!(StackBoundsException)(stack.rotateRight(40));
+    }
+}
+
+unittest
+{
+    // common tests
+    runTests(new NamedTest("Dynamic size"), Stack!(int).init);
+    runTests(new NamedTest("Static size"),  Stack!(int, 10).init);
+}
+
+unittest
+{
+    // fixed size specific tests
+    Stack!(int, 3) stack;
+    test!("==")(stack.unused(), 3);
+
+    stack.push(1);
+    stack.push(1);
+    stack.push(1);
+    testThrown!(StackBoundsException)(stack.push(1));
+}
+
+unittest
+{
+    // dynamic size specific tests
+    Stack!(int) stack;
+    test!("==")(stack.unused(), 0);
+}
+
+/*******************************************************************************
+
+    Exception that indicates any kind of out of bound access in stack, for
+    example, trying to pop from empty one.
+
+*******************************************************************************/
+
+public class StackBoundsException : ExceptionBase
+{
+    this ( )
+    {
+        version (D_Version2)
+            super("Out of bounds access attempt to stack struct");
+        else
+            super("", 0);
+    }
+}
+
+// HACK: some D1 code may be trying to catch ArrayBoundsException specifically
+// so different bases are used for smoother migration.
+version (D_Version2)
+    private alias Exception ExceptionBase;
+else
+{
+    import ocean.core.ExceptionDefinitions : ArrayBoundsException;
+    private alias ArrayBoundsException ExceptionBase;
+}
+
+private StackBoundsException e_bounds;
+
+static this ( )
+{
+    e_bounds = new StackBoundsException;
+}
 
 /*******************************************************************************
 
