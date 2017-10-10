@@ -93,7 +93,7 @@ struct Stack (V, int Size = 0)
 
         Stack clone ()
         {
-                Stack s = void;
+                Stack s;
                 static if (Size == 0)
                            s.stack.length = stack.length;
                 s.stack[] = stack;
