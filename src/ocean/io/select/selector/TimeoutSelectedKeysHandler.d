@@ -28,6 +28,7 @@ import ocean.io.select.client.model.ISelectClient;
 
 import ocean.time.timeout.model.ITimeoutManager,
                ocean.time.timeout.model.ITimeoutClient;
+import ocean.transition;
 
 import ocean.util.container.AppendBuffer: AppendBuffer;
 
@@ -143,7 +144,8 @@ class TimeoutSelectedKeysHandler: SelectedKeysHandler
 
                     verify(client !is null);
 
-                    if (!bsearch(cast (void*) client, timed_out_clients.ptr,
+                    Const!(void)* typed_ptr = timed_out_clients.ptr;
+                    if (!bsearch(cast (void*) client, typed_ptr,
                                  timed_out_clients.length, timed_out_clients[0].sizeof, &cmpPtr!(true)))
                     {
                         this.handleSelectedKey(key, unhandled_exception_hook);
@@ -195,8 +197,9 @@ class TimeoutSelectedKeysHandler: SelectedKeysHandler
 
     ***************************************************************************/
 
-    extern (C) private static int cmpPtr ( bool searching ) ( in void* a_,
-        in void* b_ )
+    extern (C) private static int cmpPtr ( bool searching ) (
+        /* d1to2fix_inject: scope */ Const!(void*) a_,
+        /* d1to2fix_inject: scope */ Const!(void*) b_ )
     {
         static if (searching)
         {
