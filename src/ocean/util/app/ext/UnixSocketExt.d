@@ -8,7 +8,9 @@
 
     The socket will be created under the path defined by the config option
     `path` under the `[UNIX_SOCKET]` config group. If the config path is not
-    defined then the unix socket will not be created.
+    defined then the unix socket will not be created. If there's a need to
+    setup the permissions mode, config option `path` will be used to read the
+    mode as octal string (usually you want 0600 for this).
 
     Usage example:
         See unittest following this class.
@@ -38,11 +40,15 @@ import ocean.util.app.ext.model.IConfigExtExtension;
 /// ditto
 public class UnixSocketExt : IApplicationExtension, IConfigExtExtension
 {
+    import core.sys.posix.sys.stat;
+
     import ocean.core.Buffer;
     import ocean.core.array.Transformation: filter, split;
     import ocean.io.select.EpollSelectDispatcher;
     import ocean.net.server.unix.UnixListener;
     import ocean.util.config.ConfigParser;
+    import ocean.text.convert.Integer;
+    import ocean.text.util.StringC;
 
     /// Unix listener with custom command handling.
     private UnixSocketListener!(UnixSocketExt) unix_listener;
@@ -58,6 +64,9 @@ public class UnixSocketExt : IApplicationExtension, IConfigExtExtension
 
     /// Path to create the unix socket.
     private istring path;
+
+    /// Mode to apply to the unix socket after binding
+    private int mode = -1;
 
     /***************************************************************************
 
@@ -75,6 +84,14 @@ public class UnixSocketExt : IApplicationExtension, IConfigExtExtension
         {
             this.unix_listener =
                 new UnixSocketListener!(UnixSocketExt)(this.path, epoll, this);
+
+            if (this.mode >= 0)
+            {
+                auto mpath = this.path.dup;
+                enforce(chmod(StringC.toCString(mpath), this.mode) == 0,
+                        "Couldn't change UnixSocket mode.");
+            }
+
             epoll.register(this.unix_listener);
         }
     }
@@ -92,6 +109,13 @@ public class UnixSocketExt : IApplicationExtension, IConfigExtExtension
     public override void processConfig ( IApplication app, ConfigParser config )
     {
         this.path = config.get("UNIX_SOCKET", "path", "");
+
+        istring modestr = config.get("UNIX_SOCKET", "mode", "");
+        if (modestr.length)
+        {
+            enforce(toInteger(modestr, this.mode, 8),
+                    "Invalid mode for UnixSocket");
+        }
     }
 
     /***************************************************************************
