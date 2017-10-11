@@ -589,6 +589,30 @@ public class SelectListener ( T : IConnectionHandler, Args ... ) : ISelectListen
         super.terminate();
     }
 
+    /***************************************************************************
+
+        Closes all connections. The listener remains active, so new connections
+        may be accepted.
+
+    ***************************************************************************/
+
+    public void closeAllConnections ( )
+    {
+        scope busy_connections = this.receiver_pool.new BusyItemsIterator;
+        foreach ( busy_connection; busy_connections )
+        {
+            /* FIXME: calling finalize here will cause errors in any connection
+             * handlers which are currently selected in epoll, as they will
+             * subsequently attempt to finalize themselves again.
+             *
+             * In practice this is of little import however, as the whole server
+             * is being shut down. It may be nice to find a clean way to avoid
+             * this though.
+             */
+            busy_connection.finalize();
+        }
+    }
+
     /**************************************************************************
 
         Called as the finalizer of class T. Returns connection into the object
