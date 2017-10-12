@@ -15,6 +15,7 @@ deprecated module ocean.text.locale.Data;
 import ocean.transition;
 
 import ocean.core.ExceptionDefinitions;
+import ocean.core.Verify;
 
 package void error(mstring msg) {
      throw new LocaleException (idup(msg));
