@@ -24,6 +24,7 @@ version (Posix)
     alias ocean.text.locale.Posix nativeMethods;
 
     import ocean.core.ExceptionDefinitions;
+    version (UnitTest) import ocean.core.Test;
     import ocean.text.locale.Data;
     import ocean.text.util.StringC;
     import core.stdc.ctype;
