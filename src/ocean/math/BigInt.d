@@ -15,6 +15,8 @@
 
 deprecated module ocean.math.BigInt;
 
+import ocean.core.Verify;
+version (UnitTest) import ocean.core.Test;
 import ocean.transition;
 
 import ocean.math.internal.BiguintCore;

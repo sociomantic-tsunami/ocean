@@ -55,6 +55,7 @@ Const!(char)* toStringz (cstring s, char[] tmp = null)
 
 version (UnitTest)
 {
+    import ocean.core.Test;
     import ocean.stdc.string;
 }
 
@@ -199,8 +200,8 @@ deprecated unittest
     p = toStringz(foo[3..5]);
     test(strlenz(p) == 2);
 
-    auto test = "\0";
-    p = toStringz(test);
+    auto test_str = "\0";
+    p = toStringz(test_str);
     test(*p == 0);
-    test(p == test.ptr);
+    test(p == test_str.ptr);
 }
