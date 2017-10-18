@@ -7,8 +7,8 @@ override DFLAGS += -w -version=GLIBC
 # but we -or course- don't have Ocean as a submodule, so we set it explicitly.
 TEST_RUNNER_MODULE := ocean.core.UnitTestRunner
 
-# Do we want coverage report?
-ifeq ($(AFTER_SCRIPT),1)
+# Enable coverage report in CI
+ifdef CI
 COVFLAG:=-cov
 endif
 

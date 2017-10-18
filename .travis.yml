@@ -19,7 +19,7 @@ env:
         # Make sure beaver is in the PATH
         - PATH="$(git config -f .gitmodules submodule.beaver.path)/bin:$PATH"
     matrix:
-        - DMD=1.081.1 DIST=xenial F=production AFTER_SCRIPT=1
+        - DMD=1.081.1 DIST=xenial F=production D2TAGS=1
         - DMD=1.081.1 DIST=xenial F=devel
         - DMD=1.081.1 DIST=xenial F=production DFLAGS=-release
         - DMD=2.070.2.s12 DIST=xenial F=production
@@ -29,10 +29,10 @@ env:
 
 install: beaver dlang install
 
-script: BEAVER_DOCKER_VARS="F AFTER_SCRIPT DFLAGS" beaver dlang make
+script: BEAVER_DOCKER_VARS="F DFLAGS" beaver dlang make
 
 after_success:
-    - test "$AFTER_SCRIPT" = "1" && beaver run ci/codecov.sh
-    - test "$AFTER_SCRIPT" = "1" &&
+    - beaver run ci/codecov.sh
+    - test "$D2TAGS" = "1" &&
         BEAVER_DOCKER_VARS="OCEAN_D2_USER OCEAN_D2_PASS"
         beaver run ci/d2tags.sh
