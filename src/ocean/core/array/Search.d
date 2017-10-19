@@ -1278,7 +1278,13 @@ unittest
 
 bool startsWith ( T ) ( in T[] arr, in T[] prefix )
 {
-    return (arr.length >= prefix.length) && (arr[0..prefix.length] == prefix[]);
+    // https://issues.dlang.org/show_bug.cgi?id=17917
+    // WORKAROUND: with -O -cov compiler doesn't early return from
+    // && expression, thus the code here is manually split into two
+    // conditions
+    if (arr.length < prefix.length)
+        return false;
+    return arr[0..prefix.length] == prefix[];
 }
 
 unittest
@@ -1314,7 +1320,13 @@ unittest
 
 bool endsWith ( T ) ( in T[] arr, in T[] suffix )
 {
-    return (arr.length >= suffix.length) && (arr[$ - suffix.length .. $] == suffix[]);
+    // https://issues.dlang.org/show_bug.cgi?id=17917
+    // WORKAROUND: with -O -cov compiler doesn't early return from
+    // && expression, thus the code here is manually split into two
+    // conditions
+    if (arr.length < suffix.length)
+        return false;
+    return arr[$ - suffix.length .. $] == suffix[];
 }
 
 unittest
