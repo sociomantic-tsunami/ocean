@@ -578,7 +578,7 @@ public abstract class DaemonApp : Application,
                     this.epoll.shutdown();
                 break;
             default:
-                assert(false);
+                break;
         }
     }
 
