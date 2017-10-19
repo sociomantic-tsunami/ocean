@@ -290,6 +290,16 @@ public abstract class DaemonApp : Application,
 
         /***********************************************************************
 
+            Unix domain socket command to trigger reopening of files which are
+            registered with the ReopenableFilesExt. (Typically used for log
+            rotation).
+
+        ***********************************************************************/
+
+        istring reopen_command = "reopen_files";
+
+        /***********************************************************************
+
             Set of signals to ignore. Delivery of the signals specified in this
             set will have no effect on the application -- they are not passed
             to the default signal handler.
@@ -367,11 +377,6 @@ public abstract class DaemonApp : Application,
         this.signal_ext.registerExtension(this);
         this.registerExtension(this.signal_ext);
 
-        // Create and register repoenable files extension
-        this.reopenable_files_ext = new ReopenableFilesExt(this.signal_ext,
-            settings.reopen_signal);
-        this.registerExtension(this.reopenable_files_ext);
-
         this.pidlock_ext = new PidLockExt();
         this.config_ext.registerExtension(this.pidlock_ext);
         this.registerExtension(this.pidlock_ext);
@@ -379,6 +384,23 @@ public abstract class DaemonApp : Application,
         this.unix_socket_ext = new UnixSocketExt();
         this.config_ext.registerExtension(this.unix_socket_ext);
         this.registerExtension(this.unix_socket_ext);
+
+        // Create and register repoenable files extension
+        this.reopenable_files_ext = new ReopenableFilesExt();
+
+        if (settings.reopen_signal)
+        {
+            this.reopenable_files_ext.setupSignalHandler(this.signal_ext,
+                    settings.reopen_signal);
+        }
+
+        if (settings.reopen_command.length)
+        {
+            this.reopenable_files_ext.setupUnixSocketHandler(
+                    this.unix_socket_ext, settings.reopen_command);
+        }
+
+        this.registerExtension(this.reopenable_files_ext);
 
         this.system_stats = new CpuMemoryStats();
     }
