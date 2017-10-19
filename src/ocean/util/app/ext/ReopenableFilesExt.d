@@ -23,17 +23,24 @@ module ocean.util.app.ext.ReopenableFilesExt;
 
 import ocean.transition;
 
+import ocean.core.Buffer;
+import ocean.core.Verify;
+
+import ocean.sys.Environment;
+
 import ocean.util.app.model.IApplication;
 import ocean.util.app.model.IApplicationExtension;
 
 import ocean.util.app.ext.SignalExt;
+import ocean.util.app.ext.UnixSocketExt;
 
 import ocean.util.app.ext.model.ISignalExtExtension;
+
+import ocean.text.convert.Formatter;
 
 import core.sys.posix.signal : SIGHUP;
 
 import ocean.io.device.File;
-
 
 
 public class ReopenableFilesExt : IApplicationExtension, ISignalExtExtension
@@ -56,6 +63,23 @@ public class ReopenableFilesExt : IApplicationExtension, ISignalExtExtension
 
     private int reopen_signal;
 
+    /***************************************************************************
+
+        Current working directory. Used for building absolute paths for the
+        registered files.
+
+    ***************************************************************************/
+
+    private istring cwd;
+
+    /***************************************************************************
+
+        Buffer for rendering the absolute paths.
+
+    ***************************************************************************/
+
+    private Buffer!(char) path_buffer;
+
 
     /***************************************************************************
 
@@ -72,12 +96,62 @@ public class ReopenableFilesExt : IApplicationExtension, ISignalExtExtension
 
     public this ( SignalExt signal_ext = null, int reopen_signal = SIGHUP )
     {
-        if ( signal_ext )
+        if (signal_ext)
         {
-            this.reopen_signal = reopen_signal;
-            signal_ext.register(this.reopen_signal);
-            signal_ext.registerExtension(this);
+            this.setupSignalHandler(signal_ext, reopen_signal);
         }
+    }
+
+
+    /***************************************************************************
+
+        Registers this extension with the signal extension and activates the
+        handling of the specified signal, which will cause the registered files
+        to be reopened.
+
+        Params:
+            signal_ext = SignalExt instance
+            reopen_signal = signal to trigger reopening of registered files
+
+    ***************************************************************************/
+
+    public void setupSignalHandler ( SignalExt signal_ext,
+            int reopen_signal = SIGHUP )
+    {
+        verify(signal_ext !is null);
+        verify(this.reopen_signal == this.reopen_signal.init,
+            "Either pass SignalExt to constructor or to setupSignalHandler, " ~
+            "not to both.");
+
+        this.reopen_signal = reopen_signal;
+        signal_ext.register(this.reopen_signal);
+        signal_ext.registerExtension(this);
+    }
+
+
+    /***************************************************************************
+
+        Registers this extension with the unix socket extension and activates the
+        handling of the specified unix socket command, which will cause reopening
+        files specified as arguments to the command.
+
+        Params:
+            unix_socket_ext = UnixSocketExt instance to register with
+            reopen_command = command to trigger reopening of the registered
+                file (passed as arguments to the command).
+
+    ***************************************************************************/
+
+    public void setupUnixSocketHandler ( UnixSocketExt unix_socket_ext,
+            istring reopen_command = "reopen_files" )
+    {
+        verify(unix_socket_ext !is null);
+
+        this.cwd = Environment.directory();
+        verify (this.cwd[$-1] == '/');
+
+        unix_socket_ext.addHandler(reopen_command,
+            &this.socketReloadCommand);
     }
 
 
@@ -114,6 +188,42 @@ public class ReopenableFilesExt : IApplicationExtension, ISignalExtExtension
 
     /***************************************************************************
 
+        Reopens all registered files with the given path
+
+        Params:
+            file_path = path of the file to open
+
+        Returns:
+            true if the file was registered and reopen, false otherwise.
+
+    ***************************************************************************/
+
+    public bool reopenFile ( cstring file_path )
+    {
+        // It might be the case that we have
+        // several files registered with the same path.
+        // We need to reopen all of them
+        bool reopened;
+
+        foreach (file; this.open_files)
+        {
+            path_buffer.reset();
+            sformat(path_buffer, "{}{}", this.cwd, file.path());
+
+            // Check both relative and absolute paths
+            if (file.path() == file_path || path_buffer[] == file_path)
+            {
+                file.close();
+                file.open(file.toString(), file.style);
+                reopened = true;
+            }
+        }
+
+        return reopened;
+    }
+
+    /***************************************************************************
+
         Signal handler. Called by SignalExt when a signal occurs. Reopens all
         log files.
 
@@ -130,6 +240,40 @@ public class ReopenableFilesExt : IApplicationExtension, ISignalExtExtension
         }
     }
 
+    /****************************************************************************
+
+        Reopen command to trigger from the Unix Domain socket. It reads
+        the file names to reload and reloads the appropriate files.
+
+        Params:
+            args = list of arguments received from the socket - should contain
+                   names of the files to rotate.
+            send_response = delegate to send the response to the client
+
+    *****************************************************************************/
+
+    private void socketReloadCommand ( cstring[] args,
+            void delegate ( cstring response ) send_response )
+    {
+        if (args.length == 0)
+        {
+            send_response("ERROR: missing name of the file to rotate.\n");
+            return;
+        }
+
+        foreach (filename; args)
+        {
+            if (!this.reopenFile(filename))
+            {
+                send_response("ERROR: Could not rotate the file '");
+                send_response(filename);
+                send_response("'\n");
+                return;
+            }
+        }
+
+        send_response("ACK\n");
+    }
 
     /***************************************************************************
 
