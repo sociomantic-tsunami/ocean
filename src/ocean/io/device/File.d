@@ -412,6 +412,18 @@ class File : Device, Device.Seek, Device.Truncate
                 return idup(path_);
         }
 
+        /**********************************************************************
+
+            Returns:
+                path used by this file.
+
+        **********************************************************************/
+
+        public cstring path ()
+        {
+            return this.path_;
+        }
+
         /***********************************************************************
 
                 Convenience function to return the content of a file.

@@ -305,18 +305,6 @@ public class BufferedDirectWriteFile: OutputStream
             if (!super.open(path, style, O_DIRECT))
                 this.error();
         }
-
-        /***********************************************************************
-
-            Returns:
-                the file's path
-
-        ***********************************************************************/
-
-        public cstring path ( )
-        {
-            return this.toString();
-        }
     }
 
     /***************************************************************************
@@ -412,18 +400,6 @@ public class BufferedDirectWriteFile: OutputStream
         verify(this.file.fileHandle == -1);
         this.file.open(path);
         this.free_index = 0;
-    }
-
-    /***************************************************************************
-
-        Returns:
-            what File.toString() returns for the underlying File instance
-
-    ***************************************************************************/
-
-    public cstring path ( )
-    {
-        return this.file.path();
     }
 
     /***************************************************************************
