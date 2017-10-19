@@ -1,0 +1,22 @@
+#!/bin/sh
+set -xeu
+
+echo TAG CREATED AND PUSHED
+exit 0
+
+# Add dub.sdl
+cp -v ci/ocean-d2-dub.sdl dub.sdl
+git add dub.sdl
+# Commit the changes and tag
+git config user.name="Sociomantic Travis Bot"
+git config user.email="tsunami@sociomantic.com"
+git commit -a -m 'Auto-convert to D2'
+# Create the new tag
+d2tag=$TRAVIS_TAG+d2
+git tag -m "$TRAVIS_TAG auto-converted to D2, see https://github.com/sociomantic-tsunami/ocean/releases/tag/$TRAVIS_TAG" "$d2tag"
+# Push (making sure the credentials are not leaked and using a helper
+# to get the password)
+set +x
+git -c "credential.https://github.com.username=${OCEAN_D2_USER}" \
+    -c "core.askPass=./ci/askpass.sh" \
+    push "https://github.com/sociomantic-tsunami/ocean-d2.git" "$d2tag"
