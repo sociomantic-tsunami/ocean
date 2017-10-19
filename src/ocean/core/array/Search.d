@@ -12,11 +12,11 @@
         Copyright (C) 2005-2006 Sean Kelly.
         Some parts copyright (c) 2009-2016 Sociomantic Labs GmbH.
         All rights reserved.
-    
+
     License:
         Tango Dual License: 3-Clause BSD License / Academic Free License v3.0.
         See LICENSE_TANGO.txt for details.
- 
+
 
 *******************************************************************************/
 
@@ -44,14 +44,14 @@ version (UnitTest)
     the index of the first element matching needle, or haystack.length if no match
     was found.  Comparisons will be performed using the supplied predicate
     or '==' if none is supplied.
-  
+
     Params:
         haystack = The array to search.
         needle   = The needletern to search for, either sub-array or element
         pred     = The evaluation predicate, which should return true if e1 is
             equal to e2 and false if not.  This predicate may be any callable
             type.
-      
+
     Returns:
         The index of the first match or haystack.length if no match was found.
 
@@ -958,13 +958,13 @@ unittest
 
    Performs a linear scan of haystack from [0 .. haystack.length$(RP), returning
    a count of the number of elements where pred returns true.
-  
+
    Params:
        haystack = The array to scan.
        pred = The evaluation predicate, which should return true if the
               element is a valid match and false if not.  This predicate
               may be any callable type.
-  
+
    Returns:
        The number of elements where pred returns true.
 
