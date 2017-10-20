@@ -118,7 +118,7 @@ class Uri : UriView
                 ExcScheme       = 0x01,
                 ExcAuthority    = 0x02,
                 ExcPath         = 0x04,
-                IncUser         = 0x80,         // encode spec for User
+                IncUser         = 0x08,         // encode spec for User
                 IncPath         = 0x10,         // encode spec for Path
                 IncQuery        = 0x20,         // encode spec for Query
                 IncQueryAll     = 0x40,
