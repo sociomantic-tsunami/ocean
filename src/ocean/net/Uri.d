@@ -29,6 +29,11 @@ import  Integer = ocean.text.convert.Integer_tango;
 
 import ocean.stdc.string : memchr;
 
+version ( UnitTest )
+{
+    import ocean.core.Test;
+}
+
 
 /*******************************************************************************
 
@@ -994,4 +999,43 @@ unittest
     //Cout (uri).newline;
     //Cout (uri.encode ("&#$%", uri.IncQuery)).newline;
 
+}
+
+/*******************************************************************************
+
+    Add unittests for Uri.encode method
+
+*******************************************************************************/
+
+unittest
+{
+    void encode ( cstring url, ref mstring working_buffer, int flags )
+    {
+        working_buffer.length = 0;
+        enableStomping(working_buffer);
+
+        Uri.encode((Const!(void)[] data)
+        {
+            working_buffer ~= cast (cstring) data;
+            return data.length;
+        }, url, flags);
+    }
+
+    mstring buffer;
+
+    // Test various modes of encoding
+    cstring url = "https://eu-sonar.sociomantic.com/js/";
+    cstring expected_result = "https%3a%2f%2feu-sonar.sociomantic.com%2fjs%2f";
+    encode(url, buffer, Uri.IncScheme);
+    test!("==")(buffer, expected_result);
+
+    expected_result = "https:%2f%2feu-sonar.sociomantic.com%2fjs%2f";
+    encode(url, buffer, Uri.IncUser);
+    test!("==")(buffer, expected_result);
+
+    url = `https://eu-sonar.sociomantic.com/js/&ao=[{"id":"1987392158"}]`;
+    expected_result = "https://eu-sonar.sociomantic.com/js/&ao=%5b%7b%22id" ~
+        "%22:%221987392158%22%7d%5d";
+    encode(url, buffer, Uri.IncGeneric);
+    test!("==")(buffer, expected_result);
 }
