@@ -187,7 +187,10 @@ struct PeriodicTracer
     {
         va_list ap;
 
-        va_start(ap, __va_argsave);
+        static if (__VERSION__ > 2071)
+            va_start(ap, fmt);
+        else
+            va_start(ap, __va_argsave);
 
         scope(exit) va_end(ap);
 
