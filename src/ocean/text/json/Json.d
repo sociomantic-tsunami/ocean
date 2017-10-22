@@ -890,10 +890,10 @@ class Json(T) : JsonParser!(T)
                 if (val is null)
                     return;
 
+                T[64] tmp = void;
+
                 switch (val.type)
                 {
-                    T[64] tmp = void;
-
                     case Type.String:
                     append (`"`), append(val.string), append(`"`);
                     break;
