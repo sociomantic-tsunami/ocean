@@ -55,7 +55,6 @@ import ocean.transition;
 
 debug
 {
-    import ocean.io.Stdout;
     import core.stdc.time: time_t, ctime;
     import core.stdc.string: strlen;
 }
@@ -212,13 +211,51 @@ abstract class TimeoutManagerBase : ITimeoutManager
                          the IExpiryRegistration instance to unregister
 
             In:
-                Must not be called from within timeout().
+                Must not be called from within timeout(). Doing so would still
+                leave already fired timer events in the TimeoutManager internal
+                list and their respective `timeout` will be called despite
+                unregistration. be called from within timeout().
 
         ***********************************************************************/
 
         void unregister ( ref Expiry expiry )
         {
             this.outer.unregister(expiry);
+        }
+
+        /***********************************************************************
+
+            Unregisters the specified expiry. If the expiry is present in the
+            list of expired registrations being currently iterated over by
+            checkTimeouts, then it will be removed (its timeout method will not
+            be called). (This means that drop can be called from timeout
+            callbacks, unlike unregister.)
+
+            Params:
+                expiry = expiry token returned by register() when registering
+                         the IExpiryRegistration instance to unregister
+
+        ***********************************************************************/
+
+        protected void drop ( ref Expiry expiry )
+        {
+            // If this method is called while checkTimeouts is iterating over
+            // the list of expired registrations, then we need to check whether
+            // the expiry to be dropped is present in the list and remove it, if
+            // it is.
+            // This makes it possible to disable timer events from the
+            // timeout callbacks of other timer events.
+
+            IExpiryRegistration registration =
+                *this.outer.expiry_to_client.get(&expiry);
+            foreach (ref pending; this.outer.expired_registrations[])
+            {
+                if (pending is registration)
+                    pending = null;
+            }
+
+            // do everything else as for regular unregistration
+            this.unregister(expiry);
         }
 
         /***********************************************************************
@@ -291,6 +328,9 @@ abstract class TimeoutManagerBase : ITimeoutManager
     /***************************************************************************
 
         List of expired registrations. Used by the checkTimeouts() method.
+
+        Elements can be set to `null` by `drop` method, in which case they
+        are ignored.
 
     ***************************************************************************/
 
@@ -508,6 +548,11 @@ abstract class TimeoutManagerBase : ITimeoutManager
         // the optional delegate returns false.
         foreach (ref registration; this.expired_registrations[])
         {
+            // registration can be disabled by `drop` method by being set to
+            // `null`
+            if (registration is null)
+                continue;
+
             ITimeoutClient client = registration.timeout();
 
             if (dg !is null) if (!dg(client)) break;
