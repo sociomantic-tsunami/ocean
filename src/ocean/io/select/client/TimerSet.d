@@ -198,7 +198,8 @@ public class TimerSet ( EventData ) : TimerEventTimeoutManager
 
         public void unregister ( )
         {
-            this.expiry_registration.unregister();
+            this.expiry_registration.drop();
+            this.outer.events.recycle(this);
         }
 
 

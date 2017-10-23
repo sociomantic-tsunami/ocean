@@ -83,11 +83,30 @@ abstract class ExpiryRegistrationBase : IExpiryRegistration
                          the IExpiryRegistration instance to unregister
 
             In:
-                Must not be called from within timeout().
+                Must not be called from within timeout(). Doing so would still
+                leave already fired timer events in the TimeoutManager internal
+                list and their respective `timeout` will be called despite
+                unregistration.
 
         ***********************************************************************/
 
         void unregister ( ref Expiry expiry );
+
+        /***********************************************************************
+
+            Unregisters the specified expiry. If the expiry is present in the
+            list of expired registrations being currently iterated over by
+            checkTimeouts, then it will be removed (its timeout method will not
+            be called). (This means that drop can be called from timeout
+            callbacks, unlike unregister.)
+
+            Params:
+                expiry = expiry token returned by register() when registering
+                         the IExpiryRegistration instance to unregister
+
+        ***********************************************************************/
+
+        void drop ( ref Expiry expiry );
 
         /***********************************************************************
 
@@ -185,22 +204,23 @@ abstract class ExpiryRegistrationBase : IExpiryRegistration
 
     public bool unregister ( )
     {
-        if (this.expiry) try
-        {
-            debug ( TimeoutManager ) Stderr("*** unregister ")(this.id)('\n').flush();
+        return this.unregisterWith({ this.mgr.unregister(*this.expiry); });
+    }
 
-            this.mgr.unregister(*this.expiry);
+    /***************************************************************************
 
-            return true;
-        }
-        finally
-        {
-            this.expiry = null;
-        }
-        else
-        {
-            return false;
-        }
+        Same as `unregister` but also removes expirty from list of currently
+        expired registrations. That means it can be called from `timeout`
+        callbacks, contrary to `unregister`.
+
+        Returns:
+            true on success or false if no client was registered.
+
+    ***************************************************************************/
+
+    public bool drop ( )
+    {
+        return this.unregisterWith({ this.mgr.drop(*this.expiry); });
     }
 
     /***************************************************************************
@@ -336,6 +356,46 @@ abstract class ExpiryRegistrationBase : IExpiryRegistration
         {
             debug ( TimeoutManager ) Stderr("no timeout\n").flush();
 
+            return false;
+        }
+    }
+
+    /***************************************************************************
+
+        Extracted common code of `drop` and `unregister`. Uses provided delegate
+        to call relevant TimeoutManager method and augments it with error
+        checking (providing boolean return value) and debug traces.
+
+        Params:
+            dg = delegate that calls relevant TimeoutManager method
+
+        Returns:
+            See `drop`/`unregister`
+
+    ***************************************************************************/
+
+    private bool unregisterWith(void delegate() dg)
+    {
+        if (this.expiry)
+        {
+            try
+            {
+                debug (TimeoutManager)
+                {
+                    Stderr("*** unregister ")(this.id)('\n').flush();
+                }
+
+                dg();
+
+                return true;
+            }
+            finally
+            {
+                this.expiry = null;
+            }
+        }
+        else
+        {
             return false;
         }
     }
