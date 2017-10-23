@@ -181,7 +181,7 @@ public class ReopenableFilesExt : IApplicationExtension, ISignalExtExtension
         foreach ( file; this.open_files )
         {
             file.close();
-            file.open(file.toString(), file.style);
+            file.open(file.path(), file.style);
         }
     }
 
@@ -214,7 +214,7 @@ public class ReopenableFilesExt : IApplicationExtension, ISignalExtExtension
             if (file.path() == file_path || path_buffer[] == file_path)
             {
                 file.close();
-                file.open(file.toString(), file.style);
+                file.open(file.path(), file.style);
                 reopened = true;
             }
         }
