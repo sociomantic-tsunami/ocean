@@ -1,0 +1,66 @@
+version: 2
+
+# Build pipeline structure and build trigger configuration
+
+workflows:
+    version: 2
+    all:
+        jobs:
+            - test-1.081
+            - test-2.070
+            - test-2.071
+            - d2tag:
+                requires:
+                    - test-1.081
+                    - test-2.070
+                    - test-2.071
+                filters:
+                    tags:
+                        only: /.*/
+                    branches:
+                        ignore: /.*/
+
+# Individual job definitions
+
+jobs:
+    test-1.081: &test-template
+        docker:
+            - image: sociomantictsunami/dlang:xenial-v3
+        environment:
+            - DMD: "1.081.*"
+            - F: "production"
+        steps:
+            - checkout
+            - run:
+                name: Update submodules
+                command: git submodule update --init
+            - run:
+                name: Install dependencies
+                command: .circleci/deps.sh
+            - run:
+                name: Build & run tests
+                command: .circleci/test.sh
+    test-2.070:
+        <<: *test-template
+        environment:
+            - DMD: "2.070.2.s*"
+            - F: "production"
+    test-2.071:
+        <<: *test-template
+        environment:
+            - DMD: "2.071.2.s*"
+            - F: "production"
+    d2tag:
+        docker:
+            - image: sociomantictsunami/dlang:xenial-v3
+        steps:
+            - checkout
+            - run:
+                name: Update submodules
+                command: git submodule update --init
+            - run:
+                name: Convert code to D2
+                command: make d2conv
+            - run:
+                name: Create new tag with -d2 suffix
+                command: echo "Done"
