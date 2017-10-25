@@ -321,6 +321,14 @@ abstract class IConnectionHandler : IConnectionHandlerInfo,
                 this.error(this.socket_error.setSock("error closing connection", __FILE__, __LINE__));
             }
 
+            // The socket is closed below. However, this does not always mean
+            // that it is unregistered from epoll -- in situations where the
+            // process has forked, the fork's reference to the underlying kernel
+            // file description will prevent it from being unregistered until
+            // the fork exits. Therefore, to be certain that the socket will not
+            // fire again in epoll, we need to explicitly unregister it.
+            this.unregisterSocket();
+
             this.socket.close();
         }
 
@@ -385,6 +393,27 @@ abstract class IConnectionHandler : IConnectionHandlerInfo,
     public void formatInfo ( ref char[] buf )
     {
         this.socket.formatInfo(buf, this.io_error);
+    }
+
+    /***************************************************************************
+
+        Called by `finalize` to unregister the connection socket from epoll
+        before closing it. This is done because closing a socket does not always
+        mean that it is unregistered from epoll -- in situations where the
+        process has forked, the fork's reference to the underlying kernel file
+        description will prevent it from being unregistered until the fork
+        exits. Therefore, to be certain that the socket will not fire again in
+        epoll, we need to explicitly unregister it.
+
+        This method does nothing by default, but should be overridden by all
+        derived classes.
+
+        TODO: this method should be made abstract in the next major release.
+
+    ***************************************************************************/
+
+    protected void unregisterSocket ( )
+    {
     }
 
     /***************************************************************************
