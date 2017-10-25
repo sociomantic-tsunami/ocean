@@ -221,6 +221,25 @@ abstract class IFiberConnectionHandlerBase : IConnectionHandler
 
     /***************************************************************************
 
+        Called by `finalize` to unregister the connection socket from epoll
+        before closing it. This is done because closing a socket does not always
+        mean that it is unregistered from epoll -- in situations where the
+        process has forked, the fork's reference to the underlying kernel file
+        description will prevent it from being unregistered until the fork
+        exits. Therefore, to be certain that the socket will not fire again in
+        epoll, we need to explicitly unregister it.
+
+    ***************************************************************************/
+
+    override protected void unregisterSocket ( )
+    {
+        if ( auto registered_client = this.fiber.registered_client )
+            if ( this.socket.fd == registered_client.fileHandle() )
+                this.fiber.unregister();
+    }
+
+    /***************************************************************************
+
         Connection handler method. If it catches exceptions, it must rethrow
         those of type KilledException.
 
