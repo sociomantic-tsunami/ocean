@@ -227,14 +227,7 @@ abstract class IIPSocket : ISocket
 
     public int socket ( int type, int protocol = 0 )
     {
-        this.fd = .socket(
-            this.is_ipv6? AF_INET6 : AF_INET,
-            setCloExec(type, SocketFlags.SOCK_CLOEXEC), protocol
-        );
-
-        this.close_in_destructor = (this.fd >= 0);
-
-        return this.fd;
+        return super.socket(this.is_ipv6? AF_INET6 : AF_INET, type, protocol);
     }
 
     /**************************************************************************
