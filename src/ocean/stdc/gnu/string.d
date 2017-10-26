@@ -15,8 +15,6 @@
 
 module ocean.stdc.gnu.string;
 
-version (GLIBC):
-
 import ocean.transition;
 import core.stdc.stddef: wchar_t;
 

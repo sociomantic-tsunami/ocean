@@ -19,7 +19,7 @@ public import core.sys.posix.netinet.tcp;
 public import core.sys.posix.netinet.in_;
 public import core.sys.posix.netdb;
 
-version (GLIBC) public import ocean.stdc.posix.gnu.socket;
+public import ocean.stdc.posix.gnu.socket;
 
 enum
 {

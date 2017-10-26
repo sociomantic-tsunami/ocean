@@ -21,7 +21,7 @@ version (D_Version2)
     public import core.stdc.wchar_;
 }
 
-version (GLIBC) public import ocean.stdc.gnu.string;
+public import ocean.stdc.gnu.string;
 
 version (Posix)
 {
