@@ -28,7 +28,19 @@ import ocean.sys.Epoll;
 
 import ocean.io.select.selector.EpollException;
 
+import ocean.core.Verify;
+
 debug (ISelectClient) import ocean.io.Stdout;
+
+version (UnitTest)
+{
+    debug = EpollFdSanity;
+}
+
+debug (EpollFdSanity)
+{
+    import ocean.io.select.selector.EpollFdSanity;
+}
 
 /******************************************************************************/
 
@@ -133,7 +145,20 @@ class SelectedKeysHandler: ISelectedKeysHandler
     final protected void handleSelectedKey ( epoll_event_t key,
         void delegate (Exception) unhandled_exception_hook )
     {
-        ISelectClient client = cast (ISelectClient) key.data.ptr;
+        debug (EpollFdSanity)
+        {
+            auto registration = FdObjEpollData.decode(key.data.u64);
+            ISelectClient client = cast (ISelectClient) registration.obj;
+
+            verify(client !is null);
+            verify(registration.verifyFd(client.fileHandle()),
+                    "Warning: the ISelectClient.fileHandle() doesn't match the "
+                    ~ "original fd this ISelectClient was registered for");
+        }
+        else
+        {
+            ISelectClient client = cast (ISelectClient) key.data.ptr;
+        }
 
         debug ( ISelectClient ) this.logEvents(client, key.events);
 

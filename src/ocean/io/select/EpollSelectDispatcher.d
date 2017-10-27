@@ -62,6 +62,16 @@ import core.stdc.errno: errno, EINTR, ENOENT, EEXIST, ENOMEM, EINVAL;
 
 debug ( ISelectClient ) import ocean.io.Stdout;
 
+version (UnitTest)
+{
+    debug = EpollFdSanity;
+}
+
+debug (EpollFdSanity)
+{
+    import ocean.io.select.selector.EpollFdSanity;
+}
+
 /*******************************************************************************
 
     EpollSelectDispatcher
@@ -320,7 +330,7 @@ public class EpollSelectDispatcher : IEpollSelectDispatcherInfo
         else
         {
             this.e.enforce(
-                this.epoll.ctl(epoll.CtlOp.EPOLL_CTL_ADD, client.fileHandle,
+                this.epollCtl(epoll.CtlOp.EPOLL_CTL_ADD, client.fileHandle,
                     client.events, client) == 0,
                 "error adding epoll registration",
                 "epoll_ctl"
@@ -372,7 +382,7 @@ public class EpollSelectDispatcher : IEpollSelectDispatcherInfo
                 this.registered_clients -= client;
             }
 
-            if (!this.epoll.ctl(epoll.CtlOp.EPOLL_CTL_DEL, client.fileHandle,
+            if (!this.epollCtl(epoll.CtlOp.EPOLL_CTL_DEL, client.fileHandle,
                 client.events, client))
             {
                 return 0;
@@ -585,7 +595,7 @@ public class EpollSelectDispatcher : IEpollSelectDispatcherInfo
 
     public bool modify ( ISelectClient client )
     {
-        if (!this.epoll.ctl(epoll.CtlOp.EPOLL_CTL_MOD, client.fileHandle,
+        if (!this.epollCtl(epoll.CtlOp.EPOLL_CTL_MOD, client.fileHandle,
             client.events, client))
         {
             return false;
@@ -596,7 +606,7 @@ public class EpollSelectDispatcher : IEpollSelectDispatcherInfo
 
             if (errnum == ENOENT)
             {
-                if (!this.epoll.ctl(epoll.CtlOp.EPOLL_CTL_ADD, client.fileHandle,
+                if (!this.epollCtl(epoll.CtlOp.EPOLL_CTL_ADD, client.fileHandle,
                     client.events, client))
                 {
                     return true;
@@ -796,6 +806,37 @@ public class EpollSelectDispatcher : IEpollSelectDispatcherInfo
                         "error waiting for epoll events");
                 }
             }
+        }
+    }
+
+    /***************************************************************************
+
+        Creates/deletes/modifies registration inside the epoll. Wrapped to
+        allow for the sanity checks on the EpollSelectDispatcher's level.
+
+        Params:
+            op     = epoll_ctl opcode
+            fd     = file descriptor to register for events
+            events = events to register fd for
+            client = user ISelectClient to set data.obj of the created epoll_data_t
+                     instance to
+
+        Returns:
+            0 on success or -1 on error. On error errno is set appropriately.
+
+    ***************************************************************************/
+
+    private int epollCtl ( Epoll.CtlOp op, int fd, Epoll.Event events,
+            ISelectClient client )
+    {
+        debug (EpollFdSanity)
+        {
+            return this.epoll.ctl(op, fd, client.events,
+                    FdObjEpollData.encode(client, client.fileHandle));
+        }
+        else
+        {
+            return this.epoll.ctl(op, fd, client.events, client);
         }
     }
 
