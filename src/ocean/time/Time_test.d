@@ -15,6 +15,8 @@ module ocean.time.Time_test;
 
 import ocean.time.Time;
 import ocean.core.Test;
+import ocean.text.convert.Formatter;
+import ocean.text.convert.DateTime_tango;
 
 unittest
 {
@@ -50,4 +52,17 @@ unittest
     test(tod.minutes is 2);
     test(tod.seconds is 3);
     test(tod.millis is 4);
+}
+
+// pretty time formatting
+unittest
+{
+    test!("==")(
+        format("{}", asPrettyStr(Time.epoch1970)),
+        "01/01/70 00:00:00"
+    );
+    test!("==")(
+        format("{}", asPrettyStr(Time.epoch1970 + TimeSpan.fromDays(5))),
+        "01/06/70 00:00:00"
+    );
 }

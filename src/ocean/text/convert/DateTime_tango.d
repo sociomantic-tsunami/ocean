@@ -36,6 +36,7 @@ import ocean.core.ExceptionDefinitions;
 import ocean.stdc.posix.langinfo;
 import Integer = ocean.text.convert.Integer_tango;
 import Utf = ocean.text.convert.Utf;
+import ocean.text.convert.Formatter;
 import ocean.text.util.StringC;
 import ocean.time.chrono.Calendar;
 import ocean.time.chrono.Gregorian;
@@ -967,6 +968,41 @@ private struct Result
     private char[] get ()
     {
         return target_[0 .. index];
+    }
+}
+
+/*******************************************************************************
+
+    Params:
+        value = time value to wrap in pretty-printing struct
+
+    Returns:
+        wrapper struct which, when supplied to `Formatter`, prints `value`
+        using current default locale settings.
+
+*******************************************************************************/
+
+public AsPrettyStr asPrettyStr ( Time value )
+{
+    return AsPrettyStr(value);
+}
+
+/*******************************************************************************
+
+    Wrapper struct which, when supplied to `Formatter`, prints `value`
+    using current default locale settings.
+
+*******************************************************************************/
+
+public struct AsPrettyStr
+{
+    private Time value;
+
+    public void toString (FormatterSink sink)
+    {
+        // Layout defaults to 'G'
+        scope dg = (cstring s) { sink(s); return s.length; };
+        DateTimeDefault.format(dg, this.value, "");
     }
 }
 
