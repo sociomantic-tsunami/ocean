@@ -20,6 +20,12 @@ import ocean.transition;
 import ocean.core.Verify;
 import core.sys.posix.unistd: close;
 
+version (UnitTest)
+{
+    debug = EpollFdSanity;
+    import ocean.core.Test;
+}
+
 /*****************************************************************************
 
     Struct bundling the event to register a file descriptor for with an
@@ -670,6 +676,40 @@ struct Epoll
 
         event.events   = events;
         event.data.obj = obj;
+
+        return epoll_ctl(this.fd, op, fd, &event);
+    }
+
+    /**************************************************************************
+
+        Calls epoll_ctl() using the current epoll file descriptor to modify the
+        registration of fd for events with obj as user data.
+
+        Creates the epoll_event_t instance passed to epoll_ctl() from events and
+        obj where data.obj is set to obj.
+
+        The current epoll file descriptor should have been sucessfully obtained
+        by create() or epoll_create1() and not already been closed, otherwise
+        epoll_ctl() will fail so that this method returns -1.
+
+        Params:
+            op     = epoll_ctl opcode
+            fd     = file descriptor to register for events
+            events = events to register fd for
+            u64    = user value to set data.u64 of the created epoll_data_t
+                     instance to
+
+        Returns:
+            0 on success or -1 on error. On error errno is set appropriately.
+
+     **************************************************************************/
+
+    public int ctl ( CtlOp op, int fd, Event events, ulong u64 )
+    {
+        epoll_event_t event;
+
+        event.events   = events;
+        event.data.u64 = u64;
 
         return epoll_ctl(this.fd, op, fd, &event);
     }
