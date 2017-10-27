@@ -21,6 +21,7 @@
 
 module ocean.io.select.protocol.task.TaskSelectTransceiver;
 
+import ocean.io.device.IODevice;
 import ocean.io.select.client.model.ISelectClient;
 
 /// ditto
@@ -29,7 +30,6 @@ class TaskSelectTransceiver
 {
     import ocean.io.select.protocol.task.TaskSelectClient;
     import ocean.io.select.protocol.task.internal.BufferedReader;
-    import ocean.io.device.IODevice: IODevice;
 
     import core.stdc.errno: errno, EAGAIN, EWOULDBLOCK, EINTR;
     import ocean.stdc.posix.sys.uio: iovec, readv;
@@ -725,7 +725,6 @@ private int connect_ ( TaskSelectTransceiver tst, lazy bool socket_connect )
 
 version (UnitTest)
 {
-    import ocean.io.device.IODevice;
     import ocean.io.select.protocol.generic.ErrnoIOException;
     import ocean.task.Task;
     import ocean.transition;
