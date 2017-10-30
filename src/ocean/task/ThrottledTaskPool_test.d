@@ -25,6 +25,7 @@ import ocean.task.util.Timer;
 import ocean.io.model.ISuspendable;
 import ocean.io.Stdout;
 import ocean.core.Test;
+import ocean.core.Verify;
 
 static import core.thread;
 
@@ -48,7 +49,7 @@ class Generator : Task
     {
         int i;
         while (++i)
-            assert(process_dg(i));
+            verify(process_dg(i));
     }
 }
 
