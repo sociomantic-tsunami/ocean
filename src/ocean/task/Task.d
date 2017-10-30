@@ -30,6 +30,7 @@ import ocean.transition;
 import ocean.core.array.Mutation : moveToEnd;
 import ocean.core.Test;
 import ocean.core.Buffer;
+import ocean.core.Verify;
 import ocean.io.select.EpollSelectDispatcher;
 import ocean.io.model.ISuspendable;
 import ocean.task.internal.TaskExtensionMixins;
@@ -299,8 +300,8 @@ public abstract class Task : ISuspendable
     public void suspend ( )
     {
         assert (this.fiber !is null);
-        assert (this.fiber is core.thread.Fiber.getThis());
-        assert (this.fiber.state == this.fiber.state.EXEC);
+        verify (this.fiber is core.thread.Fiber.getThis());
+        verify (this.fiber.state == this.fiber.state.EXEC);
 
         debug_trace("<{}> is suspending itself", cast(void*) this);
         this.fiber.yield();
