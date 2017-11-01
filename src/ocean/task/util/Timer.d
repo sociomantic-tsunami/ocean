@@ -112,10 +112,7 @@ unittest
     theScheduler.schedule(task);
     theScheduler.eventLoop();
 
-    // NB: allocated event count is expected to be 1 more than strictly
-    // necessary here because they are recycled only after task finishes
-    // or suspend again, not immediately after it gets resumed on timer
-    test!("==")(.timer.allocated_event_count(), 2);
+    test!("==")(.timer.scheduled_events(), 1);
 }
 
 /*******************************************************************************
