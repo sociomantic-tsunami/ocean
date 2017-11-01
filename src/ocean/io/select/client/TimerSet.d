@@ -256,7 +256,7 @@ public class TimerSet ( EventData ) : TimerEventTimeoutManager
 
     ***************************************************************************/
 
-    private ObjectPool!(Event) events;
+    protected ObjectPool!(Event) events;
 
     /***************************************************************************
 
