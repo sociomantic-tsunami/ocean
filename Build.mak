@@ -38,6 +38,7 @@ TEST_FILTER_OUT += \
 	$C/src/ocean/io/vfs/ZipFolder.d \
 	$C/src/ocean/math/BigInt.d \
 	$C/src/ocean/net/http/ChunkStream.d \
+	$C/src/ocean/util/compress/Zip.d \
 	$C/src/ocean/util/log/LayoutChainsaw.d \
 	$C/src/ocean/util/log/Log.d \
 	$C/src/ocean/text/convert/Memory.d \
