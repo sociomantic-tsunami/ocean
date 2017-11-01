@@ -19,7 +19,7 @@
 
 *******************************************************************************/
 
-module ocean.io.stream.Utf;
+deprecated module ocean.io.stream.Utf;
 
 import ocean.transition;
 
@@ -36,7 +36,7 @@ import Utf = ocean.text.convert.Utf;
 
 *******************************************************************************/
 
-class UtfInput(T, S) : InputFilter, InputFilter.Mutator
+deprecated class UtfInput(T, S) : InputFilter, InputFilter.Mutator
 {
         static if (!is (S == char) && !is (S == wchar) && !is (S == dchar))
                     pragma (msg, "Source type must be char, wchar, or dchar");
@@ -131,7 +131,7 @@ class UtfInput(T, S) : InputFilter, InputFilter.Mutator
 
 *******************************************************************************/
 
-class UtfOutput (S, T) : OutputFilter, OutputFilter.Mutator
+deprecated class UtfOutput (S, T) : OutputFilter, OutputFilter.Mutator
 {
         static if (!is (S == char) && !is (S == wchar) && !is (S == dchar))
                     pragma (msg, "Source type must be char, wchar, or dchar");

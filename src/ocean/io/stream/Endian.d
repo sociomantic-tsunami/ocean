@@ -18,7 +18,7 @@
 
 *******************************************************************************/
 
-module ocean.io.stream.Endian;
+deprecated module ocean.io.stream.Endian;
 
 import ocean.transition;
 
@@ -36,7 +36,7 @@ version(UnitTest) import ocean.core.Test;
 
 *******************************************************************************/
 
-class EndianInput(T) : InputFilter, InputFilter.Mutator
+deprecated class EndianInput(T) : InputFilter, InputFilter.Mutator
 {
         static if ((T.sizeof != 2) && (T.sizeof != 4) && (T.sizeof != 8))
                     pragma (msg, "EndianInput :: type should be of length 2, 4, or 8 bytes");
@@ -91,7 +91,7 @@ class EndianInput(T) : InputFilter, InputFilter.Mutator
 
 *******************************************************************************/
 
-class EndianOutput (T) : OutputFilter, OutputFilter.Mutator
+deprecated class EndianOutput (T) : OutputFilter, OutputFilter.Mutator
 {
         static if ((T.sizeof != 2) && (T.sizeof != 4) && (T.sizeof != 8))
                     pragma (msg, "EndianOutput :: type should be of length 2, 4, or 8 bytes");

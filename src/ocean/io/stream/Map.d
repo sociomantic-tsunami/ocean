@@ -17,7 +17,7 @@
 
 *******************************************************************************/
 
-module ocean.io.stream.Map;
+deprecated module ocean.io.stream.Map;
 
 import ocean.transition;
 
@@ -37,7 +37,7 @@ version(UnitTest) import ocean.core.Test;
 
 *******************************************************************************/
 
-class MapInput(T) : Lines!(T)
+deprecated class MapInput(T) : Lines!(T)
 {
         /***********************************************************************
 
@@ -121,7 +121,7 @@ class MapInput(T) : Lines!(T)
 
 *******************************************************************************/
 
-class MapOutput(T) : OutputFilter
+deprecated class MapOutput(T) : OutputFilter
 {
         private Const!(T)[] eol;
 
@@ -207,7 +207,7 @@ version (UnitTest)
     import ocean.io.device.Array;
 }
 
-unittest
+deprecated unittest
 {
     auto buf = new Array(200);
     auto input = new MapInput!(char)(buf);

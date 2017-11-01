@@ -15,7 +15,7 @@
 
 *******************************************************************************/
 
-module ocean.io.stream.Digester;
+deprecated module ocean.io.stream.Digester;
 
 import ocean.transition;
 
@@ -30,7 +30,7 @@ import ocean.util.digest.Digest;
 
 *******************************************************************************/
 
-class DigestInput : InputFilter, InputFilter.Mutator
+deprecated class DigestInput : InputFilter, InputFilter.Mutator
 {
         private Digest filter;
 
@@ -107,7 +107,7 @@ class DigestInput : InputFilter, InputFilter.Mutator
 
 *******************************************************************************/
 
-class DigestOutput : OutputFilter, InputFilter.Mutator
+deprecated class DigestOutput : OutputFilter, InputFilter.Mutator
 {
         private Digest filter;
 
