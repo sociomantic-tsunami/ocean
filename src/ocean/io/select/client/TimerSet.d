@@ -212,8 +212,10 @@ public class TimerSet ( EventData ) : TimerEventTimeoutManager
 
         public void timeout ( )
         {
-            this.fired_dg(this.data);
+            auto fired_dg = this.fired_dg;
+            auto data = this.data;
             this.outer.events.recycle(this);
+            fired_dg(data);
         }
 
 
