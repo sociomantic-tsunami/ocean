@@ -258,14 +258,6 @@ public class TimerSet ( EventData ) : TimerEventTimeoutManager
 
     private ObjectPool!(Event) events;
 
-    version (UnitTest)
-    {
-        public size_t allocated_event_count ( )
-        {
-            return events.length();
-        }
-    }
-
     /***************************************************************************
 
         Constructor.
