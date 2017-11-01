@@ -17,7 +17,7 @@
 
 *******************************************************************************/
 
-module ocean.io.vfs.ZipFolder;
+deprecated module ocean.io.vfs.ZipFolder;
 
 import ocean.transition;
 
@@ -279,7 +279,7 @@ private
  * the sync operation, you can also use the archive member to get a reference
  * to the underlying ZipFolder instance.
  */
-class ZipSubFolder : VfsFolder, VfsSync
+deprecated class ZipSubFolder : VfsFolder, VfsSync
 {
     ///
     final istring name()
@@ -595,7 +595,7 @@ private:
  * ZipFolder serves as the root object for all Zip archives in the VFS.
  * Presently, it can only open archives on the local filesystem.
  */
-class ZipFolder : ZipSubFolder
+deprecated class ZipFolder : ZipSubFolder
 {
     /**
      * Opens an archive from the local filesystem.  If the readonly argument
@@ -943,7 +943,7 @@ private:
 /**
  * This class represents a file within an archive.
  */
-class ZipFile : VfsFile
+deprecated class ZipFile : VfsFile
 {
     ///
     final istring name()
@@ -1276,7 +1276,7 @@ else
 // ************************************************************************ //
 // ************************************************************************ //
 
-class ZipSubFolderEntry : VfsFolderEntry
+deprecated class ZipSubFolderEntry : VfsFolderEntry
 {
     final VfsFolder open()
     {
@@ -1382,7 +1382,7 @@ private:
 // ************************************************************************ //
 // ************************************************************************ //
 
-class ZipSubFolderGroup : VfsFolders
+deprecated class ZipSubFolderGroup : VfsFolders
 {
     final int opApply(int delegate(ref VfsFolder) dg)
     {
@@ -1503,7 +1503,7 @@ private:
 // ************************************************************************ //
 // ************************************************************************ //
 
-class ZipFileGroup : VfsFiles
+deprecated class ZipFileGroup : VfsFiles
 {
     final int opApply(int delegate(ref VfsFile) dg)
     {
