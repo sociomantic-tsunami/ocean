@@ -15,7 +15,7 @@
  *
  ******************************************************************************/
 
-module ocean.util.compress.Zip;
+deprecated module ocean.util.compress.Zip;
 
 import ocean.transition;
 import ocean.core.Verify;
@@ -2945,5 +2945,3 @@ private:
         assert( _position >= 0 );
     }
 }
-
-
