@@ -245,7 +245,7 @@ unittest
 
 *******************************************************************************/
 
-private TimerSet!(EventData) timer;
+private TaskTimerSet timer;
 
 /*******************************************************************************
 
@@ -258,6 +258,26 @@ private TimerSet!(EventData) timer;
 private struct EventData
 {
     Task to_resume;
+}
+
+/*******************************************************************************
+
+    Derivative from generic ocean TimerSet which augments it with task-specific
+    sanity checks.
+
+*******************************************************************************/
+
+private class TaskTimerSet : TimerSet!(EventData)
+{
+    invariant ( )
+    {
+        auto _this = cast(TaskTimerSet) this;
+        scope iterator = _this.events.new BusyItemsIterator;
+        foreach (event; iterator)
+        {
+            assert (event.data.to_resume.fiber !is null);
+        }
+    }
 }
 
 /*******************************************************************************
