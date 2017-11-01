@@ -15,7 +15,7 @@
 
 *******************************************************************************/
 
-module ocean.io.stream.Greedy;
+deprecated module ocean.io.stream.Greedy;
 
 import ocean.transition;
 
@@ -29,7 +29,7 @@ import ocean.io.device.Conduit;
 
 *******************************************************************************/
 
-class GreedyInput : InputFilter
+deprecated class GreedyInput : InputFilter
 {
         /***********************************************************************
 
@@ -96,7 +96,7 @@ class GreedyInput : InputFilter
 
 *******************************************************************************/
 
-class GreedyOutput : OutputFilter
+deprecated class GreedyOutput : OutputFilter
 {
         /***********************************************************************
 

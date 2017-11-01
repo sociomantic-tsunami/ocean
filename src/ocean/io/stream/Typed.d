@@ -18,7 +18,7 @@
 
 *******************************************************************************/
 
-module ocean.io.stream.Typed;
+deprecated module ocean.io.stream.Typed;
 
 import ocean.io.device.Conduit;
 
@@ -32,7 +32,7 @@ version(UnitTest) import ocean.core.Test;
 
 *******************************************************************************/
 
-class TypedInput(T) : InputFilter
+deprecated class TypedInput(T) : InputFilter
 {
         /***********************************************************************
 
@@ -93,7 +93,7 @@ class TypedInput(T) : InputFilter
 
 *******************************************************************************/
 
-class TypedOutput(T) : OutputFilter
+deprecated class TypedOutput(T) : OutputFilter
 {
         /***********************************************************************
 
@@ -127,7 +127,7 @@ version (UnitTest)
     import ocean.io.device.Array;
 }
 
-unittest
+deprecated unittest
 {
     Array output;
 
