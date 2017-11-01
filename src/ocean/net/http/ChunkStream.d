@@ -19,7 +19,7 @@
 
 *******************************************************************************/
 
-module ocean.net.http.ChunkStream;
+deprecated module ocean.net.http.ChunkStream;
 
 import ocean.transition;
 
@@ -39,7 +39,7 @@ import Integer = ocean.text.convert.Integer_tango;
 
 *******************************************************************************/
 
-class ChunkOutput : OutputFilter
+deprecated class ChunkOutput : OutputFilter
 {
         private OutputBuffer output;
 
@@ -98,7 +98,7 @@ class ChunkOutput : OutputFilter
 
 *******************************************************************************/
 
-class ChunkInput : Lines!(char)
+deprecated class ChunkInput : Lines!(char)
 {
         private alias void delegate(cstring line) Headers;
 
