@@ -66,3 +66,19 @@ unittest
         "01/06/70 00:00:00"
     );
 }
+
+// raw time
+unittest
+{
+    // NB: ocean is compiled with deprecations-as-errors, so deprecated
+    // toString method is not picked even before it is completely removed:
+
+    test!("==")(
+        format("{}", Time.epoch1970),
+        "{ ticks_: 621355968000000000 }"
+    );
+    test!("==")(
+        format("{}", Time.epoch1970 + TimeSpan.fromDays(5)),
+        "{ ticks_: 621360288000000000 }"
+    );
+}

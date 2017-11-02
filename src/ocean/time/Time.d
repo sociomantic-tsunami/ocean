@@ -699,7 +699,7 @@ struct Time
 
     /// Support for `ocean.text.convert.Formatter`: Print the string in a
     /// user-friendly way
-    deprecated("Use the overload accepting a FormatterSink")
+    deprecated("Use `format(\"{}\", asPrettyStr(time))` instead")
     public void toString (size_t delegate(cstring) sink)
     {
         // Layout defaults to 'G'
@@ -708,6 +708,7 @@ struct Time
 
     /// Support for `ocean.text.convert.Formatter`: Print the string in a
     /// user-friendly way
+    deprecated("Use `format(\"{}\", asPrettyStr(time))` instead")
     public void toString (void delegate(cstring) sink)
     {
         // Layout defaults to 'G'
