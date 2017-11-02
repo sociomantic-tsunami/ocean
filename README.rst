@@ -46,7 +46,7 @@ Build / Use
 Dependencies
 ------------
 
-This library has quite a few number of dependencies, but it depends on which
+This library has quite a number of dependencies, but it depends on which
 modules you want to use. Usually the easiest way to find out is just using it
 and see which libraries the linker fails to find and then install by demand.
 
