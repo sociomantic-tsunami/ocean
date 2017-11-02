@@ -83,6 +83,17 @@ public class WorkerFiber : core.thread.Fiber
 
     /***************************************************************************
 
+        Terminates itself by killing underlying task
+
+    ***************************************************************************/
+
+    public void kill ( )
+    {
+        this.active_task.kill();
+    }
+
+    /***************************************************************************
+
         Constructor
 
         Worker fibers are always created with a dummy empty function as an
