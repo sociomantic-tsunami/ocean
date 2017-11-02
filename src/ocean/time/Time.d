@@ -23,13 +23,6 @@ module ocean.time.Time;
 import ocean.transition;
 import ocean.text.convert.DateTime_tango;
 
-version (UnitTest)
-{
-    import ocean.core.Test;
-    import ocean.text.convert.Formatter;
-}
-
-
 /******************************************************************************
 
     This struct represents a length of time.  The underlying representation is
@@ -884,54 +877,4 @@ struct DateTime
 {
         public Date         date;       /// date representation
         public TimeOfDay    time;       /// time representation
-}
-
-
-
-
-/******************************************************************************
-
-******************************************************************************/
-
-unittest
-{
-    test(TimeSpan.zero > TimeSpan.min);
-    test(TimeSpan.max  > TimeSpan.zero);
-    test(TimeSpan.max  > TimeSpan.min);
-    test(TimeSpan.zero >= TimeSpan.zero);
-    test(TimeSpan.zero <= TimeSpan.zero);
-    test(TimeSpan.max >= TimeSpan.max);
-    test(TimeSpan.max <= TimeSpan.max);
-    test(TimeSpan.min >= TimeSpan.min);
-    test(TimeSpan.min <= TimeSpan.min);
-
-    test (TimeSpan.fromSeconds(50).seconds is 50);
-    test (TimeSpan.fromSeconds(5000).seconds is 5000);
-    test (TimeSpan.fromMinutes(50).minutes is 50);
-    test (TimeSpan.fromMinutes(5000).minutes is 5000);
-    test (TimeSpan.fromHours(23).hours is 23);
-    test (TimeSpan.fromHours(5000).hours is 5000);
-    test (TimeSpan.fromDays(6).days is 6);
-    test (TimeSpan.fromDays(5000).days is 5000);
-
-    test (TimeSpan.fromSeconds(50).time.seconds is 50);
-    test (TimeSpan.fromSeconds(5000).time.seconds is 5000 % 60);
-    test (TimeSpan.fromMinutes(50).time.minutes is 50);
-    test (TimeSpan.fromMinutes(5000).time.minutes is 5000 % 60);
-    test (TimeSpan.fromHours(23).time.hours is 23);
-    test (TimeSpan.fromHours(5000).time.hours is 5000 % 24);
-
-    auto tod = TimeOfDay (25, 2, 3, 4);
-    tod = tod.span.time;
-    test (tod.hours is 1);
-    test (tod.minutes is 2);
-    test (tod.seconds is 3);
-    test (tod.millis is 4);
-}
-
-unittest
-{
-    test!("==")(format("{}", Time.epoch1970), "01/01/70 00:00:00");
-    test!("==")(format("{}", Time.epoch1970 + TimeSpan.fromDays(5)),
-                "01/06/70 00:00:00");
 }
