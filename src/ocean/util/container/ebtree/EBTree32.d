@@ -62,6 +62,7 @@ import ocean.util.container.ebtree.model.IEBTree,
 
 import ocean.util.container.ebtree.nodepool.NodePool;
 
+public import ocean.util.container.ebtree.c.eb32tree;
 import ocean.util.container.ebtree.c.ebtree: eb_node, eb_root;
 
 /*******************************************************************************
@@ -192,7 +193,7 @@ class EBTree32 ( bool signed = false ) : IEBTree
     private static Key getKey ( eb32_node* node_ )
     {
         verify (node_ !is null);
-        return node_.key_;
+        return node_.key;
     }
 
     /***************************************************************************
@@ -331,7 +332,7 @@ class EBTree32 ( bool signed = false ) : IEBTree
     }
     body
     {
-        return (node.node_.key_ != cast (ulong) key)?
+        return (node.node_.key != cast (ulong) key)?
                 this.add_(node.remove(), key) : &node;
     }
 
@@ -466,7 +467,7 @@ class EBTree32 ( bool signed = false ) : IEBTree
     body
     {
         verify (node !is null, "attempted to add null node (node pool returned null?)");
-        node.node_.key_ = key;
+        node.node_.key = key;
 
         static if (signed)
         {
@@ -478,78 +479,3 @@ class EBTree32 ( bool signed = false ) : IEBTree
         }
     }
 }
-
-private:
-
-/******************************************************************************
-
-    This structure carries a node, a leaf, and a key.
-
- ******************************************************************************/
-
-struct eb32_node
-{
-    private eb_node node; /* the tree node, must be at the beginning */
-    private uint key_;
-}
-
-extern (C):
-
-/* Return leftmost node in the tree, or NULL if none */
-eb32_node* eb32_first(eb_root* root);
-
-/* Return rightmost node in the tree, or NULL if none */
-eb32_node* eb32_last(eb_root* root);
-
-/* Return next node in the tree, or NULL if none */
-eb32_node* eb32_next(eb32_node* eb32);
-
-/* Return previous node in the tree, or NULL if none */
-eb32_node* eb32_prev(eb32_node* eb32);
-
-/* Return next node in the tree, skipping duplicates, or NULL if none */
-eb32_node* eb32_next_unique(eb32_node* eb32);
-
-/* Return previous node in the tree, skipping duplicates, or NULL if none */
-eb32_node* eb32_prev_unique(eb32_node* eb32);
-
-/* Delete node from the tree if it was linked in. Mark the node unused. Note
- * that this function relies on a non-inlined generic function: eb_delete.
- */
-void eb32_delete(eb32_node* eb32);
-
-/*
- * Find the first occurence of a key in the tree <root>. If none can be
- * found, return NULL.
- */
-eb32_node* eb32_lookup(eb_root* root, uint x);
-
-/*
- * Find the first occurence of a signed key in the tree <root>. If none can
- * be found, return NULL.
- */
-eb32_node* eb32i_lookup(eb_root* root, int x);
-
-/*
- * Find the last occurrence of the highest key in the tree <root>, which is
- * equal to or less than <x>. NULL is returned is no key matches.
- */
-eb32_node* eb32_lookup_le(eb_root* root, uint x);
-
-/*
- * Find the first occurrence of the lowest key in the tree <root>, which is
- * equal to or greater than <x>. NULL is returned is no key matches.
- */
-eb32_node* eb32_lookup_ge(eb_root* root, uint x);
-
-/* Insert eb32_node <new> into subtree starting at node root <root>.
- * Only new->key needs be set with the key. The eb32_node is returned.
- * If root->b[EB_RGHT]==1, the tree may only contain unique keys.
- */
-eb32_node* eb32_insert(eb_root* root, eb32_node* neww);
-
-/* Insert eb32_node <new> into subtree starting at node root <root>, using
- * signed keys. Only new->key needs be set with the key. The eb32_node
- * is returned. If root->b[EB_RGHT]==1, the tree may only contain unique keys.
- */
-eb32_node* eb32i_insert(eb_root* root, eb32_node* neww);
