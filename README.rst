@@ -144,3 +144,10 @@ which are the mandatory steps that users have to do to update to a new version,
 use but will not break any old code, and the **New Features** which are optional
 new features available in the new version that users might find interesting.
 Using them is optional, but encouraged.
+
+Contributing
+============
+
+See the guide for `contributing to Neptune-versioned libraries
+<https://github.com/sociomantic-tsunami/neptune/blob/master/doc/library-contributor.rst>`_.
+
