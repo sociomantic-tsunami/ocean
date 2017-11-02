@@ -62,6 +62,7 @@ import ocean.util.container.ebtree.model.IEBTree,
 
 import ocean.util.container.ebtree.nodepool.NodePool;
 
+public import ocean.util.container.ebtree.c.eb64tree;
 import ocean.util.container.ebtree.c.ebtree: eb_node, eb_root;
 
 /*******************************************************************************
@@ -189,7 +190,7 @@ class EBTree64 ( bool signed = false ) : IEBTree
 
     private static Key getKey ( eb64_node* node_ )
     {
-        return node_.key_;
+        return node_.key;
     }
 
     mixin Node!(eb64_node, Key, getKey,
@@ -309,7 +310,7 @@ class EBTree64 ( bool signed = false ) : IEBTree
     }
     body
     {
-        return (node.node_.key_ != cast (ulong) key)?
+        return (node.node_.key != cast (ulong) key)?
                 this.add_(node.remove(), key) : &node;
     }
 
@@ -423,7 +424,7 @@ class EBTree64 ( bool signed = false ) : IEBTree
     {
         verify (node !is null, "attempted to add null node (node pool returned null?)");
 
-        node.node_.key_ = key;
+        node.node_.key = key;
 
         static if (signed)
         {
@@ -434,69 +435,4 @@ class EBTree64 ( bool signed = false ) : IEBTree
             return this.ebCall!(eb64_insert)(&node.node_);
         }
     }
-
 }
-
-private:
-
-/******************************************************************************
-
-    This structure carries a node, a leaf, and a key.
-
- ******************************************************************************/
-
-struct eb64_node
-{
-    private eb_node node; /* the tree node, must be at the beginning */
-    private ulong key_;
-}
-
-extern (C):
-
-/* Return leftmost node in the tree, or NULL if none */
-eb64_node* eb64_first(eb_root* root);
-
-/* Return rightmost node in the tree, or NULL if none */
-eb64_node* eb64_last(eb_root* root);
-
-/* Return next node in the tree, or NULL if none */
-eb64_node* eb64_next(eb64_node* eb64);
-
-/* Return previous node in the tree, or NULL if none */
-eb64_node* eb64_prev(eb64_node* eb64);
-
-/* Return next node in the tree, skipping duplicates, or NULL if none */
-eb64_node* eb64_next_unique(eb64_node* eb64);
-
-/* Return previous node in the tree, skipping duplicates, or NULL if none */
-eb64_node* eb64_prev_unique(eb64_node* eb64);
-
-/* Delete node from the tree if it was linked in. Mark the node unused. */
-void eb64_delete(eb64_node* eb64);
-
-/*
- * Find the first occurence of a key in the tree <root>. If none can be
- * found, return NULL.
- */
-eb64_node* eb64_lookup(eb_root* root, ulong x);
-
-/*
- * Find the first occurence of a signed key in the tree <root>. If none can
- * be found, return NULL.
- */
-eb64_node* eb64i_lookup(eb_root* root, long x);
-
-eb64_node* eb64_lookup_le(eb_root* root, ulong x);
-eb64_node* eb64_lookup_ge(eb_root* root, ulong x);
-
-/* Insert eb64_node <neww> into subtree starting at node root <root>.
- * Only neww->key needs be set with the key. The eb64_node is returned.
- * If root->b[EB_RGHT]==1, the tree may only contain unique keys.
- */
-
-eb64_node* eb64_insert(eb_root* root, eb64_node* neww);
-/* Insert eb64_node <neww> into subtree starting at node root <root>, using
- * signed keys. Only neww->key needs be set with the key. The eb64_node
- * is returned. If root->b[EB_RGHT]==1, the tree may only contain unique keys.
- */
-eb64_node* eb64i_insert(eb_root* root, eb64_node* neww);
