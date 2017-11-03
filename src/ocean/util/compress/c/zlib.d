@@ -23,14 +23,14 @@ module ocean.util.compress.c.zlib;
 
 import ocean.transition;
 
-extern (C):
-
 /// See original's library documentation for details.
-static ZLIB_VERSION = "1.2.3".ptr;
+const ZLIB_VERSION = "1.2.3".ptr;
 /// See original's library documentation for details.
 const uint  ZLIB_VERNUM  = 0x1230;
+/// See original's library documentation for details.
+const void* Z_NULL = null;
 
-
+extern (C):
 private
 {
     import core.stdc.config : c_long, c_ulong;
@@ -170,9 +170,6 @@ enum
 {
     Z_DEFLATED = 8,
 }
-
-/// See original's library documentation for details.
-const Z_NULL = null;
 
 /// See original's library documentation for details.
 alias zlibVersion zlib_version;
