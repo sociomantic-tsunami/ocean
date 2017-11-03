@@ -164,6 +164,7 @@ public bool awaitOrTimeout ( Task task, uint micro_seconds )
 }
 
 ///
+version (none) // https://github.com/sociomantic-tsunami/ocean/issues/341
 unittest
 {
     initScheduler(SchedulerConfiguration.init);
@@ -203,6 +204,7 @@ unittest
     test(root.to_wait_for.finished());
 }
 
+version (none) // https://github.com/sociomantic-tsunami/ocean/issues/341
 unittest
 {
     initScheduler(SchedulerConfiguration.init);
