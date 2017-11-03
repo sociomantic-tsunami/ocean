@@ -17,13 +17,13 @@
 
 module ocean.text.convert.UnicodeBom;
 
+import core.exception : onUnicodeError;
+
 import ocean.transition;
 
 import ocean.core.ByteSwap;
 
 import  Utf = ocean.text.convert.Utf;
-
-private extern (C) void onUnicodeError (cstring msg, size_t idx = 0);
 
 version(UnitTest) import ocean.core.Test;
 
@@ -163,11 +163,11 @@ class UnicodeBom(T) : BomSniffer
                 if (settings.fallback)
                     setup (settings.fallback, false);
                 else
-                    onUnicodeError ("UnicodeBom.decode :: unknown or missing BOM");
+                    onUnicodeError("UnicodeBom.decode :: unknown or missing BOM", 0);
         else
             if (info)
                 // found a BOM when using an explicit encoding
-                onUnicodeError ("UnicodeBom.decode :: explicit encoding does not permit BOM");
+                onUnicodeError("UnicodeBom.decode :: explicit encoding does not permit BOM", 0);
 
         // convert it to internal representation
         auto ret = into (swapBytes(content), settings.type, dst, ate);
@@ -186,7 +186,7 @@ class UnicodeBom(T) : BomSniffer
     final void[] encode (T[] content, void[] dst=null)
     {
         if (settings.test)
-            onUnicodeError ("UnicodeBom.encode :: cannot write to a non-specific encoding");
+            onUnicodeError("UnicodeBom.encode :: cannot write to a non-specific encoding", 0);
 
         // convert it to external representation, and write
         auto dst_ret = from (content, settings.type, dst);

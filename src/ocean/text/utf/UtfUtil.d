@@ -34,12 +34,9 @@
 
 module ocean.text.utf.UtfUtil;
 
-
-
+import core.exception: onUnicodeError;
 
 import ocean.transition;
-
-import ocean.core.ExceptionDefinitions: onUnicodeError;
 
 import ocean.stdc.string: memrchr;
 
