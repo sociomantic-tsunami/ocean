@@ -805,7 +805,13 @@ class Layout(T)
         if (cast(TypeInfo_Pointer) tinfo)
             return integer (result, *cast(size_t*) p, format, size_t.max, "x");
 
-        if (tinfo.classinfo is TypeInfo.classinfo) // null literal, same as pointer
+         // null literal, same as pointer
+        version (D_Version2)
+            mixin("bool null_ti = tinfo is typeid(null);");
+        else
+            bool null_ti = tinfo.classinfo is TypeInfo.classinfo;
+
+        if (null_ti)
             return integer (result, *cast(size_t*) p, format, size_t.max, "x");
 
         if (cast(TypeInfo_Class) tinfo)
