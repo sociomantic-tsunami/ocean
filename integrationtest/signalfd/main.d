@@ -443,8 +443,10 @@ private class SignalFDTest
         // Allow this.signal_fd to handle the signals which have fired
         SignalFD.SignalInfo[] siginfos;
         this.signal_fd.handle(siginfos);
-        enforce(siginfos.length == this.handled_signals.length, "handled signals "
-            "count wrong");
+        enforce(
+            siginfos.length == this.handled_signals.length,
+            "handled signals count wrong"
+        );
 
         // Create a list of the signals which were handled
         int[] fired_signals;
