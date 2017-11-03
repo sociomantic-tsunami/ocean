@@ -21,7 +21,6 @@
 module ocean.time.Time;
 
 import ocean.transition;
-import ocean.text.convert.DateTime_tango;
 
 /******************************************************************************
 
