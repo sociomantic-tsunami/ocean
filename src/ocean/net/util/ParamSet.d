@@ -536,7 +536,8 @@ class ParamSet
     protected Element* get_ ( cstring key )
     out (element)
     {
-        if (element) with (*element) assert (key || !val);
+        if (element)
+            assert (element.key || !element.val);
     }
     body
     {
