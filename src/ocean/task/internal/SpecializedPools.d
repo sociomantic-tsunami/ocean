@@ -16,6 +16,7 @@ module ocean.task.internal.SpecializedPools;
 
 import ocean.meta.types.Qualifiers;
 import ocean.task.internal.FiberPoolEager;
+import ocean.task.IScheduler;
 import ocean.task.Task;
 import ocean.core.Verify;
 import ocean.core.Enforce;
@@ -24,21 +25,7 @@ import ocean.core.Optional;
 debug (TaskScheduler)
     import ocean.io.Stdout;
 
-/*******************************************************************************
-
-    Defines single mapping of `ClassInfo` to worker fiber pool in configuration
-
-*******************************************************************************/
-
-public struct PoolDescription
-{
-    /// result of `Task.classinfo` for task type which is to be handled
-    /// by this pool
-    ClassInfo task_kind;
-
-    /// worker fiber allocate stack size
-    size_t stack_size;
-}
+public alias IScheduler.Configuration.PoolDescription PoolDescription;
 
 /*******************************************************************************
 

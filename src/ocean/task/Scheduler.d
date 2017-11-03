@@ -31,6 +31,7 @@ import ocean.io.select.EpollSelectDispatcher;
 import ocean.util.container.queue.FixedRingQueue;
 
 import ocean.task.Task;
+import ocean.task.IScheduler;
 import ocean.task.internal.FiberPoolWithQueue;
 import ocean.task.internal.SpecializedPools;
 
@@ -44,77 +45,16 @@ debug (TaskScheduler)
     import ocean.io.Stdout;
 }
 
-/*******************************************************************************
-
-    Aggregation of various size limits used internally by scheduler. Instance
-    of this struct is used as `initScheduler` argument.
-
-    Default values of scheduler configuration are picked for convenient usage
-    of `SchedulerConfiguration.init` in tests - large stack size but small
-    queue limits.
-
-*******************************************************************************/
-
-struct SchedulerConfiguration
-{
-    /// stack size allocated for all worker fibers created by the scheduler
-    size_t worker_fiber_stack_size = 102400;
-
-    /// maximum amount of simultaneous worker fibers in the scheduler pool
-    size_t worker_fiber_limit = 5;
-
-    /// maximum amount of tasks awaiting scheduling in the queue while all
-    /// worker fibers are busy
-    size_t task_queue_limit = 10;
-
-    /// maximum amount of tasks that can be suspended via
-    /// `theScheduler.processEvents` in between scheduler dispatch cycles
-    size_t suspended_task_limit = 16;
-
-    /// optional array that defines specialized worker fiber pools to be
-    /// used for handling specific task kinds. Scheduled task is checked
-    /// against this array every time thus it is not recommended to configure
-    /// it to more than a few dedicated extra pools
-    PoolDescription[] specialized_pools;
-
-    /// specialized worker fiber pool description. Tasks handled by such pools
-    /// won't be queued at all and go to the dedicated pool immediately
-    alias .PoolDescription PoolDescription;
-}
+public alias IScheduler.Configuration SchedulerConfiguration;
+public alias IScheduler.Stats SchedulerStats;
 
 /*******************************************************************************
 
-    Aggregate of various statistics that indicate overall scheduler load
-    and performance.
+    Implementation of the IScheduler API
 
 *******************************************************************************/
 
-struct SchedulerStats
-{
-    size_t task_queue_busy;
-    size_t task_queue_total;
-    size_t suspended_queue_busy;
-    size_t suspended_queue_total;
-    size_t worker_fiber_busy;
-    size_t worker_fiber_total;
-}
-
-/*******************************************************************************
-
-    Scheduler class handles concurrent execution of all application tasks,
-    assigning them to limited amount of worker fibers. Scheduler functionality
-    can be split into 3 major blocks:
-
-    1. executing arbitrary `ocean.task.Task` using a worker fiber from a pool
-    2. keeping queue of tasks to execute in cases when all worker fibers are
-       busy
-    3. allowing any task to suspend to allow event processing by epoll in a way
-       that it will be automatically resumed by scheduler again when there are
-       no more immediate pending events
-
-*******************************************************************************/
-
-final class Scheduler
+final class Scheduler : IScheduler
 {
     /***************************************************************************
 
@@ -173,7 +113,7 @@ final class Scheduler
     /***************************************************************************
 
         Getter for scheduler epoll instance. Necessary for integration with
-        `ISelectClient` utilities so that new select event can be registered.
+        `ISelectClient` utilities so that new select client can be registered.
 
         Returns:
             internally used epoll instance
@@ -616,18 +556,16 @@ final class Scheduler
 
     ***************************************************************************/
 
-    public void processEvents ( istring file = __FILE__, int line = __LINE__ )
+    public void processEvents ( )
     {
         auto task = Task.getThis();
         if (this.state == State.Shutdown)
             task.kill();
 
-        enforceImpl(
+        enforce(
             this.suspend_queue_full_e,
             this.suspended_tasks.push(task),
-            this.suspend_queue_full_e.msg,
-            file,
-            line
+            this.suspend_queue_full_e.msg
         );
 
         debug_trace("task <{}> will be resumed after processing pending events",
@@ -894,6 +832,9 @@ public void initScheduler ( SchedulerConfiguration config,
         assert (is_scheduler_unused());
 
     _scheduler = new Scheduler(config, epoll);
+
+    // set interface-based global scheduler getter in IScheduler module:
+    ocean.task.IScheduler._scheduler = _scheduler;
 }
 
 /*******************************************************************************
@@ -904,22 +845,11 @@ public void initScheduler ( SchedulerConfiguration config,
 
 private Scheduler _scheduler;
 
-public alias ocean.task.internal.FiberPoolWithQueue.TaskQueueFullException
+public alias ocean.task.IScheduler.TaskQueueFullException
     TaskQueueFullException;
 
-/******************************************************************************
-
-    Exception thrown when suspended task queue overflows
-
-******************************************************************************/
-
-public class SuspendQueueFullException : Exception
-{
-    this ( )
-    {
-        super("Attempt to temporary suspend a task when resuming queue is full");
-    }
-}
+public alias ocean.task.IScheduler.SuspendQueueFullException
+    SuspendQueueFullException;
 
 private void debug_trace ( T... ) ( cstring format, T args )
 {
