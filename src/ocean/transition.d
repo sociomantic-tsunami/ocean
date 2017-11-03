@@ -553,45 +553,7 @@ unittest
 
 cstring getMsg ( Throwable e )
 {
-    // if compiled with a runtime which already provides `message()`, use it
-    static if (is(typeof(e.message())))
-        return e.message();
-    else
-    {
-        // try workaround alternatives
-
-        version (D_Version2)
-        {
-            // reusable exceptions don't have a common base class which makes it
-            // impossible to access `reused_msg` directly but it is best to
-            // ensure at least "traditional" exceptions are formatted correctly
-            // before failing
-            if (e.msg.length)
-                return e.msg;
-            else
-                // ReusableExceptionImpl currently implements D2 toString in
-                // the same way as D1 toString which is illegal but can be used
-                // as a temporary workaround
-                return e.toString();
-        }
-        else
-        {
-            // in D1 `toString` only contains message thus can use it as a replacement
-            return e.toString();
-        }
-    }
-
-    // example of adapting sink based API
-    version (none)
-    {
-        static mstring buffer;
-        buffer.length = 0;
-        enableStomping(buffer);
-        e.message((cstring chunk) {
-            buffer ~= chunk;
-        });
-        return buffer;
-    }
+    return e.message();
 }
 
 unittest
