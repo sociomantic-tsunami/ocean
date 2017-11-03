@@ -187,7 +187,7 @@ version (Posix)
 
             // Obtain info from database.
             passwd *verify;
-            core.stdc.errno.errno(0);
+            core.stdc.errno.errno = 0;
             if (getpwnam_r(username.ptr, &result, cast(char*)extra_memory, extra_memory_size,
                 &verify) == 0)
             {
