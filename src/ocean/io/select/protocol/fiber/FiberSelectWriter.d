@@ -43,6 +43,8 @@ import ocean.stdc.posix.netinet.in_: IPPROTO_TCP;
 
 static if (__VERSION__ >= 2000 && __VERSION__ < 2073)
     enum { TCP_CORK = 3 }
+else static if (__VERSION__ >= 2077)
+    import core.sys.linux.netinet.tcp: TCP_CORK;
 else
     import core.sys.linux.sys.netinet.tcp: TCP_CORK;
 
