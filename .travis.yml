@@ -27,6 +27,8 @@ env:
         - DMD=2.070.2.s* F=devel
         - DMD=2.071.2.s* F=production
         - DMD=2.071.2.s* F=devel
+        - DMD=2.077.* F=production
+        - DMD=2.077.* F=devel
 
 # Don't build tags already converted to D2
 if: NOT tag =~ \+d2$
