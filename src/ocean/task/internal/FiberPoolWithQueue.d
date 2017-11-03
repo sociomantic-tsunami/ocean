@@ -19,6 +19,7 @@ import core.thread : Fiber;
 
 import ocean.meta.types.Qualifiers;
 import ocean.core.Enforce;
+import ocean.task.IScheduler;
 import ocean.task.internal.FiberPool;
 import ocean.task.Task;
 import ocean.util.container.queue.FixedRingQueue;
@@ -40,7 +41,7 @@ public class FiberPoolWithQueue : FiberPool
 
     /// Reference to `theScheduler.processEvents` initialized upon class
     /// creation. Used to break circular dependency.
-    private void delegate(istring, int) process_events;
+    private void delegate() process_events;
 
     /***************************************************************************
 
@@ -68,7 +69,7 @@ public class FiberPoolWithQueue : FiberPool
     **************************************************************************/
 
     public this ( size_t queue_limit, size_t stack_size, size_t limit,
-        void delegate(istring, int) process_events )
+        void delegate () process_events )
     {
         assert(process_events !is null);
 
@@ -187,7 +188,7 @@ public class FiberPoolWithQueue : FiberPool
             // execution for one cycle to avoid situation where exception handler
             // calls `Task.continueAfterThrow()` and that throws again
             if (had_exception)
-                this.process_events(__FILE__, __LINE__);
+                this.process_events();
 
             // makes impossible to use the task by an accident in the period
             // between finishing it here and getting it started anew after
@@ -224,20 +225,6 @@ public class FiberPoolWithQueue : FiberPool
 
 public alias void delegate(Task, FixedRingQueue!(Task)) TaskQueueFullCB;
 
-/******************************************************************************
-
-    Exception thrown when scheduled task queue overflows
-
-******************************************************************************/
-
-public class TaskQueueFullException : Exception
-{
-    this ( )
-    {
-        super("Attempt to schedule a task when all worker fibers are busy "
-            ~ " and delayed execution task queue is full");
-    }
-}
 
 private void debug_trace ( T... ) ( cstring format, T args )
 {
