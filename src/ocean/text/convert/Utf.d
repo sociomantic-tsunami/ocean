@@ -55,8 +55,11 @@
 
 module ocean.text.convert.Utf;
 
+static import core.exception;
+
 import ocean.transition;
 
+deprecated("Import core.exception directly")
 public extern (C) void onUnicodeError (cstring msg, size_t idx = 0);
 
 /*******************************************************************************
@@ -116,7 +119,7 @@ public void toString (Const!(wchar)[] input, size_t delegate(cstring) dg)
             dg(buff[0 .. 3]);
         }
         else
-            onUnicodeError("Unicode.toString : Surrogate pair not supported");
+            core.exception.onUnicodeError("Unicode.toString : Surrogate pair not supported", 0);
     }
 }
 
@@ -150,7 +153,7 @@ public void toString (Const!(dchar)[] input, size_t delegate(cstring) dg)
             dg(buff);
         }
         else
-            onUnicodeError("Unicode.toString : invalid dchar", idx);
+            core.exception.onUnicodeError("Unicode.toString : invalid dchar", idx);
     }
 }
 
@@ -330,7 +333,7 @@ wchar[] toString16 (cstring input, wchar[] output=null, size_t* ate=null)
                         --produced;
                         break;
                     }
-                    onUnicodeError ("Unicode.toString16 : incomplete utf8 input", pIn - input.ptr);
+                    core.exception.onUnicodeError("Unicode.toString16 : incomplete utf8 input", pIn - input.ptr);
                 }
                 else
                     break;
@@ -345,7 +348,7 @@ wchar[] toString16 (cstring input, wchar[] output=null, size_t* ate=null)
     {
         if (pIn < pMax)
             // this should never happen!
-            onUnicodeError ("Unicode.toString16 : utf8 overflow", pIn - input.ptr);
+            core.exception.onUnicodeError("Unicode.toString16 : utf8 overflow", pIn - input.ptr);
     }
 
     // return the produced output
@@ -437,7 +440,7 @@ mstring toString (Const!(dchar)[] input, mstring output=null, size_t* ate=null)
                         pOut += 4;
                     }
                     else
-                        onUnicodeError ("Unicode.toString : invalid dchar", eaten);
+                        core.exception.onUnicodeError("Unicode.toString : invalid dchar", eaten);
     }
 
     // return the produced output
@@ -508,7 +511,7 @@ dchar[] toString32 (Const!(char)[] input, dchar[] output=null, size_t* ate=null)
                         b = (b << 6) | (pIn[3] & 0x3f);
 
                         if (b >= 0x110000)
-                            onUnicodeError ("Unicode.toString32 : invalid utf8 input", pIn - input.ptr);
+                            core.exception.onUnicodeError("Unicode.toString32 : invalid utf8 input", pIn - input.ptr);
                         pIn += 3;
                     }
                 }
@@ -529,7 +532,7 @@ dchar[] toString32 (Const!(char)[] input, dchar[] output=null, size_t* ate=null)
                         --produced;
                         break;
                     }
-                    onUnicodeError ("Unicode.toString32 : incomplete utf8 input", pIn - input.ptr);
+                    core.exception.onUnicodeError("Unicode.toString32 : incomplete utf8 input", pIn - input.ptr);
                 }
                 else
                     break;
@@ -544,7 +547,7 @@ dchar[] toString32 (Const!(char)[] input, dchar[] output=null, size_t* ate=null)
     {
         if (pIn < pMax)
             // this should never happen!
-            onUnicodeError ("Unicode.toString32 : utf8 overflow", pIn - input.ptr);
+            core.exception.onUnicodeError("Unicode.toString32 : utf8 overflow", pIn - input.ptr);
     }
 
     // return the produced output
@@ -616,7 +619,7 @@ wchar[] toString16 (Const!(dchar)[] input, wchar[] output=null, size_t* ate=null
                 pOut += 2;
             }
             else
-                onUnicodeError ("Unicode.toString16 : invalid dchar", eaten);
+                core.exception.onUnicodeError("Unicode.toString16 : invalid dchar", eaten);
     }
 
     // return the produced output
@@ -667,7 +670,7 @@ dchar[] toString32 (Const!(wchar)[] input, dchar[] output=null, size_t* ate=null
                 b = ((b - 0xd7c0) << 10) + (*++pIn - 0xdc00);
 
             if (b >= 0x110000)
-                onUnicodeError ("Unicode.toString32 : invalid utf16 input", pIn - input.ptr);
+                core.exception.onUnicodeError("Unicode.toString32 : invalid utf16 input", pIn - input.ptr);
 
             d = b;
             ++produced;
@@ -683,7 +686,7 @@ dchar[] toString32 (Const!(wchar)[] input, dchar[] output=null, size_t* ate=null
                         --produced;
                         break;
                     }
-                    onUnicodeError ("Unicode.toString32 : incomplete utf16 input", pIn - input.ptr);
+                    core.exception.onUnicodeError("Unicode.toString32 : incomplete utf16 input", pIn - input.ptr);
                 }
                 else
                     break;
@@ -698,7 +701,7 @@ dchar[] toString32 (Const!(wchar)[] input, dchar[] output=null, size_t* ate=null
     {
         if (pIn < pMax)
             // this should never happen!
-            onUnicodeError ("Unicode.toString32 : utf16 overflow", pIn - input.ptr);
+            core.exception.onUnicodeError("Unicode.toString32 : utf16 overflow", pIn - input.ptr);
     }
 
     // return the produced output
