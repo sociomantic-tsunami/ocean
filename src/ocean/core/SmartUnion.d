@@ -312,8 +312,6 @@ private const handleInvalidCases = "case none: assert(false);" ~
     // has no default so we add a default here just to avoid the warning.
     "version (D_Version2){} else {default: assert(false);}";
 
-// Disabled until DMD 1.081 becomes widely available
-/*
 ///
 unittest
 {
@@ -336,7 +334,6 @@ unittest
         mixin(TestSmartUnion.handleInvalidCases);
     }
 }
-*/
 
 /******************************************************************************
 
