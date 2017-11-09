@@ -2193,6 +2193,22 @@ unittest
 
     auto complex_result = printer.print(doc);
     test!("==")(complex_result, complex_doc);
+
+    // Check node renaming
+
+    auto renamed_doc = `
+<VAST version="3.0">
+  <InLine>
+    <AdTitle>VAST 3.0 Instream Test</AdTitle>
+    <Creatives>
+      <RenamedCreative id="123456" adId="654321"/>
+    </Creatives>
+  </InLine>
+</VAST>`;
+
+    creative.name("RenamedCreative");
+    auto renamed_result = printer.print(doc);
+    test!("==")(renamed_result, renamed_doc);
 }
 
 
