@@ -225,7 +225,7 @@ version (UnitTest)
 unittest
 {
     auto arr = arrayOf!(hash_t)(1, 2, 3);
-    test!("==")(arr, [ cast(hash_t) 1, 2, 3 ][]); 
+    test!("==")(arr, [ cast(hash_t) 1, 2, 3 ][]);
 }
 
 unittest
