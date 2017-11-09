@@ -1,30 +1,32 @@
-* `ocean.task.Scheduler`
+## Dedicated fiber pools for tasks of specific type
 
-  It is now possible to define dedicated worker fiber pools to process tasks of
-  specific type:
+`ocean.task.Scheduler`
 
-  ```D
-  SchedulerConfiguration config;
+It is now possible to define dedicated worker fiber pools to process tasks of
+specific type:
 
-  with (config)
-  {
-    specialized_pools = [
-      PoolDescription(MyTask.classinfo, 10240),
-      PoolDescription(MyOtherTask.classinfo, 2048),
-    ];
-  }
+```D
+SchedulerConfiguration config;
 
-  initScheduler(config);
+with (config)
+{
+specialized_pools = [
+  PoolDescription(MyTask.classinfo, 10240),
+  PoolDescription(MyOtherTask.classinfo, 2048),
+];
+}
 
-  // will be processed immediately in own worker fiber pool, skipping the queue:
-  theScheduler.schedule(new MyTask);
-  ```
+initScheduler(config);
 
-  Such functionality is intended to be used when there are some task types that
-  need real-time handling and thus can't afford waiting in the queue.  It can
-  also be used for the case where some very long-lived tasks would occupy worker
-  fibers from the shared pool forever, if processed normally
+// will be processed immediately in own worker fiber pool, skipping the queue:
+theScheduler.schedule(new MyTask);
+```
 
-  Note that this functionality can be used side by side with regular scheduling
-  queue with no issues - each task will be handled by own sub-system depending
-  on its `ClassInfo`.
+Such functionality is intended to be used when there are some task types that
+need real-time handling and thus can't afford waiting in the queue.  It can
+also be used for the case where some very long-lived tasks would occupy worker
+fibers from the shared pool forever, if processed normally
+
+Note that this functionality can be used side by side with regular scheduling
+queue with no issues - each task will be handled by own sub-system depending
+on its `ClassInfo`.
