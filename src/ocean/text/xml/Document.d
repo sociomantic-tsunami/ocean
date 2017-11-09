@@ -20,6 +20,7 @@ module ocean.text.xml.Document;
 import Array = ocean.core.Array;
 import ocean.transition;
 import ocean.core.Verify;
+import ocean.util.container.ConcatBuffer;
 
 package import ocean.text.xml.PullParser;
 
@@ -166,6 +167,15 @@ class Document(T_) : PullParser!(T_)
                                 freelists;
         private XmlPathT     xpath;
 
+
+        /***********************************************************************
+
+                Buffer for storing the text of modified nodes
+
+        ***********************************************************************/
+
+        private ConcatBuffer!(T_) node_text_buff;
+
         /***********************************************************************
 
                 Construct a DOM instance. The optional parameter indicates
@@ -183,6 +193,7 @@ class Document(T_) : PullParser!(T_)
                 newlist;
                 root = allocate;
                 root.id = XmlNodeType.Document;
+                this.node_text_buff = new ConcatBuffer!(T_);
         }
 
         /***********************************************************************
@@ -260,6 +271,7 @@ else
 }
                 newlist;
                 index = 1;
+                node_text_buff.clear();
 version(d)
 {
                 freelists = 0;          // needed to align the codegen!
@@ -428,12 +440,9 @@ else
                 p.lastChild =
                 p.firstAttr =
                 p.lastAttr = null;
-                p.rawValue.length = 0;
-                enableStomping(p.rawValue);
-                p.localName.length = 0;
-                enableStomping(p.localName);
-                p.prefixed.length = 0;
-                enableStomping(p.prefixed);
+                p.rawValue = null;
+                p.localName = null;
+                p.prefixed = null;
 }
                 return p;
         }
@@ -610,9 +619,9 @@ version (Filter)
                 public void*            user;           /// open for usage
                 package Document        doc;            // owning document
                 package XmlNodeType     id;             // node type
-                package MutT[]          prefixed;       // namespace
-                package MutT[]          localName;      // name
-                package MutT[]          rawValue;       // data value
+                package T[]             prefixed;       // namespace
+                package T[]             localName;      // name
+                package T[]             rawValue;       // data value
 
                 package Node            host,           // parent node
                                         prevSibling,    // prior
@@ -710,7 +719,7 @@ version (Filter)
 
                 Node prefix (T[] replace)
                 {
-                        Array.copy(this.prefixed, replace);
+                        this.prefixed = doc.node_text_buff.add(replace);
                         return this;
                 }
 
@@ -733,7 +742,7 @@ version (Filter)
 
                 Node name (T[] replace)
                 {
-                        Array.copy(this.localName, replace);
+                        this.localName = doc.node_text_buff.add(replace);
                         return this;
                 }
 
@@ -771,7 +780,7 @@ version(discrete)
                                      if (child.id is XmlNodeType.Data)
                                          return child.value (val);
 }
-                        Array.copy(this.rawValue, val);
+                        this.rawValue = doc.node_text_buff.add(val);
                         mutate;
                 }
 
@@ -1014,7 +1023,7 @@ version(discrete)
 }
 else
 {
-                        Array.copy(node.rawValue, value);
+                        this.rawValue = doc.node_text_buff.add(value);
 }
                         return node;
                 }
@@ -1163,8 +1172,8 @@ else
 
                 private Node set (T[] prefix, T[] local)
                 {
-                        Array.copy(this.localName, local);
-                        Array.copy(this.prefixed, prefix);
+                        this.localName = doc.node_text_buff.add(local);
+                        this.prefixed = doc.node_text_buff.add(prefix);
                         return this;
                 }
 
@@ -1177,7 +1186,7 @@ else
                 private Node create (XmlNodeType type, T[] value)
                 {
                         auto node = document.allocate;
-                        Array.copy(node.rawValue, value);
+                        node.rawValue = doc.node_text_buff.add(value);
                         node.id = type;
                         return node;
                 }
@@ -2150,6 +2159,19 @@ unittest
 
     // Now do a second document generation that re-uses the same root doc and
     // check for no memory allocations.
+
+    // Because Document uses a ConcatBuffer internally, it is quite efficient
+    // at avoiding memory allocation. With this testcase it takes five
+    // iterations before the memory usage reaches a steady-state.
+
+    for (int i = 0; i < 5; ++i)
+    {
+        doc.reset();
+        generateBasicXML("12345", "one", "one", "two", "two");
+    }
+
+    // Ensure that the memory usage has stabilised.
+
     testNoAlloc({
         doc.reset();
         generateBasicXML("12345", "one", "one", "two", "two");
