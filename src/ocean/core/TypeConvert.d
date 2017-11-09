@@ -245,3 +245,65 @@ unittest
     static assert (!is(typeof(arrayOf!(int*)(1000))));
     static assert (!is(typeof(arrayOf!(int)((int[]).init))));
 }
+
+
+/*******************************************************************************
+
+    Generates delegate that stores specified `context` as a delegate context
+    pointer and, when called, forwards it to function `F` as a regular argument.
+
+    Intended to be used as a performance optimization hack to create
+    no-allocation closures that only need to capture one pointer size argument.
+
+    Params:
+        F = function to call when delegate is called, must take exactly one
+            void* argument which is the passed context
+        context = context pointer to forward to F when resulting delegate is
+            called
+
+    Returns:
+        forged delegate that can be passed to any API expecting regular `void
+        delegate()`
+
+*******************************************************************************/
+
+void delegate() toContextDg ( alias F ) ( void* context )
+{
+    static assert (is(typeof(&F) == void function (void*)));
+
+    // Makes use of the fact that D ABI allows converting aggregate methods
+    // to delegates such that resulting delegate context pointer becomes
+    // aggregate `this`:
+
+    static struct Fake
+    {
+        void method ( )
+        {
+            void* context = cast(void*) this;
+
+            // do real work via provided F function:
+            F(context);
+        }
+    }
+
+    void delegate() dg = &Fake.init.method;
+    dg.ptr = context;
+    return dg;
+}
+
+///
+unittest
+{
+    static bool done = false;
+
+    static void handler ( void* context )
+    {
+        test!("==")(cast(size_t) context, 42);
+        done = true;
+    }
+
+    void delegate() dg = toContextDg!(handler)(cast(void*) 42);
+    test!("==")(cast(size_t) dg.ptr, 42);
+    dg();
+    test(done);
+}
