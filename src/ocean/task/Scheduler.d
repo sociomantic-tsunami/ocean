@@ -26,9 +26,9 @@ import core.thread;
 import ocean.transition;
 import ocean.core.Enforce;
 import ocean.core.Verify;
-import ocean.core.Traits;
 import ocean.io.select.EpollSelectDispatcher;
 import ocean.util.container.queue.FixedRingQueue;
+import ocean.meta.traits.Indirections : hasIndirections;
 
 import ocean.task.Task;
 import ocean.task.IScheduler;
