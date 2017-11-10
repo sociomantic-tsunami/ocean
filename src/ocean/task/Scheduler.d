@@ -552,7 +552,7 @@ final class Scheduler : IScheduler
     /***************************************************************************
 
         Orders scheduler to resume given task unconditionally after current
-        epoll cycle. Should be used instead of plain `Task.resume` from
+        epoll cycle. Must be used instead of plain `Task.resume` from
         termination hooks of other tasks.
 
         Params:
