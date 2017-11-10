@@ -28,7 +28,7 @@ debug (TaskScheduler)
     import ocean.io.Stdout;
 
 /// Ditto
-class FiberPoolEager : FiberPool
+public class FiberPoolEager : FiberPool
 {
     /**************************************************************************
 
@@ -39,7 +39,7 @@ class FiberPoolEager : FiberPool
 
     **************************************************************************/
 
-    this ( size_t stack_size )
+    public this ( size_t stack_size )
     {
         super(stack_size, 0);
     }
