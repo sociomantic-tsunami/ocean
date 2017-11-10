@@ -271,9 +271,12 @@ void delegate() toContextDg ( alias F ) ( void* context )
 {
     static assert (is(typeof(&F) == void function (void*)));
 
-    // Makes use of the fact that D ABI allows converting aggregate methods
-    // to delegates such that resulting delegate context pointer becomes
-    // aggregate `this`:
+    // This code makes use of two facts:
+    //    1) The D ABI allows aggregate methods to be converted to delegates,
+    //       such that the delegate context pointer becomes the `this` pointer
+    //       of the aggregate
+    //    2) The compiler supports explicit modification of the .ptr member of a
+    //       delegate, without modifying the existing .functptr.
 
     static struct Fake
     {
