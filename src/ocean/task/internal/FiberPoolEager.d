@@ -35,7 +35,7 @@ class FiberPoolEager : FiberPool
         Constructor
 
         Params:
-            stack_size = fiber stack size to use in this poll
+            stack_size = fiber stack size to use in this pool
 
     **************************************************************************/
 
