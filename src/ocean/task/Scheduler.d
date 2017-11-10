@@ -400,9 +400,12 @@ final class Scheduler : IScheduler
         assert (context !is null);
         assert (context !is task);
 
-        task.terminationHook(&context.resume);
+        // this methods stack is guaranteed to still be valid by the time
+        // task finishes, so we can reference `task` from delegate
+        task.terminationHook({ theScheduler.delayedResume(context); });
         if (finished_dg !is null)
             task.terminationHook({ finished_dg(task); });
+
         // force async scheduling to avoid checking if this context needs
         // suspend/resume and do it unconditionally
         this.queue(task);
@@ -546,6 +549,29 @@ final class Scheduler : IScheduler
 
     /***************************************************************************
 
+        Orders scheduler to resume given task unconditionally after current
+        epoll cycle. Should be used instead of plain `Task.resume` from
+        termination hooks of other tasks.
+
+        Params:
+            task = task object to resume on next cycle
+
+    ***************************************************************************/
+
+    public void delayedResume ( Task task )
+    {
+        enforce(
+            this.suspend_queue_full_e,
+            this.suspended_tasks.push(task),
+            this.suspend_queue_full_e.msg
+        );
+
+        debug_trace("task <{}> will be resumed after current epoll cycle",
+            cast(void*) task);
+    }
+
+    /***************************************************************************
+
         Suspends current fiber temporarily, allowing pending events to be
         processed. Current fiber will be resumed as soon as no immediate events
         are left.
@@ -562,14 +588,7 @@ final class Scheduler : IScheduler
         if (this.state == State.Shutdown)
             task.kill();
 
-        enforce(
-            this.suspend_queue_full_e,
-            this.suspended_tasks.push(task),
-            this.suspend_queue_full_e.msg
-        );
-
-        debug_trace("task <{}> will be resumed after processing pending events",
-            cast(void*) task);
+        this.delayedResume(task);
         task.suspend();
     }
 

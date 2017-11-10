@@ -200,7 +200,7 @@ class TaskPool ( TaskT : Task ) : ObjectPool!(Task)
             task.terminationHook({
                 --count;
                 if (count == 0)
-                    current_task.resume();
+                    theScheduler.delayedResume(current_task);
             });
         }
 
