@@ -1,4 +1,4 @@
-# New utility to forge zero-allocation closures with one argument
+## New utility to forge zero-allocation closures with one argument
 
 `ocean.core.TypeConvert`
 
