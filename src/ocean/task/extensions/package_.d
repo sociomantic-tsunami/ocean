@@ -30,8 +30,7 @@ unittest
 {
     initScheduler(SchedulerConfiguration.init);
 
-    class TestTask : TaskWith!(
-        ExceptionForwarding, SelectFiberSupport)
+    class TestTask : TaskWith!(ExceptionForwarding)
     {
         override void run ( )
         {
@@ -53,6 +52,4 @@ unittest
 
     task.kill();
     test!("==")(task.fiber.state, Fiber.State.TERM);
-
-    test(task.extensions.select_fiber_support.get() !is null);
 }

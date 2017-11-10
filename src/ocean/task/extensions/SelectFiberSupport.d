@@ -37,6 +37,7 @@ version (UnitTest)
 
 ******************************************************************************/
 
+deprecated("Use task facilities directly or contact the core team")
 struct SelectFiberSupport
 {
     private SelectFiber matching_select_fiber;
@@ -69,29 +70,4 @@ struct SelectFiberSupport
                 theScheduler.epoll(), this.host.fiber);
         return this.matching_select_fiber;
     }
-}
-
-///
-unittest
-{
-    initScheduler(SchedulerConfiguration(10240, 10, 10, 10));
-
-    class MyTask : TaskWith!(SelectFiberSupport)
-    {
-        override protected void run ( )
-        {
-            auto select_fiber = this.extensions.select_fiber_support.get();
-
-            auto timer = new FiberTimerEvent(select_fiber);
-            timer.wait(0.01);
-
-            // the FiberTimerEvent always leaves itself registered, as
-            // a workaround for a mis-design in our select fiber system.
-            select_fiber.unregister();
-        }
-    }
-
-    auto task = new MyTask;
-    theScheduler.schedule(task);
-    theScheduler.eventLoop();
 }
