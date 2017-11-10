@@ -225,19 +225,20 @@ abstract class TimeoutManagerBase : ITimeoutManager
 
         /***********************************************************************
 
-            Unregisters the specified expiry. If the expiry is present in the
-            list of expired registrations being currently iterated over by
-            checkTimeouts, then it will be removed (its timeout method will not
-            be called). (This means that drop can be called from timeout
-            callbacks, unlike unregister.)
+            If the expiry is present in the list of expired registrations being
+            currently iterated over by checkTimeouts, then it will be removed
+            (its timeout method will not be called). (This means that drop can
+            be called from timeout callbacks, unlike unregister.)
+
+            Does NOT unregister expiry, `this.unregister` has to be called
+            for that additionally.
 
             Params:
-                expiry = expiry token returned by register() when registering
-                         the IExpiryRegistration instance to unregister
+                registration = expiry registration reference
 
         ***********************************************************************/
 
-        protected void drop ( ref Expiry expiry )
+        protected void drop ( IExpiryRegistration registration )
         {
             // If this method is called while checkTimeouts is iterating over
             // the list of expired registrations, then we need to check whether
@@ -246,16 +247,11 @@ abstract class TimeoutManagerBase : ITimeoutManager
             // This makes it possible to disable timer events from the
             // timeout callbacks of other timer events.
 
-            IExpiryRegistration registration =
-                *this.outer.expiry_to_client.get(&expiry);
             foreach (ref pending; this.outer.expired_registrations[])
             {
                 if (pending is registration)
                     pending = null;
             }
-
-            // do everything else as for regular unregistration
-            this.unregister(expiry);
         }
 
         /***********************************************************************

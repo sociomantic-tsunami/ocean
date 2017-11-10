@@ -20,7 +20,7 @@ env:
         - PATH="$(git config -f .gitmodules submodule.beaver.path)/bin:$PATH"
         - DIST=xenial
     matrix:
-        - DMD=1.081.* F=production D2TAGS=1
+        - DMD=1.081.* F=production
         - DMD=1.081.* F=devel
         - DMD=1.081.* F=production DFLAGS=-release
         - DMD=2.070.2.s* F=production
@@ -28,12 +28,27 @@ env:
         - DMD=2.071.2.s* F=production
         - DMD=2.071.2.s* F=devel
 
+# Don't build tags already converted to D2
+if: NOT tag =~ \+d2$
+
 install: beaver dlang install
 
-script: BEAVER_DOCKER_VARS="F DFLAGS" beaver dlang make
+script: beaver dlang make
 
-after_success:
-    - beaver run ci/codecov.sh
-    - test "$D2TAGS" = "1" &&
-        BEAVER_DOCKER_VARS="OCEAN_D2_USER OCEAN_D2_PASS"
-        beaver run ci/d2tags.sh
+after_success: beaver dlang codecov
+
+jobs:
+    include:
+        - stage: D2 Release
+          # We need to include the exclusion of D2 tags because this "if"
+          # replaces the global one
+          if: tag IS present AND NOT tag =~ \+d2$
+          # env: is inherited from the first matrix row, for converting code to
+          # D2 it doesn't matter what compiler version or F we use, it only
+          # matters that we have a DIST and DMD variables defined, so we just
+          # use whatever the first row have.
+          # before_install: and install: are also inherited and we don't need
+          # to override them.
+          script: beaver dlang d2-release
+          # Overridden to NOP, otherwise is inherited
+          after_success: true
