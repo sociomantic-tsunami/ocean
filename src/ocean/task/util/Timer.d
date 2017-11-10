@@ -137,7 +137,8 @@ public bool awaitOrTimeout ( Task task, uint micro_seconds )
 
     auto scheduled_event = registerResumeEvent(context, micro_seconds);
     task.terminationHook(&scheduled_event.unregister);
-    task.terminationHook(&context.resume);
+    auto resumer = { theScheduler.delayedResume(context); };
+    task.terminationHook(resumer);
 
     // force async scheduling to avoid checking if this context needs
     // suspend/resume and do it unconditionally
@@ -154,7 +155,7 @@ public bool awaitOrTimeout ( Task task, uint micro_seconds )
     {
         // resumed because of timeout, need to clean up termination hooks of
         // awaited task to avoid double resume
-        task.removeTerminationHook(&context.resume);
+        task.removeTerminationHook(resumer);
         task.removeTerminationHook(&scheduled_event.unregister);
         return true;
     }

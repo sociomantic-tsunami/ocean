@@ -249,6 +249,22 @@ public interface IScheduler
 
     /***************************************************************************
 
+        Orders scheduler to resume given task unconditionally after current
+        epoll cycle. Should be used instead of plain `Task.resume` from
+        termination hooks of other tasks.
+
+        Params:
+            task = task object to resume on next cycle
+
+        Throws:
+            SuspendQueueFullException if resuming queue is full
+
+    ***************************************************************************/
+
+    public void delayedResume ( Task task );
+
+    /***************************************************************************
+
         Suspends current fiber temporarily, allowing pending events to be
         processed. Current fiber will be resumed as soon as no immediate events
         are left.
