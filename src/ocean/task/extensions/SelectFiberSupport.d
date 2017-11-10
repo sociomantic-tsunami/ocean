@@ -22,12 +22,12 @@ module ocean.task.extensions.SelectFiberSupport;
 
 
 import ocean.task.Task;
-import ocean.task.Scheduler;
 import ocean.io.select.fiber.SelectFiber;
 
 version (UnitTest)
 {
     import ocean.core.Test;
+    import ocean.task.Scheduler;
     import ocean.io.select.client.FiberTimerEvent;
 }
 

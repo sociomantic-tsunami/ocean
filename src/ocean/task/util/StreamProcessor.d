@@ -28,7 +28,7 @@ import ocean.transition;
 
 import ocean.task.Task;
 import ocean.task.ThrottledTaskPool;
-import ocean.task.Scheduler;
+import ocean.task.IScheduler;
 
 import ocean.core.Traits;
 import ocean.core.Enforce;
@@ -263,88 +263,53 @@ class StreamProcessor ( TaskT : Task )
 ///
 unittest
 {
-    // Global scheduler setup, it should happen at your application startup,
-    // if the task system is to be used. The scheduler is shared by all stream
-    // processors and all tasks in general.
-    initScheduler(SchedulerConfiguration.init);
-
-    static class MyProcessingTask : Task
+    void example ( )
     {
-        import ocean.core.Array;
-
-        // The task requires a single array as context, which is copied from the
-        // outside by `copyArguments()`
-        ubyte[] buffer;
-
-        public void copyArguments ( ubyte[] data )
+        static class MyProcessingTask : Task
         {
-            this.buffer.copy(data);
+            import ocean.core.Array;
+
+            // The task requires a single array as context, which is copied from
+            // the outside by `copyArguments()`
+            ubyte[] buffer;
+
+            public void copyArguments ( ubyte[] data )
+            {
+                this.buffer.copy(data);
+            }
+
+            override public void run ( )
+            {
+                // Do something with the context and return when the task is
+                // finished. Use `this.resume()` and `this.suspend()` to
+                // control the execution of the bound worker fiber, if required
+            }
+
+            override public void recycle ( )
+            {
+                this.buffer.length = 0;
+                enableStomping(this.buffer);
+            }
         }
 
-        override public void run ( )
-        {
-            // Do something with the context and return when the task is
-            // finished. Use `this.resume()` and `this.suspend()` to
-            // control the execution of the bound worker fiber, if required
-        }
+        auto throttler_config = ThrottlerConfig(5, 1);
+        auto stream_processor = new StreamProcessor!(MyProcessingTask)(throttler_config);
 
-        override public void recycle ( )
-        {
-            this.buffer.length = 0;
-            enableStomping(this.buffer);
-        }
+        // Set of input streams. In this example there are none. In your
+        // application there should be more than none.
+        ISuspendable[] input_streams; foreach ( input_stream; input_streams )
+            stream_processor.addStream(input_stream);
+
+        // An imaginary record arrives from one of the input streams and is
+        // passed to the process() method. Arguments expected by `process`
+        // method are identical to arguments expected by `copyArguments` method
+        // of your task class
+        ubyte[] record = [ 1, 2, 3 ]; stream_processor.process(record);
+
+        theScheduler.eventLoop();
     }
-
-    auto throttler_config = ThrottlerConfig(5, 1);
-    auto stream_processor = new StreamProcessor!(MyProcessingTask)(throttler_config);
-
-    // Set of input streams. In this example there are none. In your application
-    // there should be more than none.
-    ISuspendable[] input_streams;
-    foreach ( input_stream; input_streams )
-        stream_processor.addStream(input_stream);
-
-    // An imaginary record arrives from one of the input streams and is passed
-    // to the process() method. Arguments expected by `process` method are
-    // identical to arguments expected by `copyArguments` method of your
-    // task class
-    ubyte[] record = [ 1, 2, 3 ];
-    stream_processor.process(record);
-
-    theScheduler.eventLoop();
 }
 
-unittest
-{
-    SchedulerConfiguration config;
-    initScheduler(config);
-
-    static class DummyTask : Task
-    {
-        override public void run ( ) { }
-        public void copyArguments ( ) { }
-    }
-
-    {
-        // suspend point >= task queue
-        auto throttler_config = ThrottlerConfig(config.task_queue_limit, 1);
-        testThrown!(ThrottlerFailureException)(new StreamProcessor!(DummyTask)(
-            throttler_config));
-    }
-
-    {
-        // resume point >= task queue
-        auto throttler_config = ThrottlerConfig(1, config.task_queue_limit);
-        testThrown!(ThrottlerFailureException)(new StreamProcessor!(DummyTask)(
-            throttler_config));
-    }
-
-    {
-        // works
-        auto throttler_config = ThrottlerConfig(config.task_queue_limit - 1, 1);
-        auto processor = new StreamProcessor!(DummyTask)(throttler_config);
-    }
-}
 
 /*******************************************************************************
 

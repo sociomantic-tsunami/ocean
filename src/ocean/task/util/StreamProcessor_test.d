@@ -1,10 +1,7 @@
 /*******************************************************************************
 
-    Example implementation/usage of stream processor which does no I/O and thus
-    can is also used as a unit test
-
     Copyright:
-        Copyright (c) 2009-2016 Sociomantic Labs GmbH.
+        Copyright (c) 20017 Sociomantic Labs GmbH.
         All rights reserved.
 
     License:
@@ -100,3 +97,36 @@ unittest
     test!(">=")(ProcessingTask.total, 1000);
     test!("<=")(ProcessingTask.total, 1000 + config.task_queue_limit);
 }
+
+unittest
+{
+    SchedulerConfiguration config;
+    initScheduler(config);
+
+    static class DummyTask : Task
+    {
+        override public void run ( ) { }
+        public void copyArguments ( ) { }
+    }
+
+    {
+        // suspend point >= task queue
+        auto throttler_config = ThrottlerConfig(config.task_queue_limit, 1);
+        testThrown!(ThrottlerFailureException)(new StreamProcessor!(DummyTask)(
+            throttler_config));
+    }
+
+    {
+        // resume point >= task queue
+        auto throttler_config = ThrottlerConfig(1, config.task_queue_limit);
+        testThrown!(ThrottlerFailureException)(new StreamProcessor!(DummyTask)(
+            throttler_config));
+    }
+
+    {
+        // works
+        auto throttler_config = ThrottlerConfig(config.task_queue_limit - 1, 1);
+        auto processor = new StreamProcessor!(DummyTask)(throttler_config);
+    }
+}
+

@@ -27,7 +27,7 @@ abstract class TaskConnectionHandler : IConnectionHandler, Resettable
     import ocean.io.select.protocol.task.TaskSelectTransceiver;
     import ocean.io.select.protocol.generic.ErrnoIOException: IOWarning;
     import ocean.task.Task: Task;
-    import ocean.task.Scheduler: theScheduler;
+    import ocean.task.IScheduler: theScheduler;
 
     import ocean.transition;
 

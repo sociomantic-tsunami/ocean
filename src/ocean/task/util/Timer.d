@@ -22,24 +22,15 @@
 
 module ocean.task.util.Timer;
 
-
 import ocean.transition;
-
 import ocean.io.select.client.TimerSet;
 import ocean.util.container.pool.ObjectPool;
-
 import ocean.task.Task;
-import ocean.task.Scheduler;
+import ocean.task.IScheduler;
 
 debug (TaskScheduler)
 {
     import ocean.io.Stdout;
-}
-
-version (UnitTest)
-{
-    import ocean.core.Test;
-    import core.thread;
 }
 
 /*******************************************************************************
@@ -70,49 +61,23 @@ public void wait ( uint micro_seconds )
     task.removeTerminationHook(&scheduled_event.unregister);
 }
 
-///
 unittest
 {
-    initScheduler(SchedulerConfiguration.init);
-
-    class SimpleTask : Task
+    void example ( )
     {
-        override public void run ( )
+        class SimpleTask : Task
         {
-            for (int i = 0; i < 10; ++i)
-                .wait(10);
+            override public void run ( )
+            {
+                for (int i = 0; i < 10; ++i)
+                    .wait(10);
+            }
         }
+
+        auto task = new SimpleTask;
+        theScheduler.schedule(task);
+        theScheduler.eventLoop();
     }
-
-    auto task = new SimpleTask;
-    theScheduler.schedule(task);
-    theScheduler.eventLoop();
-}
-
-unittest
-{
-    // same as previous, but tests allocated event count inside `.timer` object
-
-    initScheduler(SchedulerConfiguration.init);
-
-    // re-create timer event pool to get rid of slots already allocated by other
-    // test cases
-    .timer = new typeof(.timer);
-
-    class SimpleTask : Task
-    {
-        override public void run ( )
-        {
-            for (int i = 0; i < 10; ++i)
-                .wait(10);
-        }
-    }
-
-    auto task = new SimpleTask;
-    theScheduler.schedule(task);
-    theScheduler.eventLoop();
-
-    test!("==")(.timer.scheduled_events(), 1);
 }
 
 /*******************************************************************************
@@ -161,80 +126,43 @@ public bool awaitOrTimeout ( Task task, uint micro_seconds )
     }
 }
 
-///
 unittest
 {
-    initScheduler(SchedulerConfiguration.init);
-
-    static class InfiniteTask : Task
+    void example ( )
     {
-        override public void run ( )
+        static class InfiniteTask : Task
         {
-            for (;;) .wait(100);
+            override public void run ( )
+            {
+                for (;;) .wait(100);
+            }
         }
-    }
 
-    static class RootTask : Task
-    {
-        Task to_wait_for;
-
-        override public void run ( )
+        static class RootTask : Task
         {
-            bool timeout = .awaitOrTimeout(this.to_wait_for, 200);
-            test(timeout);
+            Task to_wait_for;
 
-            // `awaitOrTimeout` itself won't terminate awaited task on timeout,
-            // it will only "detach" it from the current context. If former is
-            /// desired, it can be trivially done at the call site:
-            if (timeout)
-                this.to_wait_for.kill();
+            override public void run ( )
+            {
+                bool timeout = .awaitOrTimeout(this.to_wait_for, 200);
+
+                // `awaitOrTimeout` itself won't terminate awaited task on
+                // timeout, it will only "detach" it from the current context.
+                // If former is
+                // desired, it can be trivially done at the call site:
+                if (timeout)
+                    this.to_wait_for.kill();
+            }
         }
+
+        auto root = new RootTask;
+        root.to_wait_for = new InfiniteTask;
+
+        theScheduler.schedule(root);
+        theScheduler.eventLoop();
     }
-
-    auto root = new RootTask;
-    root.to_wait_for = new InfiniteTask;
-
-    theScheduler.schedule(root);
-    theScheduler.eventLoop();
-
-    test(root.finished());
-    test(root.to_wait_for.finished());
 }
 
-unittest
-{
-    initScheduler(SchedulerConfiguration.init);
-
-    static class FiniteTask : Task
-    {
-        override public void run ( )
-        {
-            .wait(100);
-        }
-    }
-
-    static class RootTask : Task
-    {
-        Task to_wait_for;
-
-        override public void run ( )
-        {
-            bool timeout = .awaitOrTimeout(this.to_wait_for, 5000);
-            test(!timeout);
-            test(this.to_wait_for.finished());
-        }
-    }
-
-    auto root = new RootTask;
-    root.to_wait_for = new FiniteTask;
-
-    theScheduler.schedule(root);
-    theScheduler.eventLoop();
-
-    test(root.finished());
-    test(root.to_wait_for.finished());
-
-}
 
 /*******************************************************************************
 
@@ -244,7 +172,7 @@ unittest
 
 *******************************************************************************/
 
-private TaskTimerSet timer;
+package TaskTimerSet timer;
 
 /*******************************************************************************
 

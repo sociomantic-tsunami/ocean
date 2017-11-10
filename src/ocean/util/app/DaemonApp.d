@@ -46,6 +46,7 @@ import ocean.util.app.ext.model.ISignalExtExtension;
 
 import ocean.transition;
 import ocean.core.Verify;
+import ocean.task.IScheduler;
 
 /// ditto
 public abstract class DaemonApp : Application,
@@ -59,10 +60,8 @@ public abstract class DaemonApp : Application,
 
     import ocean.util.log.Stats;
     import ocean.io.select.EpollSelectDispatcher;
-    import ocean.task.Scheduler;
 
     import ocean.sys.Stats;
-    import ocean.task.Scheduler;
     import ocean.util.app.ext.ArgumentsExt;
     import ocean.util.app.ext.ConfigExt;
     import ocean.util.app.ext.VersionArgsExt;
