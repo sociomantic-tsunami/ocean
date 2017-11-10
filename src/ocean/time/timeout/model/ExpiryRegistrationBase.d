@@ -106,12 +106,11 @@ abstract class ExpiryRegistrationBase : IExpiryRegistration
             callbacks, unlike unregister.)
 
             Params:
-                expiry = expiry token returned by register() when registering
-                         the IExpiryRegistration instance to unregister
+                registration = expiry registration reference
 
         ***********************************************************************/
 
-        void drop ( ref Expiry expiry );
+        void drop ( IExpiryRegistration registration );
 
         /***********************************************************************
 
@@ -146,7 +145,8 @@ abstract class ExpiryRegistrationBase : IExpiryRegistration
 
     ***************************************************************************/
 
-    private Expiry* expiry = null;
+    /* package(ocean) */
+    public Expiry* expiry = null;
 
     /***************************************************************************
 
@@ -209,7 +209,29 @@ abstract class ExpiryRegistrationBase : IExpiryRegistration
 
     public bool unregister ( )
     {
-        return this.unregisterWith({ this.mgr.unregister(*this.expiry); });
+        if (this.expiry)
+        {
+            try
+            {
+                debug (TimeoutManager)
+                {
+                    Stderr("*** unregister ")(this.id)('\n').flush();
+                }
+
+                this.mgr.unregister(*this.expiry);
+
+                return true;
+            }
+            finally
+            {
+                this.expiry = null;
+            }
+        }
+        else
+        {
+            return false;
+        }
+
     }
 
     /***************************************************************************
@@ -225,7 +247,8 @@ abstract class ExpiryRegistrationBase : IExpiryRegistration
 
     public bool drop ( )
     {
-        return this.unregisterWith({ this.mgr.drop(*this.expiry); });
+        this.mgr.drop(this);
+        return this.unregister();
     }
 
     /***************************************************************************
@@ -361,46 +384,6 @@ abstract class ExpiryRegistrationBase : IExpiryRegistration
         {
             debug ( TimeoutManager ) Stderr("no timeout\n").flush();
 
-            return false;
-        }
-    }
-
-    /***************************************************************************
-
-        Extracted common code of `drop` and `unregister`. Uses provided delegate
-        to call relevant TimeoutManager method and augments it with error
-        checking (providing boolean return value) and debug traces.
-
-        Params:
-            dg = delegate that calls relevant TimeoutManager method
-
-        Returns:
-            See `drop`/`unregister`
-
-    ***************************************************************************/
-
-    private bool unregisterWith(void delegate() dg)
-    {
-        if (this.expiry)
-        {
-            try
-            {
-                debug (TimeoutManager)
-                {
-                    Stderr("*** unregister ")(this.id)('\n').flush();
-                }
-
-                dg();
-
-                return true;
-            }
-            finally
-            {
-                this.expiry = null;
-            }
-        }
-        else
-        {
             return false;
         }
     }
