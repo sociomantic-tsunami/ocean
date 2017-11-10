@@ -67,7 +67,7 @@ public class FiberPoolWithQueue : FiberPool
 
     **************************************************************************/
 
-    this ( size_t queue_limit, size_t stack_size, size_t limit,
+    public this ( size_t queue_limit, size_t stack_size, size_t limit,
         void delegate(istring, int) process_events )
     {
         assert(process_events !is null);
