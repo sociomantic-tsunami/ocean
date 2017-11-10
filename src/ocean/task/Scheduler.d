@@ -320,7 +320,7 @@ final class Scheduler
     {
         debug_trace(
             "Shutting down initiated. {} queued tasks will be " ~
-                " discardead, {} suspended tasks will be killed",
+                " discarded, {} suspended tasks will be killed",
             this.fiber_pool.queued_tasks.length(),
             this.suspended_tasks.length()
         );

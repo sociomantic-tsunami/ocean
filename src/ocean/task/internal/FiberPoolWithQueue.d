@@ -58,7 +58,7 @@ public class FiberPoolWithQueue : FiberPool
         Params:
             queue_limit = max size of task queue, recommened to be at least as
                 large as pool limit
-            stack_size = fiber stack size to use in this poll
+            stack_size = fiber stack size to use in this pool
             limit = limit to pool size. If set to 0 (default), there is no
                 app limit and pool growth will be limited only by OS
                 resources
