@@ -235,7 +235,7 @@ public class FixedKeyMap ( K, V )
 
     ***************************************************************************/
 
-    public int opApply ( int delegate ( ref K ) dg )
+    public int opApply ( scope int delegate ( ref K ) dg )
     {
         int res;
         foreach ( key; this.keys )
@@ -253,7 +253,7 @@ public class FixedKeyMap ( K, V )
 
     ***************************************************************************/
 
-    public int opApply ( int delegate ( ref K, ref V ) dg )
+    public int opApply ( scope int delegate ( ref K, ref V ) dg )
     {
         int res;
         foreach ( i, key; this.keys )
@@ -271,7 +271,7 @@ public class FixedKeyMap ( K, V )
 
     ***************************************************************************/
 
-    public int opApply ( int delegate ( ref size_t, ref K, ref V ) dg )
+    public int opApply ( scope int delegate ( ref size_t, ref K, ref V ) dg )
     {
         int res;
         foreach ( i, key; this.keys )

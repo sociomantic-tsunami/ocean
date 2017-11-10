@@ -44,7 +44,7 @@ import ocean.meta.types.Typedef;
 
 public template isPrimitiveType ( T )
 {
-    const isPrimitiveType =
+    static immutable isPrimitiveType =
            is(Unqual!(T) == void)
         || is(Unqual!(T) == bool)
         || isIntegerType!(T)
@@ -73,7 +73,7 @@ unittest
 
 public template isCharType ( T )
 {
-    const bool isCharType =
+    static immutable bool isCharType =
            is(Unqual!(T) == char)
         || is(Unqual!(T) == wchar)
         || is(Unqual!(T) == dchar);
@@ -99,7 +99,7 @@ unittest
 
 public template isSignedIntegerType ( T )
 {
-    const bool isSignedIntegerType =
+    static immutable bool isSignedIntegerType =
            is(Unqual!(T) == byte)
         || is(Unqual!(T) == short)
         || is(Unqual!(T) == int)
@@ -126,7 +126,7 @@ unittest
 
 public template isUnsignedIntegerType ( T )
 {
-    const bool isUnsignedIntegerType =
+    static immutable bool isUnsignedIntegerType =
            is(Unqual!(T) == ubyte)
         || is(Unqual!(T) == ushort)
         || is(Unqual!(T) == uint)
@@ -153,7 +153,7 @@ unittest
 
 public template isIntegerType ( T )
 {
-    const bool isIntegerType =
+    static immutable bool isIntegerType =
            isSignedIntegerType!(T)
         || isUnsignedIntegerType!(T);
 }
@@ -179,7 +179,7 @@ unittest
 
 public template isRealType ( T )
 {
-    const bool isRealType =
+    static immutable bool isRealType =
            is( Unqual!(T) == float )
         || is( Unqual!(T) == double )
         || is( Unqual!(T) == real );
@@ -206,7 +206,7 @@ unittest
 
 public template isComplexType( T )
 {
-    const bool isComplexType =
+    static immutable bool isComplexType =
            is( Unqual!(T) == cfloat )
         || is( Unqual!(T) == cdouble )
         || is( Unqual!(T) == creal );
@@ -232,7 +232,7 @@ unittest
 
 public template isImaginaryType( T )
 {
-    const bool isImaginaryType =
+    static immutable bool isImaginaryType =
            is( Unqual!(T) == ifloat )
         || is( Unqual!(T) == idouble )
         || is( Unqual!(T) == ireal );
@@ -259,7 +259,7 @@ unittest
 
 public template isFloatingPointType( T )
 {
-    const bool isFloatingPointType =
+    static immutable bool isFloatingPointType =
            isRealType!(T)
         || isComplexType!(T)
         || isImaginaryType!(T);
@@ -306,14 +306,14 @@ public enum ArrayKind
 public template isArrayType ( T )
 {
     static if (is(Unqual!(T) U == U[]))
-        const isArrayType = ArrayKind.Dynamic;
+        static immutable isArrayType = ArrayKind.Dynamic;
     else static if (is(Unqual!(T) U : U[]))
-        const isArrayType = ArrayKind.Static;
+        static immutable isArrayType = ArrayKind.Static;
     else static if (is(typeof(T.init.values[0])[typeof(T.init.keys[0])] ==
             Unqual!(T)))
-        const isArrayType = ArrayKind.Associative;
+        static immutable isArrayType = ArrayKind.Associative;
     else
-        const isArrayType = ArrayKind.NotArray;
+        static immutable isArrayType = ArrayKind.NotArray;
 }
 
 ///
@@ -347,7 +347,7 @@ unittest
 
 public template staticArrayLength ( T : U[Dim], U, size_t Dim )
 {
-    const staticArrayLength = Dim;
+    static immutable staticArrayLength = Dim;
 }
 
 unittest
@@ -370,9 +370,9 @@ unittest
 template isPointerType ( T )
 {
     static if (is(Unqual!(T) U == U*))
-        const isPointerType = true;
+        static immutable isPointerType = true;
     else
-        const isPointerType = false;
+        static immutable isPointerType = false;
 }
 
 ///
@@ -425,7 +425,7 @@ unittest
 
 template isReferenceType ( T )
 {
-    const isReferenceType =
+    static immutable isReferenceType =
            isPointerType!(T)
         || is(T == delegate)
         || isArrayType!(T) == ArrayKind.Dynamic
@@ -465,7 +465,7 @@ unittest
 
 template isAggregateType ( T )
 {
-    const isAggregateType =
+    static immutable isAggregateType =
            is(T == class)
         || is(T == interface)
         || is(T == struct)
@@ -495,7 +495,7 @@ unittest
 
 template isFunctionType ( T )
 {
-    const bool isFunctionType =
+    static immutable bool isFunctionType =
            is(T == function)
         || is(typeof(*T.init) == function)
         || is(T == delegate);
@@ -553,7 +553,7 @@ unittest
 
 template isCallableType ( T )
 {
-    const bool isCallableType =
+    static immutable bool isCallableType =
            isFunctionType!(T)
         || is(typeof(&(T.init.opCall)) == delegate);
 }
@@ -606,9 +606,9 @@ public template isTypedef (T)
     version (D_Version2)
     {
         static if (is(T.IsTypedef))
-            const isTypedef = TypedefKind.Struct;
+            static immutable isTypedef = TypedefKind.Struct;
         else
-            const isTypedef = TypedefKind.None;
+            static immutable isTypedef = TypedefKind.None;
     }
     else
     {

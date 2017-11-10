@@ -266,7 +266,7 @@ private:
     Static immutable tables used for fast lookups to
     encode and decode data.
 */
-const ubyte base32_PAD = '=';
+static immutable ubyte base32_PAD = '=';
 static istring _encodeTable = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
 
 static Const!(ubyte)[] _decodeTable = [

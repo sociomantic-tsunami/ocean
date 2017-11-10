@@ -101,7 +101,7 @@ bool parse ( cstring timestamp, ref time_t t )
 
 unittest
 {
-    const time_t T = 352716457;
+    static immutable time_t T = 352716457;
 
     time_t t;
 

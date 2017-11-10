@@ -61,7 +61,7 @@ class EncodeNonUnreserved : PercentEncoder
 
      **************************************************************************/
 
-    const bool[char.max + 1] unreserved =
+    static immutable bool[char.max + 1] unreserved =
     [
         'A': true, 'B': true, 'C': true, 'D': true, 'E': true, 'F': true,
         'G': true, 'H': true, 'I': true, 'J': true, 'K': true, 'L': true,
@@ -189,7 +189,7 @@ class PercentEncoder
 
      **************************************************************************/
 
-    public int opApply ( int delegate ( ref cstring chunk ) dg )
+    public int opApply ( scope int delegate ( ref cstring chunk ) dg )
     {
         int result = 0;
 
@@ -214,7 +214,7 @@ class PercentEncoder
                     if (callDg(this.source[start .. i])) return result;
                 }
 
-                const hex_digits = "0123456789ABCDEF";
+                static immutable hex_digits = "0123456789ABCDEF";
 
                 hex[1] = hex_digits [(c >> 4) & 0xF];
                 hex[2] = hex_digits [c & 0xF];
@@ -268,7 +268,7 @@ unittest
     ~ "\"%7E\" by older URI processing implementations; the \"%7E\" can be "
     ~ "replaced by \"~\" without chänging its interpretation.");
 
-    const istring[] chunks =
+    static immutable istring[] chunks =
     [
         "For", "%20", "example", "%2C", "%20", "the", "%20", "octet", "%20",
         "corresponding","%20", "to", "%20", "the", "%20", "tilde", "%20",

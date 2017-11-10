@@ -141,7 +141,7 @@ class VersionArgsExt : IApplicationExtension, IArgumentsExtExtension,
 
     protected istring getLibsVersionsString ( istring[istring] ver )
     {
-        const prefix = "lib_";
+        static immutable prefix = "lib_";
         istring s;
         auto sorted_names = ver.keys;
         sorted_names.sort();

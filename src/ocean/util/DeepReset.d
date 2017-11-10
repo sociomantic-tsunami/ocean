@@ -340,13 +340,13 @@ unittest
 
                 void InitStructure()
                 {
-                    this.h = -52;
-                    this.i.copy("even even more test text");
-                    this.j.length = 3;
-                    this.j[0].copy("abc");
-                    this.j[1].copy("def");
-                    this.j[2].copy("ghi");
-                    foreach ( ref item; this.k )
+                    (&this).h = -52;
+                    (&this).i.copy("even even more test text");
+                    (&this).j.length = 3;
+                    (&this).j[0].copy("abc");
+                    (&this).j[1].copy("def");
+                    (&this).j[2].copy("ghi");
+                    foreach ( ref item; (&this).k )
                     {
                         item = 120000;
                     }
@@ -355,12 +355,12 @@ unittest
 
             void InitStructure()
             {
-                this.d = 32;
-                this.e.copy("even more test text");
+                (&this).d = 32;
+                (&this).e.copy("even more test text");
 
-                this.f.length = 1;
-                this.f[0].copy("abc");
-                foreach ( ref item; this.g )
+                (&this).f.length = 1;
+                (&this).f[0].copy("abc");
+                foreach ( ref item; (&this).g )
                 {
                     item = 32400;
                 }

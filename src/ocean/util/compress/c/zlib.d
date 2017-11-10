@@ -28,7 +28,7 @@ extern (C):
 /// See original's library documentation for details.
 static ZLIB_VERSION = "1.2.3".ptr;
 /// See original's library documentation for details.
-const uint  ZLIB_VERNUM  = 0x1230;
+static immutable uint  ZLIB_VERNUM  = 0x1230;
 
 
 private
@@ -172,7 +172,7 @@ enum
 }
 
 /// See original's library documentation for details.
-const Z_NULL = null;
+static immutable Z_NULL = null;
 
 /// See original's library documentation for details.
 alias zlibVersion zlib_version;

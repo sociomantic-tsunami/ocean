@@ -110,7 +110,7 @@ struct addrinfo
     socklen_t       ai_addrlen;               // The manpage says size_t: WRONG!
     sockaddr*       ai_addr;
     char*           ai_canonname;
-    typeof (this)   ai_next;
+    typeof ((&this))   ai_next;
 
     alias .INET6_ADDRSTRLEN INET6_ADDRSTRLEN;
     alias .INET_ADDRSTRLEN  INET_ADDRSTRLEN;
@@ -146,9 +146,9 @@ struct addrinfo
     mstring ipAddress ( mstring dst )
     in
     {
-        assert (this.ai_addr !is null);
+        assert ((&this).ai_addr !is null);
 
-        switch (this.ai_family)
+        switch ((&this).ai_family)
         {
             case AF_INET:
                 assert (dst.length >= INET_ADDRSTRLEN,
@@ -171,14 +171,14 @@ struct addrinfo
     {
         void* addr;
 
-        switch (this.ai_family)
+        switch ((&this).ai_family)
         {
             case AF_INET:
-                addr = &(*cast (sockaddr_in*) this.ai_addr).sin_addr;
+                addr = &(*cast (sockaddr_in*) (&this).ai_addr).sin_addr;
                 break;
 
             case AF_INET6:
-                addr = &(*cast (sockaddr_in6*) this.ai_addr).sin6_addr;
+                addr = &(*cast (sockaddr_in6*) (&this).ai_addr).sin6_addr;
                 break;
 
             default:
@@ -186,7 +186,7 @@ struct addrinfo
                 return null;
         }
 
-        auto address_p = .inet_ntop(this.ai_family, addr, dst.ptr,
+        auto address_p = .inet_ntop((&this).ai_family, addr, dst.ptr,
             castFrom!(size_t).to!(int)(dst.length));
         // inet_ntop returns const pointer even if spec says it will always
         // use `dst` memory. Using `dst` directly to avoid casts.
@@ -213,19 +213,19 @@ struct addrinfo
     ushort port ( )
     in
     {
-        assert (this.ai_addr !is null);
+        assert ((&this).ai_addr !is null);
     }
     body
     {
         .errno = 0;
 
-        switch (this.ai_family)
+        switch ((&this).ai_family)
         {
             case AF_INET:
-                return .ntohs((cast (sockaddr_in*) this.ai_addr).sin_port);
+                return .ntohs((cast (sockaddr_in*) (&this).ai_addr).sin_port);
 
             case AF_INET6:
-                return .ntohs((cast (sockaddr_in6*) this.ai_addr).sin6_port);
+                return .ntohs((cast (sockaddr_in6*) (&this).ai_addr).sin6_port);
 
             default:
                 .errno = EAFNOSUPPORT;
@@ -244,7 +244,7 @@ struct addrinfo
 
     char[] canonname ( )
     {
-        return this.ai_canonname? this.ai_canonname[0 .. strlen(this.ai_canonname)] : null;
+        return (&this).ai_canonname? (&this).ai_canonname[0 .. strlen((&this).ai_canonname)] : null;
     }
 
     /**************************************************************************
@@ -256,11 +256,11 @@ struct addrinfo
 
      **************************************************************************/
 
-    int opApply ( int delegate ( ref typeof (*this) info ) dg )
+    int opApply ( scope int delegate ( ref typeof (*(&this)) info ) dg )
     {
         int result = 0;
 
-        for (typeof (this) info = this; info && !result; info = info.ai_next)
+        for (typeof ((&this)) info = (&this); info && !result; info = info.ai_next)
         {
             result = dg(*info);
         }

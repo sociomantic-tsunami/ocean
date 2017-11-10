@@ -66,8 +66,8 @@ class StringC
 
      **************************************************************************/
 
-    public const char  Term  = '\0';
-    public const Wchar Wterm = '\0';
+    public static immutable char  Term  = '\0';
+    public static immutable Wchar Wterm = '\0';
 
     /***************************************************************************
 

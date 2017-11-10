@@ -142,7 +142,7 @@ class File : Device, Device.Seek, Device.Truncate
 {
         static import ocean.core.ExceptionDefinitions;
         import ocean.sys.CloseOnExec;
-        const O_CLOEXEC = 0x80000;
+        static immutable O_CLOEXEC = 0x80000;
 
         public alias Device.read  read;
         public alias Device.write write;
@@ -270,7 +270,7 @@ class File : Device, Device.Seek, Device.Truncate
 
         ***********************************************************************/
 
-        const Style ReadExisting = {Access.Read, Open.Exists};
+        static immutable Style ReadExisting = {Access.Read, Open.Exists};
 
         /***********************************************************************
 
@@ -278,7 +278,7 @@ class File : Device, Device.Seek, Device.Truncate
 
         ***********************************************************************/
 
-        const Style ReadShared = {Access.Read, Open.Exists, Share.Read};
+        static immutable Style ReadShared = {Access.Read, Open.Exists, Share.Read};
 
         /***********************************************************************
 
@@ -286,7 +286,7 @@ class File : Device, Device.Seek, Device.Truncate
 
         ***********************************************************************/
 
-        const Style WriteExisting = {Access.Write, Open.Exists};
+        static immutable Style WriteExisting = {Access.Write, Open.Exists};
 
         /***********************************************************************
 
@@ -294,7 +294,7 @@ class File : Device, Device.Seek, Device.Truncate
 
         ***********************************************************************/
 
-        const Style WriteCreate = {Access.Write, Open.Create};
+        static immutable Style WriteCreate = {Access.Write, Open.Create};
 
         /***********************************************************************
 
@@ -302,7 +302,7 @@ class File : Device, Device.Seek, Device.Truncate
 
         ***********************************************************************/
 
-        const Style ReadWriteAppending = {Access.ReadWrite, Open.Append};
+        static immutable Style ReadWriteAppending = {Access.ReadWrite, Open.Append};
 
         /***********************************************************************
 
@@ -310,7 +310,7 @@ class File : Device, Device.Seek, Device.Truncate
 
         ***********************************************************************/
 
-        const Style WriteAppending = {Access.Write, Open.Append};
+        static immutable Style WriteAppending = {Access.Write, Open.Append};
 
         /***********************************************************************
 
@@ -318,7 +318,7 @@ class File : Device, Device.Seek, Device.Truncate
 
         ***********************************************************************/
 
-        const Style ReadWriteExisting = {Access.ReadWrite, Open.Exists};
+        static immutable Style ReadWriteExisting = {Access.ReadWrite, Open.Exists};
 
         /***********************************************************************
 
@@ -326,7 +326,7 @@ class File : Device, Device.Seek, Device.Truncate
 
         ***********************************************************************/
 
-        const Style ReadWriteCreate = {Access.ReadWrite, Open.Create};
+        static immutable Style ReadWriteCreate = {Access.ReadWrite, Open.Create};
 
         /***********************************************************************
 
@@ -334,7 +334,7 @@ class File : Device, Device.Seek, Device.Truncate
 
         ***********************************************************************/
 
-        const Style ReadWriteOpen = {Access.ReadWrite, Open.Sedate};
+        static immutable Style ReadWriteOpen = {Access.ReadWrite, Open.Sedate};
 
 
         // the file we're working with
@@ -499,7 +499,7 @@ class File : Device, Device.Seek, Device.Truncate
         {
             alias int[] Flags;
 
-            const Flags Access =
+            static immutable Flags Access =
                 [
                     0,                      // invalid
                     O_RDONLY,
@@ -507,7 +507,7 @@ class File : Device, Device.Seek, Device.Truncate
                     O_RDWR,
                     ];
 
-            const Flags Create =
+            static immutable Flags Create =
                 [
                     0,                      // open existing
                     O_CREAT | O_TRUNC,      // truncate always
@@ -516,7 +516,7 @@ class File : Device, Device.Seek, Device.Truncate
                     O_CREAT | O_EXCL,       // can't exist
                     ];
 
-            const short[] Locks =
+            static immutable short[] Locks =
                 [
                     F_WRLCK,                // no sharing
                     F_RDLCK,                // shared read

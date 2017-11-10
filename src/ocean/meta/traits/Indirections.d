@@ -45,7 +45,7 @@ version(UnitTest)
 
 public template hasIndirections ( T... )
 {
-    const hasIndirections = ReduceType!(T, HasIndirectionsReducer);
+    static immutable hasIndirections = ReduceType!(T, HasIndirectionsReducer);
 }
 
 ///
@@ -124,7 +124,7 @@ private struct HasIndirectionsReducer
 
 public template containsMultiDimensionalDynamicArrays ( T )
 {
-    const containsMultiDimensionalDynamicArrays =
+    static immutable containsMultiDimensionalDynamicArrays =
         ReduceType!(T, MultiDimArraysReducer);
 }
 

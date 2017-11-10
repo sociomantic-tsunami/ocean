@@ -51,14 +51,14 @@ public template Fnv1Const ( T = hash_t )
 
     static if (is (DigestType == uint))
     {
-        public const DigestType PRIME = 0x0100_0193; // 32 bit prime
-        public const DigestType INIT  = 0x811C_9DC5; // 32 bit inital digest
+        public static immutable DigestType PRIME = 0x0100_0193; // 32 bit prime
+        public static immutable DigestType INIT  = 0x811C_9DC5; // 32 bit inital digest
         public alias ByteSwap.swap32 toBigEnd;
     }
     else static if (is (DigestType == ulong))
     {
-        public const DigestType PRIME = 0x0000_0100_0000_01B3; // 64 bit prime
-        public const DigestType INIT  = 0xCBF2_9CE4_8422_2325; // 64 bit inital digest
+        public static immutable DigestType PRIME = 0x0000_0100_0000_01B3; // 64 bit prime
+        public static immutable DigestType INIT  = 0xCBF2_9CE4_8422_2325; // 64 bit inital digest
         public alias ByteSwap.swap64 toBigEnd;
     }
     /*
@@ -111,7 +111,7 @@ public template StaticFnv1a ( T = hash_t )
 
     public template Fnv1a ( istring input )
     {
-        public const Fnv1a = Fnv1a!(Fnv1Const!(T).INIT, input);
+        public static immutable Fnv1a = Fnv1a!(Fnv1Const!(T).INIT, input);
     }
 
     /***************************************************************************
@@ -125,11 +125,11 @@ public template StaticFnv1a ( T = hash_t )
     {
         static if ( input.length )
         {
-            public const Fnv1a = Fnv1a!((hash ^ input[0]) * Fnv1Const!(T).PRIME, input[1 .. $]);
+            public static immutable Fnv1a = Fnv1a!((hash ^ input[0]) * Fnv1Const!(T).PRIME, input[1 .. $]);
         }
         else
         {
-            public const Fnv1a = hash;
+            public static immutable Fnv1a = hash;
         }
     }
 }
@@ -152,22 +152,22 @@ public alias Fnv1Const!(ulong) Fnv164Const;
 
 public template StaticFnv1a32 ( istring input )
 {
-    public const StaticFnv1a32 = StaticFnv1a!(uint).Fnv1a!(input);
+    public static immutable StaticFnv1a32 = StaticFnv1a!(uint).Fnv1a!(input);
 }
 
 public template StaticFnv1a32 ( uint hash, istring input )
 {
-    public const StaticFnv1a32 = StaticFnv1a!(uint).Fnv1a!(hash, input);
+    public static immutable StaticFnv1a32 = StaticFnv1a!(uint).Fnv1a!(hash, input);
 }
 
 public template StaticFnv1a64 ( istring input )
 {
-    public const StaticFnv1a64 = StaticFnv1a!(ulong).Fnv1a!(input);
+    public static immutable StaticFnv1a64 = StaticFnv1a!(ulong).Fnv1a!(input);
 }
 
 public template StaticFnv1a64 ( ulong hash, istring input )
 {
-    public const StaticFnv1a64 = StaticFnv1a!(ulong).Fnv1a!(hash, input);
+    public static immutable StaticFnv1a64 = StaticFnv1a!(ulong).Fnv1a!(hash, input);
 }
 
 
@@ -310,8 +310,8 @@ public class Fnv1Generic ( bool FNV1A = false, T = hash_t ) : FnvDigest
 
      **************************************************************************/
 
-    public const DIGEST_LENGTH = DigestType.sizeof;
-    public const HEXDGT_LENGTH = DIGEST_LENGTH * 2;
+    public static immutable DIGEST_LENGTH = DigestType.sizeof;
+    public static immutable HEXDGT_LENGTH = DIGEST_LENGTH * 2;
 
     public alias char[HEXDGT_LENGTH] HexDigest;
 
@@ -356,7 +356,7 @@ public class Fnv1Generic ( bool FNV1A = false, T = hash_t ) : FnvDigest
 
          public ubyte[] opCall ( DigestType value )
          {
-             this.value = value;
+             (&this).value = value;
 
              version (LittleEndian) toBigEnd(array);
 
@@ -779,7 +779,7 @@ unittest
         istring str;
     }
 
-    const TestData[] testdata =
+    static immutable TestData[] testdata =
     [
         {0xc5f1d7e9, [0xc5, 0xf1, 0xd7, 0xe9], "c5f1d7e9", 0x512b2851, [0x51, 0x2b, 0x28, 0x51], "512b2851", 0x43c94e2c8b277509, [0x43, 0xc9, 0x4e, 0x2c, 0x8b, 0x27, 0x75, 0x09], "43c94e2c8b277509", 0x33b96c3cd65b5f71, [0x33, 0xb9, 0x6c, 0x3c, 0xd6, 0x5b, 0x5f, 0x71], "33b96c3cd65b5f71",  true, "391581216093391581216093391581216093391581216093391581216093391581216093391581216093391581216093391581216093391581216093"},
         {0x32c1f439, [0x32, 0xc1, 0xf4, 0x39], "32c1f439", 0x76823999, [0x76, 0x82, 0x39, 0x99], "76823999", 0x3cbfd4e4ea670359, [0x3c, 0xbf, 0xd4, 0xe4, 0xea, 0x67, 0x03, 0x59], "3cbfd4e4ea670359", 0xd845097780602bb9, [0xd8, 0x45, 0x09, 0x77, 0x80, 0x60, 0x2b, 0xb9], "d845097780602bb9",  true, "391581*2^216093-1391581*2^216093-1391581*2^216093-1391581*2^216093-1391581*2^216093-1391581*2^216093-1391581*2^216093-1391581*2^216093-1391581*2^216093-1391581*2^216093-1"},

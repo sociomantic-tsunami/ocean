@@ -36,7 +36,7 @@ final class Tiger : MerkleDamgard
 {
         private ulong[3]        context;
         private uint            npass = 3;
-        private const uint      padChar = 0x01;
+        private static immutable uint      padChar = 0x01;
 
         /***********************************************************************
 

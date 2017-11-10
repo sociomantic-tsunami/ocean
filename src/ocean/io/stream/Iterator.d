@@ -116,7 +116,7 @@ class Iterator(T) : InputFilter
 
         **********************************************************************/
 
-        int opApply (int delegate(ref Const!(T)[]) dg)
+        int opApply (scope int delegate(ref Const!(T)[]) dg)
         {
                 bool more;
                 int  result;
@@ -135,7 +135,7 @@ class Iterator(T) : InputFilter
 
         **********************************************************************/
 
-        int opApply (int delegate(ref int, ref Const!(T)[]) dg)
+        int opApply (scope int delegate(ref int, ref Const!(T)[]) dg)
         {
                 bool more;
                 int  result,
@@ -156,7 +156,7 @@ class Iterator(T) : InputFilter
 
         **********************************************************************/
 
-        int opApply (int delegate(ref int, ref Const!(T)[], ref Const!(T)[]) dg)
+        int opApply (scope int delegate(ref int, ref Const!(T)[], ref Const!(T)[]) dg)
         {
                 bool more;
                 int  result,

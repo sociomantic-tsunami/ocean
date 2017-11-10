@@ -158,7 +158,7 @@ istring[] getAddrsForInterface( cstring interface_name, bool ipv6 = false )
 *******************************************************************************/
 
 bool getAddrsForInterface( cstring interface_name, bool ipv6,
-                           bool delegate ( cstring address,
+                           scope bool delegate ( cstring address,
                                            int    getnameinfo_status ) dg )
 {
     ifaddrs* ifaddr;

@@ -893,7 +893,7 @@ unittest
 {
     // One ring to rule them all, one ring to find them,
     // One ring to bring them all and in the darkness bind them.
-    const istring message =
+    static immutable istring message =
         "Ash nazg durbatulûk, ash nazg gimbatul, "
         ~ "ash nazg thrakatulûk, agh burzum-ishi krimpatul.";
 
@@ -902,7 +902,7 @@ unittest
     // This compressed data was created using Python 2.5's built in zlib
     // module, with the default compression level.
     {
-        const ubyte[] message_z = [
+        static immutable ubyte[] message_z = [
             0x78,0x9c,0x73,0x2c,0xce,0x50,0xc8,0x4b,
             0xac,0x4a,0x57,0x48,0x29,0x2d,0x4a,0x4a,
             0x2c,0x29,0xcd,0x39,0xbc,0x3b,0x5b,0x47,
@@ -943,7 +943,7 @@ unittest
     // This compressed data was created using the Cygwin gzip program
     // with default options.  The original file was called "testdata.txt".
     {
-        const ubyte[] message_gz = [
+        static immutable ubyte[] message_gz = [
             0x1f,0x8b,0x08,0x00,0x80,0x70,0x6f,0x45,
             0x00,0x03,0x73,0x2c,0xce,0x50,0xc8,0x4b,
             0xac,0x4a,0x57,0x48,0x29,0x2d,0x4a,0x4a,

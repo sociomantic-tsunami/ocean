@@ -86,7 +86,7 @@ class EBTree64 ( bool signed = false ) : IEBTree
 
      **************************************************************************/
 
-    public const signed_key = signed;
+    public static immutable signed_key = signed;
 
     /**************************************************************************
 
@@ -118,7 +118,7 @@ class EBTree64 ( bool signed = false ) : IEBTree
 
          **********************************************************************/
 
-        public const is_signed = signed;
+        public enum is_signed = signed;
 
         /**********************************************************************
 
@@ -166,7 +166,7 @@ class EBTree64 ( bool signed = false ) : IEBTree
 
         public equals_t opEquals(Dual32Key rhs)
         {
-            return this.opCmp(rhs) == 0;
+            return (&this).opCmp(rhs) == 0;
         }
 
         /**********************************************************************
@@ -180,7 +180,7 @@ class EBTree64 ( bool signed = false ) : IEBTree
 
         private EBTree64!(signed).Key opCast ( )
         {
-            return ((cast (long) this.hi) << 0x20) | this.lo;
+            return ((cast (long) (&this).hi) << 0x20) | (&this).lo;
         }
     }
 

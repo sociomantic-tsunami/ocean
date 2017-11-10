@@ -109,7 +109,7 @@ class LogExt : IConfigExtExtension
 
     ***************************************************************************/
 
-    public this ( Appender.Layout delegate (cstring name) make_layout = null,
+    public this ( scope Appender.Layout delegate (cstring name) make_layout = null,
                   bool use_insert_appender = false )
     {
         this.layout_maker = make_layout is null ? &this.makeLayoutDefault

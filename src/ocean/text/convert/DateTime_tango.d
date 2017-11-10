@@ -176,12 +176,12 @@ struct DateTimeLocale
 
         auto res=Result(output);
         scope sink = (cstring v) { res ~= v; return v.length; };
-        this.formatCustom(sink, dateTime, layout);
+        (&this).formatCustom(sink, dateTime, layout);
         return res.get;
     }
 
     /// Ditto
-    public void format (size_t delegate(cstring) output, Time dateTime,
+    public void format (scope size_t delegate(cstring) output, Time dateTime,
                         cstring layout)
     {
         // default to general format
@@ -599,7 +599,7 @@ struct DateTimeLocale
 
      **********************************************************************/
 
-    private void formatCustom (size_t delegate(cstring) sink, Time dateTime,
+    private void formatCustom (scope size_t delegate(cstring) sink, Time dateTime,
                                cstring format)
     {
         uint            len,
@@ -853,7 +853,7 @@ struct DateTimeLocale
 
      **********************************************************************/
 
-    private static int parseQuote (size_t delegate(cstring) sink,
+    private static int parseQuote (scope size_t delegate(cstring) sink,
                                    cstring format, int pos)
     {
         int start = pos;

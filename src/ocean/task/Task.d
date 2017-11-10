@@ -355,7 +355,7 @@ public abstract class Task : ISuspendable
 
     ***************************************************************************/
 
-    public void terminationHook (void delegate() hook)
+    public void terminationHook (scope void delegate() hook)
     {
         this.termination_hooks ~= hook;
     }
@@ -370,7 +370,7 @@ public abstract class Task : ISuspendable
 
     ***************************************************************************/
 
-    public void removeTerminationHook (void delegate() hook)
+    public void removeTerminationHook (scope void delegate() hook)
     {
         this.termination_hooks.length = .moveToEnd(this.termination_hooks[], hook);
     }

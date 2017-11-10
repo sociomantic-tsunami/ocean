@@ -313,7 +313,7 @@ template MapExtension ( K, V )
 
     public void dump ( IConduit io_device, CheckDg check )
     {
-        void adder ( void delegate ( ref K, ref V ) add )
+        void adder ( scope void delegate ( ref K, ref V ) add )
         {
             foreach ( ref k, ref v; this ) if ( check(k,v) )
             {
@@ -407,7 +407,7 @@ class MapSerializer
 
      ***************************************************************************/
 
-    private const uint MAGIC_MARKER = 0xCA1101AF;
+    private static immutable uint MAGIC_MARKER = 0xCA1101AF;
 
     /***************************************************************************
 
@@ -415,7 +415,7 @@ class MapSerializer
 
     ***************************************************************************/
 
-    private const ubyte HEADER_VERSION = 5;
+    private static immutable ubyte HEADER_VERSION = 5;
 
     /***************************************************************************
 
@@ -506,11 +506,11 @@ class MapSerializer
     {
         static if ( is (typeof(TypeHash!(S))) )
         {
-            const StructHash = TypeHash!(S);
+            static immutable StructHash = TypeHash!(S);
         }
         else
         {
-            const StructHash = StaticFnv1a64!(typeof(S.k).mangleof ~
+            static immutable StructHash = StaticFnv1a64!(typeof(S.k).mangleof ~
                                              typeof(S.v).mangleof);
         }
     }
@@ -714,7 +714,7 @@ class MapSerializer
 
     public void dumpConduit ( K, V ) ( Map!(V, K) map, IConduit io_device )
     {
-        void adder ( void delegate ( ref K, ref V ) add )
+        void adder ( scope void delegate ( ref K, ref V ) add )
         {
             foreach ( ref k, ref v; map )
             {
@@ -1108,7 +1108,7 @@ class MapSerializer
                                ( Version.Type actual,
                                  Version.Type expected,
                                  ref BufferPair buffer,
-                                 void delegate ( ref T ) putter,
+                                 scope void delegate ( ref T ) putter,
                                  BufferedInput buffered )
     {
         if ( actual < expected )
@@ -1148,12 +1148,12 @@ class MapSerializer
     private bool tryConvert ( bool throw_if_unable, alias loadFunc,
                               size_t index, T... )
                             ( ref BufferPair buffer,
-                              void delegate ( ref T ) putter,
+                              scope void delegate ( ref T ) putter,
                               BufferedInput buffered )
     {
         static assert ( T.length == 2 );
 
-        const other = index == 1 ? 0 : 1;
+        static immutable other = index == 1 ? 0 : 1;
 
         static if ( Version.Info!(T[index]).exists )
         {
@@ -1163,12 +1163,12 @@ class MapSerializer
             // `Version.Info!(T[index]).prev` except compare it with a type.
             // This can be checked by replacing `can_convert` with:
             // `const can_convert = Version.Info!(T[index]).prev.exists;`
-            const can_convert
+            static immutable can_convert
                 = !is(Version.Info!(T[index]).prev == MissingVersion);
         }
         else
         {
-            const can_convert = false;
+            static immutable can_convert = false;
         }
 
         static if ( can_convert )
@@ -1218,7 +1218,7 @@ class MapSerializer
     ***************************************************************************/
 
     private void loadOld ( K, V ) ( BufferedInput buffered,
-                                    void delegate ( ref K, ref V ) putter )
+                                    scope void delegate ( ref K, ref V ) putter )
     {
         size_t nr_rec;
 
@@ -1428,7 +1428,7 @@ version ( UnitTest )
             ", KNew = " ~ KNew.stringof ~
             ", VNew = " ~ VNew.stringof ~ "}"
         );
-        const ValueArraySize = 200;
+        static immutable ValueArraySize = 200;
 
         scope array = new MemoryDevice;
         scope map   = new StructhashMap!(V, K)(iterations);
@@ -1484,7 +1484,7 @@ version ( UnitTest )
             *map.put(initKey(i)) = initVal(i);
         }
 
-        void adder ( void delegate ( ref K, ref V ) add )
+        void adder ( scope void delegate ( ref K, ref V ) add )
         {
             foreach ( ref k, ref v; map )
             {
@@ -1552,16 +1552,16 @@ version ( UnitTest )
 
 unittest
 {
-    const Iterations = 10_000;
+    static immutable Iterations = 10_000;
 
-    const old_load_code =
+    static immutable old_load_code =
           `scope bufout = new BufferedOutput(array, 2048);
            bufout.seek(0);
            dumpOld!(K, V)(bufout, &adder);
 
            auto header_size = MapSerializer.FileHeader!(K, V, 2).sizeof;`;
 
-    const version4_load_code =
+    static immutable version4_load_code =
           `serializer.buffered_output.output(array);
            serializer.dumpInternal!(K, V, 4)(serializer.buffered_output, &adder);
 
@@ -1587,14 +1587,14 @@ unittest
 
     static struct Test1
     {
-        const StructVersion = 0;
+        enum StructVersion = 0;
 
         long i;
     }
 
     static struct Test2
     {
-        const StructVersion = 1;
+        enum StructVersion = 1;
         alias Test1 StructPrevious;
 
         long i;
@@ -1608,25 +1608,25 @@ unittest
 
         bool compare ( Test2* old )
         {
-            return *old == *this;
+            return *old == *(&this);
         }
     }
 
     static struct OldStruct
     {
-        const StructVersion = 0;
+        enum StructVersion = 0;
 
         int old;
 
         bool compare ( OldStruct * o )
         {
-            return *o == *this;
+            return *o == *(&this);
         }
     }
 
     static struct NewStruct
     {
-        const StructVersion = 1;
+        enum StructVersion = 1;
         alias OldStruct StructPrevious;
 
         int old;
@@ -1639,31 +1639,31 @@ unittest
 
         bool compare ( OldStruct* old )
         {
-            return old.old == this.old &&
+            return old.old == (&this).old &&
                    old.old+1 == a_bit_newer;
         }
     }
 
     static struct OldKey
     {
-        const StructVersion = 0;
+        enum StructVersion = 0;
 
         int old2;
 
         bool compare ( OldKey * o )
         {
-            return *o == *this;
+            return *o == *(&this);
         }
 
         OldKey old ( )
         {
-            return *this;
+            return *(&this);
         }
     }
 
     static struct NewKey
     {
-        const StructVersion = 1;
+        enum StructVersion = 1;
         alias OldKey StructPrevious;
 
         int old1;
@@ -1693,7 +1693,7 @@ unittest
 
     static struct NewerKey
     {
-        const StructVersion = 2;
+        enum StructVersion = 2;
         alias NewKey StructPrevious;
 
         int old1;
@@ -1717,7 +1717,7 @@ unittest
 
     static struct NewerStruct
     {
-        const StructVersion = 2;
+        enum StructVersion = 2;
         alias NewStruct StructPrevious;
 
         int old;
@@ -1736,7 +1736,7 @@ unittest
 
     static struct NoPrevious
     {
-        const StructVersion = 42;
+        enum StructVersion = 42;
 
         int hello;
 
@@ -1748,7 +1748,7 @@ unittest
 
     static struct SinglePrevious
     {
-        const StructVersion = 42;
+        enum StructVersion = 42;
         int hello42;
 
         static void convert_hello42 ( ref StructPrevious p, ref SinglePrevious dst )
@@ -1758,18 +1758,18 @@ unittest
 
         bool compare ( StructPrevious* olds )
         {
-            return this.hello42 == (olds.hello + 42);
+            return (&this).hello42 == (olds.hello + 42);
         }
 
         static struct StructPrevious
         {
-            const StructVersion = 41;
+            enum StructVersion = 41;
             alias SinglePrevious StructNext;
             int hello;
 
             bool compare ( StructNext* news )
             {
-                return this.hello == (news.hello42 - 42);
+                return (&this).hello == (news.hello42 - 42);
             }
         }
     }
@@ -1842,7 +1842,7 @@ version (UnitTest)
     // Make sure structs with a StructNext can be instantiated
     struct S ( ubyte V )
     {
-        const StructVersion = V;
+        enum StructVersion = V;
 
         // comment this out and it works
         static if (V == 0)

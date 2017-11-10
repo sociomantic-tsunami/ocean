@@ -83,7 +83,7 @@ struct UCent
 
     public equals_t opEquals(UCent rhs)
     {
-        return this.opCmp(rhs) == 0;
+        return (&this).opCmp(rhs) == 0;
     }
 }
 
@@ -125,7 +125,7 @@ struct Cent
 
     public equals_t opEquals(Cent rhs)
     {
-        return this.opCmp(rhs) == 0;
+        return (&this).opCmp(rhs) == 0;
     }
 }
 
@@ -167,7 +167,7 @@ struct eb128_node
 
     UCent key ( ) ( UCent key_ )
     {
-        eb128_node_setkey_264(this, key_.lo, key_.hi);
+        eb128_node_setkey_264((&this), key_.lo, key_.hi);
 
         return key_;
     }
@@ -180,7 +180,7 @@ struct eb128_node
 
     Cent key ( ) ( Cent key_ )
     {
-        eb128i_node_setkey_264(this, key_.lo, key_.hi);
+        eb128i_node_setkey_264((&this), key_.lo, key_.hi);
 
         return key_;
     }
@@ -203,13 +203,13 @@ struct eb128_node
         {
             Cent result;
 
-            eb128i_node_getkey_264(this, &result.lo, &result.hi);
+            eb128i_node_getkey_264((&this), &result.lo, &result.hi);
         }
         else
         {
             UCent result;
 
-            eb128_node_getkey_264(this, &result.lo, &result.hi);
+            eb128_node_getkey_264((&this), &result.lo, &result.hi);
         }
 
         return result;
@@ -217,30 +217,30 @@ struct eb128_node
 
     /// Return next node in the tree, skipping duplicates, or NULL if none
 
-    typeof (this) next ( )
+    typeof ((&this)) next ( )
     {
-        return eb128_next(this);
+        return eb128_next((&this));
     }
 
     /// Return previous node in the tree, or NULL if none
 
-    typeof (this) prev ( )
+    typeof ((&this)) prev ( )
     {
-        return eb128_prev(this);
+        return eb128_prev((&this));
     }
 
     /// Return next node in the tree, skipping duplicates, or NULL if none
 
-    typeof (this) next_unique ( )
+    typeof ((&this)) next_unique ( )
     {
-        return eb128_next_unique(this);
+        return eb128_next_unique((&this));
     }
 
     /// Return previous node in the tree, skipping duplicates, or NULL if none
 
-    typeof (this) prev_unique ( )
+    typeof ((&this)) prev_unique ( )
     {
-        return eb128_prev_unique(this);
+        return eb128_prev_unique((&this));
     }
 }
 

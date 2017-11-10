@@ -43,10 +43,10 @@ version (UnitTest) import ocean.core.Test;
 
 *******************************************************************************/
 
-public const istring defaultEncodeTable = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+public static immutable istring defaultEncodeTable = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
 
 /// Ditto
-public const ubyte[char.max + 1] defaultDecodeTable = [
+public static immutable ubyte[char.max + 1] defaultDecodeTable = [
     'A' :  0, 'B' :  1, 'C' :  2, 'D' :  3, 'E' :  4,
     'F' :  5, 'G' :  6, 'H' :  7, 'I' :  8, 'J' :  9,
     'K' : 10, 'L' : 11, 'M' : 12, 'N' : 13, 'O' : 14,
@@ -79,10 +79,10 @@ public const ubyte[char.max + 1] defaultDecodeTable = [
 
 *******************************************************************************/
 
-public const istring urlSafeEncodeTable = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_=";
+public static immutable istring urlSafeEncodeTable = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_=";
 
 /// Ditto
-public const ubyte[char.max + 1] urlSafeDecodeTable = [
+public static immutable ubyte[char.max + 1] urlSafeDecodeTable = [
     'A' :  0, 'B' :  1, 'C' :  2, 'D' :  3, 'E' :  4,
     'F' :  5, 'G' :  6, 'H' :  7, 'I' :  8, 'J' :  9,
     'K' : 10, 'L' : 11, 'M' : 12, 'N' : 13, 'O' : 14,
@@ -107,7 +107,7 @@ public const ubyte[char.max + 1] urlSafeDecodeTable = [
 
 
 /// Value set to the padding
-private const ubyte BASE64_PAD = 64;
+private static immutable ubyte BASE64_PAD = 64;
 
 /*******************************************************************************
 
@@ -409,7 +409,7 @@ body
     static assert(validateDecodeTable(Table[0]) == null,
                   validateDecodeTable(Table[0]));
 
-    const table = Table[0];
+    static immutable table = Table[0];
     ubyte[] rtn;
 
     if (data.length > 0)

@@ -303,12 +303,12 @@ class Cache ( size_t ValueSize = 0, bool TrackCreateTimes = false ) : CacheBase!
         {
             static if ( is_dynamic )
             {
-                this.value = value;
-                return &this.value;
+                (&this).value = value;
+                return &(&this).value;
             }
             else
             {
-                return this.value[] = value[];
+                return (&this).value[] = value[];
             }
         }
 
@@ -316,14 +316,14 @@ class Cache ( size_t ValueSize = 0, bool TrackCreateTimes = false ) : CacheBase!
         {
             ValueRef value_ref ( )
             {
-                return &this.value;
+                return &(&this).value;
             }
         }
         else
         {
             ValueRef value_ref ( )
             {
-                return this.value[];
+                return (&this).value[];
             }
         }
     }
@@ -1015,7 +1015,7 @@ unittest
 
     version (all)
     {{
-        const n_records  = 33,
+        static immutable n_records  = 33,
               capacity   = 22,
               n_overflow = 7;
 
@@ -1450,9 +1450,9 @@ debug ( OceanPerformanceTest )
 
         auto random = new Random;
 
-        const cache_size = 100_000;
+        static immutable cache_size = 100_000;
 
-        const max_item_size = 1024 * 4;
+        static immutable max_item_size = 1024 * 4;
 
         StopWatch sw;
 
@@ -1476,7 +1476,7 @@ debug ( OceanPerformanceTest )
         Stderr.formatln("{} puts, {} puts/s", cache_size, cast(float)cache_size / (cast(float)sw.microsec / 1_000_000));
 
         // Put values into full cache
-        const puts = 1_000_000;
+        static immutable puts = 1_000_000;
         Stderr.formatln("Writing to cache:   ");
         sw.start;
         for ( uint i; i < puts; i++ )
@@ -1489,7 +1489,7 @@ debug ( OceanPerformanceTest )
         Stderr.formatln("{} puts, {} puts/s", puts, cast(float)puts / (cast(float)sw.microsec / 1_000_000));
 
         // Get values from cache
-        const gets = 1_000_000;
+        static immutable gets = 1_000_000;
         Stderr.formatln("Reading from cache: {} gets, {} gets/s", gets, cast(float)gets / (cast(float)sw.microsec / 1_000_000));
         sw.start;
         for ( uint i; i < gets; i++ )
@@ -1529,7 +1529,7 @@ unittest
 
 
    // Test if the whenCacheItemDropped is being called
-    const max_items = 10;
+    static immutable max_items = 10;
     auto item_dropped = false;
     size_t index = 0;
 

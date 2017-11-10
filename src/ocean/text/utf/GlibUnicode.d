@@ -281,7 +281,7 @@ struct GlibUnicode
     static char[] toUtf8 ( Char ) ( Char c )
     {
         static if (Char.sizeof == wchar.sizeof)
-            pragma (msg, typeof (*this).stringof
+            pragma (msg, typeof (*(&this)).stringof
                     ~ ".toUtf8: Only Basic Multilingual Plane supported with "
                     ~ "type '" ~ Char.stringof ~ "'; use 'dchar' "
                     ~ "for full Unicode support");
@@ -310,7 +310,7 @@ struct GlibUnicode
     static Char toUtf32 ( Char ) ( char[] c )
     {
         static if (Char.sizeof == wchar.sizeof)
-            pragma (msg, typeof (*this).stringof
+            pragma (msg, typeof (*(&this)).stringof
                     ~ ".toUtf8: Only Basic Multilingual Plane supported with "
                     ~ "type '" ~ Char.stringof ~ "'; use 'dchar' "
                     ~ "for full Unicode support");

@@ -162,7 +162,7 @@ public struct Bucket ( size_t V, K = hash_t )
 
     public bool has_element ( )
     {
-        return this.first !is null;
+        return (&this).first !is null;
     }
 
     /**************************************************************************
@@ -183,13 +183,13 @@ public struct Bucket ( size_t V, K = hash_t )
         debug (HostingArrayMapBucket) if (element)
         {
             assert (element.bucket, "bucket not set in found element");
-            assert (element.bucket is this,
+            assert (element.bucket is (&this),
                     "element found is not from this bucket");
         }
     }
     body
     {
-        for (Element* element = this.first; element; element = element.next)
+        for (Element* element = (&this).first; element; element = element.next)
         {
             if (element.key == key)
             {
@@ -228,11 +228,11 @@ public struct Bucket ( size_t V, K = hash_t )
     }
     body
     {
-        Element* element = this.find(key);
+        Element* element = (&this).find(key);
 
         if (!element)
         {
-            element = this.add(new_element);
+            element = (&this).add(new_element);
 
             static if (isStaticArrayType!(K))
             {
@@ -265,7 +265,7 @@ public struct Bucket ( size_t V, K = hash_t )
     public Element* add ( Element* element )
     in
     {
-        debug (HostingArrayMapBucket) element.bucket = this;
+        debug (HostingArrayMapBucket) element.bucket = (&this);
     }
     out
     {
@@ -273,7 +273,7 @@ public struct Bucket ( size_t V, K = hash_t )
         {
             // Check for cyclic links using 2 pointers, one which traverse
             // twice as fast as the first one
-            auto ptr1 = this.first;
+            auto ptr1 = (&this).first;
             auto ptr2 = ptr1;
 
             // Find meeting point
@@ -291,8 +291,8 @@ public struct Bucket ( size_t V, K = hash_t )
     }
     body
     {
-        element.next = this.first;
-        this.first   = element;
+        element.next = (&this).first;
+        (&this).first   = element;
 
         return element;
     }
@@ -321,7 +321,7 @@ public struct Bucket ( size_t V, K = hash_t )
 
             debug (HostingArrayMapBucket) if (removed)
             {
-                assert (removed.bucket is this,
+                assert (removed.bucket is (&this),
                         "element to remove is not from this bucket");
 
                 removed.bucket = null;
@@ -330,22 +330,22 @@ public struct Bucket ( size_t V, K = hash_t )
     }
     body
     {
-        if (this.first !is null)
+        if ((&this).first !is null)
         {
-            if (this.first.key == key)
+            if ((&this).first.key == key)
             {
-                Element* removed = this.first;
+                Element* removed = (&this).first;
 
-                this.first   = this.first.next;
+                (&this).first   = (&this).first.next;
                 removed.next = null;
 
                 return removed;
             }
             else
             {
-                Element* element = this.first.next;
+                Element* element = (&this).first.next;
 
-                for (Element* prev = this.first; element;)
+                for (Element* prev = (&this).first; element;)
                 {
                     if (element.key == key)
                     {
@@ -413,17 +413,17 @@ char[] alignForSize(E...)(string[] names...)
 }
 
 unittest {
-  const x = alignForSize!(int[], char[3], short, double[5])("x", "y","z", "w");
+  static immutable x = alignForSize!(int[], char[3], short, double[5])("x", "y","z", "w");
   struct Foo{ int x; }
-  const y = alignForSize!(ubyte, Foo, cdouble)("x", "y","z");
+  static immutable y = alignForSize!(ubyte, Foo, cdouble)("x", "y","z");
 
   static if(size_t.sizeof == uint.sizeof)
   {
-      const passNormalX = x == "double[5u] w;\nint[] x;\nshort z;\nchar[3u] y;\n";
-      const passNormalY = y == "cdouble z;\nFoo y;\nubyte x;\n";
+      static immutable passNormalX = x == "double[5u] w;\nint[] x;\nshort z;\nchar[3u] y;\n";
+      static immutable passNormalY = y == "cdouble z;\nFoo y;\nubyte x;\n";
 
-      const passAbnormalX = x == "int[] x;\ndouble[5u] w;\nshort z;\nchar[3u] y;\n";
-      const passAbnormalY = y == "Foo y;\ncdouble z;\nubyte x;\n";
+      static immutable passAbnormalX = x == "int[] x;\ndouble[5u] w;\nshort z;\nchar[3u] y;\n";
+      static immutable passAbnormalY = y == "Foo y;\ncdouble z;\nubyte x;\n";
       // ^ blame http://d.puremagic.com/issues/show_bug.cgi?id=231
 
       static assert(passNormalX || double.alignof <= (int[]).alignof && passAbnormalX);

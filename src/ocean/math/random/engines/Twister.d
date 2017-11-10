@@ -60,8 +60,8 @@ struct Twister
         UPPER_MASK = 0x80000000,        //  most significant w-r bits
         LOWER_MASK = 0x7fffffff,        // least significant r bits
     }
-    const int canCheckpoint=true;
-    const int canSeed=true;
+    enum int canCheckpoint=true;
+    enum int canSeed=true;
 
     private uint[N] mt;                     // the array for the state vector
     private uint mti=mt.length+1;           // mti==mt.length+1 means mt[] is not initialized
@@ -118,7 +118,7 @@ struct Twister
         }
     }
     /// adds entropy to the generator
-    void addEntropy(uint delegate() r){
+    void addEntropy(scope uint delegate() r){
         int i, j, k;
         i=1;
         j=0;
@@ -149,7 +149,7 @@ struct Twister
         mti=0;
     }
     /// seeds the generator
-    void seed(uint delegate() r){
+    void seed(scope uint delegate() r){
         seed (19650218UL);
         addEntropy(r);
     }

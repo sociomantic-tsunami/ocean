@@ -332,7 +332,7 @@ version (Full)
                 if (format[0] is '%')
                     {
                     // specifiers for both standard format strings and custom ones
-                    const istring commonSpecs = "dmMsty";
+                    static immutable istring commonSpecs = "dmMsty";
                     foreach (c; commonSpecs)
                         if (format[1] is c)
                             {
@@ -503,22 +503,22 @@ private extern (C) char* ecvt(double d, int digits, out int decpt, out bool sign
 *******************************************************************************/
 
 // Must match NumberFormat.decimalPositivePattern
-package const   istring positiveNumberFormat = "#";
+package static immutable   istring positiveNumberFormat = "#";
 
 // Must match NumberFormat.decimalNegativePattern
-package const   istring[] negativeNumberFormats =
+package static immutable   istring[] negativeNumberFormats =
                 [
                 "(#)", "-#", "- #", "#-", "# -"
                 ];
 
 // Must match NumberFormat.currencyPositivePattern
-package const   istring[] positiveCurrencyFormats =
+package static immutable   istring[] positiveCurrencyFormats =
                 [
                 "$#", "#$", "$ #", "# $"
                 ];
 
 // Must match NumberFormat.currencyNegativePattern
-package const   istring[] negativeCurrencyFormats =
+package static immutable   istring[] negativeCurrencyFormats =
                 [
                 "($#)", "-$#", "$-#", "$#-", "(#$)",
                 "-#$", "#-$", "#$-", "-# $", "-$ #",
@@ -1102,7 +1102,7 @@ private struct Number
 
         private bool toDouble(out double value)
         {
-                const   ulong[] pow10 =
+                enum   ulong[] pow10 =
                         [
                         0xa000000000000000UL,
                         0xc800000000000000UL,
@@ -1157,7 +1157,7 @@ private struct Number
                         0x8fcac257558ee4e2UL,
                         ];
 
-                const   uint[] pow10Exp =
+                enum   uint[] pow10Exp =
                         [
                         4, 7, 10, 14, 17, 20, 24, 27, 30, 34,
                         37, 40, 44, 47, 50, 54, 107, 160, 213, 266,
@@ -1220,7 +1220,7 @@ private struct Number
                    bits += getDigits(p + 9, n);
                    }
 
-                int scale = this.scale - (count - left);
+                int scale = (&this).scale - (count - left);
                 int s = (scale < 0) ? -scale : scale;
 
                 if (s >= 352)

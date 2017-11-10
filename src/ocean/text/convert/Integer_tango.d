@@ -292,12 +292,12 @@ Const!(T)[] formatter(T, N) (T[] dst, N i_, char type, char pre, int width)
     Unqual!(N) i = i_;
 
 
-    const Immut!(T)[] lower = "0123456789abcdef";
-    const Immut!(T)[] upper = "0123456789ABCDEF";
+    static immutable Immut!(T)[] lower = "0123456789abcdef";
+    static immutable Immut!(T)[] upper = "0123456789ABCDEF";
 
     alias _FormatterInfo!(Immut!(T)) Info;
 
-    const Info[] formats = [
+    static immutable Info[] formats = [
         { 10, null, lower},
         { -10, "-" , lower},
         { 10, " " , lower},
