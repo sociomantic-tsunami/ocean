@@ -330,12 +330,18 @@ public abstract class Task : ISuspendable
     public void resume ( )
     {
         assert (this.fiber !is null);
-        assert (this.fiber !is core.thread.Fiber.getThis());
         assert (this.fiber.state != this.fiber.state.EXEC);
+
+        auto resumer = Task.getThis();
+        assert (resumer !is this);
+        verify(
+            resumer is null || !resumer.finished(),
+            "Use `theScheduler.resume(task)` to resume a task from termination"
+                ~ " hook of another task"
+        );
 
         debug (TaskScheduler)
         {
-            auto resumer = cast(void*) core.thread.Fiber.getThis();
             if (resumer is null)
             {
                 debug_trace("<{}> has been resumed by main thread or event loop",
@@ -343,8 +349,8 @@ public abstract class Task : ISuspendable
             }
             else
             {
-                debug_trace("<{}> has been resumed from fiber <{}>",
-                    cast(void*) this, resumer);
+                debug_trace("<{}> has been resumed by <{}>",
+                    cast(void*) this, cast(void*) resumer);
             }
         }
 
