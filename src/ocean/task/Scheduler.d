@@ -38,6 +38,8 @@ import ocean.task.internal.SpecializedPools;
 version (UnitTest)
 {
     import ocean.core.Test;
+    import ocean.io.Stdout;
+    import core.stdc.stdlib : abort;
 }
 
 debug (TaskScheduler)
@@ -742,6 +744,11 @@ unittest
     config.task_queue_limit = 1;
     initScheduler(config);
 
+    // use default non-test handler to check real app behaviour:
+    theScheduler.exception_handler = (Task t, Exception e) {
+        throw e;
+    };
+
     class DummyTask : Task
     {
         override public void run ( ) { theScheduler.processEvents(); }
@@ -851,6 +858,28 @@ public void initScheduler ( SchedulerConfiguration config,
         assert (is_scheduler_unused());
 
     _scheduler = new Scheduler(config, epoll);
+
+    version(UnitTest)
+    {
+        _scheduler.exception_handler = (Task t, Exception e) {
+            if (t !is null)
+            {
+                Stderr.formatln(
+                    "Unhandled exception in task {} ({})",
+                    cast(void*) t, t.classinfo.name
+                );
+            }
+            else
+            {
+                Stderr.formatln("Unhandled exception in epoll/scheduler");
+            }
+
+            Stderr.formatln("\t{} ({}:{})", e.message(), e.file, e.line)
+                .flush();
+
+            abort();
+        };
+    }
 
     // set interface-based global scheduler getter in IScheduler module:
     ocean.task.IScheduler._scheduler = _scheduler;
