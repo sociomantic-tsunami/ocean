@@ -18,8 +18,6 @@ module ocean.task.util.Event;
 
 import ocean.transition;
 import ocean.task.Task;
-import ocean.task.util.Timer;
-import ocean.task.Scheduler;
 
 debug (TaskScheduler)
 {
@@ -28,7 +26,7 @@ debug (TaskScheduler)
 
 /*******************************************************************************
 
-    Binds together a task reference and a boolean flag to indicate the event 
+    Binds together a task reference and a boolean flag to indicate the event
     status.
 
     Allows calling wait/trigger in any order as opposed to the plain
@@ -80,77 +78,6 @@ struct TaskEvent
             this.task.resume();
         }
     }
-}
-
-version (UnitTest)
-{
-    import ocean.core.Test;
-}
-
-unittest
-{
-    TaskEvent event;
-    int state = 0;
-
-    class Task1 : Task
-    {
-        override public void run ( )
-        {
-            state = 1;
-            event.wait();
-            state = 3;
-        }
-    }
-
-    class Task2 : Task
-    {
-        override public void run ( )
-        {
-            state = 2;
-            .wait(100);
-            event.trigger();
-        }
-    }
-
-    initScheduler(SchedulerConfiguration.init);
-    theScheduler.schedule(new Task1);
-    test!("==")(state, 1);
-    theScheduler.schedule(new Task2);
-    test!("==")(state, 2);
-    theScheduler.eventLoop();
-    test!("==")(state, 3);
-}
-
-unittest
-{
-    TaskEvent event;
-    int state = 0;
-
-    class Task1 : Task
-    {
-        override public void run ( )
-        {
-            state = 1;
-            event.wait();
-            state = 3;
-        }
-    }
-
-    class Task2 : Task
-    {
-        override public void run ( )
-        {
-            state = 2;
-            event.trigger();
-        }
-    }
-
-    initScheduler(SchedulerConfiguration.init);
-    theScheduler.schedule(new Task2);
-    test!("==")(state, 2);
-    theScheduler.schedule(new Task1);
-    test!("==")(state, 3);
-    theScheduler.eventLoop();
 }
 
 private void debug_trace ( T... ) ( cstring format, T args )

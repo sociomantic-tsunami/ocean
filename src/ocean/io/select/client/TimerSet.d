@@ -34,7 +34,7 @@ import ocean.util.container.pool.ObjectPool;
 
 import ocean.core.Verify;
 
-import ocean.task.Scheduler;
+import ocean.task.IScheduler;
 import ocean.io.select.EpollSelectDispatcher;
 
 import ocean.io.select.timeout.TimerEventTimeoutManager;

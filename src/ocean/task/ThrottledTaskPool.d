@@ -18,7 +18,7 @@ module ocean.task.ThrottledTaskPool;
 
 import ocean.task.TaskPool;
 import ocean.task.Task;
-import ocean.task.Scheduler;
+import ocean.task.IScheduler;
 import ocean.text.convert.Formatter;
 
 import ocean.io.model.ISuspendableThrottler;
@@ -41,11 +41,6 @@ public class ThrottledTaskPool ( TaskT ) : TaskPool!(TaskT)
 {
     import ocean.core.Traits;
     import ocean.core.Enforce;
-
-    debug (TaskScheduler)
-    {
-        import ocean.io.Stdout;
-    }
 
     /***************************************************************************
 

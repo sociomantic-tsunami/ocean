@@ -26,17 +26,11 @@ module ocean.task.TaskPool;
 import ocean.transition;
 
 import ocean.task.Task;
-import ocean.task.Scheduler;
+import ocean.task.IScheduler;
 
 import ocean.core.Enforce;
 import ocean.core.Traits;
 import ocean.util.container.pool.ObjectPool;
-
-version (UnitTest)
-{
-    import ocean.core.Test;
-    import ocean.task.util.Timer;
-}
 
 /*******************************************************************************
 
@@ -260,151 +254,40 @@ class TaskPool ( TaskT : Task ) : ObjectPool!(Task)
 ///
 unittest
 {
-    static class DummyTask : Task
+    void example ( )
     {
-        import ocean.core.Array : copy;
-
-        // The task requires a single string, which is copied from the outside
-        // by `copyArguments()`
-        private mstring buffer;
-
-        public void copyArguments ( cstring arg )
+        static class DummyTask : Task
         {
-            this.buffer.copy(arg);
+            import ocean.core.Array : copy;
+
+            // The task requires a single string, which is copied from the outside
+            // by `copyArguments()`
+            private mstring buffer;
+
+            public void copyArguments ( cstring arg )
+            {
+                this.buffer.copy(arg);
+            }
+
+            override public void recycle ( )
+            {
+                this.buffer.length = 0;
+                enableStomping(this.buffer);
+            }
+
+            public override void run ( )
+            {
+                // do good stuff
+            }
         }
 
-        override public void recycle ( )
-        {
-            this.buffer.length = 0;
-            enableStomping(this.buffer);
-        }
+        auto pool = new TaskPool!(DummyTask);
 
-        public override void run ( )
-        {
-            // do good stuff
-        }
+        // Start some tasks, passing the required parameters to the pool's `start()`
+        // method
+        pool.start("abcd");
+        pool.start("xyz");
+
+        theScheduler.eventLoop();
     }
-
-    auto pool = new TaskPool!(DummyTask);
-    initScheduler(SchedulerConfiguration.init);
-
-    // Start some tasks, passing the required parameters to the pool's `start()`
-    // method
-    pool.start("abcd");
-    pool.start("xyz");
-
-    theScheduler.eventLoop();
-}
-
-unittest
-{
-    // Test that the recycle method of custom tasks is called
-    static class RecycleTask : Task
-    {
-        static size_t recycle_count;
-
-        public void copyArguments ( )
-        {
-
-        }
-
-        override public void recycle ( )
-        {
-            recycle_count++;
-        }
-
-        override public void run ( )
-        {
-
-        }
-    }
-
-    auto pool = new TaskPool!(RecycleTask);
-    initScheduler(SchedulerConfiguration.init);
-
-    pool.start();
-    pool.start();
-
-    theScheduler.eventLoop();
-    test!("==")(RecycleTask.recycle_count, 2,
-        "RecycleTask.recycle was not called the correct number of times");
-}
-
-unittest
-{
-    // Test for waiting until all running tasks of a task pool finish executing.
-
-    static class AwaitTask : Task
-    {
-        static int value;
-
-        public void copyArguments ( )
-        {
-        }
-
-        override public void run ( )
-        {
-            .wait(1); // so that the task gets suspended
-            value++;
-        }
-    }
-
-    class MainTask : Task
-    {
-        TaskPool!(AwaitTask) my_task_pool;
-
-        public this ( )
-        {
-            this.my_task_pool = new TaskPool!(AwaitTask);
-        }
-
-        override protected void run ( )
-        {
-            const NUM_START_CALLS = 6;
-
-            for (uint i; i < NUM_START_CALLS; i++)
-                this.my_task_pool.start();
-
-            this.my_task_pool.awaitRunningTasks();
-
-            test!("==")(AwaitTask.value, NUM_START_CALLS);
-        }
-    }
-
-    initScheduler(SchedulerConfiguration.init);
-    theScheduler.schedule(new MainTask);
-    theScheduler.eventLoop();
-}
-
-unittest
-{
-    // Test that 'awaitRunningTasks()' cannot be called from a task that itself
-    // belongs to the pool.
-
-    static class AwaitTask : Task
-    {
-        void delegate () dg;
-
-        public void copyArguments ( void delegate () dg )
-        {
-            this.dg = dg;
-        }
-
-        override public void run ( )
-        {
-            testThrown!(Exception)(this.dg());
-        }
-    }
-
-    auto pool = new TaskPool!(AwaitTask);
-    initScheduler(SchedulerConfiguration.init);
-
-    pool.start(
-        {
-            // This delegate should throw as it will attempt to call the task
-            // pool's awaitRunningTasks() method from within a task that itself
-            // belongs to the pool.
-            pool.awaitRunningTasks();
-        }
-    );
 }
