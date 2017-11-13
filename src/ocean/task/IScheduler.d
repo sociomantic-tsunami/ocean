@@ -210,19 +210,6 @@ public interface IScheduler
 
     /***************************************************************************
 
-        Starts pseudo-infinite event loop. Event loop will keep running as long
-        as there is at least one event registered.
-
-        Throws:
-            SanityException if there are some active worker fibers
-            left in the pool by the time there are not events left
-
-    ***************************************************************************/
-
-    public void eventLoop ( );
-
-    /***************************************************************************
-
         Convenience shortcut on top of `await` to await for a task and return
         some value type as a result.
 
@@ -276,6 +263,19 @@ public interface IScheduler
     ***************************************************************************/
 
     public void processEvents ( );
+
+    /***************************************************************************
+
+        Starts pseudo-infinite event loop. Event loop will keep running as long
+        as there is at least one event registered.
+
+        Throws:
+            SanityException if there are some active worker fibers
+            left in the pool by the time there are not events left
+
+    ***************************************************************************/
+
+    public void eventLoop ( );
 }
 
 /*******************************************************************************
