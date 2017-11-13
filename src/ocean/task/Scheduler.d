@@ -239,8 +239,7 @@ final class Scheduler : IScheduler
         this.fiber_pool = new FiberPoolWithQueue(
             config.task_queue_limit,
             config.worker_fiber_stack_size,
-            config.worker_fiber_limit,
-            &this.processEvents
+            config.worker_fiber_limit
         );
 
         this.specialized_pools = new SpecializedPools(config.specialized_pools);
