@@ -39,10 +39,6 @@ public class FiberPoolWithQueue : FiberPool
     /* package(ocean.task) */
     public TaskQueueFullException queue_full_e;
 
-    /// Reference to `theScheduler.processEvents` initialized upon class
-    /// creation. Used to break circular dependency.
-    private void delegate() process_events;
-
     /***************************************************************************
 
         Called each time task is attempted to be queue but size limit is
@@ -63,20 +59,14 @@ public class FiberPoolWithQueue : FiberPool
             limit = limit to pool size. If set to 0 (default), there is no
                 app limit and pool growth will be limited only by OS
                 resources
-            process_events = reference to scheduler method which does temporary
-                suspend, passed to constructor to avoid circular dependency
 
     **************************************************************************/
 
-    public this ( size_t queue_limit, size_t stack_size, size_t limit,
-        void delegate () process_events )
+    public this ( size_t queue_limit, size_t stack_size, size_t limit )
     {
-        assert(process_events !is null);
-
         super(stack_size, limit);
         this.queued_tasks = new FixedRingQueue!(Task)(queue_limit);
         this.queue_full_e = new TaskQueueFullException;
-        this.process_events = process_events;
     }
 
     /***************************************************************************
@@ -188,7 +178,7 @@ public class FiberPoolWithQueue : FiberPool
             // execution for one cycle to avoid situation where exception handler
             // calls `Task.continueAfterThrow()` and that throws again
             if (had_exception)
-                this.process_events();
+                theScheduler.processEvents();
 
             // makes impossible to use the task by an accident in the period
             // between finishing it here and getting it started anew after
