@@ -177,13 +177,27 @@ public abstract class EpollProcess
 
         /***********************************************************************
 
+            Allocate the map from a free list, to reduce memory allocation.
+
+        ***********************************************************************/
+
+        import FreeListAllocator =
+            ocean.util.container.map.model.BucketElementFreeList;
+
+
+        /***********************************************************************
+
             Constructor.
 
         ***********************************************************************/
 
         public this ( )
         {
-            this.processes = new StandardKeyHashingMap!(EpollProcess, int)(20);
+            // Allocate the map using a free list
+
+            this.processes = new StandardKeyHashingMap!(EpollProcess, int)(
+                FreeListAllocator.instantiateAllocator!(
+                    StandardKeyHashingMap!(EpollProcess, int)), 20);
 
             this.sigchild_event = new SelectEvent(&this.selectEventHandler);
 
