@@ -306,7 +306,7 @@ version ( UnitTest )
 
 *******************************************************************************/
 
-private const handleInvalidCases = "case none: verify(false); break;" ~
+private const handleInvalidCases = "case none: assert(false);" ~
     // The D2 build makes sure all enum cases are covered so in fact we don't
     // need a default. However, D1 emits a compiler warning if a switch
     // has no default so we add a default here just to avoid the warning.
