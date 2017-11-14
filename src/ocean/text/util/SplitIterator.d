@@ -514,9 +514,6 @@ abstract class ISplitIterator
             index of the first delimiter occurrence in str or str.length
             either not found or start >= content.length
 
-         In:
-             start must be at most content.length.
-
      **************************************************************************/
 
     public size_t locateDelim ( size_t start = 0 )
