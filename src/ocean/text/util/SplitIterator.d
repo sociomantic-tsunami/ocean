@@ -253,7 +253,7 @@ class ChrSplitIterator : ISplitIterator
 
         Params:
              str   = string to scan
-             start = search start index
+             start = search start index, must be at most str.length
 
         Returns:
              index of first occurrence of delim in str or str.length if not
@@ -264,7 +264,7 @@ class ChrSplitIterator : ISplitIterator
     public override size_t locateDelim ( cstring str, size_t start = 0 )
     {
         verify(
-            start < str.length,
+            start <= str.length,
             typeof (this).stringof ~ ".locateDelim: start index out of range"
         );
 
