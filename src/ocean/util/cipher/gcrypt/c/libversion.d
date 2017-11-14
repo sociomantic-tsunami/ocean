@@ -35,13 +35,26 @@ public istring gcrypt_version = "1.5.0";
 
 *******************************************************************************/
 
-static this ( )
+private void staticCtor ( )
 {
     if ( !gcry_check_version(gcrypt_version.ptr) )
     {
         throw new Exception("Version of libgcrypt is less than "~gcrypt_version);
     }
 }
+
+version (D_Version2)
+{
+    mixin("shared static this () { staticCtor(); }");
+}
+else
+{
+    static this ()
+    {
+        staticCtor();
+    }
+}
+
 
 /// See original's library documentation for details.
 extern (C) Const!(char)* gcry_check_version ( Const!(char)* req_version);
