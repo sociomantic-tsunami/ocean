@@ -47,7 +47,7 @@ class HttpParams : HttpTokens, HttpParamsView
         // tell compiler to expose super.parse() also
         alias HttpTokens.parse parse;
 
-        private Delimiters!(char) amp;
+        private Delimiters amp;
 
         /**********************************************************************
 
@@ -61,7 +61,7 @@ class HttpParams : HttpTokens, HttpParamsView
                 super ('=');
 
                 // construct a line tokenizer for later usage
-                amp = new Delimiters!(char) ("&");
+                amp = new Delimiters("&");
         }
 
         /**********************************************************************

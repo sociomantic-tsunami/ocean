@@ -1186,7 +1186,7 @@ public class Arguments
 
     ***************************************************************************/
 
-    public void displayHelp ( FormatOutput!(char) output = Stderr )
+    public void displayHelp ( FormatOutput output = Stderr )
     {
         if ( this.short_desc.length > 0 )
         {
@@ -1234,7 +1234,7 @@ public class Arguments
 
     ***************************************************************************/
 
-    public void displayErrors ( FormatOutput!(char) output = Stderr )
+    public void displayErrors ( FormatOutput output = Stderr )
     {
         output.format("{}", this.errors());
     }
