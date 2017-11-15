@@ -208,7 +208,7 @@ class VirtualFolder : VfsHost
 
         ***********************************************************************/
 
-        final int opApply (int delegate(ref VfsFolder) dg)
+        final int opApply (scope int delegate(ref VfsFolder) dg)
         {
                 int result;
 
@@ -414,7 +414,7 @@ private class VirtualFolders : VfsFolders
 
         ***********************************************************************/
 
-        final int opApply (int delegate(ref VfsFolder) dg)
+        final int opApply (scope int delegate(ref VfsFolder) dg)
         {
                 int ret;
 
@@ -551,7 +551,7 @@ private class VirtualFiles : VfsFiles
 
         ***********************************************************************/
 
-        final int opApply (int delegate(ref VfsFile) dg)
+        final int opApply (scope int delegate(ref VfsFile) dg)
         {
                 int ret;
 

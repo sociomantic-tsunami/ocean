@@ -337,7 +337,7 @@ public Layout newLayout ( cstring layout_str )
 deprecated("Old Loggers are deprecated, use configureNewLoggers instead")
 public void configureOldLoggers (
     ClassIterator!(Config, ConfigParser) config, MetaConfig m_config,
-    Appender delegate ( istring file, Layout layout ) file_appender,
+    scope Appender delegate ( istring file, Layout layout ) file_appender,
     bool use_insert_appender = false)
 {
     configureOldLoggers(config, m_config, file_appender,
@@ -389,8 +389,8 @@ private alias extern(D) Layout delegate (cstring)
 deprecated("Old Loggers are deprecated, use configureNewLoggers instead")
 public void configureOldLoggers (
     ClassIterator!(Config, ConfigParser) config, MetaConfig m_config,
-    Appender delegate ( istring file, Layout layout ) file_appender,
-    Layout delegate (cstring) makeLayout, bool use_insert_appender = false)
+    scope Appender delegate ( istring file, Layout layout ) file_appender,
+    scope Layout delegate (cstring) makeLayout, bool use_insert_appender = false)
 {
     // DMD1 cannot infer the common type between both return, we have to work
     // around it...
@@ -425,7 +425,7 @@ unittest
     void myConfigureLoggers (
         ClassIterator!(Config, ConfigParser) config,
         MetaConfig m_config,
-        Appender delegate ( istring file, Layout layout ) file_appender,
+        scope Appender delegate ( istring file, Layout layout ) file_appender,
         bool use_insert_appender = false)
     {
         Layout makeLayout (cstring name)
@@ -450,7 +450,7 @@ deprecated unittest
     void myConfigureLoggers (
         ClassIterator!(Config, ConfigParser) config,
         MetaConfig m_config,
-        Appender delegate ( istring file, Layout layout ) file_appender,
+        scope Appender delegate ( istring file, Layout layout ) file_appender,
         bool use_insert_appender = false)
     {
         Layout makeLayout (cstring name)
@@ -486,7 +486,7 @@ deprecated unittest
 
 public void configureNewLoggers (
     ClassIterator!(Config, ConfigParser) config, MetaConfig m_config,
-    Appender delegate ( istring file, Layout layout ) file_appender,
+    scope Appender delegate ( istring file, Layout layout ) file_appender,
     bool use_insert_appender = false)
 {
     configureNewLoggers(config, m_config, file_appender,
@@ -519,8 +519,8 @@ public void configureNewLoggers (
 
 public void configureNewLoggers (
     ClassIterator!(Config, ConfigParser) config, MetaConfig m_config,
-    Appender delegate ( istring file, Layout layout ) file_appender,
-    Layout delegate (cstring) makeLayout, bool use_insert_appender = false)
+    scope Appender delegate ( istring file, Layout layout ) file_appender,
+    scope Layout delegate (cstring) makeLayout, bool use_insert_appender = false)
 {
     // DMD1 cannot infer the common type between both return, we have to work
     // around it...
@@ -576,10 +576,10 @@ private void configureLoggers
     (LoggerT : ILogger, Source = ConfigParser,
      FileLayout = LayoutDate, ConsoleLayout = LayoutSimple)
     (ClassIterator!(Config, Source) config, MetaConfig m_config,
-     LoggerT delegate (cstring name) lookup,
-     Appender delegate (istring file, Layout layout) file_appender,
-     Appender delegate (Layout) console_appender,
-     Layout delegate (cstring) makeLayout)
+     scope LoggerT delegate (cstring name) lookup,
+     scope Appender delegate (istring file, Layout layout) file_appender,
+     scope Appender delegate (Layout) console_appender,
+     scope Layout delegate (cstring) makeLayout)
 {
     // It is important to ensure that parent loggers are configured before child
     // loggers. This is because parent loggers will override the settings of
@@ -675,10 +675,10 @@ public void configureLogger
     (FileLayout = LayoutDate, ConsoleLayout = LayoutSimple,
      LoggerT : ILogger = Logger)
     (LoggerT log, Config settings, istring name,
-     Appender delegate ( istring file, Layout layout ) file_appender,
-     Appender delegate (Layout) console_appender,
+     scope Appender delegate ( istring file, Layout layout ) file_appender,
+     scope Appender delegate (Layout) console_appender,
      bool console_enabled, bool syslog_enabled, size_t buffer_size,
-     Layout delegate (cstring) makeLayout = (cstring v) { return newLayout(v); })
+     scope Layout delegate (cstring) makeLayout = (cstring v) { return newLayout(v); })
 {
     if (settings.buffer_size)
         buffer_size = settings.buffer_size;

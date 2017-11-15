@@ -259,7 +259,7 @@ interface VfsFolder
 
         ***********************************************************************/
 
-        int opApply (int delegate(ref VfsFolder) dg);
+        int opApply (scope int delegate(ref VfsFolder) dg);
 
         /***********************************************************************
 
@@ -318,7 +318,7 @@ interface VfsFolders
 
         ***********************************************************************/
 
-        int opApply (int delegate(ref VfsFolder) dg);
+        int opApply (scope int delegate(ref VfsFolder) dg);
 
         /***********************************************************************
 
@@ -392,7 +392,7 @@ interface VfsFiles
 
         ***********************************************************************/
 
-        int opApply (int delegate(ref VfsFile) dg);
+        int opApply (scope int delegate(ref VfsFile) dg);
 
         /***********************************************************************
 
