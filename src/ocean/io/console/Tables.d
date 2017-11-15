@@ -152,7 +152,7 @@ public class Table
 
     ***************************************************************************/
 
-    public alias FormatOutput!(char) Output;
+    public alias FormatOutput Output;
 
 
     /***************************************************************************
@@ -1417,7 +1417,7 @@ unittest
 {
     auto buffer = new Array(1024, 1024);
 
-    scope output = new FormatOutput!(char) (buffer);
+    scope output = new FormatOutput(buffer);
 
     scope table = new Table(4);
 

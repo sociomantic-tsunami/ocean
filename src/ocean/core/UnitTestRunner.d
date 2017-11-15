@@ -897,7 +897,7 @@ private scope class UnitTestRunner
 
     ***************************************************************************/
 
-    private void printUsage ( FormatOutput!(char) output )
+    private void printUsage ( FormatOutput output )
     {
         output.formatln("Usage: {} [-h] [-v] [-s] [-k] [-p PKG] [-x FILE]",
                 this.prog);
@@ -913,7 +913,7 @@ private scope class UnitTestRunner
 
     ***************************************************************************/
 
-    private void printHelp ( FormatOutput!(char) output )
+    private void printHelp ( FormatOutput output )
     {
         this.printUsage(output);
         output.format(`

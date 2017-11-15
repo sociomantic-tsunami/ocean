@@ -461,7 +461,7 @@ class HttpCookies
 
 *******************************************************************************/
 
-class CookieParser : Iterator!(char)
+class CookieParser : Iterator
 {
         private enum State {Begin, LValue, Equals, RValue, Token, SQuote, DQuote};
 
@@ -702,5 +702,3 @@ class CookieParser : Iterator!(char)
                 return (c > 32 && c < 127 && !charMap[c]);
         }
 }
-
-
