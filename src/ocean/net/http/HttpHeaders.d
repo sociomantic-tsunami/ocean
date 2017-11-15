@@ -53,7 +53,7 @@ class HttpHeadersView : HttpTokens
         // tell compiler to used super.parse() also
         alias HttpTokens.parse parse;
 
-        private Lines!(char) line;
+        private Lines        line;
         private bool         preserve;
 
         /**********************************************************************
@@ -70,7 +70,7 @@ class HttpHeadersView : HttpTokens
                 super (':', true);
 
                 // construct a line tokenizer for later usage
-                line = new Lines!(char);
+                line = new Lines;
         }
 
         /**********************************************************************

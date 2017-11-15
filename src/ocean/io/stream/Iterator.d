@@ -58,10 +58,10 @@ package import ocean.io.device.Conduit : InputFilter, InputBuffer, InputStream;
 
 *******************************************************************************/
 
-class Iterator(T) : InputFilter
+class Iterator : InputFilter
 {
         private InputBuffer     source;
-        protected Const!(T)[]   slice,
+        protected cstring       slice,
                                 delim;
 
         /***********************************************************************
@@ -105,7 +105,7 @@ class Iterator(T) : InputFilter
 
         ***********************************************************************/
 
-        final Const!(T)[] get ()
+        final cstring get ()
         {
                 return slice;
         }
@@ -118,7 +118,7 @@ class Iterator(T) : InputFilter
 
         **********************************************************************/
 
-        int opApply (int delegate(ref Const!(T)[]) dg)
+        int opApply (int delegate(ref cstring) dg)
         {
                 bool more;
                 int  result;
@@ -137,7 +137,7 @@ class Iterator(T) : InputFilter
 
         **********************************************************************/
 
-        int opApply (int delegate(ref int, ref Const!(T)[]) dg)
+        int opApply (int delegate(ref int, ref cstring) dg)
         {
                 bool more;
                 int  result,
@@ -158,7 +158,7 @@ class Iterator(T) : InputFilter
 
         **********************************************************************/
 
-        int opApply (int delegate(ref int, ref Const!(T)[], ref Const!(T)[]) dg)
+        int opApply (int delegate(ref int, ref cstring, ref cstring) dg)
         {
                 bool more;
                 int  result,
@@ -199,7 +199,7 @@ class Iterator(T) : InputFilter
 
         ***********************************************************************/
 
-        final Const!(T)[] next ()
+        final cstring next ()
         {
                 if (consume() || slice.length)
                     return slice;
@@ -213,7 +213,7 @@ class Iterator(T) : InputFilter
 
         ***********************************************************************/
 
-        protected final size_t set (Const!(T)* content, size_t start, size_t end)
+        protected final size_t set (Const!(char)* content, size_t start, size_t end)
         {
                 slice = content [start .. end];
                 return end;
@@ -227,7 +227,7 @@ class Iterator(T) : InputFilter
 
         ***********************************************************************/
 
-        protected final size_t set (Const!(T)* content, size_t start, size_t end, size_t next)
+        protected final size_t set (Const!(char)* content, size_t start, size_t end, size_t next)
         {
                 slice = content [start .. end];
                 delim = content [end .. next+1];
@@ -258,7 +258,7 @@ class Iterator(T) : InputFilter
 
         protected final size_t found (size_t i)
         {
-                return (i + 1) * T.sizeof;
+                return (i + 1);
         }
 
         /***********************************************************************
@@ -267,9 +267,9 @@ class Iterator(T) : InputFilter
 
         ***********************************************************************/
 
-        protected final bool has (Const!(T)[] set, T match)
+        protected final bool has (cstring set, char match)
         {
-                foreach (T c; set)
+                foreach (c; set)
                          if (match is c)
                              return true;
                 return false;
@@ -290,8 +290,8 @@ class Iterator(T) : InputFilter
                 // consume trailing token
                 source.reader ((Const!(void)[] arr)
                               {
-                              slice = (cast(T*) arr.ptr) [0 .. arr.length/T.sizeof];
-                              return cast(size_t)arr.length;
+                              slice = (cast(Const!(char)*) arr.ptr) [0 .. arr.length];
+                              return arr.length;
                               });
                 return false;
         }

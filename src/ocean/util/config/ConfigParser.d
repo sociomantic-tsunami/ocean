@@ -781,7 +781,7 @@ public class ConfigParser
 
     ***************************************************************************/
 
-    public void print ( FormatOutput!(char) output = Stdout )
+    public void print ( FormatOutput output = Stdout )
     {
         foreach ( category, key_value_pairs; this.properties )
         {
