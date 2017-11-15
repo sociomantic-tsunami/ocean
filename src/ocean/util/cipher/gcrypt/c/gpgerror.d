@@ -609,10 +609,18 @@ const GPG_ERR_SOURCE_SHIFT  = 24;
 /// See original's library documentation for details.
 uint gpg_err_init();
 
-static this ( )
+version (D_Version2)
 {
-    gpg_err_init();
+    mixin("shared static this ( ) { gpg_err_init(); }");
 }
+else
+{
+    static this ( )
+    {
+        gpg_err_init();
+    }
+}
+
 
 /// See original's library documentation for details.
 void gpg_err_deinit (int mode);
