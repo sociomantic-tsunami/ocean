@@ -44,15 +44,6 @@ version(DigitalMars)
         ---
         auto print = new FormatOutput!(char) (...);
 
-        print ("hello");                    // => hello
-        print (1);                          // => 1
-        print (3.14);                       // => 3.14
-        print ('b');                        // => b
-        print (1, 2, 3);                    // => 1, 2, 3
-        print ("abc", 1, 2, 3);             // => abc, 1, 2, 3
-        print ("abc", 1, 2) ("foo");        // => abc, 1, 2foo
-        print ("abc") ("def") (3.14);       // => abcdef3.14
-
         print.format ("abc {}", 1);         // => abc 1
         print.format ("abc {}:{}", 1, 2);   // => abc 1:2
         print.format ("abc {1}:{0}", 1, 2); // => abc 2:1
@@ -63,13 +54,8 @@ version(DigitalMars)
         are several use-cases where dropping an argument is legitimate,
         so we're currently not enforcing any particular trap mechanism.
 
-        Flushing the output is achieved through the flush() method, or
-        via an empty pair of parens:
+        Flushing the output is achieved through the flush() method:
         ---
-        print ("hello world") ();
-        print ("hello world").flush;
-
-        print.format ("hello {}", "world") ();
         print.format ("hello {}", "world").flush;
         ---
 
@@ -79,7 +65,6 @@ version(DigitalMars)
         newlines are generated instead via the newline() method, which also
         flushes the output when configured to do so:
         ---
-        print ("hello ") ("world").newline;
         print.format ("hello {}", "world").newline;
         print.formatln ("hello {}", "world");
         ---
@@ -110,7 +95,10 @@ class FormatOutput(T) : OutputFilter
 
         this (OutputStream output, Const!(T)[] eol = Eol)
         {
-                this (Layout!(T).instance, output, eol);
+            this.convert = Layout!(T).instance;
+            this.eol = eol;
+            super (output);
+
         }
 
         /**********************************************************************
@@ -120,6 +108,7 @@ class FormatOutput(T) : OutputFilter
 
         **********************************************************************/
 
+        deprecated("Using Layout with this class is deprecated - Remove the first argument at call site")
         this (Layout!(T) convert, OutputStream output, Const!(T)[] eol = Eol)
         {
                 verify(convert !is null);
@@ -138,7 +127,14 @@ class FormatOutput(T) : OutputFilter
 
         final FormatOutput format (Const!(T)[] fmt, ...)
         {
-            return format(fmt, _arguments, _argptr);
+            this.convert(&this.emit, _arguments, _argptr, fmt);
+            return this;
+        }
+
+        /// Used by derived classes to avoid deprecations - deprecated, remove in v4.0.0
+        protected final void _transitional_format (Const!(T)[] fmt, TypeInfo[] arguments, ArgList args)
+        {
+            this.convert(&this.emit, arguments, args, fmt);
         }
 
         /**********************************************************************
@@ -148,6 +144,7 @@ class FormatOutput(T) : OutputFilter
 
         **********************************************************************/
 
+        deprecated("RTTI-specific function is deprecated, use a Formatter-compatible API")
         final FormatOutput format (Const!(T)[] fmt, TypeInfo[] arguments, ArgList args)
         {
             convert (&emit, arguments, args, fmt);
@@ -163,7 +160,8 @@ class FormatOutput(T) : OutputFilter
 
         final FormatOutput formatln (Const!(T)[] fmt, ...)
         {
-            return formatln(fmt, _arguments, _argptr);
+            this.convert(&this.emit, _arguments, _argptr, fmt);
+            return this.newline;
         }
 
         /**********************************************************************
@@ -172,7 +170,7 @@ class FormatOutput(T) : OutputFilter
                 pass-through version.
 
         **********************************************************************/
-
+        deprecated("RTTI-specific function is deprecated, use a Formatter-compatible API")
         final FormatOutput formatln (Const!(T)[] fmt, TypeInfo[] arguments, ArgList args)
         {
             convert (&emit, arguments, args, fmt);
@@ -187,6 +185,7 @@ class FormatOutput(T) : OutputFilter
 
         **********************************************************************/
 
+        deprecated("Use the 'format' method instead, or 'flush'")
         final FormatOutput print ( ... )
         {
                 static slice =  "{}, {}, {}, {}, {}, {}, {}, {}, " ~
@@ -261,6 +260,7 @@ class FormatOutput(T) : OutputFilter
 
         **********************************************************************/
 
+        deprecated("FormatOutput will stop using Layout and switch to Formatter in v4.0.0")
         final Layout!(T) layout ()
         {
                 return convert;
@@ -271,7 +271,7 @@ class FormatOutput(T) : OutputFilter
                 Set the associated Layout.
 
         **********************************************************************/
-
+        deprecated("FormatOutput will stop using Layout and switch to Formatter in v4.0.0")
         final FormatOutput layout (Layout!(T) layout)
         {
                 convert = layout;

@@ -190,7 +190,7 @@ class ArgumentsExt : IApplicationExtension
             args.displayErrors(this.stderr);
             foreach (error; errors)
             {
-                this.stderr(error).newline;
+                this.stderr.format("{}", error).newline;
             }
             if (ocean_stderr !is null)
                 ocean_stderr.default_colour;
