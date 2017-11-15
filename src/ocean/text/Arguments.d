@@ -611,6 +611,7 @@ import ocean.io.stream.Format : FormatOutput;
 import ocean.math.Math;
 import ocean.text.Util;
 import ocean.text.convert.Formatter;
+static import ocean.text.convert.Layout_tango; // TODO: deprecated - remove in v4.0.0
 import ocean.text.convert.Integer_tango;
 import ocean.util.container.SortedMap;
 import ocean.util.container.more.Stack;
@@ -1096,6 +1097,7 @@ public class Arguments
 
     ***************************************************************************/
 
+    deprecated("Use the overload that doesn't take a parameter (and use the Formatter)")
     public istring errors ( mstring delegate(mstring buf, cstring fmt, ...) dg )
     {
         char[256] tmp;
@@ -1112,6 +1114,34 @@ public class Arguments
         }
 
         return result;
+    }
+
+    /***************************************************************************
+
+        Constructs a string of error messages.
+
+        Returns:
+            formatted error message string
+
+    ***************************************************************************/
+
+    public istring errors ()
+    {
+        mstring result;
+
+        foreach (arg; args)
+        {
+            if (arg.error)
+            {
+                // TODO: Replace with `sformat` in v4.0.0
+                ocean.text.convert.Layout_tango.Layout!(char).instance.sprint(
+                    result, msgs[arg.error-1], arg.name,
+                    arg.values.length, arg.min, arg.max, arg.bogus,
+                    arg.options);
+            }
+        }
+
+        return assumeUnique(result);
     }
 
 
@@ -1241,7 +1271,7 @@ public class Arguments
 
     public void displayErrors ( FormatOutput!(char) output = Stderr )
     {
-        output(this.errors(&output.layout.sprint));
+        output(this.errors());
     }
 
 
