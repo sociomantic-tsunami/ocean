@@ -60,7 +60,7 @@ class ArgumentsExt : IApplicationExtension
 
     ***************************************************************************/
 
-    protected FormatOutput!(char) stdout;
+    protected FormatOutput stdout;
 
 
     /***************************************************************************
@@ -69,7 +69,7 @@ class ArgumentsExt : IApplicationExtension
 
     ***************************************************************************/
 
-    protected FormatOutput!(char) stderr;
+    protected FormatOutput stderr;
 
 
     /***************************************************************************
@@ -100,8 +100,8 @@ class ArgumentsExt : IApplicationExtension
 
     public this ( istring name = null, istring desc = null,
             istring usage = null, istring help = null,
-            FormatOutput!(char) stdout = Stdout,
-            FormatOutput!(char) stderr = Stderr )
+            FormatOutput stdout = Stdout,
+            FormatOutput stderr = Stderr )
     {
         this.stdout = stdout;
         this.stderr = stderr;

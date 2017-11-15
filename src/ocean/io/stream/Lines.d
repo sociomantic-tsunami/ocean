@@ -40,7 +40,7 @@ import ocean.io.stream.Iterator;
 
 *******************************************************************************/
 
-class Lines(T) : Iterator!(T)
+class Lines : Iterator
 {
         /***********************************************************************
 
@@ -84,7 +84,7 @@ class Lines(T) : Iterator!(T)
 
         ***********************************************************************/
 
-        final bool readln (ref Const!(T)[] content)
+        final bool readln (ref cstring content)
         {
                 content = super.next;
                 return content.ptr !is null;
@@ -99,12 +99,12 @@ class Lines(T) : Iterator!(T)
 
         protected override size_t scan (Const!(void)[] data)
         {
-                auto content = (cast(T*) data.ptr) [0 .. data.length / T.sizeof];
+                auto content = (cast(Const!(char)*) data.ptr) [0 .. data.length];
 
-                foreach (int i, T c; content)
+                foreach (i, c; content)
                          if (c is '\n')
                             {
-                            int slice = i;
+                            size_t slice = i;
                             if (i && content[i-1] is '\r')
                                 --slice;
                             set (content.ptr, 0, slice, i);
@@ -128,5 +128,5 @@ version (UnitTest)
 
 unittest
 {
-    auto p = new Lines!(char) (new Array("blah".dup));
+    auto p = new Lines(new Array("blah".dup));
 }

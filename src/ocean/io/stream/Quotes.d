@@ -43,7 +43,7 @@ version(UnitTest) import ocean.core.Test;
         auto f = new File ("my.csv");
         auto l = new Lines (f);
         auto b = new Array (0);
-        auto q = new Quotes!(char)(",", b);
+        auto q = new Quotes(",", b);
 
         foreach (line; l)
                 {
@@ -58,9 +58,9 @@ version(UnitTest) import ocean.core.Test;
 
 *******************************************************************************/
 
-class Quotes(T) : Iterator!(T)
+class Quotes : Iterator
 {
-        private Const!(T)[] delim;
+        private cstring delim;
 
         /***********************************************************************
 
@@ -69,7 +69,7 @@ class Quotes(T) : Iterator!(T)
 
         ***********************************************************************/
 
-        this (Const!(T)[] delim, InputStream stream = null)
+        this (cstring delim, InputStream stream = null)
         {
                 super (stream);
                 this.delim = delim;
@@ -85,9 +85,9 @@ class Quotes(T) : Iterator!(T)
         protected override
         size_t scan (Const!(void)[] data)
         {
-                T    quote = 0;
+                char quote = 0;
                 int  escape = 0;
-                auto content = (cast(T*) data.ptr) [0 .. data.length / T.sizeof];
+                auto content = (cast(Const!(char)*) data.ptr) [0 .. data.length];
 
                 foreach (i, c; content)
                          // within a quote block?
@@ -146,7 +146,7 @@ unittest
     ];
 
     auto b = new Array (expected.join (",").dup);
-    foreach (i, f; new Quotes!(char)(",", b))
+    foreach (i, f; new Quotes(",", b))
     {
         test (i < expected.length, "uhoh: unexpected match");
         test (f == expected[i], "uhoh: bad match)");
