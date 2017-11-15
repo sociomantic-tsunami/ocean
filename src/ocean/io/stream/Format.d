@@ -36,13 +36,11 @@ version(DigitalMars)
 
         A bridge between a Layout instance and a stream. This is used for
         the Stdout & Stderr globals, but can be used for general purpose
-        buffer-formatting as desired. The Template type 'T' dictates the
-        text arrangement within the target buffer ~ one of char, wchar or
-        dchar (UTF8, UTF16, or UTF32).
+        buffer-formatting as desired.
 
         FormatOutput exposes this style of usage:
         ---
-        auto print = new FormatOutput!(char) (...);
+        auto print = new FormatOutput(...);
 
         print.format ("abc {}", 1);         // => abc 1
         print.format ("abc {}:{}", 1, 2);   // => abc 1:2
@@ -73,12 +71,12 @@ version(DigitalMars)
 
 *******************************************************************************/
 
-class FormatOutput(T) : OutputFilter
+class FormatOutput : OutputFilter
 {
         public  alias OutputFilter.flush flush;
 
-        private Const!(T)[]     eol;
-        private Layout!(T)      convert;
+        private cstring         eol;
+        private Layout!(char)   convert;
         private bool            flushLines;
 
         public alias newline    nl;             /// nl -> newline
@@ -92,9 +90,9 @@ class FormatOutput(T) : OutputFilter
 
         **********************************************************************/
 
-        this (OutputStream output, Const!(T)[] eol = Eol)
+        this (OutputStream output, cstring eol = Eol)
         {
-            this.convert = Layout!(T).instance;
+            this.convert = Layout!(char).instance;
             this.eol = eol;
             super (output);
 
@@ -106,7 +104,7 @@ class FormatOutput(T) : OutputFilter
 
         **********************************************************************/
 
-        final FormatOutput format (Const!(T)[] fmt, ...)
+        final FormatOutput format (cstring fmt, ...)
         {
             this.convert(&this.emit, _arguments, _argptr, fmt);
             return this;
@@ -118,7 +116,7 @@ class FormatOutput(T) : OutputFilter
 
         **********************************************************************/
 
-        final FormatOutput formatln (Const!(T)[] fmt, ...)
+        final FormatOutput formatln (cstring fmt, ...)
         {
             this.convert(&this.emit, _arguments, _argptr, fmt);
             return this.newline;
@@ -180,7 +178,7 @@ class FormatOutput(T) : OutputFilter
 
         **********************************************************************/
 
-        private final size_t emit (Const!(T)[] s)
+        private final size_t emit (cstring s)
         {
                 auto count = sink.write (s);
                 if (count is Eof)
@@ -189,7 +187,7 @@ class FormatOutput(T) : OutputFilter
         }
 
         /// Used by derived classes to avoid deprecations - deprecated, remove in v4.0.0
-        protected final void _transitional_format (Const!(T)[] fmt, TypeInfo[] arguments, ArgList args)
+        protected final void _transitional_format (cstring fmt, TypeInfo[] arguments, ArgList args)
         {
             this.convert(&this.emit, arguments, args, fmt);
         }

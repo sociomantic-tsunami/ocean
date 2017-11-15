@@ -105,7 +105,7 @@ public class AppStatus
 
     ***************************************************************************/
 
-    protected alias .TerminalOutput!(char) TerminalOutput;
+    protected alias .TerminalOutput TerminalOutput;
 
 
     /***************************************************************************

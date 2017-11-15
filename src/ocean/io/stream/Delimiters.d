@@ -40,9 +40,9 @@ import ocean.io.stream.Iterator;
 
 *******************************************************************************/
 
-class Delimiters(T) : Iterator!(T)
+class Delimiters : Iterator
 {
-        private Const!(T)[] delim;
+        private cstring delim;
 
         /***********************************************************************
 
@@ -74,7 +74,7 @@ class Delimiters(T) : Iterator!(T)
 
         ***********************************************************************/
 
-        this (Const!(T)[] delim, InputStream stream = null)
+        this (cstring delim, InputStream stream = null)
         {
                 this.delim = delim;
                 super (stream);
@@ -86,16 +86,16 @@ class Delimiters(T) : Iterator!(T)
 
         protected override size_t scan (Const!(void)[] data)
         {
-                auto content = (cast(T*) data.ptr) [0 .. data.length / T.sizeof];
+                auto content = (cast(Const!(char)*) data.ptr) [0 .. data.length];
 
                 if (delim.length is 1)
                    {
-                   foreach (int i, T c; content)
+                   foreach (i, c; content)
                             if (c is delim[0])
                                 return found (set (content.ptr, 0, i, i));
                    }
                 else
-                   foreach (int i, T c; content)
+                   foreach (i, c; content)
                             if (has (delim, c))
                                 return found (set (content.ptr, 0, i, i));
 
@@ -116,5 +116,5 @@ version (UnitTest)
 
 unittest
 {
-    auto p = new Delimiters!(char) (", ", new Array("blah".dup));
+    auto p = new Delimiters(", ", new Array("blah".dup));
 }
