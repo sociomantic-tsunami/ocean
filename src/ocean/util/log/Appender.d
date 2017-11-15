@@ -48,7 +48,7 @@ public class Appender
 
     interface Layout
     {
-        void format (LogEvent event, size_t delegate(Const!(void)[]) dg);
+        void format (LogEvent event, scope size_t delegate(Const!(void)[]) dg);
     }
 
     /***************************************************************************
@@ -245,7 +245,7 @@ public class AppendStream : Appender
     /// Append an event to the output.
     final override void append (LogEvent event)
     {
-        const istring Eol = "\n";
+        static immutable istring Eol = "\n";
 
         layout.format (event, (Const!(void)[] content){return stream_.write(content);});
         stream_.write (Eol);
@@ -270,7 +270,7 @@ public class LayoutTimer : Appender.Layout
 
     ***************************************************************************/
 
-    void format (LogEvent event, size_t delegate(Const!(void)[]) dg)
+    void format (LogEvent event, scope size_t delegate(Const!(void)[]) dg)
     {
         char[20] tmp = void;
 

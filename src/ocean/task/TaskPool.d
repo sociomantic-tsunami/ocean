@@ -365,7 +365,7 @@ unittest
 
         override protected void run ( )
         {
-            const NUM_START_CALLS = 6;
+            static immutable NUM_START_CALLS = 6;
 
             for (uint i; i < NUM_START_CALLS; i++)
                 this.my_task_pool.start();
@@ -390,7 +390,7 @@ unittest
     {
         void delegate () dg;
 
-        public void copyArguments ( void delegate () dg )
+        public void copyArguments ( scope void delegate () dg )
         {
             this.dg = dg;
         }

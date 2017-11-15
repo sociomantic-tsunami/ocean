@@ -77,7 +77,7 @@ public istring ellipsis = "\xE2\x80\xA6";  // The char '…'
 
 *******************************************************************************/
 
-private const ubyte[char.max + 1] utf8_stride =
+private static immutable ubyte[char.max + 1] utf8_stride =
 [
     1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
     1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
@@ -143,7 +143,7 @@ public size_t utf8Length ( cstring str )
 
 *******************************************************************************/
 
-public size_t utf8Length ( cstring str, void delegate ( size_t ) error_dg )
+public size_t utf8Length ( cstring str, scope void delegate ( size_t ) error_dg )
 {
     size_t length;
     size_t i;
@@ -190,14 +190,14 @@ unittest
 
     // test if error delegate is called for an invalid string
     bool error_caught = false;
-    const istring error_str = "error in " ~ char.init ~ " the middle";
+    static immutable istring error_str = "error in " ~ char.init ~ " the middle";
     utf8Length(error_str, ( size_t i ) { error_caught = true; });
     assert(error_caught,
         "the call to utf8Length should have caught an error");
 
     // test if error delegate is called for a valid string
     error_caught = false;
-    const istring valid_str = "There are no errors in this string!";
+    static immutable istring valid_str = "There are no errors in this string!";
     utf8Length(valid_str, ( size_t i ) { error_caught = true; });
     assert(!error_caught,
         "the call to utf8Length should not have caught an error");

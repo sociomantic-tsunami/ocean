@@ -102,7 +102,7 @@ unittest
 
 ******************************************************************************/
 
-void unescape(T, TC) (T[] src, void delegate(TC[]) emit)
+void unescape(T, TC) (T[] src, scope void delegate(TC[]) emit)
 {
         static assert (is(Unqual!(T) == Unqual!(TC)));
 
@@ -218,7 +218,7 @@ void unescape(T, TC) (T[] src, void delegate(TC[]) emit)
 
 ******************************************************************************/
 
-void escape(T, TC) (T[] src, void delegate(TC[]) emit)
+void escape(T, TC) (T[] src, scope void delegate(TC[]) emit)
 {
         static assert (is(Unqual!(TC) == Unqual!(T)));
 

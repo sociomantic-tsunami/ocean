@@ -206,7 +206,7 @@ public bool toUlong ( T ) ( T[] digits, out ulong value, uint radix = 0 )
 public bool floatStringToInt ( T = ulong ) ( cstring float_str, out T value,
                                              size_t decimal_points = 0 )
 {
-    const MaxDecimal = 16;
+    static immutable MaxDecimal = 16;
 
     assert(decimal_points <= MaxDecimal);
 

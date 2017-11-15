@@ -31,7 +31,7 @@ struct StandardHash
 
     template IsPrimitiveValueType ( T )
     {
-        const IsPrimitiveValueType = is (T : real) || is (T : creal) || is (T : dchar);
+        enum IsPrimitiveValueType = is (T : real) || is (T : creal) || is (T : dchar);
     }
 
     /**************************************************************************
@@ -93,14 +93,14 @@ struct StandardHash
 
     static if (is (hash_t == uint))
     {
-        const hash_t fnv1a_prime = 0x0100_0193, // 32 bit fnv1a prime
+        enum hash_t fnv1a_prime = 0x0100_0193, // 32 bit fnv1a prime
                      fnv1a_init  = 0x811C_9DC5; // 32 bit initial digest
     }
     else
     {
         static assert (is (hash_t == ulong));
 
-        const hash_t fnv1a_prime = 0x0000_0100_0000_01B3, // 64 bit fnv1a prime
+        enum hash_t fnv1a_prime = 0x0000_0100_0000_01B3, // 64 bit fnv1a prime
                      fnv1a_init  = 0xCBF2_9CE4_8422_2325; // 64 bit initial digest
     }
 
@@ -189,14 +189,14 @@ struct StandardHash
     {
         static if (n)
         {
-            const istring fnv1aCode = fnv1aCode!(hashvar, var, n - 1) ~ hashvar ~ "=(" ~
+            enum istring fnv1aCode = fnv1aCode!(hashvar, var, n - 1) ~ hashvar ~ "=(" ~
                               hashvar ~ "^__" ~ var ~ "[" ~
                               minus1!(n).stringof ~ "])*" ~
                               fnv1a_prime.stringof ~ ";\n";
         }
         else
         {
-            const istring fnv1aCode = "auto __" ~ var ~
+            enum istring fnv1aCode = "auto __" ~ var ~
                                      "=cast(" ~ ubyte.stringof ~ "*)&" ~ var ~
                                      ";\n";
         }
@@ -211,6 +211,6 @@ struct StandardHash
 
     template minus1 ( size_t n )
     {
-        const size_t minus1 = n - 1;
+        enum size_t minus1 = n - 1;
     }
 }

@@ -39,9 +39,9 @@ version (UnitTest)
 public template identifier ( alias Sym )
 {
     static if (is(typeof(Sym) == function))
-        const identifier = funcIdentifierHack!(Sym)();
+        static immutable identifier = funcIdentifierHack!(Sym)();
     else
-        const identifier = Sym.stringof;
+        static immutable identifier = Sym.stringof;
 }
 
 ///
@@ -105,7 +105,7 @@ private istring funcIdentifierHack(alias Sym)()
 
 public template fieldIdentifier ( T, size_t i )
 {
-    const istring fieldIdentifier = stripQualifiedPrefix(T.tupleof[i].stringof);
+    static immutable istring fieldIdentifier = stripQualifiedPrefix(T.tupleof[i].stringof);
 }
 
 unittest

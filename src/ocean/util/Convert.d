@@ -293,22 +293,22 @@ T[] ctfe_trim(T)(T[] source)
 template isPOD(T)
 {
     static if( is( T == struct ) || is( T == union ) )
-        const isPOD = true;
+        static immutable isPOD = true;
     else
-        const isPOD = false;
+        static immutable isPOD = false;
 }
 
 template isObject(T)
 {
     static if( is( T == class ) || is( T == interface ) )
-        const isObject = true;
+        static immutable isObject = true;
     else
-        const isObject = false;
+        static immutable isObject = false;
 }
 
 template isUDT(T)
 {
-    const isUDT = isPOD!(T) || isObject!(T);
+    static immutable isUDT = isPOD!(T) || isObject!(T);
 }
 
 template isString(T)
@@ -319,13 +319,13 @@ template isString(T)
             || is( Unqual!(U) == wchar )
             || is( Unqual!(U) == dchar ))
         {
-            const isString = true;
+            static immutable isString = true;
         }
         else
-            const isString = false;
+            static immutable isString = false;
     }
     else
-        const isString = false;
+        static immutable isString = false;
 }
 
 unittest
@@ -335,7 +335,7 @@ unittest
 
 template isArrayType(T)
 {
-    const isArrayType = isDynamicArrayType!(T) || isStaticArrayType!(T);
+    static immutable isArrayType = isDynamicArrayType!(T) || isStaticArrayType!(T);
 }
 
 /*
@@ -471,29 +471,29 @@ template unsupported_backwards(istring desc="")
 template TN(T:T[])
 {
     static if( is( T == char ) )
-        const TN = "string";
+        static immutable TN = "string";
     else static if( is( T == wchar ) )
-        const TN = "wstring";
+        static immutable TN = "wstring";
     else static if( is( T == dchar ) )
-        const TN = "dstring";
+        static immutable TN = "dstring";
     else
-        const TN = TN!(T)~"_array";
+        static immutable TN = TN!(T)~"_array";
 }
 
 // ditto
 template TN(T:T*)
 {
-    const TN = TN!(T)~"_pointer";
+    static immutable TN = TN!(T)~"_pointer";
 }
 
 // ditto
 template TN(T)
 {
     static if( isAssocArrayType!(T) )
-        const TN = TN!(typeof(T.keys[0]))~"_to_"
+        static immutable TN = TN!(typeof(T.keys[0]))~"_to_"
             ~TN!(typeof(T.values[0]))~"_map";
     else
-        const TN = ctfe_trim(T.stringof);
+        static immutable TN = ctfe_trim(T.stringof);
 }
 
 // Picks an appropriate toString* method from t.text.convert.Utf.
@@ -511,13 +511,13 @@ template toString_(T)
 
 template UtfNum(T)
 {
-    const UtfNum = is(typeof(T[0])==char) ? "8" : (
+    static immutable UtfNum = is(typeof(T[0])==char) ? "8" : (
             is(typeof(T[0])==wchar) ? "16" : "32");
 }
 
 template StringNum(T)
 {
-    const StringNum = is(Unqual!(typeof(T.init[0]))==char) ? "" : (
+    static immutable StringNum = is(Unqual!(typeof(T.init[0]))==char) ? "" : (
             is(Unqual!(typeof(T.init[0]))==wchar) ? "16" : "32");
 }
 
@@ -1002,7 +1002,7 @@ D toStringFromString(D,S)(S value)
     }
 }
 
-const istring CHARS =
+static immutable istring CHARS =
 "\x20\x21\x22\x23\x24\x25\x26\x27\x28\x29\x2a\x2b\x2c\x2d\x2e\x2f"
 ~ "\x30\x31\x32\x33\x34\x35\x36\x37\x38\x39\x3a\x3b\x3c\x3d\x3e\x3f"
 ~ "\x40\x41\x42\x43\x44\x45\x46\x47\x48\x49\x4a\x4b\x4c\x4d\x4e\x4f"
@@ -1140,7 +1140,7 @@ D toImpl(D,S)(S value)
     version (D_Version2)
     {
         // has own different static branch
-        const isTypedef = false;
+        static immutable isTypedef = false;
     }
     else
     {

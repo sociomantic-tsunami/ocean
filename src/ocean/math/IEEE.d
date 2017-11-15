@@ -119,7 +119,7 @@ template floatTraits(T) {
  // EXPPOS_SHORT is the index of the exponent when represented as a ushort array.
  // SIGNPOS_BYTE is the index of the sign when represented as a ubyte array.
  // RECIP_EPSILON is the value such that (smallest_denormal) * RECIP_EPSILON == T.min
- const T RECIP_EPSILON = (1/T.epsilon);
+ static immutable T RECIP_EPSILON = (1/T.epsilon);
 
  static if (T.mant_dig == 24) { // float
     enum : ushort {
@@ -127,12 +127,12 @@ template floatTraits(T) {
         SIGNMASK = 0x8000,
         EXPBIAS = 0x3F00
     }
-    const uint EXPMASK_INT = 0x7F80_0000;
-    const uint MANTISSAMASK_INT = 0x007F_FFFF;
+    static immutable uint EXPMASK_INT = 0x7F80_0000;
+    static immutable uint MANTISSAMASK_INT = 0x007F_FFFF;
     version(LittleEndian) {
-      const EXPPOS_SHORT = 1;
+      static immutable EXPPOS_SHORT = 1;
     } else {
-      const EXPPOS_SHORT = 0;
+      static immutable EXPPOS_SHORT = 0;
     }
  } else static if (T.mant_dig==53) { // double, or real==double
      enum : ushort {
@@ -140,14 +140,14 @@ template floatTraits(T) {
          SIGNMASK = 0x8000,
          EXPBIAS = 0x3FE0
     }
-    const uint EXPMASK_INT = 0x7FF0_0000;
-    const uint MANTISSAMASK_INT = 0x000F_FFFF; // for the MSB only
+    static immutable uint EXPMASK_INT = 0x7FF0_0000;
+    static immutable uint MANTISSAMASK_INT = 0x000F_FFFF; // for the MSB only
     version(LittleEndian) {
-      const EXPPOS_SHORT = 3;
-      const SIGNPOS_BYTE = 7;
+      static immutable EXPPOS_SHORT = 3;
+      static immutable SIGNPOS_BYTE = 7;
     } else {
-      const EXPPOS_SHORT = 0;
-      const SIGNPOS_BYTE = 0;
+      static immutable EXPPOS_SHORT = 0;
+      static immutable SIGNPOS_BYTE = 0;
     }
  } else static if (T.mant_dig==64) { // real80
      enum : ushort {
@@ -157,11 +157,11 @@ template floatTraits(T) {
      }
 //    const ulong QUIETNANMASK = 0xC000_0000_0000_0000; // Converts a signaling NaN to a quiet NaN.
     version(LittleEndian) {
-      const EXPPOS_SHORT = 4;
-      const SIGNPOS_BYTE = 9;
+      static immutable EXPPOS_SHORT = 4;
+      static immutable SIGNPOS_BYTE = 9;
     } else {
-      const EXPPOS_SHORT = 0;
-      const SIGNPOS_BYTE = 0;
+      static immutable EXPPOS_SHORT = 0;
+      static immutable SIGNPOS_BYTE = 0;
     }
  } else static if (real.mant_dig==113){ // quadruple
      enum : ushort {
@@ -170,11 +170,11 @@ template floatTraits(T) {
          EXPBIAS = 0x3FFE
      }
     version(LittleEndian) {
-      const EXPPOS_SHORT = 7;
-      const SIGNPOS_BYTE = 15;
+      static immutable EXPPOS_SHORT = 7;
+      static immutable SIGNPOS_BYTE = 15;
     } else {
-      const EXPPOS_SHORT = 0;
-      const SIGNPOS_BYTE = 0;
+      static immutable EXPPOS_SHORT = 0;
+      static immutable SIGNPOS_BYTE = 0;
     }
  } else static if (real.mant_dig==106) { // doubledouble
      enum : ushort {
@@ -184,22 +184,22 @@ template floatTraits(T) {
      }
     // the exponent byte is not unique
     version(LittleEndian) {
-      const EXPPOS_SHORT = 7; // 3 is also an exp short
-      const SIGNPOS_BYTE = 15;
+      static immutable EXPPOS_SHORT = 7; // 3 is also an exp short
+      static immutable SIGNPOS_BYTE = 15;
     } else {
-      const EXPPOS_SHORT = 0; // 4 is also an exp short
-      const SIGNPOS_BYTE = 0;
+      static immutable EXPPOS_SHORT = 0; // 4 is also an exp short
+      static immutable SIGNPOS_BYTE = 0;
     }
  }
 }
 
 // These apply to all floating-point types
 version(LittleEndian) {
-    const MANTISSA_LSB = 0;
-    const MANTISSA_MSB = 1;
+    static immutable MANTISSA_LSB = 0;
+    static immutable MANTISSA_MSB = 1;
 } else {
-    const MANTISSA_LSB = 1;
-    const MANTISSA_MSB = 0;
+    static immutable MANTISSA_LSB = 1;
+    static immutable MANTISSA_MSB = 0;
 }
 
 public:
@@ -703,13 +703,13 @@ int ilogb(real x)
 
 version (X86)
 {
-    const int FP_ILOGB0        = -int.max-1;
-    const int FP_ILOGBNAN      = -int.max-1;
-    const int FP_ILOGBINFINITY = -int.max-1;
+    static immutable int FP_ILOGB0        = -int.max-1;
+    static immutable int FP_ILOGBNAN      = -int.max-1;
+    static immutable int FP_ILOGBINFINITY = -int.max-1;
 } else {
     alias core.stdc.math.FP_ILOGB0   FP_ILOGB0;
     alias core.stdc.math.FP_ILOGBNAN FP_ILOGBNAN;
-    const int FP_ILOGBINFINITY = int.max;
+    static immutable int FP_ILOGBINFINITY = int.max;
 }
 
 unittest {

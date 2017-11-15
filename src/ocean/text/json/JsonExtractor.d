@@ -843,7 +843,7 @@ struct JsonExtractor
 
     unittest
     {
-        const content =
+        enum content =
         `{
             "id":"8c97472e-098e-4baa-aa63-4a3f2aab10c6",
             "imp":
@@ -983,7 +983,7 @@ struct JsonExtractor
         t.test!("==")(w.value, ""[]);
         t.test!("==")(w.type, Type.Empty);
 
-        const content2 = `{"imp":null}`;
+        enum content2 = `{"imp":null}`;
 
         try
         {

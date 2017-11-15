@@ -82,9 +82,9 @@ struct CmdPath
 
         path.set(PathUtil.normalize(path.folder));
 
-        this.dir = path.absolute(Environment.cwd()).toString();
+        (&this).dir = path.absolute(Environment.cwd()).toString();
 
-        return this.get();
+        return (&this).get();
 }
 
     /**************************************************************************
@@ -98,7 +98,7 @@ struct CmdPath
 
     public istring get ( )
     {
-        return this.dir;
+        return (&this).dir;
     }
 
     /**************************************************************************
@@ -115,6 +115,6 @@ struct CmdPath
 
     public istring prepend ( istring[] path ... )
     {
-        return FilePath.join(this.dir ~ path);
+        return FilePath.join((&this).dir ~ path);
     }
 }

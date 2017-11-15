@@ -231,10 +231,10 @@ class Process
         }
     }
 
-    const uint DefaultStdinBufferSize    = 512;
-    const uint DefaultStdoutBufferSize   = 8192;
-    const uint DefaultStderrBufferSize   = 512;
-    const Redirect DefaultRedirectFlags  = Redirect.All;
+    static immutable uint DefaultStdinBufferSize    = 512;
+    static immutable uint DefaultStdoutBufferSize   = 8192;
+    static immutable uint DefaultStderrBufferSize   = 512;
+    static immutable Redirect DefaultRedirectFlags  = Redirect.All;
 
     private cstring[]        _args;
     private istring[istring] _env;

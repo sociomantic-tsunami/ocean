@@ -92,7 +92,7 @@ public struct LogEvent
     /// Return the logger level name of this event.
     cstring levelName ()
     {
-        return ILogger.convert(this.level_);
+        return ILogger.convert((&this).level_);
     }
 
     /// Convert a time value (in milliseconds) to ascii

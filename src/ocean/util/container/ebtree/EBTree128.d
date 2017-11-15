@@ -56,7 +56,7 @@ class EBTree128 ( bool signed = false ) : IEBTree
 
      **************************************************************************/
 
-    public const signed_key = signed;
+    public static immutable signed_key = signed;
 
     /**************************************************************************
 
@@ -73,7 +73,7 @@ class EBTree128 ( bool signed = false ) : IEBTree
 
          **********************************************************************/
 
-        public const is_signed = signed;
+        public enum is_signed = signed;
 
         /**********************************************************************
 
@@ -126,7 +126,7 @@ class EBTree128 ( bool signed = false ) : IEBTree
 
         public equals_t opEquals(Key rhs)
         {
-            return this.opCmp(rhs) == 0;
+            return (&this).opCmp(rhs) == 0;
         }
     }
 

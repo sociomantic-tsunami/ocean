@@ -145,7 +145,7 @@ public struct Log
         {
             uint total;
 
-            foreach (field; this.tupleof)
+            foreach (field; (&this).tupleof)
             {
                 total += field;
             }
@@ -156,7 +156,7 @@ public struct Log
         /// Resets the counters
         private void reset ()
         {
-            foreach (ref field; this.tupleof)
+            foreach (ref field; (&this).tupleof)
             {
                 field = field.init;
             }
@@ -176,19 +176,19 @@ public struct Log
             with (Level) switch (event_level)
             {
             case Trace:
-                this.logged_trace++;
+                (&this).logged_trace++;
                 break;
             case Info:
-                this.logged_info++;
+                (&this).logged_info++;
                 break;
             case Warn:
-                this.logged_warn++;
+                (&this).logged_warn++;
                 break;
             case Error:
-                this.logged_error++;
+                (&this).logged_error++;
                 break;
             case Fatal:
-                this.logged_fatal++;
+                (&this).logged_fatal++;
                 break;
             case None:
                 break;
@@ -972,7 +972,7 @@ unittest
     }
 
     // Test string of 87 chars
-    const TestStr = "Ce qui se conçoit bien s'énonce clairement - Et les mots pour le dire arrivent aisément";
+    static immutable TestStr = "Ce qui se conçoit bien s'énonce clairement - Et les mots pour le dire arrivent aisément";
     scope appender = new Buffer();
     char[32] log_buffer;
     Logger log = (new Logger(Log.hierarchy(), "dummy"))

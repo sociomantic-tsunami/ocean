@@ -150,7 +150,7 @@ class QueryParams
 
      **************************************************************************/
 
-    public int opApply ( int delegate ( ref cstring key, ref cstring value ) ext_dg )
+    public int opApply ( scope int delegate ( ref cstring key, ref cstring value ) ext_dg )
     {
         this.iterating = true;
 
@@ -340,7 +340,7 @@ class FullQueryParamSet: QueryParamSet
 
      **************************************************************************/
 
-    public override int opApply ( int delegate ( ref cstring key, ref cstring val ) dg )
+    public override int opApply ( scope int delegate ( ref cstring key, ref cstring val ) dg )
     {
         int result = super.opApply(dg);
 

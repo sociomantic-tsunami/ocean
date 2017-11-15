@@ -33,13 +33,13 @@ public  import ocean.util.digest.Digest;
 
 *******************************************************************************/
 
-private const int INTERNAL_ROUNDS = 10;
+private static immutable int INTERNAL_ROUNDS = 10;
 
 final class Whirlpool : MerkleDamgard
 {
 		private ulong[8] hash;    /* the hashing state */
 
-        private const uint     padChar = 0x80;
+        private static immutable uint     padChar = 0x80;
 
         /***********************************************************************
 

@@ -427,7 +427,7 @@ class StringLayout ( T = char ) : AppendBuffer!(T)
 
 *******************************************************************************/
 
-public R vaArgCall ( R = void, A ... ) ( R delegate ( A dg_args, TypeInfo[] arguments, va_list argptr ) dg,
+public R vaArgCall ( R = void, A ... ) ( scope R delegate ( A dg_args, TypeInfo[] arguments, va_list argptr ) dg,
                                          A dg_args )
 {
     return dg(dg_args, _arguments, _argptr);

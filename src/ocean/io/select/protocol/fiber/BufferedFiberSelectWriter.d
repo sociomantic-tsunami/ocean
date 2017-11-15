@@ -33,7 +33,7 @@ class BufferedFiberSelectWriter : FiberSelectWriter
 
      **************************************************************************/
 
-    public const default_buffer_size = 64 * 1024;
+    public static immutable default_buffer_size = 64 * 1024;
 
     /**************************************************************************
 

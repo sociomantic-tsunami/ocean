@@ -414,7 +414,7 @@ unittest
 
     try
     {
-        struct Test { const StructVersion = 1; }
+        struct Test { enum StructVersion = 1; }
         void[] buffer;
         decorator.load!(Test)(buffer);
     }

@@ -62,9 +62,9 @@ class JsonParser(T, bool AllowNaN = false)
 
         void reset (Const!(T)[] text)
         {
-            this.text = text;
-            this.ptr = text.ptr;
-            this.end = this.ptr + text.length;
+            (&this).text = text;
+            (&this).ptr = text.ptr;
+            (&this).end = (&this).ptr + text.length;
         }
     }
 
@@ -458,7 +458,7 @@ public class JsonParserException : Exception
 
 unittest
 {
-    const istring json =
+    static immutable istring json =
     `{
         "glossary": {
             "title": "example glossary",

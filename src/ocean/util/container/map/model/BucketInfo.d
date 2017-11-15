@@ -70,14 +70,14 @@ class BucketInfo
 
         public equals_t opEquals (Bucket rhs)
         {
-            return this.opCmp(rhs) == 0;
+            return (&this).opCmp(rhs) == 0;
         }
 
         /**********************************************************************/
 
         debug (BucketInfo) private void print ( )
         {
-            Stderr.format(" {,2}/{,2}", this.index, this.length);
+            Stderr.format(" {,2}/{,2}", (&this).index, (&this).length);
         }
     }
 

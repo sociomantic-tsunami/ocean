@@ -83,7 +83,7 @@ interface ITimeoutManager
 
     ***************************************************************************/
 
-    size_t checkTimeouts ( bool delegate ( ITimeoutClient client ) dg );
+    size_t checkTimeouts ( scope bool delegate ( ITimeoutClient client ) dg );
 
     /***************************************************************************
 

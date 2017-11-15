@@ -89,7 +89,7 @@ Const!(dchar)[] toString (Const!(dchar)[] src, dchar[] dst, size_t* ate=null) {r
 
 *******************************************************************************/
 
-public void toString (Const!(char)[] input, size_t delegate(cstring) dg)
+public void toString (Const!(char)[] input, scope size_t delegate(cstring) dg)
 {
     dg(input);
 }
@@ -97,14 +97,14 @@ public void toString (Const!(char)[] input, size_t delegate(cstring) dg)
 // Need to use assert to not create circular dependency
 unittest
 {
-    const istring original = "Hello \u262F \u0842 \uEFFF";
+    static immutable istring original = "Hello \u262F \u0842 \uEFFF";
     cstring r;
     toString(original, (cstring x) { r ~= x; return x.length; });
     assert(original == r);
 }
 
 /// Ditto
-public void toString (Const!(wchar)[] input, size_t delegate(cstring) dg)
+public void toString (Const!(wchar)[] input, scope size_t delegate(cstring) dg)
 {
     char[4] buff;
     foreach (size_t idx, wchar c; input)
@@ -132,14 +132,14 @@ public void toString (Const!(wchar)[] input, size_t delegate(cstring) dg)
 // Need to use assert to not create circular dependency
 unittest
 {
-    const wchar[] original = "Hello \u262F \u1666 \uEFFF"w;
+    static immutable wchar[] original = "Hello \u262F \u1666 \uEFFF"w;
     cstring r;
     toString(original, (cstring x) { r ~= x; return x.length; });
     assert("Hello \u262F \u1666 \uEFFF" == r);
 }
 
 /// Ditto
-public void toString (Const!(dchar)[] input, size_t delegate(cstring) dg)
+public void toString (Const!(dchar)[] input, scope size_t delegate(cstring) dg)
 {
     char[4] buff;
     foreach (size_t idx, dchar c; input)
@@ -175,7 +175,7 @@ public void toString (Const!(dchar)[] input, size_t delegate(cstring) dg)
 // Need to use assert to not create circular dependency
 unittest
 {
-    const dchar[] original = "Hello \u262F \u0842 \uE420"d;
+    static immutable dchar[] original = "Hello \u262F \u0842 \uE420"d;
     cstring r;
     toString(original, (cstring x) { r ~= x; return x.length; });
     assert("Hello \u262F \u0842 \uE420" == r);

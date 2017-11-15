@@ -521,7 +521,7 @@ version ( UnitTest )
 
 unittest
 {
-    const istring lorem_ipsum =
+    static immutable istring lorem_ipsum =
         "Lorem ipsum dolor sit amet, consectetur adipisici elit, sed eiusmod "
       ~ "tempor incidunt ut labore et dolore magna aliqua. Ut enim ad minim "
       ~ "veniam, quis nostrud exercitation ullamco laboris nisi ut aliquid ex "
@@ -576,7 +576,7 @@ unittest
       ~ "kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit "
       ~ "amet.";
 
-    const istring content =
+    static immutable istring content =
         "GET /dir?query=Hello%20World!&abc=def&ghi HTTP/1.1\r\n"
       ~ "Host: www.example.org:12345\r\n"
       ~ "User-Agent: Mozilla/5.0 (X11; U; Linux i686; de; rv:1.9.2.17) Gecko/20110422 Ubuntu/9.10 (karmic) Firefox/3.6.17\r\n"
@@ -590,7 +590,7 @@ unittest
       ~ "\r\n" ~
         lorem_ipsum;
 
-    const parts = 3;
+    static immutable parts = 3;
 
     /*
      * content will be split into parts parts where the length of each part is
@@ -600,7 +600,7 @@ unittest
 
     static size_t random_chunk_length ( )
     {
-        const c = content.length * (2.0f / (parts * 3));
+        static immutable c = content.length * (2.0f / (parts * 3));
 
         static assert (c >= 3, "too many parts");
 
@@ -615,11 +615,11 @@ unittest
 
     version (OceanPerformanceTest)
     {
-        const n = 1000_000;
+        static immutable n = 1000_000;
     }
     else
     {
-        const n = 10;
+        static immutable n = 10;
     }
 
     version (OceanPerformanceTest)

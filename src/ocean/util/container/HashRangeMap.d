@@ -95,7 +95,7 @@ public struct HashRangeMap ( Value )
 
     invariant()
     {
-        assert(this.ranges.length == this.values.length,
+        assert((&this).ranges.length == (&this).values.length,
                "HashRangeMap: length mismatch between ranges and values");
     }
 
@@ -111,7 +111,7 @@ public struct HashRangeMap ( Value )
 
     public bool empty ( )
     {
-        return this.length == 0;
+        return (&this).length == 0;
     }
 
     unittest
@@ -144,7 +144,7 @@ public struct HashRangeMap ( Value )
 
     public size_t length ( )
     {
-        return this.ranges.length;
+        return (&this).ranges.length;
     }
 
     unittest
@@ -196,16 +196,16 @@ public struct HashRangeMap ( Value )
         enforce(!range.is_empty, "An empty range can't be put in HashRangeMap");
 
         size_t insert_place;
-        added = !bsearch(this.ranges, range, insert_place);
+        added = !bsearch((&this).ranges, range, insert_place);
 
         if (added)
         {
-            insertShift(this.ranges, insert_place);
-            this.ranges[insert_place] = range;
-            insertShift(this.values, insert_place);
+            insertShift((&this).ranges, insert_place);
+            (&this).ranges[insert_place] = range;
+            insertShift((&this).values, insert_place);
         }
 
-        return &this.values[insert_place];
+        return &(&this).values[insert_place];
     }
 
 
@@ -224,12 +224,12 @@ public struct HashRangeMap ( Value )
     public bool remove ( HashRange range )
     {
         size_t remove_place;
-        bool result = bsearch(this.ranges, range, remove_place);
+        bool result = bsearch((&this).ranges, range, remove_place);
 
         if (result)
         {
-            removeShift(this.ranges, remove_place);
-            removeShift(this.values, remove_place);
+            removeShift((&this).ranges, remove_place);
+            removeShift((&this).values, remove_place);
         }
 
         return result;
@@ -244,11 +244,11 @@ public struct HashRangeMap ( Value )
 
     public void clear ()
     {
-        this.ranges.length = 0;
-        enableStomping(this.ranges);
+        (&this).ranges.length = 0;
+        enableStomping((&this).ranges);
 
-        this.values.length = 0;
-        enableStomping(this.values);
+        (&this).values.length = 0;
+        enableStomping((&this).values);
     }
 
     unittest
@@ -282,10 +282,10 @@ public struct HashRangeMap ( Value )
     public Value* opIn_r ( HashRange range )
     {
         size_t insert_place;
-        if (!bsearch(this.ranges, range, insert_place))
+        if (!bsearch((&this).ranges, range, insert_place))
             return null;
 
-        return &this.values[insert_place];
+        return &(&this).values[insert_place];
     }
 
 
@@ -297,12 +297,12 @@ public struct HashRangeMap ( Value )
 
     ***************************************************************************/
 
-    public int opApply ( int delegate ( ref HashRange r, ref Value v ) dg )
+    public int opApply ( scope int delegate ( ref HashRange r, ref Value v ) dg )
     {
         int result = 0;
-        foreach (i, range; this.ranges)
+        foreach (i, range; (&this).ranges)
         {
-            result = dg(range, this.values[i]);
+            result = dg(range, (&this).values[i]);
 
             if(result)
                 break;
@@ -326,7 +326,7 @@ public struct HashRangeMap ( Value )
 
     public bool isTessellated ()
     {
-        return HashRange(hash_t.min, hash_t.max).isTessellatedBy(this.ranges);
+        return HashRange(hash_t.min, hash_t.max).isTessellatedBy((&this).ranges);
     }
 
     unittest
@@ -407,8 +407,8 @@ public struct HashRangeMap ( Value )
 
     public bool hasGap ()
     {
-        return extent(this.ranges) != HashRange(hash_t.min, hash_t.max)
-               || ocean.math.Range.hasGap(this.ranges);
+        return extent((&this).ranges) != HashRange(hash_t.min, hash_t.max)
+               || ocean.math.Range.hasGap((&this).ranges);
     }
 
     unittest
@@ -470,7 +470,7 @@ public struct HashRangeMap ( Value )
 
     public bool hasOverlap ()
     {
-        return ocean.math.Range.hasOverlap(this.ranges);
+        return ocean.math.Range.hasOverlap((&this).ranges);
     }
 
     unittest
@@ -597,12 +597,12 @@ unittest
 
         equals_t opEquals(S other)
         {
-            return this.x == other.x;
+            return (&this).x == other.x;
         }
 
         istring toString()
         {
-            return "S(" ~ to!(istring)(this.x) ~ ")";
+            return "S(" ~ to!(istring)((&this).x) ~ ")";
         }
     }
 
@@ -640,11 +640,11 @@ version ( UnitTest )
     {
         static if (is(T == struct) || is(T == class) || is(T == interface))
         {
-            const hasAtomicEquality = is(typeof(T.opEquals));
+            static immutable hasAtomicEquality = is(typeof(T.opEquals));
         }
         else
         {
-            const hasAtomicEquality = isPrimitiveType!(T) || isPointerType!(T);
+            static immutable hasAtomicEquality = isPrimitiveType!(T) || isPointerType!(T);
         }
     }
 
@@ -653,11 +653,11 @@ version ( UnitTest )
     {
         static if (isArrayType!(T))
         {
-            const hasEquality = hasAtomicEquality!(BaseTypeOfArrays!(T));
+            static immutable hasEquality = hasAtomicEquality!(BaseTypeOfArrays!(T));
         }
         else
         {
-            const hasEquality = hasAtomicEquality!(T);
+            static immutable hasEquality = hasAtomicEquality!(T);
         }
     }
 

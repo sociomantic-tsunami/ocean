@@ -130,9 +130,9 @@ public struct Identifier
 
     invariant ()
     {
-        assert(this.host.length, "No host for identifier");
-        assert(this.plugin.length, "No plugin for identifier");
-        assert(this.type.length, "No type for identifier");
+        assert((&this).host.length, "No host for identifier");
+        assert((&this).plugin.length, "No plugin for identifier");
+        assert((&this).type.length, "No type for identifier");
     }
 
 
@@ -366,11 +366,11 @@ public struct Identifier
 
     public istring toString ()
     {
-        auto pi = this.plugin_instance.length ? "-" : null;
-        auto ti = this.type_instance.length ? "-" : null;
+        auto pi = (&this).plugin_instance.length ? "-" : null;
+        auto ti = (&this).type_instance.length ? "-" : null;
 
-        return format("{}/{}{}{}/{}{}{}", this.host,
-                      this.plugin, pi, this.plugin_instance,
-                      this.type, ti, this.type_instance);
+        return format("{}/{}{}{}/{}{}{}", (&this).host,
+                      (&this).plugin, pi, (&this).plugin_instance,
+                      (&this).type, ti, (&this).type_instance);
     }
 }

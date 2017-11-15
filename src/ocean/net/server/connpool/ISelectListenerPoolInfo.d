@@ -48,7 +48,7 @@ public interface ISelectListenerPoolInfo : IPoolInfo
 
     ***************************************************************************/
 
-    int opApply ( int delegate ( ref IConnectionHandlerInfo ) dg );
+    int opApply ( scope int delegate ( ref IConnectionHandlerInfo ) dg );
 
 
     /***************************************************************************
@@ -58,6 +58,6 @@ public interface ISelectListenerPoolInfo : IPoolInfo
 
     ***************************************************************************/
 
-    int opApply ( int delegate ( ref size_t, ref IConnectionHandlerInfo ) dg );
+    int opApply ( scope int delegate ( ref size_t, ref IConnectionHandlerInfo ) dg );
 }
 

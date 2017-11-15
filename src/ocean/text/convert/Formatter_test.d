@@ -26,7 +26,7 @@ unittest
     static struct Foo
     {
         int i = 0x2A;
-        void toString (size_t delegate (cstring) sink)
+        void toString (scope size_t delegate (cstring) sink)
         {
             sink("Hello size_t");
         }
@@ -38,12 +38,12 @@ unittest
     static struct Bar
     {
         int i = 0x2A;
-         void toString (size_t delegate (cstring) sink)
+         void toString (scope size_t delegate (cstring) sink)
         {
             sink("Hello size_t");
         }
         // This one takes precedence
-        void toString (void delegate (cstring) sink)
+        void toString (scope void delegate (cstring) sink)
         {
             sink("Hello void");
         }
