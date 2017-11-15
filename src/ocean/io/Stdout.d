@@ -50,15 +50,15 @@ version (X86_64) version = DigitalMarsX64;
 
 *******************************************************************************/
 
-public static TerminalOutput!(char) Stdout; /// Global standard output.
-public static TerminalOutput!(char) Stderr; /// Global error output.
+public static TerminalOutput Stdout; /// Global standard output.
+public static TerminalOutput Stderr; /// Global error output.
 public alias Stdout stdout; /// Alternative.
 public alias Stderr stderr; /// Alternative.
 
 static this ( )
 {
-    Stdout = new TerminalOutput!(char)(Cout.stream);
-    Stderr = new TerminalOutput!(char)(Cerr.stream);
+    Stdout = new TerminalOutput(Cout.stream);
+    Stderr = new TerminalOutput(Cerr.stream);
 
     Stdout.flush = !Cout.redirected;
     Stdout.redirect = Cout.redirected;
@@ -79,7 +79,7 @@ static this ( )
 
 *******************************************************************************/
 
-public class TerminalOutput ( T ) : FormatOutput!(T)
+public class TerminalOutput : FormatOutput
 {
     /***************************************************************************
 
@@ -117,7 +117,7 @@ public class TerminalOutput ( T ) : FormatOutput!(T)
 
     ***************************************************************************/
 
-    public this (OutputStream output, Immut!(T)[] eol = Eol)
+    public this (OutputStream output, istring eol = Eol)
     {
         super(output, eol);
     }
@@ -128,7 +128,7 @@ public class TerminalOutput ( T ) : FormatOutput!(T)
 
     ***************************************************************************/
 
-    public typeof(this) format ( Const!(T)[] fmt, ... )
+    public typeof(this) format ( cstring fmt, ... )
     {
         super._transitional_format(fmt, _arguments, _argptr);
         return this;
@@ -141,7 +141,7 @@ public class TerminalOutput ( T ) : FormatOutput!(T)
 
     ***************************************************************************/
 
-    public typeof(this) formatln ( Const!(T)[] fmt, ... )
+    public typeof(this) formatln ( cstring fmt, ... )
     {
         super._transitional_format(fmt, _arguments, _argptr);
         return this.newline;
