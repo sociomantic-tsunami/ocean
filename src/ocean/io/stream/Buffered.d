@@ -1429,18 +1429,3 @@ class BufferedOutput : OutputFilter, OutputBuffer
                 return this;
         }
 }
-
-
-
-/******************************************************************************
-
-******************************************************************************/
-
-debug (Buffered)
-{
-        void main()
-        {
-                auto input = new BufferedInput (null);
-                auto output = new BufferedOutput (null);
-        }
-}
