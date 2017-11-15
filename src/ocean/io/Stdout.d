@@ -57,10 +57,8 @@ public alias Stderr stderr; /// Alternative.
 
 static this ( )
 {
-    auto layout = Layout!(char).instance;
-
-    Stdout = new TerminalOutput!(char)(layout, Cout.stream);
-    Stderr = new TerminalOutput!(char)(layout, Cerr.stream);
+    Stdout = new TerminalOutput!(char)(Cout.stream);
+    Stderr = new TerminalOutput!(char)(Cerr.stream);
 
     Stdout.flush = !Cout.redirected;
     Stdout.redirect = Cout.redirected;
@@ -121,7 +119,7 @@ public class TerminalOutput ( T ) : FormatOutput!(T)
 
     public this (OutputStream output, Immut!(T)[] eol = Eol)
     {
-        this (Layout!(T).instance, output, eol);
+        super(output, eol);
     }
 
 
@@ -132,6 +130,7 @@ public class TerminalOutput ( T ) : FormatOutput!(T)
 
     ***************************************************************************/
 
+    deprecated("Using Layout with this class is deprecated - Remove first argument at call site")
     public this (Layout!(T) convert, OutputStream output, Immut!(T)[] eol = Eol)
     {
         super(convert, output, eol);
@@ -146,7 +145,7 @@ public class TerminalOutput ( T ) : FormatOutput!(T)
 
     public typeof(this) format ( Const!(T)[] fmt, ... )
     {
-        super.format(fmt, _arguments, _argptr);
+        super._transitional_format(fmt, _arguments, _argptr);
         return this;
     }
 
@@ -158,6 +157,7 @@ public class TerminalOutput ( T ) : FormatOutput!(T)
 
     ***************************************************************************/
 
+    deprecated("RTTI-specific function is deprecated, use a Formatter-compatible API")
     public typeof(this) format (Const!(T)[] fmt, TypeInfo[] arguments, ArgList args)
     {
         super.format(fmt, arguments, args);
@@ -174,8 +174,8 @@ public class TerminalOutput ( T ) : FormatOutput!(T)
 
     public typeof(this) formatln ( Const!(T)[] fmt, ... )
     {
-        super.formatln(fmt, _arguments, _argptr);
-        return this;
+        super._transitional_format(fmt, _arguments, _argptr);
+        return this.newline;
     }
 
 
@@ -186,6 +186,7 @@ public class TerminalOutput ( T ) : FormatOutput!(T)
 
     ***************************************************************************/
 
+    deprecated("RTTI-specific function is deprecated, use a Formatter-compatible API")
     public typeof(this) formatln (Const!(T)[] fmt, TypeInfo[] arguments, ArgList args)
     {
         super.formatln(fmt, arguments, args);

@@ -1271,7 +1271,7 @@ public class Arguments
 
     public void displayErrors ( FormatOutput!(char) output = Stderr )
     {
-        output(this.errors());
+        output.format("{}", this.errors());
     }
 
 

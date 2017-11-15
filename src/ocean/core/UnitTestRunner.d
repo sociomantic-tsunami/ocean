@@ -474,7 +474,7 @@ private scope class UnitTestRunner
                 output.flush();
                 output.close();
             }
-            output(printer.print(this.xml_doc)).newline;
+            output.formatln("{}", printer.print(this.xml_doc));
         }
         catch (Exception e)
         {
@@ -897,7 +897,7 @@ private scope class UnitTestRunner
     private void printHelp ( FormatOutput!(char) output )
     {
         this.printUsage(output);
-        output.print(`
+        output.format(`
 optional arguments:
   -h, --help        print this message and exit
   -v, --verbose     print more information about unittest progress, can be
