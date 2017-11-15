@@ -130,20 +130,3 @@ unittest
 {
     auto p = new Lines!(char) (new Array("blah".dup));
 }
-
-/*******************************************************************************
-
-*******************************************************************************/
-
-debug (Lines)
-{
-        import ocean.io.Console;
-        import ocean.io.device.Array;
-
-        void main()
-        {
-                auto lines = new Lines!(char)(new Array("one\ntwo\r\nthree"));
-                foreach (i, line, delim; lines)
-                         Cout (line) (delim);
-        }
-}

@@ -84,21 +84,4 @@ class TextFileOutput : TextOutput
         {
                 super (file);
         }
- }
-
-
-/*******************************************************************************
-
-*******************************************************************************/
-
-debug (TextFile)
-{
-        import ocean.io.Console;
-
-        void main()
-        {
-                auto t = new TextFileInput ("TextFile.d");
-                foreach (line; t)
-                         Cout(line).newline;
-        }
 }

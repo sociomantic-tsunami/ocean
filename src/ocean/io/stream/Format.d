@@ -292,21 +292,3 @@ class FormatOutput(T) : OutputFilter
                 return count;
         }
 }
-
-
-/*******************************************************************************
-
-*******************************************************************************/
-
-debug (Format)
-{
-        import ocean.io.device.Array;
-
-        void main()
-        {
-                auto print = new FormatOutput!(char) (new Array(1024, 1024));
-
-                for (int i=0;i < 1000; i++)
-                     print(i).newline;
-        }
-}
