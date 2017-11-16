@@ -59,25 +59,11 @@ TEST_FILTER_OUT += \
 TEST_FILTER_OUT += \
 	$C/test/collectd/main.d
 
+$O/test-%: override LDFLAGS += -lebtree
+
 $O/test-filesystemevent: override LDFLAGS += -lrt
 
-$O/test-selectlistener: override LDFLAGS += -lebtree
-
-$O/test-unixlistener: override LDFLAGS += -lebtree
-
-$O/test-loggerstats: override LDFLAGS += -lebtree
-
-$O/test-signalext: override LDFLAGS += -lebtree
-
-$O/test-sysstats: override LDFLAGS += -lebtree
-
-$O/test-httpserver: override LDFLAGS += -lebtree -lglib-2.0
-
-$O/test-unixsockext: override LDFLAGS += -lebtree
-
-$O/test-scheduler: override LDFLAGS += -lebtree
-
-$O/test-reopenfiles: override LDFLAGS += -lebtree
+$O/test-httpserver: override LDFLAGS += -lglib-2.0
 
 # Link unittests to all used libraries
 $O/%unittests: override LDFLAGS += -lglib-2.0 -lpcre -lxml2 -lxslt -lebtree \
