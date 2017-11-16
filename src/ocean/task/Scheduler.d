@@ -34,6 +34,7 @@ import ocean.task.Task;
 import ocean.task.IScheduler;
 import ocean.task.internal.FiberPoolWithQueue;
 import ocean.task.internal.SpecializedPools;
+import ocean.task.util.Timer;
 
 version (UnitTest)
 {
@@ -501,6 +502,25 @@ final class Scheduler : IScheduler
         }
     }
 
+    /***************************************************************************
+
+        Similar to `await` but also has waiting timeout. Calling task will be
+        resumed either if awaited task finished or timeout is hit, whichever
+        happens first.
+
+        Params:
+            task = task to await
+            micro_seconds = timeout duration
+
+        Returns:
+            'true' if resumed via timeout, 'false' otherwise
+
+    ***************************************************************************/
+
+    public bool awaitOrTimeout ( Task task, uint micro_seconds )
+    {
+        return ocean.task.util.Timer.awaitOrTimeout(task, micro_seconds);
+    }
 
     /***************************************************************************
 
