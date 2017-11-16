@@ -236,6 +236,23 @@ public interface IScheduler
 
     /***************************************************************************
 
+        Similar to `await` but also has waiting timeout. Calling task will be
+        resumed either if awaited task finished or timeout is hit, whichever
+        happens first.
+
+        Params:
+            task = task to await
+            micro_seconds = timeout duration
+
+        Returns:
+            'true' if resumed via timeout, 'false' otherwise
+
+    ***************************************************************************/
+
+    public bool awaitOrTimeout ( Task task, uint micro_seconds );
+
+    /***************************************************************************
+
         Orders scheduler to resume given task unconditionally after current
         epoll cycle. Must be used instead of plain `Task.resume` from
         termination hooks of other tasks.
