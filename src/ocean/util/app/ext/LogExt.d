@@ -15,28 +15,19 @@
 
 module ocean.util.app.ext.LogExt;
 
-
-
-
 import ocean.core.TypeConvert;
-
-import ocean.util.app.model.ExtensibleClassMixin;
+import ocean.io.device.File;
+import ocean.transition;
 import ocean.util.app.Application;
+import ocean.util.app.ext.ConfigExt;
 import ocean.util.app.ext.model.IConfigExtExtension;
 import ocean.util.app.ext.model.ILogExtExtension;
-import ocean.util.app.ext.ConfigExt;
-
 import ocean.util.app.ext.ReopenableFilesExt;
-
-import ocean.util.config.ConfigFiller;
-import ocean.util.config.ConfigParser;
-import LogUtil = ocean.util.log.Config;
+import ocean.util.app.model.ExtensibleClassMixin;
 import ConfigFiller = ocean.util.config.ConfigFiller;
-
-import ocean.transition;
-import ocean.io.device.File;
-
+import ocean.util.config.ConfigParser;
 import ocean.util.log.Appender;
+import LogUtil = ocean.util.log.Config;
 
 
 /*******************************************************************************
@@ -163,7 +154,7 @@ class LogExt : IConfigExtExtension
             return new AppendStream(stream, true, layout);
         }
 
-        enable_loose_parsing(conf_ext.loose_config_parsing);
+        ConfigFiller.enable_loose_parsing(conf_ext.loose_config_parsing);
 
         LogUtil.configureNewLoggers(log_config, log_meta_config, &appender,
             this.layout_maker, this.use_insert_appender);
