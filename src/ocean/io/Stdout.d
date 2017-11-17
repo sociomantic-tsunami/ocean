@@ -57,8 +57,6 @@ public alias Stderr stderr; /// Alternative.
 
 static this ( )
 {
-    // note that a static-ctor inside Layout fails
-    // to be invoked before this is executed (bug)
     auto layout = Layout!(char).instance;
 
     Stdout = new TerminalOutput!(char)(layout, Cout.stream);
