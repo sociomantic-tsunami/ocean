@@ -698,7 +698,7 @@ unittest
 
     Performs a linear scan of haystack from [0 .. haystack.length$(RP), returning
     true if an element matching needle is found.  Comparisons will be performed
-    using the supplied predicate or '<' if none is supplied.
+    using the supplied predicate or '==' if none is supplied.
 
     Params:
         haystack = The array to search.
