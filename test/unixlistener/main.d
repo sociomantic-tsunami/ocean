@@ -140,6 +140,9 @@ void client_process (cstring socket_path)
     test!("==")(readData(), "first name? ");
     client.write("John\n");
 
+    client.write("echo Joseph\n");
+    test!("==")(readData(), "Joseph");
+
     client.write("shutdown\n");
     client.close();
 }
@@ -221,8 +224,7 @@ int main ( )
 
         // Command shutting down the epoll
         void handleShutdown ( cstring args,
-                void delegate ( cstring response ) send_response,
-                void delegate ( ref mstring response ) wait_reply )
+                void delegate ( cstring response ) send_response )
         {
             epoll.shutdown();
         }
@@ -263,9 +265,18 @@ int main ( )
             send_response("first name? "); wait_reply(response);
             success_count += first == response ? 1 : 0;
         }
+
+        // Simple echo command, non-interactive
+        void handleEcho ( cstring args,
+                void delegate (cstring response) send_response)
+        {
+            send_response(args);
+        }
+
         auto unix_server   = new UnixListener(idup(local_address), epoll,
-                ["shutdown"[]: &handleShutdown,
-                 "increment": &handleIncrementCommand,
+                ["echo"[]: &handleEcho,
+                 "shutdown": &handleShutdown],
+                ["increment"[]: &handleIncrementCommand,
                  "askMyName": &handleAskMyName,
                  "askMeAgain": &handleAskMyNameReverse]
         );

@@ -62,12 +62,39 @@ import ocean.core.array.Mutation : copy;
 /// Provides basic command handling functionality for unix socket commands.
 public class BasicCommandHandler
 {
-    /// Alias for a command handler delegate.
+    /// Alias for an interactive command handler delegate.
     public alias void delegate ( cstring,  void delegate (cstring),
-            void delegate (ref mstring)) Handler;
+            void delegate (ref mstring)) InteractiveHandler;
 
-    /// Map of command name to handler response delegate.
+    /// Alias for a non-interactive command handler delegate.
+    public alias void delegate ( cstring, void delegate (cstring) ) Handler;
+
+    /// Map of command name to interactive handler response delegate.
+    public InteractiveHandler[istring] interactive_handlers;
+
+    /// Map of a command name to non-interactive handlers delegate
     public Handler[istring] handlers;
+
+    /***************************************************************************
+
+        Constructor
+
+        Note that handlers and interactive handlers' command names may overlap.
+        In that case, the interactive handler is given the priority.
+
+        Params:
+            handlers = Array of command string to handler delegate.
+            interactive_handlers = Array of command string to interactive handler
+                delegate.
+
+    ***************************************************************************/
+
+    public this ( Handler[istring] handlers,
+            InteractiveHandler[istring] interactive_handlers )
+    {
+        this.handlers = handlers;
+        this.interactive_handlers = interactive_handlers;
+    }
 
     /***************************************************************************
 
@@ -100,9 +127,14 @@ public class BasicCommandHandler
         void delegate ( cstring ) send_response,
         void delegate (ref mstring) wait_reply)
     {
-        if (auto handler = command in this.handlers)
+
+        if (auto handler = command in this.interactive_handlers)
         {
             (*handler)(args, send_response, wait_reply);
+        }
+        else if (auto handler = command in this.handlers)
+        {
+            (*handler)(args, send_response);
         }
         else
         {
@@ -114,6 +146,30 @@ public class BasicCommandHandler
 /// Provides default functionality for handling unix socket commands.
 public class UnixConnectionHandler : UnixSocketConnectionHandler!(BasicCommandHandler)
 {
+    /***************************************************************************
+
+        Constructor.
+
+        Params:
+            finalize_dg  = internal select listener parameter for super class
+            epoll        = epoll select dispatcher to use for I/O
+            handlers     = Array of command to handler delegate.
+            interactive_handlers = Array of command to interactive handler
+                                   delegate.
+            address_path = the path of the server socket address, for logging
+
+    ***************************************************************************/
+
+    public this ( FinalizeDg finalize_dg, EpollSelectDispatcher epoll,
+                  BasicCommandHandler.Handler[istring] handlers,
+                  BasicCommandHandler.InteractiveHandler[istring] interactive_handlers,
+                  istring address_path )
+    {
+        super(finalize_dg, epoll,
+            new BasicCommandHandler(handlers, interactive_handlers),
+            address_path);
+    }
+
     /***************************************************************************
 
         Constructor.
