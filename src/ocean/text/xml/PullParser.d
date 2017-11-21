@@ -770,4 +770,11 @@ unittest
 {
     auto itr = new PullParser!(char)(testXML);
     testParser (itr);
+
+    // Parsing new text (or even the same one) should not involve any further
+    // memory allocation
+    testNoAlloc({
+        itr.reset(testXML);
+        testParser(itr);
+    }());
 }
