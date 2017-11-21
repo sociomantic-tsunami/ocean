@@ -710,7 +710,7 @@ version (UnitTest)
 	void testParser(Ch)(PullParser!(Ch) itr)
 	{
 	        test(itr.next);
-	        test(itr.value == "element [ <!ELEMENT element (#PCDATA)>]");
+	        test(itr.rawValue == "element [ <!ELEMENT element (#PCDATA)>]");
 	        test(itr.type == XmlTokenType.Doctype);
 	        test(itr.next);
 	        test(itr.localName == "element");
@@ -718,13 +718,13 @@ version (UnitTest)
 	        test(itr.depth == 0);
 	        test(itr.next);
 	        test(itr.localName == "attr");
-	        test(itr.value == "1");
+	        test(itr.rawValue == "1");
 	        test(itr.next);
 	        test(itr.type == XmlTokenType.Attribute);
 	        test(itr.localName == "attr2");
-	        test(itr.value == "two");
+	        test(itr.rawValue == "two");
 	        test(itr.next);
-	        test(itr.value == "comment");
+	        test(itr.rawValue == "comment");
 	        test(itr.next);
 	        test(itr.rawValue == "test&amp;&#x5a;");
 	        test(itr.next);
@@ -737,7 +737,7 @@ version (UnitTest)
 	        test(itr.depth == 1);
 	        test(itr.next);
 	        test(itr.localName == "attr3");
-	        test(itr.value == "3three", itr.value);
+	        test(itr.rawValue == "3three", itr.rawValue);
 	        test(itr.next);
 	        test(itr.rawValue == "sdlgjsh");
 	        test(itr.next);
@@ -746,7 +746,7 @@ version (UnitTest)
 	        test(itr.next);
 	        test(itr.type == XmlTokenType.EndEmptyElement);
 	        test(itr.next);
-	        test(itr.value == "data");
+	        test(itr.rawValue == "data");
 	        test(itr.next);
 	        test(itr.rawValue == "pi test", itr.rawValue);
 	        test(itr.next);
