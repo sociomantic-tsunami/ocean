@@ -109,7 +109,7 @@ class PullParser(Ch = char)
 
         ***********************************************************************/
 
-        this(Immut!(Ch)[] content = null)
+        this(Ch[] content = null)
         {
                 reset (content);
         }
@@ -595,18 +595,6 @@ version (partialwhite)
                 reset_;
         }
 
-        version (D_Version2)
-        {
-            // adding this as versioned overload to avoid extra allocation
-            // for mutable argument
-
-            final void reset(Const!(Ch)[] newText)
-            {
-                    text.reset (newText.dup);
-                    reset_;
-            }
-        }
-
         /***********************************************************************
 
                 experimental: set streaming mode
@@ -768,6 +756,6 @@ version (UnitTest)
 
 unittest
 {
-    auto itr = new PullParser!(char)(testXML);
+    auto itr = new PullParser!(Const!(char))(testXML);
     testParser (itr);
 }

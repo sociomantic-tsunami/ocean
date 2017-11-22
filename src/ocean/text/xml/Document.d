@@ -290,7 +290,7 @@ version(d)
 
         ***********************************************************************/
 
-        final Document header (Immut!(T)[] encoding)
+        final Document header (T[] encoding)
         {
                 if (encoding.length)
                     encoding = `xml version="1.0" encoding="`~encoding~`"`;
@@ -2108,8 +2108,8 @@ version ( UnitTest )
 
 unittest
 {
-    auto doc = new Document!(char);
-    auto printer = new DocPrinter!(char);
+    auto doc = new Document!(Const!(char));
+    auto printer = new DocPrinter!(Const!(char));
     mstring buffer;
 
     auto doc1 = `<?xml version="1.0" encoding="UTF-8"?>
@@ -2161,8 +2161,8 @@ unittest
 
 unittest
 {
-    auto doc = new Document!(char);
-    auto printer = new DocPrinter!(char);
+    auto doc = new Document!(Const!(char));
+    auto printer = new DocPrinter!(Const!(char));
     mstring buffer;
 
     auto complex_doc = `
@@ -2241,7 +2241,7 @@ debug (Document)
 
         void main()
         {
-                auto doc = new Document!(char);
+                auto doc = new Document!(Const!(char));
 
                 // attach an xml header
                 doc.header;
@@ -2276,7 +2276,7 @@ debug (Document)
                          Stdout.formatln ("{}: {}", node.parent.name, node.value);
 
                 // emit the result
-                auto printer = new DocPrinter!(char);
+                auto printer = new DocPrinter!(Const!(char));
                 printer.print (doc, stdout);
                 doc.reset;
         }
