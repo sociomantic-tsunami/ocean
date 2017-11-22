@@ -81,6 +81,7 @@ class FormatOutput(T) : OutputFilter
         private Layout!(T)      convert;
         private bool            flushLines;
 
+        deprecated("Use the 'format' method instead, or 'flush'")
         public alias print      opCall;         /// opCall -> print
         public alias newline    nl;             /// nl -> newline
 
