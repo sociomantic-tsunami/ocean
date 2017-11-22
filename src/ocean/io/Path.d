@@ -310,6 +310,19 @@ package struct FS
 
                 /***************************************************************
 
+                    Returns:
+                        true if the file exist and is readable for the effective
+                        uid.
+
+                ***************************************************************/
+
+                static bool isReadable (cstring name)
+                {
+                    return posix.access(name.ptr, R_OK) == 0;
+                }
+
+                /***************************************************************
+
                         Is this file actually a folder/directory?
 
                 ***************************************************************/
@@ -1010,6 +1023,20 @@ bool isWritable (cstring name)
 {
         char[512] tmp = void;
         return FS.isWritable (FS.strz(name, tmp));
+}
+
+/*******************************************************************************
+
+    Returns:
+        true if the file exist and is readable for the effective
+        uid.
+
+*******************************************************************************/
+
+bool isReadable (cstring name)
+{
+    char[512] tmp = void;
+    return FS.isReadable(FS.strz(name, tmp));
 }
 
 /*******************************************************************************
