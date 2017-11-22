@@ -94,9 +94,9 @@ public enum XmlTokenType {Done, StartElement, Attribute, EndElement,
 class PullParser(Ch = char)
 {
         public int                      depth;
-        public Ch[]                     prefix;
-        public Ch[]                     rawValue;
-        public Ch[]                     localName;
+        public Const!(Ch)[]             prefix;
+        public Const!(Ch)[]             rawValue;
+        public Const!(Ch)[]             localName;
         public XmlTokenType             type = XmlTokenType.None;
 
         package XmlText!(Ch)            text;
@@ -499,7 +499,7 @@ version (partialwhite)
 
         ***********************************************************************/
 
-        private XmlTokenType doUnexpected (istring msg, Ch* p)
+        private XmlTokenType doUnexpected (istring msg, Const!(Ch)* p)
         {
                 return position ("parse error :: unexpected  " ~ msg, p);
         }
@@ -508,7 +508,7 @@ version (partialwhite)
 
         ***********************************************************************/
 
-        private XmlTokenType doExpected (istring msg, Ch* p)
+        private XmlTokenType doExpected (istring msg, Const!(Ch)* p)
         {
                 char[6] tmp = void;
                 return position ("parse error :: expected  " ~ msg ~ " instead of "
@@ -519,7 +519,7 @@ version (partialwhite)
 
         ***********************************************************************/
 
-        private XmlTokenType position (istring msg, Ch* p)
+        private XmlTokenType position (istring msg, Const!(Ch)* p)
         {
                 return error (msg ~ " at position "
                     ~ idup(Integer.toString(p-text.text.ptr)));
@@ -539,16 +539,28 @@ version (partialwhite)
 
                 Return the raw value of the current token
 
+                This function may allocate memory. It is always better to
+                use rawValue instead.
+
         ***********************************************************************/
 
         final Ch[] value()
         {
-                return rawValue;
+                version (D_Version2)
+                {
+                    return rawValue.dup;
+                }
+                else
+                {
+                    return rawValue;
+                }
         }
 
         /***********************************************************************
 
                 Return the name of the current token
+
+                This function may allocate memory.
 
         ***********************************************************************/
 
@@ -556,7 +568,15 @@ version (partialwhite)
         {
                 if (prefix.length)
                     return prefix ~ ":" ~ localName;
-                return localName;
+
+                version (D_Version2)
+                {
+                    return localName.dup;
+                }
+                else
+                {
+                    return localName;
+                }
         }
 
         /***********************************************************************
@@ -589,22 +609,10 @@ version (partialwhite)
 
         ***********************************************************************/
 
-        final void reset(Ch[] newText)
+        final void reset(Const!(Ch)[] newText)
         {
                 text.reset (newText);
                 reset_;
-        }
-
-        version (D_Version2)
-        {
-            // adding this as versioned overload to avoid extra allocation
-            // for mutable argument
-
-            final void reset(Const!(Ch)[] newText)
-            {
-                    text.reset (newText.dup);
-                    reset_;
-            }
         }
 
         /***********************************************************************
@@ -665,12 +673,12 @@ version (partialwhite)
 
 package struct XmlText(Ch)
 {
-        package Ch*     end;
+        package Const!(Ch)* end;
         package size_t  len;
-        package Ch[]    text;
-        package Ch*     point;
+        package Const!(Ch)[] text;
+        package Const!(Ch)* point;
 
-        final void reset(Ch[] newText)
+        final void reset(Const!(Ch)[] newText)
         {
                 this.text = newText;
                 this.len = newText.length;
@@ -703,6 +711,8 @@ package struct XmlText(Ch)
 
 version (UnitTest)
 {
+    import ocean.core.Test;
+
 	/***********************************************************************
 
 	***********************************************************************/
@@ -710,7 +720,7 @@ version (UnitTest)
 	void testParser(Ch)(PullParser!(Ch) itr)
 	{
 	        test(itr.next);
-	        test(itr.value == "element [ <!ELEMENT element (#PCDATA)>]");
+	        test(itr.rawValue == "element [ <!ELEMENT element (#PCDATA)>]");
 	        test(itr.type == XmlTokenType.Doctype);
 	        test(itr.next);
 	        test(itr.localName == "element");
@@ -718,13 +728,13 @@ version (UnitTest)
 	        test(itr.depth == 0);
 	        test(itr.next);
 	        test(itr.localName == "attr");
-	        test(itr.value == "1");
+	        test(itr.rawValue == "1");
 	        test(itr.next);
 	        test(itr.type == XmlTokenType.Attribute);
 	        test(itr.localName == "attr2");
-	        test(itr.value == "two");
+	        test(itr.rawValue == "two");
 	        test(itr.next);
-	        test(itr.value == "comment");
+	        test(itr.rawValue == "comment");
 	        test(itr.next);
 	        test(itr.rawValue == "test&amp;&#x5a;");
 	        test(itr.next);
@@ -737,7 +747,7 @@ version (UnitTest)
 	        test(itr.depth == 1);
 	        test(itr.next);
 	        test(itr.localName == "attr3");
-	        test(itr.value == "3three", itr.value);
+	        test(itr.rawValue == "3three", itr.rawValue);
 	        test(itr.next);
 	        test(itr.rawValue == "sdlgjsh");
 	        test(itr.next);
@@ -746,7 +756,7 @@ version (UnitTest)
 	        test(itr.next);
 	        test(itr.type == XmlTokenType.EndEmptyElement);
 	        test(itr.next);
-	        test(itr.value == "data");
+	        test(itr.rawValue == "data");
 	        test(itr.next);
 	        test(itr.rawValue == "pi test", itr.rawValue);
 	        test(itr.next);
@@ -770,4 +780,12 @@ unittest
 {
     auto itr = new PullParser!(char)(testXML);
     testParser (itr);
+
+    // Parsing new text (or even the same one) should not involve any further
+    // memory allocation
+
+    testNoAlloc({
+      itr.reset(testXML);
+      testParser(itr);
+    }());
 }
