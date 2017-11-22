@@ -18,21 +18,14 @@
 
 module ocean.util.log.StaticTrace;
 
-import core.stdc.stdarg;
-
 import ocean.core.TypeConvert;
 import ocean.io.Console;
 import ocean.io.model.IConduit;
 import ocean.io.Terminal;
-import ocean.text.convert.Layout_tango;
+import ocean.text.convert.Formatter;
 import ocean.text.Search;
 import ocean.transition;
 
-
-alias void* Arg;
-alias va_list ArgList;
-
-version (X86_64) version = DigitalMarsX64;
 
 /*******************************************************************************
 
@@ -102,25 +95,21 @@ public class StaticSyncPrint
         Outputs a string to the console.
 
         Params:
+            Args = Tuple of arguments to format
             fmt = format string (same format as tanog.util.log.Trace)
-            ... = variadic list of values referenced in format string
+            args = variadic list of values referenced in format string
 
         Returns:
             this instance for method chaining
 
     ***************************************************************************/
 
-    public typeof(this) format ( cstring fmt, ... )
+    public typeof(this) format (Args...) ( cstring fmt, Args args )
     {
         formatted.length = 0;
         enableStomping(this.formatted);
-        size_t sink ( cstring s )
-        {
-            formatted ~= s;
-            return s.length;
-        }
 
-        Layout!(char).instance()(&sink, _arguments, _argptr, fmt);
+        sformat(formatted, _fmt, args);
 
         size_t lines = 0;
         istring nl = "";
@@ -155,7 +144,7 @@ public class StaticSyncPrint
         {
             formatted.length = 0;
             enableStomping(this.formatted);
-            Layout!(char).instance()(&sink, "{}", lines - 1);
+            sformat(formatted, "{}", lines - 1);
 
             write(CSI);
             write(formatted);
