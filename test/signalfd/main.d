@@ -65,7 +65,7 @@ private class SignalFDTest
 
     ***************************************************************************/
 
-    private const max_signal = 32;
+    private static immutable max_signal = 32;
 
 
     /***************************************************************************
@@ -429,7 +429,7 @@ private class SignalFDTest
         while (ret == -1 && errno == EINTR);
         enforce (ret == 0);
 
-        const int timeout_ms = 100; // just in case
+        static immutable int timeout_ms = 100; // just in case
         epoll_event_t[1] fired_events;
         auto epoll_res = epoll.wait(fired_events, timeout_ms);
 

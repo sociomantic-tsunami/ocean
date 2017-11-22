@@ -308,7 +308,7 @@ public class TimerSet ( EventData ) : TimerEventTimeoutManager
 
     ***************************************************************************/
 
-    public IEvent schedule ( EventSetupDg setup_dg, EventFiredDg fired_dg,
+    public IEvent schedule ( scope EventSetupDg setup_dg, scope EventFiredDg fired_dg,
         ulong schedule_us )
     out ( event )
     {
