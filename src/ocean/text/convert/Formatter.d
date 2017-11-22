@@ -1,13 +1,17 @@
 /*******************************************************************************
 
-    Compile-time version of `Layout_tango`, allows one to format structs,
-    and supports `Typedef` both in D1 and D2.
+    Lightweight, memory friendly string formatting module
 
     This module provides 4 possible semantics:
     - For pedestrian usage which doesn't care about allocations, see `format`
     - For allocation-friendly semantic where the data is output either to
       a sink or to a `ref char[]`, see the `sformat` overloads
     - To ensure absolutely no allocation happens, see `snformat`
+
+    Users of Phobos' `std.format` will find many similarities in the API:
+    - `format` is equivalent to `std.format.format`
+    - `snformat` is equivalent to `std.format.sformat`
+    - `sformat` is roughly equivalent to `std.format.formattedWrite`
 
     Copyright:
         Copyright (c) 2009-2016 Sociomantic Labs GmbH.
