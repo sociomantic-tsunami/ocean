@@ -18,24 +18,16 @@
 
 module ocean.util.log.StaticTrace;
 
-
-
-
-import ocean.transition;
+import core.stdc.stdarg;
 
 import ocean.core.TypeConvert;
-
-import ocean.io.Terminal;
-
-import ocean.text.convert.Layout_tango;
-
-import ocean.text.Search;
-
-import ocean.io.model.IConduit;
-
 import ocean.io.Console;
+import ocean.io.model.IConduit;
+import ocean.io.Terminal;
+import ocean.text.convert.Layout_tango;
+import ocean.text.Search;
+import ocean.transition;
 
-import core.stdc.stdarg;
 
 alias void* Arg;
 alias va_list ArgList;

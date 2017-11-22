@@ -68,23 +68,14 @@
 
 module ocean.util.log.PeriodicTrace;
 
-
-
-
-import ocean.transition;
-
-import ocean.core.TypeConvert;
-
-import ocean.util.log.StaticTrace;
-
-import ocean.io.Stdout;
-
 import core.stdc.stdarg;
 
+import ocean.core.TypeConvert;
+import ocean.io.Stdout;
 import ocean.text.convert.Layout_tango;
-
 import ocean.time.StopWatch;
-
+import ocean.transition;
+import ocean.util.log.StaticTrace;
 
 
 /*******************************************************************************
@@ -303,4 +294,3 @@ struct PeriodicTracer
         timer.start();
     }
 }
-
