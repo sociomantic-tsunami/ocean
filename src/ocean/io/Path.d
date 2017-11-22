@@ -302,9 +302,7 @@ package struct FS
 
                 static bool isWritable (cstring name)
                 {
-                        stat_t stats = void;
-
-                        return (getInfo(name, stats) & O_RDONLY) is 0;
+                        return posix.access(name.ptr, W_OK) == 0;
                 }
 
                 /***************************************************************
