@@ -50,58 +50,31 @@
 
 module ocean.io.console.AppStatus;
 
-
-
-
-import ocean.transition;
-
-import ocean.core.Verify;
-
-import ocean.io.Terminal;
-
-import ocean.time.model.IMicrosecondsClock;
-import ocean.time.MicrosecondsClock;
-
-import ocean.core.Array;
-
-import ocean.core.TypeConvert;
-
-import ocean.core.StructConverter;
-
-import ocean.io.Stdout;
-
-import ocean.text.convert.Layout;
-
-import ocean.util.log.Event;
-import ocean.util.log.InsertConsole;
-
-import ocean.util.log.layout.LayoutMessageOnly;
-
-import core.stdc.math: lroundf;
-
 import core.memory;
-
+import core.stdc.math: lroundf;
 import core.stdc.stdarg;
-
 import core.stdc.stdlib: div;
-
 import core.stdc.time: clock_t, clock, tm, time_t, time;
 
+import ocean.core.Array;
+import ocean.core.StructConverter;
+import ocean.core.TypeConvert;
+import ocean.core.Verify;
+import ocean.io.Console;
+import ocean.io.Stdout;
+import ocean.io.Terminal;
 import ocean.text.convert.Formatter;
-
+import ocean.text.convert.Layout;
+import ocean.time.model.IMicrosecondsClock;
+import ocean.time.MicrosecondsClock;
+import ocean.transition;
 import ocean.util.log.Event;
+import ocean.util.log.InsertConsole;
+import ocean.util.log.layout.LayoutMessageOnly;
 import ocean.util.log.model.ILogger;
 
-import ocean.io.Console;
 
-
-
-/*******************************************************************************
-
-    Module to display static and streaming lines in the terminal.
-
-*******************************************************************************/
-
+/// Ditto
 public class AppStatus
 {
     /***************************************************************************
