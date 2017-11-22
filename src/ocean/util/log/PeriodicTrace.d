@@ -68,11 +68,9 @@
 
 module ocean.util.log.PeriodicTrace;
 
-import core.stdc.stdarg;
-
 import ocean.core.TypeConvert;
 import ocean.io.Stdout;
-import ocean.text.convert.Layout_tango;
+import ocean.text.convert.Formatter;
 import ocean.time.StopWatch;
 import ocean.transition;
 import ocean.util.log.StaticTrace;
@@ -166,26 +164,31 @@ struct PeriodicTracer
         this.static_display member.
 
         Params:
+            Args = Tuple of arguments to format
             fmt = format string (same format as tanog.util.log.Trace)
-            ... = variadic list of values referenced in format string
+            args = variadic list of values referenced in format string
 
         Returns:
             this instance for method chaining
 
     ***************************************************************************/
 
-    public typeof(this) format ( cstring fmt, ... )
+    public typeof(this) format (Args...) ( cstring fmt, Args args )
     {
-        va_list ap;
+        if (this.timeToUpdate())
+        {
+            this.last_update_time = this.now;
 
-        static if (__VERSION__ > 2071)
-            va_start(ap, fmt);
-        else
-            va_start(ap, __va_argsave);
+            this.formatted.length = 0;
+            enableStomping(this.formatted);
+            sformat(this.formatted, fmt, args);
 
-        scope(exit) va_end(ap);
-
-        return this.format(fmt, ap, _arguments);
+            if (this.static_display)
+                StaticTrace.format("{}", this.formatted).flush;
+            else
+                Stderr.formatln("{}", this.formatted).flush;
+        }
+        return this;
     }
 
 
@@ -196,19 +199,20 @@ struct PeriodicTracer
         depending on the this.static_display member.
 
         Params:
+            Args = Tuple of arguments to format
             interval = minimum interval between display updates
             fmt = format string (same format as tanog.util.log.Trace)
-            ... = variadic list of values referenced in format string
+            args = variadic list of values referenced in format string
 
         Returns:
             this instance for method chaining
 
     ***************************************************************************/
 
-    public typeof(this) format ( ulong interval, cstring fmt, ... )
+    public typeof(this) format (Args...) ( ulong interval, cstring fmt, Args args )
     {
         this.interval = interval;
-        return this.format(fmt, _argptr, _arguments);
+        return this.format(fmt, args);
     }
 
 
@@ -234,52 +238,6 @@ struct PeriodicTracer
     {
         this.now = timer.microsec();
         return this.now > this.last_update_time + this.interval;
-    }
-
-
-    /***************************************************************************
-
-        Outputs a formatted string to the console if the update interval has
-        passed. The display is either static or adds a newline depending on the
-        this.static_display member.
-
-        Params:
-            fmt = format string (same format as tanog.util.log.Trace)
-            args = argument pointers
-            types = argument types
-
-        Returns:
-            this instance for method chaining
-
-    ***************************************************************************/
-
-    private typeof(this) format ( cstring fmt, va_list args, TypeInfo[] types )
-    {
-        if ( this.timeToUpdate() )
-        {
-            this.last_update_time = this.now;
-
-            this.formatted.length = 0;
-            enableStomping(this.formatted);
-            size_t sink ( cstring s )
-            {
-                this.formatted ~= s;
-                return s.length;
-            }
-
-            Layout!(char).instance()(&sink, types, args, fmt);
-
-            if ( this.static_display )
-            {
-                StaticTrace.format("{}", this.formatted).flush;
-            }
-            else
-            {
-                Stderr.formatln("{}", this.formatted).flush;
-            }
-        }
-
-        return this;
     }
 
 
