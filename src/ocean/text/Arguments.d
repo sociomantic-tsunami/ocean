@@ -611,6 +611,7 @@ import ocean.io.stream.Format : FormatOutput;
 import ocean.math.Math;
 import ocean.text.Util;
 import ocean.text.convert.Formatter;
+static import ocean.text.convert.Layout_tango;
 import ocean.text.convert.Integer_tango;
 import ocean.util.container.SortedMap;
 import ocean.util.container.more.Stack;
