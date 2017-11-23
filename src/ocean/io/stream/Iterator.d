@@ -213,7 +213,7 @@ class Iterator(T) : InputFilter
 
         ***********************************************************************/
 
-        protected final size_t set (T* content, size_t start, size_t end)
+        protected final size_t set (Const!(T)* content, size_t start, size_t end)
         {
                 slice = content [start .. end];
                 return end;
@@ -227,7 +227,7 @@ class Iterator(T) : InputFilter
 
         ***********************************************************************/
 
-        protected final size_t set (T* content, size_t start, size_t end, size_t next)
+        protected final size_t set (Const!(T)* content, size_t start, size_t end, size_t next)
         {
                 slice = content [start .. end];
                 delim = content [end .. next+1];
@@ -296,5 +296,3 @@ class Iterator(T) : InputFilter
                 return false;
         }
 }
-
-
