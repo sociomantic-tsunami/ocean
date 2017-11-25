@@ -264,19 +264,15 @@ public class BucketElementMallocAllocator (Bucket) : IAllocator
             this.elements = (cast(void**)allocated_mem)[0 .. n];
         }
 
-        version (D_Version2) {}
-        else
+        /***********************************************************************
+
+            Dispose class.
+
+        ***********************************************************************/
+
+        ~this ( )
         {
-            /*******************************************************************
-
-                Dispose class.
-
-            *******************************************************************/
-
-            protected override void dispose ( )
-            {
-                free(this.elements.ptr);
-            }
+            free(this.elements.ptr);
         }
 
         /***********************************************************************
@@ -364,6 +360,8 @@ version (UnitTest)
     unittest
     {
         // Test if creating a map with a bucket compiles.
-        BucketElementMallocAllocator!(Bucket!(hash_t.sizeof, hash_t)) allocator;
+        auto allocator = new
+            BucketElementMallocAllocator!(Bucket!(hash_t.sizeof, hash_t));
+        delete allocator;
     }
 }
