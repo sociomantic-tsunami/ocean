@@ -155,26 +155,6 @@ public class HeadingsCSV
         this.fields = new AppendBuffer!(Field);
     }
 
-
-    version (D_Version2) {}
-    else
-    {
-        /***********************************************************************
-
-            Disposer.
-
-        ***********************************************************************/
-
-        override void dispose ( )
-        {
-            delete this.csv;
-            delete this.headings;
-            delete this.heading_included;
-            delete this.fields;
-        }
-    }
-
-
     /***************************************************************************
 
         Parses CSV data from the provided stream. Parsing ends when an EOF is

@@ -63,32 +63,6 @@ class CookiesHttpResponse : HttpResponse
         super.addKey(HeaderFieldNames.ResponseNames.SetCookie);
     }
 
-    version (D_Version2) {}
-    else
-    {
-        /**********************************************************************
-
-            Called immediately when this instance is deleted.
-            (Must be protected to prevent an invariant from failing.)
-
-        ***********************************************************************/
-
-        protected override void dispose ( )
-        {
-            super.dispose();
-
-            foreach (ref cookie; this.cookies)
-            {
-                delete cookie;
-
-                cookie = null;
-            }
-
-            delete this.cookies;
-        }
-    }
-
-
     /**************************************************************************
 
         Called by render() when the Set-Cookie header lines should be appended.

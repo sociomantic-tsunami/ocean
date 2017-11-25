@@ -120,23 +120,6 @@ public abstract class IBucketSet
         this.bucket_element_allocator = bucket_element_allocator;
     }
 
-
-    version (D_Version2) {}
-    else
-    {
-        /***********************************************************************
-
-            Disposer.
-
-        ***********************************************************************/
-
-        protected override void dispose ( )
-        {
-            delete this.bucket_info;
-        }
-    }
-
-
     /**************************************************************************
 
         Get the length of the buckets.
@@ -358,24 +341,6 @@ public abstract class BucketSet ( size_t V, K = hash_t ) : IBucketSet
         super(allocator, n, load_factor);
 
         this.buckets = new Bucket[this.bucket_info.num_buckets];
-    }
-
-
-    version (D_Version2) {}
-    else
-    {
-        /***********************************************************************
-
-            Disposer.
-
-        ***********************************************************************/
-
-        protected override void dispose ( )
-        {
-            super.dispose();
-
-            delete this.buckets;
-        }
     }
 
     /**************************************************************************

@@ -543,23 +543,6 @@ class AddrInfo : AddrInfoC
 
     private char[] node, service;
 
-
-    version (D_Version2) {}
-    else
-    {
-        /***********************************************************************
-
-            Disposer.
-
-        ***********************************************************************/
-
-        protected override void dispose ( )
-        {
-            if (this.node)      delete this.node;
-            if (this.service)   delete this.service;
-        }
-    }
-
     /**************************************************************************
 
         Returns:

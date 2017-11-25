@@ -85,22 +85,6 @@ class IBucketElementGCAllocator: IAllocator
             this.elements = new void*[n];
         }
 
-
-        version (D_Version2) {}
-        else
-        {
-            /*******************************************************************
-
-                Disposer.
-
-            *******************************************************************/
-
-            protected override void dispose ( )
-            {
-                delete this.elements;
-            }
-        }
-
         /**********************************************************************
 
             Pushes an object on the stack.

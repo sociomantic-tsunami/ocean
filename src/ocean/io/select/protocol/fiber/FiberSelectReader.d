@@ -177,26 +177,6 @@ class FiberSelectReader : IFiberSelectProtocol
                 ~ IInputDevice.stringof);
     }
 
-
-    version (D_Version2) {}
-    else
-    {
-        /***********************************************************************
-
-            Called immediately when this instance is deleted.
-            (Must be protected to prevent an invariant from failing.)
-
-        ***********************************************************************/
-
-        protected override void dispose ( )
-        {
-            super.dispose();
-
-            delete this.data;
-        }
-    }
-
-
     /**************************************************************************
 
         Resets the amount of consumed/available data to 0.

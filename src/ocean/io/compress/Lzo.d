@@ -226,21 +226,6 @@ class Lzo
                 return;
         }
     }
-
-    version (D_Version2) {}
-    else
-    {
-        /***********************************************************************
-
-            Destructor
-
-        ***********************************************************************/
-
-        override void dispose ( )
-        {
-            delete this.workmem;
-        }
-    }
 }
 
 /// Simple compress / decompress example.

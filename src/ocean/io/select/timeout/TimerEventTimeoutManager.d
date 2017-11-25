@@ -126,24 +126,6 @@ class TimerEventTimeoutManager : TimeoutManager
         this.event = this.new TimerEvent;
     }
 
-
-    version (D_Version2) {}
-    else
-    {
-        /***********************************************************************
-
-            Called immediately when this instance is deleted.
-            (Must be protected to prevent an invariant from failing.)
-
-        ***********************************************************************/
-
-        protected override void dispose ( )
-        {
-            delete this.event;
-        }
-    }
-
-
     /***************************************************************************
 
         Returns:
