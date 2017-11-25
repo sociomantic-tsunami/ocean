@@ -108,8 +108,10 @@ public enum XmlTokenType
 
 *******************************************************************************/
 
-class PullParser(Ch = char)
+class PullParser(ChMut = char)
 {
+    alias Const!(ChMut)  Ch;
+
     public int           depth;
     public Ch[]          prefix;
     public Ch[]          rawValue;
@@ -126,7 +128,7 @@ class PullParser(Ch = char)
 
      ***********************************************************************/
 
-    this(Immut!(Ch)[] content = null)
+    this(Ch[] content = null)
     {
         reset (content);
     }
@@ -610,18 +612,6 @@ class PullParser(Ch = char)
     {
         text.reset (newText);
         reset_;
-    }
-
-    version (D_Version2)
-    {
-        // adding this as versioned overload to avoid extra allocation
-        // for mutable argument
-
-        final void reset(Const!(Ch)[] newText)
-        {
-            text.reset (newText.dup);
-            reset_;
-        }
     }
 
     /***********************************************************************
