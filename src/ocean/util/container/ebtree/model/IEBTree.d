@@ -105,17 +105,4 @@ abstract class IEBTree
         verify (this.count >= n);
         return this.count -= n;
     }
-
-    /***************************************************************************
-
-        Disposer
-
-    ***************************************************************************/
-
-    version (D_Version2) {}
-    else
-    protected override void dispose ( )
-    {
-        this.clear();
-    }
 }
