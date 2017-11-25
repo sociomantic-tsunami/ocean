@@ -697,26 +697,6 @@ class PriorityCache(T) : ICacheInfo
         return true;
     }
 
-
-    version (D_Version2) {}
-    else
-    {
-        /***********************************************************************
-
-            Disposer.
-
-        ***********************************************************************/
-
-        protected override void dispose ( )
-        {
-            super.dispose();
-
-            delete this.key_to_node;
-            delete this.time_to_index;
-            delete this.items;
-        }
-    }
-
     /***************************************************************************
 
         Creates a new item with the given priority.

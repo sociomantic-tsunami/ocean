@@ -133,27 +133,6 @@ class LzoChunk ( bool LengthInline = true )
         this.lzo_is_reference = true;
     }
 
-
-    version (D_Version2) {}
-    else
-    {
-
-        /***********************************************************************
-
-            Destructor - deletes the internal lzo object if it was created by
-            this class
-
-        ***********************************************************************/
-
-        override void dispose ( )
-        {
-            if ( !this.lzo_is_reference )
-            {
-                delete this.lzo;
-            }
-        }
-    }
-
     /***************************************************************************
 
         Compresses a data chunk
