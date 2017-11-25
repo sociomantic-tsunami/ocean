@@ -113,25 +113,6 @@ class ParamSet
 
     private mstring tolower_buf;
 
-
-    version (D_Version2) {}
-    else
-    {
-        /***********************************************************************
-
-            Called immediately when this instance is deleted.
-            (Must be protected to prevent an invariant from failing.)
-
-        ***********************************************************************/
-
-        protected override void dispose ( )
-        {
-            this.reset();
-
-            delete this.tolower_buf;
-        }
-    }
-
     /**************************************************************************
 
         Obtains the parameter value corresponding to key. key must be one of

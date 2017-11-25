@@ -348,26 +348,6 @@ public class StringEncoderSequence ( Encoders... )
         }
     }
 
-
-    version (D_Version2) {}
-    else
-    {
-        /***********************************************************************
-
-            Disposer. Deletes encoders.
-
-        ***********************************************************************/
-
-        override void dispose ( )
-        {
-            foreach ( e; this.encoders )
-            {
-                delete e;
-            }
-        }
-    }
-
-
     /***************************************************************************
 
         Runs the encoders in sequence until one succeeds.
