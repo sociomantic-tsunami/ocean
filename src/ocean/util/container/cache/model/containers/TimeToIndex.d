@@ -86,23 +86,6 @@ class TimeToIndex: EBTree128!()
             this.elements = new typeof(this.elements)(n);
         }
 
-
-        version (D_Version2) {}
-        else
-        {
-            /*******************************************************************
-
-                Destructor.
-
-            *******************************************************************/
-
-            protected override void dispose ( )
-            {
-                super.dispose();
-                delete this.elements;
-            }
-        }
-
         /***********************************************************************
 
             Obtains a new node from the array node pool.
@@ -166,22 +149,5 @@ class TimeToIndex: EBTree128!()
     {
         super.clear();
         this.nodes.clear();
-    }
-
-
-    version (D_Version2) {}
-    else
-    {
-        /***********************************************************************
-
-            Disposer.
-
-        ***********************************************************************/
-
-        protected override void dispose ( )
-        {
-            super.dispose();
-            delete this.nodes;
-        }
     }
 }

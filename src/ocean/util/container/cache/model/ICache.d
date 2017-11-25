@@ -114,25 +114,6 @@ abstract class ICache : ICacheInfo
         this.key_to_node   = new KeyToNode(max_items);
     }
 
-
-    version (D_Version2) {}
-    else
-    {
-        /***********************************************************************
-
-            Disposer.
-
-        ***********************************************************************/
-
-        protected override void dispose ( )
-        {
-            super.dispose();
-
-            delete this.key_to_node;
-            delete this.time_to_index;
-        }
-    }
-
     /***************************************************************************
 
         Removes all items from the cache.

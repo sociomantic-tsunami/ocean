@@ -132,23 +132,6 @@ public abstract class IRingQueue ( IBaseQueue ) : IBaseQueue
         this.data = this.mem_manager.create(dimension);
     }
 
-
-    version (D_Version2) {}
-    else
-    {
-        /***********************************************************************
-
-            Called for explicit deletes
-
-        ***********************************************************************/
-
-        override protected void dispose ( )
-        {
-            this.mem_manager.dispose(this.data);
-        }
-    }
-
-
     /***************************************************************************
 
         Called for explicit deletes and on collection

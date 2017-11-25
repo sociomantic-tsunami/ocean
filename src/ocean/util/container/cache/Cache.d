@@ -352,24 +352,6 @@ class Cache ( size_t ValueSize = 0, bool TrackCreateTimes = false ) : CacheBase!
         this.items = new CacheItem[max_items];
     }
 
-
-    version (D_Version2) {}
-    else
-    {
-        /***********************************************************************
-
-            Disposer.
-
-        ***********************************************************************/
-
-        protected override void dispose ( )
-        {
-            super.dispose();
-
-            delete this.items;
-        }
-    }
-
     /***************************************************************************
 
         Creates an item in the cache and sets its create time. If the cache is

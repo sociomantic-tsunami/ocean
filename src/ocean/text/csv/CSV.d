@@ -116,24 +116,6 @@ public class CSV
         this.fields = new AppendBuffer!(cstring);
     }
 
-
-    version (D_Version2) {}
-    else
-    {
-        /***********************************************************************
-
-            Disposer.
-
-        ***********************************************************************/
-
-        override void dispose ( )
-        {
-            delete this.row;
-            delete this.fields;
-        }
-    }
-
-
     /***************************************************************************
 
         Parses CSV data from the provided stream. Parsing ends when an EOF is

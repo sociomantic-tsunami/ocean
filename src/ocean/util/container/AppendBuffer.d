@@ -1256,26 +1256,6 @@ private abstract class AppendBufferImpl: IAppendBufferBase
         return this.content[oldlen .. newlen];
     }
 
-
-    version (D_Version2) {}
-    else
-    {
-        /***********************************************************************
-
-            Called immediately when this instance is deleted.
-            (Must be protected to prevent an invariant from failing.)
-
-        ***********************************************************************/
-
-        protected override void dispose ( )
-        {
-            if (this.content)
-            {
-                this.deleteContent(this.content);
-            }
-        }
-    }
-
     /**************************************************************************
 
         Allocates a dynamic array of n bytes for the content.
