@@ -127,30 +127,6 @@ public interface IMemManager
 
     public void destroy ( ubyte[] buffer );
 
-
-    version (D_Version2) {}
-    else
-    {
-        /***********************************************************************
-
-            Dispose compatible deallocation
-
-            Note that it is up to the user of classes which implement this
-            interface to ensure that the buffer passed was in fact allocated
-            by the same instance.
-
-            `void Object.dispose()` is called on explicit delete. This method is
-            intended to be called from that method.
-
-            Params:
-                buffer = buffer to deallocate
-
-        ***********************************************************************/
-
-        public void dispose ( ubyte[] buffer );
-    }
-
-
     /***************************************************************************
 
         Destructor compatible deallocation
@@ -227,23 +203,6 @@ private class GCMemManager ( bool gc_aware ) : IMemManager
     {
         delete buffer;
     }
-
-
-    /***************************************************************************
-
-        Deallocates the passed buffer.
-
-        Params:
-            buffer = buffer to deallocate
-
-    ***************************************************************************/
-
-    version (D_Version2) {}
-    else public override void dispose ( ubyte[] buffer )
-    {
-        delete buffer;
-    }
-
 
     /***************************************************************************
 
@@ -335,20 +294,6 @@ private class MallocMemManager ( bool gc_aware ) : IMemManager
             free(buffer.ptr);
         }
     }
-
-
-    /***************************************************************************
-
-        Does nothing.
-
-        Params:
-            buffer = buffer to deallocate
-
-    ***************************************************************************/
-
-    version (D_Version2) {}
-    else public override void dispose ( ubyte[] buffer ) {}
-
 
     /***************************************************************************
 

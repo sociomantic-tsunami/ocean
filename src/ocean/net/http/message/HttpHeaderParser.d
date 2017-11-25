@@ -371,28 +371,6 @@ class HttpHeaderParser : IHttpHeaderParser
         this.header_elements_ = new HeaderElement[lines_limit];
     }
 
-
-    version (D_Version2) {}
-    else
-    {
-        /***********************************************************************
-
-            Called immediately when this instance is deleted.
-            (Must be protected to prevent an invariant from failing.)
-
-        ***********************************************************************/
-
-        protected override void dispose ( )
-        {
-            this.start_line_tokens[] = null;
-
-            delete this.content;
-            delete this.header_lines_;
-            delete this.header_elements_;
-        }
-    }
-
-
     /**************************************************************************
 
         Start line tokens; slice the internal content buffer

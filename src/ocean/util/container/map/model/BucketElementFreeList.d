@@ -180,24 +180,6 @@ abstract class IBucketElementFreeList: IAllocator
                 ParkingStack.stringof ~ " instance");
     }
 
-
-    version (D_Version2) {}
-    else
-    {
-        /***********************************************************************
-
-            Disposer.
-
-        ***********************************************************************/
-
-        protected override void dispose ( )
-        {
-            this.first = null;
-            this.n_free = 0;
-        }
-    }
-
-
     /***************************************************************************
 
         Constructor.

@@ -198,26 +198,6 @@ class HttpRequest : HttpHeader
         this(false, msg_body_prealloc_length);
     }
 
-
-    version (D_Version2) {}
-    else
-    {
-        /***********************************************************************
-
-            Disposer
-
-        ***********************************************************************/
-
-        protected override void dispose ( )
-        {
-            super.dispose();
-
-            delete this.parser;
-            delete this._uri;
-            delete this.msg_body_;
-        }
-    }
-
     /**************************************************************************
 
         Returns:

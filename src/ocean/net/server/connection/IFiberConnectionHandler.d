@@ -125,26 +125,6 @@ abstract class IFiberConnectionHandlerBase : IConnectionHandler
         this(epoll, this.default_stack_size, socket, finalize_dg, error_dg);
     }
 
-
-    version (D_Version2) {}
-    else
-    {
-        /***********************************************************************
-
-            Called immediately when this instance is deleted.
-            (Must be protected to prevent an invariant from failing.)
-
-        ***********************************************************************/
-
-        protected override void dispose ( )
-        {
-            super.dispose();
-
-            delete this.fiber;
-        }
-    }
-
-
     /***************************************************************************
 
         Called by the select listener right after the client connection has been
@@ -451,23 +431,6 @@ abstract class IFiberConnectionHandler : IFiberConnectionHandlerBase, Resettable
 
         this.reader.error_reporter = this;
         this.writer.error_reporter = this;
-    }
-
-    /**************************************************************************
-
-        Called immediately when this instance is deleted.
-        (Must be protected to prevent an invariant from failing.)
-
-     **************************************************************************/
-
-    version (D_Version2) {}
-    else
-    protected override void dispose ( )
-    {
-        super.dispose();
-
-        delete this.reader;
-        delete this.writer;
     }
 
     /**************************************************************************
