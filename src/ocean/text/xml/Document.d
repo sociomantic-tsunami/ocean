@@ -260,10 +260,6 @@ else
 }
                 newlist;
                 index = 1;
-version(d)
-{
-                freelists = 0;          // needed to align the codegen!
-}
                 return this;
         }
 
