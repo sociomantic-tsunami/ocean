@@ -333,7 +333,7 @@ version(d)
 version (discrete)
 {
                                   auto node = allocate;
-                                  node.rawValue = super.rawValue;
+                                  Array.copy(node.rawValue, super.rawValue);
                                   node.id = XmlNodeType.Data;
                                   cur.append (node);
 }
@@ -350,9 +350,9 @@ else
                              case XmlTokenType.StartElement:
                                   auto node = allocate;
                                   node.host = cur;
-                                  node.prefixed = super.prefix;
+                                  Array.copy(node.prefixed, super.prefix);
                                   node.id = XmlNodeType.Element;
-                                  node.localName = super.localName;
+                                  Array.copy(node.localName, super.localName);
                                   node.start = p;
 
                                   // inline append
@@ -372,9 +372,9 @@ else
 
                              case XmlTokenType.Attribute:
                                   auto attr = allocate;
-                                  attr.prefixed = super.prefix;
-                                  attr.rawValue = super.rawValue;
-                                  attr.localName = super.localName;
+                                  Array.copy(attr.prefixed, super.prefix);
+                                  Array.copy(attr.rawValue, super.rawValue);
+                                  Array.copy(attr.localName, super.localName);
                                   attr.id = XmlNodeType.Attribute;
                                   cur.attrib (attr);
                                   break;
