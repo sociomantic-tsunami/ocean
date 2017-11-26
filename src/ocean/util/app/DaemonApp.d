@@ -73,6 +73,7 @@ public abstract class DaemonApp : Application,
     import ocean.util.app.ext.ReopenableFilesExt;
     import ocean.util.app.ext.PidLockExt;
     import ocean.util.app.ext.UnixSocketExt;
+    import ocean.util.app.ext.TaskExt;
     import ocean.util.app.ExitException;
     import ocean.util.log.Log;
     import NewLog = ocean.util.log.Logger;
@@ -193,6 +194,14 @@ public abstract class DaemonApp : Application,
 
     /***************************************************************************
 
+        Extension to start `run` method inside a task.
+
+    ***************************************************************************/
+
+    public TaskExt task_ext;
+
+    /***************************************************************************
+
         Cpu and memory collector instance.
 
     ***************************************************************************/
@@ -309,6 +318,15 @@ public abstract class DaemonApp : Application,
 
         /// Delegate for LogExt that instantiates a `Appender.Layout` from a name
         Appender.Layout delegate (cstring name) make_layout;
+
+        /***********************************************************************
+
+            By default TaskExt is disabled to prevent breaking change for
+            applications already configuring scheduler on their own.
+
+        ***********************************************************************/
+
+        bool use_task_ext;
     }
 
     /***************************************************************************
@@ -383,6 +401,12 @@ public abstract class DaemonApp : Application,
         this.unix_socket_ext = new UnixSocketExt();
         this.config_ext.registerExtension(this.unix_socket_ext);
         this.registerExtension(this.unix_socket_ext);
+
+        if (settings.use_task_ext)
+        {
+            this.task_ext = new TaskExt();
+            this.config_ext.registerExtension(this.task_ext);
+        }
 
         // Create and register repoenable files extension
         this.reopenable_files_ext = new ReopenableFilesExt();
@@ -460,7 +484,13 @@ public abstract class DaemonApp : Application,
 
     override protected int run ( istring[] args )
     {
-        return this.run(this.args, this.config);
+        if (this.task_ext is null)
+            return this.run(this.args, this.config);
+
+        this.startEventHandling(theScheduler.epoll());
+        return this.task_ext.run({
+            return this.run(this.args, this.config);
+        });
     }
 
     /***************************************************************************
