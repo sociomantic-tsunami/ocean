@@ -538,6 +538,8 @@ final class Scheduler : IScheduler
         assert (this.state != State.Shutdown);
         this.state = State.Running;
 
+        debug_trace("Starting scheduler event loop");
+
         do
         {
             this.epoll.eventLoop(
