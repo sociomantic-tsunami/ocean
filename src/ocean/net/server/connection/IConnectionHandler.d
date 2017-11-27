@@ -400,16 +400,9 @@ abstract class IConnectionHandler : IConnectionHandlerInfo,
         exits. Therefore, to be certain that the socket will not fire again in
         epoll, we need to explicitly unregister it.
 
-        This method does nothing by default, but should be overridden by all
-        derived classes.
-
-        TODO: this method should be made abstract in the next major release.
-
     ***************************************************************************/
 
-    protected void unregisterSocket ( )
-    {
-    }
+    abstract protected void unregisterSocket ( );
 
     /***************************************************************************
 

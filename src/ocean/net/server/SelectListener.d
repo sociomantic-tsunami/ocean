@@ -681,6 +681,12 @@ unittest
         {
             this.error_occurred = true;
         }
+
+        /// Unregisters the socket from the epoll before closing it. Called by
+        /// finalize.
+        override protected void unregisterSocket ()
+        {
+        }
     }
 
     // Top-level server class which owns the select listener and all global
