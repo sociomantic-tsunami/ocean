@@ -58,6 +58,7 @@ class DummyConHandler : IConnectionHandler
     }
     override protected bool io_error() { return true; }
     override public void handleConnection () {}
+    override public void unregisterSocket() {}
 }
 
 ushort testPort ( ushort port )
@@ -117,6 +118,7 @@ class DummyConHandlerUnix : IConnectionHandler
     }
     override protected bool io_error() { return true; }
     override public void handleConnection () {}
+    override public void unregisterSocket() {}
 }
 
 void test_unix (istring path)
