@@ -42,7 +42,7 @@ class MyApp : DaemonApp
 
         this.sys_stats = new CpuMemoryStats;
         // log first time to avoid zeroes in CPU usage in the first log
-        this.sys_stats.log();
+        this.sys_stats.collect();
 
         super(name, desc, VersionInfo.init, settings);
     }
@@ -55,7 +55,7 @@ class MyApp : DaemonApp
 
         auto timer = new TimerEvent(
                 {
-                    stats = this.sys_stats.log();
+                    stats = this.sys_stats.collect();
                     this.epoll.shutdown();
 
                     return false;

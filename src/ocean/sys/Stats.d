@@ -148,7 +148,7 @@ public class CpuMemoryStats
 
     ***************************************************************************/
 
-    public Stats log ()
+    public Stats collect ()
     {
         Stats stats;
 
@@ -202,6 +202,13 @@ public class CpuMemoryStats
         this.previous_stat = current_stat;
 
         return stats;
+    }
+
+    /// ditto
+    deprecated("ocean.sys.Stats.CpuMemoryStats.log is deprecated. Use collect instead.")
+    public Stats log ()
+    {
+        return this.collect();
     }
 
     /***************************************************************************

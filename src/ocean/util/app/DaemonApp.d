@@ -559,7 +559,7 @@ public abstract class DaemonApp : Application,
 
     protected void reportSystemStats ( )
     {
-        this.stats_ext.stats_log.add(this.system_stats.log());
+        this.stats_ext.stats_log.add(this.system_stats.collect());
     }
 
     /***************************************************************************
