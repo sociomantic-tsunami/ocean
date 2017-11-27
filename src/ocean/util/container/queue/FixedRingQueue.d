@@ -32,6 +32,8 @@ import ocean.util.container.mem.MemManager;
 
 version(UnitTest) import ocean.core.Test;
 
+import ocean.transition;
+
 
 /*******************************************************************************
 
@@ -185,7 +187,7 @@ class FixedByteRingQueue : FixedRingQueueBase!(IByteQueue)
 
     ***************************************************************************/
 
-    bool push ( ubyte[] element )
+    bool push ( in void[] element )
     {
         verify (element.length == super.element_size, "element size mismatch");
 
@@ -193,7 +195,8 @@ class FixedByteRingQueue : FixedRingQueueBase!(IByteQueue)
 
         if (element_in_queue)
         {
-            element_in_queue[] = element[];
+            Const!(void)[] element_ = element;
+            element_in_queue[] = element_[];
             return true;
         }
         else
@@ -214,9 +217,9 @@ class FixedByteRingQueue : FixedRingQueueBase!(IByteQueue)
 
     ***************************************************************************/
 
-    ubyte[] push ( size_t ignored = 0 )
+    void[] push ( size_t ignored = 0 )
     {
-        return cast(ubyte[])super.push_();
+        return super.push_();
     }
 
     /***************************************************************************
@@ -231,12 +234,12 @@ class FixedByteRingQueue : FixedRingQueueBase!(IByteQueue)
 
      ***************************************************************************/
 
-    ubyte[] pop ( )
+    Const!(void)[] pop ( )
     {
-        return cast(ubyte[])super.pop_();
+        return super.pop_();
     }
 
-    ubyte[] peek ( )
+    Const!(void)[] peek ( )
     {
         return super.peek_();
     }
@@ -254,11 +257,11 @@ class FixedByteRingQueue : FixedRingQueueBase!(IByteQueue)
 
     ***************************************************************************/
 
-    bool pop ( ubyte[] element )
+    bool pop ( void[] element )
     {
         verify (element.length == super.element_size, "element size mismatch");
 
-        auto element_in_queue = cast(ubyte[])super.pop_();
+        auto element_in_queue = super.pop_();
 
         if (element_in_queue)
         {
@@ -448,7 +451,7 @@ abstract class FixedRingQueueBase ( IBaseQueue ) : IRingQueue!(IBaseQueue)
 
     ***************************************************************************/
 
-    protected void[] pop_ ( )
+    protected Const!(void)[] pop_ ( )
     out (element)
     {
         assert (!element || element.length == this.element_size);
@@ -468,7 +471,7 @@ abstract class FixedRingQueueBase ( IBaseQueue ) : IRingQueue!(IBaseQueue)
     }
 
 
-    protected ubyte[] peek_ ( )
+    protected Const!(void)[] peek_ ( )
     out (element)
     {
         assert (!element || element.length == this.element_size);
@@ -479,7 +482,7 @@ abstract class FixedRingQueueBase ( IBaseQueue ) : IRingQueue!(IBaseQueue)
         {
             auto read_pos = super.read_from;
 
-            return cast(ubyte[])this.getElement(read_pos);
+            return this.getElement(read_pos);
         }
         else
         {
@@ -505,7 +508,7 @@ abstract class FixedRingQueueBase ( IBaseQueue ) : IRingQueue!(IBaseQueue)
     {
         size_t end = pos + this.element_size;
 
-        ubyte[] chunk = super.data[pos .. end];
+        auto chunk = super.data[pos .. end];
 
         pos = end;
 
