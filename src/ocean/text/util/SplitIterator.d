@@ -75,6 +75,22 @@ class StrSplitIterator : ISplitIterator
 
         Constructor
 
+        Params:
+            delim_ = delimiter string
+            content = Content string to split. content will be sliced (not copied).
+
+     **************************************************************************/
+
+    public this ( cstring delim_, cstring content )
+    {
+        this(delim_);
+        this.reset(content);
+    }
+
+    /**************************************************************************
+
+        Constructor
+
         Intended to be used for a 'scope' instance where a SearchFruct instance
         is stored somewhere in order to reuse the search index.
 
@@ -213,6 +229,16 @@ unittest
     test (split.next == "ab");
     test (split.next == "cd");
     test (split.next == "efg");
+
+}
+
+unittest
+{
+    scope split_constr = new StrSplitIterator("123", "ab" ~ "123" ~ "cd" ~ "123" ~ "efg");
+
+    test (split_constr.next == "ab");
+    test (split_constr.next == "cd");
+    test (split_constr.next == "efg");
 }
 
 
@@ -245,6 +271,22 @@ class ChrSplitIterator : ISplitIterator
     public this ( char delim_ )
     {
         this.delim = delim_;
+    }
+
+    /**************************************************************************
+
+        Constructor
+
+        Params:
+            delim_ = delimiter character
+            content = Content string to split. content will be sliced (not copied).
+
+     **************************************************************************/
+
+    public this ( char delim_, cstring content )
+    {
+        this(delim_);
+        this.reset(content);
     }
 
     /**************************************************************************
@@ -294,6 +336,16 @@ class ChrSplitIterator : ISplitIterator
         return 1;
     }
 }
+
+unittest
+{
+    scope split_constr = new ChrSplitIterator('1', "ab" ~ "1" ~ "cd" ~ "1" ~ "efg");
+
+    test (split_constr.next == "ab");
+    test (split_constr.next == "cd");
+    test (split_constr.next == "efg");
+}
+
 
 /******************************************************************************
 
