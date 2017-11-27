@@ -40,6 +40,7 @@ import ocean.io.stream.Buffered,
        ocean.io.device.File,
        Filesystem = ocean.io.Path;
 
+import ocean.transition;
 
 
 public class QueueChain : IByteQueue
@@ -82,7 +83,7 @@ public class QueueChain : IByteQueue
 
     ***************************************************************************/
 
-    public bool push ( ubyte[] item )
+    public bool push ( in void[] item )
     {
         if ( item.length == 0 ) return false;
 
@@ -112,7 +113,7 @@ public class QueueChain : IByteQueue
 
     ***************************************************************************/
 
-    public ubyte[] push ( size_t size )
+    public void[] push ( size_t size )
     {
         if ( this.swap.is_empty() && this.queue.willFit(size) )
         {
@@ -134,7 +135,7 @@ public class QueueChain : IByteQueue
 
     ***************************************************************************/
 
-    public ubyte[] pop ( )
+    public Const!(void)[] pop ( )
     {
         if ( this.queue.is_empty() == false )
         {
@@ -168,7 +169,7 @@ public class QueueChain : IByteQueue
 
     ***************************************************************************/
 
-    public ubyte[] peek ( )
+    public Const!(void)[] peek ( )
     {
         if ( this.queue.is_empty() == false )
         {

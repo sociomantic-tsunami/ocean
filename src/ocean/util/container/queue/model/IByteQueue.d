@@ -20,6 +20,7 @@ module ocean.util.container.queue.model.IByteQueue;
 
 import ocean.util.container.queue.model.IQueueInfo;
 
+import ocean.transition;
 
 
 /*******************************************************************************
@@ -54,7 +55,7 @@ public interface IByteQueue : IQueueInfo
 
     ***************************************************************************/
 
-    public ubyte[] push ( size_t size );
+    public void[] push ( size_t size );
 
 
     /***************************************************************************
@@ -69,7 +70,7 @@ public interface IByteQueue : IQueueInfo
 
     ***************************************************************************/
 
-    public bool push ( ubyte[] item );
+    public bool push ( in void[] item );
 
 
     /***************************************************************************
@@ -81,7 +82,7 @@ public interface IByteQueue : IQueueInfo
 
     ***************************************************************************/
 
-    public ubyte[] pop ( );
+    public Const!(void)[] pop ( );
 
 
     /***************************************************************************
@@ -93,6 +94,6 @@ public interface IByteQueue : IQueueInfo
 
     ***************************************************************************/
 
-    public ubyte[] peek ( );
+    public Const!(void)[] peek ( );
 }
 
