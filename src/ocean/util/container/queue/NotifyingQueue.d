@@ -374,7 +374,7 @@ class NotifyingByteQueue : ISuspendable, IQueueInfo
 
    **************************************************************************/
 
-    public bool push ( ubyte[] data )
+    public bool push ( in void[] data )
     {
         if ( !this.queue.push(data) ) return false;
 
@@ -400,7 +400,7 @@ class NotifyingByteQueue : ISuspendable, IQueueInfo
 
     ***************************************************************************/
 
-    public bool push ( size_t size, void delegate ( ubyte[] ) filler )
+    public bool push ( size_t size, void delegate ( void[] ) filler )
     {
         auto target = this.queue.push(size);
 
@@ -471,7 +471,7 @@ class NotifyingByteQueue : ISuspendable, IQueueInfo
 
     ***************************************************************************/
 
-    public ubyte[] pop ( )
+    public Const!(void)[] pop ( )
     {
         if ( !this.enabled )
         {
@@ -574,12 +574,12 @@ class NotifyingQueue ( T ) : NotifyingByteQueue
         else
             auto length = request.sizeof;
 
-        void filler ( ubyte[] target )
+        void filler ( void[] target )
         {
             static if ( is(T == struct) )
                 Serializer.serialize(request, target);
             else
-                target.copy((cast(ubyte*)&request)[0..length]);
+                target.copy((&request)[0..1]);
         }
 
         return super.push(length, &filler);
@@ -635,7 +635,7 @@ class NotifyingQueue ( T ) : NotifyingByteQueue
 
         ***********************************************************************/
 
-        T* pop ( ref ubyte[] buffer )
+        T* pop ( ref void[] buffer )
         {
             if ( !this.enabled ) return null;
 
@@ -676,13 +676,13 @@ unittest
     queue.push(arr[0]);
     queue.push(arr[1]);
 
-    ubyte[] buffer_1;
+    void[] buffer_1;
 
     auto str_0 = queue.pop(buffer_1);
 
     test!("==")(*str_0, "foo");
 
-    ubyte[] buffer_2;
+    void[] buffer_2;
 
     auto str_1 = queue.pop(buffer_2);
 
