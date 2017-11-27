@@ -65,11 +65,11 @@ public class FlexibleFileQueue : IByteQueue
 
     /***************************************************************************
 
-        Buffer used to support ubyte[] push ( size_t )
+        Buffer used to support const(void)[] push ( size_t )
 
     ***************************************************************************/
 
-    private Buffer!(ubyte) slice_push_buffer;
+    private Buffer!(void) slice_push_buffer;
 
     /***************************************************************************
 
@@ -268,7 +268,7 @@ public class FlexibleFileQueue : IByteQueue
 
     ***************************************************************************/
 
-    public bool push ( ubyte[] item )
+    public bool push ( in void[] item )
     {
         verify ( item.length <= this.size,
                  "Read buffer too small to process this item");
@@ -296,7 +296,7 @@ public class FlexibleFileQueue : IByteQueue
 
     ***************************************************************************/
 
-    public ubyte[] push ( size_t size )
+    public void[] push ( size_t size )
     {
         this.handleSliceBuffer();
 
@@ -318,7 +318,7 @@ public class FlexibleFileQueue : IByteQueue
 
     ***************************************************************************/
 
-    private ubyte[] getItem ( bool eat = true )
+    private void[] getItem ( bool eat = true )
     {
         this.handleSliceBuffer();
 
@@ -362,7 +362,7 @@ public class FlexibleFileQueue : IByteQueue
                 this.writeIndex();
             }
 
-            return cast(ubyte[]) this.ext_in.slice(Header.sizeof + h.length,
+            return this.ext_in.slice(Header.sizeof + h.length,
                                                    eat)[Header.sizeof .. $];
         }
         catch (Exception e)
@@ -384,7 +384,7 @@ public class FlexibleFileQueue : IByteQueue
 
     ***************************************************************************/
 
-    public ubyte[] pop ( )
+    public Const!(void)[] pop ( )
     {
         return this.getItem();
     }
@@ -396,7 +396,7 @@ public class FlexibleFileQueue : IByteQueue
 
     ***************************************************************************/
 
-    public ubyte[] peek ( )
+    public Const!(void)[] peek ( )
     {
         return this.getItem(false);
     }
@@ -563,7 +563,7 @@ public class FlexibleFileQueue : IByteQueue
 
     ***************************************************************************/
 
-    private bool filePush ( in ubyte[] item )
+    private bool filePush ( in void[] item )
     {
         verify(item.length <= this.size, "Pushed item will not fit read buffer");
         verify(item.length > 0, "denied push of item of size zero");
@@ -575,9 +575,7 @@ public class FlexibleFileQueue : IByteQueue
 
             Header h = Header(item.length);
 
-            ubyte[] header = (cast(ubyte*)&h)[0 .. Header.sizeof];
-
-            this.ext_out.write(header);
+            this.ext_out.write((&h)[0 .. 1]);
             this.ext_out.write(item);
 
             if (this.open_existing)
