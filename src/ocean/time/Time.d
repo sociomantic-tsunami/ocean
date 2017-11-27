@@ -23,6 +23,14 @@ module ocean.time.Time;
 import ocean.transition;
 import ocean.text.convert.DateTime_tango;
 
+import core.stdc.time: time_t;
+
+version (UnitTest)
+{
+    import core.stdc.time;
+    import ocean.core.Test;
+}
+
 /******************************************************************************
 
     This struct represents a length of time.  The underlying representation is
@@ -697,6 +705,23 @@ struct Time
                 return TimeSpan(ticks_ - epoch1970.ticks_);
         }
 
+        /**********************************************************************
+
+            Constructs a Time instance from the Unix time (time since 1/1/1970).
+
+            Params:
+                unix_time = number of seconds since 1/1/1970
+
+            Returns:
+                Time instance corresponding the given unix time.
+
+        ***********************************************************************/
+
+        static Time fromUnixTime (time_t unix_time)
+        {
+            return Time(epoch1970.ticks_ + unix_time * TimeSpan.TicksPerSecond);
+        }
+
     /// Support for `ocean.text.convert.Formatter`: Print the string in a
     /// user-friendly way
     deprecated("Use `format(\"{}\", asPrettyStr(time))` instead")
@@ -878,4 +903,11 @@ struct DateTime
 {
         public Date         date;       /// date representation
         public TimeOfDay    time;       /// time representation
+}
+
+unittest
+{
+    auto unix = time(null);
+
+    test!("==")((Time.fromUnixTime(unix) - Time.epoch1970).seconds, unix);
 }
