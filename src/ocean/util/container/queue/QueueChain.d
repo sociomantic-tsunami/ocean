@@ -82,7 +82,7 @@ public class QueueChain : IByteQueue
 
     ***************************************************************************/
 
-    public bool push ( ubyte[] item )
+    public bool push ( in ubyte[] item )
     {
         if ( item.length == 0 ) return false;
 

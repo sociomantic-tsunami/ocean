@@ -171,7 +171,7 @@ class FlexibleByteRingQueue : IRingQueue!(IByteQueue)
 
     ***************************************************************************/
 
-    public bool push ( ubyte[] item )
+    public bool push ( in ubyte[] item )
     {
         auto data = this.push(item.length);
 
@@ -310,7 +310,7 @@ class FlexibleByteRingQueue : IRingQueue!(IByteQueue)
 
     ***************************************************************************/
 
-    static public size_t pushSize ( ubyte[] item )
+    static public size_t pushSize ( in ubyte[] item )
     {
         return pushSize(item.length);
     }
@@ -349,7 +349,7 @@ class FlexibleByteRingQueue : IRingQueue!(IByteQueue)
 
     ***************************************************************************/
 
-    bool willFit ( ubyte[] item )
+    bool willFit ( in ubyte[] item )
     {
         return this.willFit(item.length);
     }

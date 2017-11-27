@@ -268,7 +268,7 @@ public class FlexibleFileQueue : IByteQueue
 
     ***************************************************************************/
 
-    public bool push ( ubyte[] item )
+    public bool push ( in ubyte[] item )
     {
         verify ( item.length <= this.size,
                  "Read buffer too small to process this item");
