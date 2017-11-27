@@ -112,6 +112,22 @@ abstract class TaskConnectionHandler : IConnectionHandler, Resettable
         this.task = this.new ConnectionHandlerTask;
     }
 
+    /**************************************************************************
+
+        Called by `finalize` to unregister the connection socket from epoll
+        before closing it. This is done because closing a socket does not always
+        mean that it is unregistered from epoll -- in situations where the
+        process has forked, the fork's reference to the underlying kernel file
+        description will prevent it from being unregistered until the fork
+        exits. Therefore, to be certain that the socket will not fire again in
+        epoll, we need to explicitly unregister it.
+
+    ***************************************************************************/
+
+    protected override void unregisterSocket ()
+    {
+        this.transceiver.reset();
+    }
 
     /***************************************************************************
 
