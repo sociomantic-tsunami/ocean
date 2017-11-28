@@ -32,6 +32,8 @@ import ocean.util.container.mem.MemManager;
 
 version(UnitTest) import ocean.core.Test;
 
+import ocean.transition;
+
 
 /*******************************************************************************
 
@@ -185,7 +187,7 @@ class FixedByteRingQueue : FixedRingQueueBase!(IByteQueue)
 
     ***************************************************************************/
 
-    bool push ( ubyte[] element )
+    bool push ( in ubyte[] element )
     {
         verify (element.length == super.element_size, "element size mismatch");
 
@@ -193,7 +195,8 @@ class FixedByteRingQueue : FixedRingQueueBase!(IByteQueue)
 
         if (element_in_queue)
         {
-            element_in_queue[] = element[];
+            Const!(void)[] element_ = element;
+            element_in_queue[] = element_[];
             return true;
         }
         else

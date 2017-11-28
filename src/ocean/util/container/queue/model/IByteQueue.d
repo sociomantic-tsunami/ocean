@@ -69,7 +69,7 @@ public interface IByteQueue : IQueueInfo
 
     ***************************************************************************/
 
-    public bool push ( ubyte[] item );
+    public bool push ( in ubyte[] item );
 
 
     /***************************************************************************

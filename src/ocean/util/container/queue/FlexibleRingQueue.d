@@ -171,7 +171,7 @@ class FlexibleByteRingQueue : IRingQueue!(IByteQueue)
 
     ***************************************************************************/
 
-    public bool push ( ubyte[] item )
+    public bool push ( in ubyte[] item )
     {
         auto data = this.push(item.length);
 
@@ -310,7 +310,7 @@ class FlexibleByteRingQueue : IRingQueue!(IByteQueue)
 
     ***************************************************************************/
 
-    static public size_t pushSize ( ubyte[] item )
+    static public size_t pushSize ( in ubyte[] item )
     {
         return pushSize(item.length);
     }
@@ -349,7 +349,7 @@ class FlexibleByteRingQueue : IRingQueue!(IByteQueue)
 
     ***************************************************************************/
 
-    bool willFit ( ubyte[] item )
+    bool willFit ( in ubyte[] item )
     {
         return this.willFit(item.length);
     }
@@ -751,7 +751,7 @@ class FlexibleByteRingQueue : IRingQueue!(IByteQueue)
 
     ***************************************************************************/
 
-    private static void validate ( ExportMetadata meta, void[] data )
+    private static void validate ( in ExportMetadata meta, in void[] data )
     {
         if (meta.items)
         {
@@ -770,7 +770,7 @@ class FlexibleByteRingQueue : IRingQueue!(IByteQueue)
 
             size_t pos = 0;
 
-            for (typeof(meta.items) i = 0; i < meta.items; i++)
+            for (uint i = 0; i < meta.items; i++)
             {
                 verify(pos <= data.length);
 
@@ -789,7 +789,7 @@ class FlexibleByteRingQueue : IRingQueue!(IByteQueue)
                             itoa(start))
                     );
 
-                    auto header = cast(Header*)data[start .. pos].ptr;
+                    auto header = cast(Const!(Header)*)data[start .. pos].ptr;
 
                     enforce!(ValidationError)(
                         (data.length - pos) >= header.length,

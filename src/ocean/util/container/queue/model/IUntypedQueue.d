@@ -128,7 +128,7 @@ public interface IUntypedQueue
 
 *******************************************************************************/
 
-public bool push ( IUntypedQueue q, void[] t )
+public bool push ( IUntypedQueue q, in void[] t )
 {
     auto s = q.push(t.length);
     if ( s is null ) return false;
