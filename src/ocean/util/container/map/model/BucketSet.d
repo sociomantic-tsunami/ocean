@@ -557,7 +557,7 @@ public abstract class BucketSet ( size_t V, K = hash_t ) : IBucketSet
 
     ***************************************************************************/
 
-    final protected bool remove_ ( K key, void delegate ( ref Bucket.Element element ) dg = null )
+    final protected bool remove_ ( K key, scope void delegate ( ref Bucket.Element element ) dg = null )
     {
         size_t bucket_index = this.toHash(key) & this.bucket_mask;
 
@@ -832,7 +832,7 @@ public abstract class BucketSet ( size_t V, K = hash_t ) : IBucketSet
 
         ***********************************************************************/
 
-        final protected int opApply ( int delegate ( ref Bucket.Element element ) dg )
+        final protected int opApply ( scope int delegate ( ref Bucket.Element element ) dg )
         {
             int tmpDg ( ref size_t i, ref Bucket.Element e )
             {
@@ -860,7 +860,7 @@ public abstract class BucketSet ( size_t V, K = hash_t ) : IBucketSet
 
         ***********************************************************************/
 
-        final protected int opApply ( int delegate ( ref size_t i,
+        final protected int opApply ( scope int delegate ( ref size_t i,
                                                      ref Bucket.Element element ) dg )
         {
             int result = 0;

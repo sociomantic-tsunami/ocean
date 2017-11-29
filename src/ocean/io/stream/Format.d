@@ -83,7 +83,7 @@ class FormatOutput(T) : OutputFilter
 
         public alias newline    nl;             /// nl -> newline
 
-        protected const Eol = "\n";
+        protected static immutable Eol = "\n";
 
         /**********************************************************************
 
