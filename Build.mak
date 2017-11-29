@@ -5,7 +5,7 @@ ifneq ($(ALLOW_DEPRECATIONS),1)
 	ifeq ($(DVER),2)
 	override DFLAGS += -de
 	else
-	override DFLAGS := $(filter-out -di,$(DFLAGS)) -v2 -v2=-static-arr-params -v2=-volatile
+	override DFLAGS := $(filter-out -di,$(DFLAGS))
 	endif
 endif
 
