@@ -58,7 +58,7 @@ class MyApp : DaemonApp
         auto timer = new TimerEvent(
                 {
                     // wait until uptime advances, clock might be slower on VMs
-                    if (ProcVFS.getProcUptime() == uptime)
+                    if (ProcVFS.getProcUptime().uptime == uptime.uptime)
                         return true;
                     stats = this.sys_stats.collect();
                     this.epoll.shutdown();
