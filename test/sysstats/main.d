@@ -20,6 +20,7 @@ import ocean.sys.ErrnoException;
 import ocean.util.app.DaemonApp;
 import ocean.io.select.client.TimerEvent;
 import ocean.math.IEEE;
+import ProcVFS = ocean.sys.stats.linux.ProcVFS;
 
 class MyApp : DaemonApp
 {
@@ -53,15 +54,19 @@ class MyApp : DaemonApp
         this.startEventHandling(this.epoll);
         CpuMemoryStats.Stats stats;
 
+        const uptime = ProcVFS.getProcUptime();
         auto timer = new TimerEvent(
                 {
+                    // wait until uptime advances, clock might be slower on VMs
+                    if (ProcVFS.getProcUptime() == uptime)
+                        return true;
                     stats = this.sys_stats.collect();
                     this.epoll.shutdown();
 
                     return false;
                 });
 
-        timer.set(0, 100, 0, 0);
+        timer.set(0, 10, 0, 10);
         this.epoll.register(timer);
         this.epoll.eventLoop();
 
