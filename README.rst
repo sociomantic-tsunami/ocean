@@ -69,6 +69,8 @@ the ``$O/%unittests`` target):
 * ``-lgpg-error``
 * ``-lrt``
 
+To install those dependencies on Ubuntu refer to the `apt-get install` command in `docker/build <docker/build#L5>`_.
+
 Please note that ``ebtree`` is not the vanilla upstream version. We created our
 own fork of it to be able to write D bindings more easily. You can find the
 needed ebtree library in https://github.com/sociomantic-tsunami/ebtree/releases
@@ -79,7 +81,6 @@ If you plan to use the provided ``Makefile`` (you need it to convert code to
 D2, or to run the tests), you need to also checkout the submodules with ``git
 submodule update --init``. This will fetch the `Makd
 <https://github.com/sociomantic-tsunami/makd>`_ project in ``submodules/makd``.
-
 
 Conversion to D2
 ----------------
