@@ -796,7 +796,7 @@ public class Arguments
 
     ***************************************************************************/
 
-    private const istring[] errmsg = [
+    private static immutable istring[] errmsg = [
         "argument '{0}' expects {2} parameter(s) but has {1}\n",
         "argument '{0}' expects {3} parameter(s) but has {1}\n",
         "argument '{0}' is missing\n",
@@ -1066,7 +1066,7 @@ public class Arguments
 
     ***************************************************************************/
 
-    public int opApply ( int delegate(ref Argument) dg )
+    public int opApply ( scope int delegate(ref Argument) dg )
     {
         int result;
 
@@ -1163,7 +1163,7 @@ public class Arguments
 
     ***************************************************************************/
 
-    public Arguments help ( void delegate ( istring arg, istring help ) dg )
+    public Arguments help ( scope void delegate ( istring arg, istring help ) dg )
     {
         foreach ( arg; args )
         {
@@ -2156,7 +2156,7 @@ public class Arguments
 
         ***********************************************************************/
 
-        public Argument bind ( Inspector inspector )
+        public Argument bind ( scope Inspector inspector )
         {
             this.inspector = inspector;
 
@@ -2178,7 +2178,7 @@ public class Arguments
 
         ***********************************************************************/
 
-        public Argument bind ( Invoker invoker )
+        public Argument bind ( scope Invoker invoker )
         {
             this.invoker = invoker;
 
@@ -2666,11 +2666,11 @@ unittest
 // Test for D2 'static immutable'
 unittest
 {
-    const istring name_ = "encode";
-    const istring conflicts_ = "decode";
-    const istring[] restrict_ = [ "json", "yaml" ];
-    const istring requires_ = "input";
-    const istring help_ = "Convert from native format to JSON/Yaml";
+    static immutable istring name_ = "encode";
+    static immutable istring conflicts_ = "decode";
+    static immutable istring[] restrict_ = [ "json", "yaml" ];
+    static immutable istring requires_ = "input";
+    static immutable istring help_ = "Convert from native format to JSON/Yaml";
 
     auto args = new Arguments;
     args(name_)

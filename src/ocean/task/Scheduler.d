@@ -137,7 +137,7 @@ final class Scheduler : IScheduler
 
     ***************************************************************************/
 
-    public void task_queue_full_cb ( TaskQueueFullCB dg )
+    public void task_queue_full_cb ( scope TaskQueueFullCB dg )
     {
         this.fiber_pool.task_queue_full_cb = dg;
     }
@@ -394,7 +394,7 @@ final class Scheduler : IScheduler
 
     ***************************************************************************/
 
-    public void await ( Task task, void delegate (Task) finished_dg = null )
+    public void await ( Task task, scope void delegate (Task) finished_dg = null )
     {
         assert (Task.getThis() !is null);
 
@@ -707,7 +707,7 @@ unittest
         {
             ++TestTask.started;
 
-            const very_long_loop = 5;
+            static immutable very_long_loop = 5;
 
             for (int i = 0; i < very_long_loop; ++i)
             {
