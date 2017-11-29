@@ -46,7 +46,10 @@ Build / Use
 Dependencies
 ------------
 
-This library has quite a few number of dependencies, but it depends on which
+Packages
+********
+
+This library has quite a number of dependencies, but it depends on which
 modules you want to use. Usually the easiest way to find out is just using it
 and see which libraries the linker fails to find and then install by demand.
 
@@ -79,6 +82,18 @@ If you plan to use the provided ``Makefile`` (you need it to convert code to
 D2, or to run the tests), you need to also checkout the submodules with ``git
 submodule update --init``. This will fetch the `Makd
 <https://github.com/sociomantic-tsunami/makd>`_ project in ``submodules/makd``.
+
+
+Submodules
+**********
+
+============================= ===========
+Dependency                     Version
+============================= ===========
+makd                           v1.3.x
+libtangort-dmd-dev (for D1)    v1.6.0
+dmd-transitional   (for D2)    2.070.2.s9
+============================= ===========
 
 
 Conversion to D2
@@ -143,3 +158,10 @@ which are the mandatory steps that users have to do to update to a new version,
 use but will not break any old code, and the **New Features** which are optional
 new features available in the new version that users might find interesting.
 Using them is optional, but encouraged.
+
+Contributing
+============
+
+See the guide for `contributing to Neptune-versioned libraries
+<https://github.com/sociomantic-tsunami/neptune/blob/master/doc/library-contributor.rst>`_.
+
