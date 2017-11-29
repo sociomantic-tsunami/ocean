@@ -1,9 +1,12 @@
 # Treat deprecations as errors to ensure ocean doesn't use own deprecated
-# symbols internally
-ifeq ($(DVER),1)
-override DFLAGS := $(filter-out -di,$(DFLAGS)) -v2 -v2=-static-arr-params -v2=-volatile
-else
-override DFLAGS += -de
+# symbols internally. Disable it on explicit flag to make possible regression
+# testing in D upstream.
+ifneq ($(ALLOW_DEPRECATIONS),1)
+	ifeq ($(DVER),2)
+	override DFLAGS += -de
+	else
+	override DFLAGS := $(filter-out -di,$(DFLAGS)) -v2 -v2=-static-arr-params -v2=-volatile
+	endif
 endif
 
 # Makd auto-detects if Ocean's test runner should be used based on submodules,
