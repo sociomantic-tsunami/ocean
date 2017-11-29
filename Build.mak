@@ -1,3 +1,5 @@
+# Treat deprecations as errors to ensure ocean doesn't use own deprecated
+# symbols internally
 ifeq ($(DVER),1)
 override DFLAGS := $(filter-out -di,$(DFLAGS)) -v2 -v2=-static-arr-params -v2=-volatile
 else
