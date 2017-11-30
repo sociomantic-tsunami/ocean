@@ -181,6 +181,7 @@ public template AppendBuffer ( T, bool use_malloc = false )
 {
     static if (use_malloc)
     {
+        deprecated("Switch to GC based AppendBuffer")
         alias AppendBuffer!(T, MallocAppendBufferImpl) AppendBuffer;
     }
     else
@@ -1386,6 +1387,7 @@ private abstract class AppendBufferImpl: IAppendBufferBase
 
  ******************************************************************************/
 
+deprecated("Switch to GC based AppendBuffer")
 private abstract class MallocAppendBufferImpl: AppendBufferImpl
 {
     /**************************************************************************
