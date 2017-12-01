@@ -239,7 +239,7 @@ static:
         {
             size_t ret = input.read(data[transmitted .. $]);
 
-            enforce!(EofException)(ret != input.Eof, "end of flow while "
+            enforce!(EofException)(ret != input.Eof, "end of flow while " ~
                 "reading '" ~ input.conduit.toString() ~ "'");
 
             transmitted += ret;
