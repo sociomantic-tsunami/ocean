@@ -123,9 +123,9 @@ static:
 
     ***************************************************************************/
 
-    public size_t writeData ( OutputStream output, void* data, size_t bytes )
+    public size_t writeData ( OutputStream output, in void* data, size_t bytes )
     {
-        return transmitData(output, data[0..bytes]);
+        return writeData(output, data[0..bytes]);
     }
 
     /***************************************************************************
@@ -146,9 +146,21 @@ static:
 
     ***************************************************************************/
 
-    public size_t writeData ( OutputStream output, void[] data )
+    public size_t writeData ( OutputStream output, in void[] data )
     {
-        return transmitData(output, data);
+        size_t transmitted = 0;
+
+        while (transmitted < data.length)
+        {
+            size_t ret = output.write(data[transmitted .. $]);
+
+            enforce!(EofException)(ret != output.Eof, "end of flow while "
+                ~ "writing '" ~ output.conduit.toString() ~ "'");
+
+            transmitted += ret;
+        }
+
+        return transmitted;
     }
 
     /***************************************************************************
@@ -199,7 +211,7 @@ static:
 
     public size_t readData ( InputStream input, void* data, size_t bytes )
     {
-        return transmitData(input, data[0..bytes]);
+        return readData(input, data[0..bytes]);
     }
 
     /***************************************************************************
@@ -221,7 +233,19 @@ static:
 
     public size_t readData ( InputStream input, void[] data )
     {
-        return transmitData(input, data);
+        size_t transmitted = 0;
+
+        while (transmitted < data.length)
+        {
+            size_t ret = input.read(data[transmitted .. $]);
+
+            enforce!(EofException)(ret != input.Eof, "end of flow while " ~
+                "reading '" ~ input.conduit.toString() ~ "'");
+
+            transmitted += ret;
+        }
+
+        return transmitted;
     }
 
     /***************************************************************************
@@ -362,39 +386,20 @@ static:
 
     public size_t transmitData ( Stream : IOStream ) ( Stream stream, void[] data )
     {
-        static assert ( !(is(Stream : InputStream) && is(Stream : OutputStream)),
-                        "stream is '" ~ Stream.stringof ~  "; please cast it "
-                        ~ "either to InputStream or OutputStream" );
-
-        size_t transmitted = 0;
-
-        while (transmitted < data.length)
+        static if ( is(Stream : OutputStream) )
         {
-            static if ( is(Stream : OutputStream) )
-            {
-                size_t ret = stream.write(data[transmitted .. $]);
-
-                const act = "writing";
-            }
-            else
-            {
-                static assert ( is(Stream : InputStream),
-                                "stream must be either InputStream or OutputStream, "
-                                ~ "not '" ~ Stream.stringof ~ '\'' );
-
-                size_t ret = stream.read(data[transmitted .. $]);
-
-                const act = "reading";
-
-            }
-
-            enforce!(EofException)(ret != stream.Eof, "end of flow while "
-                ~ act ~ " '" ~ stream.conduit.toString() ~ "'");
-
-            transmitted += ret;
+            static assert (!is(Stream : InputStream), "stream is '" ~
+                Stream.stringof ~  "; please cast it either to InputStream " ~
+                "or OutputStream" );
+            return writeData(stream, data);
         }
-
-        return transmitted;
+        else
+        {
+            static assert (is(Stream : InputStream),
+                "stream must be either InputStream or OutputStream, not '" ~
+                Stream.stringof ~ '\'' );
+            return readData(stream, data);
+        }
     }
 
     /***************************************************************************
