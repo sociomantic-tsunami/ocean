@@ -91,7 +91,7 @@ void main ( )
         suspended_task_limit = 1000;
 
         specialized_pools = [
-            PoolDescription(GeneratorTask.classinfo, 204800)
+            PoolDescription(GeneratorTask.classinfo.name, 204800)
         ];
     }
 

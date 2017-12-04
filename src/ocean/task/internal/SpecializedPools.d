@@ -42,7 +42,7 @@ public class SpecializedPools
     /// mapping element
     private static struct SpecializedPool
     {
-        ClassInfo task_kind;
+        istring task_name;
         FiberPoolEager pool;
     }
 
@@ -60,21 +60,21 @@ public class SpecializedPools
     {
         foreach (description; config)
         {
-            verify(description.task_kind !is null);
+            verify(description.task_name.length > 0);
             verify(
                 description.stack_size >= 1024,
                 "Configured stack size is suspiciously low"
             );
             verify(
-                !this.findPool(description.task_kind).isDefined(),
+                !this.findPool(description.task_name).isDefined(),
                 "ClasInfo present in task/pool mapping twice"
             );
 
             debug_trace("Registering specialized worker fiber pool for '{}'",
-                description.task_kind.name);
+                description.task_name);
 
             this.mapping ~= SpecializedPool(
-                description.task_kind,
+                description.task_name,
                 new FiberPoolEager(
                     description.stack_size
                 )
@@ -87,7 +87,7 @@ public class SpecializedPools
         Lookup specific pool data
 
         Params:
-            task = task type info to look for
+            task = task type fully qualified name to look for
 
         Returns:
             `Optional.undefined` is nothing was found, wrapped pool struct
@@ -95,11 +95,11 @@ public class SpecializedPools
 
     ***************************************************************************/
 
-    public Optional!(SpecializedPool) findPool ( ClassInfo task )
+    public Optional!(SpecializedPool) findPool ( istring task )
     {
         foreach (meta; this.mapping)
         {
-            if (meta.task_kind is task)
+            if (meta.task_name == task)
                 return optional(meta);
         }
 
@@ -121,9 +121,9 @@ public class SpecializedPools
     public bool run ( Task task )
     {
         bool found = false;
-        auto ti = task.classinfo;
+        auto name = task.classinfo.name;
 
-        this.findPool(ti).visit(
+        this.findPool(name).visit(
             ( ) { },
             (ref SpecializedPool meta) {
                 debug_trace("Processing task <{}> in a dedicated fiber pool",

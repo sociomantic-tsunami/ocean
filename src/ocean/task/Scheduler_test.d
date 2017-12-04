@@ -151,27 +151,26 @@ unittest
     theScheduler.eventLoop();
 }
 
+class DummyTask : Task
+{
+    int counter;
+
+    override void run ( )
+    {
+        ++this.counter;
+
+        auto stats = theScheduler.getStats();
+        test!("==")(stats.worker_fiber_busy, 0);
+    }
+}
 
 unittest
 {
-    static class DummyTask : Task
-    {
-        int counter;
-
-        override void run ( )
-        {
-            ++this.counter;
-
-            auto stats = theScheduler.getStats();
-            test!("==")(stats.worker_fiber_busy, 0);
-        }
-    }
-
     SchedulerConfiguration config;
     with (config)
     {
         specialized_pools = [
-            PoolDescription(DummyTask.classinfo, 10240)
+            PoolDescription(DummyTask.classinfo.name, 10240)
         ];
     }
 

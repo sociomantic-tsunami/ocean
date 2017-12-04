@@ -6,14 +6,19 @@ It is now possible to define dedicated worker fiber pools to process tasks of
 specific type:
 
 ```D
+module mymod;
+
+class MyTask : Task { /* ... */ }
+class MyOtherTask : Task { /* ... */ }
+
 SchedulerConfiguration config;
 
 with (config)
 {
-specialized_pools = [
-  PoolDescription(MyTask.classinfo, 10240),
-  PoolDescription(MyOtherTask.classinfo, 2048),
-];
+    specialized_pools = [
+        PoolDescription("mymod.MyTask", 10240),
+        PoolDescription(MyOtherTask.classinfo.name, 2048),
+    ];
 }
 
 initScheduler(config);
@@ -29,4 +34,4 @@ fibers from the shared pool forever, if processed normally
 
 Note that this functionality can be used side by side with regular scheduling
 queue with no issues - each task will be handled by own sub-system depending
-on its `ClassInfo`.
+on its type.
