@@ -21,6 +21,7 @@ import core.thread;
 
 import ocean.task.Task;
 import ocean.meta.traits.Indirections : hasIndirections;
+import ocean.meta.types.Qualifiers;
 import ocean.io.select.EpollSelectDispatcher;
 
 /*******************************************************************************
@@ -77,9 +78,9 @@ public interface IScheduler
         /// configuration
         public struct PoolDescription
         {
-            /// result of `Task.classinfo` for task type which is to be handled
-            /// by this pool
-            ClassInfo task_kind;
+            /// fully qualified name (same as `Task.classinfo.name()`) for task
+            /// type which is to be handled by this pool
+            istring task_name;
 
             /// worker fiber allocated stack size
             size_t stack_size;
