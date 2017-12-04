@@ -42,7 +42,7 @@ public void main ()
         for (ubyte i = 0; i < size; i++)
         {
             auto pop = queue.pop;
-            auto item = [i, ubyte.max - i, i, cast(ubyte) (i * i)];
+            auto item = [i, cast(ubyte)(ubyte.max - i), i, cast(ubyte) (i * i)];
             assert(pop == item, "pop failed " ~ pop.stringof);
         }
     }
