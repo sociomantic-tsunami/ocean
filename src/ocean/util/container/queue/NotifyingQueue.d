@@ -524,6 +524,8 @@ class NotifyingByteQueue : ISuspendable, IQueueInfo
 
 class NotifyingQueue ( T ) : NotifyingByteQueue
 {
+    version (D_Version2) alias NotifyingByteQueue.push push;
+
     /***************************************************************************
 
         Constructor
