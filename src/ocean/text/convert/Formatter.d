@@ -13,6 +13,54 @@
     - `snformat` is equivalent to `std.format.sformat`
     - `sformat` is roughly equivalent to `std.format.formattedWrite`
 
+    Format_specifier:
+
+    The Formatter uses a format specification similar to C#/.NET over
+    the traditional `printf` style.
+    As a result, the most simple usage is to call:
+    ---
+    format("This value will be default formatted: {}", value);
+    ---
+
+    More specific formatting options are however available.
+
+    The format specifier is defined as follows:
+
+    '{'[INDEX][WIDTH_CHAR[ALIGN_LEFT_CHAR][ALIGN_WIDTH][' '*]][':'][FORMAT_STRING]'}'
+
+    In more details:
+    - `INDEX` is the positive, decimal and 0 based index of the argument
+      to format.
+    - `WIDTH_CHAR` is either ',' (comma) if a minimum width is requested,
+      in which case the output will be padded with spaces,
+      or '.' if a maximum width is requested, in which case the output will be
+      cropped and cropping will be noted by the presence of "..."
+    - `ALIGN_LEFT_CHAR` is '-'. If present, padding / cropping will be done
+      on the left side of the string, otherwise it will be the right side
+      This can only be used after a `WIDTH_CHAR`.
+    - `ALIGN_WIDTH` is the positive, decimal width the argument should have.
+    - ':' can optionally be used to separate the index / width specification
+      from the format string. So `{}`, `{:}` and `{0:X}` are all valid.
+    - `FORMAT_STRING` is an argument-defined format string
+
+    Format_string:
+
+    The format string defines how the argument will be formatted, and thus
+    is dependent on the argument type.
+
+    Currently the following formatting strings are supported:
+        - 'X' or 'x' are used for hexadecimal formatting of the output.
+          'X' outputs uppercase, 'x' will output lowercase.
+          Applies to integer types and pointers, and will also output
+          the hexadecimal.
+        - 'e' for floating point type will display exponential notation.
+          Using a number will set the precision, so for example the string
+          `"{:2}"` with argument `0.123456` will output `"0.12"`
+          Finally, '.' will prevent padding.
+    Unrecognized formatting strings should be ignored. For composed types,
+    the formatting string is passed along, so using `X` on a `struct` or an
+    array will display any integer / pointer members in uppercase hexadecimal.
+
     Copyright:
         Copyright (c) 2009-2016 Sociomantic Labs GmbH.
         Some parts (marked explicitly) copyright Kris and/or Larsivi.
