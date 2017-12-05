@@ -581,7 +581,7 @@ class NotifyingQueue ( T ) : NotifyingByteQueue
             static if ( is(T == struct) )
                 Serializer.serialize(request, target);
             else
-                target.copy((&request)[0..1]);
+                target[] = (&request)[0..1];
         }
 
         return super.push(length, &filler);
