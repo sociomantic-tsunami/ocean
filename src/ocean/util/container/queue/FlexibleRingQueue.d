@@ -770,7 +770,7 @@ class FlexibleByteRingQueue : IRingQueue!(IByteQueue)
 
             size_t pos = 0;
 
-            for (typeof(meta.items) i = 0; i < meta.items; i++)
+            for (uint i = 0; i < meta.items; i++)
             {
                 verify(pos <= data.length);
 
@@ -789,7 +789,7 @@ class FlexibleByteRingQueue : IRingQueue!(IByteQueue)
                             itoa(start))
                     );
 
-                    auto header = cast(Header*)data[start .. pos].ptr;
+                    auto header = cast(Const!(Header)*)data[start .. pos].ptr;
 
                     enforce!(ValidationError)(
                         (data.length - pos) >= header.length,
