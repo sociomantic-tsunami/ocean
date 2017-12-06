@@ -105,7 +105,7 @@ struct RedBlack (V, A = AttributeDummy)
                 right = null;
                 parent = null;
                 color = BLACK;
-                return this;
+                return (&this);
         }
 
         /**
@@ -114,7 +114,7 @@ struct RedBlack (V, A = AttributeDummy)
          * multiple identical links in a RB tree.)
         **/
 
-        protected Ref dup (Ref delegate() alloc)
+        protected Ref dup (scope Ref delegate() alloc)
         {
                 static if (is(typeof(A) == AttributeDummy))
                            auto t = alloc().set (value);
@@ -137,14 +137,14 @@ struct RedBlack (V, A = AttributeDummy)
                 // So restrict to the following
 
                 verify(parent is null ||
-                       this is parent.left ||
-                       this is parent.right);
+                       (&this) is parent.left ||
+                       (&this) is parent.right);
 
                 verify(left is null ||
-                       this is left.parent);
+                       (&this) is left.parent);
 
                 verify(right is null ||
-                       this is right.parent);
+                       (&this) is right.parent);
 
                 verify(color is BLACK ||
                        (colorOf(left) is BLACK) && (colorOf(right) is BLACK));
@@ -161,7 +161,7 @@ struct RedBlack (V, A = AttributeDummy)
 
         Ref leftmost ()
         {
-                auto p = this;
+                auto p = (&this);
                 for ( ; p.left; p = p.left) {}
                 return p;
         }
@@ -171,7 +171,7 @@ struct RedBlack (V, A = AttributeDummy)
         **/
         Ref rightmost ()
         {
-                auto p = this;
+                auto p = (&this);
                 for ( ; p.right; p = p.right) {}
                 return p;
         }
@@ -181,7 +181,7 @@ struct RedBlack (V, A = AttributeDummy)
         **/
         Ref root ()
         {
-                auto p = this;
+                auto p = (&this);
                 for ( ; p.parent; p = p.parent) {}
                 return p;
         }
@@ -206,7 +206,7 @@ struct RedBlack (V, A = AttributeDummy)
                     return right.leftmost;
 
                 auto p = parent;
-                auto ch = this;
+                auto ch = (&this);
                 while (p && ch is p.right)
                       {
                       ch = p;
@@ -225,7 +225,7 @@ struct RedBlack (V, A = AttributeDummy)
                     return left.rightmost;
 
                 auto p = parent;
-                auto ch = this;
+                auto ch = (&this);
                 while (p && ch is p.left)
                       {
                       ch = p;
@@ -256,7 +256,7 @@ struct RedBlack (V, A = AttributeDummy)
 
         Ref find (V value, Compare!(V) cmp)
         {
-                auto t = this;
+                auto t = (&this);
                 for (;;)
                     {
                     auto diff = cmp (value, t.value);
@@ -282,9 +282,9 @@ struct RedBlack (V, A = AttributeDummy)
         **/
         Ref findFirst (V value, Compare!(V) cmp, bool after = true)
         {
-                auto t = this;
-                auto tLower = this;
-                auto tGreater  = this;
+                auto t = (&this);
+                auto tLower = (&this);
+                auto tGreater  = (&this);
 
                 for (;;)
                     {
@@ -329,7 +329,7 @@ struct RedBlack (V, A = AttributeDummy)
         int count (V value, Compare!(V) cmp)
         {
                 auto c = 0;
-                auto t = this;
+                auto t = (&this);
                 while (t)
                       {
                       int diff = cmp (value, t.value);
@@ -360,7 +360,7 @@ struct RedBlack (V, A = AttributeDummy)
         {
         Ref findAttribute (A attribute, Compare!(A) cmp)
         {
-                auto t = this;
+                auto t = (&this);
 
                 while (t)
                       {
@@ -388,7 +388,7 @@ struct RedBlack (V, A = AttributeDummy)
         int countAttribute (A attrib, Compare!(A) cmp)
         {
                 int c = 0;
-                auto t = this;
+                auto t = (&this);
 
                 while (t)
                       {
@@ -414,7 +414,7 @@ struct RedBlack (V, A = AttributeDummy)
         **/
         Ref find (V value, A attribute, Compare!(V) cmp)
         {
-                auto t = this;
+                auto t = (&this);
 
                 for (;;)
                     {
@@ -441,7 +441,7 @@ struct RedBlack (V, A = AttributeDummy)
          * Return a new subtree containing each value of current subtree
         **/
 
-        Ref copyTree (Ref delegate() alloc)
+        Ref copyTree (scope Ref delegate() alloc)
         {
                 auto t = dup (alloc);
 
@@ -478,7 +478,7 @@ struct RedBlack (V, A = AttributeDummy)
         Ref insertLeft (Ref cell, Ref root)
         {
                 left = cell;
-                cell.parent = this;
+                cell.parent = (&this);
                 return cell.fixAfterInsertion (root);
         }
 
@@ -494,7 +494,7 @@ struct RedBlack (V, A = AttributeDummy)
         Ref insertRight (Ref cell, Ref root)
         {
                 right = cell;
-                cell.parent = this;
+                cell.parent = (&this);
                 return cell.fixAfterInsertion (root);
         }
 
@@ -521,7 +521,7 @@ struct RedBlack (V, A = AttributeDummy)
                    // To work nicely with arbitrary subclasses of Ref, we don't want to
                    // just copy successor's fields. since we don't know what
                    // they are.  Instead we swap positions _in the tree.
-                   root = swapPosition (this, s, root);
+                   root = swapPosition ((&this), s, root);
                    }
 
                 // Start fixup at replacement node (normally a child).
@@ -530,15 +530,15 @@ struct RedBlack (V, A = AttributeDummy)
                 if (left is null && right is null)
                    {
                    if (color is BLACK)
-                       root = this.fixAfterDeletion (root);
+                       root = (&this).fixAfterDeletion (root);
 
                    // Unlink  (Couldn't before since fixAfterDeletion needs parent ptr)
                    if (parent)
                       {
-                      if (this is parent.left)
+                      if ((&this) is parent.left)
                           parent.left = null;
                       else
-                         if (this is parent.right)
+                         if ((&this) is parent.right)
                              parent.right = null;
                       parent = null;
                       }
@@ -555,7 +555,7 @@ struct RedBlack (V, A = AttributeDummy)
                    if (parent is null)
                        root = replacement;
                    else
-                      if (this is parent.left)
+                      if ((&this) is parent.left)
                           parent.left = replacement;
                       else
                          parent.right = replacement;
@@ -770,18 +770,18 @@ struct RedBlack (V, A = AttributeDummy)
                 right = r.left;
 
                 if (r.left)
-                    r.left.parent = this;
+                    r.left.parent = (&this);
 
                 r.parent = parent;
                 if (parent is null)
                     root = r;
                 else
-                   if (parent.left is this)
+                   if (parent.left is (&this))
                        parent.left = r;
                    else
                       parent.right = r;
 
-                r.left = this;
+                r.left = (&this);
                 parent = r;
                 return root;
         }
@@ -793,18 +793,18 @@ struct RedBlack (V, A = AttributeDummy)
                 left = l.right;
 
                 if (l.right !is null)
-                   l.right.parent = this;
+                   l.right.parent = (&this);
 
                 l.parent = parent;
                 if (parent is null)
                     root = l;
                 else
-                   if (parent.right is this)
+                   if (parent.right is (&this))
                        parent.right = l;
                    else
                       parent.left = l;
 
-                l.right = this;
+                l.right = (&this);
                 parent = l;
                 return root;
         }
@@ -814,7 +814,7 @@ struct RedBlack (V, A = AttributeDummy)
         package Ref fixAfterInsertion (Ref root)
         {
                 color = RED;
-                auto x = this;
+                auto x = (&this);
 
                 while (x && x !is root && x.parent.color is RED)
                       {
@@ -876,7 +876,7 @@ struct RedBlack (V, A = AttributeDummy)
         /** From CLR **/
         package Ref fixAfterDeletion(Ref root)
         {
-                auto x = this;
+                auto x = (&this);
                 while (x !is root && colorOf(x) is BLACK)
                       {
                       if (x is leftOf(parentOf(x)))
