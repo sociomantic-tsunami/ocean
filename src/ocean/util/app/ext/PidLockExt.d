@@ -77,7 +77,8 @@ class PidLockExt : IConfigExtExtension, IApplicationExtension
 
     /***************************************************************************
 
-        Order doesn't matter, so return default -> 0
+        Order set to -1500, as the extension should run after ConfigExt (-10000)
+        but before LogExt (-1000) (as LogExt can create side effects).
 
         Returns:
             the extension order
@@ -86,7 +87,7 @@ class PidLockExt : IConfigExtExtension, IApplicationExtension
 
     public override int order ( )
     {
-        return 0;
+        return -1500;
     }
 
     /***************************************************************************
