@@ -389,7 +389,7 @@ public class SliceBuffer ( T ) : ConcatBuffer!(T)
 
     ***************************************************************************/
 
-    public int opApply ( int delegate ( ref T[] ) dg )
+    public int opApply ( scope int delegate ( ref T[] ) dg )
     {
         int res;
 
@@ -411,7 +411,7 @@ public class SliceBuffer ( T ) : ConcatBuffer!(T)
 
     ***************************************************************************/
 
-    public int opApply ( int delegate ( ref size_t, ref T[] ) dg )
+    public int opApply ( scope int delegate ( ref size_t, ref T[] ) dg )
     {
         int res;
 
