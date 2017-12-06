@@ -224,7 +224,7 @@ class NamedTest : TestException
 
     static if (is(typeof(Throwable.message)))
     {
-        public override cstring message ( ) /* d1to2fix_inject: const */
+        public override cstring message ( ) const
         {
             if (this.name.length)
             {

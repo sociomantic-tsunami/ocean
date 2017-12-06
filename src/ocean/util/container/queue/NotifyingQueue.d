@@ -406,7 +406,7 @@ class NotifyingByteQueue : ISuspendable, IQueueInfo
 
     ***************************************************************************/
 
-    public bool push ( size_t size, void delegate ( ubyte[] ) filler )
+    public bool push ( size_t size, scope void delegate ( ubyte[] ) filler )
     {
         auto target = this.queue.push(size);
 

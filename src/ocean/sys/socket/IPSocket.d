@@ -520,7 +520,7 @@ class IPSocket ( bool IPv6 = false ) : IIPSocket
     public int accept ( ISelectable listening_socket,
                         ref InAddr remote_address, bool nonblocking )
     {
-        const SocketFlags[2] flags = [SocketFlags.None, SocketFlags.SOCK_NONBLOCK];
+        static immutable SocketFlags[2] flags = [SocketFlags.None, SocketFlags.SOCK_NONBLOCK];
 
         return this.accept(listening_socket, remote_address, flags[nonblocking]);
     }

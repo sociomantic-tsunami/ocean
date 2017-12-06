@@ -45,8 +45,8 @@ private extern ( C )
     mixin(Typedef!(uint, "__cpu_mask"));
 
     /* Size definition for CPU sets.  */
-    const __CPU_SETSIZE = 1024;
-    const __NCPUBITS = (8 * __cpu_mask.sizeof);
+    static immutable __CPU_SETSIZE = 1024;
+    static immutable __NCPUBITS = (8 * __cpu_mask.sizeof);
 
     /* Data structure to describe CPU mask.  */
     struct cpu_set_t
@@ -95,7 +95,7 @@ static:
             cpu_set_t cpu_set;
             CPU_SET(cast(__cpu_mask)cpu, cpu_set);
 
-            const pid_t pid = 0; // 0 := calling process
+            enum pid_t pid = 0; // 0 := calling process
             if (sched_setaffinity(pid, cpu_set_t.sizeof, &cpu_set))
             {
                 throw (new ErrnoException).useGlobalErrno("sched_setaffinity");

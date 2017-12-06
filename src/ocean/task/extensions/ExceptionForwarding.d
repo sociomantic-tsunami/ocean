@@ -40,12 +40,12 @@ struct ExceptionForwarding
 
     void onResumed ( )
     {
-        if (this.to_throw !is null)
+        if ((&this).to_throw !is null)
         {
             // reset the reference so it won't throw again
             // if the same fiber handles an exception and suspends again
-            auto to_throw = this.to_throw;
-            this.to_throw = null;
+            auto to_throw = (&this).to_throw;
+            (&this).to_throw = null;
             throw to_throw;
         }
     }

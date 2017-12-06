@@ -48,13 +48,13 @@ import core.stdc.errno: EAGAIN, EWOULDBLOCK, errno;
 
 /// <sys/timerfd.h>
 
-const TFD_TIMER_ABSTIME = 1,
+static immutable TFD_TIMER_ABSTIME = 1,
       TFD_CLOEXEC       = 0x80000, // octal 02000000
       TFD_NONBLOCK      = 0x800;   // octal 04000
 
 /// <linux/time.h>
 
-const CLOCK_MONOTONIC = 1;
+static immutable CLOCK_MONOTONIC = 1;
 
 // TODO: move into C bindings
 

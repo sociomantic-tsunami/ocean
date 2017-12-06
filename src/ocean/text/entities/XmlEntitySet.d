@@ -51,7 +51,7 @@ public class XmlEntitySet : IEntitySet
 
     ***************************************************************************/
 
-    public const Entity[] xml_entities =
+    public static immutable Entity[] xml_entities =
     [
         {"amp",    0x0026}, // '&'
         {"quot",   0x0022}, // '"'

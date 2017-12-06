@@ -389,7 +389,7 @@ static:
             {
                 size_t ret = stream.write(data[transmitted .. $]);
 
-                const act = "writing";
+                enum act = "writing";
             }
             else
             {
@@ -399,7 +399,7 @@ static:
 
                 size_t ret = stream.read(data[transmitted .. $]);
 
-                const act = "reading";
+                enum act = "reading";
 
             }
 

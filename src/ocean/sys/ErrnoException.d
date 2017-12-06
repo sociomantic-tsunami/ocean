@@ -423,10 +423,10 @@ public struct Caller ( T )
 
     public ReturnTypeOf!(T) call ( ParameterTupleOf!(T) args )
     {
-        auto ret = this.fn(args);
+        auto ret = (&this).fn(args);
         if (!verify(ret))
-            throw e.useGlobalErrno(e.func_name, this.original_file,
-                this.original_line);
+            throw e.useGlobalErrno(e.func_name, (&this).original_file,
+                (&this).original_line);
         return ret;
     }
 }

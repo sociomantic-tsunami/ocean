@@ -1032,7 +1032,7 @@ unittest
 {
     auto t = new NamedTest("Documentation example");
 
-    const NUM_ITEM = 10;
+    static immutable NUM_ITEM = 10;
     auto cache = new PriorityCache!(char[])(NUM_ITEM);
 
     auto key = 1;
@@ -1076,12 +1076,12 @@ unittest
 {
     auto t = new NamedTest("Adding and removing items to the cache");
 
-    const NUM_OF_ITEMS = 150;
+    static immutable NUM_OF_ITEMS = 150;
 
     auto test_cache = new PriorityCache!(int)(NUM_OF_ITEMS);
 
-    const PRIORITY = 10;
-    const VALUE = 50;
+    static immutable PRIORITY = 10;
+    static immutable VALUE = 50;
 
     for (int i = 0; i < NUM_OF_ITEMS; i++)
     {
@@ -1104,12 +1104,12 @@ unittest
 {
     auto t = new NamedTest("Retrieving highest and lowest priority items");
 
-    const NUM_OF_ITEMS = 150;
+    static immutable NUM_OF_ITEMS = 150;
 
     auto test_cache = new PriorityCache!(int)(NUM_OF_ITEMS);
 
-    const PRIORITY = 10;
-    const VALUE = 50;
+    static immutable PRIORITY = 10;
+    static immutable VALUE = 50;
 
     bool existed;
     hash_t key;
@@ -1142,13 +1142,13 @@ unittest
 {
     auto t = new NamedTest("Clearing the cache");
 
-    const NUM_OF_ITEMS = 150;
+    static immutable NUM_OF_ITEMS = 150;
 
     auto test_cache = new PriorityCache!(int)(NUM_OF_ITEMS);
 
-    const VALUE = 50;
-    const PRIORITY = 8;
-    const INDEX = 20;
+    static immutable VALUE = 50;
+    static immutable PRIORITY = 8;
+    static immutable INDEX = 20;
 
     // Create some items
     for (int i = 0; i < NUM_OF_ITEMS; i++)
@@ -1173,13 +1173,13 @@ unittest
 {
     auto t = new NamedTest("opApply foreach loops");
 
-    const NUM_OF_ITEMS = 150;
+    static immutable NUM_OF_ITEMS = 150;
 
     auto test_cache = new PriorityCache!(int)(NUM_OF_ITEMS);
 
-    const PRIORITY = 10;
-    const ORIGINAL_VALUE = 50;
-    const NEW_VALUE = 80;
+    static immutable PRIORITY = 10;
+    static immutable ORIGINAL_VALUE = 50;
+    static immutable NEW_VALUE = 80;
 
     for (int i = 0; i < NUM_OF_ITEMS; i++)
     {
@@ -1228,8 +1228,8 @@ unittest
 {
     auto t = new NamedTest("Dropped items are correctly reported");
 
-    const CACHE_SIZE = 10;
-    const ITEMS_INSERTED = 150;
+    static immutable CACHE_SIZE = 10;
+    static immutable ITEMS_INSERTED = 150;
 
     uint items_removed_count;
 
@@ -1265,7 +1265,7 @@ unittest
 {
     auto t = new NamedTest("Dropped items are passed by ref to notifier");
 
-    const CACHE_SIZE = 10;
+    static immutable CACHE_SIZE = 10;
     bool item_dropped = false;
 
     class PriorityNotify2 : PriorityCache!(uint)

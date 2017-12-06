@@ -160,7 +160,7 @@ struct BitArray
         length = bits.length;
         foreach( i, b; bits )
         {
-            (*this)[i] = b;
+            (*(&this))[i] = b;
         }
     }
 
@@ -190,9 +190,9 @@ struct BitArray
     }
     body
     {
-        auto dimension = this.dim();
-        this.ptr[0..dimension] = rhs.ptr[0..dimension];
-        return *this;
+        auto dimension = (&this).dim();
+        (&this).ptr[0..dimension] = rhs.ptr[0..dimension];
+        return *(&this);
     }
 
 
@@ -256,7 +256,7 @@ struct BitArray
     BitArray reverse()
     out( result )
     {
-        assert(compare(result, *this));
+        assert(compare(result, *(&this)));
     }
     body
     {
@@ -269,12 +269,12 @@ struct BitArray
             hi = len - 1;
             for( ; lo < hi; ++lo, --hi )
             {
-                t = (*this)[lo];
-                (*this)[lo] = (*this)[hi];
-                (*this)[hi] = t;
+                t = (*(&this))[lo];
+                (*(&this))[lo] = (*(&this))[hi];
+                (*(&this))[hi] = t;
             }
         }
-        return *this;
+        return *(&this);
     }
 
 
@@ -300,7 +300,7 @@ struct BitArray
     BitArray sort()
     out( result )
     {
-        assert(compare(result, *this));
+        assert(compare(result, *(&this)));
     }
     body
     {
@@ -316,7 +316,7 @@ struct BitArray
                 {
                     if( lo >= hi )
                         goto Ldone;
-                    if( (*this)[lo] == true )
+                    if( (*(&this))[lo] == true )
                         break;
                     ++lo;
                 }
@@ -325,13 +325,13 @@ struct BitArray
                 {
                     if( lo >= hi )
                         goto Ldone;
-                    if( (*this)[hi] == false )
+                    if( (*(&this))[hi] == false )
                         break;
                     --hi;
                 }
 
-                (*this)[lo] = false;
-                (*this)[hi] = true;
+                (*(&this))[lo] = false;
+                (*(&this))[hi] = true;
 
                 ++lo;
                 --hi;
@@ -339,7 +339,7 @@ struct BitArray
             Ldone:
             ;
         }
-        return *this;
+        return *(&this);
     }
 
 
@@ -361,7 +361,7 @@ struct BitArray
      * Params:
      *  dg = The supplied code as a delegate.
      */
-    int opApply( int delegate(ref bool) dg )
+    int opApply( scope int delegate(ref bool) dg )
     {
         int result;
 
@@ -378,7 +378,7 @@ struct BitArray
 
 
     /** ditto */
-    int opApply( int delegate(ref size_t, ref bool) dg )
+    int opApply( scope int delegate(ref size_t, ref bool) dg )
     {
         int result;
 
@@ -435,7 +435,7 @@ struct BitArray
      */
     int opEquals( BitArray rhs )
     {
-        return compare(*this, rhs);
+        return compare(*(&this), rhs);
     }
 
     // FIXME_IN_D2: allows comparing both mutable
@@ -494,10 +494,10 @@ struct BitArray
      */
     int opCmp( BitArray rhs )
     {
-        auto len = this.length;
+        auto len = (&this).length;
         if( rhs.length < len )
             len = rhs.length;
-        uint* p1 = this.ptr;
+        uint* p1 = (&this).ptr;
         uint* p2 = rhs.ptr;
         size_t n = len / 32;
         size_t i;
@@ -514,7 +514,7 @@ struct BitArray
             uint v2=p2[i] & mask;
             if (v1 != v2) return ((v1<v2)?-1:1);
         }
-        return ((this.length<rhs.length)?-1:((this.length==rhs.length)?0:1));
+        return (((&this).length<rhs.length)?-1:(((&this).length==rhs.length)?0:1));
     }
 
     unittest
@@ -590,13 +590,13 @@ struct BitArray
      */
     BitArray opCom()
     {
-        auto dim = this.dim();
+        auto dim = (&this).dim();
 
         BitArray result;
 
         result.length = len;
         for( size_t i = 0; i < dim; ++i )
-            result.ptr[i] = ~this.ptr[i];
+            result.ptr[i] = ~(&this).ptr[i];
         if( len & 31 )
             result.ptr[dim - 1] &= ~(~0 << (len & 31));
         return result;
@@ -636,13 +636,13 @@ struct BitArray
     }
     body
     {
-        auto dim = this.dim();
+        auto dim = (&this).dim();
 
         BitArray result;
 
         result.length = len;
         for( size_t i = 0; i < dim; ++i )
-            result.ptr[i] = this.ptr[i] & rhs.ptr[i];
+            result.ptr[i] = (&this).ptr[i] & rhs.ptr[i];
         return result;
     }
 
@@ -682,13 +682,13 @@ struct BitArray
     }
     body
     {
-        auto dim = this.dim();
+        auto dim = (&this).dim();
 
         BitArray result;
 
         result.length = len;
         for( size_t i = 0; i < dim; ++i )
-            result.ptr[i] = this.ptr[i] | rhs.ptr[i];
+            result.ptr[i] = (&this).ptr[i] | rhs.ptr[i];
         return result;
     }
 
@@ -728,13 +728,13 @@ struct BitArray
     }
     body
     {
-        auto dim = this.dim();
+        auto dim = (&this).dim();
 
         BitArray result;
 
         result.length = len;
         for( size_t i = 0; i < dim; ++i )
-            result.ptr[i] = this.ptr[i] ^ rhs.ptr[i];
+            result.ptr[i] = (&this).ptr[i] ^ rhs.ptr[i];
         return result;
     }
 
@@ -773,13 +773,13 @@ struct BitArray
     }
     body
     {
-        auto dim = this.dim();
+        auto dim = (&this).dim();
 
         BitArray result;
 
         result.length = len;
         for( size_t i = 0; i < dim; ++i )
-            result.ptr[i] = this.ptr[i] & ~rhs.ptr[i];
+            result.ptr[i] = (&this).ptr[i] & ~rhs.ptr[i];
         return result;
     }
 
@@ -812,7 +812,7 @@ struct BitArray
     {
         BitArray result;
 
-        result = this.dup;
+        result = (&this).dup;
         result.length = len + 1;
         result[len] = rhs;
         return result;
@@ -827,7 +827,7 @@ struct BitArray
         result.length = len + 1;
         result[0] = lhs;
         for( size_t i = 0; i < len; ++i )
-            result[1 + i] = (*this)[i];
+            result[1 + i] = (*(&this))[i];
         return result;
     }
 
@@ -837,7 +837,7 @@ struct BitArray
     {
         BitArray result;
 
-        result = this.dup();
+        result = (&this).dup();
         result ~= rhs;
         return result;
     }
@@ -917,11 +917,11 @@ struct BitArray
     }
     body
     {
-        auto dim = this.dim();
+        auto dim = (&this).dim();
 
         for( size_t i = 0; i < dim; ++i )
             ptr[i] &= rhs.ptr[i];
-        return *this;
+        return *(&this);
     }
 
     unittest
@@ -957,11 +957,11 @@ struct BitArray
     }
     body
     {
-        auto dim = this.dim();
+        auto dim = (&this).dim();
 
         for( size_t i = 0; i < dim; ++i )
             ptr[i] |= rhs.ptr[i];
-        return *this;
+        return *(&this);
     }
 
 
@@ -998,11 +998,11 @@ struct BitArray
     }
     body
     {
-        auto dim = this.dim();
+        auto dim = (&this).dim();
 
         for( size_t i = 0; i < dim; ++i )
             ptr[i] ^= rhs.ptr[i];
-        return *this;
+        return *(&this);
     }
 
     unittest
@@ -1039,11 +1039,11 @@ struct BitArray
     }
     body
     {
-        auto dim = this.dim();
+        auto dim = (&this).dim();
 
         for( size_t i = 0; i < dim; ++i )
             ptr[i] &= ~rhs.ptr[i];
-        return *this;
+        return *(&this);
     }
 
     unittest
@@ -1072,8 +1072,8 @@ struct BitArray
     BitArray opCatAssign( bool b )
     {
         length = len + 1;
-        (*this)[len - 1] = b;
-        return *this;
+        (*(&this))[len - 1] = b;
+        return *(&this);
     }
 
     unittest
@@ -1098,8 +1098,8 @@ struct BitArray
         auto istart = len;
         length = len + rhs.length;
         for( auto i = istart; i < len; ++i )
-            (*this)[i] = rhs[i - istart];
-        return *this;
+            (*(&this))[i] = rhs[i - istart];
+        return *(&this);
     }
 
     unittest
@@ -1129,8 +1129,8 @@ unittest
 {
     auto t = new NamedTest("Test increase and decrease length of the BitArray");
 
-    const size_of_uint = uint.sizeof * 8;
-    const num_bits = (size_of_uint * 5) + 15;
+    static immutable size_of_uint = uint.sizeof * 8;
+    static immutable num_bits = (size_of_uint * 5) + 15;
 
     // Creates a BitArray and sets all the bits.
     scope bool_array = new bool[num_bits];
@@ -1146,7 +1146,7 @@ unittest
 
     // Increases the length of the BitArray and checks the former bits remain
     // set and the new ones are not.
-    const greater_length = size_of_uint * 7;
+    static immutable greater_length = size_of_uint * 7;
     static assert(greater_length > num_bits);
     bit_array.length = greater_length;
     foreach (pos, bit; bit_array)
@@ -1159,7 +1159,7 @@ unittest
 
     // Decreases the length of the BitArray to a shorter length than the
     // initial one and checks all bits remain set.
-    const lower_length = size_of_uint * 5;
+    static immutable lower_length = size_of_uint * 5;
     static assert(lower_length < num_bits);
     bit_array.length = lower_length;
     foreach (bit; bit_array)

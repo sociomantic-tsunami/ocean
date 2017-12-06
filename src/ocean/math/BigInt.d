@@ -90,7 +90,7 @@ public:
     BigInt opAddAssign(T: int)(T y) {
         ulong u = cast(ulong)(y < 0 ? -y : y);
         data = BigUint.addOrSubInt(data, u, sign!=(y<0), &sign);
-        return *this;
+        return *(&this);
     }
     ///
     BigInt opAdd(T: BigInt)(T y) {
@@ -102,7 +102,7 @@ public:
     ///
     BigInt opAddAssign(T:BigInt)(T y) {
         data = BigUint.addOrSub(data, y.data, sign != y.sign, &sign);
-        return *this;
+        return *(&this);
     }
     ///
     BigInt opSub(T: int)(T y) {
@@ -116,7 +116,7 @@ public:
     BigInt opSubAssign(T: int)(T y) {
         ulong u = cast(ulong)(y < 0 ? -y : y);
         data = BigUint.addOrSubInt(data, u, sign == (y<0), &sign);
-        return *this;
+        return *(&this);
     }
     ///
     BigInt opSub(T: BigInt)(T y) {
@@ -155,27 +155,27 @@ public:
     ///
     BigInt opSubAssign(T:BigInt)(T y) {
         data = BigUint.addOrSub(data, y.data, sign == y.sign, &sign);
-        return *this;
+        return *(&this);
     }
     ///
     BigInt opMul(T: int)(T y) {
         ulong u = cast(ulong)(y < 0 ? -y : y);
-        return mulInternal(*this, u, sign != (y<0));
+        return mulInternal(*(&this), u, sign != (y<0));
     }
     ///
     BigInt opMulAssign(T: int)(T y) {
         ulong u = cast(ulong)(y < 0 ? -y : y);
-        *this = mulInternal(*this, u, sign != (y<0));
-        return *this;
+        *(&this) = mulInternal(*(&this), u, sign != (y<0));
+        return *(&this);
     }
     ///
     BigInt opMul(T:BigInt)(T y) {
-        return mulInternal(*this, y);
+        return mulInternal(*(&this), y);
     }
     ///
     BigInt opMulAssign(T: BigInt)(T y) {
-        *this = mulInternal(*this, y);
-        return *this;
+        *(&this) = mulInternal(*(&this), y);
+        return *(&this);
     }
     ///
     BigInt opDiv(T:int)(T y) {
@@ -192,16 +192,16 @@ public:
         uint u = y < 0 ? -y : y;
         data = BigUint.divInt(data, u);
         sign = data.isZero()? false : sign ^ (y<0);
-        return *this;
+        return *(&this);
     }
     ///
     BigInt opDivAssign(T: BigInt)(T y) {
-        *this = divInternal(*this, y);
-        return *this;
+        *(&this) = divInternal(*(&this), y);
+        return *(&this);
     }
     ///
     BigInt opDiv(T: BigInt)(T y) {
-        return divInternal(*this, y);
+        return divInternal(*(&this), y);
     }
     ///
     int opMod(T:int)(T y) {
@@ -219,34 +219,34 @@ public:
         data = BigUint.modInt(data, u);
         // x%y always has the same sign as x.
         // This is not the same as mathematical mod.
-        return *this;
+        return *(&this);
     }
     ///
     BigInt opMod(T: BigInt)(T y) {
-        return modInternal(*this, y);
+        return modInternal(*(&this), y);
     }
     ///
     BigInt opModAssign(T: BigInt)(T y) {
-        *this = modInternal(*this, y);
-        return *this;
+        *(&this) = modInternal(*(&this), y);
+        return *(&this);
     }
     ///
     BigInt opNeg() {
-        BigInt r = *this;
+        BigInt r = *(&this);
         r.negate();
         return r;
     }
     ///
-    BigInt opPos() { return *this; }
+    BigInt opPos() { return *(&this); }
     ///
     BigInt opPostInc() {
-        BigInt old = *this;
+        BigInt old = *(&this);
         data = BigUint.addOrSubInt(data, 1, false, &sign);
         return old;
     }
     ///
     BigInt opPostDec() {
-        BigInt old = *this;
+        BigInt old = *(&this);
         data = BigUint.addOrSubInt(data, 1, true, &sign);
         return old;
     }
@@ -261,7 +261,7 @@ public:
     BigInt opShrAssign(T:int)(T y) {
         data = data.opShr(y);
         if (data.isZero()) sign = false;
-        return *this;
+        return *(&this);
     }
     ///
     BigInt opShl(T:int)(T y) {
@@ -273,7 +273,7 @@ public:
     ///
     BigInt opShlAssign(T:int)(T y) {
         data = data.opShl(y);
-        return *this;
+        return *(&this);
     }
     ///
     int opEquals(T: BigInt)(T y) {

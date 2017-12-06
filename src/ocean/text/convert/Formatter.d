@@ -559,13 +559,13 @@ private template IsTypeofNull (T)
     version (D_Version2)
     {
         static if (is(T == typeof(null)))
-            public const bool IsTypeofNull = true;
+            public static immutable bool IsTypeofNull = true;
         else
-            public const bool IsTypeofNull = false;
+            public static immutable bool IsTypeofNull = false;
     }
     else
     {
-        public const bool IsTypeofNull = false;
+        public static immutable bool IsTypeofNull = false;
     }
 }
 
@@ -588,9 +588,9 @@ private template IsTypeofNull (T)
 private template IsTypedef (T)
 {
     version (D_Version2)
-        const IsTypedef = is(T.IsTypedef);
+        static immutable IsTypedef = is(T.IsTypedef);
     else
-        const IsTypedef = mixin("is(T == typedef)");
+        static immutable IsTypedef = mixin("is(T == typedef)");
 }
 
 /*******************************************************************************
@@ -821,7 +821,7 @@ private Const!(char)* skipSpace (Const!(char)* s, Const!(char)* end)
 
 private void writeSpace (FormatterSink s, size_t n)
 {
-    const istring Spaces32 = "                                ";
+    static immutable istring Spaces32 = "                                ";
 
     // Make 'n' a multiple of Spaces32.length (32)
     s(Spaces32[0 .. n % Spaces32.length]);
@@ -884,8 +884,8 @@ private void writePointer (in void* v, ref FormatInfo f, ElemSink se)
     version (D_Version2)
         mixin("enum int l = (T.sizeof * 2);");
     else
-        const int l = (T.sizeof * 2); // Needs to be int to avoid suffix
-    const defaultFormat = "X" ~ l.stringof ~ "#";
+        static immutable int l = (T.sizeof * 2); // Needs to be int to avoid suffix
+    static immutable defaultFormat = "X" ~ l.stringof ~ "#";
 
     if (v is null)
         se("null", f);
@@ -1361,7 +1361,7 @@ unittest
     void[] varr = arr;
     assert(format("{}", varr) == "[42, 43, 44, 45, 92]");
 
-    const ubyte[5] carr = [42, 43, 44, 45, 92];
+    static immutable ubyte[5] carr = [42, 43, 44, 45, 92];
     auto cvarr = carr; // Immutable, cannot be marked `const` in D1
     assert(format("{}", cvarr) == "[42, 43, 44, 45, 92]");
 
@@ -1379,12 +1379,12 @@ unittest
 // Const tests
 unittest
 {
-    const int ai = 42;
-    const double ad = 42.00;
+    static immutable int ai = 42;
+    static immutable double ad = 42.00;
     static struct Answer_struct { int value; }
     static class Answer_class
     {
-        public override istring toString () /* d1to2fix_inject: const */
+        public override istring toString () const
         {
             return "42";
         }
@@ -1410,7 +1410,7 @@ unittest
     Object* o = cast(Object*) 0xDEADBEEF_DEADBEEF;
     void* ptr = cast(void*) 0xDEADBEEF_DEADBEEF;
 
-    const istring expected = "0XDEADBEEFDEADBEEF";
+    static immutable istring expected = "0XDEADBEEFDEADBEEF";
     istring object_str = format("{}", o);
     istring ptr_str = format("{}", ptr);
     istring null_str = format("{}", null);
@@ -1439,7 +1439,7 @@ unittest
 
 unittest
 {
-    const bool YES = true;
-    const bool NO  = false;
+    static immutable bool YES = true;
+    static immutable bool NO  = false;
     assert(format("{} -- {}", YES, NO) == "true -- false");
 }

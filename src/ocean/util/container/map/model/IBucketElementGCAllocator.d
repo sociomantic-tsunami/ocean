@@ -154,7 +154,7 @@ class IBucketElementGCAllocator: IAllocator
     ***************************************************************************/
 
     public override void parkElements (size_t n,
-                                       void delegate ( IParkingStack park ) dg)
+                                       scope void delegate ( IParkingStack park ) dg)
     {
         scope park = new ParkingStack(n);
         dg(park);

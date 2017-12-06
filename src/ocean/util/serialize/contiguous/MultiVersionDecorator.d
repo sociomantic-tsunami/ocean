@@ -200,7 +200,7 @@ version(UnitTest)
     {
         static struct Version0
         {
-            const StructVersion = 0;
+            enum StructVersion = 0;
             alias Version1 StructNext;
 
             int a, b;
@@ -210,7 +210,7 @@ version(UnitTest)
 
         static struct Version1
         {
-            const StructVersion = 1;
+            enum StructVersion = 1;
             alias Version0 StructPrevious;
             alias Version2 StructNext;
 
@@ -221,7 +221,7 @@ version(UnitTest)
 
         static struct Version2
         {
-            const StructVersion = 2;
+            enum StructVersion = 2;
             alias Version1 StructPrevious;
 
             int a, b, c;
@@ -290,12 +290,12 @@ version (UnitTest)
         static struct Version3
         {
             int a, b;
-            const StructVersion = 3;
+            enum StructVersion = 3;
         }
 
         static struct VersionHuge
         {
-            const StructVersion = 100;
+            enum StructVersion = 100;
         }
     }
 }
@@ -340,7 +340,7 @@ unittest
 {
     struct S
     {
-        const StructVersion = 1;
+        enum StructVersion = 1;
 
         int    a = 42;
         double b = 2.0;
@@ -374,7 +374,7 @@ unittest
 {
     struct S
     {
-        const StructVersion = 1;
+        enum StructVersion = 1;
         int a = 42;
     }
 
@@ -408,7 +408,7 @@ unittest
 
     // must detect if input size is too small
 
-    struct Dummy { const StructVersion = 1; }
+    struct Dummy { enum StructVersion = 1; }
 
     testThrown!(VersionHandlingException)(loader.load!(Dummy)(buffer));
 
@@ -418,7 +418,7 @@ unittest
 
     // must detect if conversion is not defined
 
-    struct Dummy2 { const StructVersion = 2; }
+    struct Dummy2 { enum StructVersion = 2; }
 
     loader.store(Dummy2.init, buffer);
     testThrown!(VersionHandlingException)(loader.load!(Dummy)(buffer));
@@ -437,7 +437,7 @@ struct Test1
 {
     struct Version1
     {
-        const StructVersion = 1;
+        enum StructVersion = 1;
 
         alias Version2 StructNext;
 
@@ -451,7 +451,7 @@ struct Test1
 
     struct Version2
     {
-        const StructVersion = 2;
+        enum StructVersion = 2;
 
         int a = 42;
     }
@@ -486,14 +486,14 @@ struct Test2
 {
     struct Version1
     {
-        const StructVersion = 1;
+        enum StructVersion = 1;
 
         int a;
     }
 
     struct Version2
     {
-        const StructVersion = 2;
+        enum StructVersion = 2;
 
         alias Version1 StructPrevious;
 
@@ -535,7 +535,7 @@ struct Test3
 {
     struct Version0
     {
-        const ubyte StructVersion = 0;
+        enum ubyte StructVersion = 0;
         alias Version1 StructNext;
 
         struct Nested0
@@ -564,7 +564,7 @@ struct Test3
 
         void compare ( NamedTest t, Version0 other )
         {
-            foreach (index, ref element; this.tupleof)
+            foreach (index, ref element; (&this).tupleof)
             {
                 t.test!("==")(element, other.tupleof[index]);
             }
@@ -572,15 +572,15 @@ struct Test3
 
         void compare ( NamedTest t, Version1 other )
         {
-            foreach (index, ref element; this.tupleof)
+            foreach (index, ref element; (&this).tupleof)
             {
-                const name = this.tupleof[index].stringof[
-                    rfind(this.tupleof[index].stringof, "."[]) + 1 .. $
+                enum name = (&this).tupleof[index].stringof[
+                    rfind((&this).tupleof[index].stringof, "."[]) + 1 .. $
                 ];
 
                 static if (name == "nested_arr")
                 {
-                    foreach (i, elem; this.nested_arr)
+                    foreach (i, elem; (&this).nested_arr)
                     {
                         t.test!("==")(elem.a, other.nested_arr[i].a);
                     }
@@ -593,7 +593,7 @@ struct Test3
 
     struct Version1
     {
-        const ubyte StructVersion = 1;
+        enum ubyte StructVersion = 1;
         alias Version0 StructPrevious;
         alias Version2 StructNext;
 
@@ -631,15 +631,15 @@ struct Test3
 
         void compare ( NamedTest t, Version0 other )
         {
-            foreach (index, ref member; this.tupleof)
+            foreach (index, ref member; (&this).tupleof)
             {
-                const name = this.tupleof[index].stringof[
-                    rfind(this.tupleof[index].stringof, "."[]) + 1 .. $
+                enum name = (&this).tupleof[index].stringof[
+                    rfind((&this).tupleof[index].stringof, "."[]) + 1 .. $
                 ];
 
                 static if (name == "nested_arr")
                 {
-                    foreach (i, ref nested; this.nested_arr)
+                    foreach (i, ref nested; (&this).nested_arr)
                     {
                         test!("==")(nested.a, other.nested_arr[i].a);
                         test!("==")(nested.b, other.nested_arr[i].a + 1);
@@ -647,7 +647,7 @@ struct Test3
                 }
                 else static if (name == "c")
                 {
-                    test!("==")(this.c, other.b - other.a);
+                    test!("==")((&this).c, other.b - other.a);
                 }
                 else
                 {
@@ -658,7 +658,7 @@ struct Test3
 
         void compare ( NamedTest t, Version1 other )
         {
-            foreach (index, ref element; this.tupleof)
+            foreach (index, ref element; (&this).tupleof)
             {
                 t.test!("==")(element, other.tupleof[index]);
             }
@@ -666,15 +666,15 @@ struct Test3
 
         void compare ( NamedTest t, Version2 other )
         {
-            foreach (index, ref member; this.tupleof)
+            foreach (index, ref member; (&this).tupleof)
             {
-                const name = this.tupleof[index].stringof[
-                    rfind(this.tupleof[index].stringof, "."[]) + 1 .. $
+                enum name = (&this).tupleof[index].stringof[
+                    rfind((&this).tupleof[index].stringof, "."[]) + 1 .. $
                 ];
 
                 static if (name == "nested_arr")
                 {
-                    foreach (i, ref nested; this.nested_arr)
+                    foreach (i, ref nested; (&this).nested_arr)
                     {
                         test!("==")(nested.a, other.nested_arr[i].a);
                         test!("==")(nested.b, other.nested_arr[i].a / 2);
@@ -682,7 +682,7 @@ struct Test3
                 }
                 else static if (name == "c")
                 {
-                    test!("==")(this.c, other.d);
+                    test!("==")((&this).c, other.d);
                 }
                 else
                 {
@@ -694,7 +694,7 @@ struct Test3
 
     struct Version2
     {
-        const ubyte StructVersion = 2;
+        enum ubyte StructVersion = 2;
 
         alias Version1 StructPrevious;
 
@@ -728,22 +728,22 @@ struct Test3
 
         void compare ( NamedTest t, ref Version1 other )
         {
-            foreach (index, ref member; this.tupleof)
+            foreach (index, ref member; (&this).tupleof)
             {
-                const name = this.tupleof[index].stringof[
-                    rfind(this.tupleof[index].stringof, "."[]) + 1 .. $
+                enum name = (&this).tupleof[index].stringof[
+                    rfind((&this).tupleof[index].stringof, "."[]) + 1 .. $
                 ];
 
                 static if (name == "nested_arr")
                 {
-                    foreach (i, ref nested; this.nested_arr)
+                    foreach (i, ref nested; (&this).nested_arr)
                     {
                         test!("==")(nested.a, other.nested_arr[i].b * 2);
                     }
                 }
                 else static if (name == "d")
                 {
-                    test!("==")(this.d, other.c);
+                    test!("==")((&this).d, other.c);
                 }
                 else
                 {
@@ -754,7 +754,7 @@ struct Test3
 
         void compare ( NamedTest t, ref Version2 other )
         {
-            foreach (index, member; this.tupleof)
+            foreach (index, member; (&this).tupleof)
             {
                 t.test!("==")(member, other.tupleof[index]);
             }
@@ -823,7 +823,7 @@ Dst testConvMemory(Src, Dst)(Src src, size_t limit = 10)
     auto loader = new VersionDecorator(limit);
     void[] buffer;
 
-    const iterations = 10_000;
+    static immutable iterations = 10_000;
 
     static void storeThenLoad (ref NamedTest test, ref VersionDecorator loader,
                                ref Src src, ref void[] buffer,
@@ -901,13 +901,13 @@ struct Test4
 {
     struct Ver0
     {
-        const ubyte StructVersion = 0;
+        enum ubyte StructVersion = 0;
         int a;
     }
 
     struct Ver1
     {
-        const ubyte StructVersion = 1;
+        enum ubyte StructVersion = 1;
         alias Test4.Ver0 StructPrevious;
 
         long b;

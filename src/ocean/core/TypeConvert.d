@@ -229,7 +229,7 @@ template arrayOf (T)
 
 version (UnitTest)
 {
-    const _arrayOf_global_scope = arrayOf!(byte)(1, 2, 3);
+    static immutable _arrayOf_global_scope = arrayOf!(byte)(1, 2, 3);
 }
 
 ///
@@ -246,7 +246,7 @@ unittest
     auto arr = arrayOf!(Hash)(1, 2, 3);
 
     // ensure it works in CTFE
-    const manifest = arrayOf!(long)(42, 44, 46);
+    static immutable manifest = arrayOf!(long)(42, 44, 46);
     static assert (manifest.length == 3);
     static assert (manifest[0] == 42L);
     static assert (manifest[1] == 44L);

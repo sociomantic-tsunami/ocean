@@ -106,7 +106,7 @@ public class Inotify : ISelectable
 
         ***********************************************************************/
 
-        public int opApply ( int delegate ( ref inotify_event* ) dg )
+        public int opApply ( scope int delegate ( ref inotify_event* ) dg )
         {
             //255 is the default max filename length in linux)
             char[inotify_event.sizeof + 255 + 1] buffer_temp;
@@ -115,7 +115,7 @@ public class Inotify : ISelectable
             int result = 0;
 
             ssize_t read_bytes;
-            read_loop: while ( (read_bytes = read(this.outer.fd, buffer.ptr, buffer.length)) > 0 )
+            read_loop: while ( (read_bytes = read((&this).outer.fd, buffer.ptr, buffer.length)) > 0 )
             {
                 inotify_event *i_event;
 

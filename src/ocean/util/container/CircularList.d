@@ -171,7 +171,7 @@ class CircularList (V, alias Reap = Container.reap,
 
         ***********************************************************************/
 
-        final int opApply (int delegate(ref V value) dg)
+        final int opApply (scope int delegate(ref V value) dg)
         {
                 return iterator.opApply (dg);
         }
@@ -1006,7 +1006,7 @@ class CircularList (V, alias Reap = Container.reap,
 
                 ***************************************************************/
 
-                int opApply (int delegate(ref V value) dg)
+                int opApply (scope int delegate(ref V value) dg)
                 {
                         int result;
                         auto c = cell;
@@ -1076,7 +1076,7 @@ class CircularList (V, alias Reap = Container.reap,
                     ++count;
                     // ignore this change
                     ++mutation;
-                    return *this;
+                    return *(&this);
                 }
 
                 /***************************************************************
@@ -1092,7 +1092,7 @@ class CircularList (V, alias Reap = Container.reap,
                         rev ^= true;
                         next;
                         index = 0;
-                        return *this;
+                        return *(&this);
                 }
         }
 }
@@ -1196,7 +1196,7 @@ debug (CircularList)
                 // use a chunk allocator, and presize the bucket[]
                 auto test = new CircularList!(uint, Container.reap, Container.Chunk);
                 test.cache (1000, 1_000_000);
-                const count = 1_000_000;
+                static immutable count = 1_000_000;
                 StopWatch w;
 
                 // benchmark adding

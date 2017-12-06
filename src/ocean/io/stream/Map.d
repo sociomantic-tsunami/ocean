@@ -69,7 +69,7 @@ class MapInput(T) : Lines!(T)
 
         ***********************************************************************/
 
-        final int opApply (int delegate(ref Const!(T)[] name, ref Const!(T)[] value) dg)
+        final int opApply (scope int delegate(ref Const!(T)[] name, ref Const!(T)[] value) dg)
         {
                 int ret;
 
@@ -123,9 +123,9 @@ class MapOutput(T) : OutputFilter
 {
         private Const!(T)[] eol;
 
-        private const Const!(T)[] prefix = "# ";
-        private const Const!(T)[] equals = " = ";
-        private const Const!(T)[] NL = "\n";
+        private static immutable Const!(T)[] prefix = "# ";
+        private static immutable Const!(T)[] equals = " = ";
+        private static immutable Const!(T)[] NL = "\n";
 
         /***********************************************************************
 

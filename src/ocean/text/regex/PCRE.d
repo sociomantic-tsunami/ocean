@@ -159,7 +159,7 @@ public class PCRE
 
     ***************************************************************************/
 
-    public const int DEFAULT_COMPLEXITY_LIMIT = 0;
+    public static immutable int DEFAULT_COMPLEXITY_LIMIT = 0;
 
     public int complexity_limit = DEFAULT_COMPLEXITY_LIMIT;
 
@@ -535,7 +535,7 @@ unittest
 
 unittest
 {
-    void test ( bool delegate ( ) dg, bool match )
+    void test ( scope bool delegate ( ) dg, bool match )
     {
         auto t = new CounterNamedTest;
         t.test!("==")(match, dg());

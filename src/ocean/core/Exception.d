@@ -61,7 +61,7 @@ struct ExceptionChain
 
     ***************************************************************************/
 
-    public int opApply (int delegate (ref Throwable) dg)
+    public int opApply (scope int delegate (ref Throwable) dg)
     {
         int result;
 
@@ -187,7 +187,7 @@ public template ReusableExceptionImplementation()
 
         ***************************************************************************/
 
-        public override cstring message ( ) /* d1to2fix_inject: const */
+        public override cstring message ( ) const
         {
             return this.msg[].ptr is null ? this.reused_msg[] : this.msg;
         }

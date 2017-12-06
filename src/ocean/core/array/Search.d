@@ -1156,7 +1156,7 @@ unittest
 
 *******************************************************************************/
 
-public bool bsearchCustom ( size_t array_length, ssize_t delegate ( size_t i ) cmp, out size_t position )
+public bool bsearchCustom ( size_t array_length, scope ssize_t delegate ( size_t i ) cmp, out size_t position )
 in
 {
     assert (cast (ssize_t) array_length >= 0,

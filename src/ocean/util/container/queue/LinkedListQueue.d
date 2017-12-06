@@ -124,7 +124,7 @@ public class LinkedListQueue ( T, alias gc_tracking_policy = GCTrackingPolicy.re
 
         public QueueItem* find ( T find_value )
         {
-            for ( auto p = this; p; p = p.next )
+            for ( auto p = (&this); p; p = p.next )
                  if ( find_value == p.value )
                      return p;
             return null;
@@ -452,7 +452,7 @@ public class LinkedListQueue ( T, alias gc_tracking_policy = GCTrackingPolicy.re
 
     ***************************************************************************/
 
-    public int opApply ( int delegate ( ref T value ) dg )
+    public int opApply ( scope int delegate ( ref T value ) dg )
     {
         int result;
 
@@ -695,7 +695,7 @@ unittest
     // T = JustSomeClass
     LinkedListQueue!(JustSomeClass) classesList = new LinkedListQueue!(JustSomeClass)();
 
-    const int size = 100;
+    static immutable int size = 100;
     int[] int_array;
     JustSomeClass[] class_array;
 

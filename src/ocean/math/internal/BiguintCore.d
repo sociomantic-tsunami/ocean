@@ -78,10 +78,10 @@ static if (BigDigit.sizeof == int.sizeof) {
     enum { LG2BIGDIGITBITS = 6, BIGDIGITSHIFTMASK = 63 };
 } else static assert(0, "Unsupported BigDigit size");
 
-const Const!(BigDigit)[] ZERO = [0];
-const Const!(BigDigit)[] ONE = [1];
-const Const!(BigDigit)[] TWO = [2];
-const Const!(BigDigit)[] TEN = [10];
+static immutable Const!(BigDigit)[] ZERO = [0];
+static immutable Const!(BigDigit)[] ONE = [1];
+static immutable Const!(BigDigit)[] TWO = [2];
+static immutable Const!(BigDigit)[] TEN = [10];
 
 public:
 
@@ -315,9 +315,9 @@ bool fromHexString(cstring s)
         ++sofar;
     }
     if (sofar == 0)
-        this.data = ZERO;
+        (&this).data = ZERO;
     else
-        this.data = raw[0..sofar];
+        (&this).data = raw[0..sofar];
     return true;
 }
 
@@ -338,7 +338,7 @@ bool fromDecimalString(cstring s)
     auto raw = new BigDigit[predictlength];
     auto hi = biguintFromDecimal(raw, s[firstNonZero..$]);
     raw.length = hi;
-    this.data = raw;
+    (&this).data = raw;
     return true;
 }
 
@@ -367,7 +367,7 @@ BigUint opShr(ulong y)
 BigUint opShl(ulong y)
 {
     assert(y>0);
-    if (isZero()) return *this;
+    if (isZero()) return *(&this);
     uint bits = cast(uint)y & BIGDIGITSHIFTMASK;
     assert ((y>>LG2BIGDIGITBITS) < cast(ulong)(uint.max));
     uint words = cast(uint)(y >> LG2BIGDIGITBITS);
@@ -779,7 +779,7 @@ T intpow(T)(T x, ulong n)
 int highestPowerBelowUintMax(uint x)
 {
      assert(x>1);
-     const maxpwr = [31, 20, 15, 13, 12, 11, 10, 10, 9, 9,
+     static immutable maxpwr = [31, 20, 15, 13, 12, 11, 10, 10, 9, 9,
                                  8, 8, 8, 8, 7, 7, 7, 7, 7, 7, 7, 7];
      if (x<24) return maxpwr[x-2];
      if (x<41) return 6;
@@ -794,7 +794,7 @@ int highestPowerBelowUintMax(uint x)
 int highestPowerBelowUlongMax(uint x)
 {
      assert(x>1);
-     const maxpwr = [63, 40, 31, 27, 24, 22, 21, 20, 19, 18,
+     static immutable maxpwr = [63, 40, 31, 27, 24, 22, 21, 20, 19, 18,
                                  17, 17, 16, 16, 15, 15, 15, 15, 14, 14,
                                  14, 14, 13, 13, 13, 13, 13, 13, 13, 12,
                                  12, 12, 12, 12, 12, 12, 12, 12, 12];
@@ -1652,7 +1652,7 @@ void itoaZeroPadded(char[] output, uint value, int radix = 10) {
 
 void toHexZeroPadded(char[] output, uint value) {
     ptrdiff_t x = output.length - 1;
-    const istring hexDigits = "0123456789ABCDEF";
+    static immutable istring hexDigits = "0123456789ABCDEF";
     for( ; x>=0; --x) {
         output[x] = hexDigits[value & 0xF];
         value >>= 4;

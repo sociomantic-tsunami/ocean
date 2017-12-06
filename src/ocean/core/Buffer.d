@@ -107,7 +107,7 @@ struct Buffer ( T )
 
     void reset ( )
     {
-        this.length = 0;
+        (&this).length = 0;
     }
 
     /***************************************************************************
@@ -117,9 +117,9 @@ struct Buffer ( T )
 
     ***************************************************************************/
 
-    size_t length ( ) /* d1to2fix_inject: const */
+    size_t length ( ) const
     {
-        return this.data.length;
+        return (&this).data.length;
     }
 
     /***************************************************************************
@@ -134,10 +134,10 @@ struct Buffer ( T )
     void length ( size_t new_length )
     {
         version (D_Version2)
-            assumeSafeAppend(this.data);
-        this.data.length = new_length;
+            assumeSafeAppend((&this).data);
+        (&this).data.length = new_length;
         version (D_Version2)
-            assumeSafeAppend(this.data);
+            assumeSafeAppend((&this).data);
     }
 
     /***************************************************************************
@@ -153,12 +153,12 @@ struct Buffer ( T )
     void reserve ( size_t new_length )
     {
         version (D_Version2)
-            assumeSafeAppend(this.data);
-        auto old_length = this.data.length;
-        this.data.length = new_length;
-        this.data.length = old_length;
+            assumeSafeAppend((&this).data);
+        auto old_length = (&this).data.length;
+        (&this).data.length = new_length;
+        (&this).data.length = old_length;
         version (D_Version2)
-            assumeSafeAppend(this.data);
+            assumeSafeAppend((&this).data);
     }
 
     /***************************************************************************
@@ -174,9 +174,9 @@ struct Buffer ( T )
 
     ***************************************************************************/
 
-    Inout!(T[]) opSlice ( size_t begin, size_t end ) /* d1to2fix_inject: inout */
+    Inout!(T[]) opSlice ( size_t begin, size_t end ) inout
     {
-        return this.data[begin .. end];
+        return (&this).data[begin .. end];
     }
 
     /***************************************************************************
@@ -188,9 +188,9 @@ struct Buffer ( T )
 
     ***************************************************************************/
 
-    Inout!(T[]) opSlice ( ) /* d1to2fix_inject: inout */
+    Inout!(T[]) opSlice ( ) inout
     {
-        return this.data[];
+        return (&this).data[];
     }
 }
 

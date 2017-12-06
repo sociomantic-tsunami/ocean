@@ -162,7 +162,7 @@ Const!(T)[] format(T) (T[] output, Time t)
 
 unittest
 {
-    const STR_1970 = "Thu, 01 Jan 1970 00:00:00 GMT";
+    static immutable STR_1970 = "Thu, 01 Jan 1970 00:00:00 GMT";
     mstring buf;
     buf.length = 29;
     assert(format(buf, Time.epoch1970) == STR_1970);
@@ -211,7 +211,7 @@ Const!(T)[] format8601(T) (T[] output, Time t)
 
 unittest
 {
-    const STR_1970 = "1970-01-01T00:00:00Z";
+    static immutable STR_1970 = "1970-01-01T00:00:00Z";
     mstring buf;
     buf.length = 29;
     assert(format8601(buf, Time.epoch1970) == STR_1970);

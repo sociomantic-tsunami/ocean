@@ -92,7 +92,7 @@ public void structConvert ( From, To ) ( ref From from, out To to,
             version (D_Version2)
                 mixin(`enum convFuncName = "convert_" ~ FieldName!(to_index, To);`);
             else
-                const convFuncName = "convert_" ~ FieldName!(to_index, To);
+                static immutable convFuncName = "convert_" ~ FieldName!(to_index, To);
 
             static if (hasConvertFunction!(From, convFuncName, To)())
             {

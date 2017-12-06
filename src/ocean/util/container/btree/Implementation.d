@@ -107,7 +107,7 @@ package struct BTreeMapImplementation (KeyType, ValueType, int tree_degree)
 
     ***************************************************************************/
 
-    private const degree = tree_degree;
+    private enum degree = tree_degree;
 
     /***************************************************************************
 
@@ -143,8 +143,8 @@ package struct BTreeMapImplementation (KeyType, ValueType, int tree_degree)
 
     package void initialize (IMemManager allocator = mallocMemManager)
     {
-        verify (this.allocator is null);
-        this.allocator = allocator;
+        verify ((&this).allocator is null);
+        (&this).allocator = allocator;
     }
 
 
@@ -164,15 +164,15 @@ package struct BTreeMapImplementation (KeyType, ValueType, int tree_degree)
 
     package bool insert (KeyType key, ValueType el)
     {
-        verify(this.allocator !is null);
+        verify((&this).allocator !is null);
 
-        if (this.root is null)
+        if ((&this).root is null)
         {
-            this.root = this.insertNewNode();
+            (&this).root = (&this).insertNewNode();
         }
 
         size_t dummy_index;
-        if (this.get(key, dummy_index))
+        if ((&this).get(key, dummy_index))
         {
             return false;
         }
@@ -180,31 +180,31 @@ package struct BTreeMapImplementation (KeyType, ValueType, int tree_degree)
         // unqualed for internal storage only. User will never access it as
         // unqualed reference.
         auto unqualed_el = cast(Unqual!(ValueType))el;
-        auto r = this.root;
-        if (this.root.number_of_elements == this.root.elements.length)
+        auto r = (&this).root;
+        if ((&this).root.number_of_elements == (&this).root.elements.length)
         {
-            auto node = this.insertNewNode();
+            auto node = (&this).insertNewNode();
             // this is a new root
-            this.root = node;
+            (&this).root = node;
             node.is_leaf = false;
             node.number_of_elements = 0;
 
             // Old root node is the first child
             node.child_nodes[0] = r;
 
-            this.splitChild(node, 0, r);
-            auto ret = this.insertNonFull(node, key, unqualed_el);
-            debug (BTreeMapSanity) check_invariants(*this);
+            (&this).splitChild(node, 0, r);
+            auto ret = (&this).insertNonFull(node, key, unqualed_el);
+            debug (BTreeMapSanity) check_invariants(*(&this));
             if (ret)
-                this.content_version++;
+                (&this).content_version++;
             return ret;
         }
         else
         {
-            auto ret = this.insertNonFull(this.root, key, unqualed_el);
-            debug (BTreeMapSanity) check_invariants(*this);
+            auto ret = (&this).insertNonFull((&this).root, key, unqualed_el);
+            debug (BTreeMapSanity) check_invariants(*(&this));
             if (ret)
-                this.content_version++;
+                (&this).content_version++;
             return ret;
         }
     }
@@ -224,22 +224,22 @@ package struct BTreeMapImplementation (KeyType, ValueType, int tree_degree)
 
     package bool remove (KeyType key)
     {
-        verify(this.allocator !is null);
+        verify((&this).allocator !is null);
 
         BTreeMapNode* parent = null;
 
         bool rebalance_parent;
-        auto res = this.deleteFromNode(this.root,
+        auto res = (&this).deleteFromNode((&this).root,
                 parent, key, rebalance_parent);
 
         // can't rebalance the root node here, as they should all be
         // rebalanced internally by deleteFromNode
         verify(rebalance_parent == false);
 
-        debug (BTreeMapSanity) check_invariants(*this);
+        debug (BTreeMapSanity) check_invariants(*(&this));
 
         if (res)
-            this.content_version++;
+            (&this).content_version++;
 
         return res;
     }
@@ -253,7 +253,7 @@ package struct BTreeMapImplementation (KeyType, ValueType, int tree_degree)
 
     package bool empty ()
     {
-        return this.root is null;
+        return (&this).root is null;
     }
 
     /******************************************************************************
@@ -273,7 +273,7 @@ package struct BTreeMapImplementation (KeyType, ValueType, int tree_degree)
     package ValueType get (KeyType key, out bool found_element)
     {
         size_t index;
-        auto node = this.get(key, index);
+        auto node = (&this).get(key, index);
         if (!node) return ValueType.init;
 
         found_element = true;
@@ -330,12 +330,12 @@ package struct BTreeMapImplementation (KeyType, ValueType, int tree_degree)
             return getImpl(root.child_nodes[pos], key, index);
         }
 
-        if (this.root is null)
+        if ((&this).root is null)
         {
             return null;
         }
 
-        return getImpl(this.root, key, index);
+        return getImpl((&this).root, key, index);
     }
 
     /******************************************************************************
@@ -371,7 +371,7 @@ package struct BTreeMapImplementation (KeyType, ValueType, int tree_degree)
                                                     node, to_delete, rebalance_parent);
                 if (rebalance_parent)
                 {
-                    this.rebalanceAfterDeletion(node, parent, rebalance_parent);
+                    (&this).rebalanceAfterDeletion(node, parent, rebalance_parent);
                 }
 
                 return delete_result;
@@ -382,7 +382,7 @@ package struct BTreeMapImplementation (KeyType, ValueType, int tree_degree)
                 if (node.is_leaf)
                 {
                     deleteFromLeaf(node, i);
-                    this.rebalanceAfterDeletion(node, parent, rebalance_parent);
+                    (&this).rebalanceAfterDeletion(node, parent, rebalance_parent);
 
                     return true;
                 }
@@ -410,7 +410,7 @@ package struct BTreeMapImplementation (KeyType, ValueType, int tree_degree)
                     // and rebalance the tree starting from that node.
                     if (rebalance_parent)
                     {
-                        this.rebalanceAfterDeletion(node, parent, rebalance_parent);
+                        (&this).rebalanceAfterDeletion(node, parent, rebalance_parent);
                     }
                     return delete_result;
                 }
@@ -432,7 +432,7 @@ package struct BTreeMapImplementation (KeyType, ValueType, int tree_degree)
             if (rebalance_parent)
 
             {
-                this.rebalanceAfterDeletion(node, parent, rebalance_parent);
+                (&this).rebalanceAfterDeletion(node, parent, rebalance_parent);
             }
 
             return delete_result;
@@ -447,7 +447,7 @@ package struct BTreeMapImplementation (KeyType, ValueType, int tree_degree)
 
     private BTreeMapNode* insertNewNode()
     {
-        auto node = cast(BTreeMapNode*)this.allocator.create(BTreeMapNode.sizeof).ptr;
+        auto node = cast(BTreeMapNode*)(&this).allocator.create(BTreeMapNode.sizeof).ptr;
         *node = BTreeMapNode.init;
 
         node.is_leaf = true;
@@ -530,7 +530,7 @@ package struct BTreeMapImplementation (KeyType, ValueType, int tree_degree)
         int child_index,
         BTreeMapNode* child)
     {
-        auto new_node = this.insertNewNode();
+        auto new_node = (&this).insertNewNode();
         // new node is a leaf if old node was
         new_node.is_leaf = child.is_leaf;
         moveElementsAt(new_node, 0, child, degree);
@@ -564,7 +564,7 @@ package struct BTreeMapImplementation (KeyType, ValueType, int tree_degree)
         // element from the neighbouring nodes
         // note that the root is the only node which is allowed to have
         // more than a minimum elements, so we will never rebalance it
-        if (node != this.root && node.number_of_elements < this.degree - 1)
+        if (node != (&this).root && node.number_of_elements < (&this).degree - 1)
         {
             long position_in_parent = -1;
 
@@ -593,7 +593,7 @@ package struct BTreeMapImplementation (KeyType, ValueType, int tree_degree)
                 // it has the spare elements, or it does't (in which case
                 // it's merged with the parent
 
-                if (next_neighbour && next_neighbour.number_of_elements > this.degree -1)
+                if (next_neighbour && next_neighbour.number_of_elements > (&this).degree -1)
                 {
                     // copy the separator from the parent node
                     // into the deficient node
@@ -620,7 +620,7 @@ package struct BTreeMapImplementation (KeyType, ValueType, int tree_degree)
                 // it has the spare elements, or it does't (in which case
                 // it's merged with the parent
 
-                if (previous_neighbour.number_of_elements > this.degree -1)
+                if (previous_neighbour.number_of_elements > (&this).degree -1)
                 {
                     shiftElements(node, 0, 1);
                     // copy the separator from the parent node
@@ -670,7 +670,7 @@ package struct BTreeMapImplementation (KeyType, ValueType, int tree_degree)
 
                 remaining_node = node;
 
-                this.allocator.destroy(cast(ubyte[])(next_neighbour[0..1]));
+                (&this).allocator.destroy(cast(ubyte[])(next_neighbour[0..1]));
             }
             else
             {
@@ -688,17 +688,17 @@ package struct BTreeMapImplementation (KeyType, ValueType, int tree_degree)
 
                 remaining_node = previous_neighbour;
 
-                this.allocator.destroy(cast(ubyte[])((node)[0..1]));
+                (&this).allocator.destroy(cast(ubyte[])((node)[0..1]));
             }
 
             // TODO: comment this
-            if (parent == this.root && parent.number_of_elements == 0)
+            if (parent == (&this).root && parent.number_of_elements == 0)
             {
-                this.allocator.destroy(cast(ubyte[])(parent[0..1]));
-                this.root = remaining_node;
+                (&this).allocator.destroy(cast(ubyte[])(parent[0..1]));
+                (&this).root = remaining_node;
                 return;
             }
-            else if (parent != this.root && parent.number_of_elements < this.degree - 1)
+            else if (parent != (&this).root && parent.number_of_elements < (&this).degree - 1)
             {
                 rebalance_parent = true;
                 return;
@@ -927,14 +927,14 @@ package struct BTreeMapImplementation (KeyType, ValueType, int tree_degree)
 
     ******************************************************************************/
 
-    package int inorder (int delegate(ref KeyType key, ref ValueType value) dg)
+    package int inorder (scope int delegate(ref KeyType key, ref ValueType value) dg)
     {
-        if (this.root is null)
+        if ((&this).root is null)
         {
             return 0;
         }
 
-        return inorderImpl(this.content_version, *this.root, dg);
+        return inorderImpl((&this).content_version, *(&this).root, dg);
     }
 
     /******************************************************************************
@@ -951,14 +951,14 @@ package struct BTreeMapImplementation (KeyType, ValueType, int tree_degree)
 
     ******************************************************************************/
 
-    package int inorder (int delegate(ref ValueType value) dg)
+    package int inorder (scope int delegate(ref ValueType value) dg)
     {
-        if (this.root is null)
+        if ((&this).root is null)
         {
             return 0;
         }
 
-        return inorderImpl(this.content_version, *this.root, dg);
+        return inorderImpl((&this).content_version, *(&this).root, dg);
     }
 
     /***************************************************************************
@@ -1003,7 +1003,7 @@ package struct BTreeMapImplementation (KeyType, ValueType, int tree_degree)
                 }
 
                 // check if the tree is valid
-                if (start_version != this.content_version) return 1;
+                if (start_version != (&this).content_version) return 1;
 
                 if (res)
                     return res;
@@ -1043,7 +1043,7 @@ debug (BTreeMapSanity)
         /// Traverses the BTreeMap in the inorder, starting from root,
         /// and returns the btree's node.
         static void traverse (BTreeMap.BTreeMapNode* root, ref int current_height,
-                            void delegate(BTreeMap.BTreeMapNode* b, int current_height) dg)
+                            scope void delegate(BTreeMap.BTreeMapNode* b, int current_height) dg)
         {
             for (int i = 0; i < root.number_of_elements; i++)
             {

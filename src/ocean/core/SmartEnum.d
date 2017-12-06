@@ -134,11 +134,11 @@ version (UnitTest)
 /// Workaround inability to replace those in string.
 version (D_Version2)
 {
-    private const istring enum_id = "enum";
+    private static immutable istring enum_id = "enum";
 }
 else
 {
-    private const istring enum_id = "const";
+    private static immutable istring enum_id = "const";
 }
 
 /*******************************************************************************
@@ -381,7 +381,7 @@ public template SmartEnumCore ( BaseType )
 
     ***************************************************************************/
 
-    static public int opApply ( int delegate ( ref BaseType code, ref istring desc ) dg )
+    static public int opApply ( scope int delegate ( ref BaseType code, ref istring desc ) dg )
     {
         int res;
         foreach ( code, description; map )
@@ -399,7 +399,7 @@ public template SmartEnumCore ( BaseType )
 
     ***************************************************************************/
 
-    static public int opApply ( int delegate ( ref size_t index, ref BaseType code, ref istring desc ) dg )
+    static public int opApply ( scope int delegate ( ref size_t index, ref BaseType code, ref istring desc ) dg )
     {
         int res;
         foreach ( index, code, description; map )
@@ -476,11 +476,11 @@ private template EnumValuesList ( T ... )
 {
     static if ( T.length == 1 )
     {
-        const EnumValuesList = T[0].name ~ "=" ~ CTFE_Int2String(T[0].value);
+        static immutable EnumValuesList = T[0].name ~ "=" ~ CTFE_Int2String(T[0].value);
     }
     else
     {
-        const EnumValuesList = T[0].name ~ "=" ~ CTFE_Int2String(T[0].value) ~ "," ~ EnumValuesList!(T[1..$]);
+        static immutable EnumValuesList = T[0].name ~ "=" ~ CTFE_Int2String(T[0].value) ~ "," ~ EnumValuesList!(T[1..$]);
     }
 }
 
@@ -507,7 +507,7 @@ private template EnumValuesList ( T ... )
 
 private template DeclareEnum ( T ... )
 {
-    const DeclareEnum = "alias " ~ T[0].BaseType.stringof ~ " BaseType; enum : BaseType {" ~ EnumValuesList!(T) ~ "} ";
+    static immutable DeclareEnum = "alias " ~ T[0].BaseType.stringof ~ " BaseType; enum : BaseType {" ~ EnumValuesList!(T) ~ "} ";
 }
 
 
@@ -532,11 +532,11 @@ private template InitialiseMap ( T ... )
 {
     static if ( T.length == 1 )
     {
-        const InitialiseMap = `map["` ~ T[0].name ~ `"]=` ~ T[0].name ~ ";";
+        static immutable InitialiseMap = `map["` ~ T[0].name ~ `"]=` ~ T[0].name ~ ";";
     }
     else
     {
-        const InitialiseMap = `map["` ~ T[0].name ~ `"]=` ~ T[0].name ~ ";" ~ InitialiseMap!(T[1..$]);
+        static immutable InitialiseMap = `map["` ~ T[0].name ~ `"]=` ~ T[0].name ~ ";" ~ InitialiseMap!(T[1..$]);
     }
 }
 
@@ -566,7 +566,7 @@ private template InitialiseMap ( T ... )
 
 private template StaticThis ( T ... )
 {
-    const StaticThis = "static this() {" ~ InitialiseMap!(T) ~ "map.rehash;} ";
+    static immutable StaticThis = "static this() {" ~ InitialiseMap!(T) ~ "map.rehash;} ";
 }
 
 
@@ -583,11 +583,11 @@ private template MaxValue ( T ... )
 {
     static if ( T.length == 1 )
     {
-        const MaxValue = T[0].value;
+        static immutable MaxValue = T[0].value;
     }
     else
     {
-        const MaxValue = T[0].value > MaxValue!(T[1..$]) ? T[0].value : MaxValue!(T[1..$]);
+        static immutable MaxValue = T[0].value > MaxValue!(T[1..$]) ? T[0].value : MaxValue!(T[1..$]);
     }
 }
 
@@ -605,11 +605,11 @@ private template MinValue ( T ... )
 {
     static if ( T.length == 1 )
     {
-        const MinValue = T[0].value;
+        static immutable MinValue = T[0].value;
     }
     else
     {
-        const MinValue = T[0].value < MinValue!(T[1..$]) ? T[0].value : MinValue!(T[1..$]);
+        static immutable MinValue = T[0].value < MinValue!(T[1..$]) ? T[0].value : MinValue!(T[1..$]);
     }
 }
 
@@ -628,11 +628,11 @@ private template LongestName ( T ... )
 {
     static if ( T.length == 1 )
     {
-        const LongestName = T[0].name.length;
+        static immutable LongestName = T[0].name.length;
     }
     else
     {
-        const LongestName = T[0].name.length > LongestName!(T[1..$]) ? T[0].name.length : LongestName!(T[1..$]);
+        static immutable LongestName = T[0].name.length > LongestName!(T[1..$]) ? T[0].name.length : LongestName!(T[1..$]);
     }
 }
 
@@ -651,11 +651,11 @@ private template ShortestName ( T ... )
 {
     static if ( T.length == 1 )
     {
-        const ShortestName = T[0].name.length;
+        static immutable ShortestName = T[0].name.length;
     }
     else
     {
-        const ShortestName = T[0].name.length < ShortestName!(T[1..$]) ? T[0].name.length : ShortestName!(T[1..$]);
+        static immutable ShortestName = T[0].name.length < ShortestName!(T[1..$]) ? T[0].name.length : ShortestName!(T[1..$]);
     }
 }
 
@@ -681,7 +681,7 @@ private template ShortestName ( T ... )
 
 private template DeclareConstants ( T ... )
 {
-    const istring DeclareConstants =
+    static immutable istring DeclareConstants =
         enum_id ~ " length = " ~ ctfe_i2a(T.length) ~ "; " ~
         enum_id ~ " min = " ~ CTFE_Int2String(MinValue!(T)) ~ "; " ~
         enum_id ~ " max = " ~ CTFE_Int2String(MaxValue!(T)) ~ "; " ~
@@ -708,7 +708,7 @@ private template DeclareConstants ( T ... )
 
 private template MixinCore ( T ... )
 {
-    const MixinCore = "mixin SmartEnumCore!(" ~ T[0].BaseType.stringof ~ ");";
+    static immutable MixinCore = "mixin SmartEnumCore!(" ~ T[0].BaseType.stringof ~ ");";
 }
 
 
@@ -735,7 +735,7 @@ public template SmartEnum ( istring Name, T ... )
 {
     static if ( T.length > 0 )
     {
-        const SmartEnum = "class " ~ Name ~ " : ISmartEnum { " ~ DeclareEnum!(T) ~
+        static immutable SmartEnum = "class " ~ Name ~ " : ISmartEnum { " ~ DeclareEnum!(T) ~
             DeclareConstants!(T) ~ StaticThis!(T) ~ MixinCore!(T) ~ "}";
     }
     else
@@ -815,7 +815,7 @@ public template AutoSmartEnum ( istring Name, BaseType, Strings ... )
 {
     static assert ( is(typeof(Strings[0]) : istring), "AutoSmartEnum - please only give immutable strings as template parameters");
 
-    const AutoSmartEnum = SmartEnum!(Name, CreateCodes!(BaseType, 0, Strings));
+    static immutable AutoSmartEnum = SmartEnum!(Name, CreateCodes!(BaseType, 0, Strings));
 }
 
 unittest
@@ -947,13 +947,13 @@ public struct TwoWayMap ( A )
 
     invariant ( )
     {
-        assert(this.a_to_b.length == this.b_to_a.length);
+        assert((&this).a_to_b.length == (&this).b_to_a.length);
 
         debug ( TwoWayMapFullConsistencyCheck )
         {
-            foreach ( a, b; this.a_to_b )
+            foreach ( a, b; (&this).a_to_b )
             {
-                assert(this.a_to_index[a] == this.b_to_index[b]);
+                assert((&this).a_to_index[a] == (&this).b_to_index[b]);
             }
         }
     }
@@ -970,38 +970,38 @@ public struct TwoWayMap ( A )
 
     public void opAssign ( ValueType[KeyType] assoc_array )
     {
-        this.keys_list.length = 0;
-        this.values_list.length = 0;
+        (&this).keys_list.length = 0;
+        (&this).values_list.length = 0;
 
-        this.a_to_b = assoc_array;
+        (&this).a_to_b = assoc_array;
 
-        foreach ( a, b; this.a_to_b )
+        foreach ( a, b; (&this).a_to_b )
         {
-            this.b_to_a[b] = a;
+            (&this).b_to_a[b] = a;
 
-            this.keys_list ~= *(b in this.b_to_a);
-            this.values_list ~= *(a in this.a_to_b);
+            (&this).keys_list ~= *(b in (&this).b_to_a);
+            (&this).values_list ~= *(a in (&this).a_to_b);
         }
 
-        this.updateIndices();
+        (&this).updateIndices();
     }
 
     public void opAssign ( KeyType[ValueType] assoc_array )
     {
-        this.keys_list.length = 0;
-        this.values_list.length = 0;
+        (&this).keys_list.length = 0;
+        (&this).values_list.length = 0;
 
-        this.b_to_a = assoc_array;
+        (&this).b_to_a = assoc_array;
 
-        foreach ( b, a; this.b_to_a )
+        foreach ( b, a; (&this).b_to_a )
         {
-            this.a_to_b[a] = b;
+            (&this).a_to_b[a] = b;
 
-            this.keys_list ~= *(b in this.b_to_a);
-            this.values_list ~= *(a in this.a_to_b);
+            (&this).keys_list ~= *(b in (&this).b_to_a);
+            (&this).values_list ~= *(a in (&this).a_to_b);
         }
 
-        this.updateIndices();
+        (&this).updateIndices();
     }
 
 
@@ -1018,45 +1018,45 @@ public struct TwoWayMap ( A )
     public void opIndexAssign ( KeyType a, ValueType b )
     out
     {
-        assert(this.a_to_index[a] < this.keys_list.length);
-        assert(this.b_to_index[b] < this.values_list.length);
+        assert((&this).a_to_index[a] < (&this).keys_list.length);
+        assert((&this).b_to_index[b] < (&this).values_list.length);
     }
     body
     {
-        auto already_exists = !!(a in this.a_to_b);
+        auto already_exists = !!(a in (&this).a_to_b);
 
-        this.a_to_b[a] = b;
-        this.b_to_a[b] = a;
+        (&this).a_to_b[a] = b;
+        (&this).b_to_a[b] = a;
 
         if ( !already_exists )
         {
-            this.keys_list ~= *(b in this.b_to_a);
-            this.values_list ~= *(a in this.a_to_b);
+            (&this).keys_list ~= *(b in (&this).b_to_a);
+            (&this).values_list ~= *(a in (&this).a_to_b);
         }
 
-        this.updateIndices();
+        (&this).updateIndices();
     }
 
     public void opIndexAssign ( ValueType b, KeyType a )
     out
     {
-        assert(this.a_to_index[a] < this.keys_list.length);
-        assert(this.b_to_index[b] < this.values_list.length);
+        assert((&this).a_to_index[a] < (&this).keys_list.length);
+        assert((&this).b_to_index[b] < (&this).values_list.length);
     }
     body
     {
-        auto already_exists = !!(a in this.a_to_b);
+        auto already_exists = !!(a in (&this).a_to_b);
 
-        this.a_to_b[a] = b;
-        this.b_to_a[b] = a;
+        (&this).a_to_b[a] = b;
+        (&this).b_to_a[b] = a;
 
         if ( !already_exists )
         {
-            this.keys_list ~= *(b in this.b_to_a);
-            this.values_list ~= *(a in this.a_to_b);
+            (&this).keys_list ~= *(b in (&this).b_to_a);
+            (&this).values_list ~= *(a in (&this).a_to_b);
         }
 
-        this.updateIndices();
+        (&this).updateIndices();
     }
 
 
@@ -1068,10 +1068,10 @@ public struct TwoWayMap ( A )
 
     public void rehash ( )
     {
-        this.a_to_b.rehash;
-        this.b_to_a.rehash;
+        (&this).a_to_b.rehash;
+        (&this).b_to_a.rehash;
 
-        this.updateIndices();
+        (&this).updateIndices();
     }
 
 
@@ -1091,7 +1091,7 @@ public struct TwoWayMap ( A )
 
     public KeyType* opIn_r ( cstring b )
     {
-        return b in this.b_to_a;
+        return b in (&this).b_to_a;
     }
 
 
@@ -1111,7 +1111,7 @@ public struct TwoWayMap ( A )
 
     public ValueType* opIn_r ( KeyType a )
     {
-        return a in this.a_to_b;
+        return a in (&this).a_to_b;
     }
 
 
@@ -1133,7 +1133,7 @@ public struct TwoWayMap ( A )
 
     public KeyType opIndex ( cstring b )
     {
-        return this.b_to_a[b];
+        return (&this).b_to_a[b];
     }
 
 
@@ -1155,7 +1155,7 @@ public struct TwoWayMap ( A )
 
     public ValueType opIndex ( KeyType a )
     {
-        return this.a_to_b[a];
+        return (&this).a_to_b[a];
     }
 
 
@@ -1168,7 +1168,7 @@ public struct TwoWayMap ( A )
 
     public size_t length ( )
     {
-        return this.a_to_b.length;
+        return (&this).a_to_b.length;
     }
 
 
@@ -1181,7 +1181,7 @@ public struct TwoWayMap ( A )
 
     public KeyType[] keys ( )
     {
-        return this.keys_list;
+        return (&this).keys_list;
     }
 
 
@@ -1194,7 +1194,7 @@ public struct TwoWayMap ( A )
 
     public ValueType[] values ( )
     {
-        return this.values_list;
+        return (&this).values_list;
     }
 
 
@@ -1207,10 +1207,10 @@ public struct TwoWayMap ( A )
 
     ***************************************************************************/
 
-    public int opApply ( int delegate ( ref KeyType a, ref ValueType b ) dg )
+    public int opApply ( scope int delegate ( ref KeyType a, ref ValueType b ) dg )
     {
         int res;
-        foreach ( a, b; this.a_to_b )
+        foreach ( a, b; (&this).a_to_b )
         {
             res = dg(a, b);
         }
@@ -1227,12 +1227,12 @@ public struct TwoWayMap ( A )
 
     ***************************************************************************/
 
-    public int opApply ( int delegate ( ref size_t index, ref KeyType a, ref ValueType b ) dg )
+    public int opApply ( scope int delegate ( ref size_t index, ref KeyType a, ref ValueType b ) dg )
     {
         int res;
-        foreach ( a, b; this.a_to_b )
+        foreach ( a, b; (&this).a_to_b )
         {
-            auto index = this.indexOf(a);
+            auto index = (&this).indexOf(a);
             assert(index);
 
             res = dg(*index, a, b);
@@ -1257,8 +1257,8 @@ public struct TwoWayMap ( A )
 
     public size_t* indexOf ( KeyType a )
     {
-        auto index = a in this.a_to_index;
-        enforce(index, typeof(this).stringof ~ ".indexOf - element not present in map");
+        auto index = a in (&this).a_to_index;
+        enforce(index, typeof((&this)).stringof ~ ".indexOf - element not present in map");
         return index;
     }
 
@@ -1279,8 +1279,8 @@ public struct TwoWayMap ( A )
 
     public size_t* indexOf ( cstring b )
     {
-        auto index = b in this.b_to_index;
-        enforce(index, typeof(this).stringof ~ ".indexOf - element not present in map");
+        auto index = b in (&this).b_to_index;
+        enforce(index, typeof((&this)).stringof ~ ".indexOf - element not present in map");
         return index;
     }
 
@@ -1293,10 +1293,10 @@ public struct TwoWayMap ( A )
 
     private void updateIndices ( )
     {
-        foreach ( a, b; this.a_to_b )
+        foreach ( a, b; (&this).a_to_b )
         {
-            this.a_to_index[a] = this.keys_list.find(a);
-            this.b_to_index[b] = this.values_list.find(b);
+            (&this).a_to_index[a] = (&this).keys_list.find(a);
+            (&this).b_to_index[b] = (&this).values_list.find(b);
         }
     }
 }

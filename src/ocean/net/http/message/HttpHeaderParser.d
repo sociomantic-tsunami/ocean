@@ -181,7 +181,7 @@ class HttpHeaderParser : IHttpHeaderParser
 
      **************************************************************************/
 
-    const size_t DefaultSizeLimit  = 16 * 1024,
+    static immutable size_t DefaultSizeLimit  = 16 * 1024,
                  DefaultLinesLimit = 64;
 
     /**************************************************************************
@@ -198,7 +198,7 @@ class HttpHeaderParser : IHttpHeaderParser
 
          **************************************************************************/
 
-        const EndOfHeaderLine = "\r\n";
+        static immutable EndOfHeaderLine = "\r\n";
 
         /**************************************************************************
 
@@ -660,7 +660,7 @@ class HttpHeaderParser : IHttpHeaderParser
              * chunk[0 .. max_len]. If not found, the header is really too long.
              */
 
-            const end_of_header = "\r\n\r\n";
+            static immutable end_of_header = "\r\n\r\n";
 
             char* header_end = g_strstr_len(chunk.ptr, max_len, end_of_header.ptr);
 
@@ -802,7 +802,7 @@ unittest
     {
         scope parser = new HttpHeaderParser;
 
-        const content1 = "POST / HTTP/1.1\r\n"      // 17
+        static immutable content1 = "POST / HTTP/1.1\r\n"      // 17
                        ~ "Content-Length: 12\r\n"   // 37
                        ~ "\r\n"                     // 39
                        ~ "Hello World!";
@@ -830,7 +830,7 @@ unittest
         catch (HttpParseException e) { }
     }
 
-    const istring lorem_ipsum =
+    static immutable istring lorem_ipsum =
         "Lorem ipsum dolor sit amet, consectetur adipisici elit, sed eiusmod "
       ~ "tempor incidunt ut labore et dolore magna aliqua. Ut enim ad minim "
       ~ "veniam, quis nostrud exercitation ullamco laboris nisi ut aliquid ex "
@@ -885,7 +885,7 @@ unittest
       ~ "kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit "
       ~ "amet.";
 
-    const istring content2 =
+    static immutable istring content2 =
       "POST /dir?query=Hello%20World!&abc=def&ghi HTTP/1.1\r\n"
       ~ "Host: www.example.org:12345\r\n"
       ~ "User-Agent: Mozilla/5.0 (X11; U; Linux i686; de; rv:1.9.2.17) Gecko/20110422 Ubuntu/9.10 (karmic) Firefox/3.6.17\r\n"
@@ -899,7 +899,7 @@ unittest
       ~ "\r\n" ~
         lorem_ipsum;
 
-    const parts = 10;
+    static immutable parts = 10;
 
     /*
      * content will be split into parts parts where the length of each part is
@@ -909,7 +909,7 @@ unittest
 
     static size_t random_chunk_length ( )
     {
-        const c = content2.length * (2.0f / (parts * 3));
+        static immutable c = content2.length * (2.0f / (parts * 3));
 
         static assert (c >= 3, "too many parts");
 
@@ -922,11 +922,11 @@ unittest
 
     version (OceanPerformanceTest)
     {
-        const n = 1000_000;
+        static immutable n = 1000_000;
     }
     else
     {
-        const n = 10;
+        static immutable n = 10;
     }
 
     version (OceanPerformanceTest)

@@ -667,10 +667,10 @@ package struct XmlText(Ch)
 
         final void reset(Ch[] newText)
         {
-                this.text = newText;
-                this.len = newText.length;
-                this.point = text.ptr;
-                this.end = point + len;
+                (&this).text = newText;
+                (&this).len = newText.length;
+                (&this).point = text.ptr;
+                (&this).end = point + len;
         }
 
         static Const!(ubyte[64]) name =
@@ -765,7 +765,7 @@ version (UnitTest)
 
 	***********************************************************************/
 
-	const istring testXML = "<?xml version=\"1.0\" ?><!DOCTYPE element [ <!ELEMENT element (#PCDATA)>]><element "
+	static immutable istring testXML = "<?xml version=\"1.0\" ?><!DOCTYPE element [ <!ELEMENT element (#PCDATA)>]><element "
 	    ~ "attr=\"1\" attr2=\"two\"><!--comment-->test&amp;&#x5a;<qual:elem /><el2 attr3 = "
 	    ~ "'3three'><![CDATA[sdlgjsh]]><el3 />data<?pi test?></el2></element>";
 }

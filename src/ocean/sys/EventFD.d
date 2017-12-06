@@ -121,7 +121,7 @@ import core.sys.posix.unistd: read, write, close;
 private extern ( C )
 {
     int eventfd ( uint initval, int flags );
-    const EFD_CLOEXEC = 0x80000;
+    static immutable EFD_CLOEXEC = 0x80000;
 }
 
 
