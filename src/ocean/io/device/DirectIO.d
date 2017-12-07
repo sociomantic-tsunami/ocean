@@ -404,6 +404,18 @@ public class BufferedDirectWriteFile: OutputStream
 
     /***************************************************************************
 
+        Returns:
+            what File.toString() returns for the underlying File instance.
+
+    ***************************************************************************/
+
+    public cstring path ( )
+    {
+        return this.file.path();
+    }
+
+    /***************************************************************************
+
         Return the host conduit.
 
     ***************************************************************************/
