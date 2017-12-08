@@ -41,11 +41,12 @@ class MyApp : DaemonApp
 
     scope (exit)
     {
-      // must be called at some point, registered DaemonApp events won't let
+      // Must be called in this case, registered DaemonApp events won't let
       // event loop exit on its own:
       theScheduler.epoll.shutdown();
-      // theScheduler.shutdown(); // alternative to also hard kill
-                                  // all remaining tasks
+      // Most real-world daemon applications have different condition for
+      // terminating (for example, handling the signal) and won't need such
+      // `scope(exit)` statement.
     }
 
     return 0;
