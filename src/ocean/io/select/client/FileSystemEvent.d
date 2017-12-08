@@ -182,7 +182,7 @@ class FileSystemEvent : ISelectClient
 
     ***********************************************************************/
 
-    public this ( Notifier notifier )
+    public this ( scope Notifier notifier )
     {
         this();
         this.notifier = notifier;
@@ -210,7 +210,7 @@ class FileSystemEvent : ISelectClient
 
     ***********************************************************************/
 
-    public void setNotifier ( Notifier notifier )
+    public void setNotifier ( scope Notifier notifier )
     {
         this.notifier = notifier;
     }

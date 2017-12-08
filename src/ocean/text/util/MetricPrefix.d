@@ -68,7 +68,7 @@ public struct MetricPrefix
 
     dchar prefix = ' ';
 
-    public const BinaryPrefixes = [' ', 'K', 'M', 'G', 'T', 'P', 'E'];
+    public enum BinaryPrefixes = [' ', 'K', 'M', 'G', 'T', 'P', 'E'];
 
     /**************************************************************************
 
@@ -85,9 +85,9 @@ public struct MetricPrefix
 
     **************************************************************************/
 
-    typeof (this) bin ( T : float ) ( T n )
+    typeof ((&this)) bin ( T : float ) ( T n )
     {
-        this.scaled = n;
+        (&this).scaled = n;
 
         int i;
 
@@ -104,14 +104,14 @@ public struct MetricPrefix
             i /= 10;
         }
 
-        this.scaled = ldexpf(this.scaled, i * -10);
+        (&this).scaled = ldexpf((&this).scaled, i * -10);
 
-        this.prefix = BinaryPrefixes[i];
+        (&this).prefix = BinaryPrefixes[i];
 
-        return this;
+        return (&this);
     }
 
-    public const DecimalPrefixes = [cast(wchar)'p', 'n', 'µ', 'm', ' ', 'k', 'M', 'G', 'T'];
+    public enum DecimalPrefixes = [cast(wchar)'p', 'n', 'µ', 'm', ' ', 'k', 'M', 'G', 'T'];
 
     /**************************************************************************
 
@@ -129,11 +129,11 @@ public struct MetricPrefix
 
     **************************************************************************/
 
-    typeof (this) dec ( T : float ) ( T n, int e = 0 )
+    typeof ((&this)) dec ( T : float ) ( T n, int e = 0 )
     {
         verify (-5 < e && e < 5);
 
-        this.scaled = n;
+        (&this).scaled = n;
 
         int i = 4;
 
@@ -144,7 +144,7 @@ public struct MetricPrefix
                 for (i += e; (n > 1000) && (i+1 < DecimalPrefixes.length); i++)
                 {
                     n           /= 1000;
-                    this.scaled /= 1000;
+                    (&this).scaled /= 1000;
                 }
             }
             else
@@ -152,14 +152,14 @@ public struct MetricPrefix
                 for (i += e; (n < 1) && (i-1 > 0); i--)
                 {
                     n           *= 1000;
-                    this.scaled *= 1000;
+                    (&this).scaled *= 1000;
                 }
             }
         }
 
-        this.prefix = DecimalPrefixes[i];
+        (&this).prefix = DecimalPrefixes[i];
 
-        return this;
+        return (&this);
     }
 }
 
@@ -202,7 +202,7 @@ public struct MetricPrefix
 
 *******************************************************************************/
 
-public void splitBinaryPrefix ( ulong n, void delegate ( char prefix, uint order, ulong order_val ) output_dg )
+public void splitBinaryPrefix ( ulong n, scope void delegate ( char prefix, uint order, ulong order_val ) output_dg )
 {
     auto length = MetricPrefix.BinaryPrefixes.length;
     verify (length < int.max);

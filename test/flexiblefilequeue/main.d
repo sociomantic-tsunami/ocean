@@ -22,7 +22,7 @@ public void main ()
     auto test_dir = DirectorySandbox.create(["flexiblefilequeue"]);
     scope (exit) test_dir.remove();
 
-    const istring test_file = "testfile";
+    static immutable istring test_file = "testfile";
 
 
     static void pushItems (FlexibleFileQueue queue, size_t size)

@@ -484,7 +484,7 @@ class FlexibleByteRingQueue : IRingQueue!(IByteQueue)
 
     ***************************************************************************/
 
-    public void save ( void delegate ( in void[] meta, in void[] head, in void[] tail = null ) store )
+    public void save ( scope void delegate ( in void[] meta, in void[] head, in void[] tail = null ) store )
     {
         auto meta = ExportMetadata(this.items);
 
@@ -567,7 +567,7 @@ class FlexibleByteRingQueue : IRingQueue!(IByteQueue)
 
     ***************************************************************************/
 
-    public void load ( size_t delegate ( void[] meta, void[] data ) restore )
+    public void load ( scope size_t delegate ( void[] meta, void[] data ) restore )
     {
         this.clear();
 
@@ -864,7 +864,7 @@ version ( UnitTest )
 
 unittest
 {
-    const queue_size_1 = (9+FlexibleByteRingQueue.Header.sizeof)*10;
+    static immutable queue_size_1 = (9+FlexibleByteRingQueue.Header.sizeof)*10;
 
     scope queue = new FlexibleByteRingQueue(queue_size_1);
     test(queue.free_space >= queue_size_1);
@@ -949,7 +949,7 @@ unittest
 
     scope backup = new MemoryDevice;
 
-    const queue_size_1 = (9+FlexibleByteRingQueue.Header.sizeof)*10;
+    static immutable queue_size_1 = (9+FlexibleByteRingQueue.Header.sizeof)*10;
 
     scope queue = new FlexibleByteRingQueue(queue_size_1);
     test(queue.free_space >= queue_size_1);
@@ -1049,7 +1049,7 @@ unittest
 
     void save_wraparound ( Save save )
     {
-        const Q_SIZE = 20;
+        static immutable Q_SIZE = 20;
         FlexibleByteRingQueue q = new FlexibleByteRingQueue(Q_SIZE);
 
         void push(uint n)
