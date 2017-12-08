@@ -266,7 +266,7 @@ class VersionArgsExt : IApplicationExtension, IArgumentsExtExtension,
         version ( UnitTest ) { } // suppress console output in unittests
         else
         {
-            Stdout(getVersionString(app.name, this.ver)).newline;
+            Stdout.formatln("{}", getVersionString(app.name, this.ver));
         }
         app.exit(0);
     }
