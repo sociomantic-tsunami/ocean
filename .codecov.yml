@@ -1,5 +1,5 @@
 comment:
-    layout: "diff"
+    layout: "header"
 
 coverage:
     status:
