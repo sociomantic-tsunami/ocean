@@ -228,7 +228,7 @@ class FlexibleByteRingQueue : IRingQueue!(IByteQueue)
 
     ***************************************************************************/
 
-    public Const!(void)[] pop ( )
+    public void[] pop ( )
     {
         return this.items ? this.pop_() : null;
     }
@@ -244,7 +244,7 @@ class FlexibleByteRingQueue : IRingQueue!(IByteQueue)
 
     ***************************************************************************/
 
-    public Const!(void)[] peek ( )
+    public void[] peek ( )
     {
         if (this.items)
         {
@@ -828,21 +828,6 @@ class FlexibleByteRingQueue : IRingQueue!(IByteQueue)
         }
     }
 
-    /***************************************************************************
-
-        Pops an item from the queue. The item can be modified in-place.
-        This method is for the unit test.
-
-        Returns:
-            item popped from queue, may be null if queue is empty
-
-    ***************************************************************************/
-
-    private void[] pop_test ( )
-    {
-        return this.items ? this.pop_() : null;
-    }
-
     /**************************************************************************/
 
     static class ValidationError: Exception
@@ -1100,7 +1085,7 @@ unittest
         {
             for (uint i = 0; i < n; i++)
             {
-                if (auto popped = q.pop_test())
+                if (auto popped = q.pop())
                 {
                     test (popped.length == 1);
                     static ubyte[] unexpected = [cast(ubyte)Q_SIZE+1];

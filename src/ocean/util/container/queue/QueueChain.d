@@ -135,7 +135,7 @@ public class QueueChain : IByteQueue
 
     ***************************************************************************/
 
-    public Const!(void)[] pop ( )
+    public void[] pop ( )
     {
         if ( this.queue.is_empty() == false )
         {
@@ -169,7 +169,7 @@ public class QueueChain : IByteQueue
 
     ***************************************************************************/
 
-    public Const!(void)[] peek ( )
+    public void[] peek ( )
     {
         if ( this.queue.is_empty() == false )
         {

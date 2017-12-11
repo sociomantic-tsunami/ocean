@@ -16,9 +16,9 @@
   - `ubyte[] push ( size_t )` changed to `void[] push ( size_t )`
   - `bool push ( IUntypedQueue, void[] )` changed to
     `bool push ( IUntypedQueue, in void[] )`
-  - `ubyte[] pop ( )` changed to `Const!(void)[] pop ( )`
   - `bool pop ( ubyte[] )` changed to `bool pop ( void[] )`
-  - `ubyte[] peek ( )` changed to `Const!(void)[] peek ( )`
+  - `ubyte[] pop ( )` changed to `void[] pop ( )`
+  - `ubyte[] peek ( )` changed to `void[] peek ( )`
   - `size_t pushSize ( ubyte[] )` changed to `size_t pushSize ( in void[] )`
   - `bool willFit ( ubyte[] )` changed to `bool willFit ( in void[] )`
   - `void save ( void delegate ( void[] , void[], void[] ) )` changed to
