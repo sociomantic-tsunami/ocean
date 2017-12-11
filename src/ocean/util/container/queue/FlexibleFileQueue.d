@@ -384,7 +384,7 @@ public class FlexibleFileQueue : IByteQueue
 
     ***************************************************************************/
 
-    public Const!(void)[] pop ( )
+    public void[] pop ( )
     {
         return this.getItem();
     }
@@ -396,7 +396,7 @@ public class FlexibleFileQueue : IByteQueue
 
     ***************************************************************************/
 
-    public Const!(void)[] peek ( )
+    public void[] peek ( )
     {
         return this.getItem(false);
     }
