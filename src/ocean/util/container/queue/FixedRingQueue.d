@@ -234,12 +234,12 @@ class FixedByteRingQueue : FixedRingQueueBase!(IByteQueue)
 
      ***************************************************************************/
 
-    Const!(void)[] pop ( )
+    void[] pop ( )
     {
         return super.pop_();
     }
 
-    Const!(void)[] peek ( )
+    void[] peek ( )
     {
         return super.peek_();
     }
@@ -451,7 +451,7 @@ abstract class FixedRingQueueBase ( IBaseQueue ) : IRingQueue!(IBaseQueue)
 
     ***************************************************************************/
 
-    protected Const!(void)[] pop_ ( )
+    protected void[] pop_ ( )
     out (element)
     {
         assert (!element || element.length == this.element_size);
@@ -471,7 +471,7 @@ abstract class FixedRingQueueBase ( IBaseQueue ) : IRingQueue!(IBaseQueue)
     }
 
 
-    protected Const!(void)[] peek_ ( )
+    protected void[] peek_ ( )
     out (element)
     {
         assert (!element || element.length == this.element_size);

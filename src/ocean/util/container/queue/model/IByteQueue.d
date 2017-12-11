@@ -82,7 +82,7 @@ public interface IByteQueue : IQueueInfo
 
     ***************************************************************************/
 
-    public Const!(void)[] pop ( );
+    public void[] pop ( );
 
 
     /***************************************************************************
@@ -94,6 +94,6 @@ public interface IByteQueue : IQueueInfo
 
     ***************************************************************************/
 
-    public Const!(void)[] peek ( );
+    public void[] peek ( );
 }
 

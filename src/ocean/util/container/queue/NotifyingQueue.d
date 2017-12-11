@@ -471,7 +471,7 @@ class NotifyingByteQueue : ISuspendable, IQueueInfo
 
     ***************************************************************************/
 
-    public Const!(void)[] pop ( )
+    public void[] pop ( )
     {
         if ( !this.enabled )
         {
