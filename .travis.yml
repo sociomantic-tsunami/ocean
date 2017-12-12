@@ -35,7 +35,7 @@ install: beaver dlang install
 
 script: beaver dlang make
 
-after_success: ci/codecov_wrapper.sh
+after_success: beaver dlang codecov
 
 jobs:
     include:
