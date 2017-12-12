@@ -154,7 +154,7 @@ unittest
 
 public mstring hexToLower ( mstring str )
 {
-    const to_lower = ('A' - 'a');
+    static immutable to_lower = ('A' - 'a');
     foreach ( ref c; str )
     {
         if ( c >= 'A' && c <= 'F' )
@@ -214,7 +214,7 @@ unittest
 *******************************************************************************/
 
 package bool handleRadix ( cstring str, bool allow_radix,
-    bool delegate ( cstring ) process )
+    scope bool delegate ( cstring ) process )
 {
     if ( str.length >= 2 && str[0..2] == "0x" )
     {
