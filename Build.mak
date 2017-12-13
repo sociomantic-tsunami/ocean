@@ -53,7 +53,20 @@ TEST_FILTER_OUT += \
 	$C/test/collectd/main.d
 
 TEST_FILTER_OUT += \
-	$C/test/filesystemevent/main.d
+	$C/test/flexiblefilequeue/main.d \
+	$C/test/httpserver/main.d \
+	$C/test/loggerstats/main.d \
+	$C/test/pathutils/main.d \
+	$C/test/reopenfiles/main.d \
+	$C/test/scheduler/main.d \
+	$C/test/selectlistener/main.d \
+	$C/test/signalext/main.d \
+	$C/test/signalfd/main.d \
+	$C/test/sysstats/main.d \
+	$C/test/taskext/main.d \
+	$C/test/unixlistener/main.d \
+	$C/test/unixsocket/main.d \
+	$C/test/unixsockext/main.d
 
 $O/test-%: override LDFLAGS += -lebtree
 
