@@ -1,0 +1,17 @@
+#!/bin/sh
+# Copyright sociomantic labs GmbH 2017.
+# Distributed under the Boost Software License, Version 1.0.
+# (See accompanying file LICENSE.txt or copy at
+# http://www.boost.org/LICENSE_1_0.txt)
+set -eu
+
+for test in $(find "$(dirname $0)" -mindepth 2 -name test -executable)
+do
+    echo "Running $test..." >&2
+    cat <<EOT >&2
+================================================================================
+EOT
+    cd "$(dirname "$test")"
+    ./test
+    cd -
+done

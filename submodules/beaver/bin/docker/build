@@ -1,0 +1,13 @@
+#!/bin/sh
+# Copyright sociomantic labs GmbH 2017.
+# Distributed under the Boost Software License, Version 1.0.
+# (See accompanying file LICENSE.txt or copy at
+# http://www.boost.org/LICENSE_1_0.txt)
+
+# Look for a suitable image name
+img="${BEAVER_DOCKER_Iimg-$(git config hub.upstream)}"
+img="${img:-${TRAVIS_REPO_SLUG:-beaver}}"
+
+# Build the docker image
+set -xe
+docker build --pull -t "$img" "$@"

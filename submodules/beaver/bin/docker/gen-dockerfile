@@ -1,0 +1,124 @@
+#!/bin/bash
+# Copyright sociomantic labs GmbH 2017.
+# Distributed under the Boost Software License, Version 1.0.
+# (See accompanying file LICENSE.txt or copy at
+# http://www.boost.org/LICENSE_1_0.txt)
+set -eu
+
+# Defaults
+default_input=beaver.Dockerfile
+docker_dir=docker
+docker_build=build
+docker_dist=${DIST:-$(lsb_release -cs)}
+
+# Transforms a fragment (for now it just injects the DIST
+
+# Command usage string / help
+usage()
+{
+    cat <<EOT
+Usage: $0 [options]
+
+Generate a Dockerfile based on a Dockerfile fragments. By default the file
+'$default_input' is read as the only fragment (if no other -i or -I are used)
+and the following transformations are performed:
+
+* The FROM instruction is read and parsed, the Ubuntu distribution name is
+  injected as part of the tag (if present). Images are expected to follow the
+  Cachalot tag scheme (see https://github.com/sociomantic-tsunami/cachalot). By
+  default the distribution name is read from the DIST environment variable or
+  'lsb_release -cs' if the environment variable is not present.
+
+* The following lines are added at the end of the generated Dockerfile (only
+  if the $docker_dir/$docker_build script exists and it's executable):
+
+    COPY $docker_dir/ /docker-tmp
+    RUN /docker-tmp/$docker_build && rm -fr /docker-tmp
+
+  This means a simple build script is used to build the image.
+
+All the fragments are included in the same order as they were passed in the
+command line. By default the produced Dockerfile is printed in stdout.
+
+Options:
+
+-i FILE
+    include the FILE as part of the Dockerfile (use '-' to read from STDIN)
+-I INSTRUCTION
+    include the INSTRUCTION as an instruction to add to the Dockerfile
+-o FILE
+    write the resulting Dockerfile to FILE instead of STDOUT
+-d DIR
+    copy the DIR to the image instead of the default '$docker_dir'
+-b FILE
+    run the FILE as the build script instead of the default '$docker_build'
+-D DIST
+    Use DIST as the Ubuntu distribution name instead of the default (DIST
+    environment variable or lsb_release, currently '$docker_dist')
+-h
+    show this help message and exit
+EOT
+}
+
+# Parse arguments
+declare -a fragments
+output=
+while getopts i:I:o:d:b:D:h arg
+do
+    case "$arg" in
+        i) fragments+=("$(cat "$OPTARG")") ;;
+        I) fragments+=("$OPTARG") ;;
+        o) output="$OPTARG" ;;
+        d) docker_dir="$OPTARG" ;;
+        b) docker_build="$OPTARG" ;;
+        D) docker_dist="$OPTARG" ;;
+        h) usage ; exit 0 ;;
+        \?) usage >&2; exit 2 ;;
+    esac
+done
+shift $(($OPTIND-1))
+
+# Assign default fragment, if none were specified
+if test -z "${fragments+x}"
+then
+    fragments+=("$(cat "$default_input")")
+fi
+
+# Redirect output, if it was specified
+if test -n "$output"
+then
+    exec > "$output"
+fi
+
+# Replaces the FROM line to inject the DIST in stdin
+transform_from()
+{
+    # Regular expression to use to extract info from the FROM line using sed
+    # \1 is the FROM and initial spaces
+    # \2 is the "user/repository" part
+    # \3 is the "/repository" with the leading "/" (if any)
+    # \4 is the ":tag" with the leading ":" (if any)
+    # \5 is the "tag" (if any)
+    # \6 is the trailing spaces and comment (if any)
+    # \7 is the comment (if any)
+    from_sed_re='^(\s*FROM\s+)([^/:#[:space:]]+(/[^:#[:space:]]+)?)(:([^#[:space:]]+))?(\s*(#.*)?)$'
+
+    # Inject the DIST part to the tag, only if there was a tag
+    tag="$(echo "$1" | sed -rn "s|$from_sed_re|\\5|ip")"
+    echo "$1" | sed -r "s|$from_sed_re|\\1\\2${tag:+:$docker_dist-}\\5\\6|i"
+}
+
+# Do our thing
+for f in "${fragments[@]}"
+do
+    transform_from "$f"
+done
+
+# Print footer if there is actually a $docker_dir/$docker_build script
+if test -x "$docker_dir/$docker_build"
+then
+    cat <<EOT
+    COPY $docker_dir/ /docker-tmp
+    RUN /docker-tmp/$docker_build && rm -fr /docker-tmp
+EOT
+fi

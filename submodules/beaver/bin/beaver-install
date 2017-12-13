@@ -1,0 +1,19 @@
+#!/bin/sh
+# Copyright sociomantic labs GmbH 2017.
+# Distributed under the Boost Software License, Version 1.0.
+# (See accompanying file LICENSE.txt or copy at
+# http://www.boost.org/LICENSE_1_0.txt)
+set -eu
+
+d="$(dirname "$0")"
+
+if test -r "Dockerfile${DIST:+.$DIST}"
+then
+    # Build the docker image using .$DIST as suffix if present
+    "$d/beaver" docker build -f "Dockerfile${DIST:+.$DIST}" "$@" .
+else
+    # Build the docker image based on a beaver.Dockerfile base file
+    "$d/beaver" docker gen-dockerfile -i beaver.Dockerfile \
+            -o beaver.Dockerfile.generated
+    "$d/beaver" docker build -f beaver.Dockerfile.generated "$@" .
+fi

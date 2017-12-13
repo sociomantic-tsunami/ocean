@@ -1,0 +1,56 @@
+#!/bin/sh
+# Copyright sociomantic labs GmbH 2017.
+# Distributed under the Boost Software License, Version 1.0.
+# (See accompanying file LICENSE.txt or copy at
+# http://www.boost.org/LICENSE_1_0.txt)
+
+# This script can be used as a wrapper for make. It will check if beaver is
+# present as a submodule and if it is it will call make insider docker using
+# the dlang commands to build.
+#
+# Also the .travis.yml file is read to look for env variables, including
+# matrixes. By default the last element of the matrix is built, but you can
+# chose a different index by passing the environment variable MATRIX (negative
+# indexes can be used to count backwards). If MATRIX has the special value `*`
+# all matrix cells are built.
+#
+# This script requires Python3 and jq.
+
+BEAVER_PATH=${BEAVER_PATH:-$(git config -f .gitmodules submodule.beaver.path)}
+
+set -eu
+
+beaver="${BEAVER_PATH}/bin/beaver"
+
+# No beaver? Just regular make
+if test ! -x "$beaver"
+then
+	exec /usr/bin/make "$@"
+fi
+
+alias yaml2json='python3 -c "import sys, yaml, json; print(json.dumps(yaml.load(sys.stdin)))"'
+
+# Build one matrix cell
+build()
+{
+	eval export $(eval echo eval $(yaml2json < .travis.yml | jq ".env.global | .[]"))
+	eval export $(eval echo eval $matrix)
+	eval echo "+ MATRIX: "$matrix >&2
+	export DIST=${DIST:-$(lsb_release -cs)} DMD="${DMD:-dmd1}" TRAVIS=1
+	"$beaver" dlang install
+	rm beaver.Dockerfile.generated
+	"$beaver" dlang make "$@"
+}
+
+MATRIX=${MATRIX:-0}
+if test "$MATRIX" = "*"
+then
+	yaml2json < .travis.yml | jq ".env.matrix | .[]" | while read matrix
+	do
+		build "$@"
+	done
+else
+	matrix="$(yaml2json < .travis.yml | jq ".env.matrix | .[$MATRIX]")"
+	build "$@"
+fi
+

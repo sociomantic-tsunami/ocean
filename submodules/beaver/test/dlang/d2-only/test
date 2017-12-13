@@ -1,0 +1,19 @@
+#!/bin/sh
+# Copyright sociomantic labs GmbH 2017.
+# Distributed under the Boost Software License, Version 1.0.
+# (See accompanying file LICENSE.txt or copy at
+# http://www.boost.org/LICENSE_1_0.txt)
+set -xeu
+
+# Test that a D2-only project doesn't get d2conv executed
+export DIST=xenial DMD=dmd
+beaver dlang install
+cat beaver.Dockerfile.generated
+rm beaver.Dockerfile.generated
+beaver dlang make
+for f in make-all.stamp make-unittest.stamp make-integrationtest.stamp
+do
+    test -f "$f"
+    rm "$f"
+done
+test ! -f make-d2conv.stamp

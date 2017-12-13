@@ -1,0 +1,63 @@
+#!/bin/sh
+# Copyright sociomantic labs GmbH 2017.
+# Distributed under the Boost Software License, Version 1.0.
+# (See accompanying file LICENSE.txt or copy at
+# http://www.boost.org/LICENSE_1_0.txt)
+set -xeu
+
+# Test help
+beaver docker gen-dockerfile -h | grep 'Usage:'
+
+# Test FROM lines
+export DIST=xenial
+echo -n > from.output
+oldIFS="$IFS"
+IFS=
+while read i
+do
+    echo "$i" | beaver docker gen-dockerfile -i - | head -n1 >> from.output
+done < from.input
+IFS="$oldIFS"
+cat from.output
+diff -u from.expected from.output
+rm from.output
+
+# Test basic usage
+export DIST=
+beaver docker gen-dockerfile > Dockerfile
+cat Dockerfile
+grep -q "FROM.*:$(lsb_release -cs)-v2" Dockerfile # Check for the host's DIST
+beaver docker build .
+rm Dockerfile
+beaver docker run test -f /BUILT-1.1-Dockerfile -a -f /BUILT-1.2-build
+test "$(beaver docker run lsb_release -cs)" = "$(lsb_release -cs)"
+
+# Test basic usage but with DIST env var
+test_basic_dist()
+{
+    export DIST="$1"
+    beaver docker gen-dockerfile > Dockerfile2
+    cat Dockerfile2
+    grep -q "FROM.*:$DIST-v2" Dockerfile2
+    beaver docker build -f Dockerfile2 .
+    rm Dockerfile2
+    beaver docker run test -f /BUILT-1.1-Dockerfile -a -f /BUILT-1.2-build
+    test "$(beaver docker run lsb_release -cs)" = "$DIST"
+}
+test_basic_dist xenial
+
+# Test complex usage with all options
+export DIST=
+echo "RUN touch /BUILT-2.3-stdin" |
+    beaver docker gen-dockerfile -o Dockerfile3 -d docker2 -b build2 -D xenial \
+        -i beaver2.Dockerfile -I 'RUN touch /BUILT-2.2-CLI' -i -
+cat Dockerfile3
+grep -qv 'FROM.*:' Dockerfile3
+# Test ordering
+runs="$(grep '^RUN touch' Dockerfile3)"
+echo "$runs"
+test "$(echo "$runs" | sort)" = "$runs"
+beaver docker build -f Dockerfile3 .
+rm Dockerfile3
+beaver docker run test -f /BUILT-2.1-Dockerfile2 -a -f /BUILT-2.2-CLI \
+    -a -f /BUILT-2.3-stdin -a -f /BUILT-2.4-build2
