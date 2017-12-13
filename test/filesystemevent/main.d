@@ -161,6 +161,7 @@ class FileCreationTestTask: Task
         Stderr.formatln("I wrote closed and removed {}", this.temp_path);
 
         Stderr.formatln("Suspending test test task").flush;
+        theScheduler.processEvents();
         this.suspend();
         Stderr.formatln("Resuming test test task").flush;
 
