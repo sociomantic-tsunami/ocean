@@ -39,10 +39,12 @@ import ocean.task.Task;
 
 import ocean.task.Scheduler;
 import ocean.io.Stdout;
+import ocean.task.util.Event;
 
 
 class FileCreationTestTask: Task
 {
+    private TaskEvent task_event;
     /***************************************************************************
 
         File operations to be checked
@@ -162,7 +164,7 @@ class FileCreationTestTask: Task
 
         Stderr.formatln("Suspending test test task").flush;
         theScheduler.processEvents();
-        this.suspend();
+        this.task_event.wait();
         Stderr.formatln("Resuming test test task").flush;
 
         theScheduler.epoll.unregister(inotifier);
@@ -265,8 +267,7 @@ import ocean.io.Stdout;
                         if ( this.operation_order == 2 )
                         {
                             this.closed = true;
-                            if (this.suspended())
-                                this.resume();
+                            this.task_event.trigger();
                         }
                         break;
 
