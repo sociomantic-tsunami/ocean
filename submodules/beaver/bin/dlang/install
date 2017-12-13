@@ -1,0 +1,31 @@
+#!/bin/sh
+# Copyright sociomantic labs GmbH 2017.
+# Distributed under the Boost Software License, Version 1.0.
+# (See accompanying file LICENSE.txt or copy at
+# http://www.boost.org/LICENSE_1_0.txt)
+#
+# Build a docker image for D projects
+set -eu
+
+beaver=$(dirname $0)/../beaver
+
+# Package name deduced based on supplied DMD version
+case "$DMD" in
+    dmd*   ) PKG= ;;
+    1.*    ) PKG="dmd1=$DMD-$DIST" ;;
+    2.*.s* ) PKG="dmd-transitional=$DMD-$DIST" ;;
+    2.*    ) PKG="dmd-bin=$DMD libphobos2-dev=$DMD" ;;
+    *      ) echo "Unknown \$DMD ($DMD)" >&2; exit 1 ;;
+esac
+
+# Generate the Dockerfile including the DMD_PKG argument and install the
+# relevant DMD
+"$beaver" docker gen-dockerfile \
+        -i beaver.Dockerfile \
+        -I 'ARG DMD_PKG' -I 'ENV DMD_PKG=$DMD_PKG' \
+        -I 'RUN apt update && apt -y install --allow-downgrades $DMD_PKG' \
+        -o beaver.Dockerfile.generated
+
+# Build the docker image from the generated Dockerfile passing DMD_PKG
+"$beaver" docker build --build-arg "DMD_PKG=$PKG" \
+        -f beaver.Dockerfile.generated "$@" .

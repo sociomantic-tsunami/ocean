@@ -1,0 +1,18 @@
+#!/bin/sh
+# Copyright sociomantic labs GmbH 2017.
+# Distributed under the Boost Software License, Version 1.0.
+# (See accompanying file LICENSE.txt or copy at
+# http://www.boost.org/LICENSE_1_0.txt)
+set -ex
+
+echo "Hello World, this is Ubuntu ${DIST:-whatever}"
+
+if test -n "$DIST"
+then
+	test "$DIST" = "$(lsb_release -cs)"
+fi
+
+# Some encoding tests
+test "$LC_ALL" = "C.UTF-8"
+test "$LANG" = "C.UTF-8"
+python3 -c 'import sys; assert sys.stdout.encoding == "UTF-8"'

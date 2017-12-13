@@ -1,0 +1,28 @@
+#!/bin/sh
+# Copyright sociomantic labs GmbH 2017.
+# Distributed under the Boost Software License, Version 1.0.
+# (See accompanying file LICENSE.txt or copy at
+# http://www.boost.org/LICENSE_1_0.txt)
+set -e
+
+# Environment variables to export (Travis-defined + BEAVER_DOCKER_VARS)
+env_vars="$(printenv -0 | sed -zn 's/^\([^=]\+\)=.*$/\1\n/p' | tr -d '\0')"
+travis_vars="USER HOME DEBIAN_FRONTEND \
+	RAILS_ENV RACK_ENV MERB_ENV JRUBY_OPTS JAVA_HOME \
+	CI CONTINUOUS_INTEGRATION $(echo "$env_vars" | { grep '^TRAVIS' || true; })"
+beaver_vars="DIST"
+exported_env_vars="$travis_vars $beaver_vars $BEAVER_DOCKER_VARS"
+docker_env_var_args=$(echo $exported_env_vars | sed -n 's/\([^ ]\+\)/-e \1/gp')
+
+# Current user ID
+uid="$(id -u)"
+
+# Look for a suitable image name
+img="${BEAVER_DOCKER_IMG:-$(git config hub.upstream || true)}"
+img="${img:-${TRAVIS_REPO_SLUG:-beaver}}"
+
+# Run the actual command
+set -x
+docker run --rm -v "$HOME:$HOME" -v "$PWD:$PWD" -w "$PWD" -u "$uid" \
+	-e LANG=C.UTF-8 -e LC_ALL=C.UTF-8 $docker_env_var_args \
+	$BEAVER_DOCKER_OPTS "$img" "$@"

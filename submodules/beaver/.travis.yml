@@ -1,0 +1,45 @@
+# Copyright sociomantic labs GmbH 2017.
+# Distributed under the Boost Software License, Version 1.0.
+# (See accompanying file LICENSE.txt or copy at
+# http://www.boost.org/LICENSE_1_0.txt)
+
+# We will use docker to set up out environment, so don't use any particular
+# language in Travis itself
+language: generic
+
+# Enable docker
+sudo: required
+services:
+    - docker
+
+# Don't fetch submodules recursively, just a shallow fetch
+git:
+    submodules: false
+before_install: git submodule update --init
+
+env:
+    global:
+        # Make sure beaver is in the PATH
+        - PATH="$TRAVIS_BUILD_DIR/bin:$PATH"
+
+    matrix:
+        - SINGLE=true
+        - DIST=       DMD=dmd-transitional
+        - DIST=xenial DMD=dmd1
+        - DIST=xenial DMD=2.070.2.s12
+
+install: |
+    set -e
+    if test -z "$SINGLE"
+    then
+        beaver install
+    fi
+
+script: |
+    set -e
+    if test -z "$SINGLE"
+    then
+        beaver docker run test/hello
+    else
+        test/single-tests
+    fi

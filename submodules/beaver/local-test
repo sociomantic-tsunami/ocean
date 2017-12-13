@@ -1,0 +1,26 @@
+#!/bin/sh
+# Copyright sociomantic labs GmbH 2017.
+# Distributed under the Boost Software License, Version 1.0.
+# (See accompanying file LICENSE.txt or copy at
+# http://www.boost.org/LICENSE_1_0.txt)
+#
+# Runs tests locally. If no argument is provided, runs all tests, otherwise it
+# runs the test provided as argument
+set -eu
+
+export PATH="$PWD/bin:$PATH"
+
+if test $# -eq 0
+then
+    set -- test/single-tests
+fi
+
+for f in "$@"
+do
+    cd "$(dirname $f)"
+    t="$(basename $f)"
+    shift
+    "./$t"
+    echo
+    cd -
+done

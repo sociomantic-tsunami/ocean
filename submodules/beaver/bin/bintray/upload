@@ -1,0 +1,214 @@
+#!/bin/sh
+# Copyright sociomantic labs GmbH 2017.
+# Distributed under the Boost Software License, Version 1.0.
+# (See accompanying file LICENSE.txt or copy at
+# http://www.boost.org/LICENSE_1_0.txt)
+#
+# Upload packages to bintray
+
+
+# Defaults
+tag="$TRAVIS_TAG"
+dest="$TRAVIS_REPO_SLUG/$(basename "$TRAVIS_REPO_SLUG")"
+dist=${DIST:-$(lsb_release -cs)}
+user="$BINTRAY_USER"
+key="$BINTRAY_KEY"
+publish=true
+override=false
+comp_release=release
+comp_prerelease=prerelease
+in_docker=true
+arch=
+
+
+# If we run inside docker, just forward the command
+# Normally we run inside docker because it's assumed the used docker image will
+# have the jfrog tool
+for a in "$@"
+do
+	if test "$a" = "-N"
+	then
+		in_docker=false
+		break
+	fi
+done
+if $in_docker
+then
+    export BEAVER_DOCKER_VARS="$BEAVER_DOCKER_VARS BINTRAY_USER BINTRAY_KEY"
+    beaver run "$0" -N "$@"
+	exit $?
+fi
+
+
+# Command usage string / help
+usage()
+{
+	cat <<EOT
+Usage: $0 [options] FILE...
+
+Where FILE... are the files to upload to bintray.
+
+Options:
+
+-t TAG
+	name of the tag used to generate the packages (default: \$TRAVIS_TAG,
+	"$tag" currently)
+-d DEST
+	destination in the form of <subject>/<repo>/<package> as defined by
+	bintray (default: <org>/<repo>/<repo> taken from GitHub information
+	in \$TRAVIS_REPO_SLUG, "$dest" currently)
+-D DIST
+	name of the Debian distribution to upload packages to (default: taken
+	from \$DIST if present, otherwise calculated via \$(lsb_release -cs),
+	"$dist" currently)
+-u USER
+	bintray user to use to upload files (by default taken from
+	\$BINTRAY_USER)
+-k KEY
+	bintray API key to use to upload files (by default taken from
+	\$BINTRAY_KEY)
+-P
+	don't publish uploaded packages (packages are published by default)
+-o
+	overwrite existing files if they already exist
+-r NAME
+	name of the Debian component for final releases (default: $comp_release)
+-p NAME
+	name of the Debian component for pre-releases (default: $comp_prerelease)
+-a ARCH
+	name of the Debian architecture to upload to (default: auto-detect from
+	file name)
+-N
+	don't run inside docker (by default this command runs inside docker)
+-h
+	show this help message and exit
+EOT
+}
+
+
+# Helper function to exit with an error message (and a non successful exit
+# status)
+die()
+{
+	echo "Error: $@" >&2
+	exit 1
+}
+
+
+# Incorrect use
+usage_die()
+{
+	usage >&2
+	echo >&2
+	echo "Error: $@" >&2
+	exit 2
+}
+
+
+# Utility function to call jfrog bintray tool passing the user/key
+bt()
+{
+	cmd="$1"
+	shift
+	# Dummy config to avoid jfrog to stop and ask questions...
+	jfrog bt config --user=nobody --key=nokey --licenses=nolicense
+	echo jfrog bt "$cmd" "$@"
+	jfrog bt "$cmd" --user="$user" --key="$key" "$@"
+}
+
+
+# Parse arguments
+################################################################################
+
+while getopts t:d:D:u:k:Por:p:a:Nh arg
+do
+	case "$arg" in
+		t) tag="$OPTARG" ;;
+		d) dest="$OPTARG" ;;
+		D) dist="$OPTARG" ;;
+		u) user="$OPTARG" ;;
+		k) key="$OPTARG" ;;
+		P) publish=false ;;
+		o) override=true ;;
+		r) comp_release="$OPTARG" ;;
+		p) comp_prerelease="$OPTARG" ;;
+		a) arch="$OPTARG" ;;
+		N) in_docker=false ;; # This was already parsed, but still
+		h) usage ; exit 0 ;;
+		\?) usage_die ;;
+	esac
+done
+shift $(($OPTIND-1))
+
+# Validate arguments
+test "$#" -lt 1 &&
+	usage_die "You must specify FILE..."
+test -z "$tag" &&
+	usage_die "You must specify -t TAG if \$TRAVIS_TAG is not present!"
+test "$(git cat-file -t refs/tags/$tag)" != "tag" &&
+	usage_die "'$tag' should be a valid git annotated tag!"
+echo "$dest" | grep -qv '^.\+/.\+/.\+$' &&
+	usage_die "You must specify -d DEST if \$TRAVIS_REPO_SLUG is not present " \
+		"(got '$dest')!"
+test -z "$dist" &&
+	usage_die "You must specify -D DEST if \$DIST is not present and " \
+		"there is no working lsb_release command!"
+test -z "$user" &&
+	usage_die "You must specify -u USER if \$BINTRAY_USER is not present!"
+test -z "$key" &&
+	usage_die "You must specify -k KEY if \$BINTRAY_KEY is not present!"
+test -z "$comp_release" &&
+	usage_die "-r NAME should not be empty!"
+test -z "$comp_prerelease" &&
+	usage_die "-p NAME should not be empty!"
+
+# Append the tag to the destination for bintray
+dest="$dest/$tag"
+
+# Check the presence of the jfrog tool
+jfrog --help > /dev/null ||
+	exit $?
+
+
+# Create version
+################################################################################
+bt version-create \
+		--desc="$(git for-each-ref --format "%(contents:subject)" \
+			"refs/tags/$tag")" \
+		--vcs-tag="$tag" \
+		--released="$(git for-each-ref \
+			--format "%(taggerdate:format:%FT%H:%M:%S.000Z)" \
+			"refs/tags/$tag")" \
+		"$dest" 2> /tmp/bt-version-create.errors
+# We don't consider conflicts as errors, since we have a race condition in
+# matrix builds
+if test "$?" -ne 0
+then
+	cat /tmp/bt-version-create.errors >&2
+	grep -q '^\[Error\] Bintray response: 409 Conflict' \
+			/tmp/bt-version-create.errors ||
+		die "Could not create version $dest!"
+fi
+
+
+# Upload files
+################################################################################
+
+if echo "$tag" | grep -q -- '.\+-.\+'; then
+	comp="$comp_prerelease"
+else
+	comp="$comp_release"
+fi
+
+for f in "$@"
+do
+	a="$arch"
+	test -z "$a" &&
+		a="$(echo "$f" | sed 's|^.*_\([^_]\+\)\.deb$|\1|')"
+	bt upload \
+			--publish="$publish" \
+			--override="$override" \
+			--deb="$dist/$comp/$a" \
+			"$f" "$dest" ||
+		die "Could not upload file $f to $dest!"
+done

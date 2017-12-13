@@ -1,0 +1,12 @@
+FROM user/repo:xenial-tag
+FROM user/repo:xenial-tag # comment FROM baduser/badrepo:badtag
+FROM user/repo:xenial-tag# comment FROM baduser/badrepo:badtag
+FrOm user/repo:xenial-tag
+FROM user/repo
+FROM repo
+FROM repo:xenial-tag
+     	FROM   user/repo:xenial-tag    	#   comment
+FROM user/repo:xenial-v3.0.1-rc_1
+FROM user/repo#:tag
+FROM user#/repo:tag
+FROM user # /repo:tag
