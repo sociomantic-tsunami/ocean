@@ -38,6 +38,7 @@ import ocean.util.test.DirectorySandbox;
 import ocean.task.Task;
 
 import ocean.task.Scheduler;
+import ocean.io.Stdout;
 
 
 class FileCreationTestTask: Task
@@ -147,7 +148,7 @@ class FileCreationTestTask: Task
         Stderr.formatln("temp_file.toString(): '{}'", temp_file.toString());
         Stderr.formatln("temp_file.toString(): '{}'", cast(char[])temp_file.toString()).flush;
 
-        inotifier.watch(cast(char[]) temp_file.toString(),
+        inotifier.watch(temp_file.toString().dup,
                        FileEventsEnum.IN_MODIFY | FileEventsEnum.IN_DELETE_SELF
                      | FileEventsEnum.IN_CLOSE_WRITE );
 
@@ -300,11 +301,13 @@ import ocean.io.Stdout;
 
 *******************************************************************************/
 
+import core.stdc.stdlib;
 void main ( )
 {
     initScheduler(SchedulerConfiguration.init);
     theScheduler.exception_handler = (Task t, Exception e) {
-        throw e;
+        Stderr.formatln("Got exception: {}", getMsg(e)).flush;
+        abort();
     };
 
     auto dir_test_task = new FileCreationTestTask;
