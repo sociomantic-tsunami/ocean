@@ -1325,6 +1325,7 @@ private abstract class AppendBufferImpl: IAppendBufferBase
 
      **************************************************************************/
 
+    deprecated("Rely on GC to free own memory instead")
     protected void deleteContent ( ref void[] content_ )
     {
         verify (content_ !is null,
