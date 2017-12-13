@@ -4,4 +4,4 @@ set -e
 d="$(dirname $0)"
 
 set -x
-"$d/beaver" run make -rj2 "$@"
+"$d/beaver" run make "$@"
