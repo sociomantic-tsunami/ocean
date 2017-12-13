@@ -195,6 +195,7 @@ import ocean.io.Stdout;
         with (raised_event.Active) switch (raised_event.active)
         {
         case directory_file_event:
+            Stderr.formatln("directory event");
             auto event = raised_event.directory_file_event;
 
             if ( this.watched_path == event.path )
@@ -261,6 +262,7 @@ import ocean.io.Stdout;
             break;
 
         default:
+            Stderr.formatln("I got into the default??? {}", raised_event.active);
             assert(false);
         }
     }
