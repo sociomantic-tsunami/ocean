@@ -374,11 +374,12 @@ class FileSystemEvent : ISelectClient
             true to stay registered in epoll or false to unregister.
 
     ***************************************************************************/
-
+import ocean.io.Stdout;
     public override bool handle ( Event event )
     {
         foreach ( ev; this.fd.readEvents() )
         {
+            Stderr.formatln("Inside handle, reading events: {}", *(ev.wd in this.watched_files)).flush;
             verify(ev.mask != typeof(ev.mask).init);
 
             auto path = ev.wd in this.watched_files;

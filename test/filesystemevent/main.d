@@ -114,9 +114,13 @@ class FileCreationTestTask: Task
         auto file_name = "test_file";
         File.set(file_name, "".dup);
 
+        Stderr.formatln("Suspending the task!").flush;
         this.suspend();
+        Stderr.formatln("Resumed the task!").flush;
 
         theScheduler.epoll.unregister(inotifier);
+
+        Stderr.formatln("Unregistered the inotifier!").flush;
 
         test(this.created);
         test!("==")(this.created_name, file_name);
@@ -136,8 +140,12 @@ class FileCreationTestTask: Task
             Stderr.formatln("Got exception in testFileModification");
         }
 
+        Stderr.formatln("Testing file modification.").flush;
         auto temp_file = new TempFile(TempFile.Permanent);
         this.temp_path = FilePath(temp_file.toString());
+
+        Stderr.formatln("temp_file.toString(): '{}'", temp_file.toString());
+        Stderr.formatln("temp_file.toString(): '{}'", cast(char[])temp_file.toString()).flush;
 
         inotifier.watch(cast(char[]) temp_file.toString(),
                        FileEventsEnum.IN_MODIFY | FileEventsEnum.IN_DELETE_SELF
@@ -149,9 +157,14 @@ class FileCreationTestTask: Task
         temp_file.close;
         temp_path.remove();
 
+        Stderr.formatln("I wrote closed and removed {}", this.temp_path);
+
+        Stderr.formatln("Suspending test test task").flush;
         this.suspend();
+        Stderr.formatln("Resuming test test task").flush;
 
         theScheduler.epoll.unregister(inotifier);
+        Stderr.formatln("Unregistered inotifier").flush;
 
         test(this.modified);
         test(this.closed);
@@ -195,21 +208,33 @@ import ocean.io.Stdout;
         with (raised_event.Active) switch (raised_event.active)
         {
         case directory_file_event:
-            Stderr.formatln("directory event").flush;
             auto event = raised_event.directory_file_event;
+
+            Stderr.formatln("directory event path {} watched path {}. Equal? {}",
+                    event.path, this.watched_path, event.path == this.watched_path).flush;
 
             if ( this.watched_path == event.path )
             {
                 switch ( event.event )
                 {
                     case FileEventsEnum.IN_CREATE:
-                        Stderr.formatln("IN_CREATE: {}", event.name.dup);
+                        Stderr.formatln("IN_CREATE: {}", event.name.dup).flush;
                         this.created = true;
                         this.created_name = event.name.dup;
+
                         if (this.suspended())
+                        {
+                            Stderr.formatln("Was suspended, now resuming.").flush;
                             this.resume();
+                        }
+                        else
+                        {
+                            Stderr.formatln("Was not suspended, no, mate.").flush;
+                        }
+
                         break;
                     default:
+                        Stderr.formatln("This is unexpected. Code: {}", event.event).flush;
                         test(false, "Unexpected file system event notification.");
                 }
             }
