@@ -191,11 +191,11 @@ class FileCreationTestTask: Task
 import ocean.io.Stdout;
     private void fileSystemHandler ( FileSystemEvent.RaisedEvent raised_event )
     {
-        Stderr.formatln("Raised event.").flush;
+        Stderr.formatln("Raised event. {}", raised_event.active).flush;
         with (raised_event.Active) switch (raised_event.active)
         {
         case directory_file_event:
-            Stderr.formatln("directory event");
+            Stderr.formatln("directory event").flush;
             auto event = raised_event.directory_file_event;
 
             if ( this.watched_path == event.path )
@@ -217,7 +217,7 @@ import ocean.io.Stdout;
 
         case file_event:
             auto event = raised_event.file_event;
-            Stderr.formatln("file_event: {}", event.event);
+            Stderr.formatln("file_event: {}", event.event).flush;
 
             if ( this.temp_path == event.path )
             {
@@ -262,7 +262,7 @@ import ocean.io.Stdout;
             break;
 
         default:
-            Stderr.formatln("I got into the default??? {}", raised_event.active);
+            Stderr.formatln("I got into the default??? {}", raised_event.active).flush;
             assert(false);
         }
     }
