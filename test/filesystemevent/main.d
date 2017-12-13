@@ -102,6 +102,10 @@ class FileCreationTestTask: Task
 
     private void testFileCreation ( )
     {
+        scope(failure)
+        {
+            Stderr.formatln("Got exception in testFileCreation");
+        }
         inotifier.watch(this.watched_path.dup,
                FileEventsEnum.IN_CREATE);
 
@@ -127,6 +131,11 @@ class FileCreationTestTask: Task
 
     private void testFileModification ( )
     {
+        scope(failure)
+        {
+            Stderr.formatln("Got exception in testFileModification");
+        }
+
         auto temp_file = new TempFile(TempFile.Permanent);
         this.temp_path = FilePath(temp_file.toString());
 
@@ -179,9 +188,10 @@ class FileCreationTestTask: Task
             event  = Inotify event (see FileEventsEnum)
 
     **********************************************************************/
-
+import ocean.io.Stdout;
     private void fileSystemHandler ( FileSystemEvent.RaisedEvent raised_event )
     {
+        Stderr.formatln("Raised event.").flush;
         with (raised_event.Active) switch (raised_event.active)
         {
         case directory_file_event:
@@ -192,6 +202,7 @@ class FileCreationTestTask: Task
                 switch ( event.event )
                 {
                     case FileEventsEnum.IN_CREATE:
+                        Stderr.formatln("IN_CREATE: {}", event.name.dup);
                         this.created = true;
                         this.created_name = event.name.dup;
                         if (this.suspended())
@@ -205,6 +216,7 @@ class FileCreationTestTask: Task
 
         case file_event:
             auto event = raised_event.file_event;
+            Stderr.formatln("file_event: {}", event.event);
 
             if ( this.temp_path == event.path )
             {
