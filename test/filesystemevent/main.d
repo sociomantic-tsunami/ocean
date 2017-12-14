@@ -186,9 +186,10 @@ class FileCreationTestTask: Task
 import ocean.sys.Environment;
     override public void run ( )
     {
-        auto sandbox = DirectorySandbox.create();
+        /*auto sandbox = DirectorySandbox.create();
         scope (exit)
             sandbox.exitSandbox();
+            */
 
         Stderr.formatln("we're in: {}", Environment.cwd);
         this.watched_path = sandbox.path;
