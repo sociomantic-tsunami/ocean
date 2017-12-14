@@ -31,7 +31,7 @@ import ocean.stdc.posix.sys.types: ssize_t;
 import core.sys.posix.unistd: read, close;
 import core.stdc.errno: EAGAIN, EWOULDBLOCK, errno;
 
-
+import ocean.io.Stdout;
 
 /*******************************************************************************
 
@@ -112,6 +112,7 @@ public class Inotify : ISelectable
             ssize_t read_bytes;
             read_loop: while ( (read_bytes = read(this.outer.fd, buffer.ptr, buffer.length)) > 0 )
             {
+                Stderr.formatln("Read: {} bytes", read_bytes).flush;
                 inotify_event *i_event;
 
                 for ( uint i; i < read_bytes; i += inotify_event.sizeof + i_event.len  )
@@ -276,6 +277,7 @@ public class Inotify : ISelectable
 
     ~this ( )
     {
+        Stderr.formatln("Destructor run?!").flush;
         close(this.fd);
     }
 }
