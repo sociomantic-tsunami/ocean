@@ -50,7 +50,7 @@ TEST_FILTER_OUT += \
 TEST_FILTER_OUT += \
 	$C/test/collectd/main.d
 
-$O/test-filesystemevent: override LDFLAGS += -lrt
+$O/test-filesystemevent: override LDFLAGS += -lrt -lebtree
 
 $O/test-selectlistener: override LDFLAGS += -lebtree
 
