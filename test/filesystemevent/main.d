@@ -39,6 +39,12 @@ import ocean.task.Task;
 
 import ocean.task.Scheduler;
 
+import ocean.task.util.Event;
+
+import ocean.text.convert.Formatter;
+
+import ocean.sys.Environment;
+
 
 class FileCreationTestTask: Task
 {
@@ -95,6 +101,14 @@ class FileCreationTestTask: Task
 
     /***************************************************************************
 
+        TaskEvent to suspend/resume the task.
+
+    ***************************************************************************/
+
+    private TaskEvent task_event;
+
+    /***************************************************************************
+
         Test that tests monitoring a directory and watching for the file
         creation.
 
@@ -110,9 +124,10 @@ class FileCreationTestTask: Task
         auto file_name = "test_file";
         File.set(file_name, "".dup);
 
-        this.suspend();
+        this.task_event.wait();
 
         theScheduler.epoll.unregister(inotifier);
+        inotifier.unwatch(this.watched_path.dup);
 
         test(this.created);
         test!("==")(this.created_name, file_name);
@@ -127,7 +142,7 @@ class FileCreationTestTask: Task
 
     private void testFileModification ( )
     {
-        auto temp_file = new TempFile(TempFile.Permanent);
+        auto temp_file = new File("./testfile_modification", File.WriteCreate);
         this.temp_path = FilePath(temp_file.toString());
 
         inotifier.watch(cast(char[]) temp_file.toString(),
@@ -140,7 +155,7 @@ class FileCreationTestTask: Task
         temp_file.close;
         temp_path.remove();
 
-        this.suspend();
+        this.task_event.wait();
 
         theScheduler.epoll.unregister(inotifier);
 
@@ -157,7 +172,12 @@ class FileCreationTestTask: Task
 
     override public void run ( )
     {
-        auto sandbox = DirectorySandbox.create();
+        auto makd_tmpdir = Environment.get("MAKD_TMPDIR");
+        mstring path_template;
+        sformat(path_template, "{}/Dunittests-XXXXXXXX",
+                makd_tmpdir.length? makd_tmpdir : "/tmp");
+
+        auto sandbox = DirectorySandbox.create(null, path_template);
         scope (exit)
             sandbox.exitSandbox();
 
@@ -194,8 +214,7 @@ class FileCreationTestTask: Task
                     case FileEventsEnum.IN_CREATE:
                         this.created = true;
                         this.created_name = event.name.dup;
-                        if (this.suspended())
-                            this.resume();
+                        this.task_event.trigger();
                         break;
                     default:
                         test(false, "Unexpected file system event notification.");
@@ -233,8 +252,7 @@ class FileCreationTestTask: Task
                         if ( this.operation_order == 3 )
                         {
                             this.deleted = true;
-                            if (this.suspended())
-                                this.resume();
+                            this.task_event.trigger();
                         }
                         break;
 
