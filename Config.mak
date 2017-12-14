@@ -3,7 +3,7 @@
 export ASSERT_ON_STOMPING_PREVENTION=1
 
 # Common D compiler flags
-override DFLAGS += -w -version=GLIBC
+override DFLAGS += -w -version=GLIBC -debug=ISelectClient
 
 # Enable coverage report in CI
 ifdef CI

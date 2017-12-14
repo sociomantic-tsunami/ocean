@@ -147,7 +147,7 @@ class FileCreationTestTask: Task
         }
 
         Stderr.formatln("Testing file modification.").flush;
-        auto temp_file = new File("./myfile", File.WriteCreate);
+        auto temp_file = new File(this.watched_path ~ "/myfile", File.WriteCreate);
         this.temp_path = FilePath(temp_file.toString());
 
         Stderr.formatln("temp_file.toString(): '{}'", temp_file.toString());
