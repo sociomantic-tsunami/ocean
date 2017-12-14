@@ -41,6 +41,10 @@ import ocean.task.Scheduler;
 import ocean.io.Stdout;
 import ocean.task.util.Event;
 
+import core.sys.posix.unistd;
+import core.sys.posix.sys.types;
+import core.sys.posix.sys.stat;
+import core.sys.posix.fcntl;
 
 class FileCreationTestTask: Task
 {
@@ -204,6 +208,7 @@ import ocean.sys.Environment;
 
     **********************************************************************/
 import ocean.io.Stdout;
+
     private void fileSystemHandler ( FileSystemEvent.RaisedEvent raised_event )
     {
         Stderr.formatln("Raised event. {}", raised_event.active).flush;
@@ -234,6 +239,10 @@ import ocean.io.Stdout;
                             temp_file.sync();
                             temp_file.close;
                             temp_path.remove();
+                            // let's sync the directory
+                            int dirfd = .open((this.watched_path ~ "\0").ptr, O_RDONLY);
+                            fsync(dirfd);
+                            close(dirfd);
 
                             return;
                         }
