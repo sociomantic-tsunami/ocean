@@ -382,7 +382,8 @@ class FileSystemEvent : ISelectClient
             verify(ev.mask != typeof(ev.mask).init);
 
             auto path = ev.wd in this.watched_files;
-            verify(path !is null);
+            if (path is null)
+                continue;
 
             if (this.handler)
                 this.handler(*path , ev.mask);
