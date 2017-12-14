@@ -379,6 +379,7 @@ import ocean.io.Stdout;
     {
         foreach ( ev; this.fd.readEvents() )
         {
+            Stderr.formatln("Another loop iteration. ev.wd = {}", ev.wd).flush;
             verify(ev.mask != typeof(ev.mask).init);
 
             auto path = ev.wd in this.watched_files;

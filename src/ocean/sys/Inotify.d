@@ -115,6 +115,7 @@ public class Inotify : ISelectable
                 Stderr.formatln("Read: {} bytes", read_bytes).flush;
                 inotify_event *i_event;
 
+                pragma(msg, inotify_event.sizeof);
                 for ( uint i; i < read_bytes; i += inotify_event.sizeof + i_event.len  )
                 {
                     i_event = cast(inotify_event*) &buffer[i];
@@ -206,8 +207,16 @@ public class Inotify : ISelectable
 
     public uint addWatch ( char[] path, uint events )
     {
-        return cast(uint) this.e.enforceRet!(.inotify_add_watch)(&verify)
+        scope(failure)
+        {
+            Stderr.formatln("I could watch this path: {}", path).flush;
+        }
+
+        auto ret = cast(uint) this.e.enforceRet!(.inotify_add_watch)(&verify)
                       .call(this.fd, StringC.toCString(path), events);
+        Stderr.formatln("Setting the watch: {}", ret).flush;
+
+        return ret;
     }
 
 
