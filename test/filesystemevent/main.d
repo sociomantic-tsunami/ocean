@@ -39,6 +39,10 @@ import ocean.task.Task;
 
 import ocean.task.Scheduler;
 
+import ocean.text.convert.Formatter;
+
+import ocean.sys.Environment;
+
 
 class FileCreationTestTask: Task
 {
@@ -128,7 +132,7 @@ class FileCreationTestTask: Task
 
     private void testFileModification ( )
     {
-        auto temp_file = new TempFile(TempFile.Permanent);
+        auto temp_file = new File("./testfile_modification", File.WriteCreate);
         this.temp_path = FilePath(temp_file.toString());
 
         inotifier.watch(cast(char[]) temp_file.toString(),
@@ -158,7 +162,12 @@ class FileCreationTestTask: Task
 
     override public void run ( )
     {
-        auto sandbox = DirectorySandbox.create();
+        auto makd_tmpdir = Environment.get("MAKD_TMPDIR");
+        mstring path_template;
+        sformat(path_template, "{}/Dunittests-XXXXXXXX",
+                makd_tmpdir.length? makd_tmpdir : "/tmp");
+
+        auto sandbox = DirectorySandbox.create(null, path_template);
         scope (exit)
             sandbox.exitSandbox();
 
