@@ -129,7 +129,7 @@ class FileCreationTestTask: Task
         test(this.created);
         test!("==")(this.created_name, file_name);
 
-        inotifier.unwatch(path);
+        //inotifier.unwatch(path);
     }
 
     /***************************************************************************
@@ -139,6 +139,7 @@ class FileCreationTestTask: Task
 
     ***************************************************************************/
 
+    private File temp_file;
     private void testFileModification ( )
     {
         scope(failure)
@@ -147,21 +148,14 @@ class FileCreationTestTask: Task
         }
 
         Stderr.formatln("Testing file modification.").flush;
-        auto temp_file = new File(this.watched_path ~ "/myfile", File.WriteCreate);
+        this.temp_file = new File(this.watched_path ~ "/myfile", File.WriteCreate);
         this.temp_path = FilePath(temp_file.toString());
 
         Stderr.formatln("temp_file.toString(): '{}'", temp_file.toString());
         Stderr.formatln("temp_file.toString(): '{}'", cast(char[])temp_file.toString()).flush;
 
-        inotifier.watch(temp_file.toString().dup,
-                       FileEventsEnum.IN_MODIFY /*| FileEventsEnum.IN_DELETE_SELF*/
-                     | FileEventsEnum.IN_CLOSE_WRITE );
-
         theScheduler.epoll.register(inotifier);
 
-        temp_file.write("something");
-        temp_file.close;
-        //temp_path.remove();
 
         Stderr.formatln("I wrote closed and removed {}", this.temp_path);
 
@@ -230,6 +224,21 @@ import ocean.io.Stdout;
                         this.created = true;
                         this.created_name = event.name.dup;
 
+                        if (this.operation_order == 1)
+                        {
+                            inotifier.watch(this.watched_path ~ "/" ~ this.created_name,
+                                           FileEventsEnum.IN_MODIFY /*| FileEventsEnum.IN_DELETE_SELF*/
+                                         | FileEventsEnum.IN_CLOSE_WRITE );
+
+                            temp_file.write("something");
+                            temp_file.close;
+                            temp_path.remove();
+
+                            return;
+                        }
+
+                        this.operation_order++;
+
                         if (this.suspended())
                         {
                             Stderr.formatln("Was suspended, now resuming.").flush;
@@ -260,7 +269,7 @@ import ocean.io.Stdout;
                 {
                     case FileEventsEnum.IN_MODIFY:
 
-                        if ( this.operation_order == 1 )
+                        if ( this.operation_order == 2 )
                         {
                             this.modified = true;
                         }
@@ -268,7 +277,7 @@ import ocean.io.Stdout;
 
                     case FileEventsEnum.IN_CLOSE_WRITE:
 
-                        if ( this.operation_order == 2 )
+                        if ( this.operation_order == 3 )
                         {
                             this.closed = true;
                             this.task_event.trigger();
@@ -278,7 +287,7 @@ import ocean.io.Stdout;
                         /*
                     case FileEventsEnum.IN_DELETE_SELF:
 
-                        if ( this.operation_order == 3 )
+                        if ( this.operation_order == 4 )
                         {
                             this.deleted = true;
                         }
