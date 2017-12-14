@@ -79,3 +79,5 @@ $O/%unittests: override LDFLAGS += -lglib-2.0 -lpcre -lxml2 -lxslt -lebtree \
 		-lreadline -lhistory -llzo2 -lbz2 -lz -ldl -lgcrypt -lgpg-error -lrt
 # Enable coverage generation from unittests
 $O/%unittests: override DFLAGS += $(COVFLAG)
+
+testfs: $O/test-filesystemevent

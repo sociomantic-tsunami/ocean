@@ -33,7 +33,7 @@ if: NOT tag =~ \+d2$
 
 install: beaver dlang install
 
-script: beaver dlang make
+script: beaver dlang make testfs
 
 after_success: beaver dlang codecov
 
