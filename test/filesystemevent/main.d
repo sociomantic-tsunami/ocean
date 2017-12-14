@@ -231,6 +231,7 @@ import ocean.io.Stdout;
                                          | FileEventsEnum.IN_CLOSE_WRITE );
 
                             temp_file.write("something");
+                            temp_file.sync();
                             temp_file.close;
                             temp_path.remove();
 
