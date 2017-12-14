@@ -109,7 +109,8 @@ class FileCreationTestTask: Task
         {
             Stderr.formatln("Got exception in testFileCreation");
         }
-        inotifier.watch(this.watched_path.dup,
+        auto path = this.watched_path.dup;
+        inotifier.watch(path,
                FileEventsEnum.IN_CREATE);
 
         theScheduler.epoll.register(inotifier);
@@ -127,6 +128,8 @@ class FileCreationTestTask: Task
 
         test(this.created);
         test!("==")(this.created_name, file_name);
+
+        inotifier.unwatch(path);
     }
 
     /***************************************************************************
@@ -144,7 +147,7 @@ class FileCreationTestTask: Task
         }
 
         Stderr.formatln("Testing file modification.").flush;
-        auto temp_file = new TempFile(TempFile.Permanent);
+        auto temp_file = new File("./myfile", File.WriteCreate);
         this.temp_path = FilePath(temp_file.toString());
 
         Stderr.formatln("temp_file.toString(): '{}'", temp_file.toString());
@@ -180,13 +183,14 @@ class FileCreationTestTask: Task
         Test entry point. Prepares environment and tests the FileSystemEvent.
 
     ***************************************************************************/
-
+import ocean.sys.Environment;
     override public void run ( )
     {
         auto sandbox = DirectorySandbox.create();
         scope (exit)
             sandbox.exitSandbox();
 
+        Stderr.formatln("we're in: {}", Environment.cwd);
         this.watched_path = sandbox.path;
 
         this.inotifier  = new FileSystemEvent(&this.fileSystemHandler);
