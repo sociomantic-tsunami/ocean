@@ -113,6 +113,7 @@ class FileCreationTestTask: Task
         this.suspend();
 
         theScheduler.epoll.unregister(inotifier);
+        inotifier.unwatch(this.watched_path.dup);
 
         test(this.created);
         test!("==")(this.created_name, file_name);
