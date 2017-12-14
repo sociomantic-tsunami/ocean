@@ -1,0 +1,22 @@
+#!/bin/sh
+# Copyright sociomantic labs GmbH 2017.
+# Distributed under the Boost Software License, Version 1.0.
+# (See accompanying file LICENSE.txt or copy at
+# http://www.boost.org/LICENSE_1_0.txt)
+set -xeu
+
+# Test basic usage
+for DIST in xenial
+do
+    export DIST DMD=2.067.1-0
+    beaver dlang install
+    cat beaver.Dockerfile.generated
+    rm beaver.Dockerfile.generated
+    beaver dlang make
+    for f in make-all.stamp make-unittest.stamp make-integrationtest.stamp \
+            make-d2conv.stamp
+    do
+        test -f "$f"
+        rm "$f"
+    done
+done

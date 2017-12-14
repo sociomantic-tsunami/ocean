@@ -1,0 +1,50 @@
+#!/bin/sh
+# Copyright sociomantic labs GmbH 2017.
+# Distributed under the Boost Software License, Version 1.0.
+# (See accompanying file LICENSE.txt or copy at
+# http://www.boost.org/LICENSE_1_0.txt)
+set -eu
+
+# Paths
+r=$(dirname $0)/../..
+beaver=$r/bin/beaver
+
+# Use github utilities
+. $r/lib/github.sh
+
+# Convert the code to D2
+$beaver make DVER=2 d2conv
+
+set -x
+
+# Commit the changes and tag
+git config user.name "$(git for-each-ref --format="%(taggername)" \
+        refs/tags/$TRAVIS_TAG)"
+git config user.email "$(git for-each-ref --format="%(taggeremail)" \
+        refs/tags/$TRAVIS_TAG)"
+git commit --no-verify -a -m 'Auto-convert to D2'
+
+# Create the new tag
+d2tag="$TRAVIS_TAG+d2"
+cat <<EOM | git tag -F- "$d2tag"
+$TRAVIS_TAG auto-converted to D2
+
+See https://github.com/$TRAVIS_REPO_SLUG/releases/tag/$TRAVIS_TAG for
+a complete changelog.
+EOM
+
+# Push (making sure the credentials are not leaked and using a helper
+# to get the password)
+git push "https://${GITHUB_OAUTH_TOKEN}@github.com/$TRAVIS_REPO_SLUG.git" "$d2tag"
+
+# Create GitHub release
+cat <<EOT | github_api POST "/repos/${TRAVIS_REPO_SLUG}/releases"
+{
+  "tag_name": "${d2tag}",
+  "name": "$TRAVIS_TAG auto-converted to D2",
+  "body": "See https://github.com/$TRAVIS_REPO_SLUG/releases/tag/$TRAVIS_TAG.",
+  "draft": false,
+  "prerelease": $(if echo "$TRAVIS_TAG" | grep -q -- '-'; then
+                    echo true; else echo false; fi)
+}
+EOT

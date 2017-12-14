@@ -38,10 +38,17 @@ import ocean.util.test.DirectorySandbox;
 import ocean.task.Task;
 
 import ocean.task.Scheduler;
+import ocean.io.Stdout;
+import ocean.task.util.Event;
 
+import core.sys.posix.unistd;
+import core.sys.posix.sys.types;
+import core.sys.posix.sys.stat;
+import core.sys.posix.fcntl;
 
 class FileCreationTestTask: Task
 {
+    private TaskEvent task_event;
     /***************************************************************************
 
         File operations to be checked
@@ -102,7 +109,12 @@ class FileCreationTestTask: Task
 
     private void testFileCreation ( )
     {
-        inotifier.watch(this.watched_path.dup,
+        scope(failure)
+        {
+            Stderr.formatln("Got exception in testFileCreation");
+        }
+        auto path = this.watched_path.dup;
+        inotifier.watch(path,
                FileEventsEnum.IN_CREATE);
 
         theScheduler.epoll.register(inotifier);
@@ -110,12 +122,18 @@ class FileCreationTestTask: Task
         auto file_name = "test_file";
         File.set(file_name, "".dup);
 
+        Stderr.formatln("Suspending the task!").flush;
         this.suspend();
+        Stderr.formatln("Resumed the task!").flush;
 
         theScheduler.epoll.unregister(inotifier);
 
+        Stderr.formatln("Unregistered the inotifier!").flush;
+
         test(this.created);
         test!("==")(this.created_name, file_name);
+
+        //inotifier.unwatch(path);
     }
 
     /***************************************************************************
@@ -125,28 +143,37 @@ class FileCreationTestTask: Task
 
     ***************************************************************************/
 
+    private File temp_file;
     private void testFileModification ( )
     {
-        auto temp_file = new TempFile(TempFile.Permanent);
+        scope(failure)
+        {
+            Stderr.formatln("Got exception in testFileModification");
+        }
+
+        Stderr.formatln("Testing file modification.").flush;
+        this.temp_file = new File(this.watched_path ~ "/myfile", File.WriteCreate);
         this.temp_path = FilePath(temp_file.toString());
 
-        inotifier.watch(cast(char[]) temp_file.toString(),
-                       FileEventsEnum.IN_MODIFY | FileEventsEnum.IN_DELETE_SELF
-                     | FileEventsEnum.IN_CLOSE_WRITE );
+        Stderr.formatln("temp_file.toString(): '{}'", temp_file.toString());
+        Stderr.formatln("temp_file.toString(): '{}'", cast(char[])temp_file.toString()).flush;
 
         theScheduler.epoll.register(inotifier);
 
-        temp_file.write("something");
-        temp_file.close;
-        temp_path.remove();
 
-        this.suspend();
+        Stderr.formatln("I wrote closed and removed {}", this.temp_path);
+
+        Stderr.formatln("Suspending test test task").flush;
+        theScheduler.processEvents();
+        this.task_event.wait();
+        Stderr.formatln("Resuming test test task").flush;
 
         theScheduler.epoll.unregister(inotifier);
+        Stderr.formatln("Unregistered inotifier").flush;
 
         test(this.modified);
         test(this.closed);
-        test(this.deleted);
+        //test(this.deleted);
     }
 
     /***************************************************************************
@@ -154,14 +181,15 @@ class FileCreationTestTask: Task
         Test entry point. Prepares environment and tests the FileSystemEvent.
 
     ***************************************************************************/
-
+import ocean.sys.Environment;
     override public void run ( )
     {
         auto sandbox = DirectorySandbox.create();
         scope (exit)
             sandbox.exitSandbox();
 
-        this.watched_path = sandbox.path;
+        Stderr.formatln("we're in: {}", Environment.cwd).flush;
+        this.watched_path = sandbox.path;///Environment.cwd;
 
         this.inotifier  = new FileSystemEvent(&this.fileSystemHandler);
 
@@ -179,25 +207,61 @@ class FileCreationTestTask: Task
             event  = Inotify event (see FileEventsEnum)
 
     **********************************************************************/
+import ocean.io.Stdout;
 
     private void fileSystemHandler ( FileSystemEvent.RaisedEvent raised_event )
     {
+        Stderr.formatln("Raised event. {}", raised_event.active).flush;
         with (raised_event.Active) switch (raised_event.active)
         {
         case directory_file_event:
             auto event = raised_event.directory_file_event;
+
+            Stderr.formatln("directory event path {} watched path {}. Equal? {}",
+                    event.path, this.watched_path, event.path == this.watched_path).flush;
 
             if ( this.watched_path == event.path )
             {
                 switch ( event.event )
                 {
                     case FileEventsEnum.IN_CREATE:
+                        Stderr.formatln("IN_CREATE: {}", event.name.dup).flush;
                         this.created = true;
                         this.created_name = event.name.dup;
+
+                        if (this.operation_order == 1)
+                        {
+                            inotifier.watch(this.watched_path ~ "/" ~ this.created_name,
+                                           FileEventsEnum.IN_MODIFY /*| FileEventsEnum.IN_DELETE_SELF*/
+                                         | FileEventsEnum.IN_CLOSE_WRITE );
+
+                            temp_file.write("something");
+                            temp_file.sync();
+                            temp_file.close;
+                            temp_path.remove();
+                            // let's sync the directory
+                            int dirfd = .open((this.watched_path ~ "\0").ptr, O_RDONLY);
+                            fsync(dirfd);
+                            close(dirfd);
+
+                            return;
+                        }
+
+                        this.operation_order++;
+
                         if (this.suspended())
+                        {
+                            Stderr.formatln("Was suspended, now resuming.").flush;
                             this.resume();
+                        }
+                        else
+                        {
+                            Stderr.formatln("Was not suspended, no, mate.").flush;
+                        }
+
                         break;
                     default:
+                        Stderr.formatln("This is unexpected. Code: {}", event.event).flush;
                         test(false, "Unexpected file system event notification.");
                 }
             }
@@ -205,6 +269,7 @@ class FileCreationTestTask: Task
 
         case file_event:
             auto event = raised_event.file_event;
+            Stderr.formatln("file_event: {}", event.event).flush;
 
             if ( this.temp_path == event.path )
             {
@@ -214,7 +279,7 @@ class FileCreationTestTask: Task
                 {
                     case FileEventsEnum.IN_MODIFY:
 
-                        if ( this.operation_order == 1 )
+                        if ( this.operation_order == 2 )
                         {
                             this.modified = true;
                         }
@@ -222,24 +287,25 @@ class FileCreationTestTask: Task
 
                     case FileEventsEnum.IN_CLOSE_WRITE:
 
-                        if ( this.operation_order == 2 )
-                        {
-                            this.closed = true;
-                        }
-                        break;
-
-                    case FileEventsEnum.IN_DELETE_SELF:
-
                         if ( this.operation_order == 3 )
                         {
-                            this.deleted = true;
-                            if (this.suspended())
-                                this.resume();
+                            this.closed = true;
+                            this.task_event.trigger();
                         }
                         break;
 
+                        /*
+                    case FileEventsEnum.IN_DELETE_SELF:
+
+                        if ( this.operation_order == 4 )
+                        {
+                            this.deleted = true;
+                        }
+                        break;
+
+                        */
                     case FileEventsEnum.IN_IGNORED:
-                        enforce(this.deleted);
+//                        enforce(this.deleted);
                         break;
 
                     default:
@@ -249,6 +315,7 @@ class FileCreationTestTask: Task
             break;
 
         default:
+            Stderr.formatln("I got into the default??? {}", raised_event.active).flush;
             assert(false);
         }
     }
@@ -261,11 +328,13 @@ class FileCreationTestTask: Task
 
 *******************************************************************************/
 
+import core.stdc.stdlib;
 void main ( )
 {
     initScheduler(SchedulerConfiguration.init);
     theScheduler.exception_handler = (Task t, Exception e) {
-        throw e;
+        Stderr.formatln("Got exception: {}", getMsg(e)).flush;
+        abort();
     };
 
     auto dir_test_task = new FileCreationTestTask;

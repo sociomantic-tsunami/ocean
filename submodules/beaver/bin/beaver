@@ -1,0 +1,20 @@
+#!/bin/sh
+# Copyright sociomantic labs GmbH 2017.
+# Distributed under the Boost Software License, Version 1.0.
+# (See accompanying file LICENSE.txt or copy at
+# http://www.boost.org/LICENSE_1_0.txt)
+
+d="$(dirname "$0")"
+
+# Look if the module is already present as a built-in beaver command
+module="$1"
+shift
+test -x "$d/beaver-$module" &&
+	exec "$d/beaver-$module" "$@"
+
+# If not get the command
+cmd="$1"
+shift
+
+# Run the module's command
+exec "$d/$module/$cmd" "$@"

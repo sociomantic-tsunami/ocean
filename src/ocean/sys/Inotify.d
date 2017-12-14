@@ -31,7 +31,7 @@ import ocean.stdc.posix.sys.types: ssize_t;
 import core.sys.posix.unistd: read, close;
 import core.stdc.errno: EAGAIN, EWOULDBLOCK, errno;
 
-
+import ocean.io.Stdout;
 
 /*******************************************************************************
 
@@ -112,8 +112,10 @@ public class Inotify : ISelectable
             ssize_t read_bytes;
             read_loop: while ( (read_bytes = read(this.outer.fd, buffer.ptr, buffer.length)) > 0 )
             {
+                Stderr.formatln("Read: {} bytes", read_bytes).flush;
                 inotify_event *i_event;
 
+                pragma(msg, inotify_event.sizeof);
                 for ( uint i; i < read_bytes; i += inotify_event.sizeof + i_event.len  )
                 {
                     i_event = cast(inotify_event*) &buffer[i];
@@ -205,8 +207,16 @@ public class Inotify : ISelectable
 
     public uint addWatch ( char[] path, uint events )
     {
-        return cast(uint) this.e.enforceRet!(.inotify_add_watch)(&verify)
+        scope(failure)
+        {
+            Stderr.formatln("I could watch this path: {}", path).flush;
+        }
+
+        auto ret = cast(uint) this.e.enforceRet!(.inotify_add_watch)(&verify)
                       .call(this.fd, StringC.toCString(path), events);
+        Stderr.formatln("Setting the watch: {}", ret).flush;
+
+        return ret;
     }
 
 
@@ -276,6 +286,7 @@ public class Inotify : ISelectable
 
     ~this ( )
     {
+        Stderr.formatln("Destructor run?!").flush;
         close(this.fd);
     }
 }

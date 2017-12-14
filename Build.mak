@@ -52,6 +52,22 @@ TEST_FILTER_OUT += \
 TEST_FILTER_OUT += \
 	$C/test/collectd/main.d
 
+TEST_FILTER_OUT += \
+	$C/test/flexiblefilequeue/main.d \
+	$C/test/httpserver/main.d \
+	$C/test/loggerstats/main.d \
+	$C/test/pathutils/main.d \
+	$C/test/reopenfiles/main.d \
+	$C/test/scheduler/main.d \
+	$C/test/selectlistener/main.d \
+	$C/test/signalext/main.d \
+	$C/test/signalfd/main.d \
+	$C/test/sysstats/main.d \
+	$C/test/taskext/main.d \
+	$C/test/unixlistener/main.d \
+	$C/test/unixsocket/main.d \
+	$C/test/unixsockext/main.d
+
 $O/test-%: override LDFLAGS += -lebtree
 
 $O/test-filesystemevent: override LDFLAGS += -lrt
@@ -63,3 +79,5 @@ $O/%unittests: override LDFLAGS += -lglib-2.0 -lpcre -lxml2 -lxslt -lebtree \
 		-lreadline -lhistory -llzo2 -lbz2 -lz -ldl -lgcrypt -lgpg-error -lrt
 # Enable coverage generation from unittests
 $O/%unittests: override DFLAGS += $(COVFLAG)
+
+testfs: $O/test-filesystemevent $O/test-filesystemevent.stamp
