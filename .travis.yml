@@ -35,7 +35,7 @@ install: beaver dlang install
 
 script: beaver dlang make
 
-after_success: beaver dlang codecov
+after_success: bash <(curl -s https://codecov.io/bash)
 
 jobs:
     include:
