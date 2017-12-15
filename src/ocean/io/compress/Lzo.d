@@ -151,7 +151,7 @@ class Lzo
 
     size_t decompressSafe ( in void[] src, void[] dst )
     {
-        size_t len;
+        size_t len = dst.length;
 
         this.checkStatus(lzo1x_decompress_safe(cast (Const!(ubyte)*) src.ptr, src.length, cast (ubyte*) dst.ptr, &len));
 
@@ -241,6 +241,42 @@ class Lzo
             delete this.workmem;
         }
     }
+}
+
+/// Simple compress / decompress example.
+unittest
+{
+    // LZO instance. (Usually a single one can be shared globally.)
+    auto lzo = new Lzo;
+
+    // Typical function to decompress a buffer that was received over the
+    // network. (i.e. where the buffer and the expected length of the
+    // decompressed data are both received from an external source.)
+    void decompress ( in void[] src, size_t expected_decompressed_length,
+        ref void[] dst )
+    {
+        dst.length = expected_decompressed_length;
+        enableStomping(dst);
+        auto decompressed_length = lzo.decompressSafe(src, dst);
+
+        // Check that the length of the uncompressed data is what we expected.
+        // (It is important to verify this, when the data was received
+        // externally.)
+        enforce(decompressed_length == expected_decompressed_length);
+    }
+
+    auto original = "compress this!";
+
+    // Compress.
+    auto compressed = new void[lzo.maxCompressedLength(original.length)];
+    compressed.length = lzo.compress(original, compressed);
+
+    // Decompress.
+    void[] decompressed;
+    decompress(compressed, original.length, decompressed);
+
+    // We should have the original string back now.
+    test!("==")(decompressed, original);
 }
 
 /******************************************************************************
