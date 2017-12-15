@@ -104,7 +104,7 @@ class LogExt : IConfigExtExtension
 
     ***************************************************************************/
 
-    public this ( Appender.Layout delegate (cstring name) make_layout = null,
+    public this ( scope Appender.Layout delegate (cstring name) make_layout = null,
                   bool use_insert_appender = false )
     {
         this.layout_maker = make_layout is null ? &this.makeLayoutDefault
@@ -250,7 +250,7 @@ class LogExt : IConfigExtExtension
 private extern extern(C) void configureOldLoggersLogExtHack (
     ClassIterator!(LogUtil.Config, ConfigParser) config,
     LogUtil.MetaConfig m_config,
-    AppenderExternD file_appender, MakeLayoutExternD makeLayout,
+    scope AppenderExternD file_appender, scope MakeLayoutExternD makeLayout,
     bool use_insert_appender = false);
 /// Hack because DMD1 applies extern(C) to the delegate type as well...
 private alias extern(D) Appender delegate (istring, Appender.Layout)
