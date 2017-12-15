@@ -31,7 +31,7 @@ import ocean.time.chrono.Calendar;
  */
 public class Hebrew : Calendar {
 
-  private const uint[14][7] MonthDays = [
+  private static immutable uint[14][7] MonthDays = [
     // month                                                    // year type
     [ 0, 0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0  ],
     [ 0, 30, 29, 29, 29, 30, 29, 0,  30, 29, 30, 29, 30, 29 ],  // 1
@@ -42,15 +42,15 @@ public class Hebrew : Calendar {
     [ 0, 30, 30, 30, 29, 30, 30, 29, 30, 29, 30, 29, 30, 29 ]   // 6
   ];
 
-  private const uint YearOfOneAD = 3760;
-  private const uint DaysToOneAD = cast(int)(YearOfOneAD * 365.2735);
+  private static immutable uint YearOfOneAD = 3760;
+  private static immutable uint DaysToOneAD = cast(int)(YearOfOneAD * 365.2735);
 
-  private const uint PartsPerHour = 1080;
-  private const uint PartsPerDay = 24 * PartsPerHour;
-  private const uint DaysPerMonth = 29;
-  private const uint DaysPerMonthFraction = 12 * PartsPerHour + 793;
-  private const uint PartsPerMonth = DaysPerMonth * PartsPerDay + DaysPerMonthFraction;
-  private const uint FirstNewMoon = 11 * PartsPerHour + 204;
+  private static immutable uint PartsPerHour = 1080;
+  private static immutable uint PartsPerDay = 24 * PartsPerHour;
+  private static immutable uint DaysPerMonth = 29;
+  private static immutable uint DaysPerMonthFraction = 12 * PartsPerHour + 793;
+  private static immutable uint PartsPerMonth = DaysPerMonth * PartsPerDay + DaysPerMonthFraction;
+  private static immutable uint FirstNewMoon = 11 * PartsPerHour + 204;
 
   private uint minYear_ = YearOfOneAD + 1583;
   private uint maxYear_ = YearOfOneAD + 2240;
@@ -58,7 +58,7 @@ public class Hebrew : Calendar {
   /**
    * Represents the current era.
    */
-  public const uint HEBREW_ERA = 1;
+  public static immutable uint HEBREW_ERA = 1;
 
   /**
    * Overridden. Returns a Time value set to the specified date and time in the specified _era.

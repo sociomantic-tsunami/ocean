@@ -20,7 +20,7 @@ import ocean.meta.types.ReduceType;
 struct ExampleReducer
 {
     alias int Result;
-    const seed = 0;
+    enum seed = 0;
 
     Result accumulate ( Result accum, Result next )
     {
@@ -46,7 +46,7 @@ unittest
 struct CountSubTypes
 {
     alias int Result;
-    const seed = 0;
+    enum seed = 0;
 
     Result accumulate ( Result accum, Result next )
     {

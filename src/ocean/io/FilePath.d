@@ -1040,7 +1040,7 @@ class FilePath : PathView
 
     ***********************************************************************/
 
-    final int opApply (int delegate(ref FileInfo) dg)
+    final int opApply (scope int delegate(ref FileInfo) dg)
     {
             return FS.list (cString, dg);
     }
