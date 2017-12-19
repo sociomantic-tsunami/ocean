@@ -21,3 +21,9 @@ now, `isUTF8StringType`.
 
 New module for traits specialized for classes, structs and unions. Provides two
 traits, `hasMember` and `hasMethod`.
+
+`ocean.meta.types.Function`
+
+Enhanced implementation of `ParametersOf` to support more corner cases and added
+new `ReturnTypeOf` template. Both now accept function symbol as template
+argument as opposed to only type.

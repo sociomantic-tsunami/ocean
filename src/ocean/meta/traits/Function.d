@@ -24,7 +24,8 @@ import ocean.meta.traits.Basic;
 
 /*******************************************************************************
 
-    Evaluates to a compile-time sequence representing the parameters of Fn
+    Evaluates to a compile-time sequence representing the parameters of
+    TCallable
 
     Params:
         TCallable = callable type (function/delegate/function pointer)
