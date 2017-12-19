@@ -583,9 +583,10 @@ unittest
 
 template isCallableType ( T )
 {
-    const bool isCallableType =
-           isFunctionType!(T)
-        || is(typeof(&(T.init.opCall)) == delegate);
+    static if (is(typeof(T.opCall)))
+        const isCallableType = isFunctionType!(typeof(&T.init.opCall));
+    else
+        const isCallableType = isFunctionType!(T);
 }
 
 ///
@@ -598,6 +599,16 @@ unittest
 
     static assert (isCallableType!(S));
     static assert (isCallableType!(typeof(S.opCall)));
+}
+
+unittest
+{
+    struct S2
+    {
+        static bool opCall( in int p1, in int p2 ) { return true; }
+    }
+
+    static assert (isCallableType!(S2));
 }
 
 /*******************************************************************************
