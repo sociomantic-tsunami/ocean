@@ -22,7 +22,7 @@ module ocean.meta.codegen.Identifier;
 import ocean.meta.AliasSeq;
 import ocean.meta.codegen.CTFE;
 import ocean.meta.types.Qualifiers;
-import ocean.meta.traits.Function;
+import ocean.meta.types.Function;
 
 version (UnitTest)
 {

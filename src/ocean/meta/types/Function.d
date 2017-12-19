@@ -1,6 +1,6 @@
 /*******************************************************************************
 
-    Traits specific to various function-like types
+    Static reflection templates specific to various function-like types
 
     NB: because this module is often used as purely compile-time dependency it
         used built-in asserts instead of `ocean.core.Test` to reduce amount of
