@@ -53,6 +53,7 @@ TEST_FILTER_OUT += \
 	$C/src/ocean/io/stream/Snoop.d \
 	$C/src/ocean/core/_util/console.d \
 	$C/src/ocean/core/_util/string.d \
+	$C/src/ocean/meta/traits/Function.d \
 	$(shell find $C/src/ocean/text/locale -type f)
 
 $O/test-%: override LDFLAGS += -lebtree
