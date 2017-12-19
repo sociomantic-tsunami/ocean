@@ -343,6 +343,31 @@ unittest
 /*******************************************************************************
 
     Params:
+        T = any type
+
+    Returns:
+        `true` if T is static or dynamic array, `false` otherwise
+
+*******************************************************************************/
+
+public template isBasicArrayType ( T )
+{
+    const isBasicArrayType =
+           (isArrayType!(T) == ArrayKind.Static)
+        || (isArrayType!(T) == ArrayKind.Dynamic);
+}
+
+///
+unittest
+{
+    static assert ( isBasicArrayType!(int[]));
+    static assert ( isBasicArrayType!(int[5]));
+    static assert (!isBasicArrayType!(int[int]));
+}
+
+/*******************************************************************************
+
+    Params:
         T = static array type
 
     Returns:
