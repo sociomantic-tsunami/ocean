@@ -30,15 +30,15 @@ import ocean.meta.types.Qualifiers;
 
 *******************************************************************************/
 
-istring toString ( long i )
+istring toString ( T ) ( T i )
 {
     if (i == 0)
         return "0";
 
     if (i < 0)
-        return "-" ~ toString(cast(ulong) -i);
+        return "-" ~ toStringImpl(- cast(long) i);
 
-    return toString(cast(ulong) i);
+    return toStringImpl(cast(ulong) i);
 }
 
 unittest
@@ -51,15 +51,26 @@ unittest
     static assert (toString(14L) == "14");
     static assert (toString(long.max) == "9223372036854775807");
     static assert (toString(long.min) == "-9223372036854775808");
+    static assert (toString(int.min) == "-2147483648");
+    static assert (toString(int.max) == "2147483647");
+    static assert (toString(short.min) == "-32768");
+    static assert (toString(short.max) == "32767");
 }
 
-/*******************************************************************************
+unittest
+{
+    assert (toString(14UL) == "14");
+    static assert (toString(14UL) == "14");
+    assert (toString(ulong.max) == "18446744073709551615");
+    static assert (toString(ulong.max) == "18446744073709551615");
+}
 
-    Ditto
+unittest
+{
+    assert (toString(cast(short) 14) == "14");
+}
 
-*******************************************************************************/
-
-istring toString ( ulong i )
+istring toStringImpl ( ulong i )
 {
     istring digit = "0123456789";
 
@@ -75,14 +86,6 @@ istring toString ( ulong i )
     }
 
     return res;
-}
-
-unittest
-{
-    assert (toString(14UL) == "14");
-    static assert (toString(14UL) == "14");
-    assert (toString(ulong.max) == "18446744073709551615");
-    static assert (toString(ulong.max) == "18446744073709551615");
 }
 
 /*******************************************************************************
