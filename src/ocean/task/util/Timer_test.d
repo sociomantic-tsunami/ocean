@@ -81,7 +81,7 @@ unittest
 
         override public void run ( )
         {
-            bool timeout = .awaitOrTimeout(this.to_wait_for, 200);
+            bool timeout = .awaitOrTimeout(this.to_wait_for, 5000);
             test(timeout);
 
             // `awaitOrTimeout` itself won't terminate awaited task on timeout,
