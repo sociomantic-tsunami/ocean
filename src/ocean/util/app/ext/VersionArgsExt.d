@@ -37,7 +37,7 @@ import ocean.transition;
 import ocean.util.log.Logger;
 import ocean.util.log.AppendFile;
 import ocean.util.log.LayoutDate;
-import ocean.core.Array: sort;
+import ocean.core.array.Mutation /* : moveToEnd, sort */;
 
 
 
@@ -119,45 +119,9 @@ class VersionArgsExt : IApplicationExtension, IArgumentsExtExtension,
         this.ver_log = Log.lookup("ocean.util.app.ext.VersionArgsExt");
     }
 
-
     /***************************************************************************
 
-        Get a single version string with all the libraries versions.
-
-        Only keys starting with "lib_" are considered libraries.
-
-        Params:
-            ver = associative array with the version name as the key and the
-                  revision as the value
-            pop = true if the used items should be popped from ver
-
-        Returns:
-            string with the version information of all libraries
-
-    ***************************************************************************/
-
-    protected istring getLibsVersionsString ( istring[istring] ver,
-            bool pop = false )
-    {
-        const prefix = "lib_";
-        istring s;
-        auto sorted_names = ver.keys;
-        sorted_names.sort();
-        foreach (name; sorted_names)
-        {
-            if (name.startsWith(prefix))
-            {
-                s ~= " " ~ name[prefix.length .. $] ~ ":" ~ ver[name];
-                ver.remove(name);
-            }
-        }
-        return s;
-    }
-
-
-    /***************************************************************************
-
-        Get the program's name and full version information as a string.
+        Get the program's name and basic version information as a string.
 
         Params:
             app_name = program's name
@@ -170,41 +134,56 @@ class VersionArgsExt : IApplicationExtension, IArgumentsExtExtension,
 
     protected istring getVersionString ( istring app_name, VersionInfo ver )
     {
-        // Make a copy, so we can pop the elements we already used
-        VersionInfo ver_copy;
-        foreach (k, v; ver)
-            ver_copy[k] = v;
+        auto v = "version" in ver;
+        if (v !is null)
+            return app_name ~ " version " ~ *v;
+        else
+            return app_name ~ " unkown version";
+    }
 
-        istring pop(istring key)
+    /***************************************************************************
+
+        Get the program's name and extended build information as a string.
+
+        Params:
+            app_name = program's name
+            ver = description of the application's version / revision
+            single_line = if set to `true`, puts key-value pairs on the same
+                line
+
+        Returns:
+            String with the version information
+
+    ***************************************************************************/
+
+    protected istring getBuildInfoString ( istring app_name, VersionInfo ver,
+        bool single_line = false )
+    {
+        istring s  = this.getVersionString(app_name, ver);
+
+        istring separator;
+        if (single_line)
+            separator = ", ";
+        else
+            separator = "\n";
+
+        if (ver.length)
         {
-            auto v = key in ver_copy;
-            scope (exit) ver_copy.remove(key);
-            return v is null ? "<unknown>" : *v;
-        }
-
-        istring s = app_name ~ " version " ~ pop("version") ~ " (compiled by '" ~
-                pop("build_author") ~ "' on " ~ pop("build_date") ~ " with " ~
-                pop("compiler") ~ " using" ~
-                this.getLibsVersionsString(ver_copy, true) ~ ")";
-
-        if (ver_copy.length)
-        {
-            auto sorted_names = ver_copy.keys;
+            auto sorted_names = ver.keys;
+            sorted_names.length = moveToEnd(sorted_names, "version");
             sorted_names.sort();
-            s ~= " [" ~
-                    sorted_names
-                        .map((istring n) { return n ~ "='" ~ ver_copy[n] ~ "'"; })
-                        .join(", ") ~
-                "]";
+            s ~= separator;
+            s ~= sorted_names
+                .map((istring n) { return n ~ "=" ~ ver[n]; })
+                .join(separator);
         }
 
         return s;
     }
 
-
     /***************************************************************************
 
-        Extension order. This extension uses 100_000 because it should be
+      Extension order. This extension uses 100_000 because it should be
         called very late.
 
         Returns:
@@ -230,7 +209,10 @@ class VersionArgsExt : IApplicationExtension, IArgumentsExtExtension,
 
     public override void setupArgs ( IApplication app, Arguments args )
     {
-        args("version").params(0).help("show version information and exit");
+        args("version").params(0)
+            .help("show version information and exit");
+        args("build-info").params(0)
+            .help("show detailed build information and exit");
     }
 
 
@@ -247,30 +229,21 @@ class VersionArgsExt : IApplicationExtension, IArgumentsExtExtension,
 
     public override void preValidateArgs ( IApplication app, Arguments args )
     {
-        if ( args.exists("version") )
-            this.displayVersion(app);
-    }
+        istring output;
 
+        if (args.exists("build-info"))
+            output = this.getBuildInfoString(app.name, this.ver);
+        else if (args.exists("version"))
+            output = this.getVersionString(app.name, this.ver);
 
-    /***************************************************************************
-
-        Print the version information to Stdout and exit.
-
-        Params:
-            app = the application instance
-
-    ***************************************************************************/
-
-    public void displayVersion ( IApplication app )
-    {
-        version ( UnitTest ) { } // suppress console output in unittests
-        else
+        if (output.length)
         {
-            Stdout.formatln("{}", getVersionString(app.name, this.ver));
+            version ( UnitTest ) { } // suppress console output in unittests
+            else
+                Stdout.formatln("{}", output);
+            app.exit(0);
         }
-        app.exit(0);
     }
-
 
     /***************************************************************************
 
@@ -334,7 +307,7 @@ class VersionArgsExt : IApplicationExtension, IArgumentsExtExtension,
             return;
         }
 
-        this.ver_log.info(getVersionString(app.name, this.ver));
+        this.ver_log.info(getBuildInfoString(app.name, this.ver, true));
     }
 
 
@@ -493,7 +466,25 @@ unittest
     info["extra"] = "useful";
     info["more"] = "info";
     auto v = new VersionArgsExt(info);
-    test!("==")(v.getVersionString("test", info),
-            "test version v1.0 (compiled by 'me' on today with dmd3 using " ~
-            "awesome:v10.0 sucks:v0.5) [extra='useful', more='info']");
+    test!("==")(
+        v.getVersionString("test", info),
+        "test version v1.0"
+    );
+    test!("==")(
+        v.getBuildInfoString("test", info),
+        "test version v1.0
+build_author=me
+build_date=today
+compiler=dmd3
+extra=useful
+lib_awesome=v10.0
+lib_sucks=v0.5
+more=info"
+    );
+    test!("==")(
+        v.getBuildInfoString("test", info, true),
+        "test version v1.0, " ~
+            "build_author=me, build_date=today, compiler=dmd3, extra=useful, " ~
+            "lib_awesome=v10.0, lib_sucks=v0.5, more=info"
+    );
 }
