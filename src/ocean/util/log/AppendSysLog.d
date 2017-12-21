@@ -22,20 +22,8 @@ import ocean.util.log.Appender;
 import ocean.util.log.Event;
 import ocean.util.log.model.ILogger;
 
+import core.sys.posix.syslog;
 
-/*******************************************************************************
-
-    syslog C functions
-
-    FIXME: use runtime bindings
-
-*******************************************************************************/
-
-extern ( C )
-{
-    void openlog ( in char* ident, int option, int facility );
-    void syslog ( int priority, in char* format, ... );
-}
 
 /*******************************************************************************
 
