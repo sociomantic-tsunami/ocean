@@ -18,43 +18,29 @@
 
 *******************************************************************************/
 
-module integrationtest.collectd.main;
+module example.collectd.main;
 
 import ocean.transition;
 import ocean.core.Test;
-import ocean.net.Collectd;
-import ocean.net.device.LocalSocket; // LocalAddress
-import ocean.stdc.posix.sys.types; // time_t
+import ocean.net.collectd.Collectd;
 
-
-version(UnitTest) {} else
 void main (istring[] args)
 {
     auto address = args.length > 1
         ? args[1]
         : "/var/run/collectd.socket";
-
-    auto list = new Collectd(address);
-    auto get = new Collectd(address);
     auto put = new Collectd(address);
 
     auto baseId = Identifier.create("localhost/ocean_unittest/bytes");
     istring[8] inst = [ "0", "1", "2", "3", "4", "5", "6", "7" ];
-    Collectd.KVP options = [ "interval": "60" ];
-    Bytes c = void;
+    Collectd.PutvalOptions options = { interval : 60 };
+    Bytes c;
+
     for (size_t idx = 0; idx < 8; ++idx)
     {
         c.value = idx;
         baseId.type_instance = inst[idx];
         put.putval(baseId, c, options);
-    }
-
-    foreach (ref val; list.listval())
-    {
-        if (val.identifier.plugin == "ocean_unittest") {
-            auto _ = get.getval!(Bytes)(val.identifier);
-            test!("==")(val.identifier.type_instance[0] - '0', _.value);
-        }
     }
 }
 
