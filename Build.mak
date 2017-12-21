@@ -55,10 +55,6 @@ TEST_FILTER_OUT += \
 	$C/src/ocean/core/_util/string.d \
 	$(shell find $C/src/ocean/text/locale -type f)
 
-# integration test which is disabled by default because it depends on Collectd
-TEST_FILTER_OUT += \
-	$C/integrationtest/collectd/main.d
-
 $O/test-%: override LDFLAGS += -lebtree
 
 $O/test-filesystemevent: override LDFLAGS += -lrt
