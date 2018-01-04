@@ -2214,6 +2214,7 @@ unittest
 }
 
 /// is T is static array returns a dynamic array, otherwise returns T
+deprecated("Use ocean.transition.SliceIfD1StaticArray instead")
 template DynamicArrayType(T)
 {
     static if( isStaticArrayType!(T) )

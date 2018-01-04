@@ -1,3 +1,5 @@
+## New D2 migration helper template for static array corner case
+
 `ocean.transition`
 
 New `SliceIfD1StaticArray` template is intended to help with situations when
