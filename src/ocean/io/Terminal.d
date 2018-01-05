@@ -31,8 +31,8 @@ debug(Term) import ocean.io.Stdout;
 
 private
 {
-    const TIOCGWINSZ = 0x5413;
-    const SIGWINCH = 28;
+    static immutable TIOCGWINSZ = 0x5413;
+    static immutable SIGWINCH = 28;
 
     /***************************************************************************
 
@@ -93,7 +93,7 @@ struct Terminal
 
     ***************************************************************************/
 
-    public const istring CSI        = "\x1B[";
+    public enum istring CSI        = "\x1B[";
 
     /***************************************************************************
 
@@ -103,29 +103,29 @@ struct Terminal
 
     public struct Foreground
     {
-        public const istring BLACK              = "30m";
-        public const istring RED                = "31m";
-        public const istring GREEN              = "32m";
-        public const istring YELLOW             = "33m";
-        public const istring BLUE               = "34m";
-        public const istring MAGENTA            = "35m";
-        public const istring CYAN               = "36m";
-        public const istring WHITE              = "37m";
-        public const istring DEFAULT_UNDERSCORE = "38m";
-        public const istring DEFAULT            = "39m";
+        public enum istring BLACK              = "30m";
+        public enum istring RED                = "31m";
+        public enum istring GREEN              = "32m";
+        public enum istring YELLOW             = "33m";
+        public enum istring BLUE               = "34m";
+        public enum istring MAGENTA            = "35m";
+        public enum istring CYAN               = "36m";
+        public enum istring WHITE              = "37m";
+        public enum istring DEFAULT_UNDERSCORE = "38m";
+        public enum istring DEFAULT            = "39m";
     }
 
     public struct Background
     {
-        public const istring BLACK              = "40m";
-        public const istring RED                = "41m";
-        public const istring GREEN              = "42m";
-        public const istring YELLOW             = "43m";
-        public const istring BLUE               = "44m";
-        public const istring MAGENTA            = "45m";
-        public const istring CYAN               = "46m";
-        public const istring WHITE              = "47m";
-        public const istring DEFAULT            = "49m";
+        public enum istring BLACK              = "40m";
+        public enum istring RED                = "41m";
+        public enum istring GREEN              = "42m";
+        public enum istring YELLOW             = "43m";
+        public enum istring BLUE               = "44m";
+        public enum istring MAGENTA            = "45m";
+        public enum istring CYAN               = "46m";
+        public enum istring WHITE              = "47m";
+        public enum istring DEFAULT            = "49m";
     }
 
 
@@ -184,9 +184,9 @@ struct Terminal
 
     ***************************************************************************/
 
-    public const istring BOLD = "1m";
+    public enum istring BOLD = "1m";
 
-    public const istring NON_BOLD = "22m";
+    public enum istring NON_BOLD = "22m";
 
     /***************************************************************************
 
@@ -194,7 +194,7 @@ struct Terminal
 
     ***************************************************************************/
 
-    public const istring CURSOR_UP = "A";
+    public enum istring CURSOR_UP = "A";
 
     /***************************************************************************
 
@@ -202,7 +202,7 @@ struct Terminal
 
     ***************************************************************************/
 
-    public const istring LINE_UP = "F";
+    public enum istring LINE_UP = "F";
 
     /***************************************************************************
 
@@ -210,7 +210,7 @@ struct Terminal
 
     ***************************************************************************/
 
-    public const istring SCROLL_UP = "S";
+    public enum istring SCROLL_UP = "S";
 
     /***************************************************************************
 
@@ -218,7 +218,7 @@ struct Terminal
 
     ***************************************************************************/
 
-    public const istring INSERT_LINE = "L";
+    public enum istring INSERT_LINE = "L";
 
     /***************************************************************************
 
@@ -231,7 +231,7 @@ struct Terminal
 
     ***************************************************************************/
 
-    public const istring ERASE_REST_OF_LINE = "K";
+    public enum istring ERASE_REST_OF_LINE = "K";
 
     /***************************************************************************
 
@@ -245,7 +245,7 @@ struct Terminal
 
     ***************************************************************************/
 
-    public const istring ERASE_REST_OF_SCREEN = "J";
+    public enum istring ERASE_REST_OF_SCREEN = "J";
 
     /***************************************************************************
 
@@ -253,7 +253,7 @@ struct Terminal
 
     ***************************************************************************/
 
-    public const istring HIDE_CURSOR = "?25l";
+    public enum istring HIDE_CURSOR = "?25l";
 
     /***************************************************************************
 
@@ -261,7 +261,7 @@ struct Terminal
 
     ***************************************************************************/
 
-    public const istring SHOW_CURSOR = "?25h";
+    public enum istring SHOW_CURSOR = "?25h";
 
     /***************************************************************************
 
@@ -269,7 +269,7 @@ struct Terminal
 
     ***************************************************************************/
 
-    public const istring HORIZONTAL_MOVE_CURSOR = "G";
+    public enum istring HORIZONTAL_MOVE_CURSOR = "G";
 }
 
 /*******************************************************************************

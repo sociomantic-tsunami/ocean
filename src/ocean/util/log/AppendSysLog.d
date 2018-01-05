@@ -64,7 +64,7 @@ public class AppendSysLog : Appender
     private static class SysLogLayout : Layout
     {
         override public void format ( LogEvent event,
-            size_t delegate(Const!(void)[]) dg )
+            scope size_t delegate(Const!(void)[]) dg )
         {
             dg("[");
             dg(event.name);
