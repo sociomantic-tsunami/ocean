@@ -42,7 +42,7 @@ version(UnitTest) import ocean.core.Test;
 final class Ripemd320 : MerkleDamgard
 {
     private uint[10]        context;
-    private const uint     padChar = 0x80;
+    private static immutable uint     padChar = 0x80;
 
     /***********************************************************************
 

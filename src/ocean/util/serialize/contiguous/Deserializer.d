@@ -182,7 +182,7 @@ struct Deserializer
 
     **************************************************************************/
 
-    alias typeof(*this) This;
+    alias typeof(*(&this)) This;
 
     deprecated("This symbol has always been resolved to wrong function and never worked")
     alias hasMultiDimensionalDynamicArrays canDeserializeInPlace;
@@ -195,7 +195,7 @@ struct Deserializer
 
     ***************************************************************************/
 
-    public const max_length = size_t.max;
+    public enum max_length = size_t.max;
 
     /***************************************************************************
 
