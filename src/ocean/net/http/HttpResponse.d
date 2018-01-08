@@ -56,6 +56,9 @@ import ocean.net.http.time.HttpTimeFormatter;
 
 import ocean.util.container.AppendBuffer;
 
+version (UnitTest)
+    import ocean.core.Test;
+
 /******************************************************************************/
 
 class HttpResponse : HttpHeader
@@ -461,14 +464,39 @@ class HttpResponse : HttpHeader
              ******************************************************************/
 
             ~this ( )
-            out
-            {
-                this.outer.occupied = false;
-            }
-            body
             {
                 this.outer.content ~= "\r\n";
+                this.outer.occupied = false;
             }
         }
     }
+}
+
+unittest
+{
+    static class MyHttpResponse : HttpResponse
+    {
+        protected override void addHeaders ( AppendHeaderLines append )
+        {
+            {
+                scope key1 = append.new IncrementalValue("Key1");
+            }
+
+            {
+                scope key2 = append.new IncrementalValue("Key2");
+                key2.appendToValue("chunk1");
+                key2.appendToValue("chunk2");
+            }
+        }
+    }
+
+    auto response = new MyHttpResponse;
+    response["Date"] = "dummy";
+    auto rendered = response.render();
+
+    test!("==")(
+        rendered,
+        "HTTP/1.1 200 Ok\r\nDate: dummy\r\nContent-Length: 0\r\n"
+            ~ "Key1: \r\nKey2: chunk1chunk2\r\n\r\n"
+    );
 }
