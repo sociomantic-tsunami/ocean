@@ -260,9 +260,10 @@ struct StringSearch ( bool wide_char = false )
 
         length = min(length, str.length);
 
-        void* item = pLocateBinChar(str.ptr + start, value, length - start);
+        Const!(void)* item = pLocateBinChar(str.ptr + start, value, length - start);
+        Const!(void)* pstr = str.ptr;
 
-        return item? (item - str.ptr) : length;
+        return item? (item - pstr) : length;
     }
 
     ///
