@@ -238,12 +238,12 @@ public class PHPSerializer
 
                 setBit(r, isSet(d));
 
-                setBit(s, (~isSet(a) & isSet(e) & isSet(j)) |
-                          (isSet(f) & ~isSet(i)) |
-                          (~isSet(a) & isSet(f)) |
+                setBit(s, (invert(isSet(a)) & isSet(e) & isSet(j)) |
+                          (isSet(f) & invert(isSet(i))) |
+                          (invert(isSet(a)) & isSet(f)) |
                           (isSet(e) & isSet(i)) );
 
-                setBit(t, (~isSet(a) & isSet(e) & isSet(k)) |
+                setBit(t, (invert(isSet(a)) & isSet(e) & isSet(k)) |
                           (isSet(a) & isSet(i)) |
                            isSet(g) );
 
@@ -251,11 +251,11 @@ public class PHPSerializer
 
                 setBit(v, isSet(a) | isSet(e) | isSet(i));
 
-                setBit(w, (~isSet(e) & isSet(j)) |
+                setBit(w, (invert(isSet(e)) & isSet(j)) |
                           (isSet(e) & isSet(i)) |
                           isSet(a));
 
-                setBit(x, (~isSet(a) & isSet(k)) |
+                setBit(x, (invert(isSet(a)) & isSet(k)) |
                           (isSet(a) & isSet(i)) |
                           isSet(e));
 
@@ -310,47 +310,47 @@ public class PHPSerializer
             for ( it = initial; it+10 <= len*8 ; it+=10 ) with ( Bits )
             {
               //  version (UnitTestVerbose) Stdout.formatln("It: {}", it);
-                set(a, (~isSet(s) & isSet(v) & isSet(w)) |
+                set(a, (invert(isSet(s)) & isSet(v) & isSet(w)) |
                        (isSet(t) & isSet(v) & isSet(w) & isSet(x)) |
-                       (isSet(v) & isSet(w) & ~isSet(x)));
+                       (isSet(v) & isSet(w) & invert(isSet(x))));
 
                 set(b, (isSet(p) & isSet(s) & isSet(x)) |
-                       (isSet(p) & ~isSet(w)) |
-                       (isSet(p) & ~isSet(v)));
+                       (isSet(p) & invert(isSet(w))) |
+                       (isSet(p) & invert(isSet(v))));
 
                 set(c, (isSet(q) & isSet(s) & isSet(x)) |
-                       (isSet(q) & ~isSet(w)) |
-                       (isSet(q) & ~isSet(v)));
+                       (isSet(q) & invert(isSet(w))) |
+                       (isSet(q) & invert(isSet(v))));
 
                 set(d, isSet(r));
 
-                set(e, (isSet(t) & isSet(v) & ~isSet(w) & isSet(x)) |
+                set(e, (isSet(t) & isSet(v) & invert(isSet(w)) & isSet(x)) |
                        (isSet(s) & isSet(v) & isSet(w) & isSet(x)) |
-                       (~isSet(t) & isSet(v) & isSet(x)));
+                       (invert(isSet(t)) & isSet(v) & isSet(x)));
 
                 set(f, (isSet(p) & isSet(t) & isSet(v) & isSet(w) & isSet(x)) |
-                       (isSet(s) & ~isSet(x)) |
-                       (isSet(s) & ~isSet(v)));
+                       (isSet(s) & invert(isSet(x))) |
+                       (isSet(s) & invert(isSet(v))));
 
                 set(g, (isSet(q) & isSet(t) & isSet(w)) |
-                       (isSet(t) & ~isSet(x)) |
-                       (isSet(t) & ~isSet(v)));
+                       (isSet(t) & invert(isSet(x))) |
+                       (isSet(t) & invert(isSet(v))));
 
                 set(h, isSet(u));
 
                 set(i, (isSet(t) & isSet(v) & isSet(w) & isSet(x)) |
                        (isSet(s) & isSet(v) & isSet(w) & isSet(x)) |
-                       (isSet(v) & ~isSet(w) & ~isSet(x)));
+                       (isSet(v) & invert(isSet(w)) & invert(isSet(x))));
 
-                set(j, (isSet(p) & ~isSet(s) & ~isSet(t) & isSet(w)) |
-                       (isSet(s) & isSet(v) & ~isSet(w) & isSet(x)) |
-                       (isSet(p) & isSet(w) & ~isSet(x)) |
-                       (~isSet(v) & isSet(w)));
+                set(j, (isSet(p) & invert(isSet(s)) & invert(isSet(t)) & isSet(w)) |
+                       (isSet(s) & isSet(v) & invert(isSet(w)) & isSet(x)) |
+                       (isSet(p) & isSet(w) & invert(isSet(x))) |
+                       (invert(isSet(v)) & isSet(w)));
 
-                set(k, (isSet(q) & ~isSet(s) & ~isSet(t) & isSet(v) & isSet(w)) |
-                       (isSet(q) & isSet(v) & isSet(w) & ~isSet(x)) |
-                       (isSet(t) & isSet(v) & ~isSet(w) & isSet(x)) |
-                       (~isSet(v) & isSet(x)));
+                set(k, (isSet(q) & invert(isSet(s)) & invert(isSet(t)) & isSet(v) & isSet(w)) |
+                       (isSet(q) & isSet(v) & isSet(w) & invert(isSet(x))) |
+                       (isSet(t) & isSet(v) & invert(isSet(w)) & isSet(x)) |
+                       (invert(isSet(v)) & isSet(x)));
 
                 set(m, isSet(y));
 
@@ -520,3 +520,8 @@ public class PHPSerializer
     }
 }
 
+// Utility to workaround deprecation for `~Enum.Field`
+private int invert ( int num )
+{
+    return ~num;
+}
