@@ -515,7 +515,7 @@ public abstract class Task : ISuspendable
         catch (TaskKillException)
         {
             debug_trace("<{}> termination (killed)", cast(void*) this);
-            this.state_bitmask &= ~TaskState.ToKill;
+            this.state_bitmask &= ~cast(int) TaskState.ToKill;
             return false;
         }
         catch (Exception e)
