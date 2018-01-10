@@ -1134,7 +1134,7 @@ public class Arguments
             if (arg.error)
             {
                 // TODO: Replace with `sformat` in v4.0.0
-                ocean.text.convert.Layout_tango.Layout!(char).instance.sprint(
+                ocean.text.convert.Layout_tango.Layout!(char).format(
                     result, msgs[arg.error-1], arg.name,
                     arg.values.length, arg.min, arg.max, arg.bogus,
                     arg.options);
@@ -2607,6 +2607,7 @@ unittest
     x.requires('y');
     test(args.clear.parse("-xy"));
     test(args.clear.parse("-xz") is false);
+    test!("==")(args.errors(), "argument 'x' requires 'y'\n");
 
     // defaults
     z.defaults("foo");
