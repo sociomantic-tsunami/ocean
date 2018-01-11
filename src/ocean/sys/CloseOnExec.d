@@ -53,11 +53,9 @@
     This does not affect `stdin`, `stdout` and `stderr`, which are opened before
     the start of the program.
 
-    Currently the flag is `false` to keep the system's default behaviour. In
-    general it is recommended to set it to `true` to avoid the aforementioned
-    problem unless file descriptor inheriting is needed. Since there appears to
-    be no use case for it for us the default value of `open_with_close_on_exec`
-    will change to `true` in the next major ocean release.
+    The flag is `true` by default, which is in general recommended to avoid the
+    aforementioned problem unless file descriptor inheriting is needed, which
+    is not a feature that is currently relevant to Sociomantic's use cases.
 
     IF YOU HAVE A USE CASE FOR INHERITING FILE DESCRIPTORS, PLEASE CONTACT THE
     OCEAN MAINTAINERS.
@@ -97,7 +95,7 @@ import ocean.transition;
 
 *******************************************************************************/
 
-mixin(global("bool open_with_close_on_exec = false"));
+mixin(global("bool open_with_close_on_exec = true"));
 
 /*******************************************************************************
 
