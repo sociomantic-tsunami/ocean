@@ -1,12 +1,9 @@
-* `ocean.util.serialize.contiguous.Serializer`
-  `ocean.util.serialize.contiguous.Deserializer`
+## Several methods now support `Buffer!(void)` as one of possible buffer types
 
-  `serialize` and in-place `deserialize` methods now support `Buffer!(void)` as
-  one of possible buffer types. Old `void[]` and derivatives are still supported
-  too.
+`ocean.util.serialize.contiguous.Serializer`
+`ocean.util.serialize.contiguous.Deserializer`
+: `serialize` and in-place `deserialize`
 
-* `ocean.util.serialize.contiguous.MultiVersionDecorator`
+`ocean.util.serialize.contiguous.MultiVersionDecorator` : `store` and in-place `load`
 
-  `store` and in-place `load` methods now support `Buffer!(void)` as one of
-  possible buffer types. Old `void[]` and derivatives are still supported too.
-
+Old `void[]` and derivatives are still supported too.
