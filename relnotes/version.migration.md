@@ -1,4 +1,4 @@
-## Changes in --version flag handling and version log
+## Changes in `--version` flag handling and version log + new `--build-info`
 
 `VersionArgsExt` used in both `CliApp` and `DaemonApp` now implements
 `--version` flag to only print basic version information, without any detailed
@@ -12,14 +12,14 @@ also doesn't treat any keys specially, printing all data found in the supplied
 
 Old output:
 
-```
+```console
 $ ./app --version
 app version v1.0 (compiled by 'author' on today with dmd1 using lib1:v10.0 lib2:v0.5)
 ```
 
 New output:
 
-```
+```console
 $ ./app --version
 app version v1.0
 $ ./app --build-info

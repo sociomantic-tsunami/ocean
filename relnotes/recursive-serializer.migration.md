@@ -10,7 +10,7 @@ struct S
 }
 ```
 
-This is unfortunate side effect of making serializer more generic and
-separating type analysis from serialization code. As this feature was not used
-by Sociomantic projects and new implementation will simplify maintenance, it was
+This is unfortunate side effect of making serializer more generic and separating
+type analysis from serialization code. As this feature was not used by
+Sociomantic projects and new implementation will simplify maintenance, it was
 considered a desirable trade-off.

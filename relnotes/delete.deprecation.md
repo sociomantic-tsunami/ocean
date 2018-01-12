@@ -1,4 +1,4 @@
-# Deprecation of `AppenBuffer.deleteContent`
+## Deprecation of `AppenBuffer.deleteContent`
 
 `ocean.util.container.AppenBuffer`
 
