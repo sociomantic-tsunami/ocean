@@ -38,8 +38,7 @@ module ocean.util.container.pool.StructPool;
 
 import ocean.util.container.pool.model.IAggregatePool;
 
-import ocean.core.Traits : hasMethod;
-
+import ocean.meta.traits.Aggregates /* : hasMember */;
 
 
 /*******************************************************************************
@@ -78,10 +77,13 @@ public class StructPool ( T ) : IAggregatePool!(T)
 
     protected override void resetItem ( Item item )
     {
-        static if (is (typeof (T.reset) Reset))
+        static if (hasMember!(T, "reset"))
         {
-            static assert(hasMethod!(T, "reset", void delegate()),
-                T.stringof ~ ".reset() must be 'void reset()'");
+            static assert(
+                   is(typeof(&T.init.reset) == void delegate())
+                || is(typeof(&T.init.reset) == void function()),
+                T.stringof ~ ".reset() must be 'void reset()'"
+            );
 
             this.fromItem(item).reset();
         }

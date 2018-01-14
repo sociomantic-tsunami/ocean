@@ -42,7 +42,7 @@ class PidLockExt : IConfigExtExtension, IApplicationExtension
     import ocean.text.convert.Formatter;
     import ocean.text.util.StringC;
     import ocean.sys.ErrnoException;
-    import ocean.core.Traits: identifier;
+    import ocean.meta.codegen.Identifier;
     import core.stdc.errno;
     import core.stdc.stdio;
     import core.stdc.stdlib;

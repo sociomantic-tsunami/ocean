@@ -129,17 +129,15 @@ import ocean.core.Verify;
 
 public import ocean.util.config.ConfigParser: ConfigException;
 
-import ocean.core.Traits;
-
 import ocean.core.ExceptionDefinitions, ocean.core.Enforce;
-
-import ocean.core.Traits;
 
 import ocean.util.config.ConfigParser;
 
 import ocean.util.Convert;
 
-import ocean.core.Traits : isStringType, isIntegerType, isRealType;
+import ocean.meta.traits.Basic /* : isArrayType, isCharType, isIntegerType, isRealType */ ;
+import ocean.meta.traits.Arrays /* : isUTF8StringType */ ;
+import ocean.meta.types.Arrays /* : ElementTypeOf */ ;
 
 import ocean.io.Stdout;
 
@@ -673,36 +671,22 @@ struct SetInfo ( T )
 public template IsSupported ( T )
 {
     static if ( is(T : bool) )
-    {
         const IsSupported = true;
-    }
     else static if ( isIntegerType!(T) || isRealType!(T) )
-    {
         const IsSupported = true;
-    }
-    else static if ( is(T U : U[])) // If it is an array
+    else static if ( is(ElementTypeOf!(T) U) )
     {
-        static if ( isStringType!(T) ) // If it is a string
-        {
+        static if ( isCharType!(U) ) // If it is a string
             const IsSupported = true;
-        }
-        else static if ( isStringType!(U) ) // If it is string of strings
-        {
+        else static if ( isUTF8StringType!(U) ) // If it is string of strings
             const IsSupported = true;
-        }
         else static if ( isIntegerType!(U) || isRealType!(U) )
-        {
             const IsSupported = true;
-        }
         else
-        {
             const IsSupported = false;
-        }
     }
     else
-    {
         const IsSupported = false;
-    }
 }
 
 
@@ -1047,7 +1031,7 @@ private void readFieldsImpl ( T, Source )
 
         if ( config.exists(group, key) )
         {
-            static if ( is(Type U : U[]) && !isStringType!(Type))
+            static if (is(Type U : U[]) && !isUTF8StringType!(Type))
             {
                 reference.tupleof[si] =
                     config.getListStrict!(SliceIfD1StaticArray!(U))(group, key);
@@ -1057,7 +1041,6 @@ private void readFieldsImpl ( T, Source )
                 reference.tupleof[si] =
                     config.getStrict!(SliceIfD1StaticArray!(Type))(group, key);
             }
-
 
             debug (Config) Stdout.formatln("Config Debug: {}.{} = {}", group,
                              reference.tupleof[si]

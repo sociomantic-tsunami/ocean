@@ -28,7 +28,7 @@ module ocean.text.convert.Integer;
 
 import ocean.transition;
 
-import ocean.core.Traits;
+import ocean.meta.traits.Basic;
 
 import ocean.core.array.Search : find;
 

@@ -629,7 +629,8 @@ unittest
 
 version ( UnitTest )
 {
-    import ocean.core.Traits;
+    import ocean.meta.traits.Basic;
+    import ocean.meta.types.Arrays;
     import ocean.core.Verify;
 
     private template hasAtomicEquality ( T )
@@ -649,7 +650,7 @@ version ( UnitTest )
     {
         static if (isArrayType!(T))
         {
-            const hasEquality = hasAtomicEquality!(BaseTypeOfArrays!(T));
+            const hasEquality = hasAtomicEquality!(StripAllArrays!(T));
         }
         else
         {

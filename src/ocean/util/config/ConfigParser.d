@@ -22,6 +22,7 @@ import ocean.core.Array;
 import ocean.core.ExceptionDefinitions;
 import ocean.core.Exception;
 import ocean.core.Enforce;
+import ocean.meta.types.Arrays /* : ElementTypeOf */;
 import ocean.io.Stdout;
 import ocean.io.stream.Format;
 import ocean.io.stream.TextFile;

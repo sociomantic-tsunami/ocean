@@ -27,7 +27,7 @@ import ocean.transition;
 
 import ocean.stdc.posix.sys.types; // ssize_t;
 
-import ocean.core.Traits;
+import ocean.meta.traits.Basic;
 import ocean.core.Buffer;
 import ocean.core.array.DefaultPredicates;
 

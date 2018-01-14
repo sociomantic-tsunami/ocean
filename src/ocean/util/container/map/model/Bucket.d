@@ -35,7 +35,7 @@
 module ocean.util.container.map.model.Bucket;
 
 
-import ocean.core.Traits: isStaticArrayType;
+import ocean.meta.traits.Basic;
 
 /*******************************************************************************
 
@@ -229,7 +229,7 @@ public struct Bucket ( size_t V, K = hash_t )
         {
             element = this.add(new_element);
 
-            static if (isStaticArrayType!(K))
+            static if (isArrayType!(K) == ArrayKind.Static)
             {
                 element.key[] = key;
             }

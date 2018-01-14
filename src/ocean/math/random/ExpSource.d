@@ -18,7 +18,7 @@ module ocean.math.random.ExpSource;
 import Integer = ocean.text.convert.Integer_tango;
 import ocean.math.Math:exp,log;
 import ocean.math.random.Ziggurat;
-import ocean.core.Traits:isRealType;
+import ocean.meta.traits.Basic /* : isRealType */;
 
 /// class that returns exponential distributed numbers (f=exp(-x) for x>0, 0 otherwise)
 final class ExpSource(RandG,T){

@@ -204,7 +204,7 @@ import ocean.util.container.cache.PriorityCache;
 import core.stdc.time: time_t, time;
 
 import core.memory;
-import Traits = ocean.core.Traits;
+import ocean.meta.traits.Basic /* : isArrayType, ArrayKind */;
 
 /*******************************************************************************
 
@@ -291,7 +291,7 @@ class LRUCache(T, bool TrackCreateTimes = false) : PriorityCache!(ValueT!(T, Tra
         if (dst)
         {
             // This check is not needed in D2
-            static if ( Traits.isStaticArrayType!(T) )
+            static if ( isArrayType!(T) == ArrayKind.Static )
             {
                 // TODO: Add support in PriorityCache.opApply for arrays
                 (*dst)[] = value[];

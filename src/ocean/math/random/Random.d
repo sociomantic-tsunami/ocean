@@ -187,7 +187,7 @@ import ocean.math.random.engines.Twister;
 import ocean.math.random.NormalSource;
 import ocean.math.random.ExpSource;
 import ocean.math.Math;
-import ocean.core.Traits;
+import ocean.meta.types.Arrays /* : StripAllArrays */;
 import ocean.core.Verify;
 
 // ----- templateFu begin --------
@@ -699,7 +699,7 @@ final class RandomG(SourceT=DefaultEngine)
 
     U randomizeUniform(U,bool boundCheck)(ref U a){
         static if (is(U S:S[])){
-            alias BaseTypeOfArrays!(U) T;
+            alias StripAllArrays!(U) T;
             static if (is(T==byte)||is(T==ubyte)||is(T==char)){
                 uint val=source.next; /// begin without value?
                 int rest=4;
@@ -746,8 +746,8 @@ final class RandomG(SourceT=DefaultEngine)
 
     U randomizeUniformR(U,V,bool boundCheck=true)(ref U a,V to)
     {
-        verify((cast(BaseTypeOfArrays!(U))to)>0,"empty range");
-        alias BaseTypeOfArrays!(U) T;
+        verify((cast(StripAllArrays!(U))to)>0,"empty range");
+        alias StripAllArrays!(U) T;
         static assert(is(V:T),"incompatible a and to type "~U.stringof~" "~V.stringof);
         static if (is(U S:S[])){
             static if (is(T==uint) || is(T==int) || is(T==char) || is(T==byte) || is(T==ubyte)){
@@ -804,12 +804,12 @@ final class RandomG(SourceT=DefaultEngine)
 
     U randomizeUniformR2(U,V,W,bool boundCheck=true)(ref U a,V from, W to)
     {
-        alias BaseTypeOfArrays!(U) T;
+        alias StripAllArrays!(U) T;
         verify((cast(T)to)>(cast(T)from),"empy range in uniformR2");
         static if (is(T==int) || is(T==long)){
             verify(from>T.min/2&&to<T.max/2," from..to range too big");
         }
-        alias BaseTypeOfArrays!(U) T;
+        alias StripAllArrays!(U) T;
         static assert(is(V:T),"incompatible a and from type "~U.stringof~" "~V.stringof);
         static assert(is(W:T),"incompatible a and to type "~U.stringof~" "~W.stringof);
         static if (is(U S:S[])){
@@ -848,10 +848,11 @@ final class RandomG(SourceT=DefaultEngine)
     /// randomizes the given variable like uniformRSymm and returns it
     /// (for some types this is potentially more efficient, both from the use of
     /// random numbers and speedwise)
-    U randomizeUniformRSymm(U,V,bool boundCheck=true, bool excludeZero=isFloat!(BaseTypeOfArrays!(U)))
+    U randomizeUniformRSymm(U,V,bool boundCheck=true, bool
+            excludeZero=isFloat!(StripAllArrays!(U)))
         (ref U a,V to)
     {
-        alias BaseTypeOfArrays!(U) T;
+        alias StripAllArrays!(U) T;
         verify((cast(T)to)>0,"empty range");
         static assert(is(V:T),"incompatible a and to type "~U.stringof~" "~V.stringof);
         static if (is(U S:S[])){
@@ -1065,10 +1066,10 @@ final class RandomG(SourceT=DefaultEngine)
         /// initializes b with gamma distribued random numbers
         U randomize(U)(ref U b,T a=alpha,T t=theta){
             static if (is(U S:S[])) {
-                alias BaseTypeOfArrays!(U) T;
+                alias StripAllArrays!(U) T;
                 T* bEnd=b.ptr+b.length;
                 for (T* bPtr=b.ptr;bPtr!=bEnd;++bPtr){
-                    *bPtr=cast(BaseTypeOfArrays!(U)) getRandom(a,t);
+                    *bPtr=cast(StripAllArrays!(U)) getRandom(a,t);
                 }
             } else {
                 b=cast(U) getRandom(a,t);
@@ -1078,10 +1079,10 @@ final class RandomG(SourceT=DefaultEngine)
         /// maps op on random numbers (of type T) and initializes b with it
         U randomizeOp(U,S)(S delegate(T)op, ref U b,T a=alpha, T t=theta){
             static if(is(U S:S[])){
-                alias BaseTypeOfArrays!(U) T;
+                alias StripAllArrays!(U) T;
                 T* bEnd=b.ptr+b.length;
                 for (T* bPtr=b.ptr;bPtr!=bEnd;++bPtr){
-                    *bPtr=cast(BaseTypeOfArrays!(U))op(getRandom(a,t));
+                    *bPtr=cast(StripAllArrays!(U))op(getRandom(a,t));
                 }
             } else {
                 b=cast(U)op(getRandom(a));
@@ -1323,7 +1324,7 @@ version (UnitTest)
     bool doTests(RandG,Arrays...)(RandG r,real maxmin, real minmax, real expectedMean, real maxOffset,bool alwaysPrint,bool checkB, Arrays arrs){
         bool gFail=false;
         foreach (i,TA;Arrays){
-            alias BaseTypeOfArrays!(TA) T;
+            alias StripAllArrays!(TA) T;
             // all together
             r(arrs[i]);
             bool fail=checkMean!(T)(arrs[i],maxmin,minmax,expectedMean,maxOffset,alwaysPrint,checkB);

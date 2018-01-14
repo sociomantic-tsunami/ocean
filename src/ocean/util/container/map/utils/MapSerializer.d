@@ -31,18 +31,18 @@ import ocean.transition;
 import ocean.io.digest.Fnv1,
        ocean.io.serialize.SimpleStreamSerializer,
        ocean.io.serialize.TypeId,
-       ocean.util.container.map.Map,
-       ocean.core.Traits : ContainsDynamicArray;
+       ocean.util.container.map.Map;
 import ocean.core.Array : copy;
 import ocean.core.Exception;
 
 import ocean.core.ExceptionDefinitions    : IOException;
 import ocean.io.model.IConduit : IOStream;
 
-import ocean.core.Traits,
-       ocean.core.Tuple,
+import ocean.core.Tuple,
        ocean.io.stream.Buffered,
        ocean.io.device.File;
+
+import ocean.meta.traits.Basic;
 
 import ocean.util.serialize.contiguous.MultiVersionDecorator,
        ocean.util.serialize.contiguous.Serializer,
@@ -226,7 +226,7 @@ template MapExtension ( K, V )
             {
                 bool added = false;
 
-                static if ( isDynamicArrayType!(V) )
+                static if ( isArrayType!(V) == ArrayKind.Dynamic )
                 {
                     (*this.put(k, added)).copy(v);
                 }
@@ -237,9 +237,12 @@ template MapExtension ( K, V )
 
                 // If added key is an array and new don't reuse the memory it
                 // references
-                static if ( isDynamicArrayType!(K) ) if ( added )
+                static if ( isArrayType!(K) == ArrayKind.Dynamic )
                 {
-                    k = k.dup;
+                    if ( added )
+                    {
+                        k = k.dup;
+                    }
                 }
             }
         }
@@ -862,7 +865,7 @@ class MapSerializer
         {
             bool added = false;
 
-            static if ( isDynamicArrayType!(V) )
+            static if ( isArrayType!(V) == ArrayKind.Dynamic )
             {
                 copy(*map.put(k, added), v);
             }
@@ -873,9 +876,12 @@ class MapSerializer
 
             // If added key is an array and new don't reuse the memory it
             // references
-            static if ( isDynamicArrayType!(K) ) if ( added )
+            static if ( isArrayType!(K) == ArrayKind.Dynamic )
             {
-                k = k.dup;
+                if ( added )
+                {
+                    k = k.dup;
+                }
             }
         }
 
@@ -1298,7 +1304,7 @@ version ( UnitTest )
            ocean.util.container.map.Map,
            ocean.util.container.map.HashMap;
 
-    import ocean.core.Traits;
+    import ocean.meta.types.Arrays;
 
     /***************************************************************************
 
@@ -1457,9 +1463,9 @@ version ( UnitTest )
 
         V initVal ( int i )
         {
-            static if ( isDynamicArrayType!(V) )
+            static if ( isArrayType!(V) == ArrayKind.Dynamic )
             {
-                alias ElementTypeOfArray!(V) VA;
+                alias ElementTypeOf!(V) VA;
 
                 auto r = new VA[ValueArraySize];
 
@@ -1501,11 +1507,11 @@ version ( UnitTest )
         }
 
         // Check size of dump
-        static if ( isDynamicArrayType!(V) )
+        static if ( isArrayType!(V) == ArrayKind.Dynamic )
         {
             t.test(array.bufferSize() ==
                         (K.sizeof + size_t.sizeof +
-                            ElementTypeOfArray!(V).sizeof * ValueArraySize) *
+                            ElementTypeOf!(V).sizeof * ValueArraySize) *
                                 iterations + header_size + size_t.sizeof,
                     "Written size is not the expected value!");
         }
@@ -1521,7 +1527,7 @@ version ( UnitTest )
         void checker ( ref KNew k, ref VNew v )
         {
             amount_loaded++;
-            static if ( isDynamicArrayType!(VNew) )
+            static if ( isArrayType!(VNew) == ArrayKind.Dynamic )
             {
                 foreach ( i, el; v )
                 {

@@ -21,7 +21,6 @@ import Path = ocean.io.Path;
 import ocean.sys.ErrnoException;
 import core.sys.posix.stdio;
 import core.stdc.errno;
-import ocean.core.Traits;
 import ocean.core.Tuple;
 import ocean.io.device.File;
 import ocean.text.Search;
@@ -29,6 +28,8 @@ import ocean.text.convert.Integer;
 import ocean.core.Buffer;
 import ocean.core.Enforce;
 import core.stdc.stdlib;
+import ocean.meta.traits.Basic;
+import ocean.meta.codegen.Identifier;
 
 version (UnitTest)
 {
@@ -255,7 +256,7 @@ public struct ProcUptime
 
             res_time.seconds = t / 100;
             res_time.cents = abs(t) % 100;
-    
+
             return res_time;
         }
 
@@ -587,7 +588,7 @@ private ProcMemInfo parseProcMemInfoData (cstring delegate() read_next_line)
         {
             foreach (i, FieldT; typeof(meminfo.tupleof))
             {
-                case FieldName!(i, typeof(meminfo.init)):
+                case fieldIdentifier!(typeof(meminfo.init), i):
                     // Using tupleof[i] instead of field
                     // as a workaround for
                     // https://issues.dlang.org/show_bug.cgi?id=16521

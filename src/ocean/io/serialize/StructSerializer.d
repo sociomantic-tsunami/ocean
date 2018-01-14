@@ -32,7 +32,7 @@ import ocean.meta.traits.Indirections : hasIndirections;
 import ocean.meta.types.Arrays : ElementTypeOf, StripAllArrays;
 import ocean.meta.types.Typedef : castToBase;
 
-import ocean.core.Traits : FieldName, FieldType, GetField;
+import ocean.meta.codegen.Identifier;
 
 
 
@@ -538,7 +538,7 @@ struct StructSerializer ( bool AllowUnions = false )
         foreach (i, ref field; s.tupleof)
         {
             alias typeof(field) T;
-            const field_name = FieldName!(i, S);
+            const field_name = fieldIdentifier!(S, i);
 
             // imitate D1 style formatting for D2 typedef struct
             static if ( is(T == struct) && !isTypedef!(T) )
@@ -651,8 +651,8 @@ struct StructSerializer ( bool AllowUnions = false )
     {
         foreach (i, T; typeof (S.tupleof))
         {
-            T*    field      = GetField!(i, T, S)(s);
-            const field_name = FieldName!(i, S);
+            T*   field      = &s.tupleof[i];
+            auto field_name = fieldIdentifier!(S, i);
 
             static if ( is(T == struct) )
             {

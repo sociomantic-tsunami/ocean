@@ -109,7 +109,7 @@ module ocean.io.console.StructTable;
 
 import ocean.transition;
 
-import ocean.core.Traits;
+import ocean.meta.codegen.Identifier /* : fieldIdentifier */;
 
 import ocean.io.console.Tables;
 
@@ -176,8 +176,9 @@ public class StructTable ( S )
         }
         else
         {
-            const istring CellMethods = "protected char[] " ~ FieldName!(i, S)
-                ~ "_string(" ~ FieldType!(S, i).stringof
+            const istring CellMethods = "protected char[] "
+                ~ fieldIdentifier!(S, i)
+                ~ "_string(" ~ typeof(S.tupleof[i]).stringof
                 ~ "* field){return this.defaultFieldString(field);}"
                 ~ CellMethods!(i + 1);
         }
@@ -301,8 +302,9 @@ public class StructTable ( S )
         }
         else
         {
-            const istring ContentsRow = "this.addCell(this." ~ FieldName!(i, S)
-                ~ "_string(GetField!(" ~ i.stringof ~ ")(&item)));"
+            const istring ContentsRow = "this.addCell(this."
+                ~ fieldIdentifier!(S, i)
+                ~ "_string(&item.tupleof[" ~ i.stringof ~ "]));"
                 ~ ContentsRow!(i + 1);
         }
     }
@@ -324,7 +326,7 @@ public class StructTable ( S )
         }
         else
         {
-            const istring HeaderRow = `this.addCell("` ~ FieldName!(i, S) ~
+            const istring HeaderRow = `this.addCell("` ~ fieldIdentifier!(S, i) ~
                 `");` ~ HeaderRow!(i + 1);
         }
     }

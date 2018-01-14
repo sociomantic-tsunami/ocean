@@ -91,7 +91,6 @@ import ocean.transition;
 import ocean.core.Enforce;
 import ocean.core.Verify;
 import ocean.core.Exception;
-import ocean.core.Traits;
 import ocean.stdc.posix.sys.un;
 import core.stdc.time; // time
 import ocean.stdc.posix.sys.types; // time_t

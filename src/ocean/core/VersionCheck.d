@@ -20,7 +20,7 @@
 module ocean.core.VersionCheck;
 
 import ocean.transition;
-import ocean.core.Traits;
+import ocean.meta.codegen.CTFE;
 
 /// ditto
 public template hasFeaturesFrom ( istring libname, ulong major, ulong minor )
@@ -55,5 +55,5 @@ private bool hasFeaturesFromFunc ( istring libname, ulong major, ulong minor ) (
     }
 
     mixin("return is(typeof(Library.has_features_"
-        ~ ctfe_i2a(major) ~ "_" ~ ctfe_i2a(minor) ~ "));");
+        ~ toString(major) ~ "_" ~ toString(minor) ~ "));");
 }

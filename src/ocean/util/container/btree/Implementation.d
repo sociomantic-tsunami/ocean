@@ -32,8 +32,7 @@ package struct BTreeMapImplementation (KeyType, ValueType, int tree_degree)
     import ocean.core.array.Mutation;
     import ocean.core.array.Search;
     import ocean.core.Enforce;
-    import ocean.core.Traits;
-    import ocean.core.Tuple;
+    import ocean.meta.types.Function;
     import ocean.core.Verify;
     import ocean.util.container.mem.MemManager;
 
@@ -122,7 +121,7 @@ package struct BTreeMapImplementation (KeyType, ValueType, int tree_degree)
     /***************************************************************************
 
         "version" of the tree's state. Will be incremented on any removal/adding
-        the element. On the iteration's start, range will record the current 
+        the element. On the iteration's start, range will record the current
         "version" of the tree, and, and before proceeding with the iteration,
         it will check if any changes were performed on the tree, to prevent
         iteration over an undefined region.
@@ -1008,13 +1007,15 @@ package struct BTreeMapImplementation (KeyType, ValueType, int tree_degree)
                     if (res) return res;
                 }
 
-                static if (is(ReturnAndArgumentTypesOf!(UserDg) ==
-                            Tuple!(int, ValueType)))
+                static if (
+                       is(ReturnTypeOf!(UserDg) == int)
+                    && is(ParametersOf!(UserDg) == Tuple!(ValueType)))
                 {
                     res = dg (root.elements[i].value);
                 }
-                else static if (is(ReturnAndArgumentTypesOf!(UserDg) ==
-                            Tuple!(int, KeyType, ValueType)))
+                else static if (
+                       is(ReturnTypeOf!(UserDg) == int)
+                    && is(ParametersOf!(UserDg) == Tuple!(KeyType, ValueType)))
                 {
                     res = dg (root.elements[i].key, root.elements[i].value);
                 }

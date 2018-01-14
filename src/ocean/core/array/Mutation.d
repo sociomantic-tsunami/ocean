@@ -26,7 +26,9 @@ import ocean.transition;
 import core.stdc.string; // memmove, memset
 import core.stdc.math; // fabs;
 
-import ocean.core.Traits;
+import ocean.meta.traits.Basic;
+import ocean.meta.types.Function;
+import ocean.meta.AliasSeq;
 import ocean.core.Buffer;
 import ocean.core.array.DefaultPredicates;
 
@@ -1522,26 +1524,19 @@ out (end)
 }
 body
 {
-    alias ReturnAndArgumentTypesOf!(Exclude) ExcludeParams;
-
-    static assert(
-        ExcludeParams.length,
+    static assert (
+        isCallableType!(Exclude),
         "exclude is expected to be callable, not \"" ~ Exclude.stringof ~ '"'
     );
+
     static assert(
-        ExcludeParams.length == 2,
-        "exclude is expected to accept one argument, which " ~
-            Exclude.stringof ~ " doesn't'"
+        is(ParametersOf!(Exclude) == AliasSeq!(T)),
+        "exclude is expected to accept one " ~ T.stringof ~ " argument"
     );
+
     static assert(
-        is(ExcludeParams[0]: long),
-        "the return type of exclude is expected to be an integer type, " ~
-            "not " ~ ExcludeParams[0].stringof
-    );
-    static assert(
-        is(ExcludeParams[1] == T),
-        "exclude is expected to accept an argument of type " ~ T.stringof ~
-            ", not " ~ ExcludeParams[1].stringof
+        is(ReturnTypeOf!(Exclude) : long),
+        "the return type of exclude is expected to be an integer type"
     );
 
     return filterInPlaceCore(
@@ -2138,7 +2133,7 @@ private template ArrayAssigner (T)
     else
     {
         // Cannot have `ref` static array parameter in D1
-        static if (!isStaticArrayType!(T))
+        static if (isArrayType!(T) != ArrayKind.Static)
         {
             void f (ref T a, ref T b)
             {

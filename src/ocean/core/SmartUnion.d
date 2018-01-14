@@ -19,9 +19,9 @@ module ocean.core.SmartUnion;
 import ocean.transition;
 import ocean.core.ExceptionDefinitions;
 import ocean.core.Test;
-import ocean.core.Traits;
 import ocean.core.Verify;
-
+import ocean.meta.codegen.Identifier;
+import ocean.meta.types.Templates /* : TemplateInstanceArgs */;
 
 
 /******************************************************************************
@@ -400,7 +400,7 @@ private struct SmartUnionIntern ( U )
         istring[] names = ["none"[]];
         foreach ( i, F; typeof(U.init.tupleof) )
         {
-            names ~= FieldName!(i, U);
+            names ~= fieldIdentifier!(U, i);
         }
         return names;
     }
@@ -428,7 +428,7 @@ private template MemberList ( uint i, size_t len, U )
     }
     else
     {
-        const MemberList = "," ~ FieldName!(i, U) ~ MemberList!(i + 1, len, U);
+        const MemberList = "," ~ fieldIdentifier!(U, i) ~ MemberList!(i + 1, len, U);
     }
 }
 
@@ -491,7 +491,7 @@ private template MemberList ( uint i, size_t len, U )
 
 private template Methods ( U, uint i )
 {
-    const member = FieldName!(i, U);
+    const member = fieldIdentifier!(U, i);
 
     const member_access = "_.u." ~ member;
 

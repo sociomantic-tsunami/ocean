@@ -19,7 +19,7 @@ import Integer = ocean.text.convert.Integer_tango;
 import ocean.math.Math:exp,sqrt,log,PI;
 import ocean.math.ErrorFunction:erfc;
 import ocean.math.random.Ziggurat;
-import ocean.core.Traits: isRealType;
+import ocean.meta.traits.Basic /* : isRealType */;
 
 /// class that returns gaussian (normal) distributed numbers (f=exp(-0.5*x*x)/sqrt(2*pi))
 class NormalSource(RandG,T){

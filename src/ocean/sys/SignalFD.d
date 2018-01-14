@@ -99,7 +99,7 @@ import ocean.sys.ErrnoException;
 
 import ocean.sys.SignalMask;
 
-import ocean.core.Traits;
+import ocean.meta.codegen.Identifier;
 
 import ocean.io.model.IConduit;
 

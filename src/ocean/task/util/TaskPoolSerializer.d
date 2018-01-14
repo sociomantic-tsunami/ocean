@@ -38,8 +38,8 @@ public class TaskPoolSerializer
 
     import ocean.core.Array: concat;
     import ocean.core.Enforce;
-    import ocean.core.Traits;
     import ocean.core.TypeConvert;
+    import ocean.meta.traits.Aggregates /* : hasMethod */;
     import ocean.io.device.File;
     import ocean.io.model.IConduit;
     import ocean.io.FilePath;
