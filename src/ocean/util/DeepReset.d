@@ -20,8 +20,12 @@ module ocean.util.DeepReset;
 
 import ocean.transition;
 import ocean.core.Array;
-import ocean.core.Traits;
-version(UnitTest) import ocean.core.Test;
+import ocean.meta.traits.Basic /* isArrayType */;
+
+version (UnitTest)
+{
+    import ocean.core.Test;
+}
 
 /*******************************************************************************
 
@@ -46,17 +50,17 @@ public template DeepReset ( T )
     {
         alias StructDeepReset DeepReset;
     }
-    else static if ( isAssocArrayType!(T) )
+    else static if ( isArrayType!(T) == ArrayKind.Associative )
     {
         // TODO: reset associative arrays
         pragma(msg, "Warning: deep reset of associative arrays not yet implemented");
         alias nothing DeepReset;
     }
-    else static if ( is(T S : S[]) && is(T S == S[]) )
+    else static if ( isArrayType!(T) == ArrayKind.Dynamic )
     {
         alias DynamicArrayDeepReset DeepReset;
     }
-    else static if ( is(T S : S[]) && !is(T S == S[]) )
+    else static if ( isArrayType!(T) == ArrayKind.Static )
     {
         alias StaticArrayDeepReset DeepReset;
     }
@@ -120,20 +124,20 @@ public void StaticArrayDeepReset ( T ) ( T[] dst )
 
 private void ArrayDeepReset ( T ) ( ref T[] dst )
 {
-    static if ( isAssocArrayType!(T) )
+    static if ( isArrayType!(T) == ArrayKind.Associative )
     {
         // TODO: copy associative arrays
         pragma(msg, "Warning: deep reset of associative arrays not yet implemented");
     }
-    else static if ( is(T S : S[]) )
+    else static if ( isArrayType!(T) )
     {
         foreach ( i, e; dst )
         {
-            static if ( is(T U == U[]) ) // dynamic array
+            static if ( isArrayType!(T) == ArrayKind.Dynamic )
             {
                 DynamicArrayDeepReset(dst[i]);
             }
-            else // static array
+            else
             {
                 StaticArrayDeepReset(dst[i]);
             }
@@ -186,21 +190,18 @@ public void StructDeepReset ( T ) ( ref T dst )
 
     foreach ( i, member; dst.tupleof )
     {
-        static if ( isAssocArrayType!(typeof(member)) )
+        static if ( isArrayType!(typeof(member)) == ArrayKind.Associative )
         {
             // TODO: copy associative arrays
             pragma(msg, "Warning: deep reset of associative arrays not yet implemented");
         }
-        else static if ( is(typeof(member) S : S[]) )
+        else static if ( isArrayType!(typeof(member)) == ArrayKind.Dynamic )
         {
-            static if ( is(typeof(member) U == S[]) ) // dynamic array
-            {
-                DynamicArrayDeepReset(dst.tupleof[i]);
-            }
-            else // static array
-            {
-                StaticArrayDeepReset(dst.tupleof[i]);
-            }
+            DynamicArrayDeepReset(dst.tupleof[i]);
+        }
+        else static if ( isArrayType!(typeof(member)) == ArrayKind.Static )
+        {
+            StaticArrayDeepReset(dst.tupleof[i]);
         }
         else static if ( is(typeof(member) == class) )
         {
@@ -238,18 +239,18 @@ public void ClassDeepReset ( T ) ( ref T dst )
 
     foreach ( i, member; dst.tupleof )
     {
-        static if ( isAssocArrayType!(typeof(member)) )
+        static if ( isArrayType!(typeof(member)) == ArrayKind.Associative )
         {
             // TODO: copy associative arrays
             pragma(msg, "Warning: deep reset of associative arrays not yet implemented");
         }
-        else static if ( is(typeof(member) S : S[]) )
+        else static if ( isArrayType!(typeof(member)) )
         {
-            static if ( is(typeof(member) U == U[]) ) // dynamic array
+            static if ( isArrayType!(typeof(member)) == ArrayKind.Dynamic )
             {
                 DynamicArrayDeepReset(dst.tupleof[i]);
             }
-            else // static array
+            else
             {
                 StaticArrayDeepReset(dst.tupleof[i]);
             }

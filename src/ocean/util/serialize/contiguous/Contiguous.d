@@ -20,14 +20,17 @@ module ocean.util.serialize.contiguous.Contiguous;
 import ocean.transition;
 import ocean.core.Verify;
 
-import ocean.core.Enforce,
-       ocean.core.Traits;
+import ocean.core.Enforce;
 
 version(UnitTest)
 {
     import ocean.core.Test;
-
     debug = ContiguousIntegrity;
+}
+
+debug(ContiguousIntegrity)
+{
+    import ocean.meta.traits.Indirections;
 }
 
 /*******************************************************************************

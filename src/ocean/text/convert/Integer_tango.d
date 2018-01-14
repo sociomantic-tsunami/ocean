@@ -30,8 +30,8 @@ module ocean.text.convert.Integer_tango;
 
 import ocean.transition;
 import ocean.core.ExceptionDefinitions;
-import ocean.core.Traits;
 import ocean.core.Verify;
+import ocean.meta.traits.Basic;
 
 /******************************************************************************
 

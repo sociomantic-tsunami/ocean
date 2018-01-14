@@ -33,7 +33,8 @@ version (UnitTest)
 public class ErrnoException : Exception
 {
     import ocean.core.Exception : ReusableExceptionImplementation;
-    import ocean.core.Traits : ReturnTypeOf, identifier;
+    import ocean.meta.types.Function : ReturnTypeOf;
+    import ocean.meta.codegen.Identifier;
     import ocean.stdc.string;
     import ocean.text.util.StringC;
 
@@ -382,7 +383,8 @@ public class ErrnoException : Exception
 
 public struct Caller ( T )
 {
-    import ocean.core.Traits : ParameterTupleOf, isCallableType, ReturnTypeOf;
+    import ocean.meta.types.Function /* : ParametersOf, ReturnTypeOf */;
+    import ocean.meta.traits.Basic /* : isCallableType */;
 
     static assert (isCallableType!(T));
     static assert (!is(ReturnTypeOf!(T) == void));
@@ -414,7 +416,7 @@ public struct Caller ( T )
 
     ***************************************************************************/
 
-    public ReturnTypeOf!(T) call ( ParameterTupleOf!(T) args )
+    public ReturnTypeOf!(T) call ( ParametersOf!(T) args )
     {
         auto ret = this.fn(args);
         if (!verify(ret))

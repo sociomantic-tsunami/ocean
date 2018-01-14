@@ -117,7 +117,8 @@ import ocean.transition;
 
 public import ocean.core.Enforce;
 
-import ocean.core.Traits;
+import CTFE = ocean.meta.codegen.CTFE;
+
 import ocean.core.Tuple;
 import ocean.core.Verify;
 
@@ -413,46 +414,6 @@ unittest
 
 /*******************************************************************************
 
-    Wrapper for the ctfe_i2a function (see ocean.core.Traits), allowing it to
-    also handle (u)byte & (u)short types.
-
-*******************************************************************************/
-
-public istring CTFE_Int2String ( T ) ( T num )
-{
-    static if ( is(T == ubyte) )
-    {
-        return ctfe_i2a(cast(uint)num);
-    }
-    else static if ( is(T == byte) )
-    {
-        return ctfe_i2a(cast(int)num);
-    }
-    else static if ( is(T == ushort) )
-    {
-        return ctfe_i2a(cast(uint)num);
-    }
-    else static if ( is(T == short) )
-    {
-        return ctfe_i2a(cast(int)num);
-    }
-    else
-    {
-        return ctfe_i2a(num);
-    }
-}
-
-unittest
-{
-    test!("==")(CTFE_Int2String(42), "42"[]);
-    test!("==")(CTFE_Int2String(ubyte.init), "0"[]);
-    test!("==")(CTFE_Int2String(byte.init), "0"[]);
-    test!("==")(CTFE_Int2String(ushort.init), "0"[]);
-    test!("==")(CTFE_Int2String(short.init), "0"[]);
-}
-
-/*******************************************************************************
-
     Template to mixin a comma separated list of SmartEnumValues.
 
     Params:
@@ -472,11 +433,11 @@ private template EnumValuesList ( T ... )
 {
     static if ( T.length == 1 )
     {
-        const EnumValuesList = T[0].name ~ "=" ~ CTFE_Int2String(T[0].value);
+        const EnumValuesList = T[0].name ~ "=" ~ CTFE.toString(T[0].value);
     }
     else
     {
-        const EnumValuesList = T[0].name ~ "=" ~ CTFE_Int2String(T[0].value) ~ "," ~ EnumValuesList!(T[1..$]);
+        const EnumValuesList = T[0].name ~ "=" ~ CTFE.toString(T[0].value) ~ "," ~ EnumValuesList!(T[1..$]);
     }
 }
 
@@ -678,11 +639,11 @@ private template ShortestName ( T ... )
 private template DeclareConstants ( T ... )
 {
     const istring DeclareConstants =
-        enum_id ~ " length = " ~ ctfe_i2a(T.length) ~ "; " ~
-        enum_id ~ " min = " ~ CTFE_Int2String(MinValue!(T)) ~ "; " ~
-        enum_id ~ " max = " ~ CTFE_Int2String(MaxValue!(T)) ~ "; " ~
-        enum_id ~ " min_descr_length = " ~ ctfe_i2a(ShortestName!(T)) ~ "; " ~
-        enum_id ~ " max_descr_length = " ~ ctfe_i2a(LongestName!(T)) ~ "; ";
+        enum_id ~ " length = " ~ CTFE.toString(T.length) ~ "; " ~
+        enum_id ~ " min = " ~ CTFE.toString(MinValue!(T)) ~ "; " ~
+        enum_id ~ " max = " ~ CTFE.toString(MaxValue!(T)) ~ "; " ~
+        enum_id ~ " min_descr_length = " ~ CTFE.toString(ShortestName!(T)) ~ "; " ~
+        enum_id ~ " max_descr_length = " ~ CTFE.toString(LongestName!(T)) ~ "; ";
 }
 
 
@@ -847,9 +808,6 @@ unittest
 import ocean.core.Enforce;
 
 import ocean.core.Array : find;
-
-import ocean.core.Traits : isAssocArrayType;
-
 
 /*******************************************************************************
 

@@ -67,8 +67,7 @@ import ocean.util.container.map.Set;
 
 import ocean.core.Exception;
 
-import ocean.core.Traits;
-
+import ocean.meta.traits.Basic;
 
 /*******************************************************************************
 

@@ -23,8 +23,12 @@ module ocean.util.Convert;
 import ocean.transition;
 
 import ocean.core.ExceptionDefinitions;
-import ocean.core.Traits;
-import ocean.core.Tuple : Tuple;
+
+import ocean.meta.traits.Basic;
+import ocean.meta.traits.Aggregates;
+import ocean.meta.traits.Arrays;
+import ocean.meta.types.Arrays;
+import ocean.meta.types.Typedef;
 
 import ocean.math.Math;
 import ocean.text.convert.Utf;
@@ -292,40 +296,10 @@ T[] ctfe_trim(T)(T[] source)
     return ctfe_trimr(ctfe_triml(source));
 }
 
-template isPOD(T)
-{
-    static if( is( T == struct ) || is( T == union ) )
-        const isPOD = true;
-    else
-        const isPOD = false;
-}
-
-template isObject(T)
-{
-    static if( is( T == class ) || is( T == interface ) )
-        const isObject = true;
-    else
-        const isObject = false;
-}
-
-template isUDT(T)
-{
-    const isUDT = isPOD!(T) || isObject!(T);
-}
-
 template isString(T)
 {
-    static if ( is(T U : U[]) )
-    {
-        static if( is( Unqual!(U) == char )
-            || is( Unqual!(U) == wchar )
-            || is( Unqual!(U) == dchar ))
-        {
-            const isString = true;
-        }
-        else
-            const isString = false;
-    }
+    static if (isBasicArrayType!(T))
+        const isString = isCharType!(ElementTypeOf!(T));
     else
         const isString = false;
 }
@@ -333,11 +307,6 @@ template isString(T)
 unittest
 {
     static assert (isString!(typeof("literal"[])));
-}
-
-template isArrayType(T)
-{
-    const isArrayType = isDynamicArrayType!(T) || isStaticArrayType!(T);
 }
 
 /*
@@ -491,7 +460,7 @@ template TN(T:T*)
 // ditto
 template TN(T)
 {
-    static if( isAssocArrayType!(T) )
+    static if( isArrayType!(T) == ArrayKind.Associative )
         const TN = TN!(typeof(T.keys[0]))~"_to_"
             ~TN!(typeof(T.values[0]))~"_map";
     else
@@ -703,25 +672,7 @@ D toBool(D,S)(S value)
         throwConvError;
         assert(0);
     }
-    /+
-    else static if( isDynamicArrayType!(S) || isStaticArrayType!(S) )
-    {
-        mixin unsupported!("array type");
-    }
-    else static if( isAssocArrayType!(S) )
-    {
-        mixin unsupported!("associative array type");
-    }
-    else static if( isPointerType!(S) )
-    {
-        mixin unsupported!("pointer type");
-    }
-    else static if( is( S == typedef ) )
-    {
-        mixin unsupported!("typedef'ed type");
-    }
-    // +/
-    else static if( isPOD!(S) || isObject!(S) )
+    else static if( isAggregateType!(S) )
     {
         mixin fromUDT;
         return toDfromS;
@@ -833,7 +784,7 @@ D toInteger(D,S)(S value)
     {
         return toIntegerFromString!(D,S)(value);
     }
-    else static if( isPOD!(S) || isObject!(S) )
+    else static if( isAggregateType!(S) )
     {
         mixin fromUDT;
         return toDfromS;
@@ -844,29 +795,11 @@ D toInteger(D,S)(S value)
 
 D toReal(D,S)(S value)
 {
-    /+static if( is( S == bool ) )
-        return (value ? 1.0 : 0.0);
-
-    else+/ static if( isIntegerType!(S) || isRealType!(S) )
+    static if( isIntegerType!(S) || isRealType!(S) )
         return cast(D) value;
-
-    /+else static if( isCharType!(S) )
-        return cast(D) to!(uint)(value);+/
 
     else static if( isString!(S) )
     {
-        /+
-        try
-        {
-            return ocean.text.convert.Float.toFloat(value);
-        }
-        catch( IllegalArgumentException e )
-        {
-            mixin convError;
-            throwConvError;
-        }
-        +/
-
         mixin convError;
 
         uint len;
@@ -877,7 +810,7 @@ D toReal(D,S)(S value)
         return r;
     }
 
-    else static if( isPOD!(S) || isObject!(S) )
+    else static if( isAggregateType!(S) )
     {
         mixin fromUDT;
         return toDfromS;
@@ -888,10 +821,7 @@ D toReal(D,S)(S value)
 
 D toImaginary(D,S)(S value)
 {
-    /+static if( is( S == bool ) )
-        return (value ? 1.0i : 0.0i);
-
-    else+/ static if( isComplexType!(S) )
+    static if ( isComplexType!(S) )
     {
         if( value.re == 0.0 )
             return value.im * cast(D)1.0i;
@@ -903,7 +833,7 @@ D toImaginary(D,S)(S value)
             assert(0);
         }
     }
-    else static if( isPOD!(S) || isObject!(S) )
+    else static if( isAggregateType!(S) )
     {
         mixin fromUDT;
         return toDfromS;
@@ -921,7 +851,7 @@ D toComplex(D,S)(S value)
     /+else static if( isCharType!(S) )
         return cast(D) to!(uint)(value);+/
 
-    else static if( isPOD!(S) || isObject!(S) )
+    else static if( isAggregateType!(S) )
     {
         mixin fromUDT;
         return toDfromS;
@@ -967,7 +897,7 @@ D toChar(D,S)(S value)
         }
         assert(0);
     }
-    else static if( isPOD!(S) || isObject!(S) )
+    else static if( isAggregateType!(S) )
     {
         mixin fromUDT;
         return toDfromS;
@@ -1051,13 +981,13 @@ D toString(D,S)(S value)
     else static if( isRealType!(S) )
         return cast(D) mixin("ocean.text.convert.Float.toString"~StringNum!(D)~"(value)");
 
-    else static if( isDynamicArrayType!(S) || isStaticArrayType!(S) )
+    else static if( isBasicArrayType!(S) )
         mixin unsupported!("array type");
 
-    else static if( isAssocArrayType!(S) )
+    else static if( isArrayType!(S) == ArrayKind.Associative )
         mixin unsupported!("associative array type");
 
-    else static if( isPOD!(S) || isObject!(S) )
+    else static if( isAggregateType!(S) )
     {
         mixin fromUDT;
         return toDfromS;
@@ -1068,13 +998,13 @@ D toString(D,S)(S value)
 
 D fromString(D,S)(D value)
 {
-    static if( isDynamicArrayType!(S) || isStaticArrayType!(S) )
+    static if( isBasicArrayType!(S) )
         mixin unsupported_backwards!("array type");
 
-    else static if( isAssocArrayType!(S) )
+    else static if( isArrayType!(S) == ArrayKind.Associative )
         mixin unsupported_backwards!("associative array type");
 
-    else static if( isPOD!(S) || isObject!(S) )
+    else static if( isBasicArrayType!(S) )
     {
         mixin toUDT;
         return toDfromS;
@@ -1085,7 +1015,7 @@ D fromString(D,S)(D value)
 
 D toArrayFromArray(D,S)(S value)
 {
-    alias ElementTypeOfArray!(D) De;
+    alias ElementTypeOf!(D) De;
 
     D result; result.length = value.length;
     scope(failure) delete result;
@@ -1111,14 +1041,11 @@ D toMapFromMap(D,S)(S value)
 
 D toFromUDT(D,S)(S value)
 {
-    version (D_Version2)
-    {
-        // Reduce Typedef to base type conversion
-        static if ( is(S.IsTypedef) )
-            return to!(D)(value.value);
-    }
+    // D2 Typedef
+    static if ( isTypedef!(S) == TypedefKind.Struct )
+        return to!(D)(value.value);
     // Try value.to*
-    static if ( hasMember!(S, "to_" ~ TN!(D)) )
+    else static if ( hasMember!(S, "to_" ~ TN!(D)) )
         return mixin("value.to_"~TN!(D)~"()");
     else static if ( hasMember!(S, "to" ~ ctfe_camelCase(TN!(D))) )
         return mixin("value.to"~ctfe_camelCase(TN!(D))~"()");
@@ -1139,34 +1066,19 @@ D toFromUDT(D,S)(S value)
 
 D toImpl(D,S)(S value)
 {
-    version (D_Version2)
-    {
-        // has own different static branch
-        const isTypedef = false;
-    }
-    else
-    {
-        mixin("
-            static if (is( S BaseType == typedef ))
-                const isTypedef = true;
-            else
-                const isTypedef = false;
-        ");
-    }
-
     static if( is( D == S ) )
         return value;
 
-    else static if ( isTypedef )
-        return toImpl!(D,BaseType)(value);
+    else static if ( isTypedef!(S) == TypedefKind.Keyword )
+        return toImpl!(D,TypedefBaseType!(S))(value);
 
-    else static if ( is(S.IsTypedef) )
+    else static if ( isTypedef!(S) == TypedefKind.Struct )
         return toImpl!(D, typeof(S.value))(value.value);
 
     else static if( is( S BaseType == enum ) )
         return toImpl!(D,BaseType)(value);
 
-    else static if( isArrayType!(D) && isArrayType!(S)
+    else static if( isBasicArrayType!(D) && isBasicArrayType!(S)
             && is( typeof(D[0]) == typeof(S[0]) ) )
         // Special-case which catches to!(T[])!(T[n]).
         return value;
@@ -1198,13 +1110,15 @@ D toImpl(D,S)(S value)
     else static if( isString!(S) )
         return fromString!(D,S)(value);
 
-    else static if( isArrayType!(D) && isArrayType!(S) )
+    else static if( isBasicArrayType!(D) && isBasicArrayType!(S) )
         return toArrayFromArray!(D,S)(value);
 
-    else static if( isAssocArrayType!(D) && isAssocArrayType!(S) )
+    else static if( isArrayType!(D) == ArrayKind.Associative
+        && isArrayType!(S) == ArrayKind.Associative )
+    {
         return toMapFromMap!(D,S)(value);
-
-    else static if( isUDT!(D) || isUDT!(S) )
+    }
+    else static if( isAggregateType!(D) || isAggregateType!(S) )
         return toFromUDT!(D,S)(value);
 
     else

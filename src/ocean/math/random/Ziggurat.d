@@ -18,7 +18,8 @@ module ocean.math.random.Ziggurat;
 import ocean.math.Bracket:findRoot;
 import ocean.math.Math:abs;
 import ocean.math.ErrorFunction:erfc;
-import ocean.core.Traits;
+import ocean.meta.traits.Basic /* : isRealType */;
+import ocean.meta.types.Arrays /* : StripAllArrays */;
 import ocean.core.Verify;
 
 /// ziggurat method for decreasing distributions.
@@ -177,7 +178,7 @@ struct Ziggurat(RandG,T,alias probDensityF,alias tailGenerator,bool hasNegative=
         static if(is(U S:S[])){
             size_t aL = a.length;
             for (size_t i=0;i!=aL;++i){
-                a[i]=cast(BaseTypeOfArrays!(U))getRandom();
+                a[i]=cast(StripAllArrays!(U))getRandom();
             }
         } else {
             a=cast(U)getRandom();
@@ -189,7 +190,7 @@ struct Ziggurat(RandG,T,alias probDensityF,alias tailGenerator,bool hasNegative=
     template randomizeOp2(alias op){
         U randomizeOp2(U)(ref U a){
             static if(is(U S:S[])){
-                alias BaseTypeOfArrays!(U) TT;
+                alias StripAllArrays!(U) TT;
                 uint aL=a.length;
                 for (uint i=0;i!=aL;++i){
                     static if(isComplexType!(TT)) {
@@ -215,7 +216,7 @@ struct Ziggurat(RandG,T,alias probDensityF,alias tailGenerator,bool hasNegative=
     /// initializes the variable with the result of mapping op on the random numbers (of type T)
     U randomizeOp(U,S)(S delegate(T) op,ref U a){
         static if(is(U S:S[])){
-            alias BaseTypeOfArrays!(U) TT;
+            alias StripAllArrays!(U) TT;
             size_t aL = a.length;
             for (size_t i=0;i!=aL;++i){
                 static if(isComplexType!(TT)) {

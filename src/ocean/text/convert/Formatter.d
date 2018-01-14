@@ -75,12 +75,16 @@
 module ocean.text.convert.Formatter;
 
 import ocean.transition;
-import ocean.core.Traits;
 import ocean.core.Buffer;
 import Integer = ocean.text.convert.Integer_tango;
 import Float = ocean.text.convert.Float;
 import UTF = ocean.text.convert.Utf;
 import ocean.core.Verify;
+
+import ocean.meta.traits.Basic;
+import ocean.meta.types.Typedef;
+import ocean.meta.types.Arrays;
+import ocean.meta.codegen.Identifier;
 
 /*******************************************************************************
 
@@ -410,8 +414,8 @@ private void handle (T) (T v, FormatInfo f, FormatterSink sf, ElemSink se)
      * but only the means to perform it.
      * This could be solved later with a UDA, but it's at best a workaround.
      */
-    else static if (IsTypedef!(T))
-        handle!(DropTypedef!(T))(v, f, sf, se);
+    else static if (isTypedef!(T))
+        handle!(TypedefBaseType!(T))(v, f, sf, se);
 
     // toString hook: Give priority to the non-allocating one
     // Note: sink `toString` overload should take a `scope` delegate
@@ -442,9 +446,9 @@ private void handle (T) (T v, FormatInfo f, FormatterSink sf, ElemSink se)
         foreach (idx, ref m; v.tupleof)
         {
             static if (idx == 0)
-                sf("{ " ~ FieldName!(idx, T) ~ ": ");
+                sf("{ " ~ fieldIdentifier!(T, idx) ~ ": ");
             else
-                sf(", " ~ FieldName!(idx, T) ~ ": ");
+                sf(", " ~ fieldIdentifier!(T, idx) ~ ": ");
 
             // A bit ugly but it makes string much more readable
             handle(m, f, sf, se);
@@ -467,7 +471,7 @@ private void handle (T) (T v, FormatInfo f, FormatterSink sf, ElemSink se)
     }
 
     // Associative array cannot be matched by IsExp in D1
-    else static if (is(AAType!(T).Key))
+    else static if (isArrayType!(T) == ArrayKind.Associative)
     {
         bool started;
         Flags old = f.flags;
@@ -532,8 +536,10 @@ private void handle (T) (T v, FormatInfo f, FormatterSink sf, ElemSink se)
     }
 
     // Arrays (dynamic and static)
-    else static if (is (T A : A[]))
+    else static if (isBasicArrayType!(T))
     {
+        alias ElementTypeOf!(T) A;
+
         static if (is(Unqual!(A) == void))
             handle!(Const!(ubyte)[])(cast(Const!(ubyte)[]) v, f, sf, se);
         else
@@ -592,58 +598,6 @@ private template IsTypeofNull (T)
         public const bool IsTypeofNull = false;
     }
 }
-
-
-/*******************************************************************************
-
-        Helper template to detect if a given type is a typedef (D1 and D2).
-
-        This bears the same name as the template in `ocean.core.Traits`.
-        However, the definition in `Traits` unconditionally returns `false`
-        in D2.
-        While it might be suitable for most use cases, here we have to
-        explicitly handle `typedef`.
-
-        Params:
-            T   = Type to check
-
-*******************************************************************************/
-
-private template IsTypedef (T)
-{
-    version (D_Version2)
-        const IsTypedef = is(T.IsTypedef);
-    else
-        const IsTypedef = mixin("is(T == typedef)");
-}
-
-/*******************************************************************************
-
-        Helper template to get the underlying type of a typedef (D1 and D2).
-
-        This bears the same name as the template in `ocean.core.Traits`.
-        However, the definition in `Traits` unconditionally returns `T` in D2.
-        While it might be suitable for most use cases, here we have to
-        explicitly handle `typedef`.
-
-        Params:
-            T   = Typedef for which to get the underlying type
-
-*******************************************************************************/
-
-private template DropTypedef (T)
-{
-    static assert(IsTypedef!(T),
-                  "DropTypedef called on non-typedef type " ~ T.stringof);
-
-    version (D_Version2)
-        alias typeof(T.value) DropTypedef;
-    else
-        mixin("static if (is (T V == typedef))
-                alias V DropTypedef;");
-}
-
-
 
 /*******************************************************************************
 

@@ -21,7 +21,6 @@ module ocean.io.select.client.TimerEvent;
 import ocean.io.select.client.model.ISelectClient: ISelectClient;
 
 import ocean.sys.TimerFD;
-import ocean.core.Traits;
 import ocean.core.Verify;
 
 import ocean.transition;

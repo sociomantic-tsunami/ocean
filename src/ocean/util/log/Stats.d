@@ -44,7 +44,7 @@ import ocean.core.Verify;
 import ocean.core.Verify;
 import ocean.core.Enforce;
 import ocean.core.ExceptionDefinitions;
-import ocean.core.Traits : FieldName;
+import ocean.meta.codegen.Identifier /* : fieldIdentifier */;
 import ocean.core.TypeConvert;
 import ocean.io.select.EpollSelectDispatcher;
 import ocean.io.select.client.TimerEvent;
@@ -487,7 +487,7 @@ public class StatsLog
         scope sink = (cstring v) { this.buffer ~= v; };
         foreach ( i, value; values.tupleof )
         {
-            auto value_name = FieldName!(i, T);
+            auto value_name = fieldIdentifier!(T, i);
 
             static if (is(typeof(value) : long))
                 long fmtd_value = value;

@@ -29,7 +29,9 @@ import ocean.task.Task;
 import ocean.task.IScheduler;
 
 import ocean.core.Enforce;
-import ocean.core.Traits;
+import ocean.meta.types.Function /* : ParametersOf */;
+import ocean.meta.traits.Aggregates /* : hasMember */;
+import ocean.meta.AliasSeq;
 import ocean.util.container.pool.ObjectPool;
 
 /*******************************************************************************
@@ -115,7 +117,7 @@ class TaskPool ( TaskT : Task ) : ObjectPool!(Task)
 
     ***************************************************************************/
 
-    public bool start ( ParameterTupleOf!(TaskT.copyArguments) args )
+    public bool start ( ParametersOf!(TaskT.copyArguments) args )
     {
         if (this.num_busy() >= this.limit())
             return false;
@@ -202,7 +204,7 @@ class TaskPool ( TaskT : Task ) : ObjectPool!(Task)
             current_task.suspend();
     }
 
-    static if( hasMethod!(TaskT, "deserialize", void delegate(void[])) )
+    static if (hasMethod!(TaskT, "deserialize", void delegate(void[])))
     {
         /***********************************************************************
 

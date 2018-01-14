@@ -54,7 +54,7 @@ import ocean.transition;
 
 import ocean.core.Enforce: enforce;
 
-import ocean.core.Traits;
+import ocean.meta.traits.Basic /* : isArrayType, ArrayKind */;
 
 import ocean.io.model.IConduit: IOStream, InputStream, OutputStream;
 
@@ -318,7 +318,7 @@ static:
         {
             foreach ( i, field; data.tupleof )
             {
-                static if ( isStaticArrayType!(typeof(field)) )
+                static if ( isArrayType!(typeof(field)) == ArrayKind.Static )
                 {
                     transmitted += transmitData(stream,
                                                 cast(void*)&data.tupleof[i],

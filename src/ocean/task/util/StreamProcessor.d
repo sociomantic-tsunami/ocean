@@ -30,7 +30,7 @@ import ocean.task.Task;
 import ocean.task.ThrottledTaskPool;
 import ocean.task.IScheduler;
 
-import ocean.core.Traits;
+import ocean.meta.types.Function /* : ParametersOf */;
 import ocean.core.Enforce;
 import ocean.text.convert.Formatter;
 import ocean.io.model.ISuspendable;
@@ -203,7 +203,7 @@ class StreamProcessor ( TaskT : Task )
 
     ***************************************************************************/
 
-    public void process ( ParameterTupleOf!(TaskT.copyArguments) args )
+    public void process ( ParametersOf!(TaskT.copyArguments) args )
     {
         if (!this.task_pool.start(args))
         {

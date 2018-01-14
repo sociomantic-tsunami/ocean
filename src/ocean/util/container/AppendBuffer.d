@@ -29,7 +29,7 @@ import core.stdc.stdlib: malloc, realloc, free;
 
 import ocean.core.ExceptionDefinitions: onOutOfMemoryError;
 
-import ocean.core.Traits;
+import ocean.meta.traits.Indirections;
 
 import ocean.core.Verify;
 

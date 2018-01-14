@@ -130,7 +130,7 @@ public class HashMap ( V ) : Map!(V, hash_t)
     version ( UnitTest )
     {
         import ocean.core.Test;
-        import ocean.core.Traits : isFloatingPointType;
+        import ocean.meta.traits.Basic : isFloatingPointType;
         import ocean.math.IEEE : isNaN;
     }
 

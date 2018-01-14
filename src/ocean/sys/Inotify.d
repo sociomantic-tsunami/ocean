@@ -16,10 +16,6 @@
 
 module ocean.sys.Inotify;
 
-
-
-
-import ocean.core.Traits;
 import ocean.text.util.StringC;
 import ocean.sys.ErrnoException;
 

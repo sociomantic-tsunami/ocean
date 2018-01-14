@@ -47,7 +47,7 @@ import ocean.core.Array;
 
 import ocean.text.util.MetricPrefix;
 
-import ocean.core.Traits;
+import ocean.meta.traits.Basic;
 
 import ocean.text.convert.Formatter;
 

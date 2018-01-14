@@ -20,9 +20,9 @@ module ocean.sys.TimerFD;
 
 import ocean.sys.ErrnoException;
 
-import ocean.core.Traits;
-
 import ocean.io.model.IConduit: ISelectable;
+
+import ocean.meta.codegen.Identifier;
 
 import core.sys.posix.time: time_t, timespec, itimerspec, CLOCK_REALTIME;
 

@@ -28,7 +28,8 @@ import ocean.transition;
 import ocean.text.json.JsonParser;
 
 import ocean.core.Enforce;
-import ocean.core.Traits;
+
+import ocean.meta.traits.Basic;
 
 import Integer = ocean.text.convert.Integer_tango;
 

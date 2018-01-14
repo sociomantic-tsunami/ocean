@@ -21,7 +21,7 @@ module ocean.math.IrregularMovingAverage;
 
 import ocean.core.Enforce;
 
-import ocean.core.Traits;
+import ocean.meta.traits.Basic /* isIntegerType, isFloatingPointType */;
 import ocean.math.IEEE;
 import ocean.math.Math;
 import core.stdc.time;

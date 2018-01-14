@@ -25,6 +25,9 @@ import ocean.io.model.ISuspendableThrottler;
 import ocean.util.container.pool.model.IPoolInfo;
 import ocean.util.container.pool.model.ILimitable;
 
+import ocean.meta.traits.Aggregates /* : hasMethod */;
+import ocean.meta.types.Function /* ParametersOf */;
+
 import ocean.transition;
 
 debug (TaskScheduler)
@@ -39,7 +42,6 @@ debug (TaskScheduler)
 
 public class ThrottledTaskPool ( TaskT ) : TaskPool!(TaskT)
 {
-    import ocean.core.Traits;
     import ocean.core.Enforce;
 
     /***************************************************************************
@@ -171,7 +173,7 @@ public class ThrottledTaskPool ( TaskT ) : TaskPool!(TaskT)
 
     ***************************************************************************/
 
-    override public bool start ( ParameterTupleOf!(TaskT.copyArguments) args )
+    override public bool start ( ParametersOf!(TaskT.copyArguments) args )
     {
         assert (this.throttler !is null);
 
@@ -204,7 +206,7 @@ public class ThrottledTaskPool ( TaskT ) : TaskPool!(TaskT)
         return true;
     }
 
-    static if( hasMethod!(TaskT, "deserialize", void delegate(void[])) )
+    static if (hasMethod!(TaskT, "deserialize", void delegate(void[])))
     {
         /***********************************************************************
 

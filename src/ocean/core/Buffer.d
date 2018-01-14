@@ -29,7 +29,8 @@ module ocean.core.Buffer;
 
 import ocean.transition;
 
-import ocean.core.Traits;
+import ocean.meta.traits.Basic;
+import ocean.meta.types.Arrays;
 
 import ocean.core.buffer.Void;
 import ocean.core.buffer.WithIndirections;
@@ -43,7 +44,7 @@ Buffer!(Unqual!(T)) createBuffer ( T ) ( T[] initial... )
 struct Buffer ( T )
 {
     static assert (
-        !isArrayType!(T) || !is(BaseTypeOfArrays!(T) == void),
+        !isBasicArrayType!(T) || !is(StripAllArrays!(T) == void),
         "Buffer doesn't work as void[][] replacement, try use ubyte[][] instead"
     );
 

@@ -27,7 +27,6 @@ class TaskSelectClient: ISelectClient
     import ocean.task.Task: Task;
     import ocean.task.IScheduler: theScheduler;
     import ocean.io.select.protocol.task.TimeoutException;
-    import ocean.core.Traits: StripTypedef;
     import ocean.util.log.Logger;
     import ocean.transition;
 
