@@ -18,10 +18,9 @@ module ocean.core.TypeConvert;
 
 
 import ocean.transition;
-version ( UnitTest ) import ocean.core.Test;
+import ocean.meta.traits.Indirections;
 
-import ocean.core.Tuple;
-import ocean.core.Traits;
+version ( UnitTest ) import ocean.core.Test;
 
 /*******************************************************************************
 
@@ -192,7 +191,7 @@ template arrayOf (T)
     T[] arrayOf (U...) (U original)
     {
         static assert (U.length > 0);
-        static assert (!hasIndirections!(U));
+        static assert (!hasIndirections!(U[0]));
         static assert (!hasIndirections!(T));
 
         // workaround for dmd1 semantic analysis bug
