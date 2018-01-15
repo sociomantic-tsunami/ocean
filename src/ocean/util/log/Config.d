@@ -414,7 +414,7 @@ public void configureNewLoggers (
     scope Appender delegate(Layout) appender_dg = (Layout l)
                        { return console_appender_fn(use_insert_appender, l); };
 
-    configureLoggers!(Logger, ConfigParser, LayoutDate, LayoutSimple)
+    configureLoggers!(Logger, LayoutDate, LayoutSimple)
         (config, m_config, lookup, file_appender, appender_dg, makeLayout);
 }
 
@@ -427,7 +427,6 @@ public void configureNewLoggers (
 
     Params:
         LoggerT = Type of the logger to configure
-        Source = the type of the config parser
         FileLayout = layout to use for logging to file, defaults to LayoutDate
         ConsoleLayout = layout to use for logging to console, defaults to
                         LayoutSimple
@@ -447,9 +446,9 @@ public void configureNewLoggers (
 *******************************************************************************/
 
 private void configureLoggers
-    (LoggerT : ILogger, Source = ConfigParser,
+    (LoggerT : ILogger,
      FileLayout = LayoutDate, ConsoleLayout = LayoutSimple)
-    (ClassIterator!(Config, Source) config, MetaConfig m_config,
+    (ClassIterator!(Config, ConfigParser) config, MetaConfig m_config,
      LoggerT delegate (cstring name) lookup,
      Appender delegate (istring file, Layout layout) file_appender,
      Appender delegate (Layout) console_appender,
