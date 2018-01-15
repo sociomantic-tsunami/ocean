@@ -409,13 +409,11 @@ public void configureNewLoggers (
     // The type needs to be spelt out loud because DMD2 is clever enough
     // to see it's a function and not a delegate, but not clever enough
     // to understand we want a delegate in the end...
-    scope Logger delegate(cstring) lookup
-                     = (cstring n) { return !n.length ? Log.root : Log.lookup(n); };
     scope Appender delegate(Layout) appender_dg = (Layout l)
                        { return console_appender_fn(use_insert_appender, l); };
 
-    configureLoggers!(Logger, LayoutDate, LayoutSimple)
-        (config, m_config, lookup, file_appender, appender_dg, makeLayout);
+    configureLoggers!(LayoutDate, LayoutSimple)
+        (config, m_config, file_appender, appender_dg, makeLayout);
 }
 
 
@@ -426,15 +424,12 @@ public void configureNewLoggers (
     method.
 
     Params:
-        LoggerT = Type of the logger to configure
         FileLayout = layout to use for logging to file, defaults to LayoutDate
         ConsoleLayout = layout to use for logging to console, defaults to
                         LayoutSimple
 
         config   = an instance of an class iterator for Config
         m_config = an instance of the MetaConfig class
-        lookup   = Delegate that maps a name to a logger.
-                   An empty name should return the root logger.
         file_appender = delegate which returns appender instances to write to
                         a file
         console_appender = Delegate which returns an Appender suitable to use
@@ -446,10 +441,8 @@ public void configureNewLoggers (
 *******************************************************************************/
 
 private void configureLoggers
-    (LoggerT : ILogger,
-     FileLayout = LayoutDate, ConsoleLayout = LayoutSimple)
+    (FileLayout = LayoutDate, ConsoleLayout = LayoutSimple)
     (ClassIterator!(Config, ConfigParser) config, MetaConfig m_config,
-     LoggerT delegate (cstring name) lookup,
      Appender delegate (istring file, Layout layout) file_appender,
      Appender delegate (Layout) console_appender,
      Layout delegate (cstring) makeLayout)
@@ -506,8 +499,9 @@ private void configureLoggers
             console_enabled = settings.console();
             syslog_enabled = settings.syslog();
         }
-        configureLogger!(FileLayout, ConsoleLayout, LoggerT)
-            (lookup(name), settings, name,
+        configureLogger!(FileLayout, ConsoleLayout)
+            (name.length ? Log.lookup(name) : Log.root,
+             settings, name,
              file_appender, console_appender,
              console_enabled, syslog_enabled, m_config.buffer_size,
              makeLayout);
@@ -525,7 +519,6 @@ private void configureLoggers
         FileLayout = layout to use for logging to file, defaults to LayoutDate
         ConsoleLayout = layout to use for logging to console, defaults to
                         LayoutSimple
-        LoggerT  = Type of logger to configure
 
         log      = Logger to configure
         settings = an instance of an class iterator for Config
@@ -545,9 +538,8 @@ private void configureLoggers
 *******************************************************************************/
 
 public void configureLogger
-    (FileLayout = LayoutDate, ConsoleLayout = LayoutSimple,
-     LoggerT : ILogger = Logger)
-    (LoggerT log, Config settings, istring name,
+    (FileLayout = LayoutDate, ConsoleLayout = LayoutSimple)
+    (Logger log, Config settings, istring name,
      Appender delegate ( istring file, Layout layout ) file_appender,
      Appender delegate (Layout) console_appender,
      bool console_enabled, bool syslog_enabled, size_t buffer_size,
@@ -688,7 +680,6 @@ file = dummy
     Sets up the level configuration of a logger.
 
     Params:
-        LoggerT = Type of logger to configure
         log = logger to configure
         name = name of logger
         config = config settings for the logger
@@ -698,8 +689,7 @@ file = dummy
 
 *******************************************************************************/
 
-public void setupLoggerLevel (LoggerT : ILogger)
-    ( LoggerT log, istring name, Config config )
+public void setupLoggerLevel ( Logger log, istring name, Config config )
 {
     with (config) if (level.length > 0)
     {
