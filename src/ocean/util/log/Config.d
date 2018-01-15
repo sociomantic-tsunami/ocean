@@ -145,7 +145,7 @@ class Config
 
     ***************************************************************************/
 
-    public istring console_layout;
+    public istring console_layout = "simple";
 
     /***************************************************************************
 
@@ -161,7 +161,7 @@ class Config
 
     ***************************************************************************/
 
-    public istring file_layout;
+    public istring file_layout = "date";
 
     /***************************************************************************
 
@@ -406,8 +406,7 @@ public void configureNewLoggers (
     scope Appender delegate(Layout) appender_dg = (Layout l)
                        { return console_appender_fn(use_insert_appender, l); };
 
-    configureLoggers!(LayoutDate, LayoutSimple)
-        (config, m_config, file_appender, appender_dg, makeLayout);
+    configureLoggers(config, m_config, file_appender, appender_dg, makeLayout);
 }
 
 
@@ -418,10 +417,6 @@ public void configureNewLoggers (
     method.
 
     Params:
-        FileLayout = layout to use for logging to file, defaults to LayoutDate
-        ConsoleLayout = layout to use for logging to console, defaults to
-                        LayoutSimple
-
         config   = an instance of an class iterator for Config
         m_config = an instance of the MetaConfig class
         file_appender = delegate which returns appender instances to write to
@@ -435,7 +430,6 @@ public void configureNewLoggers (
 *******************************************************************************/
 
 private void configureLoggers
-    (FileLayout = LayoutDate, ConsoleLayout = LayoutSimple)
     (ClassIterator!(Config, ConfigParser) config, MetaConfig m_config,
      Appender delegate (istring file, Layout layout) file_appender,
      Appender delegate (Layout) console_appender,
@@ -493,8 +487,7 @@ private void configureLoggers
             console_enabled = settings.console();
             syslog_enabled = settings.syslog();
         }
-        configureLogger!(FileLayout, ConsoleLayout)
-            (name.length ? Log.lookup(name) : Log.root,
+        configureLogger(name.length ? Log.lookup(name) : Log.root,
              settings, name,
              file_appender, console_appender,
              console_enabled, syslog_enabled, m_config.buffer_size,
@@ -510,10 +503,6 @@ private void configureLoggers
     method.
 
     Params:
-        FileLayout = layout to use for logging to file, defaults to LayoutDate
-        ConsoleLayout = layout to use for logging to console, defaults to
-                        LayoutSimple
-
         log      = Logger to configure
         settings = an instance of an class iterator for Config
         name     = name of this logger
@@ -532,7 +521,6 @@ private void configureLoggers
 *******************************************************************************/
 
 public void configureLogger
-    (FileLayout = LayoutDate, ConsoleLayout = LayoutSimple)
     (Logger log, Config settings, istring name,
      Appender delegate ( istring file, Layout layout ) file_appender,
      Appender delegate (Layout) console_appender,
@@ -554,10 +542,7 @@ public void configureLogger
 
     if (settings.file.set)
     {
-        Layout file_log_layout = (settings.file_layout.length)
-            ? makeLayout(settings.file_layout)
-            : new FileLayout;
-        log.add(file_appender(settings.file(), file_log_layout));
+        log.add(file_appender(settings.file(), makeLayout(settings.file_layout)));
     }
 
     if (syslog_enabled)
@@ -565,10 +550,7 @@ public void configureLogger
 
     if (console_enabled)
     {
-        Layout console_log_layout = (settings.console_layout.length)
-            ? makeLayout(settings.console_layout)
-            : new ConsoleLayout;
-        log.add(console_appender(console_log_layout));
+        log.add(console_appender(makeLayout(settings.console_layout)));
     }
 
     log.collectStats(settings.collect_stats, settings.propagate);
