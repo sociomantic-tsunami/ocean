@@ -16,33 +16,14 @@
 
 module ocean.util.log.layout.LayoutMessageOnly;
 
-
-
-
 import ocean.transition;
 import ocean.util.log.Appender;
 import ocean.util.log.Event;
 
 
-
-/*******************************************************************************
-
-    A layout with only the message
-
-*******************************************************************************/
-
+/// Ditto
 public class LayoutMessageOnly : Appender.Layout
 {
-    /***************************************************************************
-
-        Constructor
-
-    ***************************************************************************/
-
-    this ( )
-    {
-    }
-
     /***************************************************************************
 
         Subclasses should implement this method to perform the
@@ -50,10 +31,8 @@ public class LayoutMessageOnly : Appender.Layout
 
     ***************************************************************************/
 
-    void format (LogEvent event, size_t delegate(Const!(void)[]) dg)
+    public override void format (LogEvent event, size_t delegate(Const!(void)[]) dg)
     {
-        dg (event.toString);
+        dg(event.toString);
     }
-
 }
-

@@ -40,14 +40,13 @@ public class Appender
 
     /***************************************************************************
 
-                Interface for all logging layout instances
+        Interface for all logging layout instances
 
-                Implement this method to perform the formatting of
-                message content.
+        Implement this method to perform the formatting of message content.
 
     ***************************************************************************/
 
-    interface Layout
+    public interface Layout
     {
         void format (LogEvent event, size_t delegate(Const!(void)[]) dg);
     }
@@ -84,23 +83,23 @@ public class Appender
     abstract void append (LogEvent event);
 
     /// Create an Appender and default its layout to LayoutTimer.
-    this ()
+    public this ()
     {
         if (generic is null)
             generic = new LayoutTimer;
-        layout_ = generic;
+        this.layout_ = generic;
     }
 
     /// Return the current Level setting
     final ILogger.Level level ()
     {
-        return level_;
+        return this.level_;
     }
 
     /// Return the current Level setting
     final Appender level (ILogger.Level l)
     {
-        level_ = l;
+        this.level_ = l;
         return this;
     }
 
@@ -145,25 +144,25 @@ public class Appender
     void layout (Layout how)
     {
         verify(generic !is null);
-        layout_ = how ? how : generic;
+        this.layout_ = how ? how : generic;
     }
 
     /// Return the current Layout
     Layout layout ()
     {
-        return layout_;
+        return this.layout_;
     }
 
     /// Attach another appender to this one
     void next (Appender appender)
     {
-        next_ = appender;
+        this.next_ = appender;
     }
 
     /// Return the next appender in the list
     Appender next ()
     {
-        return next_;
+        return this.next_;
     }
 
     /// Close this appender. This would be used for file, sockets, and the like
@@ -189,14 +188,14 @@ public class AppendNull : Appender
     /// Create with the given Layout
     this (Layout how = null)
     {
-        mask_ = register (name);
-        layout (how);
+        this.mask_ = this.register(name);
+        this.layout(how);
     }
 
     /// Return the fingerprint for this class
     final override Mask mask ()
     {
-        return mask_;
+        return this.mask_;
     }
 
     /// Return the name of this class
@@ -208,7 +207,7 @@ public class AppendNull : Appender
     /// Append an event to the output
     final override void append (LogEvent event)
     {
-        layout.format (event, (Const!(void)[]){return cast(size_t) 0;});
+        this.layout.format(event, (Const!(void)[]){return cast(size_t) 0;});
     }
 }
 
@@ -223,18 +222,18 @@ public class AppendStream : Appender
     ///Create with the given stream and layout
     this (OutputStream stream, bool flush = false, Appender.Layout how = null)
     {
-        verify (stream !is null);
+        verify(stream !is null);
 
-        mask_ = register (name);
-        stream_ = stream;
-        flush_ = flush;
-        layout (how);
+        this.mask_ = register (name);
+        this.stream_ = stream;
+        this.flush_ = flush;
+        this.layout(how);
     }
 
     /// Return the fingerprint for this class
     final override Mask mask ()
     {
-        return mask_;
+        return this.mask_;
     }
 
     /// Return the name of this class
@@ -248,10 +247,10 @@ public class AppendStream : Appender
     {
         const istring Eol = "\n";
 
-        layout.format (event, (Const!(void)[] content){return stream_.write(content);});
-        stream_.write (Eol);
-        if (flush_)
-            stream_.flush;
+        this.layout.format(event, (Const!(void)[] content){return this.stream_.write(content);});
+        this.stream_.write(Eol);
+        if (this.flush_)
+            this.stream_.flush;
     }
 }
 
@@ -271,18 +270,18 @@ public class LayoutTimer : Appender.Layout
 
     ***************************************************************************/
 
-    void format (LogEvent event, size_t delegate(Const!(void)[]) dg)
+    public override void format (LogEvent event, size_t delegate(Const!(void)[]) dg)
     {
         char[20] tmp = void;
 
-        dg (event.toMilli (tmp, event.span));
-        dg (" ");
-        dg (event.levelName);
-        dg (" [");
-        dg (event.name);
-        dg ("] ");
-        dg (event.host.label);
-        dg ("- ");
-        dg (event.toString);
+        dg(event.toMilli (tmp, event.span));
+        dg(" ");
+        dg(event.levelName);
+        dg(" [");
+        dg(event.name);
+        dg("] ");
+        dg(event.host.label);
+        dg("- ");
+        dg(event.toString);
     }
 }

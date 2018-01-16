@@ -71,9 +71,9 @@ public class AppendStderrStdout : Appender
     public this (ILogger.Level first_stderr_level = ILogger.Level.Warn,
                  Appender.Layout how = null)
     {
-        mask_ = register(name);
+        this.mask_ = this.register(name);
         this.first_stderr_level = first_stderr_level;
-        layout(how);
+        this.layout(how);
     }
 
     /***********************************************************************
@@ -85,7 +85,7 @@ public class AppendStderrStdout : Appender
 
     final override public Mask mask ()
     {
-        return mask_;
+        return this.mask_;
     }
 
     /***********************************************************************
