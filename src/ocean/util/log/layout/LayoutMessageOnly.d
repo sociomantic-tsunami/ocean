@@ -31,7 +31,7 @@ public class LayoutMessageOnly : Appender.Layout
 
     ***************************************************************************/
 
-    public override void format (LogEvent event, size_t delegate(Const!(void)[]) dg)
+    public override void format (LogEvent event, void delegate(cstring) dg)
     {
         dg(event.toString);
     }

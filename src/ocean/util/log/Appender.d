@@ -48,7 +48,7 @@ public class Appender
 
     public interface Layout
     {
-        void format (LogEvent event, size_t delegate(Const!(void)[]) dg);
+        void format (LogEvent event, void delegate(cstring) dg);
     }
 
     /***************************************************************************
@@ -207,7 +207,7 @@ public class AppendNull : Appender
     /// Append an event to the output
     final override void append (LogEvent event)
     {
-        this.layout.format(event, (Const!(void)[]){return cast(size_t) 0;});
+        this.layout.format(event, (cstring) {});
     }
 }
 
@@ -247,7 +247,7 @@ public class AppendStream : Appender
     {
         const istring Eol = "\n";
 
-        this.layout.format(event, (Const!(void)[] content){return this.stream_.write(content);});
+        this.layout.format(event, (cstring content) { this.stream_.write(content); });
         this.stream_.write(Eol);
         if (this.flush_)
             this.stream_.flush;
@@ -270,7 +270,7 @@ public class LayoutTimer : Appender.Layout
 
     ***************************************************************************/
 
-    public override void format (LogEvent event, size_t delegate(Const!(void)[]) dg)
+    public override void format (LogEvent event, void delegate(cstring) dg)
     {
         char[20] tmp = void;
 

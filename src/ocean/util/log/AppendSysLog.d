@@ -63,8 +63,7 @@ public class AppendSysLog : Appender
 
     private static class SysLogLayout : Layout
     {
-        override public void format ( LogEvent event,
-            size_t delegate(Const!(void)[]) dg )
+        override public void format ( LogEvent event, void delegate(cstring) dg )
         {
             dg("[");
             dg(event.name);
@@ -247,15 +246,14 @@ public class AppendSysLog : Appender
 
     private char* format ( LogEvent event )
     {
-        size_t layoutSink ( Const!(void)[] data )
+        void sink ( cstring data )
         {
-            this.buf ~= castFrom!(Const!(void)[]).to!(cstring)(data);
-            return data.length;
+            this.buf ~= data;
         }
 
         this.buf.length = 0;
         enableStomping(this.buf);
-        this.layout.format(event, &layoutSink);
+        this.layout.format(event, &sink);
         this.buf ~= '\0';
 
         return this.buf.ptr;

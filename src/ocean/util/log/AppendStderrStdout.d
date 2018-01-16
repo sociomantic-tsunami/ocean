@@ -119,8 +119,8 @@ public class AppendStderrStdout : Appender
 
         layout.format(
             event,
-            (Const!(void)[] content) {
-                return stream.write(content);
+            (cstring content) {
+                stream.write(content);
             }
         );
         stream.write(Console.Eol);

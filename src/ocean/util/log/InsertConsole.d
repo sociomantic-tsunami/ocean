@@ -136,12 +136,12 @@ public class InsertConsole: Appender
         {
             layout.format(
               event,
-              ( Const!(void)[] content )
+              ( cstring content )
               {
                   size_t written;
                   while (pos + content.length > buffer.length)
                   {
-                      buffer[pos .. $] = cast(char[]) content[0 .. buffer.length - pos];
+                      buffer[pos .. $] = content[0 .. buffer.length - pos];
 
                       written += stream_.write(CSI);
                       written += stream_.write(LINE_UP);
@@ -164,11 +164,9 @@ public class InsertConsole: Appender
 
                   if (content.length > 0)
                   {
-                      buffer[pos .. pos + content.length] = cast(char[]) content[];
+                      buffer[pos .. pos + content.length] = content[];
                       pos += content.length;
                   }
-
-                  return written;
               } );
 
             stream_.write(CSI);
