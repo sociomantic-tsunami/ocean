@@ -58,30 +58,30 @@ public class LayoutDate : Appender.Layout
 
         ***********************************************************************/
 
-        void format (LogEvent event, size_t delegate(Const!(void)[]) dg)
-        {
-                auto level = event.levelName;
+    public override void format (LogEvent event, size_t delegate(Const!(void)[]) dg)
+    {
+        auto level = event.levelName;
 
-                // convert time to field values
-                auto tm = event.time;
-                auto dt = (localTime) ? WallClock.toDate(tm) : Clock.toDate(tm);
+        // convert time to field values
+        auto tm = event.time;
+        auto dt = (localTime) ? WallClock.toDate(tm) : Clock.toDate(tm);
 
-                // format date according to ISO-8601 (lightweight formatter)
-                char[20] tmp = void;
-                char[256] tmp2 = void;
-                dg (layout (tmp2, "%0-%1-%2 %3:%4:%5,%6 %7 [%8] - ",
-                            convert (tmp[0..4],   dt.date.year),
-                            convert (tmp[4..6],   dt.date.month),
-                            convert (tmp[6..8],   dt.date.day),
-                            convert (tmp[8..10],  dt.time.hours),
-                            convert (tmp[10..12], dt.time.minutes),
-                            convert (tmp[12..14], dt.time.seconds),
-                            convert (tmp[14..17], dt.time.millis),
-                            level,
-                            event.name
-                            ));
-                dg (event.toString);
-        }
+        // format date according to ISO-8601 (lightweight formatter)
+        char[20] tmp = void;
+        char[256] tmp2 = void;
+        dg(layout(tmp2, "%0-%1-%2 %3:%4:%5,%6 %7 [%8] - ",
+                  convert(tmp[0..4],   dt.date.year),
+                  convert(tmp[4..6],   dt.date.month),
+                  convert(tmp[6..8],   dt.date.day),
+                  convert(tmp[8..10],  dt.time.hours),
+                  convert(tmp[10..12], dt.time.minutes),
+                  convert(tmp[12..14], dt.time.seconds),
+                  convert(tmp[14..17], dt.time.millis),
+                  level,
+                  event.name
+               ));
+        dg(event.toString);
+    }
 
         /**********************************************************************
 
