@@ -76,13 +76,13 @@ int main ( )
     int expected_value = 0;
 
     void handleIncrementCommand ( cstring args,
-            void delegate ( cstring response ) send_response )
+            scope void delegate ( cstring response ) send_response )
     {
         expected_value += Integer.parse(args);
     }
 
     void handleShutdown ( cstring args,
-            void delegate ( cstring response ) send_response )
+            scope void delegate ( cstring response ) send_response )
     {
         epoll.shutdown();
     }

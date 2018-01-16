@@ -116,7 +116,7 @@ struct BTreeMap(TreeKeyType, TreeValueType, int tree_degree)
 
     package void initialize (IMemManager allocator = mallocMemManager)
     {
-        this.impl.initialize(allocator);
+        (&this).impl.initialize(allocator);
     }
 
     // Disable constructor, so user always needs to use the makeBTreeMap method
@@ -149,7 +149,7 @@ struct BTreeMap(TreeKeyType, TreeValueType, int tree_degree)
     public bool insert (KeyType key, ValueType value)
     {
         bool added;
-        this.impl.insert(key, value, added);
+        (&this).impl.insert(key, value, added);
         return added;
     }
 
@@ -183,7 +183,7 @@ struct BTreeMap(TreeKeyType, TreeValueType, int tree_degree)
     }
     body
     {
-        return this.impl.insert(key, value, added);
+        return (&this).impl.insert(key, value, added);
     }
 
 
@@ -205,7 +205,7 @@ struct BTreeMap(TreeKeyType, TreeValueType, int tree_degree)
 
     public bool remove (KeyType key)
     {
-        return this.impl.remove(key);
+        return (&this).impl.remove(key);
     }
 
     /******************************************************************************
@@ -230,7 +230,7 @@ struct BTreeMap(TreeKeyType, TreeValueType, int tree_degree)
 
     public ValueType get (KeyType key, out bool found_element)
     {
-        return this.impl.get(key, found_element);
+        return (&this).impl.get(key, found_element);
     }
 
     /**************************************************************************
@@ -252,7 +252,7 @@ struct BTreeMap(TreeKeyType, TreeValueType, int tree_degree)
 
     public ValueType* opIn_r (KeyType key)
     {
-        return this.impl.get(key);
+        return (&this).impl.get(key);
     }
 
     /***********************************************************************
@@ -268,9 +268,9 @@ struct BTreeMap(TreeKeyType, TreeValueType, int tree_degree)
 
     ***********************************************************************/
 
-    public int opApply (int delegate (ref KeyType value, ref ValueType) dg)
+    public int opApply (scope int delegate (ref KeyType value, ref ValueType) dg)
     {
-        return this.impl.inorder(dg);
+        return (&this).impl.inorder(dg);
     }
 
     /***********************************************************************
@@ -286,9 +286,9 @@ struct BTreeMap(TreeKeyType, TreeValueType, int tree_degree)
 
     ***********************************************************************/
 
-    public int opApply (int delegate (ref ValueType) dg)
+    public int opApply (scope int delegate (ref ValueType) dg)
     {
-        return this.impl.inorder(dg);
+        return (&this).impl.inorder(dg);
     }
 
 
@@ -655,7 +655,7 @@ version (UnitTest)
         char[48] name_buf;
         ubyte name_length;
 
-        cstring name () /* d1to2fix_inject: const */
+        cstring name () const
         {
             return name_buf[0..name_length];
         }
@@ -664,8 +664,8 @@ version (UnitTest)
         {
             //logger.error("setting name: {}", name);
             enforce (name.length <= ubyte.max);
-            this.name_length = cast(ubyte)name.length;
-            this.name_buf[0..this.name_length] = name[];
+            (&this).name_length = cast(ubyte)name.length;
+            (&this).name_buf[0..(&this).name_length] = name[];
         }
    }
 }
