@@ -152,18 +152,28 @@ class LogExt : IConfigExtExtension
         auto log_config = ConfigFiller.iterate!(LogUtil.Config)("LOG", config);
         auto log_meta_config = ConfigFiller.fill!(LogUtil.MetaConfig)("LOG", config);
 
+        enable_loose_parsing(conf_ext.loose_config_parsing);
+
+        // deprecated: tracks already registered files to prevent double
+        // registration by both old and new logger system. Can be removed in
+        // ocean v4 together with the old logger.
+        File[cstring] registered_files;
+
         Appender appender ( istring file, LogUtil.Layout layout )
         {
-            auto stream = new File(file, File.WriteAppending);
-            if ( auto reopenable_files_ext =
-                (cast(Application)app).getExtension!(ReopenableFilesExt) )
+            if (!(file in registered_files))
             {
-                reopenable_files_ext.register(stream);
+                auto stream = new File(file, File.WriteAppending);
+                if ( auto reopenable_files_ext =
+                    (cast(Application)app).getExtension!(ReopenableFilesExt) )
+                {
+                    reopenable_files_ext.register(stream);
+                }
+                registered_files[file] = stream;
             }
-            return new AppendStream(stream, true, layout);
-        }
 
-        enable_loose_parsing(conf_ext.loose_config_parsing);
+            return new AppendStream(registered_files[file], true, layout);
+        }
 
         configureOldLoggersLogExtHack(log_config, log_meta_config, &appender,
             this.layout_maker, this.use_insert_appender);
