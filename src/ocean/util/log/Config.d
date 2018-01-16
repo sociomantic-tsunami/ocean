@@ -266,15 +266,15 @@ alias Appender.Layout Layout;
         layout_str = name of the desired layout
 
     Returns:
-        an instance of a suitable layout based on the input string, or an
-        instance of 'LayoutMessageOnly' if no suitable layout was identified.
+        an instance of a suitable layout based on the input string
+
+    Throws:
+        if `layout_str` cannot be matched to any layout
 
 *******************************************************************************/
 
 public Layout newLayout ( cstring layout_str )
 {
-    Layout layout;
-
     mstring tweaked_str = layout_str.dup;
 
     StringSearch!() s;
@@ -288,21 +288,17 @@ public Layout newLayout ( cstring layout_str )
     switch ( tweaked_str )
     {
         case "messageonly":
-            layout = new LayoutMessageOnly;
-            break;
+            return new LayoutMessageOnly;
 
         case "stats":
         case "statslog":
-            layout = new LayoutStatsLog;
-            break;
+            return new LayoutStatsLog;
 
         case "simple":
-            layout = new LayoutSimple;
-            break;
+            return new LayoutSimple;
 
         case "date":
-            layout = new LayoutDate;
-            break;
+            return new LayoutDate;
 
         default:
             // Has to be 2 statements because `istring ~ cstring`
@@ -311,8 +307,6 @@ public Layout newLayout ( cstring layout_str )
             msg ~= layout_str;
             throw new Exception(msg, __FILE__, __LINE__);
     }
-
-    return layout;
 }
 
 ///
