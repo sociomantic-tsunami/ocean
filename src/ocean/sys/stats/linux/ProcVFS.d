@@ -250,7 +250,7 @@ public struct ProcUptime
         {
             Time res_time;
 
-            auto t = (this.seconds * 100 + this.cents) -
+            auto t = ((&this).seconds * 100 + (&this).cents) -
                 (rhs.seconds * 100 + rhs.cents);
 
             res_time.seconds = t / 100;
@@ -501,7 +501,7 @@ private void throwException( istring name )
 
 *******************************************************************************/
 
-private ProcMemInfo parseProcMemInfoData (cstring delegate() read_next_line)
+private ProcMemInfo parseProcMemInfoData (scope cstring delegate() read_next_line)
 {
     /// Helper function to strip leading spaces
     /// Params:
