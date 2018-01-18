@@ -40,16 +40,6 @@
         ; Global options are in the section [LOG]
         [LOG]
 
-        ; Maximum amount of files that will exist.
-        file_count    = 10
-
-        ; Maximum size of one file in bytes till it will be rotated
-        ;
-        max_file_size = 500000
-
-        ; files equal or higher this value will be compressed
-        start_compress = 4
-
         ; Buffer size for output
         buffer_size = 2048
 
@@ -206,32 +196,6 @@ class Config
 
 class MetaConfig
 {
-    /***************************************************************************
-
-        How many files should be created
-
-    ***************************************************************************/
-
-    size_t file_count    = 10;
-
-    /***************************************************************************
-
-        Maximum size of one log file
-
-    ***************************************************************************/
-
-    size_t max_file_size = 500 * 1024 * 1024;
-
-    /***************************************************************************
-
-        Index of the first file that should be compressed
-
-        E.g. 4 means, start compressing with the fourth file
-
-    ***************************************************************************/
-
-    size_t start_compress = 4;
-
     /***************************************************************************
 
         Tango buffer size, if 0, internal stack based buffer of 2048 will be

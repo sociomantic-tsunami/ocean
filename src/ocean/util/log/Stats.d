@@ -126,9 +126,6 @@ public class StatsLog
     public static class Config
     {
         public istring file_name;
-        public size_t max_file_size;
-        public size_t file_count;
-        public size_t start_compress;
 
 
         /***********************************************************************
@@ -235,9 +232,6 @@ public class StatsLog
         ***********************************************************************/
 
         public this ( istring file_name = default_file_name,
-            size_t max_file_size = default_max_file_size,
-            size_t file_count = default_file_count,
-            size_t start_compress = default_start_compress,
             istring socket_path = null,
             istring hostname = null,
             istring app_name = null,
@@ -247,9 +241,7 @@ public class StatsLog
 
         {
             this.file_name = file_name;
-            this.max_file_size = max_file_size;
-            this.file_count = file_count;
-            this.start_compress = start_compress;
+
             // Collectd settings
             this.socket_path = socket_path;
             this.hostname = hostname;
@@ -268,10 +260,7 @@ public class StatsLog
     ***************************************************************************/
 
     public const time_t default_period = 30; // 30 seconds
-    public const default_file_count = 10;
-    public const default_max_file_size = 10 * 1024 * 1024; // 10Mb
     public const istring default_file_name = "log/stats.log";
-    public const size_t default_start_compress = 4;
 
 
     /***************************************************************************
