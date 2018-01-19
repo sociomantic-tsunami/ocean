@@ -29,19 +29,12 @@ import ocean.core.ExceptionDefinitions;
 
 import ocean.io.Path : standard, native;
 
-/*******************************************************************************
+import ocean.stdc.string;
+import core.sys.posix.unistd;
+import core.sys.posix.sys.statvfs;
 
-*******************************************************************************/
-
-version (Posix)
-        {
-        import ocean.stdc.string;
-        import core.sys.posix.unistd,
-                       core.sys.posix.sys.statvfs;
-
-        import ocean.io.device.File;
-        import Integer = ocean.text.convert.Integer_tango;
-        }
+import ocean.io.device.File;
+import Integer = ocean.text.convert.Integer_tango;
 
 /*******************************************************************************
 
@@ -66,130 +59,115 @@ public struct FileSystem
         throw new IOException(msg);
     }
 
-        /***********************************************************************
+    /***************************************************************************
 
-        ***********************************************************************/
+        List the set of root devices.
 
-        version (Posix)
+    ***************************************************************************/
+
+    static istring[] roots ()
+    {
+        istring path = "";
+        istring[] list;
+        int spaces;
+
+        auto fc = new File("/etc/mtab");
+        scope (exit)
+            fc.close;
+
+        auto content = new char[cast(int) fc.length];
+        fc.input.read (content);
+
+        for(int i = 0; i < content.length; i++)
         {
-                /***************************************************************
-
-                        List the set of root devices.
-
-                 ***************************************************************/
-
-                static istring[] roots ()
+            if(content[i] == ' ') spaces++;
+            else if(content[i] == '\n')
+            {
+                spaces = 0;
+                list ~= path;
+                path = "";
+            }
+            else if(spaces == 1)
+            {
+                if(content[i] == '\\')
                 {
-                        version(darwin)
-                        {
-                            assert(0);
-                        }
-                        else
-                        {
-                            istring path = "";
-                            istring[] list;
-                            int spaces;
-
-                            auto fc = new File("/etc/mtab");
-                            scope (exit)
-                                   fc.close;
-
-                            auto content = new char[cast(int) fc.length];
-                            fc.input.read (content);
-
-                            for(int i = 0; i < content.length; i++)
-                            {
-                                if(content[i] == ' ') spaces++;
-                                else if(content[i] == '\n')
-                                {
-                                    spaces = 0;
-                                    list ~= path;
-                                    path = "";
-                                }
-                                else if(spaces == 1)
-                                {
-                                    if(content[i] == '\\')
-                                    {
-                                        path ~= cast(char) Integer.parse(content[++i..i+3], 8u);
-                                        i += 2;
-                                    }
-                                    else path ~= content[i];
-                                }
-                            }
-
-                            return list;
-                        }
+                    path ~= cast(char) Integer.parse(content[++i..i+3], 8u);
+                    i += 2;
                 }
-
-                /***************************************************************
-
-                        Request how much free space in bytes is available on the
-                        disk/mountpoint where folder resides.
-
-                        If a quota limit exists for this area, that will be taken
-                        into account unless superuser is set to true.
-
-                        If a user has exceeded the quota, a negative number can
-                        be returned.
-
-                        Note that the difference between total available space
-                        and free space will not equal the combined size of the
-                        contents on the file system, since the numbers for the
-                        functions here are calculated from the used blocks,
-                        including those spent on metadata and file nodes.
-
-                        If actual used space is wanted one should use the
-                        statistics functionality of ocean.io.vfs.
-
-                        See_also: totalSpace()
-
-                ***************************************************************/
-
-                static long freeSpace(char[] folder, bool superuser = false)
-                {
-                    scope fp = new FilePath(folder);
-                    statvfs_t info;
-                    int res = statvfs(fp.native.cString.ptr, &info);
-                    if (res == -1)
-                        exception ("freeSpace->statvfs failed:"
-                                   ~ SysError.lastMsg);
-
-                    if (superuser)
-                        return cast(long)info.f_bfree *  cast(long)info.f_bsize;
-                    else
-                        return cast(long)info.f_bavail * cast(long)info.f_bsize;
-                }
-
-                /***************************************************************
-
-                        Request how large in bytes the
-                        disk/mountpoint where folder resides is.
-
-                        If a quota limit exists for this area, then
-                        that quota can be what will be returned unless superuser
-                        is set to true. On Posix systems this distinction is not
-                        made though.
-
-                        NOTE Access to this information when _superuser is
-                        set to true may only be available if the program is
-                        run in superuser mode.
-
-                        See_also: freeSpace()
-
-                ***************************************************************/
-
-                static long totalSpace(char[] folder, bool superuser = false)
-                {
-                    scope fp = new FilePath(folder);
-                    statvfs_t info;
-                    int res = statvfs(fp.native.cString.ptr, &info);
-                    if (res == -1)
-                        exception ("totalSpace->statvfs failed:"
-                                   ~ SysError.lastMsg);
-
-                    return cast(long)info.f_blocks *  cast(long)info.f_frsize;
-                }
+                else path ~= content[i];
+            }
         }
+
+        return list;
+    }
+
+    /***************************************************************************
+
+        Request how much free space in bytes is available on the disk/mountpoint
+        where folder resides
+
+        If a quota limit exists for this area, that will be taken
+        into account unless superuser is set to true.
+
+        If a user has exceeded the quota, a negative number can
+        be returned.
+
+        Note that the difference between total available space
+        and free space will not equal the combined size of the
+        contents on the file system, since the numbers for the
+        functions here are calculated from the used blocks,
+        including those spent on metadata and file nodes.
+
+        If actual used space is wanted one should use the
+        statistics functionality of ocean.io.vfs.
+
+        See_also: totalSpace()
+
+    ***************************************************************************/
+
+    static long freeSpace(char[] folder, bool superuser = false)
+    {
+        scope fp = new FilePath(folder);
+        statvfs_t info;
+        int res = statvfs(fp.native.cString.ptr, &info);
+        if (res == -1)
+            exception ("freeSpace->statvfs failed:"
+                       ~ SysError.lastMsg);
+
+        if (superuser)
+            return cast(long)info.f_bfree *  cast(long)info.f_bsize;
+        else
+            return cast(long)info.f_bavail * cast(long)info.f_bsize;
+    }
+
+    /***************************************************************************
+
+        Request how large in bytes the disk/mountpoint where folder resides is.
+
+        If a quota limit exists for this area, then that quota can be what will
+        be returned unless superuser is set to true.
+        On Posix systems this distinction is not made though.
+
+        Note:
+            Access to this information when _superuser is set to true may
+            only be available if the program is run in superuser mode.
+
+        See_also:
+            `freeSpace`
+
+    ***************************************************************************/
+
+    static long totalSpace(char[] folder, bool superuser = false)
+    {
+        scope fp = new FilePath(folder);
+        statvfs_t info;
+        int res = statvfs(fp.native.cString.ptr, &info);
+        if (res == -1)
+            exception ("totalSpace->statvfs failed:"
+                       ~ SysError.lastMsg);
+
+        return cast(long)info.f_blocks *  cast(long)info.f_frsize;
+    }
 }
 
 

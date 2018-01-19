@@ -20,11 +20,7 @@
 
 module ocean.math.random.Kiss;
 
-
-version (Posix)
-        {
-        import ocean.stdc.posix.sys.time;
-        }
+import ocean.stdc.posix.sys.time;
 
 
 /******************************************************************************
@@ -107,13 +103,10 @@ struct Kiss
         {
                 ulong s;
 
-                version (Posix)
-                        {
-                        timeval tv;
+                timeval tv;
 
-                        gettimeofday (&tv, null);
-                        s = tv.tv_usec;
-                        }
+                gettimeofday (&tv, null);
+                s = tv.tv_usec;
 
                 return seed (cast(uint) s);
         }

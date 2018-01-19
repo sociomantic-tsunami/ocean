@@ -84,16 +84,6 @@
 module ocean.sys.SignalFD;
 
 
-
-
-version ( Posix )
-{
-}
-else
-{
-    static assert(false, "module ocean.sys.SignalFD only supported in posix environments");
-}
-
 import ocean.core.Exception;
 import ocean.sys.ErrnoException;
 

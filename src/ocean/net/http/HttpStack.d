@@ -28,7 +28,7 @@ import ocean.transition;
 
 ******************************************************************************/
 
-version (Posix) import ocean.stdc.string: strncasecmp;
+import ocean.stdc.string: strncasecmp;
 
 import ocean.stdc.string: memmove;
 import core.stdc.stdio;
@@ -263,8 +263,7 @@ class HttpStack
                 if (length is 0)
                     return false;
 
-                version (Posix)
-                         return strncasecmp (target.ptr, match.ptr, length) is 0;
+                return strncasecmp (target.ptr, match.ptr, length) is 0;
         }
 
         /**********************************************************************

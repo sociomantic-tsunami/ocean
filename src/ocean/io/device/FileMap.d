@@ -18,20 +18,11 @@
 module ocean.io.device.FileMap;
 
 import ocean.transition;
-
+import ocean.stdc.posix.sys.mman;
 import ocean.sys.Common;
 
 import ocean.io.device.File,
                ocean.io.device.Array;
-
-/*******************************************************************************
-
-        External declarations.
-
-*******************************************************************************/
-
-version (Posix)
-         import ocean.stdc.posix.sys.mman;
 
 
 /*******************************************************************************
@@ -140,99 +131,88 @@ class MappedFile
                 return map;
         }
 
-        /***********************************************************************
+    private void*   base;           // array pointer
+    private size_t  size;           // length of file
 
-        ***********************************************************************/
+    /***************************************************************************
 
-        version (Posix)
+        Return a slice representing file content as a memory-mapped array
+
+        Use this to remap content each time the file size is changed.
+
+    ***************************************************************************/
+
+    final ubyte[] map ()
+    {
+        // be wary of redundant references
+        if (base)
+            reset;
+
+        // can only do 32bit mapping on 32bit platform
+        size = cast (size_t) host.length;
+
+        // Make sure the mapping attributes are consistant with
+        // the File attributes.
+        int flags = MAP_SHARED;
+        int protection = PROT_READ;
+        auto access = host.style.access;
+        if (access & host.Access.Write)
+            protection |= PROT_WRITE;
+
+        base = mmap (null, size, protection, flags, host.fileHandle, 0);
+        if (base is MAP_FAILED)
         {
-                // Linux code: not yet tested on other POSIX systems.
-                private void*   base;           // array pointer
-                private size_t  size;           // length of file
-
-                /***************************************************************
-
-                        Return a slice representing file content as a
-                        memory-mapped array. Use this to remap content
-                        each time the file size is changed.
-
-                ***************************************************************/
-
-                final ubyte[] map ()
-                {
-                        // be wary of redundant references
-                        if (base)
-                            reset;
-
-                        // can only do 32bit mapping on 32bit platform
-                        size = cast (size_t) host.length;
-
-                        // Make sure the mapping attributes are consistant with
-                        // the File attributes.
-                        int flags = MAP_SHARED;
-                        int protection = PROT_READ;
-                        auto access = host.style.access;
-                        if (access & host.Access.Write)
-                            protection |= PROT_WRITE;
-
-                        base = mmap (null, size, protection, flags, host.fileHandle, 0);
-                        if (base is MAP_FAILED)
-                           {
-                           base = null;
-                           host.error;
-                           }
-
-                        return (cast(ubyte*) base) [0 .. size];
-                }
-
-                /***************************************************************
-
-                        Release this mapped buffer without flushing.
-
-                ***************************************************************/
-
-                final void close ()
-                {
-                        reset;
-                        if (host)
-                            host.close;
-                        host = null;
-                }
-
-                /***************************************************************
-
-                ***************************************************************/
-
-                private void reset ()
-                {
-                        // NOTE: When a process ends, all mmaps belonging to that process
-                        //       are automatically unmapped by system (Linux).
-                        //       On the other hand, this is NOT the case when the related
-                        //       file descriptor is closed.  This function unmaps explicitly.
-                        if (base)
-                            if (munmap (base, size))
-                                host.error;
-
-                        base = null;
-                }
-
-                /***************************************************************
-
-                        Flush dirty content out to the drive.
-
-                ***************************************************************/
-
-                final MappedFile flush ()
-                {
-                        // MS_ASYNC: delayed flush; equivalent to "add-to-queue"
-                        // MS_SYNC: function flushes file immediately; no return until flush complete
-                        // MS_INVALIDATE: invalidate all mappings of the same file (shared)
-
-                        if (msync (base, size, MS_SYNC | MS_INVALIDATE))
-                            host.error;
-                        return this;
-                }
+            base = null;
+            host.error;
         }
+
+        return (cast(ubyte*) base) [0 .. size];
+    }
+
+    /***************************************************************************
+
+        Release this mapped buffer without flushing.
+
+    ***************************************************************************/
+
+    final void close ()
+    {
+        reset;
+        if (host)
+            host.close;
+        host = null;
+    }
+
+    ///
+    private void reset ()
+    {
+        // NOTE: When a process ends, all mmaps belonging to that process
+        //       are automatically unmapped by system (Linux).
+        //       On the other hand, this is NOT the case when the related
+        //       file descriptor is closed.  This function unmaps explicitly.
+        if (base)
+            if (munmap (base, size))
+                host.error;
+
+        base = null;
+    }
+
+    /***************************************************************************
+
+        Flush dirty content out to the drive.
+
+    ***************************************************************************/
+
+    final MappedFile flush ()
+    {
+        // MS_ASYNC: delayed flush; equivalent to "add-to-queue"
+        // MS_SYNC: function flushes file immediately; no return until flush complete
+        // MS_INVALIDATE: invalidate all mappings of the same file (shared)
+
+        if (msync (base, size, MS_SYNC | MS_INVALIDATE))
+            host.error;
+        return this;
+    }
 }
 
 ///

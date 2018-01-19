@@ -205,13 +205,8 @@ private Unqual!(T) ctfe_powI(T)(T _x,int p){
 }
 // ----- templateFu end --------
 
-version (Posix) {
-    import ocean.stdc.posix.sys.time;
-}
-
-version(darwin) { version=has_urandom; }
-version(linux)  { version=has_urandom; }
-version(solaris){ version=has_urandom; }
+import ocean.stdc.posix.sys.time;
+version=has_urandom;
 
 /// if T is a float
 template isFloat(T){
@@ -1274,17 +1269,9 @@ static this ()
 
     version(UnitTest){
         set_array_source(9); // http://dilbert.com/strip/2001-10-25
-    } else version(has_urandom){
+    } else {
         URandom r;
         rand.seed(&r.next);
-    } else {
-        ulong s;
-        version (Posix){
-            timeval tv;
-            gettimeofday (&tv, null);
-            s = tv.tv_usec;
-        }
-        set_array_source(s);
     }
 }
 
