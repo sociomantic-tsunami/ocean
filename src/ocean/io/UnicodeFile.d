@@ -15,7 +15,7 @@
 
 *******************************************************************************/
 
-module ocean.io.UnicodeFile;
+deprecated module ocean.io.UnicodeFile;
 
 import ocean.io.device.File;
 
@@ -103,7 +103,7 @@ public  import ocean.text.convert.UnicodeBom;
 
 *******************************************************************************/
 
-class UnicodeFile(T)
+deprecated class UnicodeFile(T)
 {
         private UnicodeBom!(T)  bom_;
         private char[]          path_;
