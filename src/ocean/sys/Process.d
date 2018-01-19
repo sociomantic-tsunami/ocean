@@ -194,32 +194,43 @@ class Process
         public int reason;
         public int status;
 
-        /**
-         * Returns a string with a description of the process execution result.
-         */
-        public istring toString()
+        /// Formatter-compatible string formatting function
+        public void toString (FormatterSink sink)
         {
             switch (reason)
             {
                 case Exit:
-                    return format("Process exited normally with return code {}", status);
+                    sformat(sink,
+                        "Process exited normally with return code {}", status);
+                    break;
 
                 case Signal:
-                    return format("Process was killed with signal {}", status);
+                    sformat(sink, "Process was killed with signal {}", status);
+                    break;
 
                 case Stop:
-                    return format("Process was stopped with signal {}", status);
+                    sformat(sink, "Process was stopped with signal {}", status);
+                    break;
 
                 case Continue:
-                    return format("Process was resumed with signal {}", status);
+                    sformat(sink, "Process was resumed with signal {}", status);
+                    break;
 
                 case Error:
-                    return format("Process failed with error code {}: {}",
-                                  reason, SysError.lookup(status));
+                    sformat(sink, "Process failed with error code {}: {}",
+                        reason, SysError.lookup(status));
+                    break;
 
                 default:
-                    return format("Unknown process result {}", reason);
+                    sformat(sink, "Unknown process result {}", reason);
+                    break;
             }
+        }
+
+        /// Convenience overload that format this as a string
+        public istring toString ()
+        {
+            return format("{}", this);
         }
     }
 
