@@ -25,16 +25,7 @@
 
 module ocean.sys.SignalMask;
 
-
-
-version ( Posix )
-{
-    import core.sys.posix.signal;
-}
-else
-{
-    static assert(false, "module ocean.sys.SignalMask only supported in posix environments");
-}
+import core.sys.posix.signal;
 
 debug ( SignalMask ) import ocean.io.Stdout : Stderr;
 

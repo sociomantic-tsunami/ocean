@@ -26,11 +26,8 @@ import ocean.core.Array;
 
 import ocean.core.Verify;
 
-version (Posix)
-{
-    import ocean.stdc.string: strncasecmp, memcmp;
-    private alias strncasecmp memicmp;
-}
+import ocean.stdc.string: strncasecmp, memcmp;
+private alias strncasecmp memicmp;
 
 version(UnitTest) import ocean.core.Test;
 

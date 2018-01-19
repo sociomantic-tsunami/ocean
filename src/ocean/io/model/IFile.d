@@ -32,46 +32,40 @@ public interface FileConst
         A set of file-system specific constants for file and path separators
         (chars and strings).
 
-        Keep these constants mirrored for each OS.
-
     ***************************************************************************/
 
-        version (Posix)
-        {
-                ///
-                enum : char
-                {
-                        /// The current directory character.
-                        CurrentDirChar = '.',
+    enum : char
+    {
+        /// The current directory character.
+        CurrentDirChar = '.',
 
-                        /// The file separator character.
-                        FileSeparatorChar = '.',
+        /// The file separator character.
+        FileSeparatorChar = '.',
 
-                        /// The path separator character.
-                        PathSeparatorChar = '/',
+        /// The path separator character.
+        PathSeparatorChar = '/',
 
-                        /// The system path character.
-                        SystemPathChar = ':',
-                }
+        /// The system path character.
+        SystemPathChar = ':',
+    }
 
-                /// The parent directory string.
-                const ParentDirString = "..";
+    /// The parent directory string.
+    const ParentDirString = "..";
 
-                /// The current directory string.
-                const CurrentDirString = ".";
+    /// The current directory string.
+    const CurrentDirString = ".";
 
-                /// The file separator string.
-                const FileSeparatorString = ".";
+    /// The file separator string.
+    const FileSeparatorString = ".";
 
-                /// The path separator string.
-                const PathSeparatorString = "/";
+    /// The path separator string.
+    const PathSeparatorString = "/";
 
-                /// The system path string.
-                const SystemPathString = ":";
+    /// The system path string.
+    const SystemPathString = ":";
 
-                /// The newline string.
-                const NewlineString = "\n";
-        }
+    /// The newline string.
+    const NewlineString = "\n";
 }
 
 /*******************************************************************************

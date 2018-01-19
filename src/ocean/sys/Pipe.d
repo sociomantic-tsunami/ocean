@@ -22,10 +22,7 @@ import ocean.io.device.Device;
 
 import ocean.core.ExceptionDefinitions;
 
-version (Posix)
-{
-    import core.sys.posix.unistd;
-}
+import core.sys.posix.unistd;
 
 debug (PipeConduit)
 {
@@ -100,23 +97,16 @@ class Pipe
      */
     public this(uint bufferSize = DefaultBufferSize)
     {
-        version (Posix)
-        {
-            int[2] fd;
+        int[2] fd;
 
-            if (pipe(fd) == 0)
-            {
-                _source = new PipeConduit(cast(ISelectable.Handle) fd[0], bufferSize);
-                _sink = new PipeConduit(cast(ISelectable.Handle) fd[1], bufferSize);
-            }
-            else
-            {
-                error();
-            }
+        if (pipe(fd) == 0)
+        {
+            _source = new PipeConduit(cast(ISelectable.Handle) fd[0], bufferSize);
+            _sink = new PipeConduit(cast(ISelectable.Handle) fd[1], bufferSize);
         }
         else
         {
-            static assert(false, "Unknown platform");
+            error();
         }
     }
 
@@ -124,25 +114,18 @@ class Pipe
     */
     public void recreate(uint bufferSize = DefaultBufferSize)
     {
-        version (Posix)
-        {
-            int[2] fd;
+        int[2] fd;
 
-            if (pipe(fd) == 0)
-            {
-                _source.reopen(cast(ISelectable.Handle) fd[0]);
-                _source._bufferSize = bufferSize;
-                _sink.reopen(cast(ISelectable.Handle) fd[1]);
-                _sink._bufferSize = bufferSize;
-            }
-            else
-            {
-                error();
-            }
+        if (pipe(fd) == 0)
+        {
+            _source.reopen(cast(ISelectable.Handle) fd[0]);
+            _source._bufferSize = bufferSize;
+            _sink.reopen(cast(ISelectable.Handle) fd[1]);
+            _sink._bufferSize = bufferSize;
         }
         else
         {
-            static assert(false, "Currently only supported on Posix");
+            error();
         }
     }
 

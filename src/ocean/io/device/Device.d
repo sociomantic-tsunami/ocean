@@ -96,175 +96,167 @@ class Device : Conduit, ISelectable
             }
         }
 
-        /***********************************************************************
+    protected int handle = -1;
 
-                 Unix-specific code.
+    /***************************************************************************
 
-        ***********************************************************************/
+        Allow adjustment of standard IO handles.
 
-        version (Posix)
+    ***************************************************************************/
+
+    public void reopen (Handle handle)
+    {
+        this.handle = handle;
+    }
+
+    /***************************************************************************
+
+        Returns:
+            the file descriptor of this Conduit.
+
+    ***************************************************************************/
+
+    final Handle fileHandle ()
+    {
+        return cast(Handle) handle;
+    }
+
+    /***************************************************************************
+
+        Release the underlying file.
+
+    ***************************************************************************/
+
+    override void detach ()
+    {
+        if (handle >= 0)
         {
-                protected int handle = -1;
-
-                /***************************************************************
-
-                        Allow adjustment of standard IO handles.
-
-                ***************************************************************/
-
-                public void reopen (Handle handle)
-                {
-                        this.handle = handle;
-                }
-
-                /***************************************************************
-
-                        Return the underlying OS handle of this Conduit.
-
-                ***************************************************************/
-
-                final Handle fileHandle ()
-                {
-                        return cast(Handle) handle;
-                }
-
-                /***************************************************************
-
-                        Release the underlying file.
-
-                ***************************************************************/
-
-                override void detach ()
-                {
-                        if (handle >= 0)
-                           {
-                           //if (scheduler)
-                               // TODO Not supported on Posix
-                               // scheduler.close (handle, toString);
-                           posix.close (handle);
-                           }
-                        handle = -1;
-                }
-
-                /***************************************************************
-
-                        Read a chunk of bytes from the file into the provided
-                        array. Returns the number of bytes read, or Eof where
-                        there is no further data.
-
-                ***************************************************************/
-
-                override size_t read (void[] dst)
-                {
-                        ssize_t read;
-
-                        do
-                        {
-                            read = posix.read (handle, dst.ptr, dst.length);
-                        }
-                        while (read == -1 && errno == EINTR);
-
-                        if (read is -1)
-                            error(errno, "read");
-                        else
-                           if (read is 0 && dst.length > 0)
-                               return Eof;
-                        return read;
-                }
-
-                /***************************************************************
-
-                        Write a chunk of bytes to the file from the provided
-                        array. Returns the number of bytes written, or Eof if
-                        the output is no longer available.
-
-                ***************************************************************/
-
-                override size_t write (Const!(void)[] src)
-                {
-                        ssize_t written;
-
-                        do
-                        {
-                            written = posix.write (handle, src.ptr, src.length);
-                        }
-                        while (written == -1 && errno == EINTR);
-
-                        if (written is -1)
-                            error(errno, "write");
-                        return written;
-                }
-
-                /***************************************************************
-
-                        Read a chunk of bytes from the file from the given
-                        offset, into the provided array. Returns the number of
-                        bytes read, or Eof where there is no further data.
-
-                        Params:
-                            dst = destination buffer to fill
-                            offset = offset to start reading from
-
-                        Returns:
-                            number of bytes read or Eof if there's no further
-                            data
-
-                        Throws:
-                            File.IOException on failure
-
-                ***************************************************************/
-
-                public size_t pread (void[] dst, off_t offset)
-                {
-                        ssize_t read;
-
-                        do
-                        {
-                            read = posix.pread (handle, dst.ptr, dst.length,
-                                offset);
-                        }
-                        while (read == -1 && errno == EINTR);
-
-                        if (read is -1)
-                            error(errno, "pread");
-                        else
-                           if (read is 0 && dst.length > 0)
-                               return Eof;
-                        return read;
-                }
-
-                /***************************************************************
-
-                        Write a chunk of bytes to the file starting from the
-                        given offset, from the provided array. Returns the
-                        number of bytes written
-
-                        Params:
-                            src = source buffer to write data from
-                            offset = offset to start writing from
-
-                        Returns:
-                            number of bytes written
-
-                        Throws:
-                            File.IOException on failure
-
-                ***************************************************************/
-
-                public size_t pwrite (Const!(void)[] src, off_t offset)
-                {
-                        ssize_t written;
-
-                        do
-                        {
-                            written = posix.pwrite (handle, src.ptr, src.length,
-                                    offset);
-                        }
-                        while (written == -1 && errno == EINTR);
-
-                        if (written is -1)
-                            error(errno, "pwrite");
-                        return written;
-                }
+            //if (scheduler)
+            // TODO Not supported on Posix
+            // scheduler.close (handle, toString);
+            posix.close (handle);
         }
+        handle = -1;
+    }
+
+    /***************************************************************************
+
+        Read a chunk of bytes from the file into the provided array
+
+        Returns:
+            the number of bytes read, or Eof where there is no further data.
+
+    ***************************************************************************/
+
+    override size_t read (void[] dst)
+    {
+        ssize_t read;
+
+        do
+        {
+            read = posix.read (handle, dst.ptr, dst.length);
+        }
+        while (read == -1 && errno == EINTR);
+
+        if (read is -1)
+            error(errno, "read");
+        else
+            if (read is 0 && dst.length > 0)
+                return Eof;
+        return read;
+    }
+
+    /***************************************************************************
+
+        Write a chunk of bytes to the file from the provided array.
+
+        Returns:
+            the number of bytes written, or Eof if the output is
+            no longer available.
+
+    ***************************************************************************/
+
+    override size_t write (Const!(void)[] src)
+    {
+        ssize_t written;
+
+        do
+        {
+            written = posix.write (handle, src.ptr, src.length);
+        }
+        while (written == -1 && errno == EINTR);
+
+        if (written is -1)
+            error(errno, "write");
+        return written;
+    }
+
+    /***************************************************************************
+
+        Read a chunk of bytes from the file from the given offset,
+        into the provided array
+
+        Params:
+            dst = destination buffer to fill
+            offset = offset to start reading from
+
+        Returns:
+            number of bytes read or Eof if there's no further data
+
+        Throws:
+            `File.IOException` on failure
+
+    ***************************************************************************/
+
+    public size_t pread (void[] dst, off_t offset)
+    {
+        ssize_t read;
+
+        do
+        {
+            read = posix.pread (handle, dst.ptr, dst.length,
+                                offset);
+        }
+        while (read == -1 && errno == EINTR);
+
+        if (read is -1)
+            error(errno, "pread");
+        else
+            if (read is 0 && dst.length > 0)
+                return Eof;
+        return read;
+    }
+
+    /***************************************************************************
+
+        Write a chunk of bytes to the file starting from the given offset,
+        from the provided array
+
+        Params:
+            src = source buffer to write data from
+            offset = offset to start writing from
+
+        Returns:
+            number of bytes written
+
+        Throws:
+            `File.IOException` on failure
+
+    ***************************************************************************/
+
+    public size_t pwrite (Const!(void)[] src, off_t offset)
+    {
+        ssize_t written;
+
+        do
+        {
+            written = posix.pwrite (handle, src.ptr, src.length,
+                                    offset);
+        }
+        while (written == -1 && errno == EINTR);
+
+        if (written is -1)
+            error(errno, "pwrite");
+        return written;
+    }
 }

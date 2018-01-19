@@ -18,11 +18,8 @@
 
 module ocean.math.random.Twister;
 
+import ocean.stdc.posix.sys.time;
 
-version (Posix)
-        {
-        import ocean.stdc.posix.sys.time;
-        }
 
 /*******************************************************************************
 
@@ -218,13 +215,10 @@ struct Twister
         {
                 ulong s;
 
-                version (Posix)
-                        {
-                        timeval tv;
+                timeval tv;
 
-                        gettimeofday (&tv, null);
-                        s = tv.tv_usec;
-                        }
+                gettimeofday (&tv, null);
+                s = tv.tv_usec;
 
                 return seed (cast(uint) s);
         }

@@ -30,28 +30,9 @@ import ocean.io.model.IFile;
 
 import Text = ocean.text.Util;
 
-/*******************************************************************************
-
-        Platform decls
-
-*******************************************************************************/
-
-version (darwin)
+private
 {
-    extern (C) char*** _NSGetEnviron();
-    private char** environ;
-
-    static this ()
-    {
-        environ = *_NSGetEnviron();
-    }
-}
-else
-{
-    private
-    {
-        mixin(global("extern (C) extern char** environ"));
-    }
+    mixin(global("extern (C) extern char** environ"));
 }
 
 import core.sys.posix.stdlib;
@@ -131,116 +112,106 @@ struct Environment
                 return null;
         }
 
-        /***********************************************************************
+    /***************************************************************************
 
-                Posix implementation
+        Returns:
+            the provided 'def' value if the variable does not exist
 
-        ***********************************************************************/
+    ***************************************************************************/
 
-        version (Posix)
+    static istring get (cstring variable, istring def = null)
+    {
+        char* ptr = getenv ((variable ~ '\0').ptr);
+
+        if (ptr is null)
+            return def;
+
+        return idup(ptr[0 .. strlen(ptr)]);
+    }
+
+    /***************************************************************************
+
+        Clears the variable, if value is null or empty
+
+    ***************************************************************************/
+
+    static void set (cstring variable, cstring value = null)
+    {
+        int result;
+
+        if (value.length is 0)
+            unsetenv ((variable ~ '\0').ptr);
+        else
+            result = setenv ((variable ~ '\0').ptr, (value ~ '\0').ptr, 1);
+
+        if (result != 0)
+            exception (SysError.lastMsg);
+    }
+
+    /***************************************************************************
+
+        Get all set environment variables as an associative array.
+
+    ***************************************************************************/
+
+    static istring[istring] get ()
+    {
+        istring[istring] arr;
+
+        for (char** p = environ; *p; ++p)
         {
-                /**************************************************************
+            size_t k = 0;
+            char* str = *p;
 
-                        Returns the provided 'def' value if the variable
-                        does not exist
+            while (*str++ != '=')
+                ++k;
+            istring key = idup((*p)[0..k]);
 
-                **************************************************************/
-
-                static istring get (cstring variable, istring def = null)
-                {
-                        char* ptr = getenv ((variable ~ '\0').ptr);
-
-                        if (ptr is null)
-                            return def;
-
-                        return idup(ptr[0 .. strlen(ptr)]);
-                }
-
-                /**************************************************************
-
-                        clears the variable, if value is null or empty
-
-                **************************************************************/
-
-                static void set (cstring variable, cstring value = null)
-                {
-                        int result;
-
-                        if (value.length is 0)
-                            unsetenv ((variable ~ '\0').ptr);
-                        else
-                           result = setenv ((variable ~ '\0').ptr, (value ~ '\0').ptr, 1);
-
-                        if (result != 0)
-                            exception (SysError.lastMsg);
-                }
-
-                /**************************************************************
-
-                        Get all set environment variables as an associative
-                        array.
-
-                **************************************************************/
-
-                static istring[istring] get ()
-                {
-                        istring[istring] arr;
-
-                        for (char** p = environ; *p; ++p)
-                            {
-                            size_t k = 0;
-                            char* str = *p;
-
-                            while (*str++ != '=')
-                                   ++k;
-                            istring key = idup((*p)[0..k]);
-
-                            k = 0;
-                            char* val = str;
-                            while (*str++)
-                                   ++k;
-                            arr[key] = idup(val[0 .. k]);
-                            }
-
-                        return arr;
-                }
-
-                /**************************************************************
-
-                        Set the current working directory
-
-                **************************************************************/
-
-                static void cwd (cstring path)
-                {
-                        char[512] tmp = void;
-                        tmp [path.length] = 0;
-                        tmp[0..path.length] = path;
-
-                        if (core.sys.posix.unistd.chdir (tmp.ptr))
-                            exception ("Failed to set current directory");
-                }
-
-                /**************************************************************
-
-                        Get the current working directory
-
-                **************************************************************/
-
-                static istring cwd ()
-                {
-                        char[512] tmp = void;
-
-                        char *s = core.sys.posix.unistd.getcwd (tmp.ptr, tmp.length);
-                        if (s is null)
-                            exception ("Failed to get current directory");
-
-                        auto path = s[0 .. strlen(s)+1].dup;
-                        if (path[$-2] is '/') // root path has the slash
-                            path.length = path.length-1;
-                        else
-                            path[$-1] = '/';
-                        return assumeUnique(path);
-                }
+            k = 0;
+            char* val = str;
+            while (*str++)
+                ++k;
+            arr[key] = idup(val[0 .. k]);
         }
+
+        return arr;
+    }
+
+    /***************************************************************************
+
+        Set the current working directory
+
+    ***************************************************************************/
+
+    static void cwd (cstring path)
+    {
+        char[512] tmp = void;
+        tmp [path.length] = 0;
+        tmp[0..path.length] = path;
+
+        if (core.sys.posix.unistd.chdir (tmp.ptr))
+            exception ("Failed to set current directory");
+    }
+
+    /***************************************************************************
+
+        Get the current working directory
+
+    ***************************************************************************/
+
+    static istring cwd ()
+    {
+        char[512] tmp = void;
+
+        char *s = core.sys.posix.unistd.getcwd (tmp.ptr, tmp.length);
+        if (s is null)
+            exception ("Failed to get current directory");
+
+        auto path = s[0 .. strlen(s)+1].dup;
+        if (path[$-2] is '/') // root path has the slash
+            path.length = path.length-1;
+        else
+            path[$-1] = '/';
+        return assumeUnique(path);
+    }
 }

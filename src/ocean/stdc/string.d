@@ -23,11 +23,8 @@ version (D_Version2)
 
 public import ocean.stdc.gnu.string;
 
-version (Posix)
-{
-    extern (C):
+extern (C):
 
-    char *strsignal(int sig);
-    int strcasecmp(in char *s1, in char *s2);
-    int strncasecmp(in char *s1, in char *s2, size_t n);
-}
+char *strsignal(int sig);
+int strcasecmp(in char *s1, in char *s2);
+int strncasecmp(in char *s1, in char *s2, size_t n);
