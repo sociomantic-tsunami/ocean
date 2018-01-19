@@ -23,8 +23,8 @@ import ocean.io.Console;
 import ocean.sys.Common;
 import ocean.sys.Pipe;
 import ocean.core.ExceptionDefinitions;
+import ocean.text.convert.Formatter;
 import ocean.text.Util;
-import Integer = ocean.text.convert.Integer_tango;
 
 version(UnitTest) import ocean.core.Test;
 
@@ -199,37 +199,27 @@ class Process
          */
         public istring toString()
         {
-            cstring str;
-
             switch (reason)
             {
                 case Exit:
-                    str = format("Process exited normally with return code ", status);
-                    break;
+                    return format("Process exited normally with return code {}", status);
 
                 case Signal:
-                    str = format("Process was killed with signal ", status);
-                    break;
+                    return format("Process was killed with signal {}", status);
 
                 case Stop:
-                    str = format("Process was stopped with signal ", status);
-                    break;
+                    return format("Process was stopped with signal {}", status);
 
                 case Continue:
-                    str = format("Process was resumed with signal ", status);
-                    break;
+                    return format("Process was resumed with signal {}", status);
 
                 case Error:
-                    str = format("Process failed with error code ", reason) ~
-                                 " : " ~ SysError.lookup(status);
-                    break;
+                    return format("Process failed with error code {}: {}",
+                                  reason, SysError.lookup(status));
 
                 default:
-                    str = format("Unknown process result ", reason);
-                    break;
+                    return format("Unknown process result {}", reason);
             }
-
-            return assumeUnique(str);
         }
     }
 
@@ -1599,8 +1589,9 @@ class ProcessCreateException: ProcessException
     public this (cstring command, istring message = SysError.lastMsg,
                  istring file = __FILE__, uint line = __LINE__)
     {
-        super("Could not create process for " ~ idup(command) ~ " : " ~ message,
-              file, line);
+        super(
+            format("Could not create process for '{}': {}", command, message),
+            file, line);
     }
 }
 
@@ -1613,8 +1604,9 @@ class ProcessForkException: ProcessException
 {
     public this (int pid, istring file = __FILE__, uint line = __LINE__)
     {
-        auto msg = format("Could not fork process ", pid);
-        super(assumeUnique(msg) ~ " : " ~ SysError.lastMsg, file, line);
+        super(
+            format("Could not fork process {}: {}", pid, SysError.lastMsg),
+            file, line);
     }
 }
 
@@ -1625,8 +1617,9 @@ class ProcessKillException: ProcessException
 {
     public this (int pid, istring file = __FILE__, uint line = __LINE__)
     {
-        auto msg = format("Could not kill process ", pid);
-        super(assumeUnique(msg) ~ " : " ~ SysError.lastMsg, file, line);
+        super(
+            format("Could not kill process {}: {}", pid, SysError.lastMsg),
+            file, line);
     }
 }
 
@@ -1638,22 +1631,10 @@ class ProcessWaitException: ProcessException
 {
     public this (int pid, istring file = __FILE__, uint line = __LINE__)
     {
-        auto msg = format("Could not wait on process ", pid);
-        super(assumeUnique(msg) ~ " : " ~ SysError.lastMsg, file, line);
+        super(
+            format("Could not wait on process {}: {}", pid, SysError.lastMsg),
+            file, line);
     }
-}
-
-
-
-
-/**
- *  append an int argument to a message
-*/
-private mstring format (cstring msg, int value)
-{
-    char[10] tmp;
-
-    return cast(mstring) msg ~ Integer.format (tmp, value);
 }
 
 extern (C) uint sleep (uint s);
