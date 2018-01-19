@@ -1637,8 +1637,6 @@ real pow(real x, int n)
  */
 real pow(real x, real y)
 {
-    version (linux) // C pow() often does not handle special values correctly
-    {
     if (isNaN(y))
         return y;
 
@@ -1726,7 +1724,6 @@ real pow(real x, real y)
             else if (y < 0)
                 return real.infinity;
         }
-    }
     }
 
     return core.stdc.math.powl(x, y);
@@ -2219,4 +2216,3 @@ unittest
         }
     }
 }
-
