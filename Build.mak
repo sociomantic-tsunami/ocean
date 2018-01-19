@@ -41,6 +41,7 @@ TEST_FILTER_OUT += \
 	$C/src/ocean/io/stream/Map.d \
 	$C/src/ocean/io/stream/Typed.d \
 	$C/src/ocean/io/stream/Utf.d \
+	$C/src/ocean/io/UnicodeFile.d \
 	$C/src/ocean/io/vfs/ZipFolder.d \
 	$C/src/ocean/math/BigInt.d \
 	$C/src/ocean/net/http/ChunkStream.d \
