@@ -23,11 +23,6 @@ import ocean.core.Verify;
 
 package import ocean.text.xml.PullParser;
 
-version(Clear)
-        extern (C) void* memset(void* s, int c, size_t n);
-
-version=discrete;
-
 /*******************************************************************************
 
         Implements a DOM atop the XML parser, supporting document
@@ -246,18 +241,7 @@ class Document(T_) : PullParser!(T_)
         final Document reset ()
         {
                 root.lastChild = root.firstChild = null;
-version(Clear)
-{
-                while (freelists)
-                      {
-                      auto list = lists[--freelists];
-                      memset (list.ptr, 0, NodeImpl.sizeof * list.length);
-                      }
-}
-else
-{
                 freelists = 0;
-}
                 newlist;
                 index = 1;
                 return this;
@@ -326,21 +310,10 @@ else
                                   break;
 
                              case XmlTokenType.Data:
-version (discrete)
-{
                                   auto node = allocate;
                                   Array.copy(node.rawValue, super.rawValue);
                                   node.id = XmlNodeType.Data;
                                   cur.append (node);
-}
-else
-{
-                                  if (cur.rawValue.length is 0)
-                                      cur.rawValue = super.rawValue;
-                                  else
-                                     // multiple data sections
-                                     cur.data (super.rawValue);
-}
                                   break;
 
                              case XmlTokenType.StartElement:
@@ -413,9 +386,6 @@ else
 
                 auto p = &list[index++];
                 p.doc = this;
-version(Clear){}
-else
-{
                 p.start = p.end = null;
                 p.host =
                 p.prevSibling =
@@ -430,7 +400,6 @@ else
                 enableStomping(p.localName);
                 p.prefixed.length = 0;
                 enableStomping(p.prefixed);
-}
                 return p;
         }
 
@@ -741,14 +710,11 @@ version (Filter)
 
                 T[] value ()
                 {
-version(discrete)
-{
                         if (type is XmlNodeType.Element)
                             foreach (child; children)
                                      if (child.id is XmlNodeType.Data ||
                                          child.id is XmlNodeType.CData)
                                          return child.rawValue;
-}
                         return rawValue;
                 }
 
@@ -760,13 +726,10 @@ version(discrete)
 
                 void value (T[] val)
                 {
-version(discrete)
-{
                         if (type is XmlNodeType.Element)
                             foreach (child; children)
                                      if (child.id is XmlNodeType.Data)
                                          return child.value (val);
-}
                         Array.copy(this.rawValue, val);
                         mutate;
                 }
@@ -1003,15 +966,8 @@ version(discrete)
                 {
                         auto node = create (XmlNodeType.Element, null);
                         append (node.set (prefix, local));
-version(discrete)
-{
                         if (value.length)
                             node.data_ (value);
-}
-else
-{
-                        Array.copy(node.rawValue, value);
-}
                         return node;
                 }
 
