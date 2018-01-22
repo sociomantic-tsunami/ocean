@@ -52,7 +52,7 @@ static this ( )
 
 class DummyConHandler : IConnectionHandler
 {
-    this ( void delegate ( IConnectionHandler instance ) )
+    this ( scope void delegate ( IConnectionHandler instance ) )
     {
         super(new AddressIPSocket!(), null, null);
     }
@@ -112,7 +112,7 @@ unittest
 
 class DummyConHandlerUnix : IConnectionHandler
 {
-    this ( void delegate ( IConnectionHandler instance ) )
+    this ( scope void delegate ( IConnectionHandler instance ) )
     {
         super(new UnixSocket, null, null);
     }

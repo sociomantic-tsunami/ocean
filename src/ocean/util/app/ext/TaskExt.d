@@ -58,7 +58,7 @@ class TaskExt : IConfigExtExtension
     {
         SchedulerConfiguration scheduler_config;
 
-        const category = "SCHEDULER";
+        static immutable category = "SCHEDULER";
 
         foreach (idx, ref field; scheduler_config.tupleof)
         {
@@ -114,7 +114,7 @@ class TaskExt : IConfigExtExtension
 
     ***************************************************************************/
 
-    public int run ( int delegate () dg )
+    public int run ( scope int delegate () dg )
     {
         int result = -1;
 
