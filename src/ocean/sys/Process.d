@@ -866,7 +866,7 @@ class Process
 
             // validate the redirection flags
             if((_redirect & (Redirect.OutputToError | Redirect.ErrorToOutput)) == (Redirect.OutputToError | Redirect.ErrorToOutput))
-                throw new ProcessCreateException(_args[0], "Illegal redirection flags", __FILE__, __LINE__);
+                throw new ProcessCreateException(_args[0], "Illegal redirection flags");
 
             // Are we redirecting stdout and stderr?
             bool redirected_output = (_redirect & (Redirect.Output | Redirect.OutputToError)) == Redirect.Output;
@@ -969,7 +969,7 @@ class Process
                         errno = status;
                         _running = false;
 
-                        throw new ProcessCreateException(_args[0], __FILE__, __LINE__);
+                        throw new ProcessCreateException(_args[0]);
                     }
                 }
                 else
@@ -1075,7 +1075,7 @@ class Process
             }
             else
             {
-                throw new ProcessForkException(_pid, __FILE__, __LINE__);
+                throw new ProcessForkException(_pid);
             }
         }
         else
@@ -1282,14 +1282,14 @@ class Process
                         }
                         else if (rc == -1)
                         {
-                            throw new ProcessWaitException(cast(int) _pid, __FILE__, __LINE__);
+                            throw new ProcessWaitException(cast(int) _pid);
                         }
                         usleep(50000);
                     }
                 }
                 else
                 {
-                    throw new ProcessKillException(_pid, __FILE__, __LINE__);
+                    throw new ProcessKillException(_pid);
                 }
             }
             else
@@ -1596,14 +1596,11 @@ class Process
  */
 class ProcessCreateException: ProcessException
 {
-    public this(cstring command, istring file, uint line)
+    public this (cstring command, istring message = SysError.lastMsg,
+                 istring file = __FILE__, uint line = __LINE__)
     {
-        this(command, SysError.lastMsg, file, line);
-    }
-
-    public this(cstring command, istring message, istring file, uint line)
-    {
-        super("Could not create process for " ~ idup(command) ~ " : " ~ message);
+        super("Could not create process for " ~ idup(command) ~ " : " ~ message,
+              file, line);
     }
 }
 
@@ -1614,10 +1611,10 @@ class ProcessCreateException: ProcessException
  */
 class ProcessForkException: ProcessException
 {
-    public this(int pid, istring file, uint line)
+    public this (int pid, istring file = __FILE__, uint line = __LINE__)
     {
         auto msg = format("Could not fork process ", pid);
-        super(assumeUnique(msg) ~ " : " ~ SysError.lastMsg);
+        super(assumeUnique(msg) ~ " : " ~ SysError.lastMsg, file, line);
     }
 }
 
@@ -1626,10 +1623,10 @@ class ProcessForkException: ProcessException
  */
 class ProcessKillException: ProcessException
 {
-    public this(int pid, istring file, uint line)
+    public this (int pid, istring file = __FILE__, uint line = __LINE__)
     {
         auto msg = format("Could not kill process ", pid);
-        super(assumeUnique(msg) ~ " : " ~ SysError.lastMsg);
+        super(assumeUnique(msg) ~ " : " ~ SysError.lastMsg, file, line);
     }
 }
 
@@ -1639,10 +1636,10 @@ class ProcessKillException: ProcessException
  */
 class ProcessWaitException: ProcessException
 {
-    public this(int pid, istring file, uint line)
+    public this (int pid, istring file = __FILE__, uint line = __LINE__)
     {
         auto msg = format("Could not wait on process ", pid);
-        super(assumeUnique(msg) ~ " : " ~ SysError.lastMsg);
+        super(assumeUnique(msg) ~ " : " ~ SysError.lastMsg, file, line);
     }
 }
 
