@@ -56,12 +56,6 @@ public DateTimeLocale DateTimeDefault;
 static this()
 {
     DateTimeDefault = DateTimeLocale.create;
-    version (WithExtensions)
-    {
-        Extensions8.add  (typeid(Time), &DateTimeDefault.bridge!(char));
-        Extensions16.add (typeid(Time), &DateTimeDefault.bridge!(wchar));
-        Extensions32.add (typeid(Time), &DateTimeDefault.bridge!(dchar));
-    }
 }
 
 /******************************************************************************
@@ -808,15 +802,6 @@ struct DateTimeLocale
         if (rpt is 3)
             return abbreviatedDayName (dayOfWeek);
         return dayName (dayOfWeek);
-    }
-
-    /**********************************************************************
-
-     **********************************************************************/
-
-    private T[] bridge(T) (T[] result, void* arg, T[] format)
-    {
-        return formatWide (result, *cast(Time*) arg, format);
     }
 
     /**********************************************************************
