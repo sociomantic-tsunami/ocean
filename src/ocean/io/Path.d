@@ -60,21 +60,16 @@
 
 module ocean.io.Path;
 
-import ocean.transition;
-
+public import ocean.core.ExceptionDefinitions : IOException, IllegalArgumentException;
 import ocean.core.Verify;
-
-import ocean.sys.Common;
-
-public  import ocean.time.Time : Time, TimeSpan;
-
 import ocean.io.model.IFile : FileConst, FileInfo;
-
-public  import ocean.core.ExceptionDefinitions : IOException, IllegalArgumentException;
+import ocean.sys.Common;
+public import ocean.time.Time : Time, TimeSpan;
+import ocean.transition;
 
 import core.stdc.string : memmove;
 
-version(UnitTest) import ocean.core.Test;
+version (UnitTest) import ocean.core.Test;
 
 /*******************************************************************************
 
