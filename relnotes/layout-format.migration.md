@@ -1,6 +1,6 @@
 ## Appender.Layout's `format` method sink type was updated
 
-* `ocean.util.log.Appender : Appender.Layout.format`
+`ocean.util.log.Appender : Appender.Layout.format`
 
 This method was previously accepting a `size_t delegate(Const!(void)[])` as sink type.
 As we moved away from `size_t`-returning delegates, and all those layout were essentially
