@@ -196,6 +196,7 @@ struct DateTimeLocale
 
      **********************************************************************/
 
+    deprecated("Use format instead")
     T[] formatWide(T) (T[] output, Time dateTime, T[] fmt)
     {
         static if (is (T == char))
