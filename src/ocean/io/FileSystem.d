@@ -45,22 +45,26 @@ version (Posix)
 
 /*******************************************************************************
 
-        Models an OS-specific file-system. Included here are methods to
-        manipulate the current working directory, and to convert a path
-        to its absolute form.
+    Models an OS-specific file-system.
+
+    Included here are methods to manipulate the current working directory,
+    and to convert a path to its absolute form.
 
 *******************************************************************************/
 
-struct FileSystem
+public struct FileSystem
 {
-        /***********************************************************************
+    /***************************************************************************
 
-        ***********************************************************************/
+        Throws:
+            a new IOException with the provided error message
 
-        private static void exception (istring msg)
-        {
-                throw new IOException (msg);
-        }
+    ***************************************************************************/
+
+    private static void exception (istring msg)
+    {
+        throw new IOException(msg);
+    }
 
         /***********************************************************************
 
