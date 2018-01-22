@@ -285,7 +285,7 @@ package template ensureValueTypeMember ( S, size_t i, T )
 
     static if (is (T == union))
     {
-        static assert (!ContainsDynamicArray!(T),
+        static assert (!containsDynamicArray!(T),
                        M.stringof ~ " " ~ S.tupleof[i].stringof ~
                        " - unions containing dynamic arrays are not " ~
                        "allowed, sorry");
@@ -313,6 +313,13 @@ unittest
     static struct S2
     {
         int a, b, c;
+
+        union
+        {
+            char x;
+            int y;
+        }
+
         S1 subs;
     }
 
