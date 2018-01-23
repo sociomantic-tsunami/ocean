@@ -218,7 +218,7 @@ public class SelectEvent : ISelectEvent
 
     ***************************************************************************/
 
-    public this ( Handler handler )
+    public this ( scope Handler handler )
     {
         this.handler = handler;
 
@@ -293,7 +293,7 @@ public class CountingSelectEvent : ISelectEvent
 
     ***************************************************************************/
 
-    public this ( Handler handler )
+    public this ( scope Handler handler )
     {
         this.handler = handler;
 
