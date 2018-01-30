@@ -2570,6 +2570,7 @@ unittest
     x.requires('y');
     test(args.clear.parse("-xy"));
     test(args.clear.parse("-xz") is false);
+    test!("==")(args.errors(), "argument 'x' requires 'y'\n");
 
     // defaults
     z.defaults("foo");
