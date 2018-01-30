@@ -219,15 +219,15 @@ int main ( )
         int expected_value = 0;
 
         void handleIncrementCommand ( cstring args,
-                void delegate ( cstring response ) send_response,
-                void delegate ( ref mstring response ) wait_reply )
+                scope void delegate ( cstring response ) send_response,
+                scope void delegate ( ref mstring response ) wait_reply )
         {
             expected_value += Integer.parse(args);
         }
 
         // Command shutting down the epoll
         void handleShutdown ( cstring args,
-                void delegate ( cstring response ) send_response )
+                scope void delegate ( cstring response ) send_response )
         {
             epoll.shutdown();
         }
@@ -238,8 +238,8 @@ int main ( )
         // Interactive callback. This will ask the client for the two names,
         // which should be the same as two arguments with which 
         void handleAskMyName ( cstring args,
-                void delegate ( cstring response ) send_response,
-                void delegate ( ref mstring response ) wait_reply )
+                scope void delegate ( cstring response ) send_response,
+                scope void delegate ( ref mstring response ) wait_reply )
         {
             scope i = new ChrSplitIterator(' ');
             i.reset(args);
@@ -255,8 +255,8 @@ int main ( )
         // Interactive callback for the other command
         // Used to check if we can execute more handlers
         void handleAskMyNameReverse ( cstring args,
-                void delegate ( cstring response ) send_response,
-                void delegate ( ref mstring response ) wait_reply )
+                scope void delegate ( cstring response ) send_response,
+                scope void delegate ( ref mstring response ) wait_reply )
         {
             scope i = new ChrSplitIterator(' ');
             i.reset(args);
@@ -271,7 +271,7 @@ int main ( )
 
         // Simple echo command, non-interactive
         void handleEcho ( cstring args,
-                void delegate (cstring response) send_response)
+                scope void delegate (cstring response) send_response)
         {
             send_response(args);
         }

@@ -93,9 +93,9 @@ public abstract class IPool : IPoolInfo, ILimitable
 
         ***********************************************************************/
 
-        static typeof (*this) from ( Object obj )
+        static typeof (*(&this)) from ( Object obj )
         {
-            typeof (*this) item;
+            typeof (*(&this)) item;
 
             item.obj = obj;
 
@@ -111,9 +111,9 @@ public abstract class IPool : IPoolInfo, ILimitable
 
         ***********************************************************************/
 
-        static typeof (*this) from ( void* ptr )
+        static typeof (*(&this)) from ( void* ptr )
         {
-            typeof (*this) item;
+            typeof (*(&this)) item;
 
             item.ptr = ptr;
 
