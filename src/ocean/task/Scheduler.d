@@ -544,9 +544,8 @@ final class Scheduler : IScheduler
         {
             this.epoll.eventLoop(
                 &this.select_cycle_hook,
-                this.exception_handler is null ? null : (Exception e) {
-                        this.exception_handler(null, e);
-                    }
+                this.exception_handler is null ? null :
+                    &this.exceptionHandlerForEpoll
             );
             debug_trace("end of scheduler internal event loop cycle ({} worker " ~
                 "fibers still suspended)", this.fiber_pool.num_busy());
@@ -688,6 +687,30 @@ final class Scheduler : IScheduler
             else
                 throw e;
         }
+    }
+
+    /***************************************************************************
+
+        Wraps configured `exception_handler` into API that doesn't refer to
+        tasks and thus is usable by EpollSelectDispatcher
+
+        Params:
+            e = unhandled exception instance
+
+        Returns:
+            'true` if 'this.exception_handler' is not null, 'false' otherwise
+
+    ***************************************************************************/
+
+    private bool exceptionHandlerForEpoll ( Exception e )
+    {
+        if (this.exception_handler !is null)
+        {
+            this.exception_handler(null, e);
+            return true;
+        }
+        else
+            return false;
     }
 }
 
