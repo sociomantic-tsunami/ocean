@@ -788,9 +788,10 @@ unittest
     config.task_queue_limit = 1;
     initScheduler(config);
 
-    // use default non-test handler to check real app behaviour:
+    int queue_full_hits = 0;
     theScheduler.exception_handler = (Task t, Exception e) {
-        throw e;
+        if (cast(TaskQueueFullException) e)
+            queue_full_hits++;
     };
 
     class DummyTask : Task
@@ -803,7 +804,9 @@ unittest
     // goes to queue ..
     theScheduler.schedule(new DummyTask);
     // boom!
-    testThrown!(TaskQueueFullException)(theScheduler.schedule(new DummyTask));
+    test!("==")(queue_full_hits, 0);
+    theScheduler.schedule(new DummyTask);
+    test!("==")(queue_full_hits, 1);
 
     // cleanup remaining state before proceeding to other tests
     theScheduler.eventLoop();
