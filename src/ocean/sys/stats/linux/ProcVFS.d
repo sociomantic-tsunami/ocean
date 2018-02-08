@@ -166,6 +166,25 @@ struct ProcStat
 
 public ProcStat getProcStat (cstring path)
 {
+    ProcStat s;
+    return getProcStat(path, s) ? s : ProcStat.init;
+}
+
+/*******************************************************************************
+
+    Reads /proc/<pid>/stat and extracts the data.
+
+    Params:
+        path = path of the file to query
+        stats = struct instance where to extract data
+
+    Returns:
+        'false' if parsing has failed, 'true' otherwise
+
+*******************************************************************************/
+
+public bool getProcStat (cstring path, ref ProcStat stat)
+{
     // Get the data from file
     scope file = new File(path);
 
@@ -178,11 +197,10 @@ public ProcStat getProcStat (cstring path)
 
     char[] data = procvfs_file_buf[0..num_read];
 
-    return parseProcStatData(data);
+    return parseProcStatData(data, stat);
 }
 
 /*******************************************************************************
-
 
     Parses /proc/self/stat and extracts the data.
 
@@ -194,7 +212,25 @@ public ProcStat getProcStat (cstring path)
 
 public ProcStat getProcSelfStat ()
 {
-    return getProcStat("/proc/self/stat");
+    ProcStat s;
+    return getProcSelfStat(s) ? s : ProcStat.init;
+}
+
+/*******************************************************************************
+
+    Parses /proc/self/stat and extracts the data.
+
+    Params:
+        stat = reusable struct instance to extract data to
+
+    Returns:
+        'false' if parsing has failed, 'true' otherwise
+
+*******************************************************************************/
+
+public bool getProcSelfStat (ref ProcStat stat)
+{
+    return getProcStat("/proc/self/stat", stat);
 }
 
 /*******************************************************************************
@@ -255,7 +291,7 @@ public struct ProcUptime
 
             res_time.seconds = t / 100;
             res_time.cents = abs(t) % 100;
-    
+
             return res_time;
         }
 
@@ -680,17 +716,16 @@ unittest
 
     Params:
         path = path of the file to query
+        s = reused ProcStat struct instance, all its array/string field will
+            be reset to 0 length and overwritten
 
     Returns:
-        filled ProcStat structure based on data in form of /proc/self/stat
-        or empty ProcStat instance in case parsing has failed.
+        'false' if parsing has failed, 'true' otherwise
 
 *******************************************************************************/
 
-private ProcStat parseProcStatData (cstring data)
+private bool parseProcStatData (cstring data, ref ProcStat s)
 {
-    ProcStat s;
-
     cstring space = " ";
     cstring parenth = ")";
 
@@ -708,7 +743,7 @@ private ProcStat parseProcStatData (cstring data)
     // consume pid
     auto pid_pos = space_it.forward(data);
     if (pid_pos == data.length)
-        return ProcStat.init;
+        return false;
 
     toInteger(data[0..pid_pos], s.pid);
 
@@ -723,9 +758,10 @@ private ProcStat parseProcStatData (cstring data)
     auto last_bracket = parenth_it.reverse(data);
     // There should be space for the space and process status ("(cat) R ")
     if (last_bracket >= data.length - 3)
-        return ProcStat.init;
+        return false;
 
     s.cmd.length = last_bracket;
+    enableStomping(s.cmd);
     s.cmd[] = data[0..last_bracket];
 
     // chop last bracket and space
@@ -757,7 +793,20 @@ private ProcStat parseProcStatData (cstring data)
         }
     }
 
-    return s;
+    return true;
+}
+
+/*******************************************************************************
+
+    Convenience wrapper over another `parseProcStatData` overload for cases when
+    repeated allocation is not a problem.
+
+*******************************************************************************/
+
+private ProcStat parseProcStatData ( cstring data )
+{
+    ProcStat s;
+    return parseProcStatData(data, s) ? s : ProcStat.init;
 }
 
 unittest
