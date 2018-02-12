@@ -63,7 +63,7 @@ public extern (C)
 
     ***************************************************************************/
 
-    int rl_bind_key(int key, rl_command_func_t* _function);
+    int rl_bind_key(int key, scope rl_command_func_t* _function);
 
     /***************************************************************************
 
