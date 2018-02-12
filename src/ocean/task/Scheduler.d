@@ -544,9 +544,8 @@ final class Scheduler : IScheduler
         {
             this.epoll.eventLoop(
                 &this.select_cycle_hook,
-                this.exception_handler is null ? null : (Exception e) {
-                        this.exception_handler(null, e);
-                    }
+                this.exception_handler is null ? null :
+                    &this.exceptionHandlerForEpoll
             );
             debug_trace("end of scheduler internal event loop cycle ({} worker " ~
                 "fibers still suspended)", this.fiber_pool.num_busy());
@@ -689,6 +688,30 @@ final class Scheduler : IScheduler
                 throw e;
         }
     }
+
+    /***************************************************************************
+
+        Wraps configured `exception_handler` into API that doesn't refer to
+        tasks and thus is usable by EpollSelectDispatcher
+
+        Params:
+            e = unhandled exception instance
+
+        Returns:
+            'true` if 'this.exception_handler' is not null, 'false' otherwise
+
+    ***************************************************************************/
+
+    private bool exceptionHandlerForEpoll ( Exception e )
+    {
+        if (this.exception_handler !is null)
+        {
+            this.exception_handler(null, e);
+            return true;
+        }
+        else
+            return false;
+    }
 }
 
 ///
@@ -765,9 +788,10 @@ unittest
     config.task_queue_limit = 1;
     initScheduler(config);
 
-    // use default non-test handler to check real app behaviour:
+    int queue_full_hits = 0;
     theScheduler.exception_handler = (Task t, Exception e) {
-        throw e;
+        if (cast(TaskQueueFullException) e)
+            queue_full_hits++;
     };
 
     class DummyTask : Task
@@ -780,7 +804,9 @@ unittest
     // goes to queue ..
     theScheduler.schedule(new DummyTask);
     // boom!
-    testThrown!(TaskQueueFullException)(theScheduler.schedule(new DummyTask));
+    test!("==")(queue_full_hits, 0);
+    theScheduler.schedule(new DummyTask);
+    test!("==")(queue_full_hits, 1);
 
     // cleanup remaining state before proceeding to other tests
     theScheduler.eventLoop();
