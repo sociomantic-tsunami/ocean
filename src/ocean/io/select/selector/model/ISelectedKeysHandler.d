@@ -33,5 +33,5 @@ interface ISelectedKeysHandler
     ***************************************************************************/
 
     void opCall ( epoll_event_t[] selected_set,
-        void delegate (Exception) unhandled_exception_hook );
+        bool delegate (Exception) unhandled_exception_hook );
 }
