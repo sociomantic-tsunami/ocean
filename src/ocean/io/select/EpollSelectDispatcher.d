@@ -151,7 +151,7 @@ public class EpollSelectDispatcher : IEpollSelectDispatcherInfo
 
     ***************************************************************************/
 
-    private void delegate (Exception) unhandled_exception_hook;
+    private bool delegate (Exception) unhandled_exception_hook;
 
     /***************************************************************************
 
@@ -690,7 +690,7 @@ public class EpollSelectDispatcher : IEpollSelectDispatcherInfo
      **************************************************************************/
 
     public void eventLoop ( bool delegate ( ) select_cycle_hook = null,
-        void delegate (Exception) unhandled_exception_hook  = null )
+        bool delegate (Exception) unhandled_exception_hook  = null )
     {
         verify(!this.in_event_loop, "Event loop has already been started.");
 
@@ -712,10 +712,11 @@ public class EpollSelectDispatcher : IEpollSelectDispatcherInfo
             }
             catch (Exception e)
             {
-                if (unhandled_exception_hook !is null)
-                    unhandled_exception_hook(e);
-                else
+                if (  (unhandled_exception_hook is null)
+                    || !unhandled_exception_hook(e))
+                {
                     throw e;
+                }
             }
 
             if (select_cycle_hook !is null)

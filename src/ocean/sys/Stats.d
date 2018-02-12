@@ -16,10 +16,13 @@
 module ocean.sys.Stats;
 
 import ocean.transition;
+import ocean.core.Enforce;
+import ocean.core.array.Mutation;
 import core.sys.posix.sys.resource;
 import ProcVFS = ocean.sys.stats.linux.ProcVFS;
 import ocean.sys.stats.linux.Queriable;
 import ocean.util.log.Logger;
+import ocean.meta.traits.Indirections;
 
 /// Logger for logging errors
 private Logger stats_module_logger;
@@ -112,6 +115,13 @@ public class CpuMemoryStats
     /// Previous recorded /proc/self/stat, used for generating stats
     private ProcVFS.ProcStat previous_stat;
 
+    /// Curent recorded uptime, used for generating stats, updated each cycle
+    ProcVFS.ProcUptime current_uptime;
+
+    /// Curent recorded /proc/self/stat, used for generating stats, updated each
+    /// cycle
+    ProcVFS.ProcStat current_stat;
+
     /// System configuration facts used for calculating stats
     private static long clock_ticks_per_second;
 
@@ -136,7 +146,7 @@ public class CpuMemoryStats
         this.total_memory = ProcVFS.getTotalMemoryInBytes();
 
         this.previous_uptime = ProcVFS.getProcUptime();
-        this.previous_stat = ProcVFS.getProcSelfStat();
+        enforce(ProcVFS.getProcSelfStat(this.previous_stat));
     }
 
     /***************************************************************************
@@ -152,13 +162,10 @@ public class CpuMemoryStats
     {
         Stats stats;
 
-        ProcVFS.ProcUptime current_uptime;
-        ProcVFS.ProcStat current_stat;
-
         try
         {
-            current_uptime = ProcVFS.getProcUptime();
-            current_stat = ProcVFS.getProcSelfStat();
+            this.current_uptime = ProcVFS.getProcUptime();
+            enforce(ProcVFS.getProcSelfStat(this.current_stat));
         }
         catch (Exception e)
         {
@@ -168,7 +175,7 @@ public class CpuMemoryStats
             return stats;
         }
 
-        auto uptime_diff = current_uptime.uptime - this.previous_uptime.uptime;
+        auto uptime_diff = this.current_uptime.uptime - this.previous_uptime.uptime;
 
         // Safety check for divide by zero
         if (uptime_diff.seconds == 0 && uptime_diff.cents == 0)
@@ -181,25 +188,31 @@ public class CpuMemoryStats
         {
             auto ticks_diff = convertToTicks(uptime_diff);
 
-            stats.cpu_user = (current_stat.utime <= this.previous_stat.utime) ? 0 :
-                ((current_stat.utime - this.previous_stat.utime) / ticks_diff * 100);
+            stats.cpu_user = (this.current_stat.utime <= this.previous_stat.utime) ? 0 :
+                ((this.current_stat.utime - this.previous_stat.utime) / ticks_diff * 100);
 
-            stats.cpu_system = (current_stat.stime <= this.previous_stat.stime) ? 0 :
-                ((current_stat.stime - this.previous_stat.stime) / ticks_diff * 100);
+            stats.cpu_system = (this.current_stat.stime <= this.previous_stat.stime) ? 0 :
+                ((this.current_stat.stime - this.previous_stat.stime) / ticks_diff * 100);
 
             auto previous_total = this.previous_stat.utime + this.previous_stat.stime;
-            auto current_total = current_stat.utime + current_stat.stime;
+            auto current_total = this.current_stat.utime + this.current_stat.stime;
 
             stats.cpu_total = (current_total <= previous_total) ? 0 :
                 ((current_total - previous_total) / ticks_diff * 100);
         }
 
-        stats.vsz = current_stat.vsize;
-        stats.rss = current_stat.rss * this.page_size;
+        stats.vsz = this.current_stat.vsize;
+        stats.rss = this.current_stat.rss * this.page_size;
         stats.mem_percentage = cast(float)stats.rss / this.total_memory * 100;
 
         this.previous_uptime = current_uptime;
-        this.previous_stat = current_stat;
+        foreach (idx, ref field; this.current_stat.tupleof)
+        {
+            static if (!hasIndirections!(typeof(field)))
+                this.previous_stat.tupleof[idx] = field;
+            else
+                copy(this.previous_stat.tupleof[idx], field);
+        }
 
         return stats;
     }
