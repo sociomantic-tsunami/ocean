@@ -136,6 +136,15 @@ public class EpollSelectDispatcher : IEpollSelectDispatcherInfo
 
     /***************************************************************************
 
+        List of the clients that we're currently handling. Always slices
+        this.events.
+
+    ***************************************************************************/
+
+    private epoll_event_t[] selected_set;
+
+    /***************************************************************************
+
         Re-usable errno exception
 
      **************************************************************************/
@@ -791,9 +800,11 @@ public class EpollSelectDispatcher : IEpollSelectDispatcherInfo
 
                 version ( EpollCounters ) if ( n == 0 ) this.counters.timeouts++;
 
-                auto selected_set = events[0 .. n];
+                this.selected_set = this.events[0 .. n];
+                scope (exit)
+                    this.selected_set = null;
 
-                this.handle(selected_set, this.unhandled_exception_hook);
+                this.handle(this.selected_set, this.unhandled_exception_hook);
 
                 return n;
             }
