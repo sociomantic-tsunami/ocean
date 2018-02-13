@@ -50,6 +50,8 @@ import ocean.io.select.selector.RegisteredClients;
 
 import ocean.core.Array : copy;
 
+import ocean.core.array.Search;
+
 import ocean.util.container.AppendBuffer;
 
 import ocean.time.timeout.model.ITimeoutManager;
@@ -367,6 +369,11 @@ public class EpollSelectDispatcher : IEpollSelectDispatcherInfo
 
        Params:
             client = client to unregister
+            remove_from_selected_set = if true, removes the client from the
+                selected set that may be currently being iterated over. This
+                guarantees that the unregistered client's handle method will not
+                be subsequently called by the selector. The client may thus be
+                safely destroyed after unregistering.
 
        Returns:
             0 if everything worked as expected or the error code (errno) as a
@@ -382,13 +389,36 @@ public class EpollSelectDispatcher : IEpollSelectDispatcherInfo
 
      **************************************************************************/
 
-    public int unregister ( ISelectClient client )
+    public int unregister ( ISelectClient client,
+        bool remove_from_selected_set = false )
     {
         try if (client.is_registered)
         {
             scope (success)
             {
                 this.registered_clients -= client;
+
+                if (remove_from_selected_set)
+                {
+                    /// Predicate for finding the ISelectClient inside
+                    /// array of epoll_event_t entries.
+                    bool entry_to_client (Const!(epoll_event_t) entry)
+                    {
+                        return entry.data.ptr == cast(void*)client;
+                    }
+
+                    auto index = this.selected_set.findIf(&entry_to_client);
+                    // Instead of removing the array entry, we'll just invalidate
+                    // it. This is to avoid problems with both the fact that
+                    // SelectedKeysHandler might be foreach-iterating over
+                    // this array at this time and the fact that shrinking
+                    // the slice owned by EpollSelectDispatcher wouldn't shrink
+                    // the slices owned by SelectedKeysHandler.
+                    if (index < this.selected_set.length)
+                    {
+                        this.selected_set[index] = epoll_event_t.init;
+                    }
+                }
             }
 
             if (!this.epollCtl(epoll.CtlOp.EPOLL_CTL_DEL, client.fileHandle,
