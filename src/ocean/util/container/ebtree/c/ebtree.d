@@ -35,18 +35,18 @@ alias void eb_troot_t;
 /// See original's library documentation for details.
 struct eb_root
 {
-    const BITS          = 1;
-    const BRANCHES      = (1 << BITS);
+    enum BITS          = 1;
+    enum BRANCHES      = (1 << BITS);
 
-    const RGHT   = 1;
-    const NORMAL = cast(eb_troot_t*)0;
-    const UNIQUE = cast(eb_troot_t*)1;
+    enum RGHT   = 1;
+    enum NORMAL = cast(eb_troot_t*)0;
+    enum UNIQUE = cast(eb_troot_t*)1;
 
     eb_troot_t*[BRANCHES] b;
 
     bool is_empty ( )
     {
-        return !!eb_is_empty(this);
+        return !!eb_is_empty((&this));
     }
 
     /***************************************************************************
@@ -62,7 +62,7 @@ struct eb_root
 
     bool unique ( )
     {
-        return this.b[RGHT] is UNIQUE;
+        return (&this).b[RGHT] is UNIQUE;
     }
 
     /***************************************************************************
@@ -84,7 +84,7 @@ struct eb_root
 
     bool unique ( bool enable )
     {
-        this.b[RGHT] = enable? UNIQUE : NORMAL;
+        (&this).b[RGHT] = enable? UNIQUE : NORMAL;
         return enable;
     }
 }
@@ -102,29 +102,29 @@ struct eb_node
 
     alias .eb_last last;
 
-    typeof (this) prev( )
+    typeof ((&this)) prev( )
     {
-        return eb_prev(this);
+        return eb_prev((&this));
     }
 
-    typeof (this) next ( )
+    typeof ((&this)) next ( )
     {
-        return eb_next(this);
+        return eb_next((&this));
     }
 
-    typeof (this) prev_unique ( )
+    typeof ((&this)) prev_unique ( )
     {
-        return eb_prev_unique(this);
+        return eb_prev_unique((&this));
     }
 
-    typeof (this) next_unique ( )
+    typeof ((&this)) next_unique ( )
     {
-        return eb_next_unique(this);
+        return eb_next_unique((&this));
     }
 
     void remove ( )
     {
-        eb_delete(this);
+        eb_delete((&this));
     }
 };
 
