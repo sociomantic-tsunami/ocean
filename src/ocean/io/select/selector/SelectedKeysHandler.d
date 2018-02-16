@@ -53,6 +53,9 @@ class SelectedKeysHandler: ISelectedKeysHandler
 
        Params:
             client = client to unregister
+            remove_from_selected_set = if true, removes the client from the
+                selected_set that we could be currently iterating. This will allow
+                safely destroying client instance which may be registered.
 
        Should return:
             0 if everything worked as expected or the error code (errno) as a
@@ -68,7 +71,8 @@ class SelectedKeysHandler: ISelectedKeysHandler
 
     ***************************************************************************/
 
-    public alias int delegate ( ISelectClient client ) UnregisterDg;
+    public alias int delegate ( ISelectClient client,
+            bool remove_from_selected_set = false ) UnregisterDg;
 
     /***************************************************************************
 
@@ -122,7 +126,13 @@ class SelectedKeysHandler: ISelectedKeysHandler
     {
         foreach (key; selected_set)
         {
-            this.handleSelectedKey(key, unhandled_exception_hook);
+            // EpollSelectDispatcher.unregister may invalidate the
+            // slot in the array during the unregistration of the client,
+            // so we'll skip all these.
+            if (key != epoll_event_t.init)
+            {
+                this.handleSelectedKey(key, unhandled_exception_hook);
+            }
         }
     }
 
