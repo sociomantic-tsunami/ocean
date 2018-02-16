@@ -109,7 +109,7 @@ abstract class TaskHttpConnectionHandler : TaskConnectionHandler
 
      **************************************************************************/
 
-    protected this ( FinalizeDg finalizer, HttpMethod[] supported_methods ... )
+    protected this ( scope FinalizeDg finalizer, HttpMethod[] supported_methods ... )
     {
         this(finalizer, new HttpRequest, new HttpResponse, supported_methods);
     }
@@ -126,7 +126,7 @@ abstract class TaskHttpConnectionHandler : TaskConnectionHandler
 
      **************************************************************************/
 
-    protected this ( FinalizeDg finalizer,
+    protected this ( scope FinalizeDg finalizer,
                      HttpRequest request, HttpResponse response,
                      HttpMethod[] supported_methods ... )
     {

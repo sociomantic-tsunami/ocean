@@ -83,7 +83,7 @@ abstract class TaskConnectionHandler : IConnectionHandler, Resettable
 
      ***************************************************************************/
 
-    protected this ( ISocket socket, ErrorDg error_dg_ = null )
+    protected this ( ISocket socket, scope ErrorDg error_dg_ = null )
     {
         this(socket, null, error_dg_);
     }
@@ -101,8 +101,8 @@ abstract class TaskConnectionHandler : IConnectionHandler, Resettable
 
     ***************************************************************************/
 
-    protected this ( ISocket socket, FinalizeDg finalize_dg_,
-        ErrorDg error_dg_ = null )
+    protected this ( ISocket socket, scope FinalizeDg finalize_dg_,
+        scope ErrorDg error_dg_ = null )
     {
         super(socket, finalize_dg_, error_dg_);
         this.io_warning = new IOWarning(this.socket);
