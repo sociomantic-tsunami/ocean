@@ -214,7 +214,7 @@ public class StatsLog
 
         /***********************************************************************
 
-            Frequency at which Collectd should expect to receive metrics
+            Frequency at which stats are collected
 
             This metric is expressed in seconds, and should rarely needs to be
             modified. Defaults to 30s.
