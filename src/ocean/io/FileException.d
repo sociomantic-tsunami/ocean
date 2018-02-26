@@ -116,9 +116,11 @@ unittest
 {
     auto e = new FileException;
     auto f = fdopen(-1, "r".ptr);
+    size_t check_line;
 
     try
     {
+        check_line = __LINE__ + 1;
         e.enforce(f !is null, "<42>", f);
         assert (false);
     }
@@ -128,6 +130,6 @@ unittest
             getMsg(e),
             "Bad file descriptor (failed operation on '<42>')"[]
         );
-        test!("==")(e.line, __LINE__ - 9);
+        test!("==")(e.line, check_line);
     }
 }
