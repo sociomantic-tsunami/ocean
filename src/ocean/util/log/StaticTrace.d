@@ -109,7 +109,7 @@ public class StaticSyncPrint
         formatted.length = 0;
         enableStomping(this.formatted);
 
-        sformat(formatted, _fmt, args);
+        sformat(formatted, fmt, args);
 
         size_t lines = 0;
         istring nl = "";
@@ -170,4 +170,21 @@ public class StaticSyncPrint
         this.output.flush();
         return this;
     }
+}
+
+unittest
+{
+    class FakeStream : OutputStream
+    {
+            override size_t write (Const!(void)[] src) { return src.length; }
+            override OutputStream copy (InputStream src, size_t max = -1) { return this; }
+            override OutputStream output () { return this; }
+            override long seek (long offset, Anchor anchor = Anchor.Begin) { return offset; }
+            override IConduit conduit () { return null; }
+            override IOStream flush () { return this; }
+            override void close () {}
+    }
+
+    auto trace = new StaticSyncPrint(new FakeStream);
+    trace.format("static trace says hello {}", 1);
 }
