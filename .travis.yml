@@ -19,6 +19,7 @@ env:
         # Make sure beaver is in the PATH
         - PATH="$(git config -f .gitmodules submodule.beaver.path)/bin:$PATH"
         - DIST=xenial
+        - COV=1
     matrix:
         - DMD=1.081.* F=production
         - DMD=1.081.* F=devel
