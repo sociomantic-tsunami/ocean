@@ -1,12 +1,10 @@
 /*******************************************************************************
 
-    Utility to recursively reset fields of struct to their .init value while
-    preserving array pointers (their length is set to 0 but memory is kept
-    available for further reusage)
+    Utility to recursively reset fields of an aggregate to their .init value
+    while preserving array pointers (their length is set to 0 but memory is kept
+    available for further reuse)
 
-    Copyright:
-        Copyright (c) 2009-2016 Sociomantic Labs GmbH.
-        All rights reserved.
+    Copyright: Copyright (c) 2017 sociomantic labs GmbH. All rights reserved
 
     License:
         Boost Software License Version 1.0. See LICENSE_BOOST.txt for details.
@@ -25,7 +23,7 @@ version(UnitTest) import ocean.core.Test;
 
 /*******************************************************************************
 
-    Template to determine the correct DeepReset function to call dependent on
+    Template to determine the correct DeepReset function to call depending on
     the type given.
 
     Params:
@@ -75,7 +73,7 @@ public template DeepReset ( T )
     length to 0.
 
     Params:
-        T = type of array to deep copy
+        T = type of array to deep reset
         dst = destination array
 
 *******************************************************************************/
@@ -96,7 +94,7 @@ public void DynamicArrayDeepReset ( T ) ( ref T[] dst )
     array.
 
     Params:
-        T = type of array to deep copy
+        T = type of array to deep reset
         dst = destination array
 
 *******************************************************************************/
@@ -113,7 +111,7 @@ public void StaticArrayDeepReset ( T ) ( T[] dst )
     Deep reset function for arrays.
 
     Params:
-        T = type of array to deep copy
+        T = type of array to deep reset
         dst = destination array
 
 *******************************************************************************/
@@ -122,7 +120,7 @@ private void ArrayDeepReset ( T ) ( ref T[] dst )
 {
     static if ( isAssocArrayType!(T) )
     {
-        // TODO: copy associative arrays
+        // TODO: reset associative arrays
         pragma(msg, "Warning: deep reset of associative arrays not yet implemented");
     }
     else static if ( is(T S : S[]) )
@@ -170,7 +168,7 @@ private void ArrayDeepReset ( T ) ( ref T[] dst )
     Deep reset function for structs.
 
     Params:
-        T = type of struct to deep copy
+        T = type of struct to deep reset
         dst = destination struct
 
 *******************************************************************************/
@@ -188,7 +186,7 @@ public void StructDeepReset ( T ) ( ref T dst )
     {
         static if ( isAssocArrayType!(typeof(member)) )
         {
-            // TODO: copy associative arrays
+            // TODO: reset associative arrays
             pragma(msg, "Warning: deep reset of associative arrays not yet implemented");
         }
         else static if ( is(typeof(member) S : S[]) )
@@ -224,7 +222,7 @@ public void StructDeepReset ( T ) ( ref T dst )
     Deep reset function for dynamic class instances.
 
     Params:
-        T = type of class to deep copy
+        T = type of class to deep reset
         dst = destination instance
 
 *******************************************************************************/
@@ -240,7 +238,7 @@ public void ClassDeepReset ( T ) ( ref T dst )
     {
         static if ( isAssocArrayType!(typeof(member)) )
         {
-            // TODO: copy associative arrays
+            // TODO: reset associative arrays
             pragma(msg, "Warning: deep reset of associative arrays not yet implemented");
         }
         else static if ( is(typeof(member) S : S[]) )
@@ -268,8 +266,8 @@ public void ClassDeepReset ( T ) ( ref T dst )
         }
     }
 
-    // Recurse into super any classes
-    static if ( is(T S == super ) )
+    // Recurse into any super classes
+    static if ( is(T S == super) )
     {
         foreach ( V; S )
         {
@@ -290,10 +288,10 @@ public void ClassDeepReset ( T ) ( ref T dst )
 
     We first build a basic struct that has both a single sub struct and a
     dynamic array of sub structs. Both of these are then filled along with
-    the fursther sub sub struct.
+    the further sub sub struct.
 
     The DeepReset method is then called. The struct is then confirmed to
-    have had it's members reset to the correct values
+    have had its members reset to the correct values.
 
     TODO Adjust the unit test so it also deals with struct being
     re-initialised to make sure they are not full of old data (~=)
