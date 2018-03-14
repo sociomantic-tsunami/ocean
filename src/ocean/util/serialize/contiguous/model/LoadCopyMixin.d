@@ -14,7 +14,7 @@
 
 *******************************************************************************/
 
-module ocean.util.serialize.contiguous.model.LoadCopyMixin;
+deprecated module ocean.util.serialize.contiguous.model.LoadCopyMixin;
 
 /*******************************************************************************
 
