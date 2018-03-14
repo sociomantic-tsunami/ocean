@@ -14,7 +14,7 @@
 
 *******************************************************************************/
 
-module ocean.util.serialize.model.VersionDecoratorMixins;
+deprecated module ocean.util.serialize.model.VersionDecoratorMixins;
 
 
 import ocean.transition;
