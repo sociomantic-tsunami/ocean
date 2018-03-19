@@ -260,16 +260,4 @@ class LzoChunkCompressor
         this.compressor = new Compressor;
         this.decompressor = new Decompressor;
     }
-
-
-    /***************************************************************************
-
-        Destructor.
-
-    ***************************************************************************/
-
-    ~this ( )
-    {
-        this.result.length = 0;
-    }
 }
