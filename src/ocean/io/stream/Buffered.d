@@ -22,11 +22,13 @@ module ocean.io.stream.Buffered;
 import core.stdc.string;
 
 import ocean.transition;
+version (UnitTest)  import ocean.core.Test;
 import ocean.core.Verify;
 
 public import ocean.io.model.IConduit;
 
 import ocean.io.device.Conduit;
+version (UnitTest) import ocean.io.device.MemoryDevice;
 
 
 /// Shorthand aliases
@@ -489,7 +491,9 @@ public class BufferedInput : InputFilter, InputBuffer
                 this.compress();
             // no more space in the buffer?
             else if (this.writable is 0)
-                this.conduit.error("BufferedInput.next :: input buffer is full");
+                this.extend();
+
+            verify(this.writable() > 0);
 
             // read another chunk of data
             if (this.writer(&this.source.read) is Eof)
@@ -786,6 +790,17 @@ public class BufferedInput : InputFilter, InputBuffer
     private final size_t writable ()
     {
         return this.data.length - this.extent;
+    }
+
+    /***************************************************************************
+
+        Extend the buffer by half of its size
+
+    ***************************************************************************/
+
+    private void extend ()
+    {
+        this.data.length = this.data.length + (this.data.length / 2);
     }
 }
 
@@ -1350,4 +1365,27 @@ public class BufferedOutput : OutputFilter, OutputBuffer
         this.extent = r;
         return this;
     }
+}
+
+
+unittest
+{
+    scope device = new MemoryDevice;
+    scope buffer = new BufferedInput(device, 16);
+
+    device.write(
+        "En 1815, M. Charles-François-Bienvenu Myriel était évêque de Digne. " ~
+        "C’était un vieillard d’environ soixante-quinze ans; " ~
+        "il occupait le siège de Digne depuis 1806.");
+    device.seek(0);
+
+    size_t finder (Const!(void)[] raw)
+    {
+        auto text = cast(cstring) raw;
+        if (raw.length >= 5 && raw[$ - 5 .. $] == "1806.")
+            return raw.length - 5;
+        return BufferedInput.Eof;
+    }
+
+    test(buffer.next(&finder));
 }
