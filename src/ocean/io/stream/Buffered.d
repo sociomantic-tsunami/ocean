@@ -657,17 +657,9 @@ public class BufferedInput : InputFilter, InputBuffer
 
     ***************************************************************************/
 
-    static T[] convert (T) (void[] x)
+    static Inout!(T)[] convert (T) (Inout!(void)[] x)
     {
-        return (cast(T*) x.ptr) [0 .. (x.length / T.sizeof)];
-    }
-
-    version (D_Version2)
-    {
-        static Const!(T)[] convert (T) (Const!(void)[] x)
-        {
-            return (cast(Const!(T)*) x.ptr) [0 .. (x.length / T.sizeof)];
-        }
+        return (cast(Inout!(T)*) x.ptr) [0 .. (x.length / T.sizeof)];
     }
 
     /***************************************************************************
