@@ -19,6 +19,8 @@
 
 module ocean.io.stream.Buffered;
 
+import core.stdc.string;
+
 import ocean.transition;
 import ocean.core.Verify;
 
@@ -32,16 +34,6 @@ import ocean.io.device.Conduit;
 
 public alias BufferedInput  Bin;        /// Shorthand aliases.
 public alias BufferedOutput Bout;       /// ditto
-
-/******************************************************************************
-
-******************************************************************************/
-
-extern (C)
-{
-        int printf (char*, ...);
-        private void * memmove (void *dst, Const!(void)* src, size_t);
-}
 
 /******************************************************************************
 
