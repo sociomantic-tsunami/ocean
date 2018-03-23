@@ -57,12 +57,11 @@ public class BufferedInput : InputFilter, InputBuffer
     private void[]        data;             // The raw data buffer.
     private size_t        index;            // Current read position.
     private size_t        extent;           // Limit of valid content.
-    private size_t        dimension;        // Maximum extent of content.
 
     invariant ()
     {
         assert(this.index <= this.extent);
-        assert(this.extent <= this.dimension);
+        assert(this.extent <= this.data.length);
     }
 
     /***************************************************************************
@@ -224,9 +223,9 @@ public class BufferedInput : InputFilter, InputBuffer
             // make some space? This will try to leave as much content
             // in the buffer as possible, such that entire records may
             // be aliased directly from within.
-            if (size > (this.dimension - this.index))
+            if (size > (this.data.length - this.index))
             {
-                if (size <= this.dimension)
+                if (size <= this.data.length)
                     this.compress();
                 else
                     this.conduit.error("input buffer is empty");
@@ -298,12 +297,12 @@ public class BufferedInput : InputFilter, InputBuffer
 
     public size_t writer (size_t delegate (void[]) dg)
     {
-        auto count = dg(this.data[this.extent .. this.dimension]);
+        auto count = dg(this.data[this.extent .. $]);
 
         if (count != Eof)
         {
             this.extent += count;
-            verify(this.extent <= this.dimension);
+            verify(this.extent <= this.data.length);
         }
         return count;
     }
@@ -338,7 +337,7 @@ public class BufferedInput : InputFilter, InputBuffer
             this.index += content;
         }
         // pathological cases read directly from conduit
-        else if (dst.length > this.dimension)
+        else if (dst.length > this.data.length)
             content = this.source.read(dst);
         else
         {
@@ -511,9 +510,9 @@ public class BufferedInput : InputFilter, InputBuffer
 
     public final size_t reserve (size_t space)
     {
-        verify(space < this.dimension);
+        verify(space < this.data.length);
 
-        if ((this.dimension - this.index) < space)
+        if ((this.data.length - this.index) < space)
             this.compress();
         return this.index;
     }
@@ -606,7 +605,7 @@ public class BufferedInput : InputFilter, InputBuffer
 
     public final size_t capacity ()
     {
-        return this.dimension;
+        return this.data.length;
     }
 
     /***************************************************************************
@@ -736,10 +735,7 @@ public class BufferedInput : InputFilter, InputBuffer
         while (count < max)
         {
             if (!this.writable())
-            {
-                this.dimension += increment;
-                this.data.length = this.dimension;
-            }
+                this.data.length = (this.data.length + increment);
             if ((len = this.writer(&src.read)) is Eof)
                 break;
             else
@@ -770,7 +766,6 @@ public class BufferedInput : InputFilter, InputBuffer
     {
         this.data = data;
         this.extent = readable;
-        this.dimension = data.length;
 
         // reset to start of input
         this.index = 0;
@@ -790,7 +785,7 @@ public class BufferedInput : InputFilter, InputBuffer
 
     private final size_t writable ()
     {
-        return this.dimension - this.extent;
+        return this.data.length - this.extent;
     }
 }
 
