@@ -34,12 +34,6 @@ public alias BufferedInput  Bin;
 /// ditto
 public alias BufferedOutput Bout;
 
-/// Error messages
-private static istring underflow = "input buffer is empty";
-private static istring eofRead   = "end-of-flow whilst reading";
-private static istring eofWrite  = "end-of-flow whilst writing";
-private static istring overflow  = "output buffer is full";
-
 
 /*******************************************************************************
 
@@ -235,13 +229,13 @@ public class BufferedInput : InputFilter, InputBuffer
                 if (size <= this.dimension)
                     this.compress();
                 else
-                    this.conduit.error(underflow);
+                    this.conduit.error("input buffer is empty");
             }
 
             // populate tail of buffer with new content
             do {
                 if (this.writer(&this.source.read) is Eof)
-                    this.conduit.error(eofRead);
+                    this.conduit.error("end-of-flow whilst reading");
             } while (size > this.readable());
         }
 
@@ -383,7 +377,7 @@ public class BufferedInput : InputFilter, InputBuffer
             if (i is Eof)
             {
                 if (exact && len < dst.length)
-                    this.conduit.error(eofRead);
+                    this.conduit.error("end-of-flow whilst reading");
                 return (len > 0) ? len : Eof;
             }
             len += i;
@@ -997,7 +991,7 @@ public class BufferedOutput : OutputFilter, OutputBuffer
                 do {
                     auto written = this.sink.write(src [0 .. length]);
                     if (written is Eof)
-                        this.conduit.error(eofWrite);
+                        this.conduit.error("end-of-flow whilst writing");
                     length -= written;
                     src += written;
                 } while (length > this.dimension);
@@ -1117,7 +1111,7 @@ public class BufferedOutput : OutputFilter, OutputBuffer
         {
             auto ret = this.reader(&this.sink.write);
             if (ret is Eof)
-                this.conduit.error(eofWrite);
+                this.conduit.error("end-of-flow whilst writing");
         }
 
         // flush the filter chain also
@@ -1157,7 +1151,7 @@ public class BufferedOutput : OutputFilter, OutputBuffer
             // don't drain until we actually need to
             if (this.writable is 0)
                 if (this.drain(this.sink) is Eof)
-                    this.conduit.error(eofWrite);
+                    this.conduit.error("end-of-flow whilst writing");
         }
         return this;
     }
