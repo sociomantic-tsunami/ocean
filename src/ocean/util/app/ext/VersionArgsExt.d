@@ -25,6 +25,7 @@ import ocean.util.app.ext.model.IArgumentsExtExtension;
 import ocean.util.app.ext.model.ILogExtExtension;
 import ocean.util.app.ext.LogExt;
 import ocean.util.app.ext.ConfigExt;
+import ocean.util.app.ext.UnixSocketExt;
 import ocean.util.app.Application;
 
 import ocean.text.Arguments;
@@ -34,6 +35,7 @@ import ocean.io.Stdout;
 import ocean.core.Array: startsWith, map;
 
 import ocean.transition;
+import ocean.core.Verify;
 import ocean.util.log.Logger;
 import ocean.util.log.AppendFile;
 import ocean.util.log.LayoutDate;
@@ -95,6 +97,15 @@ class VersionArgsExt : IApplicationExtension, IArgumentsExtExtension,
     ***************************************************************************/
 
     public Logger ver_log;
+
+
+    /**************************************************************************
+
+        The application's name.
+
+    ***************************************************************************/
+
+    private istring app_name;
 
 
     /***************************************************************************
@@ -269,6 +280,50 @@ class VersionArgsExt : IApplicationExtension, IArgumentsExtExtension,
             Stdout.formatln("{}", getVersionString(app.name, this.ver));
         }
         app.exit(0);
+    }
+
+
+    /***************************************************************************
+
+        Registers this extension with the unix socket extension and activates the
+        handling of the specified unix socket command, which will print the application
+        version (as shown by `--version`) to the socket when called.
+
+        Params:
+            app = the application instance
+            unix_socket_ext = UnixSocketExt instance to register with
+            reopen_command = command to trigger displaying of the version
+
+    ***************************************************************************/
+
+    public void setupUnixSocketHandler ( IApplication app,
+            UnixSocketExt unix_socket_ext,
+            istring version_command = "show_version" )
+    {
+        verify(unix_socket_ext !is null);
+
+        this.app_name = idup(app.name);
+        unix_socket_ext.addHandler(version_command,
+            &this.showVersionHandler);
+    }
+
+
+    /****************************************************************************
+
+        Print the version to the sink delegate. Used as a callback from the
+        Unix socket
+
+        Params:
+            args = list of arguments received from the socket - ignored
+            send_response = delegate to send the response to the client
+
+    *****************************************************************************/
+
+    private void showVersionHandler ( cstring[] args,
+            void delegate ( cstring response ) send_response )
+    {
+        send_response(getVersionString(this.app_name, this.ver));
+        send_response("\n");
     }
 
 
