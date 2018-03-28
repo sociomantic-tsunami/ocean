@@ -554,6 +554,7 @@ unittest
 
 *******************************************************************************/
 
+deprecated("Use Exception.message() directly")
 cstring getMsg ( Throwable e )
 {
     // if compiled with a runtime which already provides `message()`, use it
@@ -597,7 +598,7 @@ cstring getMsg ( Throwable e )
     }
 }
 
-unittest
+deprecated unittest
 {
     auto e = new Exception("abcde");
     assert (getMsg(e) == "abcde");
