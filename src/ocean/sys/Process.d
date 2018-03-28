@@ -1623,7 +1623,7 @@ unittest
     }
     catch (ProcessException e)
     {
-        test(false, getMsg(e));
+        test(false, e.message());
     }
 }
 

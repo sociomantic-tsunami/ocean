@@ -103,7 +103,7 @@ void main ( )
     theScheduler.exception_handler = ( Task t, Exception e )
     {
         Stderr.formatln("{} [{}:{}] {}", e.classinfo.name,
-            e.file, e.line, getMsg(e));
+            e.file, e.line, e.message());
         abort();
     };
 

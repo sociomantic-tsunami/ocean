@@ -285,7 +285,7 @@ class SelectedKeysHandler: ISelectedKeysHandler
             debug (ISelectClient)
             {
                 Stderr.format("{} :: Error while finalizing client: '{}'",
-                    client, getMsg(e)).flush();
+                    client, e.message()).flush();
                 if ( e.line )
                 {
                     Stderr.format("@ {}:{}", e.file, e.line);
@@ -317,7 +317,7 @@ class SelectedKeysHandler: ISelectedKeysHandler
             // FIXME: printing on separate lines for now as a workaround for a
             // dmd bug with varargs
             Stderr.formatln("{} :: Error during handle:", client);
-            Stderr.formatln("    '{}'", getMsg(e)).flush();
+            Stderr.formatln("    '{}'", e.message()).flush();
             if ( e.line )
             {
                 Stderr.formatln("    @ {}:{}", e.file, e.line).flush();
@@ -401,12 +401,12 @@ class SelectedKeysHandler: ISelectedKeysHandler
         version (none)
         {
              Stderr.formatln("{} :: ISelectClient handle exception: '{}' @{}:{}",
-                 client, getMsg(e), e.file, e.line);
+                 client, e.message(), e.file, e.line);
         }
         else
         {
             Stderr.formatln("{} :: ISelectClient handle exception:", client);
-            Stderr.formatln("    '{}'", getMsg(e));
+            Stderr.formatln("    '{}'", e.message());
             Stderr.formatln("    @{}:{}", e.file, e.line);
         }
         Stderr.flush();

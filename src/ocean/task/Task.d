@@ -521,7 +521,7 @@ public abstract class Task : ISuspendable
         catch (Exception e)
         {
             debug_trace("<{}> termination (uncaught exception): {} ({}:{})",
-                cast(void*) this, getMsg(e), e.file, e.line);
+                cast(void*) this, e.message(), e.file, e.line);
             assert (Task.task_pending_cleanup is null);
             Task.task_pending_cleanup = this;
             this.fiber.yieldAndThrow(e);

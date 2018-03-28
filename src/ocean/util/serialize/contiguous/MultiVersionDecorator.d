@@ -780,7 +780,7 @@ Dst testConv(Src, Dst)(Src src, size_t limit = 10)
             e.classinfo.name,
             e.file,
             e.line,
-            getMsg(e)
+            e.message()
         );
         test.file = __FILE__;
         test.line = __LINE__;
@@ -838,7 +838,7 @@ Dst testConvMemory(Src, Dst)(Src src, size_t limit = 10)
                 e.classinfo.name,
                 e.file,
                 e.line,
-                getMsg(e)
+                e.message()
                 );
             test.file = __FILE__;
             test.line = __LINE__;
