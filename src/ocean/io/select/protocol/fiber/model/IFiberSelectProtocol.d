@@ -287,7 +287,7 @@ abstract class IFiberSelectProtocol : IFiberSelectClient
             if (super.fiber.isRegistered(this))
             {
                 debug ( SelectFiber) Stderr.formatln("{}.transmitLoop: suspending fd {} fiber ({} @ {}:{})",
-                    typeof(this).stringof, this.conduit.fileHandle, getMsg(e), e.file, e.line);
+                    typeof(this).stringof, this.conduit.fileHandle, e.message(), e.file, e.line);
 
                 // Exceptions thrown by transmit() or in the case of the Error
                 // event are passed to the fiber resume() to be rethrown in
@@ -295,7 +295,7 @@ abstract class IFiberSelectProtocol : IFiberSelectClient
                 super.fiber.suspend(IOReady, e);
 
                 debug ( SelectFiber) Stderr.formatln("{}.transmitLoop: resumed fd {} fiber, rethrowing ({} @ {}:{})",
-                    typeof(this).stringof, this.conduit.fileHandle, getMsg(e), e.file, e.line);
+                    typeof(this).stringof, this.conduit.fileHandle, e.message(), e.file, e.line);
             }
 
             throw e;

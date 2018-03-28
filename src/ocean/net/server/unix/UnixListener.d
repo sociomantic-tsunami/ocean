@@ -156,7 +156,7 @@ public class UnixSocketListener ( CommandHandlerType ) : SelectListener!(
         catch (Exception e)
         {
             log.error("Unable to bind to or listen on \"{}\": {}",
-                      address_path, getMsg(e));
+                      address_path, e.message());
             throw e;
         }
     }
