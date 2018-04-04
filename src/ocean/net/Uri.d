@@ -17,6 +17,7 @@ public import ocean.net.model.UriView;
 
 import ocean.transition;
 import ocean.core.Exception;
+import ocean.core.Buffer;
 import ocean.stdc.string : memchr;
 import Integer = ocean.text.convert.Integer_tango;
 
@@ -64,7 +65,7 @@ class Uri : UriView
     public alias path        setPath;
     public alias fragment    setFragment;
 
-    public enum { InvalidPort = -1; }
+    public enum { InvalidPort = -1 }
 
     private int port_;
     private cstring host_, path_, query_, scheme_, userinfo_, fragment_;
@@ -85,7 +86,7 @@ class Uri : UriView
         {"http",        80},
         {"http-ng",     80},
         {"https",       443},
-        l"imap",        143},
+        {"imap",        143},
         {"irc",         194},
         {"ldap",        389},
         {"news",        119},
@@ -476,6 +477,16 @@ class Uri : UriView
         return ret;
     }
 
+    /// Ditto
+    final size_t produce (ref Buffer!(char) buffer)
+    {
+        buffer.reset();
+        return this.produce((Const!(void)[] chunk) {
+            buffer ~= cast(mstring) chunk;
+            return buffer.length;
+        });
+    }
+
     /***********************************************************************
 
       Emit the content of this Uri via the provided Consumer. The
@@ -485,14 +496,9 @@ class Uri : UriView
 
     final override istring toString ()
     {
-        void[] s;
-        s.length = 256, s.length = 0;
-        enableStomping(s);
-
-        produce ((Const!(void)[] v) {s ~= v; return v.length;});
-        auto result = cast(mstring) s;
-
-        return assumeUnique(result);
+        Buffer!(char) buffer;
+        this.produce(buffer);
+        return cast(istring) buffer[];
     }
 
     /***********************************************************************
@@ -890,6 +896,21 @@ class Uri : UriView
                 c = cast(char)(c + ('a' - 'A'));
         return src;
     }
+}
+
+///
+unittest
+{
+    auto s_uri = "http://example.net/magic?arg&arg#id";
+    auto uri = new Uri(s_uri);
+
+    test!("==")(uri.scheme, "http");
+    test!("==")(uri.host, "example.net");
+    test!("==")(uri.port, Uri.InvalidPort);
+
+    Buffer!(char) buffer;
+    uri.produce(buffer);
+    test!("==") (buffer[], s_uri);
 }
 
 
