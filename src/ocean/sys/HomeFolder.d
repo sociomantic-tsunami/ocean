@@ -29,7 +29,7 @@ import Path = ocean.io.Path;
 import ocean.sys.Environment;
 version(UnitTest) import ocean.core.Test;
 
-import ocean.core.ExceptionDefinitions;
+import core.exception : onOutOfMemoryError;
 import core.stdc.stdlib;
 import core.sys.posix.pwd;
 import core.stdc.errno;
@@ -175,7 +175,7 @@ private cstring expandFromDatabase(cstring path)
     {
         extra_memory = core.stdc.stdlib.malloc(extra_memory_size);
         if (extra_memory is null)
-            throw new OutOfMemoryException("Not enough memory for user lookup in tilde expansion.", __LINE__);
+            onOutOfMemoryError();
 
         // Obtain info from database.
         passwd *verify;
@@ -195,7 +195,7 @@ private cstring expandFromDatabase(cstring path)
         }
 
         if (core.stdc.errno.errno() != ERANGE)
-            throw new OutOfMemoryException("Not enough memory for user lookup in tilde expansion.", __LINE__);
+            onOutOfMemoryError();
 
         // extra_memory isn't large enough
         core.stdc.stdlib.free(extra_memory);

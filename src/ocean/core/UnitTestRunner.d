@@ -77,7 +77,6 @@ else
     import core.sys.posix.sys.time: timersub;
 }
 
-import ocean.core.ExceptionDefinitions : AssertException;
 import ocean.io.Stdout: Stdout, Stderr;
 import ocean.io.stream.Format: FormatOutput;
 import ocean.io.stream.TextFile: TextFileOutput;
@@ -650,13 +649,6 @@ private scope class UnitTestRunner
             else
                 err = sformat(err, "{}:{}: test failure: {}", e.file, e.line, e.message());
             return Result.Fail;
-        }
-        catch (AssertException e)
-        {
-            version (D_Version2)
-                e.toString((d) { err ~= d; });
-            else
-                err = sformat(err, "{}:{}: assert error: {}", e.file, e.line, e.message());
         }
         catch (SanityException e)
         {
