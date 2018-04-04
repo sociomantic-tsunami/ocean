@@ -39,10 +39,9 @@ import ocean.core.TypeConvert;
 import ocean.core.Verify;
 
 import ocean.text.util.SplitIterator: ISplitIterator;
+import ocean.text.convert.Formatter;
 
 import core.stdc.ctype:  tolower;
-
-import ocean.core.ExceptionDefinitions: ArrayBoundsException;
 
 version(UnitTest) import ocean.core.Test;
 
@@ -151,15 +150,14 @@ class ParamSet
 
     cstring opIndex ( cstring key )
     {
-        try
-        {
-            return this.paramset[this.tolower(key)].val;
-        }
-        catch (ArrayBoundsException e)
-        {
-            e.msg ~= " [\"" ~ key ~ "\"]";
-            throw e;
-        }
+        key = this.tolower(key);
+        auto value = key in this.paramset;
+        verify(
+            value !is null,
+            format("Key '{}' is not found in ParamSet", key)
+        );
+
+        return value.val;
     }
 
     /**************************************************************************
