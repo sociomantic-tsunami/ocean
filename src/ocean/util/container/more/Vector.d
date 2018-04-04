@@ -17,7 +17,6 @@
 
 module ocean.util.container.more.Vector;
 
-import ocean.core.ExceptionDefinitions : ArrayBoundsException;
 import ocean.stdc.string : memmove;
 
 /******************************************************************************
