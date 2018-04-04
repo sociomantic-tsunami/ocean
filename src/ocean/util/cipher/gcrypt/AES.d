@@ -39,7 +39,7 @@ public alias GcryptNoIV!(Algorithm.GCRY_CIPHER_AES, Mode.GCRY_CIPHER_MODE_ECB) A
 unittest
 {
     // AES128 requires a key of length 16 bytes.
-    const KEY = "asdfghjklqwertyu";
+    static immutable KEY = "asdfghjklqwertyu";
 
     testAES!(AES128, KEY)();
 }
@@ -50,7 +50,7 @@ public alias GcryptNoIV!(Algorithm.GCRY_CIPHER_AES192, Mode.GCRY_CIPHER_MODE_ECB
 unittest
 {
     // AES192 requires a key of length 24 bytes.
-    const KEY = "abcdefghijklmnopqrstuvwx";
+    static immutable KEY = "abcdefghijklmnopqrstuvwx";
 
     testAES!(AES192, KEY);
 }
@@ -61,7 +61,7 @@ public alias GcryptNoIV!(Algorithm.GCRY_CIPHER_AES256, Mode.GCRY_CIPHER_MODE_ECB
 unittest
 {
     // AES256 requires a key of length 32 bytes.
-    const KEY = "abcdefghijklmnopqrstuvwxyz012345";
+    static immutable KEY = "abcdefghijklmnopqrstuvwxyz012345";
 
     testAES!(AES256, KEY);
 }
@@ -80,10 +80,10 @@ public alias GcryptWithIV!(Algorithm.GCRY_CIPHER_AES, Mode.GCRY_CIPHER_MODE_CBC)
 unittest
 {
     // AES128-CBC requires a key of length 16 bytes.
-    const KEY = "asdfghjklqwertyu";
+    static immutable KEY = "asdfghjklqwertyu";
 
     // AES128-CBC requires an IV of length 16 bytes.
-    const IV = "0123456789ABCDEF";
+    static immutable IV = "0123456789ABCDEF";
 
     testAES_IV!(AES128_CBC, KEY, IV);
 }
@@ -94,10 +94,10 @@ public alias GcryptWithIV!(Algorithm.GCRY_CIPHER_AES192, Mode.GCRY_CIPHER_MODE_C
 unittest
 {
     // AES192-CBC requires a key of length 24 bytes.
-    const KEY = "abcdefghijklmnopqrstuvwx";
+    static immutable KEY = "abcdefghijklmnopqrstuvwx";
 
     // AES192-CBC requires an IV of length 16 bytes.
-    const IV = "0123456789ABCDEF";
+    static immutable IV = "0123456789ABCDEF";
 
     testAES_IV!(AES192_CBC, KEY, IV);
 }
@@ -108,10 +108,10 @@ public alias GcryptWithIV!(Algorithm.GCRY_CIPHER_AES256, Mode.GCRY_CIPHER_MODE_C
 unittest
 {
     // AES256-CBC requires a key of length 32 bytes.
-    const KEY = "abcdefghijklmnopqrstuvwxyz012345";
+    static immutable KEY = "abcdefghijklmnopqrstuvwxyz012345";
 
     // AES256-CBC requires an IV of length 16 bytes.
-    const IV = "0123456789ABCDEF";
+    static immutable IV = "0123456789ABCDEF";
 
     testAES_IV!(AES256_CBC, KEY, IV);
 }

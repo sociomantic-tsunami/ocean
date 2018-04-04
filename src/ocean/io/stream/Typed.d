@@ -73,7 +73,7 @@ deprecated class TypedInput(T) : InputFilter
 
         ***********************************************************************/
 
-        final int opApply (int delegate(ref T x) dg)
+        final int opApply (scope int delegate(ref T x) dg)
         {
                 T x;
                 int ret;

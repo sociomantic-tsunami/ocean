@@ -53,7 +53,7 @@ struct StatusPhrases
 
      **************************************************************************/
 
-    const HttpStatusPhrase[] StatusReasonPhrases =
+    enum HttpStatusPhrase[] StatusReasonPhrases =
     [
         HttpStatusPhrase(HttpResponseCode.Continue,                     "Continue"),
         HttpStatusPhrase(HttpResponseCode.SwitchingProtocols,           "Switching Protocols"),
