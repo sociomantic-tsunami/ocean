@@ -765,6 +765,31 @@ public class EpollSelectDispatcher : IEpollSelectDispatcherInfo
 
     /***************************************************************************
 
+        While there are clients registered, repeatedly waits for registered
+        events to happen, invokes the corresponding event handlers of the
+        registered clients and unregisters the clients if they desire so.
+
+        Params:
+            select_cycle_hook = if not null, will be called each time select
+                cycle finished before waiting for more events. Also called
+                once before the first select. If returns `true`, epoll will
+                return immediately if there are no active events.
+            unhandled_exception_hook = if not null, will be called each time
+                select cycle results in unhandled exception. May either rethrow
+                or consume (ignore) exception instance after processing it.
+
+     **************************************************************************/
+
+    deprecated("Make `unhandled_exception_hook` return bool.")
+    public void eventLoop ( bool delegate ( ) select_cycle_hook,
+        void delegate (Exception) unhandled_exception_hook )
+    {
+        return this.eventLoop(select_cycle_hook,
+                (Exception e) { unhandled_exception_hook(e); return true; });
+    }
+
+    /***************************************************************************
+
         Executes an epoll select.
 
         Params:
