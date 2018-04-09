@@ -295,6 +295,11 @@ public abstract class DaemonApp : Application,
             Signal to trigger reopening of files which are registered with the
             ReopenableFilesExt. (Typically used for log rotation.)
 
+            If this field is set to 0, no signal handler will be installed for
+            file reopening. This is useful if your app is deployed to use a
+            different means of triggering file reopening (e.g. a UNIX socket
+            command).
+
         ***********************************************************************/
 
         int reopen_signal = SIGHUP;
