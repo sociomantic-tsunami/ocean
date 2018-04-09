@@ -83,20 +83,24 @@ public class ReopenableFilesExt : IApplicationExtension, ISignalExtExtension
 
     /***************************************************************************
 
-        Constructor. Optionally registers this extension with the signal
-        extension and activates the handling of the specified signal, which will
-        cause the registered files to be reopened.
+        Constructor.
+
+        Optionally registers this extension with the signal extension and
+        activates the handling of the specified signal, which will cause the
+        registered files to be reopened. For this to happen, a non-null
+        `signal_ext` and a non-zero `reopen_signal` must be supplied.
 
         Params:
-            signal_ext = optional SignalExt instance to register with
-            reopen_signal = if signal_ext is non-null, signal to trigger
-                reopening of registered files
+            signal_ext = SignalExt instance to register with (defaults to null)
+            reopen_signal = signal to trigger reopening of registered files
+                (defaults to SIGHUP, and considered only if non-zero and
+                `signal_ext` is non-null)
 
     ***************************************************************************/
 
     public this ( SignalExt signal_ext = null, int reopen_signal = SIGHUP )
     {
-        if (signal_ext)
+        if (signal_ext && reopen_signal)
         {
             this.setupSignalHandler(signal_ext, reopen_signal);
         }
