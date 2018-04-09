@@ -3,6 +3,10 @@
     Template for a union that knows its active field and ensures the active
     field is read.
 
+    See_Also:
+        ocean.text.formatter.SmartUnion -- for helper functions to format a
+        SmartUnion to a string
+
     Copyright:
         Copyright (c) 2009-2016 Sociomantic Labs GmbH.
         All rights reserved.
