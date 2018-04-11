@@ -270,7 +270,7 @@ unittest
     auto e = new SomeReusableException(100);
 
     e.set("message");
-    test (getMsg(e) == "message");
+    test (e.message() == "message");
     auto old_ptr = e.reused_msg[].ptr;
 
     try
@@ -279,14 +279,14 @@ unittest
         assert (false);
     }
     catch (SomeReusableException) { }
-    test (getMsg(e) == "immutable");
+    test (e.message() == "immutable");
 
     try
     {
         e.enforce(false, "longer message");
     }
     catch (SomeReusableException) { }
-    test (getMsg(e) == "longer message");
+    test (e.message() == "longer message");
     test (old_ptr is e.reused_msg[].ptr);
 
     try
@@ -294,7 +294,7 @@ unittest
         e.badName("NAME", 42);
     }
     catch (SomeReusableException) { }
-    test (getMsg(e) == "Wrong name (NAME) 0x2A 42");
+    test (e.message() == "Wrong name (NAME) 0x2A 42");
     test (old_ptr is e.reused_msg[].ptr);
 }
 
@@ -302,7 +302,7 @@ unittest
 {
     auto e = new SomeReusableException;
     e.set("aaa").fmtAppend("{0}{0}", 42);
-    test!("==")(getMsg(e), "aaa4242");
+    test!("==")(e.message(), "aaa4242");
 }
 
 version (UnitTest)
@@ -362,7 +362,7 @@ unittest
     }
     catch (CardBoardException e)
     {
-        test!("==")(getMsg(e), "Transmogrification failed"[]);
+        test!("==")(e.message(), "Transmogrification failed"[]);
         test!("==")(e.file, __FILE__[]);
         test!("==")(e.line, __LINE__ - 9);
     }

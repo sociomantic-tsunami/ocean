@@ -9,7 +9,7 @@
     The socket will be created under the path defined by the config option
     `path` under the `[UNIX_SOCKET]` config group. If the config path is not
     defined then the unix socket will not be created. If there's a need to
-    setup the permissions mode, config option `path` will be used to read the
+    setup the permissions mode, config option `mode` will be used to read the
     mode as octal string (usually you want 0600 for this).
 
     Usage example:

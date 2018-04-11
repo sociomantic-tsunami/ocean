@@ -127,7 +127,7 @@ unittest
     catch (FileException e)
     {
         test!("==")(
-            getMsg(e),
+            e.message(),
             "Bad file descriptor (failed operation on '<42>')"[]
         );
         test!("==")(e.line, check_line);

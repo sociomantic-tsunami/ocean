@@ -479,7 +479,7 @@ private scope class UnitTestRunner
         catch (Exception e)
         {
             Stderr.formatln("{}: error: writing XML file '{}': {} [{}:{}]",
-                    this.prog, this.xml_file, getMsg(e), e.file, e.line);
+                    this.prog, this.xml_file, e.message(), e.file, e.line);
             return false;
         }
 
@@ -648,7 +648,7 @@ private scope class UnitTestRunner
             version (D_Version2)
                 e.toString((d) { err ~= d; });
             else
-                err = sformat(err, "{}:{}: test failure: {}", e.file, e.line, getMsg(e));
+                err = sformat(err, "{}:{}: test failure: {}", e.file, e.line, e.message());
             return Result.Fail;
         }
         catch (AssertException e)
@@ -656,14 +656,14 @@ private scope class UnitTestRunner
             version (D_Version2)
                 e.toString((d) { err ~= d; });
             else
-                err = sformat(err, "{}:{}: assert error: {}", e.file, e.line, getMsg(e));
+                err = sformat(err, "{}:{}: assert error: {}", e.file, e.line, e.message());
         }
         catch (SanityException e)
         {
             version (D_Version2)
                 e.toString((d) { err ~= d; });
             else
-                err = sformat(err, "{}:{}: sanity exception: {}", e.file, e.line, getMsg(e));
+                err = sformat(err, "{}:{}: sanity exception: {}", e.file, e.line, e.message());
         }
         catch (Exception e)
         {
@@ -671,7 +671,7 @@ private scope class UnitTestRunner
                 e.toString((d) { err ~= d; });
             else
                 err = sformat(err, "{}:{}: unexpected exception {}: {}",
-                              e.file, e.line, e.classinfo.name, getMsg(e));
+                              e.file, e.line, e.classinfo.name, e.message());
         }
 
         return Result.Error;

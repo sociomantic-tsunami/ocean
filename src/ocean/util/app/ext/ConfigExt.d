@@ -305,7 +305,7 @@ class ConfigExt : IApplicationExtension, IArgumentsExtExtension
             catch (IOException e)
             {
                 app.exit(3, "Error reading config file '" ~ config_file ~
-                        "': " ~ idup(getMsg(e)));
+                        "': " ~ idup(e.message()));
             }
         }
 

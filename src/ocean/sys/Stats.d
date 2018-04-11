@@ -170,7 +170,7 @@ public class CpuMemoryStats
         catch (Exception e)
         {
             .stats_module_logger.error("Couldn't get stats for the process: {}@{}:{}",
-                getMsg(e), e.file, e.line);
+                e.message(), e.file, e.line);
 
             return stats;
         }

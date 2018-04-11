@@ -311,6 +311,15 @@ public abstract class DaemonApp : Application,
 
         /***********************************************************************
 
+            Unix domain socket command to print the `--version` output of the
+            application to the unix socket.
+
+        ***********************************************************************/
+
+        istring show_version_command = "show_version";
+
+        /***********************************************************************
+
             Set of signals to ignore. Delivery of the signals specified in this
             set will have no effect on the application -- they are not passed
             to the default signal handler.
@@ -404,6 +413,12 @@ public abstract class DaemonApp : Application,
         this.unix_socket_ext = new UnixSocketExt();
         this.config_ext.registerExtension(this.unix_socket_ext);
         this.registerExtension(this.unix_socket_ext);
+
+        if (settings.show_version_command.length)
+        {
+            this.ver_ext.setupUnixSocketHandler(this, this.unix_socket_ext,
+                    settings.show_version_command);
+        }
 
         if (settings.use_task_ext)
         {

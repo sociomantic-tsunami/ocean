@@ -118,7 +118,7 @@ class DeserializationException : Exception
         }
         catch ( DeserializationException e )
         {
-            test(getMsg(e) == "Error deserializing 'S' : length 3 exceeds limit 2");
+            test(e.message() == "Error deserializing 'S' : length 3 exceeds limit 2");
         }
     }
 }
