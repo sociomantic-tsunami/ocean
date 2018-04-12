@@ -20,11 +20,13 @@ module ocean.util.app.ext.VersionArgsExt;
 
 public import ocean.util.app.ext.VersionInfo;
 
+import ocean.io.device.File;
 import ocean.util.app.model.IApplicationExtension;
 import ocean.util.app.ext.model.IArgumentsExtExtension;
 import ocean.util.app.ext.model.ILogExtExtension;
 import ocean.util.app.ext.LogExt;
 import ocean.util.app.ext.ConfigExt;
+import ocean.util.app.ext.ReopenableFilesExt;
 import ocean.util.app.ext.UnixSocketExt;
 import ocean.util.app.Application;
 
@@ -37,7 +39,7 @@ import ocean.core.Array: startsWith, map;
 import ocean.transition;
 import ocean.core.Verify;
 import ocean.util.log.Logger;
-import ocean.util.log.AppendFile;
+import ocean.util.log.Appender;
 import ocean.util.log.LayoutDate;
 import ocean.core.Array: sort;
 
@@ -359,7 +361,16 @@ class VersionArgsExt : IApplicationExtension, IArgumentsExtExtension,
 
         if (this.default_logging)
         {
-            this.ver_log.add(new AppendFile(this.default_file, new LayoutDate));
+            auto stream = new File(this.default_file, File.WriteAppending);
+
+            if ( auto reopenable_files_ext =
+                (cast(Application)app).getExtension!(ReopenableFilesExt) )
+            {
+                reopenable_files_ext.register(stream);
+            }
+
+            auto appender = new AppendStream(stream, true, new LayoutDate);
+            this.ver_log.add(appender);
         }
     }
 
