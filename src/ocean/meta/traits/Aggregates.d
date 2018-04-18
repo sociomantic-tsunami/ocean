@@ -80,7 +80,7 @@ public template hasMethod ( T, istring name, F )
 {
     static if (hasMember!(T, name))
     {
-        const hasMethod = is(typeof(mixin("&T.init." ~ name)) == F);
+        const hasMethod = is(typeof(mixin("&T.init." ~ name)) : F);
     }
     else
         const hasMethod = false;
