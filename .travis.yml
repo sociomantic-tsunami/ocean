@@ -23,6 +23,7 @@ env:
         - DMD=1.081.* F=production
         - DMD=1.081.* F=devel
         - DMD=1.081.* F=production DFLAGS=-release
+        - DMD=1.081.* F=devel DFLAGS=-debug=ISelectClient
         - DMD=2.070.2.s* F=production
         - DMD=2.070.2.s* F=devel
         - DMD=2.071.2.s* F=production
