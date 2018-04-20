@@ -265,11 +265,11 @@ class HashFile(K, V)
 
                 void write (HashFile bucket, V data, BlockSize block)
                 {
-                        this.used = data.length;
+                        (&this).used = data.length;
 
                         // create new slot if we exceed capacity
-                        if (this.used > this.capacity)
-                            createBucket (bucket, this.used, block);
+                        if ((&this).used > (&this).capacity)
+                            createBucket (bucket, (&this).used, block);
 
                         bucket.heap [offset .. offset+used] = cast(ubyte[]) data;
                 }
@@ -280,10 +280,10 @@ class HashFile(K, V)
 
                 void createBucket (HashFile bucket, int bytes, BlockSize block)
                 {
-                        this.offset = bucket.waterLine;
-                        this.capacity = (bytes + block.capacity) & ~block.capacity;
+                        (&this).offset = bucket.waterLine;
+                        (&this).capacity = (bytes + block.capacity) & ~block.capacity;
 
-                        bucket.waterLine += this.capacity;
+                        bucket.waterLine += (&this).capacity;
                         if (bucket.waterLine > bucket.fileSize)
                            {
                            auto target = bucket.waterLine * 2;
