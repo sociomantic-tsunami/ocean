@@ -27,10 +27,8 @@ import ocean.sys.Common;
 import ocean.io.device.Device,
        ocean.io.stream.Buffered;
 
-version (Posix)
-{
-    import core.sys.posix.unistd: isatty;
-}
+import core.sys.posix.unistd: isatty;
+
 
 /*******************************************************************************
 

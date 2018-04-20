@@ -102,13 +102,10 @@ struct Kiss
         {
                 ulong s;
 
-                version (Posix)
-                        {
-                        timeval tv;
+                timeval tv;
 
-                        gettimeofday (&tv, null);
-                        s = tv.tv_usec;
-                        }
+                gettimeofday (&tv, null);
+                s = tv.tv_usec;
 
                 return seed (cast(uint) s);
         }

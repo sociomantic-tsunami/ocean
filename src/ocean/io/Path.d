@@ -38,9 +38,6 @@
         the normalize() and pattern() functions. See the doc towards the
         end of this module.
 
-        Compile with -version=Win32SansUnicode to enable Win95 &amp; Win32s
-        file support.
-
         Copyright:
             Copyright (c) 2008 Kris Bell.
             Normalization & Patterns copyright (c) 2006-2009 Max Samukha,
@@ -60,35 +57,21 @@
 
 module ocean.io.Path;
 
-import ocean.transition;
-
+public import ocean.core.ExceptionDefinitions : IOException, IllegalArgumentException;
 import ocean.core.Verify;
-
-import ocean.sys.Common;
-
-public  import ocean.time.Time : Time, TimeSpan;
-
 import ocean.io.model.IFile : FileConst, FileInfo;
-
-public  import ocean.core.ExceptionDefinitions : IOException, IllegalArgumentException;
+import ocean.sys.Common;
+public import ocean.time.Time : Time, TimeSpan;
+import ocean.transition;
 
 import core.stdc.string : memmove;
 
-version(UnitTest) import ocean.core.Test;
+version (UnitTest) import ocean.core.Test;
 
-/*******************************************************************************
-
-        Various imports
-
-*******************************************************************************/
-
-version (Posix)
-        {
-        import core.stdc.stdio;
-        import core.stdc.string;
-        import core.sys.posix.utime;
-        import core.sys.posix.dirent;
-        }
+import core.stdc.stdio;
+import core.stdc.string;
+import core.sys.posix.utime;
+import core.sys.posix.dirent;
 
 
 /*******************************************************************************
@@ -249,364 +232,359 @@ package struct FS
                 return dst [0 .. i];
         }
 
-        /***********************************************************************
+    /***************************************************************************
 
-                Posix-specific code.
+        Get info about this path.
 
-        ***********************************************************************/
+    ***************************************************************************/
 
-        version (Posix)
+    private static uint getInfo (cstring name, ref stat_t stats)
+    {
+        if (posix.stat (name.ptr, &stats))
+            exception (name);
+
+        return stats.st_mode;
+    }
+
+    /***************************************************************************
+
+        Returns:
+            whether the file or path exists.
+
+    ***************************************************************************/
+
+    static bool exists (cstring name)
+    {
+        stat_t stats = void;
+        return posix.stat (name.ptr, &stats) is 0;
+    }
+
+    /***************************************************************************
+
+        Returns:
+            the file length (in bytes.)
+
+    ***************************************************************************/
+
+    static ulong fileSize (cstring name)
+    {
+        stat_t stats = void;
+
+        getInfo (name, stats);
+        return cast(ulong) stats.st_size;
+    }
+
+    /***************************************************************************
+
+        Is this file writable?
+
+    ***************************************************************************/
+
+    static bool isWritable (cstring name)
+    {
+        return posix.access(name.ptr, W_OK) == 0;
+    }
+
+    /***************************************************************************
+
+        Returns:
+            true if the file exist and is readable for the effective uid.
+
+    ***************************************************************************/
+
+    static bool isReadable (cstring name)
+    {
+        return posix.access(name.ptr, R_OK) == 0;
+    }
+
+    /***************************************************************************
+
+        Is this file actually a folder/directory?
+
+    ***************************************************************************/
+
+    static bool isFolder (cstring name)
+    {
+        stat_t stats = void;
+
+        return (getInfo(name, stats) & S_IFMT) is S_IFDIR;
+    }
+
+    /***************************************************************************
+
+        Is this a normal file?
+
+    ***************************************************************************/
+
+    static bool isFile (cstring name)
+    {
+        stat_t stats = void;
+
+        return (getInfo(name, stats) & S_IFMT) is S_IFREG;
+    }
+
+    /***************************************************************************
+
+        Return timestamp information.
+
+        Timestamps are returns in a format dictated by the file-system.
+        For example NTFS keeps UTC time, while FAT timestamps are based
+        on the local time.
+
+    ***************************************************************************/
+
+    static Stamps timeStamps (cstring name)
+    {
+        static Time convert (typeof(stat_t.st_mtime) secs)
         {
-                /***************************************************************
-
-                        Get info about this path.
-
-                ***************************************************************/
-
-                private static uint getInfo (cstring name, ref stat_t stats)
-                {
-                        if (posix.stat (name.ptr, &stats))
-                            exception (name);
-
-                        return stats.st_mode;
-                }
-
-                /***************************************************************
-
-                        Return whether the file or path exists.
-
-                ***************************************************************/
-
-                static bool exists (cstring name)
-                {
-                        stat_t stats = void;
-                        return posix.stat (name.ptr, &stats) is 0;
-                }
-
-                /***************************************************************
-
-                        Return the file length (in bytes.)
-
-                ***************************************************************/
-
-                static ulong fileSize (cstring name)
-                {
-                        stat_t stats = void;
-
-                        getInfo (name, stats);
-                        return cast(ulong) stats.st_size;
-                }
-
-                /***************************************************************
-
-                        Is this file writable?
-
-                ***************************************************************/
-
-                static bool isWritable (cstring name)
-                {
-                        return posix.access(name.ptr, W_OK) == 0;
-                }
-
-                /***************************************************************
-
-                    Returns:
-                        true if the file exist and is readable for the effective
-                        uid.
-
-                ***************************************************************/
-
-                static bool isReadable (cstring name)
-                {
-                    return posix.access(name.ptr, R_OK) == 0;
-                }
-
-                /***************************************************************
-
-                        Is this file actually a folder/directory?
-
-                ***************************************************************/
-
-                static bool isFolder (cstring name)
-                {
-                        stat_t stats = void;
-
-                        return (getInfo(name, stats) & S_IFMT) is S_IFDIR;
-                }
-
-                /***************************************************************
-
-                        Is this a normal file?
-
-                ***************************************************************/
-
-                static bool isFile (cstring name)
-                {
-                        stat_t stats = void;
-
-                        return (getInfo(name, stats) & S_IFMT) is S_IFREG;
-                }
-
-                /***************************************************************
-
-                        Return timestamp information.
-
-                        Timestamps are returns in a format dictated by the
-                        file-system. For example NTFS keeps UTC time,
-                        while FAT timestamps are based on the local time.
-
-                ***************************************************************/
-
-                static Stamps timeStamps (cstring name)
-                {
-                        static Time convert (typeof(stat_t.st_mtime) secs)
-                        {
-                                return Time.epoch1970 +
-                                       TimeSpan.fromSeconds(secs);
-                        }
-
-                        stat_t stats = void;
-                        Stamps time  = void;
-
-                        getInfo (name, stats);
-
-                        time.modified = convert (stats.st_mtime);
-                        time.accessed = convert (stats.st_atime);
-                        time.created  = convert (stats.st_ctime);
-                        return time;
-                }
-
-                /***************************************************************
-
-                        Set the accessed and modified timestamps of the
-                        specified file.
-
-                ***************************************************************/
-
-                static void timeStamps (cstring name, Time accessed, Time modified)
-                {
-                        utimbuf time = void;
-                        time.actime = (accessed - Time.epoch1970).seconds;
-                        time.modtime = (modified - Time.epoch1970).seconds;
-                        if (utime (name.ptr, &time) is -1)
-                            exception (name);
-                }
-
-                /***********************************************************************
-
-                        Transfer the content of another file to this one. Returns a
-                        reference to this class on success, or throws an IOException
-                        upon failure.
-
-                        Note: Allocates a memory buffer.
-
-                ***********************************************************************/
-
-                static void copy (cstring source, mstring dest)
-                {
-                        auto src = posix.open (source.ptr, O_RDONLY, Octal!("640"));
-                        scope (exit)
-                               if (src != -1)
-                                   posix.close (src);
-
-                        auto dst = posix.open (dest.ptr, O_CREAT | O_RDWR, Octal!("660"));
-                        scope (exit)
-                               if (dst != -1)
-                                   posix.close (dst);
-
-                        if (src is -1 || dst is -1)
-                            exception (source);
-
-                        // copy content
-                        ubyte[] buf = new ubyte [16 * 1024];
-                        auto read = posix.read (src, buf.ptr, buf.length);
-                        while (read > 0)
-                              {
-                              auto p = buf.ptr;
-                              do {
-                                 auto written = posix.write (dst, p, read);
-                                 p += written;
-                                 read -= written;
-                                 if (written is -1)
-                                     exception (dest);
-                                 } while (read > 0);
-                              read = posix.read (src, buf.ptr, buf.length);
-                              }
-                        if (read is -1)
-                            exception (source);
-
-                        // copy timestamps
-                        stat_t stats;
-                        if (posix.stat (source.ptr, &stats))
-                            exception (source);
-
-                        utimbuf utim;
-                        utim.actime = stats.st_atime;
-                        utim.modtime = stats.st_mtime;
-                        if (utime (dest.ptr, &utim) is -1)
-                            exception (dest);
-                }
-
-                /***************************************************************
-
-                        Remove the file/directory from the file-system.
-                        Returns true on success - false otherwise.
-
-                ***************************************************************/
-
-                static bool remove (cstring name)
-                {
-                        return core.stdc.stdio.remove(name.ptr) != -1;
-                }
-
-                /***************************************************************
-
-                       Change the name or location of a file/directory.
-
-                ***************************************************************/
-
-                static void rename (cstring src, cstring dst)
-                {
-                        if (core.stdc.stdio.rename (src.ptr, dst.ptr) is -1)
-                            exception (src);
-                }
-
-                /***************************************************************
-
-                        Create a new file.
-
-                        Params:
-                            mode = mode for the new file (defaults to 0660)
-
-                ***************************************************************/
-
-                static void createFile (cstring name,
-                        mode_t mode = Octal!("660"))
-                {
-                        int fd;
-
-                        fd = posix.open (name.ptr, O_CREAT | O_WRONLY | O_TRUNC,
-                                mode);
-                        if (fd is -1)
-                            exception (name);
-
-                        if (posix.close(fd) is -1)
-                            exception (name);
-                }
-
-                /***************************************************************
-
-                        Create a new directory.
-
-                        Params:
-                            mode = mode for the new directory (defaults to 0777)
-
-                ***************************************************************/
-
-                static void createFolder (cstring name,
-                        mode_t mode = Octal!("777"))
-                {
-                        if (posix.mkdir (name.ptr, mode))
-                            exception (name);
-                }
-
-                /***************************************************************
-
-                        List the set of filenames within this folder.
-
-                        Each path and filename is passed to the provided
-                        delegate, along with the path prefix and whether
-                        the entry is a folder or not.
-
-                        Note: Allocates and reuses a small memory buffer.
-
-                ***************************************************************/
-
-                static int list (cstring folder, int delegate(ref FileInfo) dg, bool all=false)
-                {
-                        int             ret;
-                        DIR*            dir;
-                        dirent          entry;
-                        dirent*         pentry;
-                        stat_t          sbuf;
-                        mstring          prefix;
-                        mstring          sfnbuf;
-
-                        dir = core.sys.posix.dirent.opendir (folder.ptr);
-                        if (! dir)
-                              return ret;
-
-                        scope (exit)
-                        {
-                            core.sys.posix.dirent.closedir (dir);
-                            delete sfnbuf;
-
-                            // only delete when we dupped it
-                            if (folder[$-2] != '/')
-                                delete prefix;
-                        }
-
-                        // ensure a trailing '/' is present
-                        if (folder[$-2] != '/')
-                        {
-                            prefix = folder.dup;
-                            prefix[$-1] = '/';
-                        }
-                        else
-                            prefix = folder[0 .. $-1].dup;
-
-                        // prepare our filename buffer
-                        sfnbuf = new char[prefix.length + 256];
-                        sfnbuf[0 .. prefix.length] = prefix[];
-
-                        while (true)
-                              {
-                              // pentry is null at end of listing, or on an error
-                              readdir_r (dir, &entry, &pentry);
-                              if (pentry is null)
-                                  break;
-
-                              auto len = core.stdc.string.strlen (entry.d_name.ptr);
-                              auto str = entry.d_name.ptr [0 .. len];
-                              ++len;  // include the null
-
-                              // resize the buffer as necessary ...
-                              if (sfnbuf.length < prefix.length + len)
-                                  sfnbuf.length = prefix.length + len;
-
-                              sfnbuf [prefix.length .. prefix.length + len]
-                                      = entry.d_name.ptr [0 .. len];
-
-                              // skip "..." names
-                              if (str.length > 3 || str != "..."[0 .. str.length])
-                                 {
-                                 FileInfo info = void;
-                                 info.bytes  = 0;
-                                 info.name   = idup(str);
-                                 info.path   = idup(prefix);
-                                 info.hidden = str[0] is '.';
-                                 info.folder = info.system = false;
-
-                                 if (! stat (sfnbuf.ptr, &sbuf))
-                                 {
-                                     info.folder = (sbuf.st_mode & S_IFDIR) != 0;
-                                     if (info.folder is false)
-                                     {
-                                         if ((sbuf.st_mode & S_IFREG) is 0)
-                                             info.system = true;
-                                         else
-                                             info.bytes = cast(ulong) sbuf.st_size;
-                                     }
-                                 }
-                                 if (all || (info.hidden | info.system) is false)
-                                     if ((ret = dg(info)) != 0)
-                                          break;
-                                 }
-                              }
-                        return ret;
-                        assert(false);
-                }
+            return Time.epoch1970 +
+                TimeSpan.fromSeconds(secs);
         }
+
+        stat_t stats = void;
+        Stamps time  = void;
+
+        getInfo (name, stats);
+
+        time.modified = convert (stats.st_mtime);
+        time.accessed = convert (stats.st_atime);
+        time.created  = convert (stats.st_ctime);
+        return time;
+    }
+
+    /***************************************************************************
+
+        Set the accessed and modified timestamps of the specified file.
+
+    ***************************************************************************/
+
+    static void timeStamps (cstring name, Time accessed, Time modified)
+    {
+        utimbuf time = void;
+        time.actime = (accessed - Time.epoch1970).seconds;
+        time.modtime = (modified - Time.epoch1970).seconds;
+        if (utime (name.ptr, &time) is -1)
+            exception (name);
+    }
+
+    /***************************************************************************
+
+        Transfer the content of another file to this one.
+
+        Returns:
+            a reference to this class on success
+
+        Throws:
+            `IOException` upon failure
+
+         Note:
+            Allocates a memory buffer.
+
+    ***************************************************************************/
+
+    static void copy (cstring source, mstring dest)
+    {
+        auto src = posix.open (source.ptr, O_RDONLY, Octal!("640"));
+        scope (exit)
+            if (src != -1)
+                posix.close (src);
+
+        auto dst = posix.open (dest.ptr, O_CREAT | O_RDWR, Octal!("660"));
+        scope (exit)
+            if (dst != -1)
+                posix.close (dst);
+
+        if (src is -1 || dst is -1)
+            exception (source);
+
+        // copy content
+        ubyte[] buf = new ubyte [16 * 1024];
+        auto read = posix.read (src, buf.ptr, buf.length);
+        while (read > 0)
+        {
+            auto p = buf.ptr;
+            do {
+                auto written = posix.write (dst, p, read);
+                p += written;
+                read -= written;
+                if (written is -1)
+                    exception (dest);
+            } while (read > 0);
+            read = posix.read (src, buf.ptr, buf.length);
+        }
+        if (read is -1)
+            exception (source);
+
+        // copy timestamps
+        stat_t stats;
+        if (posix.stat (source.ptr, &stats))
+            exception (source);
+
+        utimbuf utim;
+        utim.actime = stats.st_atime;
+        utim.modtime = stats.st_mtime;
+        if (utime (dest.ptr, &utim) is -1)
+            exception (dest);
+    }
+
+    /***************************************************************************
+
+        Remove the file/directory from the file-system.
+
+        Returns:
+            `true` on success - `false` otherwise.
+
+    ***************************************************************************/
+
+    static bool remove (cstring name)
+    {
+        return core.stdc.stdio.remove(name.ptr) != -1;
+    }
+
+    /***************************************************************************
+
+        Change the name or location of a file/directory.
+
+    ***************************************************************************/
+
+    static void rename (cstring src, cstring dst)
+    {
+        if (core.stdc.stdio.rename(src.ptr, dst.ptr) is -1)
+            exception(src);
+    }
+
+    /***************************************************************************
+
+        Create a new file.
+
+        Params:
+            mode = mode for the new file (defaults to 0660)
+
+    ***************************************************************************/
+
+    static void createFile (cstring name, mode_t mode = Octal!("660"))
+    {
+        int fd;
+
+        fd = posix.open (name.ptr, O_CREAT | O_WRONLY | O_TRUNC,
+                         mode);
+        if (fd is -1)
+            exception (name);
+
+        if (posix.close(fd) is -1)
+            exception (name);
+    }
+
+    /***************************************************************************
+
+        Create a new directory.
+
+        Params:
+            mode = mode for the new directory (defaults to 0777)
+
+    *************************************************************************/
+
+    static void createFolder (cstring name, mode_t mode = Octal!("777"))
+    {
+        if (posix.mkdir (name.ptr, mode))
+            exception (name);
+    }
+
+    /***************************************************************************
+
+        List the set of filenames within this folder.
+
+        Each path and filename is passed to the provided delegate,
+        along with the path prefix and whether the entry is a folder or not.
+
+        Note: Allocates and reuses a small memory buffer.
+
+    ***************************************************************************/
+
+    static int list (cstring folder, int delegate(ref FileInfo) dg, bool all=false)
+    {
+        int             ret;
+        DIR*            dir;
+        dirent          entry;
+        dirent*         pentry;
+        stat_t          sbuf;
+        mstring          prefix;
+        mstring          sfnbuf;
+
+        dir = core.sys.posix.dirent.opendir (folder.ptr);
+        if (! dir)
+            return ret;
+
+        scope (exit)
+        {
+            core.sys.posix.dirent.closedir (dir);
+            delete sfnbuf;
+
+            // only delete when we dupped it
+            if (folder[$-2] != '/')
+                delete prefix;
+        }
+
+        // ensure a trailing '/' is present
+        if (folder[$-2] != '/')
+        {
+            prefix = folder.dup;
+            prefix[$-1] = '/';
+        }
+        else
+            prefix = folder[0 .. $-1].dup;
+
+        // prepare our filename buffer
+        sfnbuf = new char[prefix.length + 256];
+        sfnbuf[0 .. prefix.length] = prefix[];
+
+        while (true)
+        {
+            // pentry is null at end of listing, or on an error
+            readdir_r (dir, &entry, &pentry);
+            if (pentry is null)
+                break;
+
+            auto len = core.stdc.string.strlen (entry.d_name.ptr);
+            auto str = entry.d_name.ptr [0 .. len];
+            ++len;  // include the null
+
+            // resize the buffer as necessary ...
+            if (sfnbuf.length < prefix.length + len)
+                sfnbuf.length = prefix.length + len;
+
+            sfnbuf [prefix.length .. prefix.length + len]
+                = entry.d_name.ptr [0 .. len];
+
+            // skip "..." names
+            if (str.length > 3 || str != "..."[0 .. str.length])
+            {
+                FileInfo info = void;
+                info.bytes  = 0;
+                info.name   = idup(str);
+                info.path   = idup(prefix);
+                info.hidden = str[0] is '.';
+                info.folder = info.system = false;
+
+                if (! stat (sfnbuf.ptr, &sbuf))
+                {
+                    info.folder = (sbuf.st_mode & S_IFDIR) != 0;
+                    if (info.folder is false)
+                    {
+                        if ((sbuf.st_mode & S_IFREG) is 0)
+                            info.system = true;
+                        else
+                            info.bytes = cast(ulong) sbuf.st_size;
+                    }
+                }
+                if (all || (info.hidden | info.system) is false)
+                    if ((ret = dg(info)) != 0)
+                        break;
+            }
+        }
+        return ret;
+        assert(false);
+    }
 }
 
 
@@ -1467,12 +1445,9 @@ unittest
 
         Throws: Nothing.
         -----
-        version (Posix)
-        {
-          patternMatch("Go*.bar", "[fg]???bar"); // => false
-          patternMatch("/foo*home/bar", "?foo*bar"); // => true
-          patternMatch("foobar", "foo?bar"); // => true
-        }
+        patternMatch("Go*.bar", "[fg]???bar"); // => false
+        patternMatch("/foo*home/bar", "?foo*bar"); // => true
+        patternMatch("foobar", "foo?bar"); // => true
         -----
 
 ******************************************************************************/
@@ -1508,8 +1483,7 @@ bool patternMatch (cstring filename, cstring pattern)
 
         bool charMatch (char c1, char c2)
         {
-            version (Posix)
-                 return c1 == c2;
+            return c1 == c2;
         }
 
         ni = 0;
@@ -1587,8 +1561,7 @@ bool patternMatch (cstring filename, cstring pattern)
 
 unittest
 {
-    version (Posix)
-        test(!patternMatch("foo", "Foo"));
+    test(!patternMatch("foo", "Foo"));
 
     test(patternMatch("foo", "*"));
     test(patternMatch("foo.bar", "*"));

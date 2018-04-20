@@ -19,27 +19,8 @@ module ocean.sys.Common;
 
 import ocean.transition;
 
-version (linux)
-        {
-        public import ocean.sys.linux.linux;
-        alias ocean.sys.linux.linux posix;
-        }
-
-version (darwin)
-        {
-        public import ocean.sys.darwin.darwin;
-        alias ocean.sys.darwin.darwin posix;
-        }
-version (freebsd)
-        {
-        public import ocean.sys.freebsd.freebsd;
-        alias ocean.sys.freebsd.freebsd posix;
-        }
-version (solaris)
-        {
-        public import ocean.sys.solaris.solaris;
-        alias ocean.sys.solaris.solaris posix;
-        }
+public import ocean.sys.linux.linux;
+alias ocean.sys.linux.linux posix;
 
 /*******************************************************************************
 
@@ -47,16 +28,8 @@ version (solaris)
 
 *******************************************************************************/
 
-version (Posix)
-        {
-        import core.stdc.errno;
-        import core.stdc.string;
-        }
-else
-   {
-   pragma (msg, "Unsupported environment; neither Win32 or Posix is declared");
-   static assert(0);
-   }
+import core.stdc.errno;
+import core.stdc.string;
 
 
 /*******************************************************************************

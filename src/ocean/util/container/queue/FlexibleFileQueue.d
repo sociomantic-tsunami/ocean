@@ -333,7 +333,7 @@ public class FlexibleFileQueue : IByteQueue
             try this.ext_out.flush();
             catch (Exception e)
             {
-                log.error("## ERROR: Can't flush file buffer: {}", getMsg(e));
+                log.error("## ERROR: Can't flush file buffer: {}", e.message());
                 return null;
             }
 
@@ -368,7 +368,7 @@ public class FlexibleFileQueue : IByteQueue
         catch (Exception e)
         {
             log.error("## ERROR: Failsafe catch triggered by exception: {} ({}:{})",
-                      getMsg(e), e.file, e.line);
+                      e.message(), e.file, e.line);
         }
 
         return null;
@@ -592,7 +592,7 @@ public class FlexibleFileQueue : IByteQueue
         }
         catch (Exception e)
         {
-            log.error("## ERROR: Exception happened while writing to disk: {}", getMsg(e));
+            log.error("## ERROR: Exception happened while writing to disk: {}", e.message());
             return false;
         }
     }

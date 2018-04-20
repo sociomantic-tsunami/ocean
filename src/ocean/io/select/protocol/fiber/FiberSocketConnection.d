@@ -46,7 +46,7 @@ debug ( EpollTiming ) import ocean.time.StopWatch;
 debug ( ISelectClient )
 {
     import ocean.io.Stdout : Stderr;
-    import ocean.stdc.stringz;
+    import ocean.text.util.StringC;
 }
 
 
@@ -601,7 +601,8 @@ public class IFiberSocketConnection : IFiberSelectProtocol
                 debug ( ISelectClient )
                 {
                     Stderr.formatln("[{}:{}]: {}",
-                        this.address_, this.port_, fromStringz(this.socket_error.strerror(errnum))).flush();
+                        this.address_, this.port_, StringC.toDString(
+                            this.socket_error.strerror(errnum))).flush();
                 }
 
                 switch (errnum)

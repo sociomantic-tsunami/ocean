@@ -94,7 +94,7 @@ unittest
     }
     catch (TestException e)
     {
-        assert(getMsg(e) == "unit test has failed");
+        assert(e.message() == "unit test has failed");
         assert(e.line == __LINE__ - 6);
     }
 
@@ -105,7 +105,7 @@ unittest
     }
     catch (TestException e)
     {
-        assert(getMsg(e) == "expression '2 == 3' evaluates to false");
+        assert(e.message() == "expression '2 == 3' evaluates to false");
         assert(e.line == __LINE__ - 6);
     }
 }
@@ -288,7 +288,7 @@ unittest
     }
     catch (TestException e)
     {
-        assert(getMsg(e) == "[name] unit test has failed");
+        assert(e.message() == "[name] unit test has failed");
     }
 
     try
@@ -298,7 +298,7 @@ unittest
     }
     catch (TestException e)
     {
-        assert(getMsg(e) == "[name] expression '2 > 3' evaluates to false");
+        assert(e.message() == "[name] expression '2 > 3' evaluates to false");
     }
 }
 
@@ -362,7 +362,7 @@ unittest
     }
     catch (TestException e)
     {
-        assert(getMsg(e) == `[struct] expression '{ a: 1, arr: "ab" } == { a: 2, arr: "cd" }' evaluates to false`);
+        assert(e.message() == `[struct] expression '{ a: 1, arr: "ab" } == { a: 2, arr: "cd" }' evaluates to false`);
     }
 }
 
@@ -379,6 +379,6 @@ unittest
     }
     catch (TestException e)
     {
-        assert(getMsg(e) == `[typedef] expression '10 == 20' evaluates to false`);
+        assert(e.message() == `[typedef] expression '10 == 20' evaluates to false`);
     }
 }

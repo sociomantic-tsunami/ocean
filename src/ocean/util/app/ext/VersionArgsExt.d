@@ -20,11 +20,14 @@ module ocean.util.app.ext.VersionArgsExt;
 
 public import ocean.util.app.ext.VersionInfo;
 
+import ocean.io.device.File;
 import ocean.util.app.model.IApplicationExtension;
 import ocean.util.app.ext.model.IArgumentsExtExtension;
 import ocean.util.app.ext.model.ILogExtExtension;
 import ocean.util.app.ext.LogExt;
 import ocean.util.app.ext.ConfigExt;
+import ocean.util.app.ext.ReopenableFilesExt;
+import ocean.util.app.ext.UnixSocketExt;
 import ocean.util.app.Application;
 
 import ocean.text.Arguments;
@@ -34,8 +37,9 @@ import ocean.io.Stdout;
 import ocean.core.Array: startsWith, map;
 
 import ocean.transition;
+import ocean.core.Verify;
 import ocean.util.log.Logger;
-import ocean.util.log.AppendFile;
+import ocean.util.log.Appender;
 import ocean.util.log.LayoutDate;
 import ocean.core.array.Mutation /* : moveToEnd, sort */;
 
@@ -95,6 +99,15 @@ class VersionArgsExt : IApplicationExtension, IArgumentsExtExtension,
     ***************************************************************************/
 
     public Logger ver_log;
+
+
+    /**************************************************************************
+
+        The application's name.
+
+    ***************************************************************************/
+
+    private istring app_name;
 
 
     /***************************************************************************
@@ -247,6 +260,50 @@ class VersionArgsExt : IApplicationExtension, IArgumentsExtExtension,
 
     /***************************************************************************
 
+        Registers this extension with the unix socket extension and activates the
+        handling of the specified unix socket command, which will print the application
+        version (as shown by `--version`) to the socket when called.
+
+        Params:
+            app = the application instance
+            unix_socket_ext = UnixSocketExt instance to register with
+            reopen_command = command to trigger displaying of the version
+
+    ***************************************************************************/
+
+    public void setupUnixSocketHandler ( IApplication app,
+            UnixSocketExt unix_socket_ext,
+            istring version_command = "show_version" )
+    {
+        verify(unix_socket_ext !is null);
+
+        this.app_name = idup(app.name);
+        unix_socket_ext.addHandler(version_command,
+            &this.showVersionHandler);
+    }
+
+
+    /****************************************************************************
+
+        Print the version to the sink delegate. Used as a callback from the
+        Unix socket
+
+        Params:
+            args = list of arguments received from the socket - ignored
+            send_response = delegate to send the response to the client
+
+    *****************************************************************************/
+
+    private void showVersionHandler ( cstring[] args,
+            void delegate ( cstring response ) send_response )
+    {
+        send_response(getVersionString(this.app_name, this.ver));
+        send_response("\n");
+    }
+
+
+    /***************************************************************************
+
         Add the default logger if default_logging is true.
 
         If the configuration variable is present, it will override the current
@@ -277,7 +334,16 @@ class VersionArgsExt : IApplicationExtension, IArgumentsExtExtension,
 
         if (this.default_logging)
         {
-            this.ver_log.add(new AppendFile(this.default_file, new LayoutDate));
+            auto stream = new File(this.default_file, File.WriteAppending);
+
+            if ( auto reopenable_files_ext =
+                (cast(Application)app).getExtension!(ReopenableFilesExt) )
+            {
+                reopenable_files_ext.register(stream);
+            }
+
+            auto appender = new AppendStream(stream, true, new LayoutDate);
+            this.ver_log.add(appender);
         }
     }
 

@@ -299,17 +299,17 @@ class Application : IApplication
 
     protected void printExitException ( ExitException e )
     {
-        if (getMsg(e) == "")
+        if (e.message() == "")
         {
             return;
         }
         if (e.status == 0)
         {
-            Stdout.formatln("{}", getMsg(e));
+            Stdout.formatln("{}", e.message());
         }
         else
         {
-            Stderr.red.format("{}", getMsg(e)).default_colour.newline;
+            Stderr.red.format("{}", e.message()).default_colour.newline;
         }
     }
 

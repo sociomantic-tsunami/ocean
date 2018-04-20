@@ -79,7 +79,7 @@ class TestHttpHandler: TaskHttpConnectionHandler
 
     static void printEx ( Exception e )
     {
-        Stderr.formatln("{} @{}:{}", getMsg(e), e.file, e.line);
+        Stderr.formatln("{} @{}:{}", e.message(), e.file, e.line);
     }
 }
 

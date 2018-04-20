@@ -56,13 +56,23 @@ struct Serializer
 
     /***************************************************************************
 
-        Serializes the data in s
+        Serializes the data in src.
+
+        Note that the serialization process may expand the dst buffer more than
+        ultimately necessary, but it always returns a slice into the buffer
+        that covers bytes of the struct instance itself, not including any of
+        indirections (that are placed after).
+        Therefore calling applications should be careful to use the returned
+        buffer rather than the dst buffer directly.
 
         Params:
             S = type of the struct to dump
             src = struct to serialize
             dst = buffer to write to. It is only extended if needed and
                 never shrunk
+
+        Returns:
+            the slice to the serialize data
 
     ***************************************************************************/
 

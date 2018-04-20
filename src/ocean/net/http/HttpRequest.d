@@ -3,9 +3,9 @@
     HTTP request message parser
 
     Before parsing an HTTP request message, the names of all header fields whose
-    values will be required must be added, except the General-Header and
-    Request-Header fields specified in RFC 2616 section 4.5 and 5.3,
-    respectively.
+    values will be required must be added by calling `addCustomHeaders`, except
+    the General-Header and Request-Header fields specified in RFC 2616 section
+    4.5 and 5.3, respectively.
     After parse() has finished parsing the message hader, the values of these
     message header fields of interest can be obtained by the ParamSet
     (HttpRequest super class) methods. A null value indicates that the request

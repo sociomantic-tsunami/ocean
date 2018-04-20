@@ -37,10 +37,10 @@
 
         import ocean.util.log.PeriodicTrace;
 
-        PeriodicTrace trace1;
+        PeriodicTracer trace1;
         trace1.interval = 500_000; // only update display after at least half a second has passed
 
-        PeriodicTrace trace2;
+        PeriodicTracer trace2;
         trace2.interval = 5_000_000; // only update display after at least 5 seconds have passed
 
         for ( uint i; i < uint.max; i++ )

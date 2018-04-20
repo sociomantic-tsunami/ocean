@@ -131,7 +131,7 @@ public class ErrnoException : Exception
         }
         catch (ErrnoException e)
         {
-            test!("==")(getMsg(e),
+            test!("==")(e.message(),
                         "FUNCTION: Too many open files (extra)"[]);
             test!("==")(e.errorNumber(), EMFILE);
         }
@@ -211,7 +211,7 @@ public class ErrnoException : Exception
         }
         catch (ErrnoException e)
         {
-            test!("==")(getMsg(e), "func: Too many open files"[]);
+            test!("==")(e.message(), "func: Too many open files"[]);
             test!("==")(e.line, __LINE__ - 6);
         }
     }
@@ -258,7 +258,7 @@ public class ErrnoException : Exception
         }
         catch (ErrnoException e)
         {
-            test!("==")(getMsg(e), "func: Too many open files"[]);
+            test!("==")(e.message(), "func: Too many open files"[]);
             test!("==")(e.failedFunctionName(), "func"[]);
             test!("==")(e.line, __LINE__ - 7);
         }
@@ -292,7 +292,7 @@ public class ErrnoException : Exception
         .errno = ENOTBLK;
         auto e = new ErrnoException;
         test!("==")(
-            getMsg(e.useGlobalErrno("func").append(" str1").append(" str2")),
+            e.useGlobalErrno("func").append(" str1").append(" str2").message(),
             "func: Block device required str1 str2"[]
         );
         test!("==")(.errno, ENOTBLK);
@@ -337,7 +337,7 @@ public class ErrnoException : Exception
     {
         auto e = new ErrnoException;
         e.set(0);
-        test!("==")(getMsg(e), "Expected non-zero errno after failure"[]);
+        test!("==")(e.message(), "Expected non-zero errno after failure"[]);
     }
 
     /**************************************************************************
@@ -368,7 +368,7 @@ public class ErrnoException : Exception
     {
         auto e = new ErrnoException;
         e.set(ENOTBLK).addMessage("msg");
-        test!("==")(getMsg(e), "Block device required (msg)"[]);
+        test!("==")(e.message(), "Block device required (msg)"[]);
     }
 }
 

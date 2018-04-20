@@ -35,14 +35,7 @@ private
 {
     import core.stdc.config : c_long, c_ulong;
 
-    version( Posix )
-    {
-        import ocean.stdc.posix.sys.types : z_off_t = off_t;
-    }
-    else
-    {
-        alias c_long z_off_t;
-    }
+    import ocean.stdc.posix.sys.types : z_off_t = off_t;
 
     alias ubyte     Byte;
     alias uint      uInt;

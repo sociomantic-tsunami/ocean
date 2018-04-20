@@ -45,8 +45,11 @@ import ocean.util.app.ext.model.ILogExtExtension;
 import ocean.util.app.ext.model.ISignalExtExtension;
 
 import ocean.transition;
+version (UnitTest) import ocean.core.Test;
 import ocean.core.Verify;
 import ocean.task.IScheduler;
+
+import core.stdc.time;
 
 /// ditto
 public abstract class DaemonApp : Application,
@@ -291,6 +294,11 @@ public abstract class DaemonApp : Application,
             Signal to trigger reopening of files which are registered with the
             ReopenableFilesExt. (Typically used for log rotation.)
 
+            If this field is set to 0, no signal handler will be installed for
+            file reopening. This is useful if your app is deployed to use a
+            different means of triggering file reopening (e.g. a UNIX socket
+            command).
+
         ***********************************************************************/
 
         int reopen_signal = SIGHUP;
@@ -304,6 +312,15 @@ public abstract class DaemonApp : Application,
         ***********************************************************************/
 
         istring reopen_command = "reopen_files";
+
+        /***********************************************************************
+
+            Unix domain socket command to print the `--version` output of the
+            application to the unix socket.
+
+        ***********************************************************************/
+
+        istring show_version_command = "show_version";
 
         /***********************************************************************
 
@@ -401,6 +418,12 @@ public abstract class DaemonApp : Application,
         this.config_ext.registerExtension(this.unix_socket_ext);
         this.registerExtension(this.unix_socket_ext);
 
+        if (settings.show_version_command.length)
+        {
+            this.ver_ext.setupUnixSocketHandler(this, this.unix_socket_ext,
+                    settings.show_version_command);
+        }
+
         if (settings.use_task_ext)
         {
             this.task_ext = new TaskExt();
@@ -459,13 +482,42 @@ public abstract class DaemonApp : Application,
         this.registerExtension(this.timer_ext);
 
         // Register stats timer with epoll
-        this.timer_ext.register(&this.statsTimer, this.stats_ext.config.interval);
+        ulong initial_offset = timeToNextInterval(this.stats_ext.config.interval);
+        this.timer_ext.register(
+            &this.statsTimer, initial_offset, this.stats_ext.config.interval);
 
         // Register signal event handler with epoll
         this.epoll.register(this.signal_ext.selectClient());
 
         /// Initialize the unix socket with epoll.
         this.unix_socket_ext.initializeSocket(this.epoll);
+    }
+
+    /***************************************************************************
+
+        Params:
+            interval = interval used for calling the stats timer
+            current  = current time, default to now (`time(null)`)
+
+        Returns:
+            function to calculate the amount of time to wait until the next
+            interval is reached.
+
+    ***************************************************************************/
+
+    private static ulong timeToNextInterval (ulong interval, time_t current = time(null))
+    {
+        return (current % interval) ? (interval - (current % interval)) : 0;
+    }
+
+    unittest
+    {
+        time_t orig = 704124854; // 14 seconds past the minute
+        test!("==")(timeToNextInterval(15, orig), 1);
+        test!("==")(timeToNextInterval(20, orig), 6);
+        test!("==")(timeToNextInterval(30, orig), 16);
+        test!("==")(timeToNextInterval(60, orig), 46);
+        test!("==")(timeToNextInterval(15, orig + 1), 0);
     }
 
     /***************************************************************************

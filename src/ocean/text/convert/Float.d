@@ -49,24 +49,10 @@ private alias real NumType;
 
 private extern (C)
 {
-    double log10 (double x);
-    double ceil (double num);
-    double modf (double num, double *i);
-    double pow  (double base, double exp);
-
     real log10l (real x);
     real ceill (real num);
     real modfl (real num, real *i);
     real powl  (real base, real exp);
-
-    int printf (char*, ...);
-    alias ecvtl econvert;
-    alias ecvtl fconvert;
-
-    char* ecvt (double d, int digits, int* decpt, int* sign);
-    char* fcvt (double d, int digits, int* decpt, int* sign);
-    char* ecvtl (real d, int digits, int* decpt, int* sign);
-    char* fcvtl (real d, int digits, int* decpt, int* sign);
 }
 
 /******************************************************************************
