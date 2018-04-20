@@ -37,7 +37,7 @@ version(UnitTest) import ocean.core.Test;
 final class Sha512 : MerkleDamgard
 {
         private ulong[8]        context;
-        private const uint      padChar = 0x80;
+        private static immutable uint      padChar = 0x80;
 
         /***********************************************************************
 

@@ -140,7 +140,7 @@ abstract class IConnectionHandler : IConnectionHandlerInfo,
 
      ***************************************************************************/
 
-    protected this ( ISocket socket, ErrorDg error_dg_ = null )
+    protected this ( ISocket socket, scope ErrorDg error_dg_ = null )
     {
         this(socket, null, error_dg_);
     }
@@ -158,8 +158,8 @@ abstract class IConnectionHandler : IConnectionHandlerInfo,
 
     ***************************************************************************/
 
-    protected this ( ISocket socket, FinalizeDg finalize_dg_ = null,
-        ErrorDg error_dg_ = null )
+    protected this ( ISocket socket, scope FinalizeDg finalize_dg_ = null,
+        scope ErrorDg error_dg_ = null )
     {
         verify(socket !is null);
 
@@ -186,7 +186,7 @@ abstract class IConnectionHandler : IConnectionHandlerInfo,
 
     ***************************************************************************/
 
-    public FinalizeDg finalize_dg ( FinalizeDg finalize_dg_ )
+    public FinalizeDg finalize_dg ( scope FinalizeDg finalize_dg_ )
     {
         return this.finalize_dg_ = finalize_dg_;
     }
@@ -204,7 +204,7 @@ abstract class IConnectionHandler : IConnectionHandlerInfo,
 
     ***************************************************************************/
 
-    public ErrorDg error_dg ( ErrorDg error_dg_ )
+    public ErrorDg error_dg ( scope ErrorDg error_dg_ )
     {
         return this.error_dg_ = error_dg_;
     }

@@ -70,7 +70,7 @@ interface ILogger
 
     ***************************************************************************/
 
-    private const Pair[Level.max + 1] Pairs =
+    private static immutable Pair[Level.max + 1] Pairs =
     [
         { "Trace",  Level.Trace },
         { "Info",   Level.Info },

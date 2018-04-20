@@ -81,7 +81,7 @@ class HttpStack
         private int     depth;
         private Token[] tokens;
 
-        private const int MaxHttpStackSize = 256;
+        private static immutable int MaxHttpStackSize = 256;
 
         /**********************************************************************
 
@@ -122,7 +122,7 @@ class HttpStack
 
         **********************************************************************/
 
-        int opApply (int delegate(ref Token) dg)
+        int opApply (scope int delegate(ref Token) dg)
         {
                 int result = 0;
 
