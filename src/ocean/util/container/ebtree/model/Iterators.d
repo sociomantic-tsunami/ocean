@@ -71,7 +71,7 @@ template Iterators ( Node )
 
         ***********************************************************************/
 
-        public int opApply ( int delegate ( ref Node node ) dg )
+        public int opApply ( scope int delegate ( ref Node node ) dg )
         {
             int ret = 0;
 
@@ -91,7 +91,7 @@ template Iterators ( Node )
 
         ***************************************************************************/
 
-        public int opApplyReverse ( int delegate ( ref Node node ) dg )
+        public int opApplyReverse ( scope int delegate ( ref Node node ) dg )
         {
             int ret = 0;
 

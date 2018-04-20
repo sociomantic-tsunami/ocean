@@ -295,7 +295,7 @@ class VersionArgsExt : IApplicationExtension, IArgumentsExtExtension,
     *****************************************************************************/
 
     private void showVersionHandler ( cstring[] args,
-            void delegate ( cstring response ) send_response )
+            scope void delegate ( cstring response ) send_response )
     {
         send_response(getVersionString(this.app_name, this.ver));
         send_response("\n");
