@@ -1227,6 +1227,32 @@ unittest
     test!("is")(v, null);
 }
 
+unittest
+{
+    // ensure class keys work
+    class Key
+    {
+        int x;
+
+        this ( int x )
+        {
+            this.x = x;
+        }
+
+        override hash_t toHash ( )
+        {
+            return x;
+        }
+    }
+
+    auto map = new StandardKeyHashingMap!(int, Key)(5);
+    auto key = new Key(42);
+    map[key] = 24;
+    auto v = key in map;
+    test!("!is")(v, null);
+    test!("==")(*v, 24);
+}
+
 /*******************************************************************************
 
     Instantiate the bucket element allocator templates.
