@@ -128,7 +128,7 @@ public class CSV
 
     ***************************************************************************/
 
-    public void parse ( InputStream stream, RowDg row_dg )
+    public void parse ( InputStream stream, scope RowDg row_dg )
     {
         verify(stream !is null, "InputStream is null");
         verify(row_dg !is null, "Row delegate is null");
@@ -200,7 +200,7 @@ public class CSV
 
     ***************************************************************************/
 
-    private bool parseRow ( RowDg row_dg )
+    private bool parseRow ( scope RowDg row_dg )
     {
         this.fields.length = 0;
 

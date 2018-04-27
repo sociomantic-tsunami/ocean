@@ -244,7 +244,7 @@ abstract class IAllocator
 
          **********************************************************************/
 
-        public int opApply ( int delegate ( ref void* object ) dg )
+        public int opApply ( scope int delegate ( ref void* object ) dg )
         {
             int r = 0;
 
@@ -297,5 +297,5 @@ abstract class IAllocator
 
     ***************************************************************************/
 
-    void parkElements ( size_t n, void delegate ( IParkingStack park ) dg );
+    void parkElements ( size_t n, scope void delegate ( IParkingStack park ) dg );
 }

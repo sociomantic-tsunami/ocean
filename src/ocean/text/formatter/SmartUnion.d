@@ -108,22 +108,22 @@ private struct SmartUnionFormatter ( SU )
 
     ***************************************************************************/
 
-    public void toString ( void delegate ( cstring chunk ) sink )
+    public void toString ( scope void delegate ( cstring chunk ) sink )
     {
-        if ( this.smart_union.active )
+        if ( (&this).smart_union.active )
         {
-            if ( this.include_name )
-                sformat(sink, "<{}>: ", this.smart_union.active_name);
+            if ( (&this).include_name )
+                sformat(sink, "<{}>: ", (&this).smart_union.active_name);
 
             This.sink = sink;
             scope ( exit ) This.sink = null;
 
-            callWithActive!(formatUnionMember)(this.smart_union);
+            callWithActive!(formatUnionMember)((&this).smart_union);
         }
         else
         {
-            if ( this.include_name )
-                sformat(sink, "<{}>", this.smart_union.active_name);
+            if ( (&this).include_name )
+                sformat(sink, "<{}>", (&this).smart_union.active_name);
         }
     }
 
