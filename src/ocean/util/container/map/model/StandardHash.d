@@ -80,7 +80,12 @@ struct StandardHash
                          ~ "classes/interfaces/structs/unions implementing "
                          ~ "toHash() supported, not '" ~ K.stringof ~ '\'');
 
-            return key.toHash();
+            // HACK: we don't want to start implementing all our class `toHash`
+            // methods as `const` yet, have to cast to silence druntime
+            static if (is(K == class) || is(K == interface))
+                return (cast(Unqual!(K)) key).toHash();
+            else
+                return key.toHash();
         }
     }
 
