@@ -21,7 +21,7 @@ import core.sys.posix.sys.socket;
 
 extern (C):
 
-const UNIX_PATH_MAX = 108;
+static immutable UNIX_PATH_MAX = 108;
 
 align(1)
 struct sockaddr_un
@@ -43,7 +43,7 @@ struct sockaddr_un
         public static sockaddr_un create (cstring path)
         in
         {
-            assert(typeof(this).sun_path.length > path.length,
+            assert(typeof((&this)).sun_path.length > path.length,
                     "Can't set path longer than UNIX_PATH_MAX.");
         }
         body

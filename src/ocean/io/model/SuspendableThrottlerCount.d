@@ -330,8 +330,8 @@ version ( UnitTest )
 
     abstract scope class ISuspendableThrottlerCount_Test
     {
-        const suspend = 10;
-        const resume = 2;
+        static immutable suspend = 10;
+        static immutable resume = 2;
 
         protected ISuspendableThrottlerCount throttler;
 
@@ -351,7 +351,7 @@ version ( UnitTest )
             test(this.throttler.suspended);
 
             // Empty throttler to one before resumption
-            const diff = suspend - resume;
+            static immutable diff = suspend - resume;
             for ( int i; i < diff - 1; i++ )
             {
                 this.dec();
