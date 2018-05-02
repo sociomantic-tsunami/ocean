@@ -183,3 +183,57 @@ unittest
 
     theScheduler.eventLoop();
 }
+
+// https://github.com/sociomantic-tsunami/ocean/issues/498
+
+class AwaitedTask1 : Task
+{
+    int result;
+
+    override void run ( )
+    {
+        theScheduler.processEvents();
+        this.result = 42;
+    }
+}
+
+class AwaitedTask2 : Task
+{
+    override void run ( )
+    {
+        // exit immediately
+    }
+}
+
+class MainTask : Task
+{
+    override void run ( )
+    {
+        auto task1 = new AwaitedTask1;
+        auto task2 = new AwaitedTask2;
+        int result = theScheduler.awaitResult(task1);
+        test!("==")(result, 42);
+        theScheduler.await(task2);
+
+        auto stats = theScheduler.getStats();
+        test!("==")(stats.worker_fiber_busy, 1);
+    }
+}
+
+unittest
+{
+    SchedulerConfiguration config;
+    with (config)
+    {
+        specialized_pools = [
+            PoolDescription(AwaitedTask1.classinfo.name, 10240),
+            PoolDescription(AwaitedTask2.classinfo.name, 10240)
+        ];
+    }
+
+    initScheduler(config);
+
+    auto task = new MainTask;
+    theScheduler.queue(task);
+    theScheduler.eventLoop();
+}

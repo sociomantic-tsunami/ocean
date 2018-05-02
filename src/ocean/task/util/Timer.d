@@ -102,13 +102,17 @@ public bool awaitOrTimeout ( Task task, uint micro_seconds )
 
     auto scheduled_event = registerResumeEvent(context, micro_seconds);
     task.terminationHook(&scheduled_event.unregister);
-    auto resumer = { theScheduler.delayedResume(context); };
+    auto resumer = {
+        if (context.suspended())
+            theScheduler.delayedResume(context);
+    };
     task.terminationHook(resumer);
 
-    // force async scheduling to avoid checking if this context needs
-    // suspend/resume and do it unconditionally
-    theScheduler.queue(task);
-    context.suspend();
+    theScheduler.schedule(task);
+
+    // suspend if not finished immediately
+    if (!task.finished())
+        context.suspend();
 
     if (task.finished())
     {
