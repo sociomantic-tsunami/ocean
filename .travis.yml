@@ -49,9 +49,9 @@ jobs:
         - <<: *test-matrix
           env: DMD=2.071.2.s* F=devel
         - <<: *test-matrix
-          env: DMD=2.078.* F=production
+          env: DMD=2.080.* F=production
         - <<: *test-matrix
-          env: DMD=2.078.* F=devel
+          env: DMD=2.080.* F=devel
         # Additional stages
         - stage: Closure allocation check
           script: ci/closures.sh
