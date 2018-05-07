@@ -18,7 +18,7 @@
 module ocean.util.digest.Crc32;
 
 import ocean.transition;
-
+import ocean.core.TypeConvert;
 public import ocean.util.digest.Digest;
 
 version(UnitTest) import ocean.core.Test;
@@ -141,7 +141,7 @@ unittest
     scope c = new Crc32();
     static ubyte[] data = [1,2,3,4,5,6,7,8,9,10];
     c.update(data);
-    test(c.binaryDigest() == cast(ubyte[]) x"7b572025");
+    test(c.binaryDigest() == arrayOf!(ubyte)(0x7B, 0x57, 0x20, 0x25));
     c.update(data);
     test(c.crc32Digest == 0x2520577b);
     c.update(data);
