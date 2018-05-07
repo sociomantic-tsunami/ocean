@@ -608,12 +608,10 @@ public abstract class IAggregatePool ( T ) : IPool, IFreeList!(ItemType_!(T))
     {
         static if (is (ItemType == class))
         {
-            delete item.obj;
             item.obj = null;
         }
         else
         {
-            delete item.ptr;
             item.ptr = null;
         }
     }

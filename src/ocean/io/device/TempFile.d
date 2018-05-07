@@ -38,6 +38,7 @@ import ocean.stdc.posix.sys.types : off_t;
 import ocean.stdc.posix.sys.stat : stat, stat_t;
 import ocean.stdc.posix.fcntl : O_NOFOLLOW;
 import core.sys.posix.stdlib : getenv;
+import core.stdc.stdlib : malloc, free;
 import ocean.stdc.string : strlen;
 
 /******************************************************************************
@@ -275,8 +276,8 @@ class TempFile : File
             istring prefix=DEFAULT_PREFIX,
             istring suffix=DEFAULT_SUFFIX)
     {
-        auto junk = new char[length];
-        scope(exit) delete junk;
+        auto junk = (cast(char*) malloc(length))[0 .. length];
+        scope(exit) free(junk.ptr);
 
         foreach( ref c ; junk )
         {

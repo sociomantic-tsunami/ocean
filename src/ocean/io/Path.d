@@ -497,7 +497,7 @@ package struct FS
         Each path and filename is passed to the provided delegate,
         along with the path prefix and whether the entry is a folder or not.
 
-        Note: Allocates and reuses a small memory buffer.
+        Note: Allocates small memory buffer.
 
     ***************************************************************************/
 
@@ -516,14 +516,7 @@ package struct FS
             return ret;
 
         scope (exit)
-        {
             core.sys.posix.dirent.closedir (dir);
-            delete sfnbuf;
-
-            // only delete when we dupped it
-            if (folder[$-2] != '/')
-                delete prefix;
-        }
 
         // ensure a trailing '/' is present
         if (folder[$-2] != '/')

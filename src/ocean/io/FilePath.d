@@ -779,8 +779,6 @@ class FilePath : PathView
                     // test this entry for inclusion
                     if (filter is null || filter (p, info.folder))
                         paths ~= p;
-                    else
-                       delete p;
                     }
             return paths;
     }

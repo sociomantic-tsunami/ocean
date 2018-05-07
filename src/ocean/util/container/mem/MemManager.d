@@ -201,7 +201,7 @@ private class GCMemManager ( bool gc_aware ) : IMemManager
 
     public override void destroy ( ubyte[] buffer )
     {
-        delete buffer;
+        // no-op, rely on GC
     }
 
     /***************************************************************************

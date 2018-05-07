@@ -329,13 +329,12 @@ class MemoryDevice : IConduit
 
     /***************************************************************************
 
-        Deletes the buffer and resets position
+        Resets the buffer and position
 
     ***************************************************************************/
 
     override void close ( )
     {
-        delete this.data;
         this.data = null;
         this.position = 0;
     }

@@ -51,7 +51,7 @@ class IBucketElementGCAllocator: IAllocator
 
     protected override void deallocate ( void* element )
     {
-        delete element;
+        // no-op, rely on GC
     }
 
     /***************************************************************************

@@ -432,8 +432,7 @@ struct Container
 
                 void collect (T* p)
                 {
-                        if (p)
-                            delete p;
+                    // noop, rely on GC
                 }
 
                 /***************************************************************
@@ -444,8 +443,7 @@ struct Container
 
                 void collect (T*[] t)
                 {
-                        if (t)
-                            delete t;
+                    // noop, rely on GC
                 }
 
                 /***************************************************************
@@ -818,15 +816,13 @@ version (prior_allocator)
                         }
                         cur.next.prev = cur.prev;
                         cur.prev.next = cur.next;
-                        delete cur;
                     }
                 }
             }
 
             void collect(T*[] t)
             {
-                if(t)
-                    delete t;
+                // noop, rely on GC
             }
 
             /**
