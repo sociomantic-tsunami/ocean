@@ -130,7 +130,7 @@ unittest
 
 ******************************************************************************/
 
-public void testThrown ( E : Exception = Exception ) ( lazy void expr,
+public void testThrown ( E : Throwable = Exception ) ( lazy void expr,
     bool strict = true, istring file = __FILE__, int line = __LINE__ )
 {
     bool was_thrown = false;
