@@ -94,7 +94,7 @@ public class BasicCommandHandler
     ***************************************************************************/
 
     public void handle ( cstring command, cstring args,
-        void delegate ( cstring ) send_response )
+        scope void delegate ( cstring ) send_response )
     {
         if (auto handler = command in this.handlers)
         {

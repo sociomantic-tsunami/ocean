@@ -80,10 +80,10 @@ class CachingStructLoader ( S )
 
          **********************************************************************/
 
-        static typeof(this) opCall ( void[] data )
+        static typeof((&this)) opCall ( void[] data )
         {
-            verify (data.length == typeof(*this).sizeof);
-            return cast(typeof(this))data.ptr;
+            verify (data.length == typeof(*(&this)).sizeof);
+            return cast(typeof((&this)))data.ptr;
         }
     }
 
@@ -314,7 +314,7 @@ class CachingStructLoader ( S )
 
      **************************************************************************/
 
-    abstract protected void getData ( hash_t key, void delegate ( Contiguous!(S) data ) got );
+    abstract protected void getData ( hash_t key, scope void delegate ( Contiguous!(S) data ) got );
 
     /**************************************************************************
 

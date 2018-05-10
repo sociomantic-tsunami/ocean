@@ -95,8 +95,8 @@ private
             with( vfsFilterInfo )
             {
                 // Cheat horribly here
-                name = this.name;
-                path = this.fullname[0..($-name.length+"/".length)];
+                name = (&this).name;
+                path = (&this).fullname[0..($-name.length+"/".length)];
 
                 folder = isDir;
                 bytes = folder ? 0 : fileSize;
@@ -184,7 +184,7 @@ private
                         debug( ZipFolder )
                             Stderr.formatln("Entry.openOutput: duplicated"
                                     ~ " temp file {} for {}",
-                                    file.tempFile, this.fullname);
+                                    file.tempFile, (&this).fullname);
                     }
 
                     // TODO: Copy file info if available
@@ -199,7 +199,7 @@ private
                     debug( ZipFolder )
                         Stderr.formatln("Entry.openOutput: created"
                                 ~ " temp file {} for {}",
-                                file.tempFile, this.fullname);
+                                file.tempFile, (&this).fullname);
                 }
 
                 .verify(file.tempFile !is null);
@@ -395,7 +395,7 @@ class ZipSubFolder : VfsFolder, VfsSync
     }
 
     ///
-    final int opApply(int delegate(ref VfsFolder) dg)
+    final int opApply(scope int delegate(ref VfsFolder) dg)
     {
         .verify(valid);
 
@@ -1384,7 +1384,7 @@ private:
 
 class ZipSubFolderGroup : VfsFolders
 {
-    final int opApply(int delegate(ref VfsFolder) dg)
+    final int opApply(scope int delegate(ref VfsFolder) dg)
     {
         .verify(valid);
         int result = 0;
@@ -1505,7 +1505,7 @@ private:
 
 class ZipFileGroup : VfsFiles
 {
-    final int opApply(int delegate(ref VfsFile) dg)
+    final int opApply(scope int delegate(ref VfsFile) dg)
     {
         .verify(valid);
         int result = 0;

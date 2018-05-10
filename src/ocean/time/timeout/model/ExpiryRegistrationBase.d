@@ -374,7 +374,7 @@ abstract class ExpiryRegistrationBase : IExpiryRegistration
 
     ***************************************************************************/
 
-    private bool unregisterWith(void delegate() dg)
+    private bool unregisterWith(scope void delegate() dg)
     {
         if (this.expiry)
         {
