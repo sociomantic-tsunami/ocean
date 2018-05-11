@@ -102,7 +102,7 @@ public bool awaitOrTimeout ( Task task, uint micro_seconds )
 
     auto scheduled_event = registerResumeEvent(context, micro_seconds);
     task.terminationHook(&scheduled_event.unregister);
-    auto resumer = {
+    scope resumer = {
         if (context.suspended())
             theScheduler.delayedResume(context);
     };
