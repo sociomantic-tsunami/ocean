@@ -402,12 +402,11 @@ public class EpollSelectDispatcher : IEpollSelectDispatcherInfo
                 {
                     /// Predicate for finding the ISelectClient inside
                     /// array of epoll_event_t entries.
-                    bool entry_to_client (Const!(epoll_event_t) entry)
-                    {
+                    scope entry_to_client = (Const!(epoll_event_t) entry) {
                         return entry.data.ptr == cast(void*)client;
-                    }
+                    };
 
-                    auto index = this.selected_set.findIf(&entry_to_client);
+                    auto index = this.selected_set.findIf(entry_to_client);
                     // Instead of removing the array entry, we'll just invalidate
                     // it. This is to avoid problems with both the fact that
                     // SelectedKeysHandler might be foreach-iterating over
