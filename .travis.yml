@@ -49,6 +49,8 @@ jobs:
         - <<: *test-matrix
           env: DMD=2.071.2.s* F=devel
         # Additional stages
+        - stage: Closure allocation check
+          script: ci/closures.sh
         - stage: D2 Release
           if: tag IS present AND NOT tag =~ \+d2$
           script: beaver dlang d2-release
