@@ -19,36 +19,36 @@ env:
         # Make sure beaver is in the PATH
         - PATH="$(git config -f .gitmodules submodule.beaver.path)/bin:$PATH"
         - DIST=xenial
-    matrix:
-        - DMD=1.081.* F=production
-        - DMD=1.081.* F=devel
-        - DMD=1.081.* F=production DFLAGS=-release
-        - DMD=2.070.2.s* F=production
-        - DMD=2.070.2.s* F=devel
-        - DMD=2.071.2.s* F=production
-        - DMD=2.071.2.s* F=devel
+        - COV=1
 
-# Don't build tags already converted to D2
-if: NOT tag =~ \+d2$
-
-install: beaver dlang install
-
-script: beaver dlang make
-
-after_success: beaver dlang codecov
-
+# Basic config is inherited from the global scope
 jobs:
+    templates:
+        - &test-matrix
+          stage: Test
+          # Don't build tags already converted to D2
+          if: NOT tag =~ \+d2$
+          after_success: beaver dlang codecov
+          script:
+              - beaver dlang install
+              - beaver dlang make
     include:
+        # Test matrix
+        - <<: *test-matrix
+          env: DMD=1.081.* F=production
+        - <<: *test-matrix
+          env: DMD=1.081.* F=production DFLAGS=-release
+        - <<: *test-matrix
+          env: DMD=1.081.* F=devel
+        - <<: *test-matrix
+          env: DMD=2.070.2.s* F=production
+        - <<: *test-matrix
+          env: DMD=2.070.2.s* F=devel
+        - <<: *test-matrix
+          env: DMD=2.071.2.s* F=production
+        - <<: *test-matrix
+          env: DMD=2.071.2.s* F=devel
+        # Additional stages
         - stage: D2 Release
-          # We need to include the exclusion of D2 tags because this "if"
-          # replaces the global one
           if: tag IS present AND NOT tag =~ \+d2$
-          # env: is inherited from the first matrix row, for converting code to
-          # D2 it doesn't matter what compiler version or F we use, it only
-          # matters that we have a DIST and DMD variables defined, so we just
-          # use whatever the first row have.
-          # before_install: and install: are also inherited and we don't need
-          # to override them.
           script: beaver dlang d2-release
-          # Overridden to NOP, otherwise is inherited
-          after_success: true
