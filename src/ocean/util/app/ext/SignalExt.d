@@ -249,6 +249,13 @@ public class SignalExt : IApplicationExtension
         The list of signals handled may be extended after construction by
         calling the register() method.
 
+        Note that the signals will be handled with a delay of up to single
+        epoll cycle. This is because the signal extension is synced with the
+        EpollSelectDispatcher. This makes it unsuitable to handle critical
+        signals (like `SIGABRT` or `SIGSEGV`) where the application shouldn't
+        be allowed to proceed in the general case; for these cases setup an
+        asynchronous signal handler using `sigaction` instead.
+
         Params:
             signals = list of signals to handle
             ignore_signals = list of signals to ignore
