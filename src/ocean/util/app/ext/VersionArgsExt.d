@@ -175,12 +175,12 @@ class VersionArgsExt : IApplicationExtension, IArgumentsExtExtension,
         foreach (k, v; ver)
             ver_copy[k] = v;
 
-        istring pop(istring key)
+        scope pop = (istring key)
         {
             auto v = key in ver_copy;
             scope (exit) ver_copy.remove(key);
             return v is null ? "<unknown>" : *v;
-        }
+        };
 
         istring s = app_name ~ " version " ~ pop("version") ~ " (compiled by '" ~
                 pop("build_author") ~ "' on " ~ pop("build_date") ~ " with " ~
@@ -191,9 +191,15 @@ class VersionArgsExt : IApplicationExtension, IArgumentsExtExtension,
         {
             auto sorted_names = ver_copy.keys;
             sorted_names.sort();
+
+            scope formatter = (istring n)
+            {
+                return n ~ "='" ~ ver_copy[n] ~ "'";
+            };
+
             s ~= " [" ~
                     sorted_names
-                        .map((istring n) { return n ~ "='" ~ ver_copy[n] ~ "'"; })
+                        .map(formatter)
                         .join(", ") ~
                 "]";
         }
