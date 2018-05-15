@@ -220,7 +220,7 @@ template MapExtension ( K, V )
 
     public void load ( IConduit io_device, CheckDg check )
     {
-        void add ( ref K k, ref V v )
+        scope add = ( ref K k, ref V v )
         {
             if (check(k,v))
             {
@@ -242,9 +242,9 @@ template MapExtension ( K, V )
                     k = k.dup;
                 }
             }
-        }
+        };
 
-        this.serializer.loadDgConduit!(K, V)(io_device, &add);
+        this.serializer.loadDgConduit!(K, V)(io_device, add);
     }
 
     /***************************************************************************
@@ -308,15 +308,15 @@ template MapExtension ( K, V )
 
     public void dump ( IConduit io_device, CheckDg check )
     {
-        void adder ( void delegate ( ref K, ref V ) add )
+        scope adder = ( void delegate ( ref K, ref V ) add )
         {
             foreach ( ref k, ref v; this ) if ( check(k,v) )
             {
                 add(k, v);
             }
-        }
+        };
 
-        this.serializer.dumpDgConduit!(K, V)(io_device, &adder);
+        this.serializer.dumpDgConduit!(K, V)(io_device, adder);
     }
 }
 
@@ -709,15 +709,15 @@ class MapSerializer
 
     public void dumpConduit ( K, V ) ( Map!(V, K) map, IConduit io_device )
     {
-        void adder ( void delegate ( ref K, ref V ) add )
+        scope adder = ( void delegate ( ref K, ref V ) add )
         {
             foreach ( ref k, ref v; map )
             {
                 add(k, v);
             }
-        }
+        };
 
-        this.dumpDgConduit!(K, V)(io_device, &adder);
+        this.dumpDgConduit!(K, V)(io_device, adder);
     }
 
 
@@ -790,12 +790,12 @@ class MapSerializer
         // Write dummy value first
         SimpleStreamSerializer.write(buffered, nr_rec);
 
-        void addKeyVal ( ref K key, ref V val )
+        scope addKeyVal = ( ref K key, ref V val )
         {
             SimpleStreamSerializerArrays.write!(K)(buffered, key);
             SimpleStreamSerializerArrays.write!(V)(buffered, val);
             nr_rec++;
-        }
+        };
 
         scope(exit)
         {
@@ -808,7 +808,7 @@ class MapSerializer
             buffered.flush();
         }
 
-        adder(&addKeyVal);
+        adder(addKeyVal);
     }
 
 
@@ -858,7 +858,7 @@ class MapSerializer
 
     public void loadConduit ( K, V ) ( Map!(V, K) map, IConduit io_device )
     {
-        void putter ( ref K k, ref V v )
+        scope putter = ( ref K k, ref V v )
         {
             bool added = false;
 
@@ -877,9 +877,9 @@ class MapSerializer
             {
                 k = k.dup;
             }
-        }
+        };
 
-        this.loadDgConduit!(K, V)(io_device, &putter);
+        this.loadDgConduit!(K, V)(io_device, putter);
     }
 
 
@@ -1170,7 +1170,7 @@ class MapSerializer
         {
             alias AddStructPrevious!(index, T) TWithPrev;
 
-            void convPut ( ref TWithPrev keyval )
+            scope convPut = ( ref TWithPrev keyval )
             {
                 auto buf = &keyval[index] is buffer.first.ptr ?
                                 &buffer.second : &buffer.first;
@@ -1182,9 +1182,9 @@ class MapSerializer
                 res[other] = &keyval[other];
 
                 putter(*res[0], *res[1]);
-            }
+            };
 
-            loadFunc!(TWithPrev)(buffered, &convPut);
+            loadFunc!(TWithPrev)(buffered, convPut);
 
             return true;
         }
@@ -1369,12 +1369,12 @@ version ( UnitTest )
         // Write dummy value for now
         SimpleStreamSerializer.write(buffered, nr_rec);
 
-        void addKeyVal ( ref K key, ref V val )
+        scope addKeyVal = ( ref K key, ref V val )
         {
             SimpleStreamSerializer.write!(K)(buffered, key);
             SimpleStreamSerializer.write!(V)(buffered, val);
             nr_rec++;
-        }
+        };
 
         scope(exit)
         {
@@ -1387,7 +1387,7 @@ version ( UnitTest )
             buffered.flush();
         }
 
-        adder(&addKeyVal);
+        adder(addKeyVal);
     }
 
     /***************************************************************************
@@ -1479,13 +1479,13 @@ version ( UnitTest )
             *map.put(initKey(i)) = initVal(i);
         }
 
-        void adder ( void delegate ( ref K, ref V ) add )
+        scope adder = ( void delegate ( ref K, ref V ) add )
         {
             foreach ( ref k, ref v; map )
             {
                 add(k, v);
             }
-        }
+        };
 
         // Dump test map (to memory)
         static if ( custom_dump.length > 0 )
@@ -1495,7 +1495,7 @@ version ( UnitTest )
         else
         {
             serializer.buffered_output.output(array);
-            serializer.dumpInternal!(K, V)(serializer.buffered_output, &adder);
+            serializer.dumpInternal!(K, V)(serializer.buffered_output, adder);
 
             auto header_size = MapSerializer.FileHeader!(K, V, MapSerializer.HEADER_VERSION).sizeof;
         }
@@ -1518,7 +1518,7 @@ version ( UnitTest )
 
         // Check load function
         size_t amount_loaded = 0;
-        void checker ( ref KNew k, ref VNew v )
+        scope checker = ( ref KNew k, ref VNew v )
         {
             amount_loaded++;
             static if ( isDynamicArrayType!(VNew) )
@@ -1534,11 +1534,11 @@ version ( UnitTest )
                 t.test(v.compare(map.get(fromNew(k))),
                     "Loaded item unequal saved item!");
             }
-        }
+        };
 
         array.seek(0);
         serializer.buffered_input.input(array);
-        serializer.loadInternal!(KNew, VNew)(serializer.buffered_input, &checker);
+        serializer.loadInternal!(KNew, VNew)(serializer.buffered_input, checker);
 
         t.test(amount_loaded == map.length,
                "Amount of loaded items unequal amount of written items!");
@@ -1552,13 +1552,13 @@ unittest
     const old_load_code =
           `scope bufout = new BufferedOutput(array, 2048);
            bufout.seek(0);
-           dumpOld!(K, V)(bufout, &adder);
+           dumpOld!(K, V)(bufout, adder);
 
            auto header_size = MapSerializer.FileHeader!(K, V, 2).sizeof;`;
 
     const version4_load_code =
           `serializer.buffered_output.output(array);
-           serializer.dumpInternal!(K, V, 4)(serializer.buffered_output, &adder);
+           serializer.dumpInternal!(K, V, 4)(serializer.buffered_output, adder);
 
            auto header_size = MapSerializer.FileHeader!(K, V, 4).sizeof;
            `;
