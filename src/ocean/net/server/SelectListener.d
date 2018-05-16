@@ -652,7 +652,7 @@ unittest
 
         ***********************************************************************/
 
-        public this ( FinalizeDg finalize_dg, SomeSharedResource shared_resource )
+        public this ( scope FinalizeDg finalize_dg, SomeSharedResource shared_resource )
         {
             this.shared_resource = shared_resource;
 

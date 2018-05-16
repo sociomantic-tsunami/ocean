@@ -176,7 +176,7 @@ package class HierarchyT (LoggerT) : ILogger.Context
 
     ***************************************************************************/
 
-    final int opApply (int delegate(ref LoggerT) dg)
+    final int opApply (scope int delegate(ref LoggerT) dg)
     {
         int ret;
 
@@ -193,7 +193,7 @@ package class HierarchyT (LoggerT) : ILogger.Context
 
     ***************************************************************************/
 
-    private LoggerT inject (cstring label, LoggerT delegate(cstring name) dg)
+    private LoggerT inject (cstring label, scope LoggerT delegate(cstring name) dg)
     {
         // try not to allocate unless you really need to
         char[255] stack_buffer;

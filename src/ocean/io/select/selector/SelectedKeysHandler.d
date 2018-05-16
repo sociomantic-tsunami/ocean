@@ -87,7 +87,7 @@ class SelectedKeysHandler: ISelectedKeysHandler
 
     ***************************************************************************/
 
-    public this ( UnregisterDg unregister, EpollException e )
+    public this ( scope UnregisterDg unregister, EpollException e )
     {
         this.unregister = unregister;
         this.e = e;
@@ -106,7 +106,7 @@ class SelectedKeysHandler: ISelectedKeysHandler
     ***************************************************************************/
 
     override public void opCall ( epoll_event_t[] selected_set,
-        void delegate (Exception) unhandled_exception_hook )
+        scope void delegate (Exception) unhandled_exception_hook )
     {
         foreach (key; selected_set)
         {
@@ -131,7 +131,7 @@ class SelectedKeysHandler: ISelectedKeysHandler
      **************************************************************************/
 
     final protected void handleSelectedKey ( epoll_event_t key,
-        void delegate (Exception) unhandled_exception_hook )
+        scope void delegate (Exception) unhandled_exception_hook )
     {
         ISelectClient client = cast (ISelectClient) key.data.ptr;
 

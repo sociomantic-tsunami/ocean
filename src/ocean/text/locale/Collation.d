@@ -159,7 +159,7 @@ public class StringSorter {
     Remarks:
       The comparison parameter must have the same signature as StringComparison.
   */
-  public this(StringComparison comparison) {
+  public this(scope StringComparison comparison) {
     comparison_ = comparison;
   }
 

@@ -109,7 +109,7 @@ public class UnixSocketExt : IApplicationExtension, IConfigExtExtension
     ***************************************************************************/
 
     public void handle ( cstring command, cstring args,
-                         void delegate (cstring) send_response )
+                         scope void delegate (cstring) send_response )
     {
         if (auto handler = command in this.handlers)
         {
@@ -134,7 +134,7 @@ public class UnixSocketExt : IApplicationExtension, IConfigExtExtension
 
     ***************************************************************************/
 
-    public void addHandler ( istring command, Handler handler )
+    public void addHandler ( istring command, scope Handler handler )
     {
         this.handlers[command] = handler;
     }
@@ -268,7 +268,7 @@ unittest
         }
 
         private void test ( cstring[] args,
-            void delegate ( cstring response ) send_response )
+            scope void delegate ( cstring response ) send_response )
         {
             send_response("Test request received");
         }

@@ -28,7 +28,7 @@ extern (C):
 /// See original's library documentation for details.
 static ZLIB_VERSION = "1.2.3".ptr;
 /// See original's library documentation for details.
-const uint  ZLIB_VERNUM  = 0x1230;
+static immutable uint  ZLIB_VERNUM  = 0x1230;
 
 
 private
@@ -172,7 +172,7 @@ enum
 }
 
 /// See original's library documentation for details.
-const Z_NULL = null;
+static immutable Z_NULL = null;
 
 /// See original's library documentation for details.
 alias zlibVersion zlib_version;
@@ -271,9 +271,9 @@ alias int  function(void*, ubyte*, uint) out_func;
 
 /// See original's library documentation for details.
 int inflateBack(z_streamp strm,
-                in_func   in_fn,
+                scope in_func   in_fn,
                 void*     in_desc,
-                out_func  out_fn,
+                scope out_func  out_fn,
                 void*     out_desc);
 
 /// See original's library documentation for details.

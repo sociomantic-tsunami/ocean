@@ -275,7 +275,7 @@ version(d)
 
         final Document header ()
         {
-                const header = `xml version="1.0" encoding="UTF-8"`;
+                static immutable header = `xml version="1.0" encoding="UTF-8"`;
                 root.prepend (root.create(XmlNodeType.PI, header));
                 return this;
         }
@@ -493,7 +493,7 @@ else
 
                 ***************************************************************/
 
-                int opApply (int delegate(ref Node) dg)
+                int opApply (scope int delegate(ref Node) dg)
                 {
                         int ret;
 
@@ -513,7 +513,7 @@ else
 
                 ***************************************************************/
 
-                Node name (T[] prefix, T[] local, bool delegate(Node) dg=null)
+                Node name (T[] prefix, T[] local, scope bool delegate(Node) dg=null)
                 {
                         for (auto n=node; n; n = n.nextSibling)
                             {
@@ -710,8 +710,8 @@ version (Filter)
 
                 Node prefix (T[] replace)
                 {
-                        Array.copy(this.prefixed, replace);
-                        return this;
+                        Array.copy((&this).prefixed, replace);
+                        return (&this);
                 }
 
                 /***************************************************************
@@ -733,8 +733,8 @@ version (Filter)
 
                 Node name (T[] replace)
                 {
-                        Array.copy(this.localName, replace);
-                        return this;
+                        Array.copy((&this).localName, replace);
+                        return (&this);
                 }
 
                 /***************************************************************
@@ -771,7 +771,7 @@ version(discrete)
                                      if (child.id is XmlNodeType.Data)
                                          return child.value (val);
 }
-                        Array.copy(this.rawValue, val);
+                        Array.copy((&this).rawValue, val);
                         mutate;
                 }
 
@@ -845,7 +845,7 @@ version(discrete)
 
                 final XmlPathT.NodeSet query ()
                 {
-                        return doc.xpath.start (this);
+                        return doc.xpath.start ((&this));
                 }
 
                 /***************************************************************
@@ -1029,7 +1029,7 @@ else
                 {
                         auto node = create (XmlNodeType.Attribute, value);
                         attrib (node.set (prefix, local));
-                        return this;
+                        return (&this);
                 }
 
                 /***************************************************************
@@ -1041,7 +1041,7 @@ else
                 private Node data_ (T[] data)
                 {
                         append (create (XmlNodeType.Data, data));
-                        return this;
+                        return (&this);
                 }
 
                 /***************************************************************
@@ -1053,7 +1053,7 @@ else
                 private Node cdata_ (T[] cdata)
                 {
                         append (create (XmlNodeType.CData, cdata));
-                        return this;
+                        return (&this);
                 }
 
                 /***************************************************************
@@ -1065,7 +1065,7 @@ else
                 private Node comment_ (T[] comment)
                 {
                         append (create (XmlNodeType.Comment, comment));
-                        return this;
+                        return (&this);
                 }
 
                 /***************************************************************
@@ -1077,7 +1077,7 @@ else
                 private Node pi_ (T[] pi, T[] patch)
                 {
                         append (create(XmlNodeType.PI, pi).patch(patch));
-                        return this;
+                        return (&this);
                 }
 
                 /***************************************************************
@@ -1089,7 +1089,7 @@ else
                 private Node doctype_ (T[] doctype)
                 {
                         append (create (XmlNodeType.Doctype, doctype));
-                        return this;
+                        return (&this);
                 }
 
                 /***************************************************************
@@ -1102,7 +1102,7 @@ else
                 private void attrib (Node node)
                 {
                         verify (node.parent is null);
-                        node.host = this;
+                        node.host = (&this);
                         if (lastAttr)
                            {
                            lastAttr.nextSibling = node;
@@ -1123,7 +1123,7 @@ else
                 private void append (Node node)
                 {
                         verify (node.parent is null);
-                        node.host = this;
+                        node.host = (&this);
                         if (lastChild)
                            {
                            lastChild.nextSibling = node;
@@ -1144,7 +1144,7 @@ else
                 private void prepend (Node node)
                 {
                         verify (node.parent is null);
-                        node.host = this;
+                        node.host = (&this);
                         if (firstChild)
                            {
                            firstChild.prevSibling = node;
@@ -1163,9 +1163,9 @@ else
 
                 private Node set (T[] prefix, T[] local)
                 {
-                        Array.copy(this.localName, local);
-                        Array.copy(this.prefixed, prefix);
-                        return this;
+                        Array.copy((&this).localName, local);
+                        Array.copy((&this).prefixed, prefix);
+                        return (&this);
                 }
 
                 /***************************************************************
@@ -1191,7 +1191,7 @@ else
                 private Node remove()
                 {
                         if (! host)
-                              return this;
+                              return (&this);
 
                         mutate;
                         if (prevSibling && nextSibling)
@@ -1205,7 +1205,7 @@ else
                         else
                            if (nextSibling)
                               {
-                              verify(host.firstChild == this);
+                              verify(host.firstChild == (&this));
                               parent.firstChild = nextSibling;
                               nextSibling.prevSibling = null;
                               nextSibling = null;
@@ -1216,7 +1216,7 @@ else
                                  {
                                  if (prevSibling)
                                     {
-                                    verify(host.lastChild == this);
+                                    verify(host.lastChild == (&this));
                                     host.lastChild = prevSibling;
                                     prevSibling.nextSibling = null;
                                     prevSibling = null;
@@ -1224,8 +1224,8 @@ else
                                     }
                                  else
                                     {
-                                    verify(host.firstChild == this);
-                                    verify(host.lastChild == this);
+                                    verify(host.firstChild == (&this));
+                                    verify(host.lastChild == (&this));
                                     host.firstChild = null;
                                     host.lastChild = null;
                                     host = null;
@@ -1235,7 +1235,7 @@ else
                                  {
                                  if (prevSibling)
                                     {
-                                    verify(host.lastAttr == this);
+                                    verify(host.lastAttr == (&this));
                                     host.lastAttr = prevSibling;
                                     prevSibling.nextSibling = null;
                                     prevSibling = null;
@@ -1243,15 +1243,15 @@ else
                                     }
                                  else
                                     {
-                                    verify(host.firstAttr == this);
-                                    verify(host.lastAttr == this);
+                                    verify(host.firstAttr == (&this));
+                                    verify(host.lastAttr == (&this));
                                     host.firstAttr = null;
                                     host.lastAttr = null;
                                     host = null;
                                     }
                                  }
 
-                        return this;
+                        return (&this);
                 }
 
                 /***************************************************************
@@ -1269,7 +1269,7 @@ else
                 {
                         end = text.ptr + text.length;
                         start = text.ptr;
-                        return this;
+                        return (&this);
                 }
 
                 /***************************************************************
@@ -1281,12 +1281,12 @@ else
 
                 private Node mutate ()
                 {
-                        auto node = this;
+                        auto node = (&this);
                         do {
                            node.end = null;
                            } while ((node = node.host) !is null);
 
-                        return this;
+                        return (&this);
                 }
 
                 /***************************************************************
@@ -1325,7 +1325,7 @@ else
 
                 private void migrate (Document host)
                 {
-                        this.doc = host;
+                        (&this).doc = host;
                         foreach (attr; attributes)
                                  attr.migrate (host);
                         foreach (child; children)
@@ -1766,7 +1766,7 @@ public class XmlPath(T)
 
                 ***************************************************************/
 
-                NodeSet filter (bool delegate(Node) filter)
+                NodeSet filter (scope bool delegate(Node) filter)
                 {
                         NodeSet set = {host};
                         auto mark = host.mark;
@@ -1784,7 +1784,7 @@ public class XmlPath(T)
 
                 ***************************************************************/
 
-                NodeSet child (bool delegate(Node) filter,
+                NodeSet child (scope bool delegate(Node) filter,
                                XmlNodeType type = XmlNodeType.Element)
                 {
                         NodeSet set = {host};
@@ -1805,7 +1805,7 @@ public class XmlPath(T)
 
                 ***************************************************************/
 
-                NodeSet attribute (bool delegate(Node) filter)
+                NodeSet attribute (scope bool delegate(Node) filter)
                 {
                         NodeSet set = {host};
                         auto mark = host.mark;
@@ -1824,7 +1824,7 @@ public class XmlPath(T)
 
                 ***************************************************************/
 
-                NodeSet descendant (bool delegate(Node) filter,
+                NodeSet descendant (scope bool delegate(Node) filter,
                                     XmlNodeType type = XmlNodeType.Element)
                 {
                         void traverse (Node parent)
@@ -1854,7 +1854,7 @@ public class XmlPath(T)
 
                 ***************************************************************/
 
-                NodeSet parent (bool delegate(Node) filter)
+                NodeSet parent (scope bool delegate(Node) filter)
                 {
                         NodeSet set = {host};
                         auto mark = host.mark;
@@ -1884,7 +1884,7 @@ public class XmlPath(T)
 
                 ***************************************************************/
 
-                NodeSet ancestor (bool delegate(Node) filter)
+                NodeSet ancestor (scope bool delegate(Node) filter)
                 {
                         NodeSet set = {host};
                         auto mark = host.mark;
@@ -1918,7 +1918,7 @@ public class XmlPath(T)
 
                 ***************************************************************/
 
-                NodeSet next (bool delegate(Node) filter,
+                NodeSet next (scope bool delegate(Node) filter,
                               XmlNodeType type = XmlNodeType.Element)
                 {
                         NodeSet set = {host};
@@ -1945,7 +1945,7 @@ public class XmlPath(T)
 
                 ***************************************************************/
 
-                NodeSet prev (bool delegate(Node) filter,
+                NodeSet prev (scope bool delegate(Node) filter,
                               XmlNodeType type = XmlNodeType.Element)
                 {
                         NodeSet set = {host};
@@ -1970,7 +1970,7 @@ public class XmlPath(T)
 
                 ***************************************************************/
 
-                int opApply (int delegate(ref Node) dg)
+                int opApply (scope int delegate(ref Node) dg)
                 {
                         int ret;
 
@@ -2000,7 +2000,7 @@ public class XmlPath(T)
                 private NodeSet assign (uint mark)
                 {
                         nodes = host.slice (mark);
-                        return *this;
+                        return *(&this);
                 }
 
                 /***************************************************************
@@ -2011,7 +2011,7 @@ public class XmlPath(T)
 
                 ***************************************************************/
 
-                private void test (bool delegate(Node) filter, Node node)
+                private void test (scope bool delegate(Node) filter, Node node)
                 {
                         auto pop = host.push;
                         auto add = filter (node);
@@ -2224,7 +2224,7 @@ interface IXmlPrinter(T)
 
         ***********************************************************************/
 
-        void print (Node root, void delegate(T[][]...) emit);
+        void print (Node root, scope void delegate(T[][]...) emit);
 }
 }
 

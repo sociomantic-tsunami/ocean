@@ -416,7 +416,7 @@ abstract class ISplitIterator
 
      **************************************************************************/
 
-    public int opApply ( int delegate ( ref cstring segment ) dg_in )
+    public int opApply ( scope int delegate ( ref cstring segment ) dg_in )
     {
         IterationDelegate dg;
 
@@ -443,7 +443,7 @@ abstract class ISplitIterator
 
      **************************************************************************/
 
-    public int opApply ( int delegate ( ref size_t pos, ref cstring segment ) dg_in )
+    public int opApply ( scope int delegate ( ref size_t pos, ref cstring segment ) dg_in )
     {
         IterationDelegate dg;
 
