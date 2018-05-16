@@ -38,6 +38,9 @@ public class AppendFile : Filer
 {
    private Mask mask_;
 
+    /// File to append to
+    private File    file_;
+
     /***************************************************************************
 
         Create a basic FileAppender to a file with the specified path.
@@ -52,7 +55,8 @@ public class AppendFile : Filer
         // make it shareable for read
         File.Style style = File.WriteAppending;
         style.share = File.Share.Read;
-        this.configure(new File(fp, style));
+        this.file_ = new File(fp, style);
+        configure (this.file_);
         this.layout(how);
     }
 
@@ -79,7 +83,18 @@ public class AppendFile : Filer
         return this.classinfo.name;
     }
 
-    /***************************************************************************
+    /***********************************************************************
+
+            File that this appender appends to.
+
+    ***********************************************************************/
+
+    File file ()
+    {
+        return this.file_;
+    }
+
+    /***********************************************************************
 
         Append an event to the output.
 
