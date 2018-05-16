@@ -40,6 +40,9 @@ class AppendFile : Filer
 {
         private Mask    mask_;
 
+        /// File to append to
+        private File    file_;
+
         /***********************************************************************
 
                 Create a basic FileAppender to a file with the specified
@@ -55,7 +58,8 @@ class AppendFile : Filer
                 // make it shareable for read
                 File.Style style = File.WriteAppending;
                 style.share = File.Share.Read;
-                configure (new File (fp, style));
+                this.file_ = new File(fp, style);
+                configure (this.file_);
                 layout (how);
         }
 
@@ -92,6 +96,18 @@ class AppendFile : Filer
             layout.format (event, &buffer.write);
             buffer.append (FileConst.NewlineString)
                   .flush;
+        }
+
+
+        /***********************************************************************
+
+                File that this appender appends to.
+
+        ***********************************************************************/
+
+        File file ()
+        {
+            return this.file_;
         }
 }
 
