@@ -39,7 +39,7 @@ import ocean.core.Array: startsWith, map;
 import ocean.transition;
 import ocean.core.Verify;
 import ocean.util.log.Logger;
-import ocean.util.log.Appender;
+import ocean.util.log.AppendFile;
 import ocean.util.log.LayoutDate;
 import ocean.core.array.Mutation /* : moveToEnd, sort */;
 
@@ -334,15 +334,14 @@ class VersionArgsExt : IApplicationExtension, IArgumentsExtExtension,
 
         if (this.default_logging)
         {
-            auto stream = new File(this.default_file, File.WriteAppending);
+            auto appender = new AppendFile(this.default_file, new LayoutDate);
 
             if ( auto reopenable_files_ext =
                 (cast(Application)app).getExtension!(ReopenableFilesExt) )
             {
-                reopenable_files_ext.register(stream);
+                reopenable_files_ext.register(appender.file());
             }
 
-            auto appender = new AppendStream(stream, true, new LayoutDate);
             this.ver_log.add(appender);
         }
     }
