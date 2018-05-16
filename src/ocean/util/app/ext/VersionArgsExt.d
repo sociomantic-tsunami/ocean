@@ -152,7 +152,7 @@ class VersionArgsExt : IApplicationExtension, IArgumentsExtExtension,
     protected istring getLibsVersionsString ( istring[istring] ver,
             bool pop = false )
     {
-        const prefix = "lib_";
+        static immutable prefix = "lib_";
         istring s;
         auto sorted_names = ver.keys;
         sorted_names.sort();
@@ -322,7 +322,7 @@ class VersionArgsExt : IApplicationExtension, IArgumentsExtExtension,
     *****************************************************************************/
 
     private void showVersionHandler ( cstring[] args,
-            void delegate ( cstring response ) send_response )
+            scope void delegate ( cstring response ) send_response )
     {
         send_response(getVersionString(this.app_name, this.ver));
         send_response("\n");

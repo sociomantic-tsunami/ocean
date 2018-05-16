@@ -34,30 +34,30 @@ struct eb64_node
 
     /// Return next node in the tree, skipping duplicates, or NULL if none
 
-    typeof (this) next ( )
+    typeof ((&this)) next ( )
     {
-        return eb64_next(this);
+        return eb64_next((&this));
     }
 
     /// Return previous node in the tree, or NULL if none
 
-    typeof (this) prev ( )
+    typeof ((&this)) prev ( )
     {
-        return eb64_prev(this);
+        return eb64_prev((&this));
     }
 
     /// Return next node in the tree, skipping duplicates, or NULL if none
 
-    typeof (this) next_unique ( )
+    typeof ((&this)) next_unique ( )
     {
-        return eb64_next_unique(this);
+        return eb64_next_unique((&this));
     }
 
     /// Return previous node in the tree, skipping duplicates, or NULL if none
 
-    typeof (this) prev_unique ( )
+    typeof ((&this)) prev_unique ( )
     {
-        return eb64_prev_unique(this);
+        return eb64_prev_unique((&this));
     }
 }
 
