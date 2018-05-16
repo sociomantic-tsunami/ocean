@@ -213,20 +213,20 @@ struct S
 
     ***************************************************************************/
 
-    void testNullReferences ( ) /* d1to2fix_inject: const */
+    void testNullReferences ( ) const
     {
-        foreach (s2_static_array_element; this.s2_static_array)
+        foreach (s2_static_array_element; (&this).s2_static_array)
         {
             testArray!("is")(s2_static_array_element.a, null);
             testArray!("is")(s2_static_array_element.b, null);
         }
 
-        foreach (s3_a_element; this.s3.a)
+        foreach (s3_a_element; (&this).s3.a)
             testArray!("is")(s3_a_element, null);
 
-        testArray!("is")(this.s4_dynamic_array, null);
+        testArray!("is")((&this).s4_dynamic_array, null);
 
-        foreach (static_of_dynamic_element; this.static_of_dynamic)
+        foreach (static_of_dynamic_element; (&this).static_of_dynamic)
             testArray!("is")(static_of_dynamic_element, null);
     }
 
@@ -245,7 +245,7 @@ struct S
 
     ***************************************************************************/
 
-    size_t serialized_length ( ) /* d1to2fix_inject: const */
+    size_t serialized_length ( ) const
     {
         static size_t s2_length ( ref Const!(S_2) s2 )
         {
@@ -254,23 +254,23 @@ struct S
 
         size_t n = This.sizeof;
 
-        n += s2_length(this.s2);
+        n += s2_length((&this).s2);
 
-        foreach (s2_static_array_element; this.s2_static_array)
+        foreach (s2_static_array_element; (&this).s2_static_array)
             n += s2_length(s2_static_array_element);
 
-        foreach (s3_a_element; this.s3.a)
+        foreach (s3_a_element; (&this).s3.a)
             n += serialArrayLength(s3_a_element);
 
-        n += serialArrayLength(this.s4_dynamic_array);
-        foreach (s4_dynamic_array_element; this.s4_dynamic_array)
+        n += serialArrayLength((&this).s4_dynamic_array);
+        foreach (s4_dynamic_array_element; (&this).s4_dynamic_array)
             n += serialArrayLength(s4_dynamic_array_element.a);
 
-        foreach (static_of_dynamic_element; this.static_of_dynamic)
+        foreach (static_of_dynamic_element; (&this).static_of_dynamic)
             n += serialArrayLength(static_of_dynamic_element);
 
-        n += serialArrayLength(this.dynamic_of_static_of_static_of_dynamic);
-        foreach (dynamic_element; this.dynamic_of_static_of_static_of_dynamic)
+        n += serialArrayLength((&this).dynamic_of_static_of_static_of_dynamic);
+        foreach (dynamic_element; (&this).dynamic_of_static_of_static_of_dynamic)
             foreach (static_element; dynamic_element)
                 foreach (static_element2; static_element)
                     n += serialArrayLength(static_element2);

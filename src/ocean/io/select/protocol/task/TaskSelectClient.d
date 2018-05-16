@@ -102,7 +102,7 @@ class TaskSelectClient: ISelectClient
 
     ***************************************************************************/
 
-    public this ( ISelectable iodev, int delegate ( ) error_code_dg )
+    public this ( ISelectable iodev, scope int delegate ( ) error_code_dg )
     {
         this.iodev = iodev;
         this.error_code_dg = error_code_dg;
