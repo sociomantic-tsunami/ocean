@@ -78,21 +78,21 @@ int main ( )
     // Needs to be 3 after end of tests.
     int expected_value = 0;
 
-    void handleIncrementCommand ( cstring args,
+    scope handleIncrementCommand = ( cstring args,
             void delegate ( cstring response ) send_response )
     {
         expected_value += Integer.parse(args);
-    }
+    };
 
-    void handleShutdown ( cstring args,
+    scope handleShutdown = ( cstring args,
             void delegate ( cstring response ) send_response )
     {
         epoll.shutdown();
-    }
+    };
 
     auto unix_server   = new UnixListener(local_address, epoll,
-            ["shutdown"[]: &handleShutdown,
-             "increment": &handleIncrementCommand]
+            ["shutdown"[]: handleShutdown,
+             "increment":  handleIncrementCommand]
     );
 
     epoll.register(unix_server);
