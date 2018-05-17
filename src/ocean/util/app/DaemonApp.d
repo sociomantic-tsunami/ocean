@@ -539,9 +539,19 @@ public abstract class DaemonApp : Application,
             return this.run(this.args, this.config);
 
         this.startEventHandling(theScheduler.epoll());
-        return this.task_ext.run({
-            return this.run(this.args, this.config);
-        });
+        return this.task_ext.run(&this.mainForTaskExt);
+    }
+
+    /***************************************************************************
+
+        Used inside `run` if TaskExt is enabled to workaround double `this`
+        issue with inline delegate literal
+
+    ***************************************************************************/
+
+    private int mainForTaskExt ( )
+    {
+        return this.run(this.args, this.config);
     }
 
     /***************************************************************************

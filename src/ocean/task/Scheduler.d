@@ -404,14 +404,17 @@ final class Scheduler : IScheduler
 
         // this methods stack is guaranteed to still be valid by the time
         // task finishes, so we can reference `task` from delegate
-        task.terminationHook({ theScheduler.delayedResume(context); });
+        task.terminationHook({
+            if (context.suspended())
+                theScheduler.delayedResume(context);
+        });
+
         if (finished_dg !is null)
             task.terminationHook({ finished_dg(task); });
 
-        // force async scheduling to avoid checking if this context needs
-        // suspend/resume and do it unconditionally
-        this.queue(task);
-        context.suspend();
+        this.schedule(task);
+        if (!task.finished())
+            context.suspend();
     }
 
     ///

@@ -116,19 +116,21 @@ class TaskExt : IConfigExtExtension
 
     public int run ( int delegate () dg )
     {
-        int result = -1;
-
         auto task = new class Task {
+            int delegate() dg;
+            int result = -1;
+
             override void run ( )
             {
-                result = dg();
+                this.result = this.dg();
             }
         };
 
+        task.dg = dg;
         theScheduler.queue(task);
         theScheduler.eventLoop();
 
-        return result;
+        return task.result;
     }
 
     /***************************************************************************

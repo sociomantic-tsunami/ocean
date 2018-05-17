@@ -218,26 +218,26 @@ int main ( )
         // Needs to be 3 after end of tests.
         int expected_value = 0;
 
-        void handleIncrementCommand ( cstring args,
+        scope handleIncrementCommand = ( cstring args,
                 void delegate ( cstring response ) send_response,
                 void delegate ( ref mstring response ) wait_reply )
         {
             expected_value += Integer.parse(args);
-        }
+        };
 
         // Command shutting down the epoll
-        void handleShutdown ( cstring args,
+        scope handleShutdown = ( cstring args,
                 void delegate ( cstring response ) send_response )
         {
             epoll.shutdown();
-        }
+        };
 
         // test doesn't work in this callbacks, as the exceptions will be swallowed
         int success_count = 0;
 
         // Interactive callback. This will ask the client for the two names,
-        // which should be the same as two arguments with which 
-        void handleAskMyName ( cstring args,
+        // which should be the same as two arguments with which
+        scope handleAskMyName = ( cstring args,
                 void delegate ( cstring response ) send_response,
                 void delegate ( ref mstring response ) wait_reply )
         {
@@ -250,11 +250,11 @@ int main ( )
             success_count += first == response ? 1 : 0;
             send_response("second name? "); wait_reply(response);
             success_count += second == response ? 1 : 0;
-        }
+        };
 
         // Interactive callback for the other command
         // Used to check if we can execute more handlers
-        void handleAskMyNameReverse ( cstring args,
+        scope handleAskMyNameReverse = ( cstring args,
                 void delegate ( cstring response ) send_response,
                 void delegate ( ref mstring response ) wait_reply )
         {
@@ -267,21 +267,21 @@ int main ( )
             success_count += second == response ? 1 : 0;
             send_response("first name? "); wait_reply(response);
             success_count += first == response ? 1 : 0;
-        }
+        };
 
         // Simple echo command, non-interactive
-        void handleEcho ( cstring args,
+        scope handleEcho = ( cstring args,
                 void delegate (cstring response) send_response)
         {
             send_response(args);
-        }
+        };
 
         auto unix_server   = new UnixListener(idup(local_address), epoll,
-                ["echo"[]: &handleEcho,
-                 "shutdown": &handleShutdown],
-                ["increment"[]: &handleIncrementCommand,
-                 "askMyName": &handleAskMyName,
-                 "askMeAgain": &handleAskMyNameReverse]
+                ["echo"[]: handleEcho,
+                 "shutdown": handleShutdown],
+                ["increment"[]: handleIncrementCommand,
+                 "askMyName": handleAskMyName,
+                 "askMeAgain": handleAskMyNameReverse]
         );
 
         epoll.register(unix_server);
