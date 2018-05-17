@@ -172,9 +172,15 @@ class VersionArgsExt : IApplicationExtension, IArgumentsExtExtension,
             auto sorted_names = ver.keys;
             sorted_names.length = moveToEnd(sorted_names, "version");
             sorted_names.sort();
+
+            scope formatter = (istring n)
+            {
+                return n ~ "=" ~ ver[n];
+            };
+
             s ~= separator;
             s ~= sorted_names
-                .map((istring n) { return n ~ "=" ~ ver[n]; })
+                .map(formatter)
                 .join(separator);
         }
 
