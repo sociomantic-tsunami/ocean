@@ -63,13 +63,23 @@ public class FiberPoolEager : FiberPool
         debug_trace("running task <{}> via worker fiber <{}>",
             cast(void*) task, cast(void*) fiber);
         task.assignTo(fiber);
-        task.terminationHook({
-            auto fiber = cast(WorkerFiber) Fiber.getThis();
-            auto task = fiber.activeTask();
-            this.recycle(fiber);
-            task.fiber = null;
-        });
+        task.terminationHook(&this.recycleHook);
         task.resume();
+    }
+
+    /***************************************************************************
+
+        Used as an argument to `task.terminationHook` to recycle worker fiber
+        back to pool.
+
+    ***************************************************************************/
+
+    private void recycleHook ( )
+    {
+        auto fiber = cast(WorkerFiber) Fiber.getThis();
+        auto task = fiber.activeTask();
+        this.recycle(fiber);
+        task.fiber = null;
     }
 }
 
