@@ -3,6 +3,7 @@ set -xeu
 
 # Install dependencies
 apt-get install -y \
+    d1to2fix=0.10.* \
     libglib2.0-dev \
     libpcre3-dev \
     libxml2-dev \

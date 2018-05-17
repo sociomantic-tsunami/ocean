@@ -155,14 +155,14 @@ class QueryParams
 
         scope (exit) this.iterating = false;
 
-        auto dg = this.trim_whitespace?
-                    (ref cstring key, ref cstring value)
-                    {
-                        auto tkey = ChrSplitIterator.trim(key),
-                             tval = ChrSplitIterator.trim(value);
-                        return ext_dg(tkey, tval);
-                    } :
-                    ext_dg;
+        scope trim_dg = (ref cstring key, ref cstring value)
+        {
+            auto tkey = ChrSplitIterator.trim(key),
+                 tval = ChrSplitIterator.trim(value);
+            return ext_dg(tkey, tval);
+        };
+
+        scope dg = this.trim_whitespace ? trim_dg : ext_dg;
 
         scope split_paramlist = new ChrSplitIterator(this.element_delim),
               split_param     = new ChrSplitIterator(this.keyval_delim);
