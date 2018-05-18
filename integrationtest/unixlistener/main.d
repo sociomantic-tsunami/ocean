@@ -270,7 +270,7 @@ int main ( )
         };
 
         // Simple echo command, non-interactive
-        scope handleEcho = ( cstring args,
+        scope handleEcho = delegate ( cstring args,
                 void delegate (cstring response) send_response)
         {
             send_response(args);
