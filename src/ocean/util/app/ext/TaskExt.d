@@ -144,7 +144,7 @@ class TaskExt : IConfigExtExtension
 
     public override int order ( )
     {
-        return 0;
+        return -1;
     }
 
     /***************************************************************************

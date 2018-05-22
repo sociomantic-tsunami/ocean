@@ -290,7 +290,7 @@ public class ReopenableFilesExt : IApplicationExtension, ISignalExtExtension
 
     override public int order ( )
     {
-        return 0;
+        return -1;
     }
 
 
