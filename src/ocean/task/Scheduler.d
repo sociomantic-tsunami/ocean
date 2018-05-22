@@ -959,9 +959,6 @@ private Scheduler _scheduler;
 public alias ocean.task.IScheduler.TaskQueueFullException
     TaskQueueFullException;
 
-public alias ocean.task.IScheduler.SuspendQueueFullException
-    SuspendQueueFullException;
-
 private void debug_trace ( T... ) ( cstring format, T args )
 {
     debug ( TaskScheduler )

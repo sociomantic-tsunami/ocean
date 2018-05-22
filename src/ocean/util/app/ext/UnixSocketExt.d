@@ -104,20 +104,6 @@ public class UnixSocketExt : IApplicationExtension, IConfigExtExtension
 
     ***************************************************************************/
 
-    deprecated ("Use the appropriate overload of UnixSocketExt.addHandler.")
-    public void addInteractiveHandler ( istring command, InteractiveHandler handler )
-    {
-        this.unix_socket.commands.addHandler(command, handler);
-    }
-
-    /***************************************************************************
-
-        Params:
-            command = The command to listen for in the socket listener.
-            handler = The handler to call when command is received.
-
-    ***************************************************************************/
-
     public void addHandler ( istring command, Handler handler )
     {
         this.unix_socket.commands.addHandler(command, handler);
@@ -149,21 +135,6 @@ public class UnixSocketExt : IApplicationExtension, IConfigExtExtension
     public void addHandler ( istring command, RawSocketHandler handler )
     {
         this.unix_socket.commands.addHandler(command, handler);
-    }
-
-    /***************************************************************************
-
-        Unregister a command and handler from the unix listener.
-
-        Params:
-            command = The command to be removed from the listener.
-
-    ***************************************************************************/
-
-    deprecated ("Use UnixSocketExt.removeHandler instead.")
-    public void removeInteractiveHandler ( istring command )
-    {
-        this.unix_socket.commands.removeHandler(command);
     }
 
     /***************************************************************************

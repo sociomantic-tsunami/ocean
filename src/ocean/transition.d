@@ -519,26 +519,6 @@ unittest
 
 /*******************************************************************************
 
-    Exact upstream API for `Throwable.message` is not yet known. Using this
-    function to get it allows to implement any needed API bridge without
-    breaking/changing user code.
-
-*******************************************************************************/
-
-deprecated("Use Exception.message() directly")
-cstring getMsg ( Throwable e )
-{
-    return e.message();
-}
-
-deprecated unittest
-{
-    auto e = new Exception("abcde");
-    assert (getMsg(e) == "abcde");
-}
-
-/*******************************************************************************
-
     Helper which provides stub implementation of GC.usage if it is not present
     upstream in order to keep ocean compiling and passing tests.
 
