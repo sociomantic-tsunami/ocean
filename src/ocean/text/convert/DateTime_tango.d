@@ -194,23 +194,6 @@ struct DateTimeLocale
 
     /**********************************************************************
 
-     **********************************************************************/
-
-    deprecated("Use format instead")
-    T[] formatWide(T) (T[] output, Time dateTime, T[] fmt)
-    {
-        static if (is (T == char))
-            return format (output, dateTime, fmt);
-        else
-        {
-            char[128] tmp0 = void;
-            char[128] tmp1 = void;
-            return Utf.fromString8(format(tmp0, dateTime, Utf.toString(fmt, tmp1)), output);
-        }
-    }
-
-    /**********************************************************************
-
       Return a generic English/US instance
 
      **********************************************************************/

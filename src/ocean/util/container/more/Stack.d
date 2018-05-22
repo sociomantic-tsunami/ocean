@@ -406,7 +406,7 @@ unittest
 
 *******************************************************************************/
 
-public class StackBoundsException : ExceptionBase
+public class StackBoundsException : Exception
 {
     this ( )
     {
@@ -415,16 +415,6 @@ public class StackBoundsException : ExceptionBase
         else
             super("", 0);
     }
-}
-
-// HACK: some D1 code may be trying to catch ArrayBoundsException specifically
-// so different bases are used for smoother migration.
-version (D_Version2)
-    private alias Exception ExceptionBase;
-    else
-{
-    import ocean.core.ExceptionDefinitions : ArrayBoundsException;
-    private alias ArrayBoundsException ExceptionBase;
 }
 
 private StackBoundsException e_bounds;

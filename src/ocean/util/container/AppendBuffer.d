@@ -1317,25 +1317,6 @@ private abstract class AppendBufferImpl: IAppendBufferBase
 
     /**************************************************************************
 
-        Deallocates the content array.
-
-        Params:
-            content_ = content array, previously allocated by newContent() or
-                       modified by setContentLength()
-
-     **************************************************************************/
-
-    deprecated("Rely on GC to free own memory instead")
-    protected void deleteContent ( ref void[] content_ )
-    {
-        verify (content_ !is null,
-                typeof (this).stringof ~ ".deleteContent: content_ is null");
-
-        delete content_;
-    }
-
-    /**************************************************************************
-
         Readjusts limit_invariants.
 
      **************************************************************************/
