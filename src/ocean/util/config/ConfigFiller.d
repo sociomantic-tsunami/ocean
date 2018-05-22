@@ -769,9 +769,6 @@ private bool hasField ( T ) ( T reference, cstring field )
     return was_found;
 }
 
-deprecated("Use ConfigIterator instead.")
-alias ConfigIterator ClassIterator;
-
 /*******************************************************************************
 
     Config Iterator. Iterates over variables of a category

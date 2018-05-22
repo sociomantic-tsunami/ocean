@@ -212,7 +212,7 @@ class MetaConfig
 
 *******************************************************************************/
 
-alias ClassIterator!(Config) ConfigIterator;
+alias ocean.util.config.ConfigFiller.ConfigIterator!(Config, ConfigParser) ConfigIterator;
 
 /*******************************************************************************
 
@@ -281,7 +281,7 @@ unittest
     alias LayoutSimple SubmarineLayout;
 
     void myConfigureLoggers (
-        ClassIterator!(Config, ConfigParser) config,
+        ConfigIterator config,
         MetaConfig m_config,
         Appender delegate ( istring file, Layout layout ) file_appender,
         bool use_insert_appender = false)
@@ -317,7 +317,7 @@ unittest
 *******************************************************************************/
 
 public void configureNewLoggers (
-    ClassIterator!(Config, ConfigParser) config, MetaConfig m_config,
+    ConfigIterator config, MetaConfig m_config,
     Appender delegate ( istring file, Layout layout ) file_appender,
     bool use_insert_appender = false)
 {
@@ -350,7 +350,7 @@ public void configureNewLoggers (
 *******************************************************************************/
 
 public void configureNewLoggers (
-    ClassIterator!(Config, ConfigParser) config, MetaConfig m_config,
+    ConfigIterator config, MetaConfig m_config,
     Appender delegate ( istring file, Layout layout ) file_appender,
     Layout delegate (cstring) makeLayout, bool use_insert_appender = false)
 {
@@ -394,7 +394,7 @@ public void configureNewLoggers (
 *******************************************************************************/
 
 private void configureLoggers
-    (ClassIterator!(Config, ConfigParser) config, MetaConfig m_config,
+    (ConfigIterator config, MetaConfig m_config,
      Appender delegate (istring file, Layout layout) file_appender,
      Appender delegate (Layout) console_appender,
      Layout delegate (cstring) makeLayout)

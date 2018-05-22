@@ -20,13 +20,6 @@ ifneq ($(ALLOW_DEPRECATIONS),1)
 	endif
 endif
 
-# Remove deprecated modules from testing:
-TEST_FILTER_OUT += \
-	$C/src/ocean/util/serialize/contiguous/model/LoadCopyMixin.d \
-	$C/src/ocean/util/serialize/model/VersionDecoratorMixins.d \
-	$C/src/ocean/time/model/IMicrosecondsClock.d \
-	$C/src/ocean/io/UnicodeFile.d
-
 # Remove coverage files
 clean += .*.lst
 

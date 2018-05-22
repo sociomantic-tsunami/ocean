@@ -230,23 +230,6 @@ public abstract class Task
 
     /***************************************************************************
 
-        Must be called after handling exception rethrown from the task in cases
-        when it doesn't result in immediate program termination. Not calling
-        this method may result in worker fiber leaks.
-
-        Returns:
-            'true' if pending task was resumed, 'false' otherwise
-
-    ***************************************************************************/
-
-    deprecated("This method is no-op and tasks are resumed automatically by scheduler")
-    public static bool continueAfterThrow ( )
-    {
-        return false;
-    }
-
-    /***************************************************************************
-
         Constructor. Used only to insert debug trace message.
 
     ***************************************************************************/
