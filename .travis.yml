@@ -53,4 +53,4 @@ jobs:
           script: ci/closures.sh
         - stage: D2 Release
           if: tag IS present AND NOT tag =~ \+d2$
-          script: beaver dlang d2-release
+          script: ci/d2tags.sh
