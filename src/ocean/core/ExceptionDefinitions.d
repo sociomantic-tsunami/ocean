@@ -60,18 +60,6 @@ public import core.exception;
 import core.thread;
 alias core.thread.ThreadException ThreadException;
 
-// Tango backwards compatibility aliases
-deprecated("Catching Error objects is a bad idea in D2")
-public alias AssertError AssertException;
-deprecated("Catching Error objects is a bad idea in D2")
-public alias OutOfMemoryError OutOfMemoryException;
-deprecated("Catching Error objects is a bad idea in D2")
-public alias FinalizeError FinalizeException;
-deprecated("Catching Error objects is a bad idea in D2")
-public alias RangeError ArrayBoundsException;
-deprecated("Catching Error objects is a bad idea in D2")
-public alias SwitchError SwitchException;
-
 /**
  * Base class for operating system or library exceptions.
  */
