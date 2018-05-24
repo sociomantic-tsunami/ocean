@@ -291,7 +291,7 @@ class BufferedInput : InputFilter, InputBuffer
 
         ***********************************************************************/
 
-        final size_t reader (size_t delegate (Const!(void)[]) dg)
+        final size_t reader (scope size_t delegate (Const!(void)[]) dg)
         {
                 auto count = dg (data [index..extent]);
 
@@ -323,7 +323,7 @@ class BufferedInput : InputFilter, InputBuffer
 
         ***********************************************************************/
 
-        public size_t writer (size_t delegate (void[]) dg)
+        public size_t writer (scope size_t delegate (void[]) dg)
         {
                 auto count = dg (data [extent..dimension]);
 
@@ -512,7 +512,7 @@ class BufferedInput : InputFilter, InputBuffer
 
         ***********************************************************************/
 
-        final bool next (size_t delegate (Const!(void)[]) scan)
+        final bool next (scope size_t delegate (Const!(void)[]) scan)
         {
                 while (reader(scan) is Eof)
                       {
@@ -895,7 +895,7 @@ class BufferedOutput : OutputFilter, OutputBuffer
 
         ***********************************************************************/
 
-        this (OutputStream stream, void delegate() flush_notifier = null)
+        this (OutputStream stream, scope void delegate() flush_notifier = null)
         {
                 verify(stream !is null);
                 this (stream, stream.conduit.bufferSize, flush_notifier);
@@ -918,7 +918,7 @@ class BufferedOutput : OutputFilter, OutputBuffer
         ***********************************************************************/
 
         this (OutputStream stream, size_t capacity,
-                void delegate() flush_notifier = null)
+                scope void delegate() flush_notifier = null)
         {
                 set (new ubyte[capacity], 0);
                 this.flush_notifier = flush_notifier;
@@ -1306,7 +1306,7 @@ class BufferedOutput : OutputFilter, OutputBuffer
 
         ***********************************************************************/
 
-        final size_t writer (size_t delegate (void[]) dg)
+        final size_t writer (scope size_t delegate (void[]) dg)
         {
                 auto count = dg (data [extent..dimension]);
 
@@ -1339,7 +1339,7 @@ class BufferedOutput : OutputFilter, OutputBuffer
 
         ***********************************************************************/
 
-        private final size_t reader (size_t delegate (Const!(void)[]) dg)
+        private final size_t reader (scope size_t delegate (Const!(void)[]) dg)
         {
                 auto count = dg (data [index..extent]);
 

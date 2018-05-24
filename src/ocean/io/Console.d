@@ -49,7 +49,7 @@ version (Posix)
 
 struct Console
 {
-    const istring Eol = "\n";
+    enum istring Eol = "\n";
 
     /**********************************************************************
 
