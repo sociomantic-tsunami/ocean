@@ -361,7 +361,7 @@ deprecated class Text(T) : TextView!(T)
 
          ***************************************************************/
 
-        private bool locate (Call call, T[] content, size_t from)
+        private bool locate (scope Call call, T[] content, size_t from)
         {
             auto index = call (content, from);
             if (index < content.length)
@@ -902,7 +902,7 @@ deprecated class Text(T) : TextView!(T)
      ***********************************************************************/
 
     final override
-    Comparator comparator (Comparator other)
+    Comparator comparator (scope Comparator other)
     {
         auto tmp = comparator_;
         if (other)
@@ -1472,7 +1472,7 @@ deprecated class TextView(T) : UniText
 
      ***********************************************************************/
 
-    abstract Comparator comparator (Comparator other);
+    abstract Comparator comparator (scope Comparator other);
 
     /***********************************************************************
 

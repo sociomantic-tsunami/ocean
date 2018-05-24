@@ -24,7 +24,7 @@ module ocean.util.serialize.model.Traits;
 
 private struct _Dummy
 {
-    const StructVersion = 0;
+    enum StructVersion = 0;
 
     int a, b, c;
 }
@@ -49,7 +49,7 @@ private struct _Dummy
 
 deprecated template isSerializer(T)
 {
-    public const isSerializer =
+    public static immutable isSerializer =
         is(typeof({
             _Dummy input;
             void[] buffer;
@@ -104,7 +104,7 @@ version(UnitTest)
 
 deprecated template isDeserializer(T)
 {
-    public const isDeserializer =
+    public static immutable isDeserializer =
         is(typeof({
             _Dummy input;
             void[] buffer;
@@ -178,7 +178,7 @@ deprecated template isDecorator(T)
         && is(typeof({ alias T.Deserializer Alias; }))
     )
     {
-        public const isDecorator =
+        public static immutable isDecorator =
                isSerializer!(T.Serializer)
             && isDeserializer!(T.Deserializer)
             && is(typeof({
@@ -196,7 +196,7 @@ deprecated template isDecorator(T)
     }
     else
     {
-        public const isDecorator = false;
+        public static immutable isDecorator = false;
     }
 }
 
