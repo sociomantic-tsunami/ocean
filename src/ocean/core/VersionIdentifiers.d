@@ -30,7 +30,7 @@ import ocean.transition;
 *******************************************************************************/
 
 deprecated("Use MakD's Version module to get this information")
-public void versionIdentifiers ( void delegate ( istring version_name ) dg )
+public void versionIdentifiers ( scope void delegate ( istring version_name ) dg )
 {
     mixin(Version!("DigitalMars", "dg"));
     mixin(Version!("GNU", "dg"));
@@ -96,6 +96,6 @@ public void versionIdentifiers ( void delegate ( istring version_name ) dg )
 
 private template Version ( istring version_name, istring func_name )
 {
-    const Version = "version(" ~ version_name ~ ")"
+    static immutable Version = "version(" ~ version_name ~ ")"
         ~ func_name ~ `("` ~ version_name ~ `");`;
 }

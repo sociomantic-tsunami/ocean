@@ -55,22 +55,22 @@ interface FileConst
                 }
 
                 /// The parent directory string.
-                const ParentDirString = "..";
+                static immutable ParentDirString = "..";
 
                 /// The current directory string.
-                const CurrentDirString = ".";
+                static immutable CurrentDirString = ".";
 
                 /// The file separator string.
-                const FileSeparatorString = ".";
+                static immutable FileSeparatorString = ".";
 
                 /// The path separator string.
-                const PathSeparatorString = "/";
+                static immutable PathSeparatorString = "/";
 
                 /// The system path string.
-                const SystemPathString = ":";
+                static immutable SystemPathString = ":";
 
                 /// The newline string.
-                const NewlineString = "\n";
+                static immutable NewlineString = "\n";
         }
 }
 
