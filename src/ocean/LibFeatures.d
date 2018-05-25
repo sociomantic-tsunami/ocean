@@ -17,10 +17,10 @@
 
 module ocean.LibFeatures;
 
-const has_features_2_7 = true;
-const has_features_2_6 = true;
-const has_features_2_5 = true;
-const has_features_2_4 = true;
-const has_features_2_3 = true;
-const has_features_2_1 = true;
-const has_features_2_0 = true;
+static immutable has_features_2_7 = true;
+static immutable has_features_2_6 = true;
+static immutable has_features_2_5 = true;
+static immutable has_features_2_4 = true;
+static immutable has_features_2_3 = true;
+static immutable has_features_2_1 = true;
+static immutable has_features_2_0 = true;

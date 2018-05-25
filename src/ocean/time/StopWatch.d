@@ -75,7 +75,7 @@ public struct StopWatch
 
 
         private ulong  started;
-        private const double multiplier = 1.0 / 1_000_000.0;
+        private enum double multiplier = 1.0 / 1_000_000.0;
 
         /***********************************************************************
 
@@ -96,7 +96,7 @@ public struct StopWatch
 
         double stop ()
         {
-                return multiplier * this.microsec;
+                return multiplier * (&this).microsec;
         }
 
         /***********************************************************************

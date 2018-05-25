@@ -134,7 +134,7 @@ public class InsertConsole: Appender
 
         ushort pos = 0;
 
-        const istring Eol = "\n";
+        static immutable istring Eol = "\n";
 
         with ( Terminal )
         {

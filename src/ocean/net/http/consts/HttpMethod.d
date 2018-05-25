@@ -61,7 +61,7 @@ struct HttpMethodNames
 
      **************************************************************************/
 
-    const istring[HttpMethod.max + 1] List =
+    enum istring[HttpMethod.max + 1] List =
     [
         HttpMethod.Undefined:  "",
         HttpMethod.Get:        "GET",

@@ -26,8 +26,8 @@ module ocean.math.random.engines.ArraySource;
 struct ArraySource{
     uint[] a;
     size_t i;
-    const int canCheckpoint=false; // implement?
-    const int canSeed=false;
+    enum int canCheckpoint=false; // implement?
+    enum int canSeed=false;
 
     static ArraySource opCall(uint[] a,size_t i=0)
     in { assert(a.length>0,"array needs at least one element"); }

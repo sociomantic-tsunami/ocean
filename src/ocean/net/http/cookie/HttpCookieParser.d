@@ -43,9 +43,9 @@ class HttpCookieParser : QueryParamSet
 
 unittest
 {
-    const istring cookie_header_value = "test=2649113645; test-value=1383922851";
+    static immutable istring cookie_header_value = "test=2649113645; test-value=1383922851";
 
-    const istring[] cookie_names =
+    static immutable istring[] cookie_names =
     [
         "test",
         "test-value"

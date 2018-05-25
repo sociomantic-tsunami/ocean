@@ -84,7 +84,7 @@ class Uri : UriView
 
         private static short[istring] genericSchemes;
 
-        private const istring hexDigits = "0123456789abcdef";
+        private static immutable istring hexDigits = "0123456789abcdef";
 
         private static Const!(SchemePort[]) schemePorts =
                 [
@@ -438,7 +438,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        final size_t produce (Consumer consume)
+        final size_t produce (scope Consumer consume)
         {
                 size_t ret;
 
@@ -507,7 +507,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        static size_t encode (Consumer consume, cstring s, int flags)
+        static size_t encode (scope Consumer consume, cstring s, int flags)
         {
                 size_t  ret;
                 char[3] hex;

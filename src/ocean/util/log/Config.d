@@ -342,7 +342,7 @@ public Layout newLayout ( istring layout_str )
 
 public void configureOldLoggers (
     ClassIterator!(Config, ConfigParser) config, MetaConfig m_config,
-    Appender delegate ( istring file, Layout layout ) file_appender,
+    scope Appender delegate ( istring file, Layout layout ) file_appender,
     bool use_insert_appender = false)
 {
     // DMD1 cannot infer the common type between both return, we have to work
@@ -387,7 +387,7 @@ public void configureOldLoggers (
 
 public void configureNewLoggers (
     ClassIterator!(Config, ConfigParser) config, MetaConfig m_config,
-    Appender delegate ( istring file, Layout layout ) file_appender,
+    scope Appender delegate ( istring file, Layout layout ) file_appender,
     bool use_insert_appender = false)
 {
     // DMD1 cannot infer the common type between both return, we have to work
@@ -442,9 +442,9 @@ private void configureLoggers
     (LoggerT : ILogger, Source = ConfigParser,
      FileLayout = LayoutDate, ConsoleLayout = LayoutSimple)
     (ClassIterator!(Config, Source) config, MetaConfig m_config,
-     LoggerT delegate (cstring name) lookup,
-     Appender delegate (istring file, Layout layout) file_appender,
-     Appender delegate (Layout) console_appender)
+     scope LoggerT delegate (cstring name) lookup,
+     scope Appender delegate (istring file, Layout layout) file_appender,
+     scope Appender delegate (Layout) console_appender)
 {
     // It is important to ensure that parent loggers are configured before child
     // loggers. This is because parent loggers will override the settings of
@@ -536,8 +536,8 @@ public void configureLogger
     (FileLayout = LayoutDate, ConsoleLayout = LayoutSimple,
      LoggerT : ILogger = Logger)
     (LoggerT log, Config settings, istring name,
-     Appender delegate ( istring file, Layout layout ) file_appender,
-     Appender delegate (Layout) console_appender,
+     scope Appender delegate ( istring file, Layout layout ) file_appender,
+     scope Appender delegate (Layout) console_appender,
      bool console_enabled, bool syslog_enabled, size_t buffer_size)
 {
     if (settings.buffer_size)

@@ -242,7 +242,7 @@ struct StringSearch ( bool wide_char = false )
 
     static:
 
-    const Char TERM = '\0';
+    enum Char TERM = '\0';
 
     /**
      * Locates the first occurence of value within the first length characters
@@ -547,7 +547,7 @@ struct StringSearch ( bool wide_char = false )
     Char[] shiftString ( ref Char[] str, size_t dst_pos, size_t src_pos, size_t length )
     in
     {
-        const PREFIX = "shiftString(): ";
+        enum PREFIX = "shiftString(): ";
 
         assert (src_pos <= str.length, PREFIX ~ "source start out of range");
         assert (dst_pos <= str.length, PREFIX ~ "destination start out of range");

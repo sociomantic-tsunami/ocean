@@ -82,13 +82,13 @@ public struct IncrementalAverage
         if (count == 0)
             return;
 
-        this.count_ += count;
+        (&this).count_ += count;
 
-        auto delta = (value - this.average_) * count;
+        auto delta = (value - (&this).average_) * count;
 
-        this.average_ += delta / this.count_;
+        (&this).average_ += delta / (&this).count_;
 
-        this.mean_of_square += delta * (value - this.average_);
+        (&this).mean_of_square += delta * (value - (&this).average_);
     }
 
 
@@ -101,7 +101,7 @@ public struct IncrementalAverage
 
     public double average ()
     {
-        return this.average_;
+        return (&this).average_;
     }
 
 
@@ -114,7 +114,7 @@ public struct IncrementalAverage
 
     public ulong count ()
     {
-        return this.count_;
+        return (&this).count_;
     }
 
 
@@ -126,9 +126,9 @@ public struct IncrementalAverage
 
     public void clear ()
     {
-        this.average_ = 0;
-        this.count_ = 0;
-        this.mean_of_square = 0;
+        (&this).average_ = 0;
+        (&this).count_ = 0;
+        (&this).mean_of_square = 0;
     }
 
     /***************************************************************************
@@ -162,13 +162,13 @@ public struct IncrementalAverage
 
     public double variance (double correction_factor = 0)
     {
-        if (this.count_ < 2)
+        if ((&this).count_ < 2)
             return 0;
 
-        assert(this.count_ > correction_factor, "Correction factor is same "
+        assert((&this).count_ > correction_factor, "Correction factor is same "
                ~ "size or bigger than the number of elements added.");
 
-        return this.mean_of_square / (this.count_ - correction_factor);
+        return (&this).mean_of_square / ((&this).count_ - correction_factor);
     }
 
     /***************************************************************************
@@ -190,7 +190,7 @@ public struct IncrementalAverage
 
     public double stdDeviation (double correction_factor = 0)
     {
-        return sqrt(this.variance(correction_factor));
+        return sqrt((&this).variance(correction_factor));
     }
 }
 
@@ -203,7 +203,7 @@ version (UnitTest)
 
     // Bit count to avoid deliberate loss of precision.
     // Ensures only 8 bits of precision could be lost.
-    const PRECISION = double.mant_dig - 8;
+    static immutable PRECISION = double.mant_dig - 8;
 }
 
 unittest
@@ -260,7 +260,7 @@ unittest
                   PRECISION);
 
 	inc_avg.clear();
-	const ADD = ulong.max/1_000_000;
+	static immutable ADD = ulong.max/1_000_000;
 	for (ulong i = 0; i < ulong.max; i += (ADD < ulong.max - i ? ADD : 1))
 		inc_avg.addToAverage(i%2); // 1 or 0
 	inc_avg.addToAverage(1); // One more add is missing
@@ -359,10 +359,10 @@ unittest
 {
     auto t = new NamedTest("Multiple insertion precision");
 
-    const value_1 = 3;
-    const value_2 = 7;
-    const value_3 = 11;
-    const freq = 1001;
+    static immutable value_1 = 3;
+    static immutable value_2 = 7;
+    static immutable value_3 = 11;
+    static immutable freq = 1001;
 
     IncrementalAverage single, multiple;
 
@@ -396,7 +396,7 @@ unittest
 
     IncrementalAverage distribution;
 
-    const value = 8.0;
+    static immutable value = 8.0;
 
     distribution.addToAverage(value);
 

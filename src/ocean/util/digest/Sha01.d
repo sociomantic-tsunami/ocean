@@ -32,8 +32,8 @@ import ocean.util.digest.MerkleDamgard;
 package abstract class Sha01 : MerkleDamgard
 {
         protected uint[5]        context;
-        private const ubyte      padChar = 0x80;
-        package const uint       mask = 0x0000000F;
+        private static immutable ubyte      padChar = 0x80;
+        package static immutable uint       mask = 0x0000000F;
 
         /***********************************************************************
 

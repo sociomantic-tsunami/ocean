@@ -205,7 +205,7 @@ class TaskSelectTransceiver
 
     ***************************************************************************/
 
-    public void readConsume ( size_t delegate ( void[] data ) consume )
+    public void readConsume ( scope size_t delegate ( void[] data ) consume )
     {
         this.buffered_reader.readConsume(consume, &this.deviceRead);
     }
@@ -660,7 +660,7 @@ import ocean.text.util.ClassName;
 *******************************************************************************/
 
 public int connect ( Socket: IODevice ) ( TaskSelectTransceiver tst,
-    bool delegate ( Socket socket ) socket_connect )
+    scope bool delegate ( Socket socket ) socket_connect )
 {
     auto socket = cast(Socket)tst.iodev;
     assert(socket, "connect: Unable to cast the I/O " ~
@@ -888,7 +888,7 @@ unittest
 
     initScheduler(SchedulerConfiguration.init);
 
-    const outstr = "Hello World!";
+    static immutable outstr = "Hello World!";
     char[outstr.length] instr;
 
     // Start a task that writes the test string to the pipe.
@@ -904,7 +904,7 @@ unittest
         override void run ( )
         {
             // Read only "Hello " to test readv().
-            const hello = "Hello ".length;
+            static immutable hello = "Hello ".length;
             intst.read(instr[0 .. hello]);
             auto world = instr[hello .. $];
 

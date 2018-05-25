@@ -49,7 +49,7 @@ class SnoopInput : InputStream
 
         ***********************************************************************/
 
-        this (InputStream host, Snoop snoop = null)
+        this (InputStream host, scope Snoop snoop = null)
         {
                 assert (host);
                 this.host = host;
@@ -195,7 +195,7 @@ class SnoopOutput : OutputStream
 
         ***********************************************************************/
 
-        this (OutputStream host, Snoop snoop = null)
+        this (OutputStream host, scope Snoop snoop = null)
         {
                 assert (host);
                 this.host = host;

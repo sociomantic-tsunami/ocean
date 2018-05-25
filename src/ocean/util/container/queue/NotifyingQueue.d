@@ -298,7 +298,7 @@ class NotifyingByteQueue : ISuspendable, IQueueInfo
 
     ***************************************************************************/
 
-    public bool ready ( NotificationDg notifier )
+    public bool ready ( scope NotificationDg notifier )
     in
     {
         debug foreach ( waiting_notifier; this.notifiers[] )
@@ -339,7 +339,7 @@ class NotifyingByteQueue : ISuspendable, IQueueInfo
 
     ***************************************************************************/
 
-    final public bool isRegistered ( NotificationDg notifier )
+    final public bool isRegistered ( scope NotificationDg notifier )
     {
         foreach (wait_notifier; this.notifiers[])
         {
@@ -404,7 +404,7 @@ class NotifyingByteQueue : ISuspendable, IQueueInfo
 
     ***************************************************************************/
 
-    public bool push ( size_t size, void delegate ( ubyte[] ) filler )
+    public bool push ( size_t size, scope void delegate ( ubyte[] ) filler )
     {
         auto target = this.queue.push(size);
 

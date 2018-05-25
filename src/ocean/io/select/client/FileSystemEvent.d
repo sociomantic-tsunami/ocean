@@ -208,7 +208,7 @@ class FileSystemEvent : ISelectClient
     ***********************************************************************/
 
     deprecated ("Please use this(Notifier) instead")
-    public this ( Handler handler )
+    public this ( scope Handler handler )
     {
         this();
         this.handler = handler;
@@ -225,7 +225,7 @@ class FileSystemEvent : ISelectClient
 
     ***********************************************************************/
 
-    public this ( Notifier notifier )
+    public this ( scope Notifier notifier )
     {
         this();
         this.notifier = notifier;
@@ -254,7 +254,7 @@ class FileSystemEvent : ISelectClient
     ***********************************************************************/
 
     deprecated ("Please use setNotifier(Notifier) instead")
-    public void setHandler ( Handler handler )
+    public void setHandler ( scope Handler handler )
     {
         this.handler = handler;
     }
@@ -269,7 +269,7 @@ class FileSystemEvent : ISelectClient
 
     ***********************************************************************/
 
-    public void setNotifier ( Notifier notifier )
+    public void setNotifier ( scope Notifier notifier )
     {
         this.notifier = notifier;
     }

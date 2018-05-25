@@ -154,7 +154,7 @@ public mstring snformat (Args...) (mstring buffer, cstring fmt, Args args)
 
 *******************************************************************************/
 
-public bool sformat (Args...) (Sink sink, cstring fmt, Args args)
+public bool sformat (Args...) (scope Sink sink, cstring fmt, Args args)
 {
     FormatInfo info;
     size_t nextIndex;
@@ -242,7 +242,7 @@ public alias size_t delegate(cstring, ref Const!(FormatInfo)) ElementSink;
 
 *******************************************************************************/
 
-private size_t widthSink (Sink sink, cstring str, ref Const!(FormatInfo) f)
+private size_t widthSink (scope Sink sink, cstring str, ref Const!(FormatInfo) f)
 {
     if (f.flags & Flags.Width)
     {
@@ -290,7 +290,7 @@ private size_t widthSink (Sink sink, cstring str, ref Const!(FormatInfo) f)
 
 *******************************************************************************/
 
-private void handle (T) (T v, FormatInfo f, Sink sf, ElementSink se)
+private void handle (T) (T v, FormatInfo f, scope Sink sf, scope ElementSink se)
 {
     // Handle ref types explicitly
     static if (is (typeof(v is null)))
@@ -511,13 +511,13 @@ private template IsTypeofNull (T)
     version (D_Version2)
     {
         static if (is(T == typeof(null)))
-            public const bool IsTypeofNull = true;
+            public static immutable bool IsTypeofNull = true;
         else
-            public const bool IsTypeofNull = false;
+            public static immutable bool IsTypeofNull = false;
     }
     else
     {
-        public const bool IsTypeofNull = false;
+        public static immutable bool IsTypeofNull = false;
     }
 }
 
@@ -540,9 +540,9 @@ private template IsTypeofNull (T)
 private template IsTypedef (T)
 {
     version (D_Version2)
-        const IsTypedef = is(T.IsTypedef);
+        static immutable IsTypedef = is(T.IsTypedef);
     else
-        const IsTypedef = mixin("is(T == typedef)");
+        static immutable IsTypedef = mixin("is(T == typedef)");
 }
 
 /*******************************************************************************
@@ -596,7 +596,7 @@ private template DropTypedef (T)
 
 *******************************************************************************/
 
-private FormatInfo consume (Sink sink, ref cstring fmt)
+private FormatInfo consume (scope Sink sink, ref cstring fmt)
 {
     FormatInfo ret;
     auto s = fmt.ptr;
@@ -746,9 +746,9 @@ private Const!(char)* skipSpace (Const!(char)* s, Const!(char)* end)
 
 *******************************************************************************/
 
-private size_t writeSpace (Sink s, size_t n)
+private size_t writeSpace (scope Sink s, size_t n)
 {
-    const istring Spaces32 = "                                ";
+    static immutable istring Spaces32 = "                                ";
     size_t ret;
 
     // Make 'n' a multiple of Spaces32.length (32)
@@ -810,15 +810,15 @@ private bool readNumber (out size_t f, ref Const!(char)* s)
 
 *******************************************************************************/
 
-private void writePointer (in void* v, ref FormatInfo f, ElementSink se)
+private void writePointer (in void* v, ref FormatInfo f, scope ElementSink se)
 {
     alias void* T;
 
     version (D_Version2)
         mixin("enum int l = (T.sizeof * 2);");
     else
-        const int l = (T.sizeof * 2); // Needs to be int to avoid suffix
-    const defaultFormat = "X" ~ l.stringof ~ "#";
+        static immutable int l = (T.sizeof * 2); // Needs to be int to avoid suffix
+    static immutable defaultFormat = "X" ~ l.stringof ~ "#";
 
     // Needs to support base 2 at most, plus an optional prefix
     // of 2 chars max
@@ -1204,7 +1204,7 @@ unittest
     // Support for new sink-based toString
     static struct S1
     {
-        void toString (size_t delegate(cstring d) sink)
+        void toString (scope size_t delegate(cstring d) sink)
         {
             sink("42424242424242");
         }
@@ -1215,7 +1215,7 @@ unittest
     // For classes too
     static class C1
     {
-        void toString (size_t delegate(cstring d) sink)
+        void toString (scope size_t delegate(cstring d) sink)
         {
             sink("42424242424242");
         }
@@ -1226,7 +1226,7 @@ unittest
     // Compile time support is awesome, isn't it ?
     static struct S2
     {
-        void toString (size_t delegate(cstring d) sink, cstring default_ = "42")
+        void toString (scope size_t delegate(cstring d) sink, cstring default_ = "42")
         {
             sink(default_);
         }
@@ -1290,7 +1290,7 @@ unittest
     void[] varr = arr;
     assert(format("{}", varr) == "[42, 43, 44, 45, 92]");
 
-    const ubyte[5] carr = [42, 43, 44, 45, 92];
+    static immutable ubyte[5] carr = [42, 43, 44, 45, 92];
     auto cvarr = carr; // Immutable, cannot be marked `const` in D1
     assert(format("{}", cvarr) == "[42, 43, 44, 45, 92]");
 
@@ -1308,12 +1308,12 @@ unittest
 // Const tests
 unittest
 {
-    const int ai = 42;
-    const double ad = 42.00;
+    static immutable int ai = 42;
+    static immutable double ad = 42.00;
     static struct Answer_struct { int value; }
     static class Answer_class
     {
-        public override istring toString () /* d1to2fix_inject: const */
+        public override istring toString () const
         {
             return "42";
         }
@@ -1339,7 +1339,7 @@ unittest
     Object* o = cast(Object*) 0xDEADBEEF_DEADBEEF;
     void* ptr = cast(void*) 0xDEADBEEF_DEADBEEF;
 
-    const istring expected = "0XDEADBEEFDEADBEEF";
+    static immutable istring expected = "0XDEADBEEFDEADBEEF";
     istring object_str = format("{}", o);
     istring ptr_str = format("{}", ptr);
     istring null_str = format("{}", null);

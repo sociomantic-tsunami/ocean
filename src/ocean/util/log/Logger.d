@@ -137,7 +137,7 @@ public struct Log
         /// Resets the counters
         private void reset ()
         {
-            foreach (ref field; this.tupleof)
+            foreach (ref field; (&this).tupleof)
             {
                 field = field.init;
             }
@@ -157,19 +157,19 @@ public struct Log
             with (Level) switch (event_level)
             {
             case Trace:
-                this.logged_trace++;
+                (&this).logged_trace++;
                 break;
             case Info:
-                this.logged_info++;
+                (&this).logged_info++;
                 break;
             case Warn:
-                this.logged_warn++;
+                (&this).logged_warn++;
                 break;
             case Error:
-                this.logged_error++;
+                (&this).logged_error++;
                 break;
             case Fatal:
-                this.logged_fatal++;
+                (&this).logged_fatal++;
                 break;
             case None:
                 break;
@@ -197,7 +197,7 @@ public struct Log
     /// Poor man's SmartEnum: We don't use SmartEnum directly because
     /// it would change the public interface, and we accept any case anyway.
     /// This can be fixed when we drop D1 support.
-    private const Pair[Level.max + 1] Pairs =
+    private enum Pair[Level.max + 1] Pairs =
     [
         { "Trace",  Level.Trace },
         { "Info",   Level.Info },

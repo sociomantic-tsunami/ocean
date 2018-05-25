@@ -103,7 +103,7 @@ class ProgressFile : File
 
     ***************************************************************************/
 
-    public this ( ProgressDg progress_dg )
+    public this ( scope ProgressDg progress_dg )
     in
     {
         assert(progress_dg !is null, typeof(this).stringof ~ ": progress delegate is null, what's the point?");
@@ -128,7 +128,7 @@ class ProgressFile : File
 
     ***************************************************************************/
 
-    public this ( ProgressDg progress_dg, char[] path, Style style = ReadExisting )
+    public this ( scope ProgressDg progress_dg, char[] path, Style style = ReadExisting )
     in
     {
         assert(progress_dg !is null, typeof(this).stringof ~ ": progress delegate is null, what's the point?");

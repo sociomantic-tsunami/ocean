@@ -258,9 +258,9 @@ debug (Environment)
 
         void main(istring[] args)
         {
-        const istring VAR = "TESTENVVAR";
-        const istring VAL1 = "VAL1";
-        const istring VAL2 = "VAL2";
+        static immutable istring VAR = "TESTENVVAR";
+        static immutable istring VAL1 = "VAL1";
+        static immutable istring VAL2 = "VAL2";
 
         assert(Environment.get(VAR) is null);
 

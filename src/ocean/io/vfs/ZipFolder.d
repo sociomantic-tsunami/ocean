@@ -91,8 +91,8 @@ private
             with( vfsFilterInfo )
             {
                 // Cheat horribly here
-                name = this.name;
-                path = this.fullname[0..($-name.length+"/".length)];
+                name = (&this).name;
+                path = (&this).fullname[0..($-name.length+"/".length)];
 
                 folder = isDir;
                 bytes = folder ? 0 : fileSize;
@@ -189,7 +189,7 @@ private
                         debug( ZipFolder )
                             Stderr.formatln("Entry.openOutput: duplicated"
                                     ~ " temp file {} for {}",
-                                    file.tempFile, this.fullname);
+                                    file.tempFile, (&this).fullname);
                     }
 
                     // TODO: Copy file info if available
@@ -204,7 +204,7 @@ private
                     debug( ZipFolder )
                         Stderr.formatln("Entry.openOutput: created"
                                 ~ " temp file {} for {}",
-                                file.tempFile, this.fullname);
+                                file.tempFile, (&this).fullname);
                 }
 
                 assert( file.tempFile !is null );
@@ -409,7 +409,7 @@ class ZipSubFolder : VfsFolder, VfsSync
     }
 
     ///
-    final int opApply(int delegate(ref VfsFolder) dg)
+    final int opApply(scope int delegate(ref VfsFolder) dg)
     in { assert( valid ); }
     body
     {
@@ -588,7 +588,7 @@ private:
         return folders;
     }
 
-    final Entry*[] files(ref VfsStats stats, VfsFilter filter = null)
+    final Entry*[] files(ref VfsStats stats, scope VfsFilter filter = null)
     in { assert( valid ); }
     body
     {
@@ -1428,7 +1428,7 @@ private:
 
 class ZipSubFolderGroup : VfsFolders
 {
-    final int opApply(int delegate(ref VfsFolder) dg)
+    final int opApply(scope int delegate(ref VfsFolder) dg)
     in { assert( valid ); }
     body
     {
@@ -1507,7 +1507,7 @@ class ZipSubFolderGroup : VfsFolders
         return catalog (&filter);
     }
 
-    final VfsFiles catalog(VfsFilter filter = null)
+    final VfsFiles catalog(scope VfsFilter filter = null)
     in { assert( valid ); }
     body
     {
@@ -1558,7 +1558,7 @@ private:
 
 class ZipFileGroup : VfsFiles
 {
-    final int opApply(int delegate(ref VfsFile) dg)
+    final int opApply(scope int delegate(ref VfsFile) dg)
     in { assert( valid ); }
     body
     {
@@ -1601,7 +1601,7 @@ private:
         Entry* entry;
     }
 
-    this(ZipFolder archive, ZipSubFolderGroup host, VfsFilter filter)
+    this(ZipFolder archive, ZipSubFolderGroup host, scope VfsFilter filter)
     out { assert( valid ); }
     body
     {

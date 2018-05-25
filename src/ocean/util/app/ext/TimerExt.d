@@ -186,7 +186,7 @@ public class TimerExt : IApplicationExtension
 
     ***************************************************************************/
 
-    public void register ( EventDg dg, double period_s )
+    public void register ( scope EventDg dg, double period_s )
     {
         assert(dg);
         assert(period_s >= 0.0);
@@ -206,7 +206,7 @@ public class TimerExt : IApplicationExtension
 
     ***************************************************************************/
 
-    public void register ( EventDg dg, double init_s, double period_s )
+    public void register ( scope EventDg dg, double init_s, double period_s )
     {
         assert(dg);
         assert(init_s >= 0.0);
@@ -232,7 +232,7 @@ public class TimerExt : IApplicationExtension
 
     ***************************************************************************/
 
-    public void registerMicrosec ( EventDg dg, ulong init_microsec, ulong period_microsec )
+    public void registerMicrosec ( scope EventDg dg, ulong init_microsec, ulong period_microsec )
     {
         assert(dg);
 

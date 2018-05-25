@@ -30,8 +30,8 @@ struct Kiss99{
     private uint nBytes = 0;
     private uint restB  = 0;
 
-    const int canCheckpoint=true;
-    const int canSeed=true;
+    enum int canCheckpoint=true;
+    enum int canSeed=true;
 
     void skip(uint n){
         for (int i=n;i!=n;--i){
@@ -53,7 +53,7 @@ struct Kiss99{
         }
     }
     uint next(){
-        const ulong a = 698769069UL;
+        enum ulong a = 698769069UL;
         ulong t;
         kiss_x = 69069*kiss_x+12345;
         kiss_y ^= (kiss_y<<13); kiss_y ^= (kiss_y>>17); kiss_y ^= (kiss_y<<5);
@@ -65,7 +65,7 @@ struct Kiss99{
         return ((cast(ulong)next)<<32)+cast(ulong)next;
     }
 
-    void seed(uint delegate() r){
+    void seed(scope uint delegate() r){
         kiss_x = r();
         for (int i=0;i<100;++i){
             kiss_y=r();

@@ -81,7 +81,7 @@ class TimeoutSelectedKeysHandler: SelectedKeysHandler
 
     ***************************************************************************/
 
-    public this ( UnregisterDg unregister, EpollException e,
+    public this ( scope UnregisterDg unregister, EpollException e,
                   ITimeoutManager timeout_manager, uint num_clients = 0 )
     {
         super(unregister, e);
@@ -108,7 +108,7 @@ class TimeoutSelectedKeysHandler: SelectedKeysHandler
     ***************************************************************************/
 
     public override void opCall ( epoll_event_t[] selected_set,
-        void delegate (Exception) unhandled_exception_hook )
+        scope void delegate (Exception) unhandled_exception_hook )
     {
         if (this.timeout_manager.us_left < timeout_manager.us_left.max)
         {

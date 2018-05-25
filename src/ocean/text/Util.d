@@ -1312,15 +1312,15 @@ private struct LineFruct(T)
 {
         private T[] src;
 
-        int opApply (int delegate (ref T[] line) dg)
+        int opApply (scope int delegate (ref T[] line) dg)
         {
                 int     ret;
                 size_t  pos,
                         mark;
                 T[]     line;
 
-                const T nl = '\n';
-                const T cr = '\r';
+                enum T nl = '\n';
+                enum T cr = '\r';
 
                 while ((pos = locate (src, nl, mark)) < src.length)
                       {
@@ -1355,7 +1355,7 @@ private struct DelimFruct(T)
         private T[]         src;
         private Const!(T)[] set;
 
-        int opApply (int delegate (ref T[] token) dg)
+        int opApply (scope int delegate (ref T[] token) dg)
         {
                 int     ret;
                 size_t  pos,
@@ -1403,7 +1403,7 @@ public struct PatternFruct(T)
         private T[] src, sub;
         private Const!(Unqual!(T))[] pattern;
 
-        int opApply (int delegate (ref T[] token) dg)
+        int opApply (scope int delegate (ref T[] token) dg)
         {
                 int     ret;
                 size_t  pos,
@@ -1441,7 +1441,7 @@ private struct QuoteFruct(T)
         private Const!(T)[] src;
         private Const!(T)[] set;
 
-        int opApply (int delegate (ref Const!(T)[] token) dg)
+        int opApply (scope int delegate (ref Const!(T)[] token) dg)
         {
                 int     ret;
                 size_t  mark;

@@ -66,7 +66,7 @@ struct SmartUnion ( U )
 
      **************************************************************************/
 
-    Active active ( ) { return this._.active; }
+    Active active ( ) { return (&this)._.active; }
 
     /***************************************************************************
 
@@ -78,7 +78,7 @@ struct SmartUnion ( U )
 
     public istring active_name ( )
     {
-        return this._.active_names[this._.active];
+        return (&this)._.active_names[(&this)._.active];
     }
 
     /**************************************************************************
@@ -89,7 +89,7 @@ struct SmartUnion ( U )
 
     mixin (AllMethods!(U, "", 0));
 
-    private alias typeof(*this) Type;
+    private alias typeof(*(&this)) Type;
 }
 
 ///
@@ -313,7 +313,7 @@ private struct SmartUnionIntern ( U )
 
      **************************************************************************/
 
-    const N = U.tupleof.length;
+    enum N = U.tupleof.length;
 
     /**************************************************************************
 
@@ -337,7 +337,7 @@ private struct SmartUnionIntern ( U )
 
     ***************************************************************************/
 
-    const istring[] active_names = member_string_list();
+    enum istring[] active_names = member_string_list();
 
     /***************************************************************************
 
@@ -378,11 +378,11 @@ private template MemberList ( uint i, size_t len, U )
 {
     static if ( i == len )
     {
-        const MemberList = "";
+        static immutable MemberList = "";
     }
     else
     {
-        const MemberList = "," ~ FieldName!(i, U) ~ MemberList!(i + 1, len, U);
+        static immutable MemberList = "," ~ FieldName!(i, U) ~ MemberList!(i + 1, len, U);
     }
 }
 
@@ -451,27 +451,27 @@ private template MemberList ( uint i, size_t len, U )
 
 private template Methods ( U, uint i )
 {
-    const member = FieldName!(i, U);
+    static immutable member = FieldName!(i, U);
 
-    const member_access = "_.u." ~ member;
+    static immutable member_access = "_.u." ~ member;
 
-    const type = "typeof(" ~ member_access ~ ")";
+    static immutable type = "typeof(" ~ member_access ~ ")";
 
-    const get = type ~ ' ' ~  member ~ "() "
+    static immutable get = type ~ ' ' ~  member ~ "() "
         ~ "in { enforce(_.active == _.active." ~ member ~ ", "
         ~ `"SmartUnion: '` ~ member ~ `' not active"); } `
         ~ "body { return " ~ member_access ~ "; }";
 
-    const set = type ~ ' ' ~  member ~ '(' ~ type ~ ' ' ~ member ~ ")"
+    static immutable set = type ~ ' ' ~  member ~ '(' ~ type ~ ' ' ~ member ~ ")"
         ~ "{ _.active = _.active." ~ member ~ ";"
         ~ "return " ~ member_access ~ '=' ~ member ~ "; }";
 
-    const ini = "static Type opCall(" ~ type ~ ' ' ~ member ~ ")"
+    static immutable ini = "static Type opCall(" ~ type ~ ' ' ~ member ~ ")"
         ~ "{ Type su; su." ~ member ~ '=' ~ member ~ "; return su; }";
 
-    const local_import = "import ocean.core.Enforce;\n";
+    static immutable local_import = "import ocean.core.Enforce;\n";
 
-    const all = local_import ~ get ~ '\n' ~ set ~ '\n' ~ ini;
+    static immutable all = local_import ~ get ~ '\n' ~ set ~ '\n' ~ ini;
 }
 
 /*******************************************************************************
@@ -492,11 +492,11 @@ private template AllMethods ( U, istring pre, uint i)
 {
     static if (i < U.tupleof.length)
     {
-        const AllMethods =
+        static immutable AllMethods =
             AllMethods!(U, pre ~ '\n' ~ Methods!(U, i).all, i + 1);
     }
     else
     {
-        const AllMethods = pre;
+        static immutable AllMethods = pre;
     }
 }

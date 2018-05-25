@@ -269,11 +269,11 @@ public class StatsLog
 
     ***************************************************************************/
 
-    public const time_t default_period = 30; // 30 seconds
-    public const default_file_count = 10;
-    public const default_max_file_size = 10 * 1024 * 1024; // 10Mb
-    public const istring default_file_name = "log/stats.log";
-    public const size_t default_start_compress = 4;
+    public static immutable time_t default_period = 30; // 30 seconds
+    public static immutable default_file_count = 10;
+    public static immutable default_max_file_size = 10 * 1024 * 1024; // 10Mb
+    public static immutable istring default_file_name = "log/stats.log";
+    public static immutable size_t default_start_compress = 4;
 
 
     /***************************************************************************
@@ -348,7 +348,7 @@ public class StatsLog
     ***************************************************************************/
 
     public this ( Config config,
-        Appender delegate ( istring file, Appender.Layout layout ) new_appender,
+        scope Appender delegate ( istring file, Appender.Layout layout ) new_appender,
         istring name = "Stats" )
     in
     {

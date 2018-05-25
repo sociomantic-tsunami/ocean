@@ -149,7 +149,7 @@ public class CSV
 
     ***************************************************************************/
 
-    public void parse ( InputStream stream, RowDg row_dg )
+    public void parse ( InputStream stream, scope RowDg row_dg )
     in
     {
         assert(stream !is null, "InputStream is null");
@@ -217,7 +217,7 @@ public class CSV
 
     ***************************************************************************/
 
-    private bool parseRow ( RowDg row_dg )
+    private bool parseRow ( scope RowDg row_dg )
     {
         this.fields.length = 0;
 

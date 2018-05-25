@@ -85,14 +85,14 @@ struct Contiguous( S )
     public S* ptr ( )
     in
     {
-        assert((this.data.length == 0) || (this.data.length >= S.sizeof));
+        assert(((&this).data.length == 0) || ((&this).data.length >= S.sizeof));
     }
     body
     {
-        if (this.data.length == 0)
+        if ((&this).data.length == 0)
             return null;
 
-        return cast(S*) this.data.ptr;
+        return cast(S*) (&this).data.ptr;
     }
 
     /***************************************************************************
@@ -107,9 +107,9 @@ struct Contiguous( S )
 
     public void enforceIntegrity()
     {
-        if (this.data.ptr)
+        if ((&this).data.ptr)
         {
-            enforceContiguous(*cast(S*) this.data.ptr, this.data);
+            enforceContiguous(*cast(S*) (&this).data.ptr, (&this).data);
         }
     }
 
@@ -124,7 +124,7 @@ struct Contiguous( S )
 
     public size_t length()
     {
-        return this.data.length;
+        return (&this).data.length;
     }
 
     /***************************************************************************
@@ -136,9 +136,9 @@ struct Contiguous( S )
 
     public Contiguous!(S) reset()
     {
-        this.data.length = 0;
-        enableStomping(this.data);
-        return *this;
+        (&this).data.length = 0;
+        enableStomping((&this).data);
+        return *(&this);
     }
 
     debug(ContiguousIntegrity)
@@ -148,9 +148,9 @@ struct Contiguous( S )
             // can't call this.enforceIntegrity because it will trigger
             // invariant recursively being a public method
 
-            if (this.data.length)
+            if ((&this).data.length)
             {
-                enforceContiguous(*cast(S*) this.data.ptr, this.data);
+                enforceContiguous(*cast(S*) (&this).data.ptr, (&this).data);
             }
         }
     }

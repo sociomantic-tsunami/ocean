@@ -31,8 +31,8 @@ struct CMWC(uint cmwc_r=1024U,ulong cmwc_a=987769338UL){
     uint nBytes = 0;
     uint restB  = 0;
 
-    const int canCheckpoint=true;
-    const int canSeed=true;
+    enum int canCheckpoint=true;
+    enum int canSeed=true;
 
     void skip(uint n){
         for (int i=n;i!=n;--i){
@@ -54,9 +54,9 @@ struct CMWC(uint cmwc_r=1024U,ulong cmwc_a=987769338UL){
         }
     }
     uint next(){
-        const uint rMask=cmwc_r-1u;
+        enum uint rMask=cmwc_r-1u;
         static assert((rMask&cmwc_r)==0,"cmwc_r is supposed to be a power of 2"); // put a more stringent test?
-        const uint m=0xFFFF_FFFE;
+        enum uint m=0xFFFF_FFFE;
         cmwc_i=(cmwc_i+1)&rMask;
         ulong t=cmwc_a*cmwc_q[cmwc_i]+cmwc_c;
         cmwc_c=cast(uint)(t>>32);
@@ -71,7 +71,7 @@ struct CMWC(uint cmwc_r=1024U,ulong cmwc_a=987769338UL){
         return ((cast(ulong)next)<<32)+cast(ulong)next;
     }
 
-    void seed(uint delegate() rSeed){
+    void seed(scope uint delegate() rSeed){
         cmwc_i=cmwc_r-1u; // randomize also this?
         for (int ii=0;ii<10;++ii){
             for (uint i=0;i<cmwc_r;++i){

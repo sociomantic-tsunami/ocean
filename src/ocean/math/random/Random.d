@@ -215,9 +215,9 @@ version(solaris){ version=has_urandom; }
 /// if T is a float
 template isFloat(T){
     static if(is(T==float)||is(T==double)||is(T==real)){
-        const bool isFloat=true;
+        static immutable bool isFloat=true;
     } else {
-        const bool isFloat=false;
+        static immutable bool isFloat=false;
     }
 }
 
@@ -266,7 +266,7 @@ final class RandomG(SourceT=DefaultEngine)
         return this;
     }
     /// if source.canSeed seeds the generator using the given source of uints
-    RandomG seed (uint delegate() seedSource)
+    RandomG seed (scope uint delegate() seedSource)
     {
         static if(is(typeof(SourceT.canSeed))) {
             static if (SourceT.canSeed)
@@ -316,9 +316,9 @@ final class RandomG(SourceT=DefaultEngine)
             return cast(bool)(source.next & 1u); // check lowest bit
         } else static if (is(T==float)||is(T==double)||is(T==real)){
             static if (T.mant_dig<30) {
-                const T halfT=(cast(T)1)/(cast(T)2);
-                const T fact32=ctfe_powI(halfT,32);
-                const uint minV=1u<<(T.mant_dig-1);
+                static immutable T halfT=(cast(T)1)/(cast(T)2);
+                static immutable T fact32=ctfe_powI(halfT,32);
+                static immutable uint minV=1u<<(T.mant_dig-1);
                 uint nV=source.next;
                 if (nV>=minV) {
                     T res=nV*fact32;
@@ -344,9 +344,9 @@ final class RandomG(SourceT=DefaultEngine)
                     }
                 }
             } else static if (T.mant_dig<62) {
-                const T halfT=(cast(T)1)/(cast(T)2);
-                const T fact64=ctfe_powI(halfT,64);
-                const ulong minV=1UL<<(T.mant_dig-1);
+                static immutable T halfT=(cast(T)1)/(cast(T)2);
+                static immutable T fact64=ctfe_powI(halfT,64);
+                static immutable ulong minV=1UL<<(T.mant_dig-1);
                 ulong nV=source.nextL;
                 if (nV>=minV) {
                     T res=nV*fact64;
@@ -358,8 +358,8 @@ final class RandomG(SourceT=DefaultEngine)
                         return res;
                     }
                 } else { // probability 0.00048828125 for 53 bit mantissa
-                    const T fact32=ctfe_powI(halfT,32);
-                    const ulong minV2=1UL<<(T.mant_dig-33);
+                    static immutable T fact32=ctfe_powI(halfT,32);
+                    static immutable ulong minV2=1UL<<(T.mant_dig-33);
                     if (nV>=minV2){
                         return ((cast(T)nV)+(cast(T)source.next)*fact32)*fact64;
                     } else { // probability 1.1368683772161603e-13 for 53 bit mantissa
@@ -379,9 +379,9 @@ final class RandomG(SourceT=DefaultEngine)
                     }
                 }
             } else static if (T.mant_dig<=64){
-                const T halfT=(cast(T)1)/(cast(T)2);
-                const T fact8=ctfe_powI(halfT,8);
-                const T fact72=ctfe_powI(halfT,72);
+                static immutable T halfT=(cast(T)1)/(cast(T)2);
+                static immutable T fact8=ctfe_powI(halfT,8);
+                static immutable T fact72=ctfe_powI(halfT,72);
                 ubyte nB=source.nextB;
                 if (nB!=0){
                     T res=nB*fact8+source.nextL*fact72;
@@ -393,7 +393,7 @@ final class RandomG(SourceT=DefaultEngine)
                         return res;
                     }
                 } else { // probability 0.00390625
-                    const T fact64=ctfe_powI(halfT,64);
+                    static immutable T fact64=ctfe_powI(halfT,64);
                     T scale=fact8;
                     while (nB==0){
                         nB=source.nextB;
@@ -410,8 +410,8 @@ final class RandomG(SourceT=DefaultEngine)
                 }
             } else {
                 // (T.mant_dig > 64 bits), not so optimized, but works for any size
-                const T halfT=(cast(T)1)/(cast(T)2);
-                const T fact32=ctfe_powI(halfT,32);
+                static immutable T halfT=(cast(T)1)/(cast(T)2);
+                static immutable T fact32=ctfe_powI(halfT,32);
                 uint nL=source.next;
                 T fact=fact32;
                 while (nL==0){
@@ -528,9 +528,9 @@ final class RandomG(SourceT=DefaultEngine)
             }
         } else static if (is(T==float)||is(T==double)||is(T==real)){
             static if (T.mant_dig<30){
-                const T halfT=(cast(T)1)/(cast(T)2);
-                const T fact32=ctfe_powI(halfT,32);
-                const uint minV=1u<<T.mant_dig;
+                static immutable T halfT=(cast(T)1)/(cast(T)2);
+                static immutable T fact32=ctfe_powI(halfT,32);
+                static immutable uint minV=1u<<T.mant_dig;
                 uint nV=source.next;
                 if (nV>=minV) {
                     T res=nV*fact32*to;
@@ -559,9 +559,9 @@ final class RandomG(SourceT=DefaultEngine)
                     }
                 }
             } else static if (T.mant_dig<62) {
-                const T halfT=(cast(T)1)/(cast(T)2);
-                const T fact64=ctfe_powI(halfT,64);
-                const ulong minV=1UL<<(T.mant_dig);
+                static immutable T halfT=(cast(T)1)/(cast(T)2);
+                static immutable T fact64=ctfe_powI(halfT,64);
+                static immutable ulong minV=1UL<<(T.mant_dig);
                 ulong nV=source.nextL;
                 if (nV>=minV) {
                     T res=nV*fact64*to;
@@ -574,8 +574,8 @@ final class RandomG(SourceT=DefaultEngine)
                         return (1-2*cast(int)(nV&1UL))*res;
                     }
                 } else { // probability 0.00048828125 for 53 bit mantissa
-                    const T fact32=ctfe_powI(halfT,32);
-                    const ulong minV2=1UL<<(T.mant_dig-32);
+                    static immutable T fact32=ctfe_powI(halfT,32);
+                    static immutable ulong minV2=1UL<<(T.mant_dig-32);
                     if (nV>=minV2){
                         uint nV2=source.next;
                         T res=((cast(T)nV)+(cast(T)nV2)*fact32)*fact64*to;
@@ -599,9 +599,9 @@ final class RandomG(SourceT=DefaultEngine)
                     }
                 }
             } else static if (T.mant_dig<=64) {
-                const T halfT=(cast(T)1)/(cast(T)2);
-                const T fact8=ctfe_powI(halfT,8);
-                const T fact72=ctfe_powI(halfT,72);
+                static immutable T halfT=(cast(T)1)/(cast(T)2);
+                static immutable T fact8=ctfe_powI(halfT,8);
+                static immutable T fact72=ctfe_powI(halfT,72);
                 ubyte nB=source.nextB;
                 if (nB!=0){
                     ulong nL=source.nextL;
@@ -615,7 +615,7 @@ final class RandomG(SourceT=DefaultEngine)
                         return (1-2*cast(int)(nL&1UL))*res;
                     }
                 } else { // probability 0.00390625
-                    const T fact64=ctfe_powI(halfT,64);
+                    static immutable T fact64=ctfe_powI(halfT,64);
                     T scale=fact8;
                     while (nB==0){
                         nB=source.nextB;
@@ -634,8 +634,8 @@ final class RandomG(SourceT=DefaultEngine)
                 }
             } else {
                 // (T.mant_dig > 64 bits), not so optimized, but works for any size
-                const T halfT=(cast(T)1)/(cast(T)2);
-                const T fact32=ctfe_powI(halfT,32);
+                static immutable T halfT=(cast(T)1)/(cast(T)2);
+                static immutable T fact32=ctfe_powI(halfT,32);
                 uint nL=source.next;
                 T fact=fact32;
                 while (nL==0){
@@ -936,7 +936,7 @@ final class RandomG(SourceT=DefaultEngine)
         /// chainable call style initialization of variables (thorugh a call to randomize)
         UniformDistribution opCall(U,S...)(ref U a,S args){
             randomize(a,args);
-            return *this;
+            return *(&this);
         }
         /// returns a random number
         T getRandom(){
@@ -962,7 +962,7 @@ final class RandomG(SourceT=DefaultEngine)
         /// chainable call style initialization of variables (thorugh a call to randomize)
         UniformRDistribution opCall(U)(ref U a){
             randomize(a);
-            return *this;
+            return *(&this);
         }
         /// returns a random number
         T getRandom(){
@@ -990,7 +990,7 @@ final class RandomG(SourceT=DefaultEngine)
         /// chainable call style initialization of variables (thorugh a call to randomize)
         UniformRSymmDistribution opCall(U)(ref U a){
             randomize(a);
-            return *this;
+            return *(&this);
         }
         /// returns a random number
         T getRandom(){
@@ -1017,7 +1017,7 @@ final class RandomG(SourceT=DefaultEngine)
         /// chainable call style initialization of variables (thorugh a call to randomize)
         UniformR2Distribution opCall(U,S...)(ref U a,S args){
             randomize(a,args);
-            return *this;
+            return *(&this);
         }
         /// returns a random number
         T getRandom(){
@@ -1049,7 +1049,7 @@ final class RandomG(SourceT=DefaultEngine)
         /// chainable call style initialization of variables (thorugh a call to randomize)
         GammaDistribution opCall(U,S...)(ref U a,S args){
             randomize(a,args);
-            return *this;
+            return *(&this);
         }
         /// returns a single random number
         T getRandom(T a=alpha,T t=theta)
@@ -1083,7 +1083,7 @@ final class RandomG(SourceT=DefaultEngine)
             return b;
         }
         /// maps op on random numbers (of type T) and initializes b with it
-        U randomizeOp(U,S)(S delegate(T)op, ref U b,T a=alpha, T t=theta){
+        U randomizeOp(U,S)(scope S delegate(T)op, ref U b,T a=alpha, T t=theta){
             static if(is(U S:S[])){
                 alias BaseTypeOfArrays!(U) T;
                 T* bEnd=b.ptr+b.length;

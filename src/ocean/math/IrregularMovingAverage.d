@@ -68,7 +68,7 @@ public struct IrregularMovingAverage (Time = time_t, Value = real)
 
     ***************************************************************************/
 
-    private alias typeof(*this) This;
+    private alias typeof(*(&this)) This;
 
 
     /***************************************************************************
@@ -130,32 +130,32 @@ public struct IrregularMovingAverage (Time = time_t, Value = real)
 
     invariant ()
     {
-        assert(!isNaN(this.beta_));
-        assert(!isInfinity(this.beta_));
-        assert(0 < this.beta_);
-        assert(this.beta_ < 1);
+        assert(!isNaN((&this).beta_));
+        assert(!isInfinity((&this).beta_));
+        assert(0 < (&this).beta_);
+        assert((&this).beta_ < 1);
 
-        assert(!isNaN(this.alpha));
-        assert(!isInfinity(this.alpha));
-        assert(0 <= this.alpha);
-        assert(this.alpha <= 1);
+        assert(!isNaN((&this).alpha));
+        assert(!isInfinity((&this).alpha));
+        assert(0 <= (&this).alpha);
+        assert((&this).alpha <= 1);
 
-        assert(!isNaN(this.w));
-        assert(!isInfinity(this.w));
+        assert(!isNaN((&this).w));
+        assert(!isInfinity((&this).w));
 
-        assert(!isNaN(this.z));
-        assert(!isInfinity(this.z));
+        assert(!isNaN((&this).z));
+        assert(!isInfinity((&this).z));
 
-        assert(!isNaN(this.s));
-        assert(!isInfinity(this.s));
+        assert(!isNaN((&this).s));
+        assert(!isInfinity((&this).s));
 
-        assert(!isNaN(this.s2));
-        assert(!isInfinity(this.s2));
+        assert(!isNaN((&this).s2));
+        assert(!isInfinity((&this).s2));
 
         static if (isFloatingPointType!(Time))
         {
-            assert(!isNaN(this.update_time_));
-            assert(!isInfinity(this.update_time_));
+            assert(!isNaN((&this).update_time_));
+            assert(!isInfinity((&this).update_time_));
         }
     }
 
@@ -256,30 +256,30 @@ public struct IrregularMovingAverage (Time = time_t, Value = real)
     }
     body
     {
-        enforce(value_time > this.update_time,
+        enforce(value_time > (&this).update_time,
                 "Cannot incorporate data point from the past!");
 
         // values re-used multiple times updating parameters
-        Value time_diff = value_time - this.update_time;
-        Value beta_pow  = pow(this.beta, time_diff);
+        Value time_diff = value_time - (&this).update_time;
+        Value beta_pow  = pow((&this).beta, time_diff);
 
-        this.update_time_ = value_time;
+        (&this).update_time_ = value_time;
 
         // update w based using old alpha value
-        this.w = this.w /
-            (beta_pow + (time_diff * beta_pow * this.w / this.alpha));
+        (&this).w = (&this).w /
+            (beta_pow + (time_diff * beta_pow * (&this).w / (&this).alpha));
 
-        this.alpha = this.alpha / (beta_pow + this.alpha);
+        (&this).alpha = (&this).alpha / (beta_pow + (&this).alpha);
 
         // update z using new alpha and w values
-        this.z = this.z /
-            (beta_pow + (this.alpha * this.z / this.w));
+        (&this).z = (&this).z /
+            (beta_pow + ((&this).alpha * (&this).z / (&this).w));
 
         // update s using new alpha value
-        this.s  = (this.alpha * value)  + ((1.0 - this.alpha) * this.s);
+        (&this).s  = ((&this).alpha * value)  + ((1.0 - (&this).alpha) * (&this).s);
 
         // update s2 using new alpha and new s value
-        this.s2 = (this.alpha * this.s) + ((1.0 - this.alpha) * this.s2);
+        (&this).s2 = ((&this).alpha * (&this).s) + ((1.0 - (&this).alpha) * (&this).s2);
     }
 
 
@@ -292,7 +292,7 @@ public struct IrregularMovingAverage (Time = time_t, Value = real)
 
     public Value value ()
     {
-        return this.s2;
+        return (&this).s2;
     }
 
 
@@ -321,15 +321,15 @@ public struct IrregularMovingAverage (Time = time_t, Value = real)
     }
     body
     {
-        enforce(t >= this.update_time_,
+        enforce(t >= (&this).update_time_,
                 "Cannot calculate predicted value from the past!");
 
-        Time k = t - this.update_time;
+        Time k = t - (&this).update_time;
 
         assert(k >= 0);
 
-        Value estimate = this.s +
-            ( ((this.z / this.w) + ((this.z / this.alpha) * k)) * (this.s - this.s2) );
+        Value estimate = (&this).s +
+            ( (((&this).z / (&this).w) + (((&this).z / (&this).alpha) * k)) * ((&this).s - (&this).s2) );
 
         return estimate;
     }
@@ -345,7 +345,7 @@ public struct IrregularMovingAverage (Time = time_t, Value = real)
 
     public Time update_time ()
     {
-        return this.update_time_;
+        return (&this).update_time_;
     }
 
 
@@ -370,11 +370,11 @@ public struct IrregularMovingAverage (Time = time_t, Value = real)
             assert(!isInfinity(value_time));
         }
 
-        assert(t > this.update_time_);
+        assert(t > (&this).update_time_);
     }
     body
     {
-        return this.update_time_ = t;
+        return (&this).update_time_ = t;
     }
 
 
@@ -387,7 +387,7 @@ public struct IrregularMovingAverage (Time = time_t, Value = real)
 
     public Value beta ()
     {
-        return this.beta_;
+        return (&this).beta_;
     }
 
 
@@ -418,7 +418,7 @@ public struct IrregularMovingAverage (Time = time_t, Value = real)
     }
     body
     {
-        return this.beta_ = b;
+        return (&this).beta_ = b;
     }
 }
 
