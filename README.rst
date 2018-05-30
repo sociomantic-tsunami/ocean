@@ -22,18 +22,7 @@ D2 Compatibility
 
 By default all development in Ocean is done in D1, but using a subset that is
 almost D2 comptaible (and with the help of d1to2fix_, it can be fully converted
-to D2).
-
-That said, for now Ocean is only intended to work with D 2.070.x, but even that
-is not possible at the moment because of some changes needed in the upstream
-compiler that are still pending. Because of this a patched *transitional*
-compiler is needed.  The patches needed to compile the ``dmd-transitional``
-compiler are located in the `dedicated repository
-<https://github.com/sociomantic-tsunami/dmd-transitional>`_.
-
-We are working with upstream to get this issue sorted out as soon as possible.
-To track progress or read more details, please subscribe to `issue #9
-<https://github.com/sociomantic-tsunami/ocean/issues/9>`_.
+to D2, and you checkout ``+d2`` tags which contain D2 code).
 
 Also, as far as D2 upstream get serious about hassle-free upgrading to new
 compiler versions, expect Ocean to lag behind latest upstream releases for
