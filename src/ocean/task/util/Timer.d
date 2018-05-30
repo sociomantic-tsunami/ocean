@@ -33,6 +33,11 @@ debug (TaskScheduler)
     import ocean.io.Stdout;
 }
 
+version (UnitTest)
+{
+    debug = TaskTimerInvariant;
+}
+
 /*******************************************************************************
 
     Suspends the current fiber/task and resumes it again after `micro_seconds`
@@ -200,13 +205,16 @@ private struct EventData
 
 private class TaskTimerSet : TimerSet!(EventData)
 {
-    invariant ( )
+    debug (TaskTimerInvariant)
     {
-        auto _this = cast(TaskTimerSet) this;
-        scope iterator = _this.events.new BusyItemsIterator;
-        foreach (event; iterator)
+        invariant ( )
         {
-            assert (event.data.to_resume.fiber !is null);
+            auto _this = cast(TaskTimerSet) this;
+            scope iterator = _this.events.new BusyItemsIterator;
+            foreach (event; iterator)
+            {
+                assert (event.data.to_resume.fiber !is null);
+            }
         }
     }
 }
