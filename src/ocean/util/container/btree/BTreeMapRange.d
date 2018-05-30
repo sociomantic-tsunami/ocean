@@ -172,7 +172,7 @@ public struct BTreeMapRange(BTreeMap)
 
     invariant ()
     {
-        verify(this.stack !is null);
+        verify((&this).stack !is null);
     }
 
 
@@ -188,8 +188,8 @@ public struct BTreeMapRange(BTreeMap)
 
     public KeyValue front ()
     {
-        this.enforceValid();
-        return Pair!(BTreeMap.KeyType, BTreeMap.ValueType)(this.current_key, this.current_value);
+        (&this).enforceValid();
+        return Pair!(BTreeMap.KeyType, BTreeMap.ValueType)((&this).current_key, (&this).current_value);
     }
 
     /***************************************************************************
@@ -203,8 +203,8 @@ public struct BTreeMapRange(BTreeMap)
 
     public void popFront ()
     {
-        this.enforceValid();
-        this.iterationStep();
+        (&this).enforceValid();
+        (&this).iterationStep();
     }
 
     /***************************************************************************
@@ -219,9 +219,9 @@ public struct BTreeMapRange(BTreeMap)
 
     public bool empty ()
     {
-        this.enforceValid();
-        return this.tree.root is null ||
-            (this.item.node is null && this.stack.length == 0);
+        (&this).enforceValid();
+        return (&this).tree.root is null ||
+            ((&this).item.node is null && (&this).stack.length == 0);
     }
 
     /***************************************************************************
@@ -234,7 +234,7 @@ public struct BTreeMapRange(BTreeMap)
 
     public bool isValid ()
     {
-        return tree_version == this.tree.content_version;
+        return tree_version == (&this).tree.content_version;
     }
 
     /***************************************************************************
@@ -248,7 +248,7 @@ public struct BTreeMapRange(BTreeMap)
 
     private void enforceValid ()
     {
-        if (!this.isValid())
+        if (!(&this).isValid())
         {
             throw .range_exception;
         }
@@ -262,11 +262,11 @@ public struct BTreeMapRange(BTreeMap)
 
     private void start ()
     {
-        if (this.tree.root !is null)
+        if ((&this).tree.root !is null)
         {
-            this.tree_version = this.tree.content_version;
-            this.item = NodeElement(this.tree.root, 0);
-            this.iterationStep();
+            (&this).tree_version = (&this).tree.content_version;
+            (&this).item = NodeElement((&this).tree.root, 0);
+            (&this).iterationStep();
         }
     }
 
@@ -280,44 +280,44 @@ public struct BTreeMapRange(BTreeMap)
     {
         while (true)
         {
-            if (this.item.node.is_leaf)
+            if ((&this).item.node.is_leaf)
             {
                 // Leaf doesn't have subtrees, we can just iterate over it
-                if (this.item.index < this.item.node.number_of_elements)
+                if ((&this).item.index < (&this).item.node.number_of_elements)
                 {
-                    this.current_value = this.item.value;
-                    this.current_key = this.item.key;
-                    this.item.index++;
+                    (&this).current_value = (&this).item.value;
+                    (&this).current_key = (&this).item.key;
+                    (&this).item.index++;
                     return;
                 }
             }
             else
             {
                 // do we have a subtree in the child_elements[index]?
-                if (this.item.index <= this.item.node.number_of_elements)
+                if ((&this).item.index <= (&this).item.node.number_of_elements)
                 {
-                    *this.stack ~= NodeElement(this.item.node, this.item.index);
-                    this.item = NodeElement(item.node.child_nodes[this.item.index], 0);
+                    *(&this).stack ~= NodeElement((&this).item.node, (&this).item.index);
+                    (&this).item = NodeElement(item.node.child_nodes[(&this).item.index], 0);
                     continue;
                 }
             }
 
-            if ((*this.stack).pop(this.item) == false)
+            if ((*(&this).stack).pop((&this).item) == false)
             {
                 return;
             }
 
             // We got the item from the stack, and we should see if we
             // have any more elements to call the delegate on it
-            if (this.item.index < this.item.node.number_of_elements)
+            if ((&this).item.index < (&this).item.node.number_of_elements)
             {
-                this.current_value = this.item.value;
-                this.current_key = this.item.key;
-                this.item.index++;
+                (&this).current_value = (&this).item.value;
+                (&this).current_key = (&this).item.key;
+                (&this).item.index++;
                 return;
             }
             // There's no more elements, just skip to the next one
-            this.item.index++;
+            (&this).item.index++;
         }
     }
 }

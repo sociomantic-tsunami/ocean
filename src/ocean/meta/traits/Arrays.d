@@ -34,7 +34,7 @@ import ocean.meta.types.Qualifiers;
 
 template isUTF8StringType ( T )
 {
-    const isUTF8StringType =
+    static immutable isUTF8StringType =
            isArrayType!(T) == ArrayKind.Dynamic
         && is(Unqual!(ElementTypeOf!(T)) == char);
 }
