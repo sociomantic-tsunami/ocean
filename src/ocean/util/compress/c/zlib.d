@@ -24,11 +24,11 @@ module ocean.util.compress.c.zlib;
 import ocean.transition;
 
 /// See original's library documentation for details.
-const ZLIB_VERSION = "1.2.3".ptr;
+static immutable ZLIB_VERSION = "1.2.3".ptr;
 /// See original's library documentation for details.
-const uint  ZLIB_VERNUM  = 0x1230;
+static immutable uint  ZLIB_VERNUM  = 0x1230;
 /// See original's library documentation for details.
-const void* Z_NULL = null;
+static immutable void* Z_NULL = null;
 
 extern (C):
 private
@@ -261,9 +261,9 @@ alias int  function(void*, ubyte*, uint) out_func;
 
 /// See original's library documentation for details.
 int inflateBack(z_streamp strm,
-                in_func   in_fn,
+                scope in_func   in_fn,
                 void*     in_desc,
-                out_func  out_fn,
+                scope out_func  out_fn,
                 void*     out_desc);
 
 /// See original's library documentation for details.

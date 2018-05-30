@@ -108,7 +108,7 @@ package struct FS
                 cstring folder;
                 bool   allFiles;
 
-                int opApply (int delegate(ref FileInfo) dg)
+                int opApply (scope int delegate(ref FileInfo) dg)
                 {
                         char[256] tmp = void;
                         auto path = strz (folder, tmp);
@@ -501,7 +501,7 @@ package struct FS
 
     ***************************************************************************/
 
-    static int list (cstring folder, int delegate(ref FileInfo) dg, bool all=false)
+    static int list (cstring folder, scope int delegate(ref FileInfo) dg, bool all=false)
     {
         int             ret;
         DIR*            dir;
@@ -645,7 +645,7 @@ struct PathParser
 
         PathParser dup ()
         {
-                auto ret = *this;
+                auto ret = *(&this);
                 ret.fp = fp.dup;
                 return ret;
         }
@@ -920,7 +920,7 @@ struct PathParser
                 if (suffix_ < 0 || suffix_ is name_)
                     suffix_ = end_;
 
-                return *this;
+                return *(&this);
         }
 }
 

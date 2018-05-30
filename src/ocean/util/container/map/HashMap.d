@@ -412,7 +412,7 @@ unittest
 unittest
 {
     // Unittest that serves as a usage example
-    const expected_number_of_elements = 1_000;
+    static immutable expected_number_of_elements = 1_000;
 
     // Mapping from hash_t -> int
     auto map = new HashMap!(int)(expected_number_of_elements);

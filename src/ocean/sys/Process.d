@@ -178,7 +178,7 @@ class Process
         public int status;
 
         /// Formatter-compatible string formatting function
-        public void toString (FormatterSink sink)
+        public void toString (scope FormatterSink sink)
         {
             switch (reason)
             {
@@ -213,14 +213,14 @@ class Process
         /// Convenience overload that format this as a string
         public istring toString ()
         {
-            return format("{}", this);
+            return format("{}", (&this));
         }
     }
 
-    const uint DefaultStdinBufferSize    = 512;
-    const uint DefaultStdoutBufferSize   = 8192;
-    const uint DefaultStderrBufferSize   = 512;
-    const Redirect DefaultRedirectFlags  = Redirect.All;
+    static immutable uint DefaultStdinBufferSize    = 512;
+    static immutable uint DefaultStdoutBufferSize   = 8192;
+    static immutable uint DefaultStderrBufferSize   = 512;
+    static immutable Redirect DefaultRedirectFlags  = Redirect.All;
 
     private cstring[]        _args;
     private istring[istring] _env;
