@@ -227,7 +227,7 @@ public mstring snformat (Args...) (mstring buffer, cstring fmt, Args args)
 
 *******************************************************************************/
 
-public bool sformat (Args...) (FormatterSink sink, cstring fmt, Args args)
+public bool sformat (Args...) (scope FormatterSink sink, cstring fmt, Args args)
 {
     FormatInfo info;
     size_t nextIndex;
@@ -297,7 +297,7 @@ public bool sformat (Args...) (FormatterSink sink, cstring fmt, Args args)
 
 *******************************************************************************/
 
-private void widthSink (FormatterSink sink, cstring str, ref Const!(FormatInfo) f)
+private void widthSink (scope FormatterSink sink, cstring str, ref Const!(FormatInfo) f)
 {
     if (f.flags & Flags.Width)
     {
@@ -365,7 +365,7 @@ private void widthSink (FormatterSink sink, cstring str, ref Const!(FormatInfo) 
 
 *******************************************************************************/
 
-private void handle (T) (T v, FormatInfo f, FormatterSink sf, ElemSink se)
+private void handle (T) (T v, FormatInfo f, scope FormatterSink sf, scope ElemSink se)
 {
     /** The order in which the following conditions are applied matters.
      * Explicit type checks (e.g. associative array, or `is(T == V)`)
@@ -589,13 +589,13 @@ private template IsTypeofNull (T)
     version (D_Version2)
     {
         static if (is(T == typeof(null)))
-            public const bool IsTypeofNull = true;
+            public static immutable bool IsTypeofNull = true;
         else
-            public const bool IsTypeofNull = false;
+            public static immutable bool IsTypeofNull = false;
     }
     else
     {
-        public const bool IsTypeofNull = false;
+        public static immutable bool IsTypeofNull = false;
     }
 }
 
@@ -650,7 +650,7 @@ private RetType nullWrapper (T, RetType) (T* v, lazy RetType expr,
 
 *******************************************************************************/
 
-private FormatInfo consume (FormatterSink sink, ref cstring fmt)
+private FormatInfo consume (scope FormatterSink sink, ref cstring fmt)
 {
     FormatInfo ret;
     auto s = fmt.ptr;
@@ -796,9 +796,9 @@ private Const!(char)* skipSpace (Const!(char)* s, Const!(char)* end)
 
 *******************************************************************************/
 
-private void writeSpace (FormatterSink s, size_t n)
+private void writeSpace (scope FormatterSink s, size_t n)
 {
-    const istring Spaces32 = "                                ";
+    static immutable istring Spaces32 = "                                ";
 
     // Make 'n' a multiple of Spaces32.length (32)
     s(Spaces32[0 .. n % Spaces32.length]);
@@ -854,15 +854,15 @@ private bool readNumber (out size_t f, ref Const!(char)* s)
 
 *******************************************************************************/
 
-private void writePointer (in void* v, ref FormatInfo f, ElemSink se)
+private void writePointer (in void* v, ref FormatInfo f, scope ElemSink se)
 {
     alias void* T;
 
     version (D_Version2)
         mixin("enum int l = (T.sizeof * 2);");
     else
-        const int l = (T.sizeof * 2); // Needs to be int to avoid suffix
-    const defaultFormat = "X" ~ l.stringof ~ "#";
+        static immutable int l = (T.sizeof * 2); // Needs to be int to avoid suffix
+    static immutable defaultFormat = "X" ~ l.stringof ~ "#";
 
     if (v is null)
         se("null", f);
