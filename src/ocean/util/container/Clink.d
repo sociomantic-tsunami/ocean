@@ -42,7 +42,7 @@ struct Clink (V)
 
     Ref set (V v)
     {
-            return set (v, this, this);
+            return set (v, (&this), (&this));
     }
 
     /***********************************************************************
@@ -59,7 +59,7 @@ struct Clink (V)
             value = v;
             prev = p;
             next = n;
-            return this;
+            return (&this);
     }
 
     /**
@@ -68,7 +68,7 @@ struct Clink (V)
 
     bool singleton()
     {
-            return next is this;
+            return next is (&this);
     }
 
     void linkNext (Ref p)
@@ -77,7 +77,7 @@ struct Clink (V)
                {
                next.prev = p;
                p.next = next;
-               p.prev = this;
+               p.prev = (&this);
                next = p;
                }
     }
@@ -86,9 +86,9 @@ struct Clink (V)
      * Make a cell holding v and link it immediately after current cell
     **/
 
-    void addNext (V v, Ref delegate() alloc)
+    void addNext (V v, scope Ref delegate() alloc)
     {
-            auto p = alloc().set (v, this, next);
+            auto p = alloc().set (v, (&this), next);
             next.prev = p;
             next = p;
     }
@@ -97,10 +97,10 @@ struct Clink (V)
      * make a node holding v, link it before the current cell, and return it
     **/
 
-    Ref addPrev (V v, Ref delegate() alloc)
+    Ref addPrev (V v, scope Ref delegate() alloc)
     {
             auto p = prev;
-            auto c = alloc().set (v, p, this);
+            auto c = alloc().set (v, p, (&this));
             p.next = c;
             prev = c;
             return c;
@@ -116,7 +116,7 @@ struct Clink (V)
                {
                prev.next = p;
                p.prev = prev;
-               p.next = this;
+               p.next = (&this);
                prev = p;
                }
     }
@@ -128,11 +128,11 @@ struct Clink (V)
     int size()
     {
             int c = 0;
-            auto p = this;
+            auto p = (&this);
             do {
                ++c;
                p = p.next;
-               } while (p !is this);
+               } while (p !is (&this));
             return c;
     }
 
@@ -143,12 +143,12 @@ struct Clink (V)
 
     Ref find (V element)
     {
-            auto p = this;
+            auto p = (&this);
             do {
                if (element == p.value)
                    return p;
                p = p.next;
-               } while (p !is this);
+               } while (p !is (&this));
             return null;
     }
 
@@ -160,12 +160,12 @@ struct Clink (V)
     int count (V element)
     {
             int c = 0;
-            auto p = this;
+            auto p = (&this);
             do {
                if (element == p.value)
                    ++c;
                p = p.next;
-               } while (p !is this);
+               } while (p !is (&this));
             return c;
     }
 
@@ -175,7 +175,7 @@ struct Clink (V)
 
     Ref nth (size_t n)
     {
-            auto p = this;
+            auto p = (&this);
             for (ptrdiff_t i = 0; i < n; ++i)
                  p = p.next;
             return p;
@@ -190,7 +190,7 @@ struct Clink (V)
     void unlinkNext ()
     {
             auto nn = next.next;
-            nn.prev = this;
+            nn.prev = (&this);
             next = nn;
     }
 
@@ -202,7 +202,7 @@ struct Clink (V)
     void unlinkPrev ()
     {
             auto pp = prev.prev;
-            pp.next = this;
+            pp.next = (&this);
             prev = pp;
     }
 
@@ -218,17 +218,17 @@ struct Clink (V)
             auto n = next;
             p.next = n;
             n.prev = p;
-            prev = this;
-            next = this;
+            prev = (&this);
+            next = (&this);
     }
 
     /**
      * Make a copy of the list and return new head.
     **/
 
-    Ref copyList (Ref delegate() alloc)
+    Ref copyList (scope Ref delegate() alloc)
     {
-            auto hd = this;
+            auto hd = (&this);
 
             auto newlist = alloc().set (hd.value, null, null);
             auto current = newlist;
