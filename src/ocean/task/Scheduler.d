@@ -379,6 +379,9 @@ final class Scheduler : IScheduler
 
         This method must not be called outside of a task.
 
+        If `task` is already scheduled, it will not be re-scheduled again but
+        awaiting will still occur.
+
         Because of how termination hooks are implemented, by the time `await`
         returns, the task object is not yet completely recycled - it will only
         happen during next context switch. Caller of `await` must either ensure
@@ -412,7 +415,9 @@ final class Scheduler : IScheduler
         if (finished_dg !is null)
             task.terminationHook({ finished_dg(task); });
 
-        this.schedule(task);
+        if (!task.suspended())
+            this.schedule(task);
+
         if (!task.finished())
             context.suspend();
     }
@@ -457,6 +462,9 @@ final class Scheduler : IScheduler
 
         Convenience shortcut on top of `await` to await for a task and return
         some value type as a result.
+
+        If `task` is already scheduled, it will not be re-scheduled again but
+        awaiting will still occur.
 
         Params:
             task = any task that defines `result` public field  of type with no
@@ -510,6 +518,9 @@ final class Scheduler : IScheduler
         Similar to `await` but also has waiting timeout. Calling task will be
         resumed either if awaited task finished or timeout is hit, whichever
         happens first.
+
+        If `task` is already scheduled, it will not be re-scheduled again but
+        awaiting will still occur.
 
         Params:
             task = task to await
