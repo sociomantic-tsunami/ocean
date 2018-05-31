@@ -392,8 +392,6 @@ final class Scheduler : IScheduler
 
     public void await ( Task task, void delegate (Task) finished_dg = null )
     {
-        assert (Task.getThis() !is null);
-
         auto context = Task.getThis();
         assert (context !is null);
         assert (context !is task);
