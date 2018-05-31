@@ -91,6 +91,9 @@ unittest
     will be resumed either if awaited task finished or timeout is hit, whichever
     happens first.
 
+    If `task` is already scheduled, it will not be re-scheduled again but
+    awaiting will still occur.
+
     Params:
         task = task to await
         micro_seconds = timeout duration
@@ -113,7 +116,8 @@ public bool awaitOrTimeout ( Task task, uint micro_seconds )
     };
     task.terminationHook(resumer);
 
-    theScheduler.schedule(task);
+    if (!task.suspended())
+        theScheduler.schedule(task);
 
     // suspend if not finished immediately
     if (!task.finished())
