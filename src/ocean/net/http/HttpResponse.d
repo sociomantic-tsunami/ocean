@@ -310,8 +310,7 @@ class HttpResponse : HttpHeader
 
     /**************************************************************************
 
-        Sets the Date message header to the current wall clock time if it is not
-        already set.
+        Sets the Date message header to the current wall clock time.
 
      **************************************************************************/
 
@@ -319,10 +318,7 @@ class HttpResponse : HttpHeader
     {
         super.access(HeaderFieldNames.General.Names.Date, (cstring, ref cstring val)
         {
-            if (!val)
-            {
-                val = this.time.format();
-            }
+            val = this.time.format();
         });
     }
 
