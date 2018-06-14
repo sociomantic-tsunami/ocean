@@ -17,6 +17,7 @@
 
 module ocean.LibFeatures;
 
+const has_features_3_9  = true;
 const has_features_3_8  = true;
 const has_features_3_7  = true;
 const has_features_3_6  = true;
