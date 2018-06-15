@@ -12,9 +12,6 @@
     setup the permissions mode, config option `mode` will be used to read the
     mode as octal string (usually you want 0600 for this).
 
-    Usage example:
-        See unittest following this class.
-
     Copyright:
         Copyright (c) 2009-2017 Sociomantic Labs GmbH.
         All rights reserved.
@@ -40,36 +37,11 @@ import ocean.util.app.ext.model.IConfigExtExtension;
 /// ditto
 public class UnixSocketExt : IApplicationExtension, IConfigExtExtension
 {
-    import core.sys.posix.sys.stat;
-
-    import ocean.core.Buffer;
-    import ocean.core.array.Transformation: filter, split;
-    import ocean.io.select.EpollSelectDispatcher;
-    import ocean.net.server.unix.UnixListener;
-    import ocean.util.config.ConfigParser;
     import ocean.text.convert.Integer;
     import ocean.text.util.StringC;
-
-    /// Unix listener with custom command handling.
-    private UnixSocketListener!(UnixSocketExt) unix_listener;
-
-    /// Stores the command arguments split by " ";
-    private cstring[] args_buf;
-
-    /// Alias for our interactive handler delegate.
-    public alias void delegate ( cstring[],
-            void delegate (cstring),
-            void delegate (ref mstring) ) InteractiveHandler;
-
-    /// Alias for our non-interactive handler delegate.
-    public alias void delegate ( cstring[],
-            void delegate (cstring) ) Handler;
-
-    /// Our registered map of interactive handlers by command.
-    private InteractiveHandler[istring] interactive_handlers;
-
-    /// Our registered map of handlers by command.
-    private Handler[istring] handlers;
+    import ocean.util.config.ConfigParser;
+    import ocean.net.server.unix.CommandRegistry;
+    import ocean.net.server.unix.UnixListener;
 
     /// Path to create the unix socket.
     private istring path;
@@ -77,23 +49,44 @@ public class UnixSocketExt : IApplicationExtension, IConfigExtExtension
     /// Mode to apply to the unix socket after binding
     private int mode = -1;
 
-    /***************************************************************************
+    /// Command registry to handle the commands from the client
+    private CommandsRegistry commands;
+
+    /// Handler delegate
+    public alias CommandsRegistry.Handler Handler;
+
+    /// Interactive handler delegate
+    public alias CommandsRegistry.InteractiveHandler InteractiveHandler;
+
+    /// Unix listener with dynamic command handling.
+    private UnixSocketListener!(CommandsRegistry) unix_listener;
+
+    /*************************************************************************
+
+        Constructor
+
+    **************************************************************************/
+
+    this ( )
+    {
+        this.commands = new CommandsRegistry;
+    }
+
+    /*************************************************************************
 
         Initializes the socket listener.
 
-        Params:
+         Params:
             epoll = Epoll instance.
 
-    ***************************************************************************/
+    **************************************************************************/
 
     public void initializeSocket ( EpollSelectDispatcher epoll )
     {
-        verify(this.unix_listener is null);
-        if ( this.path.length > 0 )
+        if (this.path.length)
         {
-            this.unix_listener =
-                new UnixSocketListener!(UnixSocketExt)(this.path, epoll, this, this.mode);
-
+            this.unix_listener = new UnixSocketListener!(CommandsRegistry)
+                (this.path, epoll, this.commands, this.mode);
             epoll.register(this.unix_listener);
         }
     }
@@ -122,62 +115,18 @@ public class UnixSocketExt : IApplicationExtension, IConfigExtExtension
 
     /***************************************************************************
 
-        Receives all commands from the socket and splits the command by " ".
-        If a matching command is registered then the command will be called with
-        the remaining arguments. This method will be called by the
-        UnixSocketListener whenever a command is received.
-
-        Params:
-            command = The command received by the unix socket.
-            args = The arguments provided with the command.
-            send_response = Delegate to call with response string.
-            wait_reply = Delegate to call to obtain the reply from the user
-
-    ***************************************************************************/
-
-    public void handle ( cstring command, cstring args,
-                 void delegate (cstring) send_response,
-                 void delegate (ref mstring buf) wait_reply )
-    {
-        if (auto handler = command in this.interactive_handlers)
-        {
-            split(args, " ", this.args_buf);
-            scope predicate = (cstring v) { return v.length; };
-            auto arguments = filter(this.args_buf[], predicate, this.args_buf);
-            (*handler)(arguments, send_response, wait_reply);
-        }
-        else if (auto handler = command in this.handlers)
-        {
-            split(args, " ", this.args_buf);
-            scope predicate = (cstring v) { return v.length; };
-            auto arguments = filter(this.args_buf[], predicate, this.args_buf);
-            (*handler)(arguments, send_response);
-        }
-        else
-        {
-            send_response("Command not found\n");
-        }
-    }
-
-    /***************************************************************************
-
-        Register a command and interactive handler to the unix listener.
-
         Params:
             command = The command to listen for in the socket listener.
-            handler = The interactive handler to call when command is received.
+            handler = The handler to call when command is received.
 
     ***************************************************************************/
 
-    public void addInteractiveHandler ( istring command,
-        InteractiveHandler handler )
+    public void addInteractiveHandler ( istring command, InteractiveHandler handler )
     {
-        this.interactive_handlers[command] = handler;
+        this.commands.addHandler(command, handler);
     }
 
     /***************************************************************************
-
-        Register a command and handler to the unix listener.
 
         Params:
             command = The command to listen for in the socket listener.
@@ -187,7 +136,7 @@ public class UnixSocketExt : IApplicationExtension, IConfigExtExtension
 
     public void addHandler ( istring command, Handler handler )
     {
-        this.handlers[command] = handler;
+        this.commands.addHandler(command, handler);
     }
 
     /***************************************************************************
@@ -201,12 +150,12 @@ public class UnixSocketExt : IApplicationExtension, IConfigExtExtension
 
     public void removeInteractiveHandler ( istring command )
     {
-        this.interactive_handlers.remove(command);
+        this.commands.removeHandler(command);
     }
 
     /***************************************************************************
 
-        Register a command and handler to the unix listener.
+        Unregisters a command and handler to the unix listener.
 
         Params:
             command = The command to be removed from the listener.
@@ -215,7 +164,7 @@ public class UnixSocketExt : IApplicationExtension, IConfigExtExtension
 
     public void removeHandler ( istring command )
     {
-        this.handlers.remove(command);
+        this.commands.removeHandler(command);
     }
 
     /***************************************************************************
@@ -233,7 +182,7 @@ public class UnixSocketExt : IApplicationExtension, IConfigExtExtension
     public override void atExit ( IApplication app, istring[] args, int status,
             ExitException exception )
     {
-        if (this.unix_listener)
+        if (this.unix_listener !is null)
             this.unix_listener.shutdown();
     }
 
