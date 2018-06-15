@@ -48,7 +48,7 @@ public class UnixListener : UnixSocketListener!( BasicCommandHandler )
 
     ***********************************************************************/
 
-    public this ( istring address_path, EpollSelectDispatcher epoll,
+    public this ( cstring address_path, EpollSelectDispatcher epoll,
                   BasicCommandHandler.Handler[istring] handlers )
     {
         this.handler = new BasicCommandHandler(handlers);
@@ -100,12 +100,13 @@ public class UnixListener : UnixSocketListener!( BasicCommandHandler )
 public class UnixSocketListener ( CommandHandlerType ) : SelectListener!(
     UnixSocketConnectionHandler!(CommandHandlerType), EpollSelectDispatcher,
     CommandHandlerType,
-    istring // address_path
+    cstring // address_path
 )
 {
     import ocean.sys.socket.UnixSocket;
     import ocean.stdc.posix.sys.un: sockaddr_un;
     import ocean.stdc.posix.sys.socket: AF_UNIX, sockaddr;
+    import ocean.text.convert.Formatter;
 
     import core.sys.posix.unistd: unlink;
     import core.stdc.errno: errno;
@@ -124,7 +125,7 @@ public class UnixSocketListener ( CommandHandlerType ) : SelectListener!(
 
     ***************************************************************************/
 
-    private istring address_pathnul;
+    private char[sockaddr_un.sun_path.length] address_pathnul;
 
     /***************************************************************************
 
@@ -148,13 +149,13 @@ public class UnixSocketListener ( CommandHandlerType ) : SelectListener!(
 
     ***************************************************************************/
 
-    public this ( istring address_path, EpollSelectDispatcher epoll,
+    public this ( cstring address_path, EpollSelectDispatcher epoll,
                   CommandHandlerType handler )
     {
         enforce(address_path.length < sockaddr_un.sun_path.length,
-                "Unix socket path too long: " ~ address_path);
+                format("Unix socket path too long: {}", address_path));
 
-        this.address_pathnul = address_path ~ '\0';
+        snformat(this.address_pathnul, "{}\0", address_path);
 
         auto log = Log.lookup("ocean.net.server.unixsocket");
 
