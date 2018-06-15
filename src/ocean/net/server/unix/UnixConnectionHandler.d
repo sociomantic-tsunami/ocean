@@ -184,7 +184,7 @@ public class UnixConnectionHandler : UnixSocketConnectionHandler!(BasicCommandHa
 
     public this ( FinalizeDg finalize_dg, EpollSelectDispatcher epoll,
                   BasicCommandHandler.Handler[istring] handlers,
-                  istring address_path )
+                  cstring address_path )
     {
         super(finalize_dg, epoll, new BasicCommandHandler(handlers),
             address_path);
@@ -251,7 +251,7 @@ public class UnixSocketConnectionHandler ( CommandHandlerType ) : IFiberConnecti
 
     ***************************************************************************/
 
-    private istring address_path;
+    private cstring address_path;
 
     /***************************************************************************
 
@@ -278,7 +278,7 @@ public class UnixSocketConnectionHandler ( CommandHandlerType ) : IFiberConnecti
     ***************************************************************************/
 
     public this ( FinalizeDg finalize_dg, EpollSelectDispatcher epoll,
-                  CommandHandlerType handler, istring address_path )
+                  CommandHandlerType handler, cstring address_path )
     {
         super(epoll, new UnixSocket, finalize_dg);
         auto e = new SocketError(this.socket);
