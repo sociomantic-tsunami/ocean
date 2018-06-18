@@ -1015,6 +1015,47 @@ unittest
 
 /*******************************************************************************
 
+    Searches a sorted array for the specified element. The array is assumed to
+    be pre-sorted in ascending order, the search will not work properly if it
+    is not. If T is a class or struct, comparison is performed using T.opCmp().
+    Otherwise, elements of T are compared using ">" and ">=" or, if T is
+    compatible to size_t (which includes ssize_t, the signed version of size_t),
+    by calculating the difference.
+
+    Template params:
+        T = type of array element
+
+    Params:
+        array = array to search
+        match = element to search for
+
+    Returns:
+        true if the element was found in the array
+
+    In:
+        See `bsearch` for input constraints
+
+*******************************************************************************/
+
+public bool bcontains ( T ) ( T[] array, T match )
+{
+    size_t position;
+
+    return bsearch(array, match, position);
+}
+
+unittest
+{
+    auto arr = [ 1, 2, 4, 6, 20, 100, 240 ];
+
+    test(bcontains(arr, 6));
+    test(!bcontains(arr, 0));
+    test(!bcontains(arr, 300));
+    test(!bcontains(arr, 10));
+}
+
+/*******************************************************************************
+
     Searches a sorted array for the specified element or for the insert
     position of the element. The array is assumed to be pre-sorted in ascending
     order, the search will not work properly if it is not.
