@@ -46,6 +46,30 @@ class TaskExt : IConfigExtExtension
 {
     /***************************************************************************
 
+        Default scheduler configuration to use in absence of explicit
+        configuration setting.
+
+    ***************************************************************************/
+
+    SchedulerConfiguration config;
+
+    /***************************************************************************
+
+        Constructor
+
+        Params:
+            config = optional, scheduler configuration to use in absence
+                of config file overrides
+
+    ***************************************************************************/
+
+    this ( SchedulerConfiguration config = SchedulerConfiguration.init )
+    {
+        this.config = config;
+    }
+
+    /***************************************************************************
+
         Parse the configuration file options to get the scheduler configuration
 
         Params:
@@ -56,11 +80,15 @@ class TaskExt : IConfigExtExtension
 
     public override void processConfig ( IApplication app, ConfigParser parser )
     {
-        SchedulerConfiguration scheduler_config;
+        scope(exit)
+            initScheduler(this.config);
+
+        if (parser is null)
+            return;
 
         const category = "SCHEDULER";
 
-        foreach (idx, ref field; scheduler_config.tupleof)
+        foreach (idx, ref field; this.config.tupleof)
         {
             static if (fieldIdentifier!(SchedulerConfiguration, idx)
                 != "specialized_pools")
@@ -93,11 +121,9 @@ class TaskExt : IConfigExtExtension
                 "Malformed configuration for scheduler"
             );
 
-            scheduler_config.specialized_pools ~=
+            this.config.specialized_pools ~=
                 SchedulerConfiguration.PoolDescription(line[0 .. idx], size);
         }
-
-        initScheduler(scheduler_config);
     }
 
     /***************************************************************************
