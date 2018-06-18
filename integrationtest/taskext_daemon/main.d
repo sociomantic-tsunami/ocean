@@ -13,7 +13,7 @@
 
 *******************************************************************************/
 
-module integrationtest.taskext.main;
+module integrationtest.taskext_daemon.main;
 
 import ocean.transition;
 import ocean.util.app.DaemonApp;
@@ -83,7 +83,7 @@ int main ( istring[] cl_args )
         File.set("etc/config.ini", "[SCHEDULER]
 worker_fiber_limit = 3
 specialized_pools =
-    integrationtest.taskext.main.AnotherTask:10240
+    integrationtest.taskext_daemon.main.AnotherTask:10240
     whatever:1024
 [LOG.Root]
 console = false");
