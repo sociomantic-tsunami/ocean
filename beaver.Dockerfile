@@ -1,1 +1,1 @@
-FROM sociomantictsunami/dlang:v3
+FROM sociomantictsunami/dlang:v5
