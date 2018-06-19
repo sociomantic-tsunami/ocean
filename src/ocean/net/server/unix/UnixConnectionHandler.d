@@ -58,6 +58,7 @@ import ocean.io.select.protocol.generic.ErrnoIOException : SocketError;
 import ocean.util.log.Logger;
 import ocean.text.util.SplitIterator: ChrSplitIterator;
 import ocean.core.array.Mutation : copy;
+import ocean.meta.types.Function;
 
 /// Provides basic command handling functionality for unix socket commands.
 public class BasicCommandHandler
@@ -406,8 +407,12 @@ public class UnixSocketConnectionHandler ( CommandHandlerType ) : IFiberConnecti
 
         cstring cmd = split_cmd.trim(split_cmd.next());
 
-        this.handler.handle(cmd, split_cmd.remaining, &this.sendResponse,
-                &this.waitReply);
+        static if (ParametersOf!(typeof(this.handler.handle)).length == 4)
+            this.handler.handle(cmd, split_cmd.remaining, &this.sendResponse,
+                    &this.waitReply);
+        else
+            this.handler.handle(cmd, split_cmd.remaining, &this.sendResponse,
+                    &this.waitReply, this.socket);
     }
 
     /***************************************************************************
