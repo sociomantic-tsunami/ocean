@@ -63,11 +63,13 @@ import ocean.core.Verify;
 import ocean.io.Console;
 import ocean.io.Stdout;
 import ocean.io.Terminal;
+import ocean.io.model.IConduit;
 import ocean.text.convert.Formatter;
 import ocean.time.model.IMicrosecondsClock;
 import ocean.time.MicrosecondsClock;
 import ocean.transition;
 import ocean.util.container.AppendBuffer;
+
 import ocean.util.log.Event;
 import ocean.util.log.InsertConsole;
 import ocean.util.log.layout.LayoutMessageOnly;
@@ -290,6 +292,36 @@ public class AppStatus
 
     /***************************************************************************
 
+        Output stream to output the streaming lines to. Can be null, in which
+        case output will be disabled.
+
+    ***************************************************************************/
+
+    private OutputStream stream;
+
+
+    /***************************************************************************
+
+        TerminalOutput stream to output the static lines to. Can be null, in
+        which case output will be disabled.
+
+    ***************************************************************************/
+
+    private TerminalOutput terminal_output;
+
+
+    /**************************************************************************
+
+        Indicator if the output is redirected. If so, no control characters
+        will be output.
+
+    ***************************************************************************/
+
+    private bool is_redirected;
+
+
+    /***************************************************************************
+
         Constructor. Saves the current time as the program start time.
 
         Params:
@@ -301,11 +333,18 @@ public class AppStatus
                     title line
             ms_between_calls = expected milliseconds between calls to
                                getCpuUsage (defaults to 1000ms)
+            stream = stream to write the streaming output into. Can be null
+                if it's not yet available (the streaming output will then be
+                disabled).
+            terminal_output = terminal to write the static output into. Can be
+                null if it's not yet available (the static output will then be
+                disabled).
 
     ***************************************************************************/
 
     public this ( cstring app_name, cstring app_version, cstring app_build_date,
-        cstring app_build_author, uint size, ulong ms_between_calls = 1000 )
+        cstring app_build_author, uint size, ulong ms_between_calls = 1000,
+            OutputStream stream = Cout.stream, TerminalOutput terminal_output = Stdout)
     {
         this.app_name.copy(app_name);
         this.app_version.copy(app_version);
@@ -315,11 +354,60 @@ public class AppStatus
         this.static_lines.length = size;
         this.static_lines_display_props.length = size;
         this.ms_between_calls = ms_between_calls;
-        this.insert_console = new InsertConsole(Cout.stream, true,
-            new LayoutMessageOnly);
+        this.stream = stream;
+        this.terminal_output = terminal_output;
         this.old_terminal_size = Terminal.rows;
+        if (this.stream)
+        {
+            this.insert_console = new InsertConsole(this.stream, true,
+                new LayoutMessageOnly);
+        }
 
         this.msg = new StringBuffer;
+
+        // Care only about stdout redirection
+        if (stream == Cout.stream)
+        {
+            this.is_redirected = Cout.redirected;
+        }
+    }
+
+
+    /***************************************************************************
+
+        Connects output for AppStatus to output. Useful if the output
+        doesn't exist during entire lifetime of AppStatus.
+
+        stream = stream to write into
+        terminal_output = terminal to write into.
+
+    ***************************************************************************/
+
+    public void connectOutput ( OutputStream stream, TerminalOutput terminal_output )
+    {
+        verify(stream !is null);
+        verify(terminal_output !is null);
+
+        this.stream = stream;
+        this.terminal_output = terminal_output;
+        if (this.insert_console is null)
+            this.insert_console = new InsertConsole(this.stream, true,
+                    new LayoutMessageOnly);
+        this.insert_console.connectOutput(stream);
+    }
+
+
+    /***************************************************************************
+
+        Disconnects output from the AppStatus to output. All subsequent display*
+        methods will be no-op.
+
+    ***************************************************************************/
+
+    public void disconnectOutput ()
+    {
+        this.stream = null;
+        this.terminal_output = null;
     }
 
 
@@ -344,7 +432,7 @@ public class AppStatus
         // Add +2: One for header and one for footer
         for (size_t i = 0; i < this.static_lines.length + 2; i++)
         {
-            Stdout.clearline.newline;
+            this.terminal_output.clearline.newline;
         }
 
         // Each iteration in the previous loop moves the cursor one line to
@@ -353,10 +441,10 @@ public class AppStatus
         // the same first line over and over.
         for (size_t i = 0; i < this.static_lines.length + 2; i++)
         {
-            Stdout.up;
+            this.terminal_output.up;
         }
 
-        Stdout.flush;
+        this.terminal_output.flush;
     }
 
 
@@ -386,7 +474,7 @@ public class AppStatus
     {
         this.resetStaticLines();
 
-        if ( Cout.redirected )
+        if ( this.is_redirected )
         {
             this.static_lines.length = size;
 
@@ -403,14 +491,14 @@ public class AppStatus
             this.resetCursorPosition();
 
             // ...and then remove the static lines header
-            Stdout.clearline.cr.flush.up;
+            this.terminal_output.clearline.cr.flush.up;
         }
         else if ( this.static_lines.length < size )
         {
             // The number of static lines are being increased
 
             // First remove the static lines header
-            Stdout.clearline.cr.flush.up;
+            this.terminal_output.clearline.cr.flush.up;
 
             // ...and then push up the streaming portion on the top by
             //        the new number of static lines
@@ -418,7 +506,7 @@ public class AppStatus
             //        + the static lines footer
             for ( auto i = 0; i < (size + 2); ++i )
             {
-                Stdout.formatln("");
+                this.terminal_output.formatln("");
             }
         }
 
@@ -448,7 +536,7 @@ public class AppStatus
 
     /***************************************************************************
 
-        Print the current static lines set by the calling program to Stdout
+        Print the current static lines set by the calling program to this.terminal_output
         with a title line showing the current time, runtime, and memory and cpu
         usage and a footer line showing the version information.
 
@@ -466,7 +554,7 @@ public class AppStatus
 
     public void displayStaticLines ( )
     {
-        if ( Cout.redirected )
+        if ( this.is_redirected || this.terminal_output is null)
         {
             return;
         }
@@ -475,12 +563,12 @@ public class AppStatus
 
         foreach ( line; this.static_lines )
         {
-            Stdout.formatln("");
+            this.terminal_output.formatln("");
         }
-        Stdout.formatln("");
+        this.terminal_output.formatln("");
 
         this.printVersionInformation();
-        Stdout.clearline.cr.flush.up;
+        this.terminal_output.clearline.cr.flush.up;
 
         foreach_reverse ( index, line; this.static_lines )
         {
@@ -488,9 +576,9 @@ public class AppStatus
             {
                 this.applyDisplayProps(this.static_lines_display_props[index]);
 
-                Stdout.format(this.truncateLength(line));
+                this.terminal_output.format(this.truncateLength(line));
             }
-            Stdout.clearline.cr.flush.up;
+            this.terminal_output.clearline.cr.flush.up;
         }
 
         this.printHeadingLine();
@@ -619,9 +707,14 @@ public class AppStatus
 
     public typeof(this) displayStreamingLine () ( )
     {
-        if ( Cout.redirected )
+        if (this.stream is null)
         {
-            Cout.append(this.msg[]).newline.flush;
+            return this;
+        }
+
+        if ( this.is_redirected )
+        {
+            this.terminal_output.formatln("{}", this.msg[]).newline.flush;
 
             return this;
         }
@@ -751,7 +844,7 @@ public class AppStatus
         this.formatMemoryUsage();
         this.formatCpuUsage();
 
-        Stdout.default_colour.default_bg.bold(true)
+        this.terminal_output.default_colour.default_bg.bold(true)
             .format(this.truncateLength(this.heading_line)).bold(false)
             .clearline.cr.flush;
     }
@@ -834,7 +927,7 @@ public class AppStatus
         sformat(this.footer_line, "Version {} built on {} by {}",
             this.app_version, this.app_build_date, this.app_build_author);
 
-        Stdout.default_colour.default_bg.bold(true)
+        this.terminal_output.default_colour.default_bg.bold(true)
             .format(this.truncateLength(this.footer_line)).bold(false);
 
         auto remaining = Terminal.columns - this.footer_line.length;
@@ -842,7 +935,7 @@ public class AppStatus
         {
             this.footer_line.length = 0;
             enableStomping(this.footer_line);
-            this.printExtraVersionInformation(Stdout, this.footer_line,
+            this.printExtraVersionInformation(this.terminal_output, this.footer_line,
                 remaining);
         }
     }
@@ -938,14 +1031,14 @@ public class AppStatus
 
     private void resetCursorPosition ( )
     {
-        Stdout.endrow;
+        this.terminal_output.endrow;
         this.old_terminal_size = Terminal.rows;
 
         foreach ( line; this.static_lines )
         {
-            Stdout.clearline.cr.flush.up;
+            this.terminal_output.clearline.cr.flush.up;
         }
-        Stdout.clearline.cr.flush.up;
+        this.terminal_output.clearline.cr.flush.up;
     }
 
 
@@ -1015,56 +1108,56 @@ public class AppStatus
         {
             case Terminal.Foreground.BLACK:
             {
-                Stdout.black();
+                this.terminal_output.black();
                 break;
             }
 
             case Terminal.Foreground.RED:
             {
-                Stdout.red();
+                this.terminal_output.red();
                 break;
             }
 
             case Terminal.Foreground.GREEN:
             {
-                Stdout.green();
+                this.terminal_output.green();
                 break;
             }
 
             case Terminal.Foreground.YELLOW:
             {
-                Stdout.yellow();
+                this.terminal_output.yellow();
                 break;
             }
 
             case Terminal.Foreground.BLUE:
             {
-                Stdout.blue();
+                this.terminal_output.blue();
                 break;
             }
 
             case Terminal.Foreground.MAGENTA:
             {
-                Stdout.magenta();
+                this.terminal_output.magenta();
                 break;
             }
 
             case Terminal.Foreground.CYAN:
             {
-                Stdout.cyan();
+                this.terminal_output.cyan();
                 break;
             }
 
             case Terminal.Foreground.WHITE:
             {
-                Stdout.white();
+                this.terminal_output.white();
                 break;
             }
 
             case Terminal.Foreground.DEFAULT:
             default:
             {
-                Stdout.default_colour();
+                this.terminal_output.default_colour();
                 break;
             }
         }
@@ -1088,56 +1181,56 @@ public class AppStatus
         {
             case Terminal.Background.BLACK:
             {
-                Stdout.black_bg();
+                this.terminal_output.black_bg();
                 break;
             }
 
             case Terminal.Background.RED:
             {
-                Stdout.red_bg();
+                this.terminal_output.red_bg();
                 break;
             }
 
             case Terminal.Background.GREEN:
             {
-                Stdout.green_bg();
+                this.terminal_output.green_bg();
                 break;
             }
 
             case Terminal.Background.YELLOW:
             {
-                Stdout.yellow_bg();
+                this.terminal_output.yellow_bg();
                 break;
             }
 
             case Terminal.Background.BLUE:
             {
-                Stdout.blue_bg();
+                this.terminal_output.blue_bg();
                 break;
             }
 
             case Terminal.Background.MAGENTA:
             {
-                Stdout.magenta_bg();
+                this.terminal_output.magenta_bg();
                 break;
             }
 
             case Terminal.Background.CYAN:
             {
-                Stdout.cyan_bg();
+                this.terminal_output.cyan_bg();
                 break;
             }
 
             case Terminal.Background.WHITE:
             {
-                Stdout.white_bg();
+                this.terminal_output.white_bg();
                 break;
             }
 
             case Terminal.Background.DEFAULT:
             default:
             {
-                Stdout.default_bg();
+                this.terminal_output.default_bg();
                 break;
             }
         }
@@ -1160,7 +1253,7 @@ public class AppStatus
 
         this.applyBgColour(display_props.bg_colour);
 
-        Stdout.bold(display_props.is_bold);
+        this.terminal_output.bold(display_props.is_bold);
     }
 }
 

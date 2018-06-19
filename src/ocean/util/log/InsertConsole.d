@@ -79,12 +79,26 @@ public class InsertConsole: Appender
         verify (stream !is null);
 
         mask_ = register(name ~ stream.classinfo.name);
-        stream_ = stream;
+        this.connectOutput(stream);
         flush_ = flush;
         layout(how);
 
         this.buffer = new char[Terminal.columns];
         this.buffer[] = '\0';
+    }
+
+    /***********************************************************************
+
+        Sets the output stream to the different stream.
+
+        Params:
+            output = stream to output to.
+
+    ***********************************************************************/
+
+    void connectOutput ( OutputStream stream )
+    {
+        this.stream_ = stream;
     }
 
     /***********************************************************************
