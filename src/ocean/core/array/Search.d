@@ -1015,6 +1015,56 @@ unittest
 
 /*******************************************************************************
 
+    Checks if array B is a subset of array A. Array A is assumed to be
+    pre-sorted in ascending order. Array B doesn't need to be sorted and might
+    have duplicate elements. It checks if array A contains each item of array B
+    using binary search. If T is a class or struct, comparison is performed
+    using T.opCmp(). Otherwise, elements of T are compared using ">" and ">="
+    or, if T is compatible to size_t (which includes ssize_t, the signed version
+    of size_t), by calculating the difference.
+
+    Template params:
+        T = type of array element
+
+    Params:
+        a = array A
+        b = array B
+
+    Returns:
+        false if there is any item of array B, which is not an item of array A
+
+    In:
+        See `bsearch` for input constraints
+
+*******************************************************************************/
+
+public bool bsubset ( T ) ( T[] a, T[] b )
+{
+    if ( a.length == 0 )
+        return b.length == 0;
+
+    foreach ( ref T item; b )
+    {
+        if ( !bcontains(a, item) )
+            return false;
+    }
+
+    return true;
+}
+
+unittest
+{
+    test(bsubset!(int)([], []));
+    test(!bsubset!(int)([], [0]));
+    test(bsubset!(int)([0], []));
+    test(bsubset([0], [0]));
+    test(!bsubset([0], [1]));
+    test(bsubset([0, 1], [1]));
+    test(bsubset([0, 1], [0, 1, 1]));
+}
+
+/*******************************************************************************
+
     Searches a sorted array for the specified element. The array is assumed to
     be pre-sorted in ascending order, the search will not work properly if it
     is not. If T is a class or struct, comparison is performed using T.opCmp().
