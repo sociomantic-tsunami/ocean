@@ -58,6 +58,9 @@ public class UnixSocketExt : IApplicationExtension, IConfigExtExtension
     /// Interactive handler delegate
     public alias CommandsRegistry.InteractiveHandler InteractiveHandler;
 
+    /// RawSocketHandler delegate
+    public alias CommandsRegistry.RawSocketHandler RawSocketHandler;
+
     /// Unix listener with dynamic command handling.
     private UnixSocketListener!(CommandsRegistry) unix_listener;
 
@@ -149,6 +152,21 @@ public class UnixSocketExt : IApplicationExtension, IConfigExtExtension
     ***************************************************************************/
 
     public void addHandler ( istring command, InteractiveHandler handler )
+    {
+        this.commands.addHandler(command, handler);
+    }
+
+    /***************************************************************************
+
+        Register a command and raw handler to the unix listener.
+
+        Params:
+            command = The command to listen for in the socket listener.
+            handler = The handler to call when command is received.
+
+    ***************************************************************************/
+
+    public void addHandler ( istring command, RawSocketHandler handler )
     {
         this.commands.addHandler(command, handler);
     }
