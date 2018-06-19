@@ -60,6 +60,8 @@ import ocean.core.Array;
 import ocean.core.StructConverter;
 import ocean.core.TypeConvert;
 import ocean.core.Verify;
+import ocean.io.device.File;
+import ocean.io.device.IODevice;
 import ocean.io.Console;
 import ocean.io.Stdout;
 import ocean.io.Terminal;
@@ -408,6 +410,55 @@ public class AppStatus
     {
         this.stream = null;
         this.terminal_output = null;
+    }
+
+
+    /**************************************************************************
+
+
+        UnixSocketExt's handler which connects the connected socket to the
+        registered AppStatus instance, displays static lines and waits until
+        user disconnects.
+
+        Params:
+            command = command used to call this handler
+            write_line = delegate to write data to the socket
+            read_line = delegate to read data from the socket
+            socket = IODevice instance of the connected socket.
+
+    **************************************************************************/
+
+    public void connectedSocketHandler ( cstring[] command,
+            void delegate (cstring) write_line,
+            void delegate (ref mstring) read_line, IODevice socket )
+    {
+        static File unix_socket_file;
+        static TerminalOutput unix_terminal_output;
+
+        if (unix_socket_file is null)
+        {
+            unix_socket_file = new File;
+            unix_terminal_output = new TerminalOutput(unix_socket_file);
+        }
+
+        unix_socket_file.setFileHandle(socket.fileHandle());
+        this.connectOutput(unix_socket_file,
+            unix_terminal_output);
+
+        scope (exit)
+            this.disconnectOutput();
+
+        this.displayStaticLines();
+
+        // just wait for the user to disconnect
+        static mstring buffer;
+        buffer.length = 100;
+        while (true)
+        {
+            read_line(buffer);
+            if (buffer.length == 0)
+                break;
+        }
     }
 
 
