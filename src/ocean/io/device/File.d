@@ -573,6 +573,21 @@ class File : Device, Device.Seek, Device.Truncate
 
         /***********************************************************************
 
+            Wraps the already open file descriptor into a File instance.
+
+            Params:
+                fd = file descriptor to wrap the file around
+
+        ***********************************************************************/
+
+        void setFileHandle ( int fd )
+        {
+            verify (fd > 0);
+            this.handle = fd;
+        }
+
+        /***********************************************************************
+
             Set the file size to be that of the current seek position.
             The file must be writable for this to succeed.
 
