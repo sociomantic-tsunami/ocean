@@ -92,14 +92,7 @@ public class UnixSocketExt : IApplicationExtension, IConfigExtExtension
         if ( this.path.length > 0 )
         {
             this.unix_listener =
-                new UnixSocketListener!(UnixSocketExt)(this.path, epoll, this);
-
-            if (this.mode >= 0)
-            {
-                auto mpath = this.path.dup;
-                enforce(chmod(StringC.toCString(mpath), this.mode) == 0,
-                        "Couldn't change UnixSocket mode.");
-            }
+                new UnixSocketListener!(UnixSocketExt)(this.path, epoll, this, this.mode);
 
             epoll.register(this.unix_listener);
         }
