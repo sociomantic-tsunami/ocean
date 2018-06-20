@@ -121,6 +121,7 @@ public class UnixSocketExt : IApplicationExtension, IConfigExtExtension
 
     ***************************************************************************/
 
+    deprecated ("Use the appropriate overload of UnixSocketExt.addHandler.")
     public void addInteractiveHandler ( istring command, InteractiveHandler handler )
     {
         this.commands.addHandler(command, handler);
@@ -141,6 +142,19 @@ public class UnixSocketExt : IApplicationExtension, IConfigExtExtension
 
     /***************************************************************************
 
+        Params:
+            command = The command to listen for in the socket listener.
+            handler = The handler to call when command is received.
+
+    ***************************************************************************/
+
+    public void addHandler ( istring command, InteractiveHandler handler )
+    {
+        this.commands.addHandler(command, handler);
+    }
+
+    /***************************************************************************
+
         Unregister a command and handler from the unix listener.
 
         Params:
@@ -148,6 +162,7 @@ public class UnixSocketExt : IApplicationExtension, IConfigExtExtension
 
     ***************************************************************************/
 
+    deprecated ("Use UnixSocketExt.removeHandler instead.")
     public void removeInteractiveHandler ( istring command )
     {
         this.commands.removeHandler(command);
@@ -276,7 +291,7 @@ unittest
         override public int run ( Arguments args, ConfigParser config )
         {
             this.startEventHandling(new EpollSelectDispatcher);
-            this.unix_socket_ext.addInteractiveHandler("test", &this.test);
+            this.unix_socket_ext.addHandler("test", &this.test);
 
             return 0;
         }
