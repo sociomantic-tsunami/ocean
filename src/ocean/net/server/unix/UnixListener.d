@@ -39,6 +39,7 @@ public class UnixListener : UnixSocketListener!( BasicCommandHandler )
             epoll        = the `EpollSelectDispatcher` instance to use for
                             I/O (connection handler parameter)
             handlers     = Array of command to handler delegate.
+            mode         = mode to apply after binding the socket file
 
         Throws:
         `Exception` if
@@ -49,10 +50,11 @@ public class UnixListener : UnixSocketListener!( BasicCommandHandler )
     ***********************************************************************/
 
     public this ( cstring address_path, EpollSelectDispatcher epoll,
-                  BasicCommandHandler.Handler[istring] handlers )
+                  BasicCommandHandler.Handler[istring] handlers,
+                  int mode = -1 )
     {
         this.handler = new BasicCommandHandler(handlers);
-        super(address_path, epoll, this.handler);
+        super(address_path, epoll, this.handler, mode);
     }
 
     /***********************************************************************
@@ -67,6 +69,7 @@ public class UnixListener : UnixSocketListener!( BasicCommandHandler )
                             I/O (connection handler parameter)
             handlers     = Array of command to handler delegate.
             interactive_handlers  = Array of command to interactive handler delegate.
+            mode         = mode to apply after binding the socket file
 
         Throws:
         `Exception` if
@@ -78,10 +81,11 @@ public class UnixListener : UnixSocketListener!( BasicCommandHandler )
 
     public this ( istring address_path, EpollSelectDispatcher epoll,
                   BasicCommandHandler.Handler[istring] handlers,
-                  BasicCommandHandler.InteractiveHandler[istring] interactive_handlers )
+                  BasicCommandHandler.InteractiveHandler[istring] interactive_handlers,
+                  int mode = -1 )
     {
         this.handler = new BasicCommandHandler(handlers, interactive_handlers);
-        super(address_path, epoll, this.handler);
+        super(address_path, epoll, this.handler, mode);
     }
 }
 
@@ -108,6 +112,7 @@ public class UnixSocketListener ( CommandHandlerType ) : SelectListener!(
     import ocean.stdc.posix.sys.socket: AF_UNIX, sockaddr;
     import ocean.text.convert.Formatter;
 
+    import core.sys.posix.sys.stat;
     import core.sys.posix.unistd: unlink;
     import core.stdc.errno: errno;
 
@@ -140,6 +145,7 @@ public class UnixSocketListener ( CommandHandlerType ) : SelectListener!(
             epoll        = the `EpollSelectDispatcher` instance to use for I/O
                            (connection handler parameter)
             handler      = Command handler.
+            mode         = mode to apply after binding the socket file
 
         Throws:
             `Exception` if
@@ -150,7 +156,7 @@ public class UnixSocketListener ( CommandHandlerType ) : SelectListener!(
     ***************************************************************************/
 
     public this ( cstring address_path, EpollSelectDispatcher epoll,
-                  CommandHandlerType handler )
+                  CommandHandlerType handler, int mode = -1 )
     {
         enforce(address_path.length < sockaddr_un.sun_path.length,
                 format("Unix socket path too long: {}", address_path));
@@ -181,6 +187,12 @@ public class UnixSocketListener ( CommandHandlerType ) : SelectListener!(
 
             super(cast(sockaddr*)&address, new UnixSocket,
                   epoll, handler, address_path);
+
+            if (mode >= 0)
+            {
+                enforce(chmod(this.address_pathnul.ptr, mode) == 0,
+                        "Couldn't change UnixSocket mode.");
+            }
 
             log.info("Listening on \"{}\"", address_path);
         }
