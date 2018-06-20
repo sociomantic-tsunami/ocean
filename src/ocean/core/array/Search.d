@@ -817,6 +817,9 @@ unittest
     in arr_against or N if no mismatch occurs.  Comparisons will be performed
     using the supplied predicate or '==' if none is supplied.
 
+    If the input arrays are not sorted in the same way, or they have different
+    number of duplicate items, see `bsubset`.
+
     Params:
         arr         = The array to evaluate.
         arr_against = The array to match against.
@@ -1022,6 +1025,9 @@ unittest
     using T.opCmp(). Otherwise, elements of T are compared using ">" and ">="
     or, if T is compatible to size_t (which includes ssize_t, the signed version
     of size_t), by calculating the difference.
+
+    If both of the arrays are sorted in the same way and don't contain different
+    number of duplicate items, see `mismatch`.
 
     Template params:
         T = type of array element
