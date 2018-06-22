@@ -75,13 +75,14 @@ unittest
     append(str, "tritt "[], "die "[]);
     test (append(str, "Treppe "[], "krumm."[]) == "Die Katze tritt die Treppe krumm.");
 
-    alias bsearch!(long) bs;
-
-    long[] arr = [1, 2, 3,  5, 8, 13, 21];
+    long[] arr = [1, 2, 3, 5, 8, 13, 21];
 
     size_t n;
 
-    test (bs(arr, 5, n));
+    test(bsearch(arr, 5L, n));
+    test!("==")(n, 3);
+
+    test(bcontains(arr, 5L));
 }
 
 version ( UnitTest )

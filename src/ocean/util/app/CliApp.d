@@ -24,6 +24,7 @@ module ocean.util.app.CliApp;
 
 import ocean.util.app.Application : Application;
 import ocean.util.app.ext.model.IArgumentsExtExtension;
+import ocean.task.IScheduler;
 
 import ocean.transition;
 
@@ -38,6 +39,7 @@ abstract class CliApp : Application, IArgumentsExtExtension
     import ocean.text.Arguments : Arguments;
     import ocean.util.app.ext.ArgumentsExt;
     import ocean.util.app.ext.VersionArgsExt;
+    import ocean.util.app.ext.TaskExt;
 
     protected import ocean.util.app.ext.VersionInfo : VersionInfo;
 
@@ -75,6 +77,14 @@ abstract class CliApp : Application, IArgumentsExtExtension
 
     /***************************************************************************
 
+        Extension to start `run` method inside a task.
+
+    ***************************************************************************/
+
+    public TaskExt task_ext;
+
+    /***************************************************************************
+
         Struct containing optional constructor arguments. There are enough of
         these that handling them as default arguments to the ctor is cumbersome.
 
@@ -97,6 +107,24 @@ abstract class CliApp : Application, IArgumentsExtExtension
         ***********************************************************************/
 
         istring help = null;
+
+        /***********************************************************************
+
+            By default TaskExt is disabled to prevent breaking change for
+            applications already configuring scheduler on their own.
+
+        ***********************************************************************/
+
+        bool use_task_ext;
+
+        /***********************************************************************
+
+            Only used if `use_task_ext` is set to `true`. Defines scheduler
+            configuration to be used by TaskExt.
+
+        ***********************************************************************/
+
+        IScheduler.Configuration scheduler_config;
     }
 
     /***************************************************************************
@@ -130,6 +158,13 @@ abstract class CliApp : Application, IArgumentsExtExtension
         this.ver = this.ver_ext.ver;
         this.args_ext.registerExtension(this.ver_ext);
         this.registerExtension(this.ver_ext);
+
+        if (settings.use_task_ext)
+        {
+            this.task_ext = new TaskExt(settings.scheduler_config);
+            // initialises scheduler even if config is not present:
+            this.task_ext.processConfig(null, null);
+        }
     }
 
     /***************************************************************************
@@ -146,6 +181,21 @@ abstract class CliApp : Application, IArgumentsExtExtension
     ***************************************************************************/
 
     override protected int run ( istring[] args )
+    {
+        if (this.task_ext is null)
+            return this.run(this.args);
+
+        return this.task_ext.run(&this.mainForTaskExt);
+    }
+
+    /***************************************************************************
+
+        Used inside `run` if TaskExt is enabled to workaround double `this`
+        issue with inline delegate literal
+
+    ***************************************************************************/
+
+    private int mainForTaskExt ( )
     {
         return this.run(this.args);
     }

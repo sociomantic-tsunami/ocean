@@ -554,12 +554,13 @@ unittest
 
 *******************************************************************************/
 
+deprecated("Use Exception.message() directly")
 cstring getMsg ( Throwable e )
 {
     return e.message();
 }
 
-unittest
+deprecated unittest
 {
     auto e = new Exception("abcde");
     assert (getMsg(e) == "abcde");

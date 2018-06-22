@@ -33,7 +33,7 @@ class RefuseRootExt : IArgumentsExtExtension
 {
     /***************************************************************************
 
-        Order doesn't matter, so return default -> 0
+        Order doesn't matter, so return anything less than default app 0
 
         Returns:
             the extension order
@@ -42,7 +42,7 @@ class RefuseRootExt : IArgumentsExtExtension
 
     override int order ()
     {
-        return 0;
+        return -1;
     }
 
     /***************************************************************************

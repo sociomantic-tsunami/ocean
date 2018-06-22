@@ -379,12 +379,8 @@ final class Scheduler : IScheduler
 
         This method must not be called outside of a task.
 
-        Because of how termination hooks are implemented, by the time `await`
-        returns, the task object is not yet completely recycled - it will only
-        happen during next context switch. Caller of `await` must either ensure
-        that the task object lives long enough for that or call
-        `theScheduler.processEvents` right after `await` to ensure immediate
-        recycle (at the performance cost of an extra context switch).
+        If `task` is already scheduled, it will not be re-scheduled again but
+        awaiting will still occur.
 
         Params:
             task = task to schedule and wait for
@@ -396,8 +392,6 @@ final class Scheduler : IScheduler
 
     public void await ( Task task, void delegate (Task) finished_dg = null )
     {
-        assert (Task.getThis() !is null);
-
         auto context = Task.getThis();
         assert (context !is null);
         assert (context !is task);
@@ -412,7 +406,9 @@ final class Scheduler : IScheduler
         if (finished_dg !is null)
             task.terminationHook({ finished_dg(task); });
 
-        this.schedule(task);
+        if (!task.suspended())
+            this.schedule(task);
+
         if (!task.finished())
             context.suspend();
     }
@@ -457,6 +453,9 @@ final class Scheduler : IScheduler
 
         Convenience shortcut on top of `await` to await for a task and return
         some value type as a result.
+
+        If `task` is already scheduled, it will not be re-scheduled again but
+        awaiting will still occur.
 
         Params:
             task = any task that defines `result` public field  of type with no
@@ -510,6 +509,9 @@ final class Scheduler : IScheduler
         Similar to `await` but also has waiting timeout. Calling task will be
         resumed either if awaited task finished or timeout is hit, whichever
         happens first.
+
+        If `task` is already scheduled, it will not be re-scheduled again but
+        awaiting will still occur.
 
         Params:
             task = task to await

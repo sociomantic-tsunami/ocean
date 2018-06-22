@@ -38,6 +38,8 @@ jobs:
         - <<: *test-matrix
           env: DMD=1.081.* F=production DFLAGS=-release
         - <<: *test-matrix
+          env: DMD=1.081.* F=production DFLAGS=-debug=ISelectClient
+        - <<: *test-matrix
           env: DMD=1.081.* F=devel
         - <<: *test-matrix
           env: DMD=2.070.2.s* F=production

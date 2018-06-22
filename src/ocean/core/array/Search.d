@@ -817,6 +817,9 @@ unittest
     in arr_against or N if no mismatch occurs.  Comparisons will be performed
     using the supplied predicate or '==' if none is supplied.
 
+    If the input arrays are not sorted in the same way, or they have different
+    number of duplicate items, see `bsubset`.
+
     Params:
         arr         = The array to evaluate.
         arr_against = The array to match against.
@@ -1011,6 +1014,100 @@ unittest
     test!("==")( countIf( "gbbbi"[], ( char c ) { return c == 'b'; } ), 3 );
     test!("==")( countIf( "gbbbi"[], ( char c ) { return c == 'i'; } ), 1 );
     test!("==")( countIf( "gbbbi"[], ( char c ) { return c == 'd'; } ), 0 );
+}
+
+/*******************************************************************************
+
+    Checks if array B is a subset of array A. Array A is assumed to be
+    pre-sorted in ascending order. Array B doesn't need to be sorted and might
+    have duplicate elements. It checks if array A contains each item of array B
+    using binary search. If T is a class or struct, comparison is performed
+    using T.opCmp(). Otherwise, elements of T are compared using ">" and ">="
+    or, if T is compatible to size_t (which includes ssize_t, the signed version
+    of size_t), by calculating the difference.
+
+    If both of the arrays are sorted in the same way and don't contain different
+    number of duplicate items, see `mismatch`.
+
+    Template params:
+        T = type of array element
+
+    Params:
+        a = array A
+        b = array B
+
+    Returns:
+        false if there is any item of array B, which is not an item of array A
+
+    In:
+        See `bsearch` for input constraints
+
+*******************************************************************************/
+
+public bool bsubset ( T ) ( T[] a, T[] b )
+{
+    if ( a.length == 0 )
+        return b.length == 0;
+
+    foreach ( ref T item; b )
+    {
+        if ( !bcontains(a, item) )
+            return false;
+    }
+
+    return true;
+}
+
+unittest
+{
+    test(bsubset!(int)([], []));
+    test(!bsubset!(int)([], [0]));
+    test(bsubset!(int)([0], []));
+    test(bsubset([0], [0]));
+    test(!bsubset([0], [1]));
+    test(bsubset([0, 1], [1]));
+    test(bsubset([0, 1], [0, 1, 1]));
+}
+
+/*******************************************************************************
+
+    Searches a sorted array for the specified element. The array is assumed to
+    be pre-sorted in ascending order, the search will not work properly if it
+    is not. If T is a class or struct, comparison is performed using T.opCmp().
+    Otherwise, elements of T are compared using ">" and ">=" or, if T is
+    compatible to size_t (which includes ssize_t, the signed version of size_t),
+    by calculating the difference.
+
+    Template params:
+        T = type of array element
+
+    Params:
+        array = array to search
+        match = element to search for
+
+    Returns:
+        true if the element was found in the array
+
+    In:
+        See `bsearch` for input constraints
+
+*******************************************************************************/
+
+public bool bcontains ( T ) ( T[] array, T match )
+{
+    size_t position;
+
+    return bsearch(array, match, position);
+}
+
+unittest
+{
+    auto arr = [ 1, 2, 4, 6, 20, 100, 240 ];
+
+    test(bcontains(arr, 6));
+    test(!bcontains(arr, 0));
+    test(!bcontains(arr, 300));
+    test(!bcontains(arr, 10));
 }
 
 /*******************************************************************************

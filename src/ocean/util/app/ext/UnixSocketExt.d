@@ -265,7 +265,7 @@ public class UnixSocketExt : IApplicationExtension, IConfigExtExtension
 
     public override int order ( )
     {
-        return 0;
+        return -1;
     }
 
     /***************************************************************************

@@ -120,7 +120,7 @@ unittest
 
         override public void run ( )
         {
-            bool timeout = .awaitOrTimeout(this.to_wait_for, 5000);
+            bool timeout = .awaitOrTimeout(this.to_wait_for, 1_000_000);
             test(!timeout);
             test(this.to_wait_for.finished());
         }

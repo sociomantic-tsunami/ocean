@@ -237,3 +237,41 @@ unittest
     theScheduler.queue(task);
     theScheduler.eventLoop();
 }
+
+// await on already running task
+
+unittest
+{
+    static class SubTask : Task
+    {
+        bool termination = false;
+
+        override void run ( )
+        {
+            while (!termination)
+                .wait(1_000);
+        }
+    }
+
+    static class MainTask : Task
+    {
+        override void run ( )
+        {
+            auto sub = new SubTask;
+            auto task = Task.getThis();
+            // spawns sub task
+            bool timeout = theScheduler.awaitOrTimeout(sub, 2_000);
+            test(timeout);
+            // waits for sub task a bit more but also timeouts
+            timeout = theScheduler.awaitOrTimeout(sub, 2_000);
+            test(timeout);
+            // sets sub task to terminate and awaits unconditionally
+            sub.termination = true;
+            theScheduler.await(sub);
+        }
+    }
+
+    initScheduler(SchedulerConfiguration.init);
+    theScheduler.schedule(new MainTask);
+    theScheduler.eventLoop();
+}

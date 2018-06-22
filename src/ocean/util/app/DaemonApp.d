@@ -285,6 +285,13 @@ public abstract class DaemonApp : Application,
 
             Set of signals to handle.
 
+            Note that the signals will be handled with a delay of up to
+            single epoll cycle. This is because the signal extension is synced
+            with the EpollSelectDispatcher. This makes it unsuitable to handle
+            critical signals (like `SIGABRT` or `SIGSEGV`) where the application
+            shouldn't be allowed to proceed in the general case; for these
+            cases setup an asynchronous signal handler using `sigaction` instead.
+
         ***********************************************************************/
 
         int[] signals;
@@ -343,6 +350,17 @@ public abstract class DaemonApp : Application,
         ***********************************************************************/
 
         bool use_task_ext;
+
+        /***********************************************************************
+
+            Only used if `use_task_ext` is set to `true`. Defines default
+            scheduler configuration to be used by TaskExt.
+
+            Fields present in config file will take priority over this.
+
+        ***********************************************************************/
+
+        IScheduler.Configuration scheduler_config;
     }
 
     /***************************************************************************
@@ -426,7 +444,7 @@ public abstract class DaemonApp : Application,
 
         if (settings.use_task_ext)
         {
-            this.task_ext = new TaskExt();
+            this.task_ext = new TaskExt(settings.scheduler_config);
             this.config_ext.registerExtension(this.task_ext);
         }
 

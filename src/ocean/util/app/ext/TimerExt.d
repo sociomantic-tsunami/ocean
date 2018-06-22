@@ -350,7 +350,7 @@ public class TimerExt : IApplicationExtension
 
     public override int order ( )
     {
-        return 0;
+        return -1;
     }
 
     /***************************************************************************
