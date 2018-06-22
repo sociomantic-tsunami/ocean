@@ -59,7 +59,7 @@ public struct Stack ( V, int Size = 0 )
     Stack* clear ( )
     {
         depth = 0;
-        return this;
+        return (&this);
     }
 
     /***************************************************************************
@@ -140,7 +140,7 @@ public struct Stack ( V, int Size = 0 )
             enforce(.e_bounds, depth < stack.length);
             stack[depth++] = value;
         }
-        return this;
+        return (&this);
     }
 
     /***************************************************************************
@@ -158,7 +158,7 @@ public struct Stack ( V, int Size = 0 )
     {
         foreach (v; value)
             push (v);
-        return this;
+        return (&this);
     }
 
     /***************************************************************************
@@ -255,7 +255,7 @@ public struct Stack ( V, int Size = 0 )
             p++;
         }
         *p = t;
-        return this;
+        return (&this);
     }
 
     /***************************************************************************
@@ -282,7 +282,7 @@ public struct Stack ( V, int Size = 0 )
             p--;
         }
         *p = t;
-        return this;
+        return (&this);
     }
 
     /***************************************************************************
@@ -308,7 +308,7 @@ public struct Stack ( V, int Size = 0 )
 
     ***************************************************************************/
 
-    int opApply ( int delegate(ref V value) dg )
+    int opApply ( scope int delegate(ref V value) dg )
     {
         int result;
 

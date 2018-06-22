@@ -41,9 +41,9 @@ import core.thread;
 
 import ocean.text.util.StringC;
 
-const istring CLIENT_STRING = "Hello from the client";
+static immutable istring CLIENT_STRING = "Hello from the client";
 
-const istring SERVER_STRING = "Hello from the server";
+static immutable istring SERVER_STRING = "Hello from the server";
 
 int runClient ( sockaddr_un* socket_address )
 {

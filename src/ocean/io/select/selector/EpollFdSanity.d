@@ -41,13 +41,13 @@ version (UnitTest)
 public struct FdObjEpollData
 {
     /// Number of bits to store address in
-    private const address_bits = 56;
+    private enum address_bits = 56;
 
     /// Mask for the user-space address
-    private const address_mask = (1UL << address_bits) - 1;
+    private enum address_mask = (1UL << address_bits) - 1;
 
     /// Mask for the storing part of the fd
-    private const fd_mask = ~address_mask;
+    private enum fd_mask = ~address_mask;
 
     static assert(address_mask + fd_mask == ulong.max);
 
@@ -119,7 +119,7 @@ public struct FdObjEpollData
 
     public bool verifyFd (int fd)
     {
-        return this.fd == (fd & 0xFF);
+        return (&this).fd == (fd & 0xFF);
     }
 }
 
