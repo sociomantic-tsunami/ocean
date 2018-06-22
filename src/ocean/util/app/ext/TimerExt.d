@@ -302,7 +302,7 @@ public class TimerExt : IApplicationExtension
             try
             {
                 log.error("Unhnandled exception in TimerExt's callback: {}",
-                        getMsg(e));
+                        e.message());
             }
             catch (Exception)
             {
