@@ -396,8 +396,10 @@ public abstract class DaemonApp : Application,
     {
         super(name, desc);
 
-        // DaemonApp always handles SIGTERM:
-        settings.signals ~= core.sys.posix.signal.SIGTERM;
+        // If derived app does not handle signals explicitly, default
+        // DaemonApp handler will be used which handles SIGTERM
+        if (settings.signals.length == 0)
+            settings.signals = [ core.sys.posix.signal.SIGTERM ];
 
         // Create and register arguments extension
         this.args_ext = new ArgumentsExt(name, desc, settings.usage,
