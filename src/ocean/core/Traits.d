@@ -6,7 +6,7 @@
 
     Copyright:
         Copyright (C) 2005-2006 Sean Kelly.
-        Some parts copyright (c) 2009-2016 sociomantic labs GmbH.
+        Some parts copyright (c) 2009-2016 dunnhumby Germany GmbH.
         All rights reserved.
 
     License:

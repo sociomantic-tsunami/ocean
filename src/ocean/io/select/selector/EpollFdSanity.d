@@ -15,7 +15,7 @@
     be registered with epoll and returned with epoll_wait to the user.
 
     Copyright:
-        Copyright (c) 2017 sociomantic labs GmbH.
+        Copyright (c) 2017 dunnhumby Germany GmbH.
         All rights reserved.
 
     License:

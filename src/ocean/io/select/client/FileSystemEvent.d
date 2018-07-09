@@ -5,7 +5,7 @@
     ocean.sys.Inotify and http://man7.org/linux/man-pages/man7/inotify.7.html
 
     Copyright:
-        Copyright (c) 2009-2016 Sociomantic Labs GmbH.
+        Copyright (c) 2009-2016 dunnhumby Germany GmbH.
         All rights reserved.
 
     License:

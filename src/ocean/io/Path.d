@@ -42,7 +42,7 @@
             Copyright (c) 2008 Kris Bell.
             Normalization & Patterns copyright (c) 2006-2009 Max Samukha,
                 Thomas Kühne, Grzegorz Adam Hankiewicz
-            Some parts copyright (c) 2009-2016 Sociomantic Labs GmbH.
+            Some parts copyright (c) 2009-2016 dunnhumby Germany GmbH.
             All rights reserved.
 
         License:

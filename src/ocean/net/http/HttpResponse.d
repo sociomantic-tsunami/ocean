@@ -28,7 +28,7 @@
         See_Also: http://www.w3.org/Protocols/rfc2616/rfc2616-sec5.html#sec5
 
     Copyright:
-        Copyright (c) 2009-2016 Sociomantic Labs GmbH.
+        Copyright (c) 2009-2016 dunnhumby Germany GmbH.
         All rights reserved.
 
     License:

@@ -7,7 +7,7 @@
     codebase.
 
     Copyright:
-        Copyright (c) 2018 Sociomantic Labs GmbH.
+        Copyright (c) 2018 dunnhumby Germany GmbH.
         All rights reserved.
 
     License:

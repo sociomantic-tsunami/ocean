@@ -8,7 +8,7 @@
                     @see http://www.servlets.com/rfcs/rfc2109.html
 
     Copyright:
-        Copyright (c) 2009-2016 Sociomantic Labs GmbH.
+        Copyright (c) 2009-2016 dunnhumby Germany GmbH.
         All rights reserved.
 
     License:

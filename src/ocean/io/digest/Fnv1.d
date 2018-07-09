@@ -3,7 +3,7 @@
     TODO: move module to ocean.util.digest
 
     Copyright:
-        Copyright (c) 2009-2016 Sociomantic Labs GmbH.
+        Copyright (c) 2009-2016 dunnhumby Germany GmbH.
         All rights reserved.
 
     License:
@@ -705,7 +705,7 @@ public class Fnv1Generic ( bool FNV1A = false, T = hash_t ) : FnvDigest
     Noll>:
     http://web.archive.org/web/20101105131957/http://www.isthe.com/chongo/src/fnv/test_fnv.c
 
-    C to D port by David Eckardt, sociomantic labs, October 2009
+    C to D port by David Eckardt, dunnhumby Germany GmbH, October 2009
 
 **************************************************************************/
 

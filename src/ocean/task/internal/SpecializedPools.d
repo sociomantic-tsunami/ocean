@@ -3,7 +3,7 @@
     Implements mapping between specific task `TypeInfo` and matching
     `FiberPoolEager` instances intended to serve all tasks of such type.
 
-    Copyright: Copyright (c) 2017 sociomantic Labs GmbH. All rights reserved.
+    Copyright: Copyright (c) 2017 dunnhumby Germany GmbH. All rights reserved.
 
     License:
         Boost Software License Version 1.0. See LICENSE_BOOST.txt for details.

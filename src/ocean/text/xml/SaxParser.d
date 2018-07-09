@@ -2,7 +2,7 @@
 
         Copyright:
             Copyright (C) 2007-2008 Scott Sanders, Kris Bell.
-            Some parts copyright (c) 2009-2016 Sociomantic Labs GmbH.
+            Some parts copyright (c) 2009-2016 dunnhumby Germany GmbH.
             All rights reserved.
 
         License:

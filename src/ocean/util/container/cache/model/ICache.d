@@ -3,7 +3,7 @@
     Cache base class, implements the cache logic that is not related to values.
 
     Copyright:
-        Copyright (c) 2009-2016 Sociomantic Labs GmbH.
+        Copyright (c) 2009-2016 dunnhumby Germany GmbH.
         All rights reserved.
 
     License:

@@ -42,7 +42,7 @@
  *
  * Copyright:
  *     Copyright (C) 2008 Don Clugston.
- *     Some parts copyright (c) 2009-2016 Sociomantic Labs GmbH.
+ *     Some parts copyright (c) 2009-2016 dunnhumby Germany GmbH.
  *     All rights reserved.
  *
  * License:

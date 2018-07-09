@@ -3,7 +3,7 @@
     Unittest for ocean.io.Path
 
     Copyright:
-        Copyright (c) 2017 sociomantic labs GmbH.
+        Copyright (c) 2017 dunnhumby Germany GmbH.
         All rights reserved.
 
     License:
