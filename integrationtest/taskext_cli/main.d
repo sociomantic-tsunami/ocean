@@ -3,7 +3,7 @@
     Test for ocean.util.app.ext.TaskExt for CliApp
 
     Copyright:
-        Copyright (c) 2018 sociomantic labs GmbH.
+        Copyright (c) 2018 dunnhumby Germany GmbH.
         All rights reserved.
 
     License:

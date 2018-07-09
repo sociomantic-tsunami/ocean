@@ -8,7 +8,7 @@
     This module must have as few import dependencies as possible so that it can
     be used in place of `assert` freely without introducing cyclic imports.
 
-    Copyright: Copyright (c) 2017 sociomantic labs GmbH. All rights reserved
+    Copyright: Copyright (c) 2017 dunnhumby Germany GmbH. All rights reserved
 
     License:
         Boost Software License Version 1.0. See LICENSE_BOOST.txt for details.

@@ -5,7 +5,7 @@
     Multiplexes multiple, logical timers into a single timer fd (see
     ocean.io.select.client.TimerEvent).
 
-    copyright:  Copyright (c) 2011 sociomantic labs.
+    copyright:  Copyright (c) 2011 dunnhumby Germany GmbH.
                 All rights reserved.
 
     version:    August 2011 : Initial release

@@ -7,7 +7,7 @@
     by the space character and provided as an array.
 
     Copyright:
-        Copyright (c) 2009-2018 Sociomantic Labs GmbH.
+        Copyright (c) 2009-2018 dunnhumby Germany GmbH.
         All rights reserved.
 
     License:

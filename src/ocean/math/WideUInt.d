@@ -5,7 +5,7 @@
     (defined via template argument).
 
     Copyright:
-        Copyright (c) 2017 sociomantic Labs GmbH.
+        Copyright (c) 2017 dunnhumby Germany GmbH.
         All rights reserved.
 
     License:

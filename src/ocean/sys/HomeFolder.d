@@ -3,7 +3,7 @@
         Copyright:
             Copyright (c) 2006-2009 Lars Ivar Igesund, Thomas Kühne,
               Grzegorz Adam Hankiewicz, sleek
-            Some parts copyright (c) 2009-2016 Sociomantic Labs GmbH.
+            Some parts copyright (c) 2009-2016 dunnhumby Germany GmbH.
             All rights reserved.
 
         License:

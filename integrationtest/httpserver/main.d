@@ -8,7 +8,7 @@
     various system calls (`socket`, `connect`, `read/write`, epoll API
     functions, etc) which could, under certain environmental conditions, fail.
 
-    Copyright:      Copyright (c) 2017 sociomantic labs. All rights reserved
+    Copyright:      Copyright (c) 2017 dunnhumby Germany GmbH. All rights reserved
 
     License:
         Boost Software License Version 1.0. See LICENSE_BOOST.txt for details.
