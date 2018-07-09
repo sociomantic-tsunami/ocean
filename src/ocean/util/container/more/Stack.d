@@ -2,7 +2,7 @@
 
     Copyright:
         Copyright (c) 2008 Kris Bell.
-        Some parts copyright (c) 2009-2017 sociomantic Labs GmbH.
+        Some parts copyright (c) 2009-2017 dunnhumby Germany GmbH.
         All rights reserved.
 
     License:

@@ -3,7 +3,7 @@
     CRC-32 generator, uses LZO's built-in CRC-32 calculator
 
     Copyright:
-        Copyright (c) 2009-2016 Sociomantic Labs GmbH.
+        Copyright (c) 2009-2016 dunnhumby Germany GmbH.
         All rights reserved.
 
     License:

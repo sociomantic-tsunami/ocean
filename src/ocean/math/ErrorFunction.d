@@ -4,7 +4,7 @@
  * Copyright:
  *     Copyright (C) 1984, 1995, 2000 Stephen L. Moshier
  *     Code taken from the Cephes Math Library Release 2.3:  January, 1995
- *     Some parts copyright (c) 2009-2016 Sociomantic Labs GmbH.
+ *     Some parts copyright (c) 2009-2016 dunnhumby Germany GmbH.
  *     All rights reserved.
  *
  * License:

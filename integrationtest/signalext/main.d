@@ -2,7 +2,7 @@
 
     Test for the SignalExt behaviour.
 
-    copyright: Copyright (c) 2015 sociomantic labs. All rights reserved
+    copyright: Copyright (c) 2015 dunnhumby Germany GmbH. All rights reserved
 
 *******************************************************************************/
 

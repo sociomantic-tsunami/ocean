@@ -3,7 +3,7 @@
     Real time clock, obtains the current UNIX wall clock time in µs.
 
     Copyright:
-        Copyright (c) 2009-2016 Sociomantic Labs GmbH.
+        Copyright (c) 2009-2016 dunnhumby Germany GmbH.
         All rights reserved.
 
     License:

@@ -9,7 +9,7 @@
  * representation of a UUID, or by providing the constituent bytes.
  *
  * Copyright:
- *     Copyright (c) 2009-2016 Sociomantic Labs GmbH.
+ *     Copyright (c) 2009-2016 dunnhumby Germany GmbH.
  *     All rights reserved.
  *
  * License:

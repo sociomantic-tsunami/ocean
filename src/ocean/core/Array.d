@@ -20,7 +20,7 @@
     TODO: Extend unittest to test all functions in this module.
 
     Copyright:
-        Copyright (c) 2009-2016 Sociomantic Labs GmbH.
+        Copyright (c) 2009-2016 dunnhumby Germany GmbH.
         All rights reserved.
 
     License:

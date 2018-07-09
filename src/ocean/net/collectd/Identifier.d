@@ -16,7 +16,7 @@
         https://collectd.org/documentation/manpages/types.db.5.shtml
 
     Copyright:
-        Copyright (c) 2015-2016 Sociomantic Labs GmbH.
+        Copyright (c) 2015-2016 dunnhumby Germany GmbH.
         All rights reserved.
 
     License:

@@ -1,7 +1,7 @@
 /*******************************************************************************
 
     Copyright:
-        Copyright (C) 2017 Sociomantic Labs GmbH. All rights reserved.
+        Copyright (C) 2017 dunnhumby Germany GmbH. All rights reserved.
 
     NB: because this module is often used as purely compile-time dependency it
         used built-in asserts instead of `ocean.core.Test` to reduce amount of

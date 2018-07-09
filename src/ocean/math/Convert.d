@@ -18,7 +18,7 @@
     http://man7.org/linux/man-pages/man7/math_error.7.html$(RPAREN).
 
     Copyright:
-        Copyright (c) 2009-2016 Sociomantic Labs GmbH.
+        Copyright (c) 2009-2016 dunnhumby Germany GmbH.
         All rights reserved.
 
     License:

@@ -4,7 +4,7 @@
     from /proc VFS.
 
     Copyright:
-        Copyright (c) 2009-2017 Sociomantic Labs GmbH.
+        Copyright (c) 2009-2017 dunnhumby Germany GmbH.
         All rights reserved.
 
     License:

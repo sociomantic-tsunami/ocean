@@ -62,7 +62,7 @@
     array will display any integer / pointer members in uppercase hexadecimal.
 
     Copyright:
-        Copyright (c) 2009-2016 Sociomantic Labs GmbH.
+        Copyright (c) 2009-2016 dunnhumby Germany GmbH.
         Some parts (marked explicitly) copyright Kris and/or Larsivi.
         All rights reserved.
 
