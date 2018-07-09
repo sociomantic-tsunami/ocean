@@ -4,7 +4,7 @@
     within them (== purely value types).
 
     Copyright:
-        Copyright (c) 2016 Sociomantic Labs GmbH.
+        Copyright (c) 2016 dunnhumby Germany GmbH.
         All rights reserved.
 
     License:

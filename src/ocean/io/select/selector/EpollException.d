@@ -3,7 +3,7 @@
     Key exception -- thrown when an error event was reported for a selected key.
 
     Copyright:
-        Copyright (c) 2009-2016 Sociomantic Labs GmbH.
+        Copyright (c) 2009-2016 dunnhumby Germany GmbH.
         All rights reserved.
 
     License:

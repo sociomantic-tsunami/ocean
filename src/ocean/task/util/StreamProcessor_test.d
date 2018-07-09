@@ -1,7 +1,7 @@
 /*******************************************************************************
 
     Copyright:
-        Copyright (c) 20017 Sociomantic Labs GmbH.
+        Copyright (c) 20017 dunnhumby Germany GmbH.
         All rights reserved.
 
     License:

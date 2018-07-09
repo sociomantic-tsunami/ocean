@@ -8,7 +8,7 @@
     which could, under certain environmental conditions, fail.
 
     Copyright:
-        Copyright (c) 2014-2017 sociomantic labs GmbH.
+        Copyright (c) 2014-2017 dunnhumby Germany GmbH.
         All rights reserved.
 
     License:

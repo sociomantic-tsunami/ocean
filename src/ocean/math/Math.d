@@ -3,7 +3,7 @@
  *
  * Copyright:
  *     Portions Copyright (C) 2001-2005 Digital Mars.
- *     Some parts copyright (c) 2009-2016 Sociomantic Labs GmbH.
+ *     Some parts copyright (c) 2009-2016 dunnhumby Germany GmbH.
  *     All rights reserved.
  *
  * License:

@@ -8,7 +8,7 @@
         3-Clause BSD License (see LICENSE_BSD.txt for details).
 
     Copyright:
-        Copyright (c) 2009-2016 Sociomantic Labs GmbH.
+        Copyright (c) 2009-2016 dunnhumby Germany GmbH.
         All rights reserved.
 
 *******************************************************************************/

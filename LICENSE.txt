@@ -1,7 +1,7 @@
 This project includes parts of the Tango[1] project, and because of that the
 license terms are not trivial.
 
-All files written by Sociomantic Labs GmbH that are free from Tango code are
+All files written by dunnhumby Germany GmbH that are free from Tango code are
 distributed under a dual license: Boost Software License Version 1.0 and Tango
 3-Clause BSD License (you can pick one and only follow the terms of that one).
 
