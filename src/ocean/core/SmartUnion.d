@@ -71,7 +71,7 @@ struct SmartUnion ( U )
 
      **************************************************************************/
 
-    Active active ( ) { return this._.active; }
+    Active active ( ) { return (&this)._.active; }
 
     /***************************************************************************
 
@@ -83,7 +83,7 @@ struct SmartUnion ( U )
 
     public istring active_name ( )
     {
-        return this._.active_names[this._.active];
+        return (&this)._.active_names[(&this)._.active];
     }
 
     /***************************************************************************
@@ -103,7 +103,7 @@ struct SmartUnion ( U )
 
     mixin (AllMethods!(U, "", 0));
 
-    private alias typeof(*this) Type;
+    private alias typeof(*(&this)) Type;
 }
 
 ///
@@ -310,7 +310,7 @@ version ( UnitTest )
 
 *******************************************************************************/
 
-private const handleInvalidCases = "case none: assert(false);" ~
+private static immutable handleInvalidCases = "case none: assert(false);" ~
     // The D2 build makes sure all enum cases are covered so in fact we don't
     // need a default. However, D1 emits a compiler warning if a switch
     // has no default so we add a default here just to avoid the warning.
@@ -363,7 +363,7 @@ private struct SmartUnionIntern ( U )
 
      **************************************************************************/
 
-    const N = U.tupleof.length;
+    enum N = U.tupleof.length;
 
     /**************************************************************************
 
@@ -387,7 +387,7 @@ private struct SmartUnionIntern ( U )
 
     ***************************************************************************/
 
-    const istring[] active_names = member_string_list();
+    enum istring[] active_names = member_string_list();
 
     /***************************************************************************
 
@@ -428,11 +428,11 @@ private template MemberList ( uint i, size_t len, U )
 {
     static if ( i == len )
     {
-        const MemberList = "";
+        static immutable MemberList = "";
     }
     else
     {
-        const MemberList = "," ~ fieldIdentifier!(U, i) ~ MemberList!(i + 1, len, U);
+        static immutable MemberList = "," ~ fieldIdentifier!(U, i) ~ MemberList!(i + 1, len, U);
     }
 }
 
@@ -495,27 +495,27 @@ private template MemberList ( uint i, size_t len, U )
 
 private template Methods ( U, uint i )
 {
-    const member = fieldIdentifier!(U, i);
+    static immutable member = fieldIdentifier!(U, i);
 
-    const member_access = "_.u." ~ member;
+    static immutable member_access = "_.u." ~ member;
 
-    const type = "typeof(" ~ member_access ~ ")";
+    static immutable type = "typeof(" ~ member_access ~ ")";
 
-    const get = type ~ ' ' ~  member ~ "() "
+    static immutable get = type ~ ' ' ~  member ~ "() "
         ~ "{ verify(_.active == _.active." ~ member ~ ", "
         ~ `"SmartUnion: '` ~ member ~ `' not active"); `
         ~ "return " ~ member_access ~ "; }";
 
-    const set = type ~ ' ' ~  member ~ '(' ~ type ~ ' ' ~ member ~ ")"
+    static immutable set = type ~ ' ' ~  member ~ '(' ~ type ~ ' ' ~ member ~ ")"
         ~ "{ _.active = _.active." ~ member ~ ";"
         ~ "return " ~ member_access ~ '=' ~ member ~ "; }";
 
-    const ini = "static Type opCall(" ~ type ~ ' ' ~ member ~ ")"
+    static immutable ini = "static Type opCall(" ~ type ~ ' ' ~ member ~ ")"
         ~ "{ Type su; su." ~ member ~ '=' ~ member ~ "; return su; }";
 
-    const local_import = "import ocean.core.Enforce;\n";
+    static immutable local_import = "import ocean.core.Enforce;\n";
 
-    const all = local_import ~ get ~ '\n' ~ set ~ '\n' ~ ini;
+    static immutable all = local_import ~ get ~ '\n' ~ set ~ '\n' ~ ini;
 }
 
 /*******************************************************************************
@@ -536,11 +536,11 @@ private template AllMethods ( U, istring pre, uint i)
 {
     static if (i < U.tupleof.length)
     {
-        const AllMethods =
+        static immutable AllMethods =
             AllMethods!(U, pre ~ '\n' ~ Methods!(U, i).all, i + 1);
     }
     else
     {
-        const AllMethods = pre;
+        static immutable AllMethods = pre;
     }
 }

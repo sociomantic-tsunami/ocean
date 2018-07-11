@@ -71,7 +71,7 @@ class TimerEvent : ITimerEvent
 
     ***********************************************************************/
 
-    public this ( Handler handler, bool realtime = false )
+    public this ( scope Handler handler, bool realtime = false )
     {
         super(realtime);
 
@@ -108,7 +108,7 @@ class TimerEvent : ITimerEvent
 
     ***********************************************************************/
 
-    public void setHandler ( Handler handler )
+    public void setHandler ( scope Handler handler )
     {
         this.handler = handler;
     }

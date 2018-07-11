@@ -54,7 +54,7 @@ struct Vector (V, int Size = 0)
         Vector* clear ()
         {
                 depth = 0;
-                return this;
+                return (&this);
         }
 
         /***********************************************************************
@@ -158,7 +158,7 @@ struct Vector (V, int Size = 0)
         {
                 foreach (v; value)
                          add (v);
-                return this;
+                return (&this);
         }
 
         /**********************************************************************
@@ -268,7 +268,7 @@ struct Vector (V, int Size = 0)
 
         ***********************************************************************/
 
-        int opApply (int delegate(ref V value) dg)
+        int opApply (scope int delegate(ref V value) dg)
         {
                         int result;
 
@@ -283,7 +283,7 @@ struct Vector (V, int Size = 0)
 
         ***********************************************************************/
 
-        int opApply (int delegate(ref V value, ref bool kill) dg)
+        int opApply (scope int delegate(ref V value, ref bool kill) dg)
         {
                         int result;
 
