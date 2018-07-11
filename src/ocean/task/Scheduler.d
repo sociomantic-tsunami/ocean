@@ -260,6 +260,10 @@ final class Scheduler : IScheduler
 
     public void shutdown ( )
     {
+        // no-op if already shutting down
+        if (this.state == State.Shutdown)
+            return;
+
         debug_trace(
             "Shutting down initiated. {} queued tasks will be " ~
                 " discarded, {} suspended tasks will be killed",
