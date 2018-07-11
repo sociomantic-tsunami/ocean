@@ -480,6 +480,11 @@ public class AppStatus
 
     public void eraseStaticLines ( )
     {
+        if (this.terminal_output is null)
+        {
+            return;
+        }
+
         // Add +2: One for header and one for footer
         for (size_t i = 0; i < this.static_lines.length + 2; i++)
         {
