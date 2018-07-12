@@ -334,6 +334,7 @@ final class Scheduler : IScheduler
             auto caller_task = Task.getThis();
             if (caller_task !is null)
                 caller_task.kill();
+            return;
         }
 
         try
