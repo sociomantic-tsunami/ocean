@@ -52,7 +52,7 @@ extern (C)
 
      **************************************************************************/
 
-    const size_t Lzo1x1WorkmemSize = 16 * 1024 * (ubyte*).sizeof;
+    static immutable size_t Lzo1x1WorkmemSize = 16 * 1024 * (ubyte*).sizeof;
 
     /**************************************************************************
 
