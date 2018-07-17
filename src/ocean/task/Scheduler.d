@@ -260,6 +260,10 @@ final class Scheduler : IScheduler
 
     public void shutdown ( )
     {
+        // no-op if already shutting down
+        if (this.state == State.Shutdown)
+            return;
+
         debug_trace(
             "Shutting down initiated. {} queued tasks will be " ~
                 " discarded, {} suspended tasks will be killed",
@@ -327,9 +331,15 @@ final class Scheduler : IScheduler
     {
         if (this.state == State.Shutdown)
         {
+            // Simply returning here would be generally sufficient to make sure
+            // no new tasks get added after shutdown. However, it is of some
+            // merit to try to kill everything as soon as possible thus
+            // scheduler kills the caller tasks on any attempt to schedule a new
+            // one.
             auto caller_task = Task.getThis();
             if (caller_task !is null)
                 caller_task.kill();
+            return;
         }
 
         try
