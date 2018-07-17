@@ -429,8 +429,8 @@ public class AppStatus
     **************************************************************************/
 
     public void connectedSocketHandler ( cstring[] command,
-            void delegate (cstring) write_line,
-            void delegate (ref mstring) read_line, IODevice socket )
+            scope void delegate (cstring) write_line,
+            scope void delegate (ref mstring) read_line, IODevice socket )
     {
         static File unix_socket_file;
         static TerminalOutput unix_terminal_output;
@@ -840,7 +840,7 @@ public class AppStatus
 
     public bool getMemoryUsage ( out float mem_allocated, out float mem_free )
     {
-        const float Mb = 1024 * 1024;
+        static immutable float Mb = 1024 * 1024;
         size_t used, free;
         ocean.transition.gc_usage(used, free);
 
@@ -1318,8 +1318,8 @@ unittest
 {
     void example ()
     {
-        const number_of_static_lines = 2;
-        const ms_between_calls = 1000;
+        static immutable number_of_static_lines = 2;
+        static immutable ms_between_calls = 1000;
 
         AppStatus app_status = new AppStatus("test",
             "revision", "build_date", "build_author",

@@ -89,13 +89,13 @@ Const!(dchar)[] toString (Const!(dchar)[] src, dchar[] dst, size_t* ate=null) {r
 
 *******************************************************************************/
 
-public void toString (Const!(char)[] input, size_t delegate(cstring) dg)
+public void toString (Const!(char)[] input, scope size_t delegate(cstring) dg)
 {
     dg(input);
 }
 
 /// Ditto
-public void toString (Const!(wchar)[] input, size_t delegate(cstring) dg)
+public void toString (Const!(wchar)[] input, scope size_t delegate(cstring) dg)
 {
     char[4] buff;
     foreach (size_t idx, wchar c; input)
@@ -121,7 +121,7 @@ public void toString (Const!(wchar)[] input, size_t delegate(cstring) dg)
 }
 
 /// Ditto
-public void toString (Const!(dchar)[] input, size_t delegate(cstring) dg)
+public void toString (Const!(dchar)[] input, scope size_t delegate(cstring) dg)
 {
     char[4] buff;
     foreach (size_t idx, dchar c; input)

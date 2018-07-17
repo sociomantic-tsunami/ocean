@@ -90,8 +90,8 @@ public class BasicCommandHandler
 
     ***************************************************************************/
 
-    public this ( Handler[istring] handlers,
-            InteractiveHandler[istring] interactive_handlers )
+    public this ( scope Handler[istring] handlers,
+            scope InteractiveHandler[istring] interactive_handlers )
     {
         this.handlers = handlers;
         this.interactive_handlers = interactive_handlers;
@@ -106,7 +106,7 @@ public class BasicCommandHandler
 
     ***************************************************************************/
 
-    public this ( Handler[istring] handlers )
+    public this ( scope Handler[istring] handlers )
     {
         this.handlers = handlers;
     }
@@ -125,8 +125,8 @@ public class BasicCommandHandler
     ***************************************************************************/
 
     public void handle ( cstring command, cstring args,
-        void delegate ( cstring ) send_response,
-        void delegate (ref mstring) wait_reply)
+        scope void delegate ( cstring ) send_response,
+        scope void delegate (ref mstring) wait_reply)
     {
 
         if (auto handler = command in this.interactive_handlers)
@@ -161,9 +161,9 @@ public class UnixConnectionHandler : UnixSocketConnectionHandler!(BasicCommandHa
 
     ***************************************************************************/
 
-    public this ( FinalizeDg finalize_dg, EpollSelectDispatcher epoll,
-                  BasicCommandHandler.Handler[istring] handlers,
-                  BasicCommandHandler.InteractiveHandler[istring] interactive_handlers,
+    public this ( scope FinalizeDg finalize_dg, EpollSelectDispatcher epoll,
+                  scope BasicCommandHandler.Handler[istring] handlers,
+                  scope BasicCommandHandler.InteractiveHandler[istring] interactive_handlers,
                   istring address_path )
     {
         super(finalize_dg, epoll,
@@ -183,8 +183,8 @@ public class UnixConnectionHandler : UnixSocketConnectionHandler!(BasicCommandHa
 
     ***************************************************************************/
 
-    public this ( FinalizeDg finalize_dg, EpollSelectDispatcher epoll,
-                  BasicCommandHandler.Handler[istring] handlers,
+    public this ( scope FinalizeDg finalize_dg, EpollSelectDispatcher epoll,
+                  scope BasicCommandHandler.Handler[istring] handlers,
                   cstring address_path )
     {
         super(finalize_dg, epoll, new BasicCommandHandler(handlers),
@@ -278,7 +278,7 @@ public class UnixSocketConnectionHandler ( CommandHandlerType ) : IFiberConnecti
 
     ***************************************************************************/
 
-    public this ( FinalizeDg finalize_dg, EpollSelectDispatcher epoll,
+    public this ( scope FinalizeDg finalize_dg, EpollSelectDispatcher epoll,
                   CommandHandlerType handler, cstring address_path )
     {
         super(epoll, new UnixSocket, finalize_dg);

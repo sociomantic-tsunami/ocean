@@ -396,7 +396,7 @@ public final class Collectd
 
     ***************************************************************************/
 
-    private const istring PutvalSuccessLineBegin = "0 Success: ";
+    private static immutable istring PutvalSuccessLineBegin = "0 Success: ";
 
 
     /***************************************************************************
