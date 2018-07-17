@@ -470,12 +470,16 @@ public abstract class DaemonApp : Application,
 
     public void startEventHandling ( EpollSelectDispatcher epoll )
     {
-        verify(epoll !is null);
-        verify(this.epoll is null,
-            "Either pass epoll to the ctor or startEventHandling, not both");
-        verify(this.timer_ext is null);
+        verify(
+            (epoll !is null) ^ (this.epoll !is null),
+            "Must pass epoll either via ctor or startEventHandling " ~
+                "argument (but not both)"
+        );
 
-        this.epoll = epoll;
+        if (this.epoll is null)
+            this.epoll = epoll;
+
+        verify(this.timer_ext is null);
 
         // Create and register timer extension
         this.timer_ext = new TimerExt(this.epoll);
