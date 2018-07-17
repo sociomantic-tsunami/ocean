@@ -127,7 +127,7 @@ template VoidBufferImpl ( )
 
     ***************************************************************************/
 
-    int opApply ( int delegate(ref Const!(ubyte)) dg ) /* d1to2fix_inject: const */
+    int opApply ( scope int delegate(ref Const!(ubyte)) dg ) const
     {
         foreach (elem; cast(ubyte[]) this.data)
         {
@@ -148,7 +148,7 @@ template VoidBufferImpl ( )
 
     ***************************************************************************/
 
-    int opApply ( int delegate(ref size_t, ref Const!(ubyte)) dg ) /* d1to2fix_inject: const */
+    int opApply ( scope int delegate(ref size_t, ref Const!(ubyte)) dg ) const
     {
         foreach (index, elem; cast(ubyte[]) this.data)
         {

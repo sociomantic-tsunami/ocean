@@ -74,21 +74,21 @@ struct Console
         Console emit (cstring s)
         {
                 consoleString (s);
-                return *this;
+                return *(&this);
         }
 
         /// emit an unsigned integer to the console
         Console emit (ulong i)
         {
                 consoleInteger (i);
-                return *this;
+                return *(&this);
         }
 
         /// emit a newline to the console
         Console newline ()
         {
                 version (Posix)
-                         const eol = "\n";
+                         enum eol = "\n";
 
                 return emit (eol);
         }
