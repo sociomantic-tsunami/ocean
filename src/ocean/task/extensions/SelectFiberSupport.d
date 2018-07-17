@@ -45,11 +45,11 @@ struct SelectFiberSupport
 
     public void reset ( Task host )
     {
-        this.host = host;
-        if (   (this.matching_select_fiber !is null)
-            && (this.matching_select_fiber.getRawFiber() !is host.fiber))
+        (&this).host = host;
+        if (   ((&this).matching_select_fiber !is null)
+            && ((&this).matching_select_fiber.getRawFiber() !is host.fiber))
         {
-            this.matching_select_fiber.reset(host.fiber);
+            (&this).matching_select_fiber.reset(host.fiber);
         }
     }
 
@@ -65,9 +65,9 @@ struct SelectFiberSupport
 
     public SelectFiber get ( )
     {
-        if (this.matching_select_fiber is null)
-            this.matching_select_fiber = new SelectFiber(
-                theScheduler.epoll(), this.host.fiber);
-        return this.matching_select_fiber;
+        if ((&this).matching_select_fiber is null)
+            (&this).matching_select_fiber = new SelectFiber(
+                theScheduler.epoll(), (&this).host.fiber);
+        return (&this).matching_select_fiber;
     }
 }

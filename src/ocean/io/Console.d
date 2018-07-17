@@ -47,7 +47,7 @@ import core.sys.posix.unistd: isatty;
 
 struct Console
 {
-    const istring Eol = "\n";
+    enum istring Eol = "\n";
 
     /**********************************************************************
 
