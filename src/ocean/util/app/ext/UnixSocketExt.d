@@ -37,32 +37,24 @@ import ocean.util.app.ext.model.IConfigExtExtension;
 /// ditto
 public class UnixSocketExt : IApplicationExtension, IConfigExtExtension
 {
+    import ocean.application.components.UnixSocketCommands;
     import ocean.text.convert.Integer;
     import ocean.text.util.StringC;
     import ocean.util.config.ConfigParser;
     import ocean.net.server.unix.CommandRegistry;
     import ocean.net.server.unix.UnixListener;
 
-    /// Path to create the unix socket.
-    private istring path;
-
-    /// Mode to apply to the unix socket after binding
-    private int mode = -1;
-
-    /// Command registry to handle the commands from the client
-    private CommandsRegistry commands;
-
     /// Handler delegate
-    public alias CommandsRegistry.Handler Handler;
+    public alias UnixSocketCommands.Handler Handler;
 
     /// Interactive handler delegate
-    public alias CommandsRegistry.InteractiveHandler InteractiveHandler;
+    public alias UnixSocketCommands.InteractiveHandler InteractiveHandler;
 
     /// RawSocketHandler delegate
-    public alias CommandsRegistry.RawSocketHandler RawSocketHandler;
+    public alias UnixSocketCommands.RawSocketHandler RawSocketHandler;
 
-    /// Unix listener with dynamic command handling.
-    private UnixSocketListener!(CommandsRegistry) unix_listener;
+    // Unix socket commands wrapper.
+    private UnixSocketCommands unix_socket;
 
     /*************************************************************************
 
@@ -72,7 +64,7 @@ public class UnixSocketExt : IApplicationExtension, IConfigExtExtension
 
     this ( )
     {
-        this.commands = new CommandsRegistry;
+        this.unix_socket = new UnixSocketCommands;
     }
 
     /*************************************************************************
@@ -86,12 +78,7 @@ public class UnixSocketExt : IApplicationExtension, IConfigExtExtension
 
     public void initializeSocket ( EpollSelectDispatcher epoll )
     {
-        if (this.path.length)
-        {
-            this.unix_listener = new UnixSocketListener!(CommandsRegistry)
-                (this.path, epoll, this.commands, this.mode);
-            epoll.register(this.unix_listener);
-        }
+        this.unix_socket.startEventHandling(epoll);
     }
 
     /***************************************************************************
@@ -106,14 +93,7 @@ public class UnixSocketExt : IApplicationExtension, IConfigExtExtension
 
     public override void processConfig ( IApplication app, ConfigParser config )
     {
-        this.path = config.get("UNIX_SOCKET", "path", "");
-
-        istring modestr = config.get("UNIX_SOCKET", "mode", "");
-        if (modestr.length)
-        {
-            enforce(toInteger(modestr, this.mode, 8),
-                    "Invalid mode for UnixSocket");
-        }
+        this.unix_socket.parseConfig(config);
     }
 
     /***************************************************************************
@@ -127,7 +107,7 @@ public class UnixSocketExt : IApplicationExtension, IConfigExtExtension
     deprecated ("Use the appropriate overload of UnixSocketExt.addHandler.")
     public void addInteractiveHandler ( istring command, InteractiveHandler handler )
     {
-        this.commands.addHandler(command, handler);
+        this.unix_socket.commands.addHandler(command, handler);
     }
 
     /***************************************************************************
@@ -140,7 +120,7 @@ public class UnixSocketExt : IApplicationExtension, IConfigExtExtension
 
     public void addHandler ( istring command, Handler handler )
     {
-        this.commands.addHandler(command, handler);
+        this.unix_socket.commands.addHandler(command, handler);
     }
 
     /***************************************************************************
@@ -153,7 +133,7 @@ public class UnixSocketExt : IApplicationExtension, IConfigExtExtension
 
     public void addHandler ( istring command, InteractiveHandler handler )
     {
-        this.commands.addHandler(command, handler);
+        this.unix_socket.commands.addHandler(command, handler);
     }
 
     /***************************************************************************
@@ -168,7 +148,7 @@ public class UnixSocketExt : IApplicationExtension, IConfigExtExtension
 
     public void addHandler ( istring command, RawSocketHandler handler )
     {
-        this.commands.addHandler(command, handler);
+        this.unix_socket.commands.addHandler(command, handler);
     }
 
     /***************************************************************************
@@ -183,7 +163,7 @@ public class UnixSocketExt : IApplicationExtension, IConfigExtExtension
     deprecated ("Use UnixSocketExt.removeHandler instead.")
     public void removeInteractiveHandler ( istring command )
     {
-        this.commands.removeHandler(command);
+        this.unix_socket.commands.removeHandler(command);
     }
 
     /***************************************************************************
@@ -197,7 +177,7 @@ public class UnixSocketExt : IApplicationExtension, IConfigExtExtension
 
     public void removeHandler ( istring command )
     {
-        this.commands.removeHandler(command);
+        this.unix_socket.commands.removeHandler(command);
     }
 
     /***************************************************************************
@@ -215,8 +195,7 @@ public class UnixSocketExt : IApplicationExtension, IConfigExtExtension
     public override void atExit ( IApplication app, istring[] args, int status,
             ExitException exception )
     {
-        if (this.unix_listener !is null)
-            this.unix_listener.shutdown();
+        this.unix_socket.shutdown();
     }
 
     /***************************************************************************
