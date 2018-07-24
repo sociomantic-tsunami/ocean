@@ -23,10 +23,7 @@ module ocean.util.app.ext.ReopenableFilesExt;
 
 import ocean.transition;
 
-import ocean.core.Buffer;
 import ocean.core.Verify;
-
-import ocean.sys.Environment;
 
 import ocean.util.app.model.IApplication;
 import ocean.util.app.model.IApplicationExtension;
@@ -36,8 +33,6 @@ import ocean.util.app.ext.UnixSocketExt;
 
 import ocean.util.app.ext.model.ISignalExtExtension;
 
-import ocean.text.convert.Formatter;
-
 import core.sys.posix.signal : SIGHUP;
 
 import ocean.io.device.File;
@@ -45,13 +40,10 @@ import ocean.io.device.File;
 
 public class ReopenableFilesExt : IApplicationExtension, ISignalExtExtension
 {
-    /***************************************************************************
+    import ocean.application.components.OpenFiles;
 
-        List of open files to be reopened when reopenAll() is called.
-
-    ***************************************************************************/
-
-    private File[] open_files;
+    /// TODO
+    private OpenFiles files;
 
 
     /***************************************************************************
@@ -62,23 +54,6 @@ public class ReopenableFilesExt : IApplicationExtension, ISignalExtExtension
     ***************************************************************************/
 
     private int reopen_signal;
-
-    /***************************************************************************
-
-        Current working directory. Used for building absolute paths for the
-        registered files.
-
-    ***************************************************************************/
-
-    private istring cwd;
-
-    /***************************************************************************
-
-        Buffer for rendering the absolute paths.
-
-    ***************************************************************************/
-
-    private Buffer!(char) path_buffer;
 
 
     /***************************************************************************
@@ -100,6 +75,8 @@ public class ReopenableFilesExt : IApplicationExtension, ISignalExtExtension
 
     public this ( SignalExt signal_ext = null, int reopen_signal = SIGHUP )
     {
+        this.files = new OpenFiles;
+
         if (signal_ext && reopen_signal)
         {
             this.setupSignalHandler(signal_ext, reopen_signal);
@@ -151,9 +128,6 @@ public class ReopenableFilesExt : IApplicationExtension, ISignalExtExtension
     {
         verify(unix_socket_ext !is null);
 
-        this.cwd = Environment.directory();
-        verify (this.cwd[$-1] == '/');
-
         unix_socket_ext.addHandler(reopen_command,
             &this.socketReloadCommand);
     }
@@ -170,7 +144,7 @@ public class ReopenableFilesExt : IApplicationExtension, ISignalExtExtension
 
     public void register ( File file )
     {
-        this.open_files ~= file;
+        this.files.register(file);
     }
 
 
@@ -182,11 +156,7 @@ public class ReopenableFilesExt : IApplicationExtension, ISignalExtExtension
 
     public void reopenAll ( )
     {
-        foreach ( file; this.open_files )
-        {
-            file.close();
-            file.open(file.path(), file.style);
-        }
+        this.files.reopenAll();
     }
 
 
@@ -204,26 +174,7 @@ public class ReopenableFilesExt : IApplicationExtension, ISignalExtExtension
 
     public bool reopenFile ( cstring file_path )
     {
-        // It might be the case that we have
-        // several files registered with the same path.
-        // We need to reopen all of them
-        bool reopened;
-
-        foreach (file; this.open_files)
-        {
-            path_buffer.reset();
-            sformat(path_buffer, "{}{}", this.cwd, file.path());
-
-            // Check both relative and absolute paths
-            if (file.path() == file_path || path_buffer[] == file_path)
-            {
-                file.close();
-                file.open(file.path(), file.style);
-                reopened = true;
-            }
-        }
-
-        return reopened;
+        return this.files.reopenFile(file_path);
     }
 
     /***************************************************************************
