@@ -31,19 +31,16 @@
 module ocean.util.app.ext.TaskExt;
 
 import ocean.transition;
-import ocean.core.array.Search : find;
-import ocean.core.Enforce;
-import ocean.text.convert.Integer;
 import ocean.util.app.ext.model.IConfigExtExtension;
 import ocean.task.Scheduler;
-import ocean.task.Task;
 import ocean.util.config.ConfigParser;
 import ocean.util.config.ConfigFiller;
-import ocean.meta.codegen.Identifier;
 
 /// ditto
 class TaskExt : IConfigExtExtension
 {
+    import ocean.application.components.TaskScheduler;
+
     /***************************************************************************
 
         Default scheduler configuration to use in absence of explicit
@@ -83,47 +80,7 @@ class TaskExt : IConfigExtExtension
         scope(exit)
             initScheduler(this.config);
 
-        if (parser is null)
-            return;
-
-        const category = "SCHEDULER";
-
-        foreach (idx, ref field; this.config.tupleof)
-        {
-            static if (fieldIdentifier!(SchedulerConfiguration, idx)
-                != "specialized_pools")
-            {
-                field = parser.get(
-                    category,
-                    fieldIdentifier!(SchedulerConfiguration, idx),
-                    field
-                );
-            }
-        }
-
-        auto specialized_pools = parser.getList!(istring)(
-            category, "specialized_pools", null);
-
-        foreach (line; specialized_pools)
-        {
-            if (line.length == 0)
-                continue;
-
-            auto idx = find(line, ':');
-            enforce(
-                idx < line.length,
-                "Malformed configuration for scheduler"
-            );
-
-            size_t size;
-            enforce(
-                toInteger(line[idx+1 .. $], size),
-                "Malformed configuration for scheduler"
-            );
-
-            this.config.specialized_pools ~=
-                SchedulerConfiguration.PoolDescription(line[0 .. idx], size);
-        }
+        parseSchedulerConfig(parser, this.config);
     }
 
     /***************************************************************************
@@ -142,21 +99,7 @@ class TaskExt : IConfigExtExtension
 
     public int run ( int delegate () dg )
     {
-        auto task = new class Task {
-            int delegate() dg;
-            int result = -1;
-
-            override void run ( )
-            {
-                this.result = this.dg();
-            }
-        };
-
-        task.dg = dg;
-        theScheduler.queue(task);
-        theScheduler.eventLoop();
-
-        return task.result;
+        return runInTask(dg);
     }
 
     /***************************************************************************
