@@ -107,6 +107,8 @@ public class SignalExt : IApplicationExtension
 {
     import core.sys.posix.signal;
 
+    import ocean.application.components.Signals;
+
     // For SignalErrnoException
     import ocean.sys.SignalFD;
 
@@ -127,118 +129,11 @@ public class SignalExt : IApplicationExtension
 
     /***************************************************************************
 
-        SignalErrnoException.
+        Signal handlers wrapper.
 
     ***************************************************************************/
 
-    alias SignalFD.SignalErrnoException SignalErrnoException;
-
-    /***************************************************************************
-
-        SelectReader instance used to read the data from pipe written by
-        signal handler.
-
-    ***************************************************************************/
-
-    private SelectReader reader;
-
-    /***************************************************************************
-
-        Associative array of old signal handlers, addressed by the signal
-        number.
-
-    ***************************************************************************/
-
-    private sigaction_t[int] old_signals;
-
-    /***************************************************************************
-
-        Helper class wrapping Device to InputDevice. Used to read from Pipe
-        via SelectReader.
-
-    ***************************************************************************/
-
-    private static class InputDeviceWrapper: InputDevice, ISelectable
-    {
-        /***********************************************************************
-
-            Device instance to read from.
-
-        ***********************************************************************/
-
-        private Device device;
-
-        /***********************************************************************
-
-            Constructor.
-
-            Params:
-                device = device instance to read from.
-
-        ***********************************************************************/
-
-        public this (Device device)
-        {
-            this.device = device;
-        }
-
-        /***********************************************************************
-
-            Returns:
-                file handle of the underlying device.
-
-        ***********************************************************************/
-
-        override Handle fileHandle()
-        {
-            return this.device.fileHandle();
-        }
-    }
-
-    /***************************************************************************
-
-        InputDevice reading data from the file.
-
-    ***************************************************************************/
-
-    private InputDeviceWrapper pipe_source;
-
-    /***************************************************************************
-
-        Pipe used to tranfser the data from the signal handler back to the
-        application. Static as used from the static signal handler
-
-    ***************************************************************************/
-
-    private static Pipe signal_pipe;
-
-    /***************************************************************************
-
-        Signal handler. Needs to be static method as it is registered as
-        C callback.
-
-        Params:
-            signum = signal being handled
-
-    ***************************************************************************/
-
-    private static extern(C) void signalHandler (int signum)
-    {
-        typeof(this).signal_pipe.sink.write(cast(ubyte[])(&signum)[0..1]);
-    }
-
-    /***************************************************************************
-
-        Static constructor. Initialises signal_pipe static member.
-
-    ***************************************************************************/
-
-    static this()
-    {
-        // Setup a pipe for transferring the signal info. Unbuffered,
-        // as we want these to be available as soon as possible.
-        SignalExt.signal_pipe = new Pipe(0);
-    }
+    private Signals signals;
 
     /***************************************************************************
 
@@ -267,16 +162,9 @@ public class SignalExt : IApplicationExtension
 
     public this ( int[] signals, int[] ignore_signals = null )
     {
-        typeof(this).signal_pipe.source.setNonBlock();
-        this.pipe_source = new InputDeviceWrapper(typeof(this).signal_pipe.source);
-        this.reader = new SelectReader(this.pipe_source, int.sizeof);
-        this.installSignalHandlers(signals);
-        this.ignore(ignore_signals);
-
-        // Make the intention to read 4 bytes (the signal number). This will
-        // read it from the pipe in one of the epoll cycles, after the data
-        // is written into the pipe from signal handler.
-        this.reader.read(&this.handleSignals);
+        this.signals = new Signals(&this.handleSignals);
+        this.signals.handle(signals);
+        this.signals.ignore(ignore_signals);
     }
 
     /***************************************************************************
@@ -293,7 +181,7 @@ public class SignalExt : IApplicationExtension
 
     public void ignore ( in int[] signals )
     {
-        this.installSignalHandlers(signals, SIG_IGN);
+        this.signals.ignore(signals);
     }
 
     /***************************************************************************
@@ -314,7 +202,7 @@ public class SignalExt : IApplicationExtension
 
     public typeof(this) register ( int signal )
     {
-        this.installSignalHandlers(cast(int[])(&signal)[0..1]);
+        this.signals.handle(cast(int[])(&signal)[0..1]);
 
         return this;
     }
@@ -331,7 +219,7 @@ public class SignalExt : IApplicationExtension
 
     public ISelectClient selectClient ( )
     {
-        return this.reader;
+        return this.signals.selectClient();
     }
 
 
@@ -361,10 +249,8 @@ public class SignalExt : IApplicationExtension
 
     ***************************************************************************/
 
-    private void handleSignals ( void[] signals_read )
+    private void handleSignals ( int[] signals )
     {
-        auto signals = cast(int[])signals_read;
-
         foreach ( ext; this.extensions )
         {
             foreach (signal; signals)
@@ -385,65 +271,7 @@ public class SignalExt : IApplicationExtension
     public override void atExit ( IApplication app, istring[] args, int status,
             ExitException exception )
     {
-        this.restoreSignalHandlers();
-    }
-
-    /***************************************************************************
-
-        Installs the signal handlers.
-
-        Params:
-            signals = list of signals to handle
-            signal_handler = signal handler to install
-
-        Throws:
-            SignalErrnoException if setting up the signal fails
-
-    ***************************************************************************/
-
-    private void installSignalHandlers ( in int[] signals,
-            in typeof(sigaction_t.sa_handler) signal_handler = &this.signalHandler)
-    {
-        sigaction_t sa;
-
-        sa.sa_handler = signal_handler;
-
-        if (sigemptyset(&sa.sa_mask) == -1)
-        {
-            throw (new SignalErrnoException).useGlobalErrno("sigemptyset");
-        }
-
-        foreach (signal; signals)
-        {
-            this.old_signals[signal] = sigaction_t.init;
-            sigaction_t* old_handler = signal in this.old_signals;
-            verify(old_handler !is null);
-
-            if (sigaction(signal, &sa, old_handler) == -1)
-            {
-                throw (new SignalErrnoException).useGlobalErrno("sigaction");
-            }
-        }
-    }
-
-    /***************************************************************************
-
-        Restores the original signal handlers.
-
-        Throws:
-            SignalErrnoException if resetting up the signal fails
-
-    ***************************************************************************/
-
-    private void restoreSignalHandlers ( )
-    {
-        foreach (signal, sa; this.old_signals)
-        {
-            if (sigaction(signal, &sa, null) == -1)
-            {
-                throw (new SignalErrnoException).useGlobalErrno("sigaction");
-            }
-        }
+        this.signals.clear();
     }
 
     /***************************************************************************
