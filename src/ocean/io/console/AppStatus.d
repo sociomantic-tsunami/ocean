@@ -103,6 +103,31 @@ public class AppStatus
     public StringBuffer msg;
 
 
+    /**************************************************************************
+
+        Set of components to show on the heading line.
+
+    **************************************************************************/
+
+    public enum HeadingLineComponents
+    {
+        /// Don't show any components
+        None = 0,
+
+        /// Show uptime info
+        Uptime = 1,
+
+        /// Show CPU info
+        CpuUsage = 2,
+
+        /// Show memory usage
+        MemoryUsage = 4,
+
+        /// Convenience value to show All
+        All = MemoryUsage * 2 - 1,
+    }
+
+
     /***************************************************************************
 
         Alias for system clock function.
@@ -322,6 +347,15 @@ public class AppStatus
     private bool is_redirected;
 
 
+    /**************************************************************************
+
+        Set of flags to show on the heading line of AppStatus.
+
+    ***************************************************************************/
+
+    private HeadingLineComponents heading_line_components;
+
+
     /***************************************************************************
 
         Constructor. Saves the current time as the program start time.
@@ -341,12 +375,14 @@ public class AppStatus
             terminal_output = terminal to write the static output into. Can be
                 null if it's not yet available (the static output will then be
                 disabled).
+            heading_line_components = components to show on the heading line
 
     ***************************************************************************/
 
     public this ( cstring app_name, cstring app_version, cstring app_build_date,
         cstring app_build_author, uint size, ulong ms_between_calls = 1000,
-            OutputStream stream = Cout.stream, TerminalOutput terminal_output = Stdout)
+            OutputStream stream = Cout.stream, TerminalOutput terminal_output = Stdout,
+            HeadingLineComponents heading_line_components = HeadingLineComponents.All)
     {
         this.app_name.copy(app_name);
         this.app_version.copy(app_version);
@@ -358,6 +394,7 @@ public class AppStatus
         this.ms_between_calls = ms_between_calls;
         this.stream = stream;
         this.terminal_output = terminal_output;
+        this.heading_line_components = heading_line_components;
         this.old_terminal_size = Terminal.rows;
         if (this.stream)
         {
@@ -896,9 +933,20 @@ public class AppStatus
           ~ "{:d2}:{:d2}:{:d2}] {}", dt.date.day, dt.date.month, dt.date.year,
             dt.time.hours, dt.time.minutes, dt.time.seconds, this.app_name);
 
-        this.formatUptime();
-        this.formatMemoryUsage();
-        this.formatCpuUsage();
+        if (this.heading_line_components & HeadingLineComponents.Uptime)
+        {
+            this.formatUptime();
+        }
+
+        if (this.heading_line_components & HeadingLineComponents.MemoryUsage)
+        {
+            this.formatMemoryUsage();
+        }
+
+        if (this.heading_line_components & HeadingLineComponents.CpuUsage)
+        {
+            this.formatCpuUsage();
+        }
 
         this.terminal_output.default_colour.default_bg.bold(true)
             .format(this.truncateLength(this.heading_line)).bold(false)
