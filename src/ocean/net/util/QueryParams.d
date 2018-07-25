@@ -229,9 +229,9 @@ class QueryParamSet: ParamSet
 
     public this ( char element_delim, char keyval_delim, in istring[] keys ... )
     {
-        super.addKeys(keys);
+        this.addKeys(keys);
 
-        super.rehash();
+        this.rehash();
 
         this.element_delim = element_delim;
         this.keyval_delim   = keyval_delim;
@@ -249,7 +249,7 @@ class QueryParamSet: ParamSet
 
     public void parse ( cstring query )
     {
-        super.reset();
+        this.reset();
 
         scope query_params = new QueryParams(this.element_delim, this.keyval_delim);
 
