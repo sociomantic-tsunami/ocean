@@ -86,7 +86,7 @@ class TaskExt : IConfigExtExtension
         if (parser is null)
             return;
 
-        const category = "SCHEDULER";
+        static immutable category = "SCHEDULER";
 
         foreach (idx, ref field; this.config.tupleof)
         {
@@ -140,7 +140,7 @@ class TaskExt : IConfigExtExtension
 
     ***************************************************************************/
 
-    public int run ( int delegate () dg )
+    public int run ( scope int delegate () dg )
     {
         auto task = new class Task {
             int delegate() dg;

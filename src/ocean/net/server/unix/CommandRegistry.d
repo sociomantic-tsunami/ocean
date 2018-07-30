@@ -75,8 +75,8 @@ public class CommandsRegistry
     ***************************************************************************/
 
     public void handle ( cstring command, cstring args,
-                 void delegate (cstring) send_response,
-                 void delegate (ref mstring buf) wait_reply,
+                 scope void delegate (cstring) send_response,
+                 scope void delegate (ref mstring buf) wait_reply,
                  IODevice socket )
     {
         scope predicate = (cstring v) { return !v.length; };
@@ -119,7 +119,7 @@ public class CommandsRegistry
     ***************************************************************************/
 
     public void addHandler ( istring command,
-        InteractiveHandler handler )
+        scope InteractiveHandler handler )
     {
         this.interactive_handlers[command] = handler;
     }
@@ -134,7 +134,7 @@ public class CommandsRegistry
 
     ***************************************************************************/
 
-    public void addHandler ( istring command, Handler handler )
+    public void addHandler ( istring command, scope Handler handler )
     {
         this.handlers[command] = handler;
     }
@@ -149,7 +149,7 @@ public class CommandsRegistry
 
     ***************************************************************************/
 
-    public void addHandler ( istring command, RawSocketHandler handler )
+    public void addHandler ( istring command, scope RawSocketHandler handler )
     {
         this.handlers_ex[command] = handler;
     }
