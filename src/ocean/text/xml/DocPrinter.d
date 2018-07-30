@@ -47,7 +47,7 @@ class DocPrinter(T)
         private bool quick = true;
         private uint indentation = 2;
 
-        private const Eol = "\n";
+        private static immutable Eol = "\n";
 
         /***********************************************************************
 
@@ -120,7 +120,7 @@ class DocPrinter(T)
 
         ***********************************************************************/
 
-        final void print (Node root, void delegate(Const!(T)[][]...) emit)
+        final void print (Node root, scope void delegate(Const!(T)[][]...) emit)
         {
                 T[256] tmp;
                 T[256] spaces = ' ';
