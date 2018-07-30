@@ -870,12 +870,9 @@ unittest
 *******************************************************************************/
 
 public Scheduler theScheduler ( )
-in
 {
     assert(_scheduler !is null, "Scheduler is null, initScheduler must be called before using it");
-}
-body
-{
+
     return _scheduler;
 }
 
