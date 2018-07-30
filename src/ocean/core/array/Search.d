@@ -30,6 +30,7 @@ import ocean.stdc.posix.sys.types; // ssize_t;
 import ocean.meta.traits.Basic;
 import ocean.core.Buffer;
 import ocean.core.array.DefaultPredicates;
+import ocean.core.Verify;
 
 version (UnitTest)
 {
@@ -1249,12 +1250,6 @@ unittest
 *******************************************************************************/
 
 public bool bsearchCustom ( size_t array_length, ssize_t delegate ( size_t i ) cmp, out size_t position )
-in
-{
-    assert (cast (ssize_t) array_length >= 0,
-            "bsearchCustom: array_length integer overflow (maximum is " ~
-            ssize_t.stringof ~ ".max = " ~ ssize_t.max.stringof ~ ')');
-}
 out (found)
 {
     if (found)
@@ -1268,6 +1263,10 @@ out (found)
 }
 body
 {
+    verify(cast (ssize_t) array_length >= 0,
+        "bsearchCustom: array_length integer overflow (maximum is " ~
+        ssize_t.stringof ~ ".max = " ~ ssize_t.max.stringof ~ ')');
+
     if ( array_length == 0 )
     {
         return false;
