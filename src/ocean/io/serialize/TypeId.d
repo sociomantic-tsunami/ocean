@@ -55,7 +55,7 @@ unittest
         T*[float function(Spam, T.Eggs)] a;         // at offset 104
     }
 
-    const id = TypeId!(S);
+    static immutable id = TypeId!(S);
     static assert(id ==
                   `struct{` ~
                     `0LU` ~ `uint` ~
@@ -76,7 +76,7 @@ unittest
                     `}*[floatfunction(intushort)]` ~
                   `}`);
 
-    const hash = TypeHash!(S);
+    static immutable hash = TypeHash!(S);
     static assert(hash == 0x3ff282c0d315761b);
 }
 
@@ -93,48 +93,48 @@ template TypeId ( T )
 {
     static if (is (T == struct) && !IsTypedef!(T))
     {
-        const TypeId = "struct{" ~ AggregateId!(CheckedBaseType!(T)) ~ "}";
+        static immutable TypeId = "struct{" ~ AggregateId!(CheckedBaseType!(T)) ~ "}";
     }
     else static if (is (T == union))
     {
-        const TypeId = "union{" ~ AggregateId!(CheckedBaseType!(T)) ~ "}";
+        static immutable TypeId = "union{" ~ AggregateId!(CheckedBaseType!(T)) ~ "}";
     }
     else static if (is (T Base : Base[]))
     {
         static if (is (T == Base[]))
         {
-            const TypeId = TypeId!(Base) ~ "[]";
+            static immutable TypeId = TypeId!(Base) ~ "[]";
         }
         else
         {
-            const TypeId = TypeId!(Base) ~ "[" ~ T.length.stringof ~ "]";
+            static immutable TypeId = TypeId!(Base) ~ "[" ~ T.length.stringof ~ "]";
         }
     }
     else static if (is (T Base == Base*))
     {
         static if (is (Base Args == function) && is (Base R == return))
         {
-            const TypeId = TypeId!(R) ~ "function(" ~ TupleId!(Args) ~ ")";
+            static immutable TypeId = TypeId!(R) ~ "function(" ~ TupleId!(Args) ~ ")";
         }
         else
         {
-            const TypeId = TypeId!(Base) ~ "*";
+            static immutable TypeId = TypeId!(Base) ~ "*";
         }
     }
     else static if (is (T    Func == delegate) &&
                     is (Func Args == function) && is (Func R == return))
     {
-        const TypeId = TypeId!(R) ~ "delegate(" ~ TupleId!(Args) ~ ")";
+        static immutable TypeId = TypeId!(R) ~ "delegate(" ~ TupleId!(Args) ~ ")";
     }
     else static if (is (typeof (T.init.values[0]) V) &&
                     is (typeof (T.init.keys[0])   K) &&
                     is (V[K] == T))
     {
-        const TypeId = TypeId!(V) ~ "[" ~ TypeId!(K) ~ "]";
+        static immutable TypeId = TypeId!(V) ~ "[" ~ TypeId!(K) ~ "]";
     }
     else
     {
-        const TypeId = CheckedBaseType!(T).stringof;
+        static immutable TypeId = CheckedBaseType!(T).stringof;
     }
 }
 
@@ -149,8 +149,8 @@ unittest
     }
 
 
-    const x = TypeId!(Sample);
-    const ExpectedSampleStr = `struct{0LUint[4LU]16LUint24LUdouble32LUchar*}`;
+    static immutable x = TypeId!(Sample);
+    static immutable ExpectedSampleStr = `struct{0LUint[4LU]16LUint24LUdouble32LUchar*}`;
     static assert(x == ExpectedSampleStr);
 
     // This looks like a bug
@@ -182,7 +182,7 @@ unittest
 
 template TypeHash ( T )
 {
-    const TypeHash = TypeHash!(Fnv164Const.INIT, T);
+    static immutable TypeHash = TypeHash!(Fnv164Const.INIT, T);
 }
 
 unittest
@@ -195,8 +195,8 @@ unittest
         char* c;
     }
 
-    const hash = TypeHash!(Sample);
-    const ExpectedSampleHash = 0x25E3D303374B7838;
+    static immutable hash = TypeHash!(Sample);
+    static immutable ExpectedSampleHash = 0x25E3D303374B7838;
     static assert(hash == ExpectedSampleHash);
 
     // This looks like a bug
@@ -232,48 +232,48 @@ template TypeHash ( ulong hash, T )
 {
     static if (is (T == struct) && !IsTypedef!(T))
     {
-        const TypeHash = StaticFnv1a64!(AggregateHash!(StaticFnv1a64!(hash, "struct{"), CheckedBaseType!(T)), "}");
+        static immutable TypeHash = StaticFnv1a64!(AggregateHash!(StaticFnv1a64!(hash, "struct{"), CheckedBaseType!(T)), "}");
     }
     else static if (is (T == union))
     {
-        const TypeHash = StaticFnv1a64!(AggregateHash!(StaticFnv1a64!(hash, "union{"), CheckedBaseType!(T)), "}");
+        static immutable TypeHash = StaticFnv1a64!(AggregateHash!(StaticFnv1a64!(hash, "union{"), CheckedBaseType!(T)), "}");
     }
     else static if (is (T Base : Base[]))
     {
         static if (is (T == Base[]))
         {
-            const TypeHash = StaticFnv1a64!(TypeHash!(hash, Base), "[]");
+            static immutable TypeHash = StaticFnv1a64!(TypeHash!(hash, Base), "[]");
         }
         else
         {
-            const TypeHash = StaticFnv1a64!(TypeHash!(hash, Base), "[" ~ T.length.stringof ~ "]");
+            static immutable TypeHash = StaticFnv1a64!(TypeHash!(hash, Base), "[" ~ T.length.stringof ~ "]");
         }
     }
     else static if (is (T Base == Base*))
     {
         static if (is (Base Args == function) && is (Base R == return))
         {
-            const TypeHash = StaticFnv1a64!(TupleHash!(StaticFnv1a64!(TypeHash!(hash, R), "function("), Args), ")");
+            static immutable TypeHash = StaticFnv1a64!(TupleHash!(StaticFnv1a64!(TypeHash!(hash, R), "function("), Args), ")");
         }
         else
         {
-            const TypeHash = StaticFnv1a64!(TypeHash!(Base), "*");
+            static immutable TypeHash = StaticFnv1a64!(TypeHash!(Base), "*");
         }
     }
     else static if (is (T    Func == delegate) &&
                     is (Func Args == function) && is (Func R == return))
     {
-        const TypeHash = StaticFnv1a64!(TupleHash!(StaticFnv1a64!(TypeHash!(hash, R), "delegate("), Args), ")");
+        static immutable TypeHash = StaticFnv1a64!(TupleHash!(StaticFnv1a64!(TypeHash!(hash, R), "delegate("), Args), ")");
     }
     else static if (is (typeof (T.init.values[0]) V) &&
                     is (typeof (T.init.keys[0])   K) &&
                     is (V[K] == T))
     {
-        const TypeHash = StaticFnv1a64!(TypeHash!(StaticFnv1a64!(TypeHash!(hash, V), "["), K), "]");
+        static immutable TypeHash = StaticFnv1a64!(TypeHash!(StaticFnv1a64!(TypeHash!(hash, V), "["), K), "]");
     }
     else
     {
-        const TypeHash = StaticFnv1a64!(hash, CheckedBaseType!(T).stringof);
+        static immutable TypeHash = StaticFnv1a64!(hash, CheckedBaseType!(T).stringof);
     }
 }
 
@@ -288,11 +288,11 @@ template AggregateId ( T, size_t n = 0 )
 {
     static if (n < T.tupleof.length)
     {
-        const AggregateId = T.tupleof[n].offsetof.stringof ~ TypeId!(typeof (T.tupleof[n])) ~ AggregateId!(T, n + 1);
+        static immutable AggregateId = T.tupleof[n].offsetof.stringof ~ TypeId!(typeof (T.tupleof[n])) ~ AggregateId!(T, n + 1);
     }
     else
     {
-        const AggregateId = "";
+        static immutable AggregateId = "";
     }
 }
 
@@ -306,11 +306,11 @@ template TupleId ( T ... )
 {
     static if (T.length)
     {
-        const TupleId = TypeId!(T[0]) ~ TupleId!(T[1 .. $]);
+        static immutable TupleId = TypeId!(T[0]) ~ TupleId!(T[1 .. $]);
     }
     else
     {
-        const TupleId = "";
+        static immutable TupleId = "";
     }
 }
 
@@ -326,11 +326,11 @@ template AggregateHash ( ulong hash, T, size_t n = 0 )
 {
     static if (n < T.tupleof.length)
     {
-        const AggregateHash = AggregateHash!(TypeHash!(StaticFnv1a64!(hash, T.tupleof[n].offsetof.stringof), typeof (T.tupleof[n])), T, n + 1);
+        static immutable AggregateHash = AggregateHash!(TypeHash!(StaticFnv1a64!(hash, T.tupleof[n].offsetof.stringof), typeof (T.tupleof[n])), T, n + 1);
     }
     else
     {
-        const AggregateHash = hash;
+        static immutable AggregateHash = hash;
     }
 }
 
@@ -345,11 +345,11 @@ template TupleHash ( ulong hash, T ... )
 {
     static if (T.length)
     {
-        const TupleHash = TupleHash!(TypeHash!(hash, T[0]), T[1 .. $]);
+        static immutable TupleHash = TupleHash!(TypeHash!(hash, T[0]), T[1 .. $]);
     }
     else
     {
-        const TupleHash = hash;
+        static immutable TupleHash = hash;
     }
 }
 
@@ -401,11 +401,11 @@ template TypeErrorMsg ( T, Base )
 {
     static if (is (T == Base))
     {
-        const TypeErrorMsg = Base.stringof ~ " is not supported because it is a class or interface";
+        static immutable TypeErrorMsg = Base.stringof ~ " is not supported because it is a class or interface";
     }
     else
     {
-        const TypeErrorMsg = T.stringof ~ " is a typedef of " ~ Base.stringof ~ " which is not supported because it is a class or interface";
+        static immutable TypeErrorMsg = T.stringof ~ " is a typedef of " ~ Base.stringof ~ " which is not supported because it is a class or interface";
     }
 }
 
@@ -427,9 +427,9 @@ template TypeErrorMsg ( T, Base )
 private template IsTypedef (T)
 {
     version (D_Version2)
-        const IsTypedef = is(T.IsTypedef);
+        static immutable IsTypedef = is(T.IsTypedef);
     else
-        const IsTypedef = mixin("is(T == typedef)");
+        static immutable IsTypedef = mixin("is(T == typedef)");
 }
 
 

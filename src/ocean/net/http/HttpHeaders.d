@@ -174,7 +174,7 @@ class HttpHeadersView : HttpTokens
 
         **********************************************************************/
 
-        int opApply (int delegate(ref HeaderElement) dg)
+        int opApply (scope int delegate(ref HeaderElement) dg)
         {
                 HeaderElement   element;
                 int             result = 0;
@@ -231,7 +231,7 @@ class HttpHeadersView : HttpTokens
 
                 **************************************************************/
 
-                int opApply (int delegate(ref HeaderElement) dg)
+                int opApply (scope int delegate(ref HeaderElement) dg)
                 {
                         HeaderElement   element;
                         int             result = 0;
@@ -301,7 +301,7 @@ class HttpHeaders : HttpHeadersView
 
         **********************************************************************/
 
-        void add (HttpHeaderName name, void delegate(OutputBuffer) dg)
+        void add (HttpHeaderName name, scope void delegate(OutputBuffer) dg)
         {
                 super.add (name.value, dg);
         }

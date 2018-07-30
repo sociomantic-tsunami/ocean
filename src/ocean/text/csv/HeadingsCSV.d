@@ -191,7 +191,7 @@ public class HeadingsCSV
 
     ***************************************************************************/
 
-    public void parse ( InputStream stream, RowDg row_dg )
+    public void parse ( InputStream stream, scope RowDg row_dg )
     {
         this.headings.clear();
 
@@ -249,7 +249,7 @@ public class HeadingsCSV
     ***************************************************************************/
 
     public void parse ( InputStream stream, cstring[] include_headings,
-        RowDg row_dg )
+        scope RowDg row_dg )
     {
         this.headings.clear();
         this.heading_included.length = 0;

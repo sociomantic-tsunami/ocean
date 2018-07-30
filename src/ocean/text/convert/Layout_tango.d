@@ -228,12 +228,12 @@ class Layout(T)
 
      **********************************************************************/
 
-    public final size_t convert (Sink sink, Const!(T)[] formatStr, ...)
+    public final size_t convert (scope Sink sink, Const!(T)[] formatStr, ...)
     {
         return convert (cast(SizeSink)sink, _arguments, _argptr, formatStr);
     }
 
-    public final size_t convert (SizeSink sink, Const!(T)[] formatStr, ...)
+    public final size_t convert (scope SizeSink sink, Const!(T)[] formatStr, ...)
     {
         return convert (sink, _arguments, _argptr, formatStr);
     }
@@ -315,12 +315,12 @@ class Layout(T)
 
      **********************************************************************/
 
-    public final size_t convert (Sink sink, TypeInfo[] arguments, ArgList args, Const!(T)[] formatStr)
+    public final size_t convert (scope Sink sink, TypeInfo[] arguments, ArgList args, Const!(T)[] formatStr)
     {
         return convert(cast(SizeSink)sink, arguments, args, formatStr);
     }
 
-    public final size_t convert (SizeSink sink, TypeInfo[] arguments, ArgList args, Const!(T)[] formatStr)
+    public final size_t convert (scope SizeSink sink, TypeInfo[] arguments, ArgList args, Const!(T)[] formatStr)
     {
         version (LinuxVarArgs)
         {
@@ -462,7 +462,7 @@ class Layout(T)
 
      **********************************************************************/
 
-    private size_t parse (Const!(T)[] layout, TypeInfo[] ti, Arg[] args, SizeSink sink)
+    private size_t parse (Const!(T)[] layout, TypeInfo[] ti, Arg[] args, scope SizeSink sink)
     {
         T[512] result = void;
         ptrdiff_t length, nextIndex;
@@ -952,7 +952,7 @@ class Layout(T)
 
      **********************************************************************/
 
-    private size_t spaces (SizeSink sink, ptrdiff_t count)
+    private size_t spaces (scope SizeSink sink, ptrdiff_t count)
     {
         size_t ret;
 

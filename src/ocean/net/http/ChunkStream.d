@@ -79,7 +79,7 @@ deprecated class ChunkOutput : OutputFilter
 
         ***********************************************************************/
 
-        final void terminate (void delegate(OutputBuffer) headers = null)
+        final void terminate (scope void delegate(OutputBuffer) headers = null)
         {
                 output.append ("0\r\n");
                 if (headers)
@@ -112,7 +112,7 @@ deprecated class ChunkInput : Lines!(char)
 
         ***********************************************************************/
 
-        this (InputStream stream, Headers headers = null)
+        this (InputStream stream, scope Headers headers = null)
         {
                 set (stream);
                 this.headers = headers;

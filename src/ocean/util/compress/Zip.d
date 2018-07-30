@@ -108,7 +108,7 @@ private
 
 struct LocalFileHeader
 {
-    const uint signature = 0x04034b50;
+    enum uint signature = 0x04034b50;
 
     alias LocalFileHeaderData Data;
     Data data;
@@ -132,15 +132,15 @@ struct LocalFileHeader
             ZipException.eftoolong;
 
         // Encode filename
-        auto file_name = utf8_to_cp437(this.file_name);
-        scope(exit) if( file_name !is cast(ubyte[])this.file_name )
+        auto file_name = utf8_to_cp437((&this).file_name);
+        scope(exit) if( file_name !is cast(ubyte[])(&this).file_name )
             delete file_name;
 
         if( file_name is null )
             ZipException.fnencode;
 
         // Update lengths in data
-        Data data = this.data;
+        Data data = (&this).data;
         data.file_name_length = cast(ushort) file_name.length;
         data.extra_field_length = cast(ushort) extra_field.length;
 
@@ -269,7 +269,7 @@ struct LocalFileHeader
 
 struct FileHeader
 {
-    const uint signature = 0x02014b50;
+    enum uint signature = 0x02014b50;
 
     alias FileHeaderData Data;
     Data* data;
@@ -313,21 +313,21 @@ struct FileHeader
             ZipException.cotoolong;
 
         // encode the filename and comment
-        auto file_name = utf8_to_cp437(this.file_name);
-        scope(exit) if( file_name !is cast(ubyte[])this.file_name )
+        auto file_name = utf8_to_cp437((&this).file_name);
+        scope(exit) if( file_name !is cast(ubyte[])(&this).file_name )
             delete file_name;
-        auto file_comment = utf8_to_cp437(this.file_comment);
-        scope(exit) if( file_comment !is cast(ubyte[])this.file_comment )
+        auto file_comment = utf8_to_cp437((&this).file_comment);
+        scope(exit) if( file_comment !is cast(ubyte[])(&this).file_comment )
             delete file_comment;
 
         if( file_name is null )
             ZipException.fnencode;
 
-        if( file_comment is null && this.file_comment !is null )
+        if( file_comment is null && (&this).file_comment !is null )
             ZipException.coencode;
 
         // Update the lengths
-        Data data = *(this.data);
+        Data data = *((&this).data);
         data.file_name_length = cast(ushort) file_name.length;
         data.extra_field_length = cast(ushort) extra_field.length;
         data.file_comment_length = cast(ushort) file_comment.length;
@@ -417,7 +417,7 @@ struct FileHeader
 
 struct EndOfCDRecord
 {
-    const uint  signature = 0x06054b50;
+    enum uint  signature = 0x06054b50;
 
     alias EndOfCDRecordData Data;
     Data data;
@@ -436,12 +436,12 @@ struct EndOfCDRecord
         if( file_comment.length > ushort.max )
             ZipException.cotoolong;
 
-        auto file_comment = utf8_to_cp437(this.file_comment);
-        scope(exit) if( file_comment !is cast(ubyte[])this.file_comment )
+        auto file_comment = utf8_to_cp437((&this).file_comment);
+        scope(exit) if( file_comment !is cast(ubyte[])(&this).file_comment )
                 delete file_comment;
 
         // Set up data block
-        Data data = this.data;
+        Data data = (&this).data;
         data.file_comment_length = cast(ushort) file_comment.length;
 
         version( BigEndian ) swapAll(data);
@@ -492,15 +492,15 @@ public
 
 private
 {
-    const ushort ZIP_VERSION = 20;
-    const ushort MAX_EXTRACT_VERSION = 20;
+    static immutable ushort ZIP_VERSION = 20;
+    static immutable ushort MAX_EXTRACT_VERSION = 20;
 
     /*                                     compression flags
                                   uses trailing descriptor |
                                utf-8 encoding            | |
                                             ^            ^ /\               */
-    const ushort SUPPORTED_FLAGS = 0b00_0_0_0_0000_0_0_0_1_11_0;
-    const ushort UNSUPPORTED_FLAGS = ~SUPPORTED_FLAGS;
+    static immutable ushort SUPPORTED_FLAGS = 0b00_0_0_0_0000_0_0_0_1_11_0;
+    static immutable ushort UNSUPPORTED_FLAGS = ~SUPPORTED_FLAGS;
 
     Method toMethod(ushort method)
     {
@@ -541,7 +541,7 @@ interface ZipReader
     bool more();
     ZipEntry get();
     ZipEntry get(ZipEntry);
-    int opApply(int delegate(ref ZipEntry));
+    int opApply(scope int delegate(ref ZipEntry));
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -702,7 +702,7 @@ class ZipBlockReader : ZipReader
      * passed to your loop.  If you wish to keep the instance and re-use it
      * later, you $(B must) use the dup member to create a copy.
      */
-    int opApply(int delegate(ref ZipEntry) dg)
+    int opApply(scope int delegate(ref ZipEntry) dg)
     {
         int result = 0;
         ZipEntry entry;
@@ -827,7 +827,7 @@ private:
         //Stderr.formatln("read_eocd_record()");
 
         // Signature + record + max. comment length
-        const max_chunk_len = 4 + EndOfCDRecord.Data.sizeof + ushort.max;
+        static immutable max_chunk_len = 4 + EndOfCDRecord.Data.sizeof + ushort.max;
 
         auto file_len = seeker.seek(0, seeker.Anchor.End);
         verify( file_len <= size_t.max );
@@ -1478,7 +1478,7 @@ private:
     /*
      * Creates a new ZipEntry from the FileHeader.
      */
-    this(FileHeader header, open_dg_t open_dg)
+    this(FileHeader header, scope open_dg_t open_dg)
     {
         this.reset(header, open_dg);
     }
@@ -1486,7 +1486,7 @@ private:
     /*
      * Resets the current instance with new values.
      */
-    ZipEntry reset(FileHeader header, open_dg_t open_dg)
+    ZipEntry reset(FileHeader header, scope open_dg_t open_dg)
     {
         this.header = header;
         this.open_dg = open_dg;
@@ -1916,9 +1916,9 @@ void write(T)(OutputStream s, T value)
 void swapAll(T)(ref T data)
 {
     static if( is(typeof(T.record_fields)) )
-        const fields = T.record_fields;
+        static immutable fields = T.record_fields;
     else
-        const fields = data.tupleof.length;
+        static immutable fields = data.tupleof.length;
 
     foreach( i,_ ; data.tupleof )
     {

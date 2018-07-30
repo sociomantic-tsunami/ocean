@@ -51,7 +51,7 @@ struct HttpVersionIds
 
      **************************************************************************/
 
-    const istring[HttpVersion.max + 1] list =
+    enum istring[HttpVersion.max + 1] list =
     [
         HttpVersion.v1_1: "HTTP/1.1",
         HttpVersion.v1_0: "HTTP/1.0"
@@ -138,7 +138,7 @@ struct HttpVersionIds
 
     static bool validSyntax ( cstring id )
     {
-        const prefix = "HTTP/";
+        enum prefix = "HTTP/";
 
         bool valid = id.length > prefix.length;
 

@@ -26,7 +26,7 @@ unittest
     static struct Foo
     {
         int i = 0x2A;
-        void toString (size_t delegate (cstring) sink)
+        void toString (scope size_t delegate (cstring) sink)
         {
             sink("Hello size_t");
         }
@@ -38,12 +38,12 @@ unittest
     static struct Bar
     {
         int i = 0x2A;
-         void toString (size_t delegate (cstring) sink)
+         void toString (scope size_t delegate (cstring) sink)
         {
             sink("Hello size_t");
         }
         // This one takes precedence
-        void toString (void delegate (cstring) sink)
+        void toString (scope void delegate (cstring) sink)
         {
             sink("Hello void");
         }
@@ -377,7 +377,7 @@ unittest
     // Support for new sink-based toString
     static struct S1
     {
-        void toString (FormatterSink sink)
+        void toString (scope FormatterSink sink)
         {
             sink("42424242424242");
         }
@@ -388,7 +388,7 @@ unittest
     // For classes too
     static class C1
     {
-        void toString (FormatterSink sink)
+        void toString (scope FormatterSink sink)
         {
             sink("42424242424242");
         }
@@ -399,7 +399,7 @@ unittest
     // Compile time support is awesome, isn't it ?
     static struct S2
     {
-        void toString (FormatterSink sink, cstring default_ = "42")
+        void toString (scope FormatterSink sink, cstring default_ = "42")
         {
             sink(default_);
         }
@@ -461,7 +461,7 @@ unittest
     void[] varr = arr;
     test(format("{}", varr) == "[42, 43, 44, 45, 92]");
 
-    const ubyte[5] carr = [42, 43, 44, 45, 92];
+    static immutable ubyte[5] carr = [42, 43, 44, 45, 92];
     auto cvarr = carr; // Immutable, cannot be marked `const` in D1
     test(format("{}", cvarr) == "[42, 43, 44, 45, 92]");
 
@@ -479,12 +479,12 @@ unittest
 // Const tests
 unittest
 {
-    const int ai = 42;
-    const double ad = 42.00;
+    static immutable int ai = 42;
+    static immutable double ad = 42.00;
     static struct Answer_struct { int value; }
     static class Answer_class
     {
-        public override istring toString () /* d1to2fix_inject: const */
+        public override istring toString () const
         {
             return "42";
         }
@@ -510,7 +510,7 @@ unittest
     Object* o = cast(Object*) 0xDEADBEEF_DEADBEEF;
     void* ptr = cast(void*) 0xDEADBEEF_DEADBEEF;
 
-    const istring expected = "0XDEADBEEFDEADBEEF";
+    static immutable istring expected = "0XDEADBEEFDEADBEEF";
     istring object_str = format("{}", o);
     istring ptr_str = format("{}", ptr);
     istring null_str = format("{}", null);
@@ -539,8 +539,8 @@ unittest
 
 unittest
 {
-    const bool YES = true;
-    const bool NO  = false;
+    static immutable bool YES = true;
+    static immutable bool NO  = false;
     test(format("{} -- {}", YES, NO) == "true -- false");
 }
 

@@ -58,7 +58,7 @@ public class LayoutDate : Appender.Layout
 
         ***********************************************************************/
 
-        void format (LogEvent event, size_t delegate(Const!(void)[]) dg)
+        void format (LogEvent event, scope size_t delegate(Const!(void)[]) dg)
         {
                 auto level = event.levelName;
 

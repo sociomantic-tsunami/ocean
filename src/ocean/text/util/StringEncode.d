@@ -74,7 +74,7 @@ import core.stdc.errno;
 
 class IconvException : Exception
 {
-    const MSG = "Iconv: Error";
+    static immutable MSG = "Iconv: Error";
 
     this ( istring msg = MSG, istring file = __FILE__, int line = __LINE__ )
     {
@@ -93,7 +93,7 @@ class IconvException : Exception
 
 class InvalidMbSeq :  IconvException
 {
-    const msg = "Iconv: Invalid Multibyte Sequence";
+    static immutable msg = "Iconv: Invalid Multibyte Sequence";
 
     this ( istring file = __FILE__, int line = __LINE__ )
     {
@@ -109,7 +109,7 @@ class InvalidMbSeq :  IconvException
 
 class IncompleteMbSeq :  IconvException
 {
-    const msg = "Iconv: Incomplete Multibyte Sequence";
+    static immutable msg = "Iconv: Incomplete Multibyte Sequence";
 
     this ( istring file = __FILE__, int line = __LINE__ )
     {

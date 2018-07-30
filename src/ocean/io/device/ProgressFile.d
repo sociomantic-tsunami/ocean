@@ -100,7 +100,7 @@ deprecated class ProgressFile : File
 
     ***************************************************************************/
 
-    public this ( ProgressDg progress_dg )
+    public this ( scope ProgressDg progress_dg )
     {
         verify(progress_dg !is null,
                 typeof(this).stringof ~ ": progress delegate is null, what's the point?");
@@ -123,7 +123,7 @@ deprecated class ProgressFile : File
 
     ***************************************************************************/
 
-    public this ( ProgressDg progress_dg, char[] path, Style style = ReadExisting )
+    public this ( scope ProgressDg progress_dg, char[] path, Style style = ReadExisting )
     {
         verify(progress_dg !is null,
                 typeof(this).stringof ~ ": progress delegate is null, what's the point?");
