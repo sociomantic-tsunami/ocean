@@ -229,9 +229,9 @@ class QueryParamSet: ParamSet
 
     public this ( char element_delim, char keyval_delim, in istring[] keys ... )
     {
-        super.addKeys(keys);
+        this.addKeys(keys);
 
-        super.rehash();
+        this.rehash();
 
         this.element_delim = element_delim;
         this.keyval_delim   = keyval_delim;
@@ -249,13 +249,13 @@ class QueryParamSet: ParamSet
 
     public void parse ( cstring query )
     {
-        super.reset();
+        this.reset();
 
         scope query_params = new QueryParams(this.element_delim, this.keyval_delim);
 
         foreach (key, val; query_params.set(query))
         {
-            super.set(key, val);
+            this.set(key, val);
         }
     }
 }
@@ -442,6 +442,80 @@ unittest
                 default:
                     test(0);
             }
+        }
+    }
+}
+
+
+unittest
+{
+    scope params = new FullQueryParamSet(',', ':', "hello", "world");
+    params.parse("hello:1,world:2,Die:Katze,tritt");
+    test!("==")(params["hello"], "1");
+    test!("==")(params["world"], "2");
+    test(!("Die" in params));
+    test(!("tritt" in params));
+    test!("==")(params.remaining_elements.length, 2);
+
+    with (params.remaining_elements[0])
+    {
+        test!("==")(key, "Die");
+        test!("==")(val, "Katze");
+    }
+
+    with (params.remaining_elements[1])
+    {
+        test!("==")(key, "tritt");
+        test!("is")(val, val.init);
+    }
+
+    bool[4] found;
+
+    foreach (key, val; params)
+    {
+        switch (key)
+        {
+            case "hello":
+                test!("==")(val, "1");
+                found[0] = true;
+                break;
+            case "world":
+                test!("==")(val, "2");
+                found[1] = true;
+                break;
+            case "Die":
+                test!("==")(val, "Katze");
+                found[2] = true;
+                break;
+            case "tritt":
+                test!("==")(val, val.init);
+                found[3] = true;
+                break;
+            default:
+                test(0);
+        }
+    }
+
+    foreach (f; found)
+        test(f);
+
+    params.reset();
+    test(params["hello"] is null);
+    test(params["world"] is null);
+    test!("==")(params.remaining_elements.length, 0);
+
+    foreach (key, val; params)
+    {
+        switch (key)
+        {
+            case "hello":
+                test!("==")(val, val.init);
+                break;
+            case "world":
+                test!("==")(val, val.init);
+                break;
+            default:
+                test(0);
         }
     }
 }
