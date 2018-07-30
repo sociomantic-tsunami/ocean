@@ -29,6 +29,7 @@ import core.stdc.math; // fabs;
 import ocean.core.Traits;
 import ocean.core.Buffer;
 import ocean.core.array.DefaultPredicates;
+import ocean.core.Verify;
 
 version (UnitTest)
 {
@@ -1140,13 +1141,10 @@ unittest
 
 public T[] removeShift ( T ) ( ref Buffer!(T) buffer, size_t index,
     size_t remove_elems = 1 )
-in
 {
-    assert(index < buffer.length, "removeShift: index is >= buffer length");
-    assert(index + remove_elems - 1 < buffer.length, "removeShift: end is >= buffer length");
-}
-body
-{
+    verify(index < buffer.length);
+    verify(index + remove_elems - 1 < buffer.length);
+
     if ( remove_elems == 0 )
         return buffer[];
 
@@ -1209,12 +1207,9 @@ unittest
 
 public T[] insertShift ( T ) ( ref Buffer!(T) buffer, size_t index,
     size_t insert_elems = 1)
-in
 {
-    assert(index <= buffer.length, "insertShift: index is > buffer length");
-}
-body
-{
+    verify(index <= buffer.length);
+
     if ( insert_elems == 0 )
         return buffer[];
 
