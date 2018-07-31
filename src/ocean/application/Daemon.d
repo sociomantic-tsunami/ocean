@@ -223,8 +223,7 @@ public abstract class Daemon
 
         // Handle command line args and parse config files.
         this.handleArgs(cl_args);
-        this.parseConfig();
-        this.oneTimeConfiguration();
+        this.parseConfig(true);
 
         // Initialise scheduler, epoll, and epoll clients.
         initScheduler(this.settings.scheduler_config);
@@ -427,6 +426,10 @@ public abstract class Daemon
         opposed to the components handled in oneTimeConfiguration, that must
         only be configured once). Calls user-defined config processing hooks.
 
+        Params:
+            startup = if true, one-time configuration that should only occur at
+                application startup is performed
+
     ***************************************************************************/
 
     private void parseConfig ( )
@@ -449,27 +452,22 @@ public abstract class Daemon
         // Apply any arg-specified config value overrides.
         ConfigOverrides.handleArgs(this.args, this.config);
 
+        // Perform one-time application config, if requested.
+        if ( startup )
+        {
+            TaskScheduler.parseSchedulerConfig(this.config,
+                this.settings.scheduler_config);
+            this.unix_socket.parseConfig(this.config);
+            this.pid.parseConfig(this.config);
+            this.configureStatsLogger();
+        }
+
         // Configure internal components that may be reconfigured.
         this.configureLoggers();
 
         // Call config processing hooks.
         foreach ( hook; this.hooks.process_config )
             hook();
-    }
-
-    /***************************************************************************
-
-        Configure internal components that must be set up once only.
-
-    ***************************************************************************/
-
-    private void oneTimeConfiguration ( )
-    {
-        TaskScheduler.parseSchedulerConfig(this.config,
-            this.settings.scheduler_config);
-        this.unix_socket.parseConfig(this.config);
-        this.pid.parseConfig(this.config);
-        this.configureStatsLogger();
     }
 
     /***************************************************************************
@@ -686,7 +684,7 @@ public abstract class Daemon
     private void reloadConfigCommand ( cstring[] args,
         void delegate ( cstring response ) send_response )
     {
-        this.parseConfig();
+        this.parseConfig(false);
         send_response("ACK\n");
     }
 }
