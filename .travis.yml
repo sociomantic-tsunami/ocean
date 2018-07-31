@@ -42,13 +42,13 @@ jobs:
         - <<: *test-matrix
           env: DMD=1.081.* F=devel
         - <<: *test-matrix
-          env: DMD=2.070.2.s* F=production
-        - <<: *test-matrix
-          env: DMD=2.070.2.s* F=devel
-        - <<: *test-matrix
           env: DMD=2.071.2.s* F=production
         - <<: *test-matrix
           env: DMD=2.071.2.s* F=devel
+        - <<: *test-matrix
+          env: DMD=2.078.3.s* F=production
+        - <<: *test-matrix
+          env: DMD=2.078.3.s* F=devel
         - <<: *test-matrix
           env: DMD=2.078.* F=production
         - <<: *test-matrix
