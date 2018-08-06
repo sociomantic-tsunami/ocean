@@ -530,7 +530,7 @@ public class AppStatus
     {
         this.resetStaticLines();
 
-        if ( this.is_redirected )
+        if ( this.is_redirected || this.terminal_output is null )
         {
             this.static_lines.length = size;
 
