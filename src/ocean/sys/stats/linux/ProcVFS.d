@@ -20,6 +20,7 @@ import ocean.transition;
 import Path = ocean.io.Path;
 import ocean.sys.ErrnoException;
 import core.sys.posix.stdio;
+import core.sys.posix.dirent;
 import core.stdc.errno;
 import ocean.core.Tuple;
 import ocean.io.device.File;
@@ -30,6 +31,7 @@ import ocean.core.Enforce;
 import core.stdc.stdlib;
 import ocean.meta.traits.Basic;
 import ocean.meta.codegen.Identifier;
+import ocean.text.util.StringC;
 
 version (UnitTest)
 {
@@ -78,9 +80,41 @@ public int getOpenFdCount ()
 {
     int count;
 
-    foreach (c; Path.children("/proc/self/fdinfo"))
+    auto dir = opendir("/proc/self/fdinfo".ptr);
+
+    if (dir is null)
+        return 0;
+
+    scope (exit)
     {
-        count++;
+        // ignore EBADF
+        closedir(dir);
+    }
+
+    /*
+        This uses `readdir` and not `readdir_r` since the latter
+        is de-facto deprecated.
+
+        From http://man7.org/linux/man-pages/man3/readdir_r.3.html
+
+        In the current POSIX.1 specification (POSIX.1-2008), readdir(3) is
+        not required to be thread-safe. However, in modern
+        implementations (including the glibc implementation), concurrent
+        calls to readdir(3) that specify different directory streams are
+        thread-safe. Therefore, the use of readdir_r() is generally
+        unnecessary in multithreaded programs. In cases where multiple
+        threads must read from the same directory stream, using readdir(3)
+        with external synchronization is still preferable to the use of
+        readdir_r(), for the reasons given in the points above.
+    */
+    dirent* dp;
+    while ((dp = readdir(dir)) !is null)
+    {
+        auto entry_name = StringC.toDString(dp.d_name.ptr);
+        if (entry_name != "." && entry_name != "..")
+        {
+            count++;
+        }
     }
 
     return count;
