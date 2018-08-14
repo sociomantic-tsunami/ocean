@@ -356,6 +356,28 @@ final class Scheduler : IScheduler
         }
     }
 
+    private class SimpleTask : Task
+    {
+        private void delegate ( ) logic;
+
+        public this ( void delegate ( ) dg )
+        {
+            this.logic = dg;
+            // TODO: verify
+        }
+
+        protected override void run ( )
+        {
+            this.logic();
+        }
+    }
+
+    /// TODO
+    public void schedule ( void delegate ( ) dg )
+    {
+        this.schedule(new SimpleTask(dg));
+    }
+
     /***************************************************************************
 
         Method used to queue the task for later execution.
