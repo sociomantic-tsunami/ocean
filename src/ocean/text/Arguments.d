@@ -611,7 +611,7 @@ import ocean.io.stream.Format : FormatOutput;
 import ocean.math.Math;
 import ocean.text.Util;
 import ocean.text.convert.Formatter;
-import ocean.text.convert.Integer_tango;
+import ocean.text.convert.Integer;
 import ocean.util.container.SortedMap;
 import ocean.util.container.more.Stack;
 import ocean.core.Verify;
@@ -1292,11 +1292,9 @@ public class Arguments
             value = arg.assigned[0];
         }
 
-        auto num = toLong(value);
-
-        enforce(num <= T.max && num >= T.min);
-
-        return cast(T)num;
+        T num;
+        enforce(toInteger(value, num));
+        return num;
     }
 
 
@@ -2660,6 +2658,11 @@ unittest
     args("num").params(1);
     test(args.parse("--num 100"));
     test(args.getInt!(uint)("num") == 100);
+
+    args = new Arguments;
+    args("num").params(1);
+    test(args.parse("--num 18446744073709551615"));
+    test(args.getInt!(ulong)("num") == ulong.max);
 }
 
 // Test for D2 'static immutable'
