@@ -419,6 +419,9 @@ class ConfigExt : IApplicationExtension, IArgumentsExtExtension
         if (key.length == 0)
             return "Empty key for config option override: " ~ opt;
 
+        if (!this.config.exists(category, key))
+            return "Attempt to override non-existent config entry";
+
         return null;
     }
 }
@@ -440,6 +443,7 @@ version (UnitTest)
 unittest
 {
     auto ext = new ConfigExt;
+    ext.config.parseString("[cat]\nkey = oops");
 
     // Errors are compared only with startsWith(), not the whole error
     void testParser ( istring opt, istring exp_cat, istring exp_key,
@@ -485,7 +489,7 @@ unittest
     testParser("cat.key = value  ", "cat", "key", "value");
     testParser("  cat.key = value  ", "cat", "key", "value");
     testParser("  cat . key = value \t ", "cat", "key", "value");
-    testParser("  empty . val = \t ", "empty", "val", "");
+    testParser("  cat . key = \t ", "cat", "key", "");
 
     // New format errors
     testParserError("cat.key value", "No value separator ");
@@ -493,6 +497,10 @@ unittest
     testParserError("cat key value", "No value separator ");
     testParserError(" . empty = cat\t ", "Empty category ");
     testParserError("  empty .  = key\t ", "Empty key ");
-    testParserError("  empty . val = \t ", null);
+    testParserError("  cat . key = \t ", null);
     testParserError("  .   = \t ", "Empty ");
+    testParserError("badcat.key=value",
+        "Attempt to override non-existent config entry");
+    testParserError("cat.badkey=value",
+        "Attempt to override non-existent config entry");
 }
