@@ -14,6 +14,8 @@
 
 *******************************************************************************/
 
+module integrationtest.timerext.main;
+
 import ocean.transition;
 import ocean.core.Test;
 import ocean.util.app.Application;
@@ -75,6 +77,7 @@ class App : Application
     }
 }
 
+version(UnitTest) {} else
 void main (istring[] args)
 {
     auto sandbox = DirectorySandbox.create(["etc", "log"]);
