@@ -92,7 +92,7 @@ Versioning
 ==========
 
 ocean's versioning follows `Neptune
-<https://github.com/sociomantic-tsunami/neptune/blob/master/doc/library-user.rst>`_.
+<https://github.com/sociomantic-tsunami/neptune/blob/v0.x.x/doc/library-user.rst>`_.
 
 This means that the major version is increased for breaking changes, the minor
 version is increased for feature releases, and the patch version is increased
@@ -140,5 +140,5 @@ Contributing
 ============
 
 See the guide for `contributing to Neptune-versioned libraries
-<https://github.com/sociomantic-tsunami/neptune/blob/master/doc/library-contributor.rst>`_.
+<https://github.com/sociomantic-tsunami/neptune/blob/v0.x.x/doc/library-contributor.rst>`_.
 
