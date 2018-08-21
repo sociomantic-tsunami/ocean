@@ -46,7 +46,7 @@ version (UnitTest)
 
 *******************************************************************************/
 
-public const HashDigits = hash_t.sizeof * 2;
+public static immutable HashDigits = hash_t.sizeof * 2;
 
 
 /*******************************************************************************

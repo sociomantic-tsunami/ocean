@@ -56,7 +56,7 @@ template TreeQueue ( T )
 
             public bool is_empty ( )
             {
-                return this.core.is_empty;
+                return (&this).core.is_empty;
             }
 
             /*******************************************************************
@@ -78,7 +78,7 @@ template TreeQueue ( T )
 
             public bool push ( T value, bool startwatch = true )
             {
-                return this.core.push(mixin(cast_ulong ~ "value"), startwatch);
+                return (&this).core.push(mixin(cast_ulong ~ "value"), startwatch);
             }
 
             /*******************************************************************
@@ -90,9 +90,9 @@ template TreeQueue ( T )
 
             *******************************************************************/
 
-            public int opApply ( int delegate ( ref T value ) dg )
+            public int opApply ( scope int delegate ( ref T value ) dg )
             {
-                return this.core.opApply(
+                return (&this).core.opApply(
                     (ref ulong value_)
                     {
                         auto value = mixin(cast_T ~ "value_");
@@ -112,7 +112,7 @@ template TreeQueue ( T )
 
             public bool exists ( T value )
             {
-                return this.core.exists(mixin(cast_ulong ~ "value"));
+                return (&this).core.exists(mixin(cast_ulong ~ "value"));
             }
 
             /*******************************************************************
@@ -127,7 +127,7 @@ template TreeQueue ( T )
 
             public bool remove ( T value )
             {
-                return this.core.remove(mixin(cast_ulong ~ "value"));
+                return (&this).core.remove(mixin(cast_ulong ~ "value"));
             }
 
             /*******************************************************************
@@ -139,7 +139,7 @@ template TreeQueue ( T )
 
             public TreeQueueStats stats ( )
             {
-                return this.core.stats;
+                return (&this).core.stats;
             }
 
             /*******************************************************************
@@ -156,7 +156,7 @@ template TreeQueue ( T )
 
             public TreeQueueStats stats ( TreeQueueStats src )
             {
-                return this.core.stats = src;
+                return (&this).core.stats = src;
             }
 
             /*******************************************************************
@@ -169,11 +169,11 @@ template TreeQueue ( T )
 
             static if (is(T PtrBase == PtrBase*))
             {
-                private const pointer_values = true;
+                private enum pointer_values = true;
             }
             else
             {
-                private const pointer_values = is(T == class) ||
+                private enum pointer_values = is(T == class) ||
                                                is(T == interface);
             }
 
@@ -187,16 +187,16 @@ template TreeQueue ( T )
             static if (pointer_values)
             {
                 static assert(is(size_t == ulong));
-                private const cast_ulong = "cast(ulong)cast(void*)";
-                private const cast_T     = "cast(T)cast(void*)";
+                private enum cast_ulong = "cast(ulong)cast(void*)";
+                private enum cast_T     = "cast(T)cast(void*)";
             }
             else
             {
                 static assert(is(T == long), "The TreeQueue value type is " ~
                               "expected to be a 64-bit integer or reference " ~
                               "type, not \"" ~ T.stringof ~ "\"");
-                private const cast_ulong = "cast(ulong)";
-                private const cast_T     = "cast(T)";
+                private enum cast_ulong = "cast(ulong)";
+                private enum cast_T     = "cast(T)";
             }
         }
     }
@@ -275,7 +275,7 @@ private struct TreeQueueCore
 
         ***********************************************************************/
 
-        typeof(this) prev = null, next = null;
+        typeof((&this)) prev = null, next = null;
 
         /***********************************************************************
 
@@ -294,14 +294,14 @@ private struct TreeQueueCore
 
         invariant ( )
         {
-            if (this.ebnode.key)
+            if ((&this).ebnode.key)
             {
-                assert(this.prev !is null || this.next is null);
+                assert((&this).prev !is null || (&this).next is null);
             }
             else
             {
-                assert(this.prev is null);
-                assert(this.next is null);
+                assert((&this).prev is null);
+                assert((&this).next is null);
             }
         }
     }
@@ -338,16 +338,16 @@ private struct TreeQueueCore
 
     invariant ( )
     {
-        auto _this = cast(TreeQueueCore*)this; // cast away const in invariant
+        auto _this = cast(TreeQueueCore*)(&this); // cast away const in invariant
         if (_this.ebtree.is_empty)
         {
-            assert(this.head is null);
-            assert(this.tail is null);
+            assert((&this).head is null);
+            assert((&this).tail is null);
         }
         else
         {
-            assert(this.head !is null);
-            assert(this.tail !is null);
+            assert((&this).head !is null);
+            assert((&this).tail !is null);
         }
     }
 
@@ -360,7 +360,7 @@ private struct TreeQueueCore
 
     public bool is_empty ( )
     {
-        return this.head is null;
+        return (&this).head is null;
     }
 
     /***************************************************************************
@@ -382,28 +382,28 @@ private struct TreeQueueCore
     public bool push ( ulong id, bool startwatch = true )
     out
     {
-        assert(!this.ebtree.is_empty, "ebtree empty after push");
+        assert(!(&this).ebtree.is_empty, "ebtree empty after push");
     }
     body
     {
         bool added;
-        auto item = this.ebtree.put(id, added);
+        auto item = (&this).ebtree.put(id, added);
 
         if (added)
         {
-            if (this.head)
+            if ((&this).head)
             {
-                assert(!this.head.prev);
-                this.head.prev = item;
+                assert(!(&this).head.prev);
+                (&this).head.prev = item;
             }
             else // null head: queue is empty
             {
-                assert(this.tail is null);
-                this.tail = item;
+                assert((&this).tail is null);
+                (&this).tail = item;
             }
 
-            item.next = this.head;
-            this.head = item;
+            item.next = (&this).head;
+            (&this).head = item;
 
             if (startwatch)
                 item.time_in_queue.start();
@@ -423,41 +423,41 @@ private struct TreeQueueCore
 
     ***************************************************************************/
 
-    public int opApply ( int delegate ( ref ulong id ) dg )
+    public int opApply ( scope int delegate ( ref ulong id ) dg )
     {
         int stop = 0;
 
-        while (!stop && this.tail)
+        while (!stop && (&this).tail)
         {
-            assert(this);
+            assert((&this));
 
-            auto request_id = this.tail.ebnode.key;
+            auto request_id = (&this).tail.ebnode.key;
 
             // Update this.tail before removing the nodeitem because
             // ebtree.remove() deallocates it.
-            auto nodeitem_to_remove = this.tail;
+            auto nodeitem_to_remove = (&this).tail;
 
-            if (auto new_tail = this.tail.prev)
+            if (auto new_tail = (&this).tail.prev)
             {
-                assert(new_tail.next is this.tail);
+                assert(new_tail.next is (&this).tail);
                 new_tail.next = null;
-                this.tail = new_tail;
+                (&this).tail = new_tail;
             }
             else
             {
-                assert(this.head is this.tail);
-                this.head = this.tail = null;
+                assert((&this).head is (&this).tail);
+                (&this).head = (&this).tail = null;
             }
 
             with (*nodeitem_to_remove)
             {
                 if (time_in_queue == time_in_queue.init)
-                    this.stats.notime++;
+                    (&this).stats.notime++;
                 else
-                    this.stats.time_histogram.countMicros(time_in_queue.microsec);
+                    (&this).stats.time_histogram.countMicros(time_in_queue.microsec);
             }
 
-            this.ebtree.remove(*nodeitem_to_remove);
+            (&this).ebtree.remove(*nodeitem_to_remove);
 
             stop = dg(request_id);
         }
@@ -474,7 +474,7 @@ private struct TreeQueueCore
 
     public bool exists ( ulong id )
     {
-        return !!(id in this.ebtree);
+        return !!(id in (&this).ebtree);
     }
 
     /***************************************************************************
@@ -491,19 +491,19 @@ private struct TreeQueueCore
 
     public bool remove ( ulong id )
     {
-        if (auto item = id in this.ebtree)
+        if (auto item = id in (&this).ebtree)
         {
             if (item.prev)
                 item.prev.next = item.next;
             else
-                this.head = item.next;
+                (&this).head = item.next;
 
             if (item.next)
                 item.next.prev = item.prev;
             else
-                this.tail = item.prev;
+                (&this).tail = item.prev;
 
-            this.ebtree.remove(*item);
+            (&this).ebtree.remove(*item);
             return true;
         }
         else

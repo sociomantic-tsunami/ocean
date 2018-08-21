@@ -59,8 +59,8 @@ class DelegateJobNotification: JobNotification
 
     ***************************************************************************/
 
-    public this (void delegate() resume_job,
-            void delegate() suspend_job = null)
+    public this (scope void delegate() resume_job,
+            scope void delegate() suspend_job = null)
     {
         this.initialise(resume_job, suspend_job);
     }
@@ -78,8 +78,8 @@ class DelegateJobNotification: JobNotification
 
     ***************************************************************************/
 
-    public typeof(this) initialise (void delegate() resume_job,
-            void delegate() suspend_job = null)
+    public typeof(this) initialise (scope void delegate() resume_job,
+            scope void delegate() suspend_job = null)
     {
         this.resume_job = resume_job;
         this.suspend_job = suspend_job;
