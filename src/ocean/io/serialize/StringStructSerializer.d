@@ -116,7 +116,7 @@ public class StringStructSerializer ( Char )
 
     ***************************************************************************/
 
-    private const indent_size = 3;
+    private static immutable indent_size = 3;
 
 
     /***************************************************************************
@@ -502,7 +502,7 @@ public class StringStructSerializer ( Char )
         // The set of characters to use for creating cases within the following
         // switch block. These are just whitepace or unprintable characters but
         // without their preceding backslashes.
-        const letters = ['0', 'a', 'b', 'f', 'n', 'r', 't', 'v'];
+        static immutable letters = ['0', 'a', 'b', 'f', 'n', 'r', 't', 'v'];
 
         switch ( c )
         {

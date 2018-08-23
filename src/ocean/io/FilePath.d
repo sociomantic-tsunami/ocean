@@ -768,7 +768,7 @@ class FilePath : PathView
 
     ***********************************************************************/
 
-    final FilePath[] toList (Filter filter = null)
+    final FilePath[] toList (scope Filter filter = null)
     {
             FilePath[] paths;
 
@@ -1040,7 +1040,7 @@ class FilePath : PathView
 
     ***********************************************************************/
 
-    final int opApply (int delegate(ref FileInfo) dg)
+    final int opApply (scope int delegate(ref FileInfo) dg)
     {
             return FS.list (cString, dg);
     }
