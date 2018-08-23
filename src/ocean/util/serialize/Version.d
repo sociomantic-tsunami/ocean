@@ -44,8 +44,8 @@ version(UnitTest) import ocean.core.Test;
 
 public struct MissingVersion
 {
-    const exists = false;
-    const ubyte number = 0;
+    enum exists = false;
+    enum ubyte number = 0;
 }
 
 /*******************************************************************************
@@ -96,8 +96,8 @@ struct Version
                 ", but it must be lower than Version.Type.max"
             );
 
-            const exists = true;
-            const number = S.StructVersion;
+            enum exists = true;
+            enum number = S.StructVersion;
 
             alias S type;
 
@@ -134,14 +134,14 @@ struct Version
 
     unittest
     {
-        struct S1 { const StructVersion = 1; }
+        struct S1 { enum StructVersion = 1; }
         alias Info!(S1) Ver;
         static assert (Ver.exists);
         static assert (Ver.number == 1);
         static assert (is(Ver.next == MissingVersion));
         static assert (is(Ver.prev == MissingVersion));
 
-        struct S2 { const StructVersion = Version.Type.max + 1; }
+        struct S2 { enum StructVersion = Version.Type.max + 1; }
         static assert (!is(typeof(Info!(S2))));
     }
 
@@ -149,7 +149,7 @@ struct Version
     {
         struct S
         {
-            const StructVersion = 1;
+            enum StructVersion = 1;
             alias S StructPrevious;
             alias S StructNext;
         }
