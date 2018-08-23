@@ -666,3 +666,52 @@ unittest
     int x;
     int[] arr = toArray(x);
 }
+
+/*******************************************************************************
+
+    Assigns elements to an array.
+
+    The function is a replacement for declaring an array literal, it does
+    not allocate GC memory and ensures the length of the array matches the
+    number of variadic arguments.
+
+    Params:
+        T = the type of array element
+        array = the array to assign the elements to
+        elements = the elements to add to the array
+
+*******************************************************************************/
+
+public void fill (T) (T[] array, T[] elements...)
+{
+    array[] = elements[];
+}
+
+///
+unittest
+{
+    int[10] array;
+
+    auto previous_ptr = array.ptr;
+    testNoAlloc(array.fill(0, 1, 2, 3, 4, 5, 6, 7, 8, 9));
+    test!("is")(previous_ptr, array.ptr);
+
+    foreach (i, item; array)
+        test!("==")(array[i], item);
+}
+
+///
+unittest
+{
+    int[] array;
+
+    array.length = 10;
+    enableStomping(array);
+
+    auto previous_ptr = array.ptr;
+    testNoAlloc(array.fill(0, 1, 2, 3, 4, 5, 6, 7, 8, 9));
+    test!("is")(previous_ptr, array.ptr);
+
+    foreach (i, item; array)
+        test!("==")(array[i], item);
+}
