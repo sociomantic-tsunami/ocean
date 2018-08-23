@@ -1168,6 +1168,18 @@ public class BufferedOutput : OutputFilter, OutputBuffer
 
     /***************************************************************************
 
+        Flushes the buffer and closes the stream.
+
+    ***************************************************************************/
+
+    final override void close ( )
+    {
+        this.flush();
+        super.close();
+    }
+
+    /***************************************************************************
+
         Drain buffer content to the specific conduit.
 
         Write as much of the buffer that the associated conduit can consume.

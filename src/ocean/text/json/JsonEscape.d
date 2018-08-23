@@ -196,7 +196,7 @@ void unescape(T, TC) (T[] src, void delegate(TC[]) emit)
                            break;
 
                       default:
-                           throw new Exception ("invalid escape");
+                           throw invalid_escape;
                      }
 
               s += 2;
@@ -267,4 +267,11 @@ void escape(T, TC) (T[] src, void delegate(TC[]) emit)
             emit (src);
         else
            emit (t [0 .. e - t]);
+}
+
+private Exception invalid_escape;
+
+static this ( )
+{
+    invalid_escape = new Exception ("invalid escape");
 }

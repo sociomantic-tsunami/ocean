@@ -178,18 +178,21 @@ public class SlidingAverage ( T )
 
     /***************************************************************************
 
-        Resets the average counter to its initial state.
+        Resets the average counter to the zero state:
 
-        Index is set to max so that it will be set to 0 once .push() is called
+        - index is set to max so that it will be set to 0 once .push() is called
+        - average is set to 0.0
+        - all elements of window reset to T.init
+        - used window size set to 0
 
     ***************************************************************************/
 
     public void clear ( )
     {
         this.index = this.index.max;
-        this._average = 0;
+        this._average = 0.0;
         this.current_size = 0;
-        this.window[] = 0;
+        this.window[] = T.init;
     }
 }
 
