@@ -199,7 +199,7 @@ FoldingCaseData* getFoldingCaseData(dchar code)
 
 
 //shortcuts, make source file smaller
-private const
+private static immutable
    Lu = UnicodeData.GeneralCategory.Lu,
    Ll = UnicodeData.GeneralCategory.Ll,
    Lt = UnicodeData.GeneralCategory.Lt,

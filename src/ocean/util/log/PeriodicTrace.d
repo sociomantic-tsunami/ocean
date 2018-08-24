@@ -173,22 +173,22 @@ struct PeriodicTracer
 
     ***************************************************************************/
 
-    public typeof(this) format (Args...) ( cstring fmt, Args args )
+    public typeof((&this)) format (Args...) ( cstring fmt, Args args )
     {
-        if (this.timeToUpdate())
+        if ((&this).timeToUpdate())
         {
-            this.last_update_time = this.now;
+            (&this).last_update_time = (&this).now;
 
-            this.formatted.length = 0;
-            enableStomping(this.formatted);
-            sformat(this.formatted, fmt, args);
+            (&this).formatted.length = 0;
+            enableStomping((&this).formatted);
+            sformat((&this).formatted, fmt, args);
 
-            if (this.static_display)
-                StaticTrace.format("{}", this.formatted).flush;
+            if ((&this).static_display)
+                StaticTrace.format("{}", (&this).formatted).flush;
             else
-                Stderr.formatln("{}", this.formatted).flush;
+                Stderr.formatln("{}", (&this).formatted).flush;
         }
-        return this;
+        return (&this);
     }
 
 
@@ -209,10 +209,10 @@ struct PeriodicTracer
 
     ***************************************************************************/
 
-    public typeof(this) format (Args...) ( ulong interval, cstring fmt, Args args )
+    public typeof((&this)) format (Args...) ( ulong interval, cstring fmt, Args args )
     {
-        this.interval = interval;
-        return this.format(fmt, args);
+        (&this).interval = interval;
+        return (&this).format(fmt, args);
     }
 
 
@@ -236,8 +236,8 @@ struct PeriodicTracer
 
     public bool timeToUpdate ( )
     {
-        this.now = timer.microsec();
-        return this.now > this.last_update_time + this.interval;
+        (&this).now = timer.microsec();
+        return (&this).now > (&this).last_update_time + (&this).interval;
     }
 
 

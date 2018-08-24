@@ -50,15 +50,15 @@ struct TaskEvent
 
     public void wait ( )
     {
-        if (!this.triggered)
+        if (!(&this).triggered)
         {
-            this.task = Task.getThis();
+            (&this).task = Task.getThis();
             debug_trace("Task {} suspended waiting for event {}",
-                cast(void*) this.task, cast(void*) this);
-            this.task.suspend();
+                cast(void*) (&this).task, cast(void*) (&this));
+            (&this).task.suspend();
         }
 
-        this.triggered = false;
+        (&this).triggered = false;
     }
 
     /***************************************************************************
@@ -70,12 +70,12 @@ struct TaskEvent
 
     public void trigger ( )
     {
-        this.triggered = true;
-        if (this.task !is null && this.task.suspended())
+        (&this).triggered = true;
+        if ((&this).task !is null && (&this).task.suspended())
         {
             debug_trace("Resuming task {} by trigger of event {}",
-                cast(void*) this.task, cast(void*) this);
-            this.task.resume();
+                cast(void*) (&this).task, cast(void*) (&this));
+            (&this).task.resume();
         }
     }
 }
