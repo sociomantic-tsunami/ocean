@@ -25,7 +25,7 @@ class BufferedReader
 
     ***************************************************************************/
 
-    public const size_t default_read_buffer_size = 1U << 14;
+    public static immutable size_t default_read_buffer_size = 1U << 14;
 
     /***************************************************************************
 
@@ -110,8 +110,8 @@ class BufferedReader
 
     ***************************************************************************/
 
-    public void readConsume ( size_t delegate ( void[] data ) consume,
-        size_t delegate ( void[] dst ) ioread )
+    public void readConsume ( scope size_t delegate ( void[] data ) consume,
+        scope size_t delegate ( void[] dst ) ioread )
     {
         while (!this.available)
             this.available = ioread(this.data);
@@ -154,7 +154,7 @@ class BufferedReader
 
     ***************************************************************************/
 
-    public void readRaw ( void[] dst, size_t delegate ( void[] dst_a, void[] dst_b ) ioread )
+    public void readRaw ( void[] dst, scope size_t delegate ( void[] dst_a, void[] dst_b ) ioread )
     {
         auto available_data = this.data[this.consumed .. this.available];
 

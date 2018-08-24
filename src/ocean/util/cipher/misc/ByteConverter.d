@@ -26,7 +26,7 @@ version ( UnitTest )
 /** Converts between integral types and unsigned byte arrays */
 struct ByteConverter
 {
-    private const istring hexits = "0123456789abcdef";
+    private enum istring hexits = "0123456789abcdef";
 
     /** Conversions between little endian integrals and bytes */
     struct LittleEndian
