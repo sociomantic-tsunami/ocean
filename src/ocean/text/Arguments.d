@@ -1278,6 +1278,7 @@ public class Arguments
 
         Returns:
             integer value of the parameter assigned to the argument
+            0 if value is missing or not a valid integer
 
     ***************************************************************************/
 
@@ -1293,8 +1294,10 @@ public class Arguments
         }
 
         T num;
-        enforce(toInteger(value, num));
-        return num;
+        if (toInteger(value, num))
+            return num;
+        else
+            return 0;
     }
 
 
@@ -2663,6 +2666,10 @@ unittest
     args("num").params(1);
     test(args.parse("--num 18446744073709551615"));
     test(args.getInt!(ulong)("num") == ulong.max);
+
+    args = new Arguments;
+    args("num").params(1);
+    test(args.getInt!(ulong)("num") == 0);
 }
 
 // Test for D2 'static immutable'
