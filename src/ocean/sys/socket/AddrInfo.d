@@ -541,7 +541,7 @@ class AddrInfo : AddrInfoC
 
      **************************************************************************/
 
-    private char[] node, service;
+    private mstring node, service;
 
     /**************************************************************************
 
@@ -570,7 +570,7 @@ class AddrInfo : AddrInfoC
 
      **************************************************************************/
 
-    public ErrorCode getTcpIp ( char[] node, char[] service, bool ipv6,
+    public ErrorCode getTcpIp ( cstring node, cstring service, bool ipv6,
                                 addrinfo.Flags flags = addrinfo.Flags.None )
     {
         return super.getTcpIp(this.node.toCstr(node),
@@ -594,7 +594,7 @@ class AddrInfo : AddrInfoC
 
      **************************************************************************/
 
-    public ErrorCode getIp ( char[] node, char[] service,
+    public ErrorCode getIp ( cstring node, cstring service,
                              bool ipv6, int type, int protocol,
                              addrinfo.Flags flags = addrinfo.Flags.None )
     {
@@ -619,7 +619,7 @@ class AddrInfo : AddrInfoC
 
      **************************************************************************/
 
-    public ErrorCode get ( char[] node, char[] service,
+    public ErrorCode get ( cstring node, cstring service,
                            int family, int type, int protocol,
                            addrinfo.Flags flags = addrinfo.Flags.None )
     {
@@ -642,7 +642,7 @@ class AddrInfo : AddrInfoC
 
      **************************************************************************/
 
-    public ErrorCode get ( char[] node, char[] service, addrinfo* hints = null )
+    public ErrorCode get ( cstring node, cstring service, addrinfo* hints = null )
     {
         return super.get(this.node.toCstr(node), this.service.toCstr(service),
                          hints);
@@ -662,7 +662,7 @@ class AddrInfo : AddrInfoC
 
  **************************************************************************/
 
-private char* toCstr ( ref char[] dst, char[] src )
+private char* toCstr ( ref mstring dst, cstring src )
 {
     return src.length? dst.concat(src, "\0"[]).ptr : null;
 }
