@@ -6,6 +6,10 @@
     removing  elements where the difference between the current time and the
     createtime is greater than that lifetime value.
 
+    The cache can be configured to apply different lifetimes to empty and
+    non-empty values (where a cached record with array length 0 is considered
+    "empty"). See constructor arguments.
+
     Copyright:
         Copyright (c) 2009-2016 dunnhumby Germany GmbH.
         All rights reserved.
@@ -54,12 +58,24 @@ class ExpiringCache ( size_t ValueSize = 0 ) : Cache!(ValueSize, true),
 
     /***************************************************************************
 
-        Life time for all items in seconds; may be changed at any time.
+        Life time for non-empty items in seconds; may be changed at any time.
         This value must be at least 1.
 
     ***************************************************************************/
 
     public time_t lifetime;
+
+    /***************************************************************************
+
+        Life time for empty items in seconds; may be changed at any time.
+        This value must be at least 1. Can be same as `lifetime`.
+
+        ExpiringCache considers a cached record with array length 0 as being
+        "empty".
+
+    ***************************************************************************/
+
+    public time_t empty_lifetime;
 
     /***************************************************************************
 
@@ -75,13 +91,15 @@ class ExpiringCache ( size_t ValueSize = 0 ) : Cache!(ValueSize, true),
 
         Params:
             max_items = maximum number of items in the cache, set once, cannot
-                        be changed
-            lifetime  = life time for all items in seconds; may be changed at
-                        any time. This value must be at least 1.
+                be changed
+            lifetime = lifetime for non-empty items in seconds; may be changed
+                at any time. This value must be at least 1.
+            empty_lifetime = lifetime for empty items in seconds. If set to 0
+                (default), will be same as regular `lifetime`
 
     ***************************************************************************/
 
-    public this ( size_t max_items, time_t lifetime )
+    public this ( size_t max_items, time_t lifetime, time_t empty_lifetime = 0 )
     {
         verify (lifetime > 0,
                 "cache element lifetime is expected to be at least 1");
@@ -89,6 +107,7 @@ class ExpiringCache ( size_t ValueSize = 0 ) : Cache!(ValueSize, true),
         super(max_items);
 
         this.lifetime = lifetime;
+        this.empty_lifetime = empty_lifetime ? empty_lifetime : lifetime;
     }
 
     /***************************************************************************
@@ -304,9 +323,6 @@ class ExpiringCache ( size_t ValueSize = 0 ) : Cache!(ValueSize, true),
     }
     body
     {
-        verify (this.lifetime > 0,
-                "cache element lifetime is expected to be at least 1");
-
         TimeToIndex.Node** node = key in this;
 
         // opIn_r may return null but never a pointer to null.
@@ -320,8 +336,12 @@ class ExpiringCache ( size_t ValueSize = 0 ) : Cache!(ValueSize, true),
             time_t access_time;
 
             cache_item = this.access(**node, access_time);
+            assert(cache_item !is null);
+            bool empty = cache_item.value_ref.length == 0;
 
-            // access() will never return null.
+            time_t used_lifetime = empty ? this.empty_lifetime : this.lifetime;
+            verify (used_lifetime > 0,
+                "cache element lifetime is expected to be at least 1");
 
             if (access_time >= cache_item.create_time)
             {
@@ -332,7 +352,7 @@ class ExpiringCache ( size_t ValueSize = 0 ) : Cache!(ValueSize, true),
                  * program bug.
                  */
 
-                existed = (access_time - cache_item.create_time) < this.lifetime;
+                existed = (access_time - cache_item.create_time) < used_lifetime;
             }
 
             if (!existed)
@@ -395,7 +415,7 @@ unittest
 
         scope expiring_cache = new class ExpiringCache!()
         {
-            this ( ) {super(4, 10);}
+            this ( ) {super(4, 10, 5);}
 
             override time_t now ( ) {return ++t;}
         };
@@ -458,6 +478,27 @@ unittest
             test!("==")(length, 0);
             test(!exists(1));
             test(!exists(2));
+        }
+
+        // Test empty records
+        with (expiring_cache)
+        {
+            t = 0;
+            test!("==")(length, 0);
+
+            *createRaw(1) = data1;
+            test!("==")(length, 1);
+            test(exists(1));
+
+            *getRaw(1) = null;
+            test!("==")(length, 1);
+            test(exists(1));
+
+            t = 6; // less than 10, more than 5
+            {
+                Value* data = getRaw(1);
+                test!("is")(data, null);
+            }
         }
     }
 

@@ -130,6 +130,18 @@ template Value ( size_t ValueSize )
             {
                 return &this.array;
             }
+
+            /*******************************************************************
+
+                Returns:
+                    length of underlying array
+
+            *******************************************************************/
+
+            public size_t length ( )
+            {
+                return this.array.length;
+            }
         }
 
         public alias Value* ValueRef;
