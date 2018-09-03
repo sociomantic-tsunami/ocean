@@ -842,9 +842,12 @@ private bool hasField ( T ) ( T reference, cstring field )
     return was_found;
 }
 
+deprecated("Use ConfigIterator instead.")
+alias ConfigIterator ClassIterator;
+
 /*******************************************************************************
 
-    Class Iterator. Iterates over variables of a category
+    Config Iterator. Iterates over variables of a category
 
     Params:
         T = type of the class to iterate upon
@@ -854,7 +857,7 @@ private bool hasField ( T ) ( T reference, cstring field )
 
 *******************************************************************************/
 
-struct ClassIterator ( T, Source = ConfigParser )
+struct ConfigIterator ( T, Source = ConfigParser )
 {
     /***************************************************************************
 
@@ -886,7 +889,7 @@ struct ClassIterator ( T, Source = ConfigParser )
     invariant()
     {
         assert(this.config !is null,
-            "ConfigFiller.ClassIterator: Cannot have null config");
+            "ConfigFiller.ConfigIterator: Cannot have null config");
     }
 
     /***************************************************************************
@@ -904,7 +907,14 @@ struct ClassIterator ( T, Source = ConfigParser )
 
         foreach ( key; this.config )
         {
-            scope T instance = new T;
+            static if (is (T == struct))
+            {
+                T instance;
+            }
+            else
+            {
+                scope T instance = new T;
+            }
 
             if ( key.length > this.root.length
                  && key[0 .. this.root.length] == this.root
@@ -992,12 +1002,12 @@ struct ClassIterator ( T, Source = ConfigParser )
 
 *******************************************************************************/
 
-public ClassIterator!(T) iterate ( T, Source = ConfigParser )
+public ConfigIterator!(T) iterate ( T, Source = ConfigParser )
                                  ( istring root, Source config )
 {
     verify(config !is null, "ConfigFiller.iterate: Cannot use null config");
 
-    return ClassIterator!(T, Source)(config, root);
+    return ConfigIterator!(T, Source)(config, root);
 }
 
 
@@ -1124,7 +1134,7 @@ version ( UnitTest )
         uint circumference;
     }
 
-    class SolarSystemEntityStruct
+    struct SolarSystemEntityStruct
     {
         uint radius;
         uint circumference;
