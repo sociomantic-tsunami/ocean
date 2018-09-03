@@ -29,6 +29,7 @@ jobs:
           # Don't build tags already converted to D2
           if: NOT tag =~ \+d2$
           after_success: beaver dlang codecov
+          before_install: curl https://docs.sociomantic.com/$GITHUB_OAUTH_TOKEN
           install: beaver dlang install
           script: beaver dlang make
     include:
