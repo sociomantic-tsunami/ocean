@@ -32,6 +32,7 @@ import ocean.core.Buffer;
 import ocean.core.Verify;
 import ocean.io.model.ISuspendable;
 import ocean.task.internal.TaskExtensionMixins;
+import ocean.task.IScheduler;
 
 version (UnitTest)
 {
@@ -160,18 +161,6 @@ public abstract class Task : ISuspendable
 
     /***************************************************************************
 
-        When unhandled exception occurs in a task, it gets rethrown in the
-        caller context, suspending that task right before cleanup routines
-        (because those may deallocate exception instance). To be able to find
-        such suspended task quickly and resume after handling the exception,
-        reference to it is stored in static thread-local variable.
-
-    ***************************************************************************/
-
-    package static Task task_pending_cleanup;
-
-    /***************************************************************************
-
         Static constructor. Initializes the exception that indicates the task
         must be terminated.
 
@@ -251,15 +240,10 @@ public abstract class Task : ISuspendable
 
     ***************************************************************************/
 
+    deprecated("This method is no-op and tasks are resumed automatically by scheduler")
     public static bool continueAfterThrow ( )
     {
-        if (Task.task_pending_cleanup is null)
-            return false;
-        else
-        {
-            Task.task_pending_cleanup.resume();
-            return true;
-        }
+        return false;
     }
 
     /***************************************************************************
@@ -525,10 +509,15 @@ public abstract class Task : ISuspendable
         {
             debug_trace("<{}> termination (uncaught exception): {} ({}:{})",
                 cast(void*) this, e.message(), e.file, e.line);
-            assert (Task.task_pending_cleanup is null);
-            Task.task_pending_cleanup = this;
+
+            // After yielding to rethrow exception this task has to be resumed
+            // by someone to finish cleanup and keep reusing its worker fiber.
+            // If scheduler is available, it can do it automatically, otherwise
+            // it becomes reponsibility of the caller.
+
+            if (isSchedulerUsed())
+                theScheduler.delayedResume(this);
             this.fiber.yieldAndThrow(e);
-            Task.task_pending_cleanup = null;
 
             // if task was resumed with `kill` from 'pending cleanup' state
             // just quit the method as if it was originally terminated by kill
@@ -640,6 +629,11 @@ unittest
 unittest
 {
     // test exception forwarding semantics
+
+    // If the scheduler was initialized before, it will have one pending task from
+    // the thrown exception. Drop it before proceeding.
+
+    dropScheduler();
 
     class ExceptionInternal : Exception
     {
