@@ -325,6 +325,21 @@ public bool isSchedulerUsed ( )
     return _scheduler !is null;
 }
 
+version (UnitTest)
+{
+    /***************************************************************************
+
+        Occasionally useful in tests to drop reference to already initialized
+        scheduler and test some code as if scheduler is not present.
+
+    ***************************************************************************/
+
+    public void dropScheduler ( )
+    {
+        _scheduler = null;
+    }
+}
+
 /*******************************************************************************
 
     Initialized externally from `ocean.task.Scheduler` to reference the same

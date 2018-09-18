@@ -69,7 +69,6 @@ unittest
         else
             test!("==")(e.msg, "scheduler");
         caught++;
-        Task.continueAfterThrow();
     };
 
     for (int i = 0; i < 3; ++i)
