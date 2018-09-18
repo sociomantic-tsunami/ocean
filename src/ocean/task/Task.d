@@ -28,12 +28,15 @@ static import core.thread;
 
 import ocean.transition;
 import ocean.core.array.Mutation : moveToEnd, reverse;
-import ocean.core.Test;
 import ocean.core.Buffer;
 import ocean.core.Verify;
-import ocean.io.select.EpollSelectDispatcher;
 import ocean.io.model.ISuspendable;
 import ocean.task.internal.TaskExtensionMixins;
+
+version (UnitTest)
+{
+    import ocean.core.Test;
+}
 
 debug (TaskScheduler)
 {
