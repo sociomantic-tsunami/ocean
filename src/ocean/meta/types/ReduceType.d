@@ -80,7 +80,7 @@ import ocean.meta.types.Typedef;
 
 public template ReduceType ( T, Reducer )
 {
-    const ReduceType = ReduceTypeImpl!(Reducer).init.reduce!(T)();
+    static immutable ReduceType = ReduceTypeImpl!(Reducer).init.reduce!(T)();
 }
 
 /*******************************************************************************
