@@ -107,7 +107,7 @@ class GetSocketAddress
 
         public sockaddr addr ( )
         {
-            return this.addr_;
+            return (&this).addr_;
         }
 
         /**********************************************************************
@@ -119,7 +119,7 @@ class GetSocketAddress
 
         public Family family ( )
         {
-            return cast (Family) this.addr_.sa_family;
+            return cast (Family) (&this).addr_.sa_family;
         }
 
         /**********************************************************************
@@ -132,7 +132,7 @@ class GetSocketAddress
 
         public bool supported_family ( )
         {
-            switch (this.family)
+            switch ((&this).family)
             {
                 case Family.INET, Family.INET6:
                     return true;
@@ -160,9 +160,9 @@ class GetSocketAddress
         }
         body
         {
-            void* addrp = &this.addr_;
+            void* addrp = &(&this).addr_;
 
-            switch (this.family)
+            switch ((&this).family)
             {
                 case Family.INET:
                     addrp += sockaddr_in.init.sin_addr.offsetof;
@@ -173,13 +173,13 @@ class GetSocketAddress
                     break;
 
                 default:
-                    throw this.e.set(.EAFNOSUPPORT);
+                    throw (&this).e.set(.EAFNOSUPPORT);
             }
 
-            auto str = .inet_ntop(this.addr_.sa_family, addrp,
-                                   this.addr_string_buffer.ptr, this.addr_string_buffer.length);
+            auto str = .inet_ntop((&this).addr_.sa_family, addrp,
+                                   (&this).addr_string_buffer.ptr, (&this).addr_string_buffer.length);
 
-            this.e.enforce(!!str, "inet_ntop");
+            (&this).e.enforce(!!str, "inet_ntop");
 
             return str[0 .. strlen(str)];
         }
@@ -199,18 +199,18 @@ class GetSocketAddress
         {
             in_port_t port;
 
-            switch (this.family)
+            switch ((&this).family)
             {
                 case Family.INET:
-                    port = (cast (sockaddr_in*) &this.addr_).sin_port;
+                    port = (cast (sockaddr_in*) &(&this).addr_).sin_port;
                     break;
 
                 case Family.INET6:
-                    port = (cast (sockaddr_in6*) &this.addr_).sin6_port;
+                    port = (cast (sockaddr_in6*) &(&this).addr_).sin6_port;
                     break;
 
                 default:
-                    throw this.e.set(.EAFNOSUPPORT);
+                    throw (&this).e.set(.EAFNOSUPPORT);
             }
 
             return .ntohs(port);

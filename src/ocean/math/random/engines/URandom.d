@@ -33,8 +33,8 @@ struct URandom{
         readStyle.cache =File.Cache.None;
 
     }
-    const int canCheckpoint=false;
-    const int canSeed=false;
+    enum int canCheckpoint=false;
+    enum int canSeed=false;
 
     void skip(uint n){ }
     ubyte nextB(){
@@ -77,7 +77,7 @@ struct URandom{
         return el.l;
     }
     /// does nothing
-    void seed(uint delegate() r) { }
+    void seed(scope uint delegate() r) { }
     /// writes the current status in a string
     istring toString(){
         return "URandom";

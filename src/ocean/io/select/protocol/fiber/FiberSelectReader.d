@@ -45,7 +45,7 @@ class FiberSelectReader : IFiberSelectProtocol
 
      **************************************************************************/
 
-    public const size_t default_buffer_size = 16 * 1024;
+    public static immutable size_t default_buffer_size = 16 * 1024;
 
     /**************************************************************************
 
@@ -240,7 +240,7 @@ class FiberSelectReader : IFiberSelectProtocol
 
      **************************************************************************/
 
-    public bool consume ( Consumer consume )
+    public bool consume ( scope Consumer consume )
     {
         size_t n   = consume(this.data[this.consumed .. this.available]),
                end = this.consumed + n;
@@ -416,7 +416,7 @@ class FiberSelectReader : IFiberSelectProtocol
 
      **************************************************************************/
 
-    public typeof (this) readConsume ( Consumer consume )
+    public typeof (this) readConsume ( scope Consumer consume )
     {
         bool more;
 
