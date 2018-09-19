@@ -71,6 +71,7 @@ import ocean.time.model.IMicrosecondsClock;
 import ocean.time.MicrosecondsClock;
 import ocean.transition;
 import ocean.util.container.AppendBuffer;
+import ocean.text.convert.Integer;
 
 import ocean.util.log.Event;
 import ocean.util.log.InsertConsole;
@@ -144,6 +145,15 @@ public class AppStatus
     ***************************************************************************/
 
     protected alias .TerminalOutput TerminalOutput;
+
+
+    /**************************************************************************
+
+        Number of columns in Terminal
+
+    ***************************************************************************/
+
+    private int terminal_columns;
 
 
     /***************************************************************************
@@ -376,13 +386,18 @@ public class AppStatus
                 null if it's not yet available (the static output will then be
                 disabled).
             heading_line_components = components to show on the heading line
+            terminal_columns = width of the terminal to assume. If zero, main
+                terminal will be queried. Passing 0 will take the width from the
+                current terminal (which must be present, otherwise no output will
+                happen).
 
     ***************************************************************************/
 
     public this ( cstring app_name, cstring app_version, cstring app_build_date,
         cstring app_build_author, uint size, ulong ms_between_calls = 1000,
             OutputStream stream = Cout.stream, TerminalOutput terminal_output = Stdout,
-            HeadingLineComponents heading_line_components = HeadingLineComponents.All)
+            HeadingLineComponents heading_line_components = HeadingLineComponents.All,
+            int terminal_columns = 80)
     {
         this.app_name.copy(app_name);
         this.app_version.copy(app_version);
@@ -396,6 +411,16 @@ public class AppStatus
         this.terminal_output = terminal_output;
         this.heading_line_components = heading_line_components;
         this.old_terminal_size = Terminal.rows;
+
+        if (terminal_columns > 0)
+        {
+            this.terminal_columns = terminal_columns;
+        }
+        else
+        {
+            this.terminal_columns = Terminal.columns;
+        }
+
         if (this.stream)
         {
             this.insert_console = new InsertConsole(this.stream, true,
@@ -455,7 +480,8 @@ public class AppStatus
 
         UnixSocketExt's handler which connects the connected socket to the
         registered AppStatus instance, displays static lines and waits until
-        user disconnects.
+        user disconnects. The optional parameter is the wanted terminal width
+        to assume.
 
         Params:
             command = command used to call this handler
@@ -481,6 +507,11 @@ public class AppStatus
         unix_socket_file.setFileHandle(socket.fileHandle());
         this.connectOutput(unix_socket_file,
             unix_terminal_output);
+
+        if (command.length > 0)
+        {
+            toInteger(command[0], this.terminal_columns);
+        }
 
         scope (exit)
             this.disconnectOutput();
