@@ -1065,7 +1065,7 @@ public class AppStatus
 
     protected char[] truncateLength ( ref char[] buffer )
     {
-        return this.truncateLength(buffer, Terminal.columns);
+        return this.truncateLength(buffer, this.terminal_columns);
     }
 
 
