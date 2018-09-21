@@ -950,7 +950,15 @@ class LinkedList (V, alias Reap = Container.reap,
                 bool next (ref V v)
                 {
                         auto n = next;
-                        return (n) ? v = *n, true : false;
+                        if (n)
+                        {
+                            v = *n;
+                            return true;
+                        }
+                        else
+                        {
+                            return false;
+                        }
                 }
 
                 /***************************************************************
