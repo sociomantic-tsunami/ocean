@@ -103,6 +103,14 @@ public class CSV
 
     private AppendBuffer!(cstring) fields;
 
+    /***************************************************************************
+
+        Fixed size buffer for reading for stream
+
+    ***************************************************************************/
+
+    private mstring buffer;
+
 
     /***************************************************************************
 
@@ -114,6 +122,7 @@ public class CSV
     {
         this.row = new AppendBuffer!(char);
         this.fields = new AppendBuffer!(cstring);
+        this.buffer = new char[512];
     }
 
     /***************************************************************************
@@ -133,53 +142,78 @@ public class CSV
         verify(stream !is null, "InputStream is null");
         verify(row_dg !is null, "Row delegate is null");
 
-        char[512] buf;
-        this.row.length = 0;
+        this.row.clear();
+
+        // appends chunk of data from stream when encountering any of control
+        // symbols
+        scope append_chunk = ( mstring data, ref size_t start, size_t end )
+        {
+            this.row ~= data[start .. end];
+            start = end + 1;
+        };
+
+        // indicates that the beginning of a stream chunk is already in the
+        // middle of a quote
+        bool in_quote = false;
 
         size_t bytes_read;
-        bool in_quote;
-        for ( bytes_read = 0; bytes_read != InputStream.Eof;
-              bytes_read = stream.read(buf) )
+
+        while ((bytes_read = stream.read(this.buffer)) != InputStream.Eof)
         {
-            auto chunk = buf[0 .. bytes_read];
+            size_t chunk_start = 0;
+            auto data = this.buffer[0 .. bytes_read];
 
-            size_t row_start;
-            foreach ( i, c; chunk )
+            foreach (i, c; data)
             {
-                switch ( c )
+                verify(c != '\0');
+
+                if (c == this.separator && !in_quote)
                 {
-                    case '"':
-                        in_quote = !in_quote;
-                        break;
+                    // trick: make use of the fact there won't be a \0 symbol
+                    // in the input stream and replace separator symbol with \0
+                    // to disambugate from escaped separator and make parsing
+                    // a single row trivial
+                    append_chunk(data, chunk_start, i);
+                    this.row ~= '\0';
+                    continue;
+                }
 
-                    case '\n':
-                        if ( !in_quote )
-                        {
-                            this.row ~= chunk[row_start .. i];
-                            if ( !this.parseRow(row_dg) )
-                            {
-                                return;
-                            }
+                if (c == '"')
+                {
+                    in_quote = !in_quote;
 
-                            this.row.length = 0;
-                            row_start = i + 1;
-                        }
-                        break;
+                    if (data[i-1] == '"')
+                    {
+                        // need adjustment, it was escaped quote last time and
+                        // not the end of quote
+                        this.row ~= "\"";
+                        chunk_start++;
+                    }
+                    else
+                        append_chunk(data, chunk_start, i);
+                    continue;
+                }
 
-                    default:
+                if (c == '\n')
+                {
+                    if (in_quote)
+                        continue;
+                    append_chunk(data, chunk_start, i);
+
+                    // if row_dg returns 'false', no further parsing is needed
+                    if (!this.parseRow(row_dg))
+                        return;
+                    this.row.clear();
+                    continue;
                 }
             }
 
-            if ( row_start < chunk.length )
-            {
-                this.row ~= chunk[row_start .. $];
-            }
+            if (chunk_start < data.length )
+                this.row ~= data[chunk_start .. $];
         }
 
-        if ( row.length )
-        {
+        if (row.length)
             this.parseRow(row_dg);
-        }
     }
 
 
@@ -191,51 +225,24 @@ public class CSV
         Params:
             row_dg = delegate to receive parsed rows
 
-        Throws:
-            Exception if quoted field is not delimited by separator
-
-            FIXME: if we need to be able to successfully parse
-            fields like `"hello"world,` then we'll need to come
-            up with something clever here instead of this enforcement.
-
     ***************************************************************************/
 
     private bool parseRow ( RowDg row_dg )
     {
-        this.fields.length = 0;
+        this.fields.clear();
 
-        bool in_quote;
-        bool field_was_quoted;
         size_t field_start;
 
-        foreach ( i, c; this.row[] )
+        foreach (i, c; this.row[])
         {
-            if ( c == '"' )
+            if (c == '\0')
             {
-                if ( in_quote )
-                {
-                    enforce(i == row.length - 1 || row[i + 1] == this.separator,
-                        "Quoted field not delimited by separator");
-                    field_start++; // Skip leading "
-                    field_was_quoted = true;
-                }
-
-                in_quote = !in_quote;
-            }
-            else if ( c == this.separator )
-            {
-                if ( !in_quote )
-                {
-                    size_t end = field_was_quoted ? i - 1 : i; // Skip trailing "
-                    this.fields ~= this.row[field_start .. end];
-                    field_start = i + 1;
-                    field_was_quoted = false;
-                }
+                this.fields ~= this.row[field_start .. i];
+                field_start = i + 1;
             }
         }
 
         this.fields ~= this.row[field_start .. this.row.length];
-
         return row_dg(this.fields[]);
     }
 }
@@ -255,7 +262,7 @@ version ( UnitTest )
 
 unittest
 {
-    void test ( CSV csv, cstring str, cstring[][] expected )
+    void test ( NamedTest t, CSV csv, cstring str, cstring[][] expected )
     {
         scope array = new Array(1024);
         array.append(str);
@@ -268,7 +275,7 @@ unittest
 
             foreach ( i, f; parsed_fields )
             {
-                .test(f == fields[i]);
+                t.test!("==")(f, fields[i]);
             }
             return true;
         });
@@ -276,27 +283,36 @@ unittest
 
     scope csv = new CSV;
 
-    // Single row
-    test(csv,
+    test(new NamedTest("Single Row"), csv,
 `An,Example,Simple,CSV,Row`,
         [["An", "Example", "Simple", "CSV", "Row"]]);
 
-    // Single row + quoted comma
-    test(csv,
+    test(new NamedTest("Single row + quoted comma"), csv,
 `An,Example,"Quoted,Field",CSV,Row`,
         [["An", "Example", "Quoted,Field", "CSV", "Row"]]);
 
-    // Single row + quoted newline
-    test(csv,
+    test(new NamedTest("Single row + quoted newline"), csv,
 `An,Example,"Quoted
 Field",CSV,Row`,
         [["An", "Example", "Quoted\nField", "CSV", "Row"]]);
 
-    // Two rows
-    test(csv,
+    test(new NamedTest("Two rows"), csv,
 `An,Example,Simple,CSV,Row
 This,Time,With,Two,Rows`,
         [["An", "Example", "Simple", "CSV", "Row"],
          ["This","Time","With","Two","Rows"]]);
+
+    test(new NamedTest("Quoted field last"), csv,
+`An,Example,"Quoted"`,
+        [["An", "Example", "Quoted"]]);
+
+    test(new NamedTest("Partially quoted field"), csv,
+`An,Example,"Quot"ed`,
+        [["An", "Example", "Quoted"]]);
+
+    test(new NamedTest("Escaped quote"), csv,
+`An,""Example"","Quoted"`,
+        [["An", "\"Example\"", "Quoted"]]);
+
 }
 
