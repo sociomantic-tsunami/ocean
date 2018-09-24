@@ -83,11 +83,11 @@ template Tuple( TList... )
 template IndexOf( T, TList... )
 {
     static if( TList.length == 0 )
-        const size_t IndexOf = 0;
+        static immutable size_t IndexOf = 0;
     else static if( is( T == TList[0] ) )
-        const size_t IndexOf = 0;
+        static immutable size_t IndexOf = 0;
     else
-        const size_t IndexOf = 1 + IndexOf!( T, TList[1 .. $] );
+        static immutable size_t IndexOf = 1 + IndexOf!( T, TList[1 .. $] );
 }
 
 

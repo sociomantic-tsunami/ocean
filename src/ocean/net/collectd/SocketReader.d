@@ -67,7 +67,7 @@ package struct SocketReader (size_t MAX_FIELD_SIZE = 512, size_t FIELDS = 16)
 
     public cstring front ()
     {
-        return this.current_field;
+        return (&this).current_field;
     }
 
 
@@ -94,46 +94,46 @@ package struct SocketReader (size_t MAX_FIELD_SIZE = 512, size_t FIELDS = 16)
 
     public ssize_t popFront (ISocket socket = null, int flags = 0)
     {
-        auto off = this.locateChar('\n');
+        auto off = (&this).locateChar('\n');
 
-        if (off != this.length)
+        if (off != (&this).length)
         {
             // Worst case scenario: the field starts at the end of the buffer
             // and continues at the beginning. In this case, we have no choice
             // but to copy data to our field_buffer to get something sane.
-            if (this.start_idx + off > this.buffer.length)
+            if ((&this).start_idx + off > (&this).buffer.length)
             {
-                auto p1len = this.buffer.length - this.start_idx;
+                auto p1len = (&this).buffer.length - (&this).start_idx;
                 verify(p1len < off);
 
-                this.field_buffer[0 .. p1len]
-                    = this.buffer[this.start_idx .. this.buffer.length];
+                (&this).field_buffer[0 .. p1len]
+                    = (&this).buffer[(&this).start_idx .. (&this).buffer.length];
 
-                this.field_buffer[p1len .. off] = this.buffer[0 .. off - p1len];
+                (&this).field_buffer[p1len .. off] = (&this).buffer[0 .. off - p1len];
 
-                this.current_field = this.field_buffer[0 .. off];
+                (&this).current_field = (&this).field_buffer[0 .. off];
             }
             else
             {
                 // Usual case: We just return a slice to our buffer
-                this.current_field = this.buffer[this.start_idx .. this.start_idx + off];
+                (&this).current_field = (&this).buffer[(&this).start_idx .. (&this).start_idx + off];
             }
-            this.length -= (off + 1);
-            this.start_idx = !this.length ? 0 : this.calc(this.start_idx, off + 1);
+            (&this).length -= (off + 1);
+            (&this).start_idx = !(&this).length ? 0 : (&this).calc((&this).start_idx, off + 1);
         }
         else if (socket !is null)
         {
-            auto r = this.recv(socket, flags);
+            auto r = (&this).recv(socket, flags);
             if (r <= 0)
             {
-                this.current_field = null;
-                throw this.e.useGlobalErrno("recv");
+                (&this).current_field = null;
+                throw (&this).e.useGlobalErrno("recv");
             }
-            this.popFront(socket, flags);
+            (&this).popFront(socket, flags);
         }
         else
         {
-            this.current_field = null;
+            (&this).current_field = null;
         }
         return 0;
     }
@@ -150,7 +150,7 @@ package struct SocketReader (size_t MAX_FIELD_SIZE = 512, size_t FIELDS = 16)
 
     public bool empty ()
     {
-        return this.current_field is null;
+        return (&this).current_field is null;
     }
 
 
@@ -174,17 +174,17 @@ package struct SocketReader (size_t MAX_FIELD_SIZE = 512, size_t FIELDS = 16)
     {
         verify(socket !is null, "Cannot recv with a null socket");
 
-        auto start = this.calc(this.start_idx, this.length);
-        auto end   = start < this.start_idx ? this.start_idx : this.buffer.length;
+        auto start = (&this).calc((&this).start_idx, (&this).length);
+        auto end   = start < (&this).start_idx ? (&this).start_idx : (&this).buffer.length;
 
-        ssize_t ret = socket.recv(this.buffer[start .. end], flags);
+        ssize_t ret = socket.recv((&this).buffer[start .. end], flags);
 
         // Errors are handled from popFront
         if (ret <= 0)
             return ret;
 
-        this.length += ret;
-        verify(this.length <= this.buffer.length);
+        (&this).length += ret;
+        verify((&this).length <= (&this).buffer.length);
 
         return ret;
     }
@@ -199,7 +199,7 @@ package struct SocketReader (size_t MAX_FIELD_SIZE = 512, size_t FIELDS = 16)
 
     private bool isLinear ()
     {
-        return !(this.start_idx + this.length > this.buffer.length);
+        return !((&this).start_idx + (&this).length > (&this).buffer.length);
     }
 
 
@@ -215,9 +215,9 @@ package struct SocketReader (size_t MAX_FIELD_SIZE = 512, size_t FIELDS = 16)
 
     private size_t linearEnd ()
     {
-        return this.isLinear()
-            ? (this.start_idx + this.length)
-            : (this.buffer.length);
+        return (&this).isLinear()
+            ? ((&this).start_idx + (&this).length)
+            : ((&this).buffer.length);
     }
 
 
@@ -229,9 +229,9 @@ package struct SocketReader (size_t MAX_FIELD_SIZE = 512, size_t FIELDS = 16)
 
     private size_t linearSpace ()
     {
-        return this.isLinear()
-            ? (this.buffer.length - this.calc(this.start_idx, this.length))
-            : (this.start_idx - this.calc(this.start_idx, this.length));
+        return (&this).isLinear()
+            ? ((&this).buffer.length - (&this).calc((&this).start_idx, (&this).length))
+            : ((&this).start_idx - (&this).calc((&this).start_idx, (&this).length));
     }
 
 
@@ -251,14 +251,14 @@ package struct SocketReader (size_t MAX_FIELD_SIZE = 512, size_t FIELDS = 16)
     private size_t locateChar (char tok)
     {
         auto after = StringSearch!(false).locateChar(
-            this.buffer[this.start_idx .. this.linearEnd()], tok);
-        if (this.isLinear() || this.start_idx  + after < this.buffer.length)
+            (&this).buffer[(&this).start_idx .. (&this).linearEnd()], tok);
+        if ((&this).isLinear() || (&this).start_idx  + after < (&this).buffer.length)
         {
             return after;
         }
         // In this case, after ==> buffer.length - start_idx
         return after + StringSearch!(false).locateChar(
-            this.buffer[0 .. this.length - after],
+            (&this).buffer[0 .. (&this).length - after],
             tok);
     }
 
@@ -278,7 +278,7 @@ package struct SocketReader (size_t MAX_FIELD_SIZE = 512, size_t FIELDS = 16)
 
     private size_t calc (size_t idx, size_t val)
     {
-        return (idx + val) % this.buffer.length;
+        return (idx + val) % (&this).buffer.length;
     }
 
 

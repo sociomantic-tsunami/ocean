@@ -100,7 +100,7 @@ private struct VisitImpl ( Visitor )
 
     private void visitAll ( T ) ( T* value )
     {
-        auto deeper = this.visitor.visit(value);
+        auto deeper = (&this).visitor.visit(value);
 
         if (!deeper)
             return;
@@ -112,7 +112,7 @@ private struct VisitImpl ( Visitor )
         else static if (isTypedef!(T))
         {
             auto reinterp = cast(TypedefBaseType!(T)*) value;
-            this.visitAll(reinterp);
+            (&this).visitAll(reinterp);
         }
         else static if (isAggregateType!(T))
         {
@@ -130,7 +130,7 @@ private struct VisitImpl ( Visitor )
                         static if (Base.init.tupleof.length)
                         {
                             Base base = *value; // implicit upcast
-                            this.visitAll(&base);
+                            (&this).visitAll(&base);
                         }
                     }
                 }
@@ -140,7 +140,7 @@ private struct VisitImpl ( Visitor )
             {
                 foreach (ref field; (*value).tupleof)
                 {
-                    this.visitAll(&field);
+                    (&this).visitAll(&field);
                 }
             }
         }
@@ -151,7 +151,7 @@ private struct VisitImpl ( Visitor )
                 || isArrayType!(T) == ArrayKind.Dynamic)
             {
                 foreach (ref elem; *value)
-                    this.visitAll(&elem);
+                    (&this).visitAll(&elem);
             }
             else
             {
@@ -165,12 +165,12 @@ private struct VisitImpl ( Visitor )
         else static if (isPointerType!(T))
         {
             if (*value !is null)
-                this.visitAll(*value);
+                (&this).visitAll(*value);
         }
         else static if (is(T U == enum))
         {
             auto reinterp = cast(U*) value;
-            this.visitAll(reinterp);
+            (&this).visitAll(reinterp);
         }
         else
         {
