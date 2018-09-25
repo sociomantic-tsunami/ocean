@@ -17,10 +17,55 @@ module ocean.core.TypeConvert;
 
 
 
-import ocean.transition;
 import ocean.meta.traits.Indirections;
+import ocean.meta.types.Qualifiers;
+import ocean.meta.types.Typedef;
 
 version ( UnitTest ) import ocean.core.Test;
+
+
+/*******************************************************************************
+
+    Trivial wrapper for a cast from any array to an array of immutable elements
+    (e.g. from any string to an immutable string), to make code more readable.
+    Its use is only legal if no one else has a reference to the contents of the
+    `input` array.  Cf. `std.exception.assumeUnique` in Phobos.
+
+    Params:
+        input = slice whose contents to cast to immutable; this reference
+            will be nullified to prevent any further access from this
+            mutable handle
+
+    Returns:
+        slice of immutable elements corresponding to the same segment of
+        memory referred to by `input`
+
+    Note:
+        D1 does not allow overloading on rvalue vs lvalue, nor does it have
+        anything similar to D2's `auto ref` feature.  At the same time, to
+        match Phobos semantics we need to nullify the slice that gets cast
+        to immutable.  Because of this our `assumeUnique` accepts only
+        rvalues: use temporary local variables to assign lvalues if any
+        need to be used with `assumeUnique`.
+
+
+*******************************************************************************/
+
+public Immut!(T)[] assumeUnique (T) (ref T[] input)
+{
+    auto tmp = input;
+    input = null;
+    return cast(Immut!(T)[]) tmp;
+}
+
+unittest
+{
+    auto s1 = "aaa".dup;
+    auto s2 = assumeUnique(s1);
+    test!("==")(s2, "aaa");
+    test!("is")(s1, mstring.init);
+}
+
 
 /*******************************************************************************
 
