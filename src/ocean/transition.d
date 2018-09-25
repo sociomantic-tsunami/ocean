@@ -24,6 +24,7 @@ module ocean.transition;
 import ocean.meta.traits.Basic;
 import ocean.meta.types.Arrays;
 
+public import ocean.core.TypeConvert : assumeUnique;
 public import ocean.meta.types.Qualifiers;
 public import ocean.meta.types.Typedef;
 
@@ -242,36 +243,6 @@ unittest
     {
         static assert (min_normal!(double) == double.min);
     }
-}
-
-/*******************************************************************************
-
-    Trivial wrapper for a cast from any string to immutable string to make code
-    more readable. Is only legal if no one else has reference to `input`
-    contents.
-
-    NB! D1 does not allow overloading on rvalue vs lvalue, nor it has anything
-    similar to D2 `auto ref` feature. At the same time matching Phobos semantics
-    requires to nullify slice that gets casted to immutable. Because of that
-    our assumeUnique accepts only rvalues - use temporary local variables to
-    assign lvalues if those need to be used with assumeUnique
-
-*******************************************************************************/
-
-Immut!(T)[] assumeUnique(T)(ref T[] input)
-{
-    auto tmp = input;
-    input = null;
-    return cast(Immut!(T)[]) tmp;
-}
-
-unittest
-{
-    auto s1  = "aaa".dup;
-    auto s2 = assumeUnique(s1);
-
-    assert (s2 == "aaa");
-    assert (s1 is null);
 }
 
 /*******************************************************************************
