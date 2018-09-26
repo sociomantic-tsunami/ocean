@@ -44,12 +44,29 @@ version ( UnitTest ) import ocean.core.Test;
         D1 does not allow overloading on rvalue vs lvalue, nor does it have
         anything similar to D2's `auto ref` feature.  At the same time, to
         match Phobos semantics we need to nullify the slice that gets cast
-        to immutable.  Because of this our `assumeUnique` accepts only
+        to immutable.  Because of this in D1 `assumeUnique` accepts only
         rvalues: use temporary local variables to assign lvalues if any
         need to be used with `assumeUnique`.
 
+        D2 programs can use lvalues as well as rvalues.
+
+    Credits:
+        This function is copied from phobos `std.exception.assumeUnique`
+        ((c) Andrei Alexandrescu, Boost license) with minor modifications.
 
 *******************************************************************************/
+
+version (D_Version2) public Immut!(T)[] assumeUnique (T) (T[] input)
+{
+    return .assumeUnique(input);
+}
+
+version (D_Version2) unittest
+{
+    auto s = assumeUnique("1234".dup);
+    static assert(is(typeof(s) == istring));
+    test!("==")(s, "1234");
+}
 
 public Immut!(T)[] assumeUnique (T) (ref T[] input)
 {
