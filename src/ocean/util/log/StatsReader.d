@@ -83,6 +83,7 @@ public struct StatsLine
 
     static public StatsLine opCall (cstring line)
     {
+        enforce(line.length > 0, "Can not parse an empty line");
         StatsLine stats_line;
         auto len = line.length;
 
@@ -215,13 +216,61 @@ unittest
 
 public class StatsLogReader
 {
+    /**************************************************************************
+
+        Struct used to iterate through stat lines that are not empty
+
+    **************************************************************************/
+
+    private struct StatLinesIterator
+    {
+        /**********************************************************************
+
+            The line stream
+
+        **********************************************************************/
+
+        private Lines lines;
+
+        /***************************************************************************
+
+            Enables 'foreach' iteration over the stat lines.
+
+            Params:
+                dg = delegate called for each argument
+
+        ***************************************************************************/
+
+        public int opApply ( int delegate(ref Const!(char[])) dg )
+        {
+            int result;
+
+            foreach (line; this.lines)
+            {
+                if (line.length == 0)
+                {
+                    continue;
+                }
+
+                result = dg(line);
+
+                if ( result != 0 )
+                {
+                    break;
+                }
+            }
+
+            return result;
+        }
+    }
+
     /******************************************************************************
 
         Line iterator
 
     ******************************************************************************/
 
-    private Lines lines;
+    private StatLinesIterator lines;
 
     /**************************************************************************
 
@@ -234,7 +283,7 @@ public class StatsLogReader
 
     this (InputStream stream)
     {
-        this.lines = new Lines(stream);
+        this.lines = StatLinesIterator(new Lines(stream));
     }
 
     /***************************************************************************
@@ -322,7 +371,7 @@ unittest
 {
     auto data = new Array(
         "2018-09-12 10:03:07,598 2018-09-12 10:03:07,598 cpu_usage:1 memory:3\n" ~
-        "2018-09-12 10:03:07,598 2018-09-12 10:03:07,598 cpu_usage:2 memory:4".dup);
+        "2018-09-12 10:03:07,598 2018-09-12 10:03:07,598 cpu_usage:2 memory:4\n".dup);
 
     auto reader = new StatsLogReader(data);
 
@@ -348,7 +397,7 @@ unittest
     /// Iteration with index
     data = new Array(
         "2018-09-12 10:03:07,598 2018-09-12 10:03:07,598 cpu_usage:1 memory:3\n" ~
-        "2018-09-12 10:03:07,598 2018-09-12 10:03:07,598 cpu_usage:2 memory:4".dup);
+        "2018-09-12 10:03:07,598 2018-09-12 10:03:07,598 cpu_usage:2 memory:4\n".dup);
     reader = new StatsLogReader(data);
     index = 0;
     foreach (i, line; reader)
@@ -375,7 +424,7 @@ unittest
 {
     auto data = new Array(
         "2018-09-12 10:03:07,598 2018-09-12 10:03:07,598 cpu_usage:1 memory:3\n" ~
-        "2018-09-12 10:03:07,598 2018-09-12 10:03:07,598 cpu_usage:2 memory:4".dup);
+        "2018-09-12 10:03:07,598 2018-09-12 10:03:07,598 cpu_usage:2 memory:4\n".dup);
 
     /// It should be able to get the last line with a function call
     auto reader = new StatsLogReader(data);
