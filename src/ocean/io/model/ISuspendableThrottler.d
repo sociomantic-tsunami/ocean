@@ -65,7 +65,9 @@ abstract public class ISuspendableThrottler
     /***************************************************************************
 
         Adds a suspendable to the list of suspendables which are to be
-        throttled. If it is already in the list, nothing happens.
+        throttled if it's not already in there.
+        Also ensures that the state of the added suspendable is consistent
+        with the state of the throttler.
 
         Params:
             s = suspendable
@@ -77,10 +79,15 @@ abstract public class ISuspendableThrottler
         if ( !this.suspendables.contains(s) )
         {
             this.suspendables ~= s;
-            if (this.suspended_)
-            {
-                s.suspend();
-            }
+        }
+
+        if (this.suspended_ && !s.suspended())
+        {
+            s.suspend();
+        }
+        else if (!this.suspended_ && s.suspended())
+        {
+            s.resume();
         }
     }
 
