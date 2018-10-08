@@ -35,79 +35,6 @@
 
     Use debug=Config to get a printout of all the configuration options
 
-    Config file for the example below:
-    -------
-    [Example.FirstGroup]
-    number = 1
-    required_string = SET
-    was_this_set = "there, I set it!"
-    limited = 20
-
-    [Example.SecondGroup]
-    number = 2
-    required_string = SET_AGAIN
-
-    [Example.ThirdGroup]
-    number = 3
-    required_string = SET
-    was_this_set = "arrr"
-    limited = 40
-    -------
-
-    Usage Example:
-    -------
-    import Class = ocean.util.config.ConfigFiller;
-    import ocean.util.Config;
-
-    class ConfigParameters
-    {
-        int number;
-        Required!(char[]) required_string;
-        SetInfo!(char[]) was_this_set;
-        Required!(MinMax!(size_t, 1, 30)) limited;
-        Limit!(char[], "one", "two", "three") limited_set;
-        LimitInit!(char[], "one", "one", "two", "three") limited_set_with_default;
-    }
-
-    void main ( char[][] argv )
-    {
-        Config.parseFile(argv[1]);
-
-        auto iter = Class.iterate!(ConfigParameters)("Example");
-
-        foreach ( name, conf; iter ) try
-        {
-            // Outputs FirstGroup/SecondGroup/ThirdGroup
-            Stdout.formatln("Group: {}", name);
-            Stdout.formatln("Number: {}", conf.number);
-            Stdout.formatln("Required: {}", conf.required_string());
-            if ( conf.was_this_set.set )
-            {
-                Stdout.formatln("It was set! And the value is {}",
-                was_this_set());
-            }
-            // If limited was not set, an exception will be thrown
-            // If limited was set but is outside of the specified
-            // range [1 .. 30], an exception will be thrown as well
-            Stdout.formatln("Limited: {}", conf.limited());
-
-            // If limited_set is not a value in the given set ("one", "two",
-            // "three"), an exception will be thrown
-            Stdout.formatln("Limited_set: {}", conf.limited_set());
-
-            // If limited_set is not a value in the given set ("one", "two",
-            // "three"), an exception will be thrown, if it is not set, it
-            // defaults to "one"
-            Stdout.formatln("Limited_set_with_default: {}",
-                             conf.limited_set_with_default());
-        }
-        catch ( Exception e )
-        {
-            Stdout.formatln("Required parameter wasn't set: {}", e.message());
-        }
-    }
-    -------
-
     Copyright:
         Copyright (c) 2009-2016 dunnhumby Germany GmbH.
         All rights reserved.
@@ -1361,4 +1288,82 @@ float_arr = 10.2
     test!("==")(array_struct.int_arr, [30, 40, -60, 1111111111, 0x10]);
     test!("==")(array_struct.ulong_arr, ulong_array);
     test!("==")(array_struct.float_arr, float_array);
+}
+
+version (UnitTest)
+{
+    import ocean.io.Stdout;
+    import ConfigFiller = ocean.util.config.ConfigFiller;
+    import ocean.util.config.ConfigParser;
+
+}
+
+///
+unittest
+{
+    /*
+        Config file for the example below:
+
+        [Example.FirstGroup]
+        number = 1
+        required_string = SET
+        was_this_set = "there, I set it!"
+        limited = 20
+
+        [Example.SecondGroup]
+        number = 2
+        required_string = SET_AGAIN
+
+        [Example.ThirdGroup]
+        number = 3
+        required_string = SET
+        was_this_set = "arrr"
+        limited = 40
+    */
+
+    static struct ConfigParameters
+    {
+        int number;
+        ConfigFiller.Required!(char[]) required_string;
+        ConfigFiller.SetInfo!(char[]) was_this_set;
+        ConfigFiller.Required!(ConfigFiller.MinMax!(size_t, 1, 30)) limited;
+        ConfigFiller.Limit!(cstring, "one", "two", "three") limited_set;
+        ConfigFiller.LimitInit!(cstring, "one", "one", "two", "three") limited_set_with_default;
+    }
+
+    void parseConfig ( char[][] argv )
+    {
+        scope config = new ConfigParser();
+        config.parseFile(argv[1].dup);
+
+        auto iter = ConfigFiller.iterate!(ConfigParameters)("Example", config);
+        foreach ( name, conf; iter ) try
+        {
+            // Outputs FirstGroup/SecondGroup/ThirdGroup
+            Stdout.formatln("Group: {}", name);
+            Stdout.formatln("Number: {}", conf.number);
+            Stdout.formatln("Required: {}", conf.required_string());
+            if ( conf.was_this_set.set )
+            {
+                Stdout.formatln("It was set! And the value is {}",
+                    conf.was_this_set());
+            }
+            // If limited was not set, an exception will be thrown
+            // If limited was set but is outside of the specified
+            // range [1 .. 30], an exception will be thrown as well
+            Stdout.formatln("Limited: {}", conf.limited());
+            // If limited_set is not a value in the given set ("one", "two",
+            // "three"), an exception will be thrown
+            Stdout.formatln("Limited_set: {}", conf.limited_set());
+            // If limited_set is not a value in the given set ("one", "two",
+            // "three"), an exception will be thrown, if it is not set, it
+            // defaults to "one"
+            Stdout.formatln("Limited_set_with_default: {}",
+                             conf.limited_set_with_default());
+        }
+        catch ( Exception e )
+        {
+            Stdout.formatln("Required parameter wasn't set: {}", e.message());
+        }
+    }
 }
