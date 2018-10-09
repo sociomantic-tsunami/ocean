@@ -81,17 +81,17 @@ abstract public class ISuspendableThrottler
             this.suspendables ~= s;
         }
 
-        if (this.suspended_ && !s.suspended())
+        if (this.suspended_ != s.suspended())
         {
-            s.suspend();
-        }
-        else if (!this.suspended_ && s.suspended())
-        {
-            s.resume();
+            if (this.suspended_)
+                s.suspend();
+            else
+                s.resume();
         }
     }
 
-    version (UnitTest){
+    version (UnitTest)
+    {
         import ocean.core.Test;
     }
     unittest
