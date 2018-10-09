@@ -162,6 +162,7 @@ abstract public class ISuspendableThrottler
     {
         this.suspendables =
             this.suspendables[0 .. this.suspendables.moveToEnd(s)];
+        enableStomping(suspendables);
     }
 
 
