@@ -101,6 +101,39 @@ abstract public class ISuspendableThrottler
         enableStomping(suspendables);
     }
 
+    unittest
+    {
+        class Throttler : ISuspendableThrottler
+        {
+            override protected bool suspend ( )
+            {
+                return false;
+            }
+
+            override protected bool resume ( )
+            {
+                return true;
+            }
+        }
+
+        class Suspendable : ISuspendable
+        {
+            public void suspend ( ) { }
+            public void resume ( ) { }
+            public bool suspended ( )
+            {
+                return false;
+            }
+
+        }
+
+        auto throttler = new Throttler;
+        auto suspendable = new Suspendable;
+
+        throttler.addSuspendable(suspendable);
+        throttler.removeSuspendable(suspendable);
+        throttler.addSuspendable(suspendable);
+    }
 
     /***************************************************************************
 
