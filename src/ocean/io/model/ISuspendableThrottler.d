@@ -125,7 +125,7 @@ abstract public class ISuspendableThrottler
 
             public bool suspended ( )
             {
-                return suspended_;
+                return this.suspended_;
             }
         }
 
