@@ -21,33 +21,10 @@ import ocean.task.util.Timer;
 
 import ocean.io.model.ISuspendable;
 import ocean.io.Stdout;
+import ocean.io.select.client.TimerEvent;
+
 import ocean.core.Test;
-
-static import core.thread;
-
-/*******************************************************************************
-
-    "stream" or "generator" class, one which keeps producing new records for
-    processing at throttled rate
-
-*******************************************************************************/
-
-class Generator : Task
-{
-    void delegate(int) process_dg;
-
-    this ( typeof(this.process_dg) dg )
-    {
-        this.process_dg = dg;
-    }
-
-    override void run ( )
-    {
-        int i;
-        while (++i)
-            process_dg(i);
-    }
-}
+import ocean.core.Verify;
 
 /*******************************************************************************
 
@@ -77,6 +54,57 @@ class ProcessingTask : Task
     }
 }
 
+/*******************************************************************************
+
+    "stream" or "generator" class, one which keeps producing new records for
+    processing at throttled rate
+
+*******************************************************************************/
+
+class Generator : ISuspendable
+{
+    TimerEvent timer;
+    StreamProcessor!(ProcessingTask) stream_processor;
+    int counter;
+
+    this ( )
+    {
+        this.timer = new TimerEvent(&this.generate);
+
+        auto throttler_config = ThrottlerConfig(10, 1);
+        this.stream_processor = new StreamProcessor!(ProcessingTask)(throttler_config);
+        this.stream_processor.addStream(this);
+    }
+
+    void start ( )
+    {
+        this.timer.set(0, 10, 0, 10);
+        this.resume();
+    }
+
+    override void resume ( )
+    {
+        theScheduler.epoll.register(this.timer);
+    }
+
+    override void suspend ( )
+    {
+        theScheduler.epoll.unregister(this.timer);
+    }
+
+    override bool suspended ( )
+    {
+        return this.timer.is_registered;
+    }
+
+    bool generate ( )
+    {
+        this.stream_processor.process(this.counter);
+        ++this.counter;
+        return true;
+    }
+}
+
 unittest
 {
     SchedulerConfiguration config;
@@ -84,12 +112,8 @@ unittest
     config.task_queue_limit = 30;
     initScheduler(config);
 
-    auto throttler_config = ThrottlerConfig(10, 1);
-    auto stream_processor = new StreamProcessor!(ProcessingTask)(throttler_config);
-    auto generator = new Generator(&stream_processor.process);
-    stream_processor.addStream(generator);
-
-    theScheduler.schedule(generator);
+    auto generator = new Generator;
+    generator.start();
     theScheduler.eventLoop();
 
     // exact number of tasks that will be processed before the shutdown
