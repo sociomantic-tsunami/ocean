@@ -78,7 +78,7 @@ class Generator : ISuspendable
 
     void start ( )
     {
-        this.timer.set(0, 10, 0, 10);
+        this.timer.set(0, 1, 0, 1);
         this.resume();
     }
 

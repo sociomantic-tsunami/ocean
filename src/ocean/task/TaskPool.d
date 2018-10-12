@@ -75,32 +75,6 @@ class TaskPool ( TaskT : Task ) : ObjectPool!(Task)
 
     public alias TaskT TaskType;
 
-    /***************************************************************************
-
-        Internal helper class derived from user-supplied task type that is used
-        to track reference to outer pool for recycling.
-
-        Params:
-            TaskT = user-supplied task type
-
-    ***************************************************************************/
-
-    protected class OwnedTask : TaskT
-    {
-        /***********************************************************************
-
-            Recycles the task by first calling its own recycle method to
-            reset it to a clean state, and returns it to the pool of
-            available tasks instances afterwards.
-
-        ***********************************************************************/
-
-        override public void recycle ( )
-        {
-            super.recycle();
-            this.outer.recycle(this);
-        }
-    }
 
     /***************************************************************************
 
@@ -122,28 +96,28 @@ class TaskPool ( TaskT : Task ) : ObjectPool!(Task)
         if (this.num_busy() >= this.limit())
             return false;
 
-        auto task = cast(TaskT) this.get(new OwnedTask);
+        auto task = cast(TaskT) this.get(new TaskT);
         assert (task !is null);
 
-        try
-        {
-            task.copyArguments(args);
-            theScheduler.schedule(task);
-        }
-        catch (TaskKillException e)
-        {
-            // don't try recycling task upon TaskKillException as this is not
-            // normal code flow and it may have already been recycled by
-            // finishing on its own
-            throw e;
-        }
-        catch (Exception e)
-        {
-            this.recycle(task);
-            throw e;
-        }
-
+        task.copyArguments(args);
+        this.startImpl(task);
         return true;
+    }
+
+    /***************************************************************************
+
+        Common part of start implementation reused by derivatives. Split into
+        separate method to ensure that recycling hook won't be omitted.
+
+        Params:
+            task = already setup task to run and recyle
+
+    ***************************************************************************/
+
+    protected void startImpl ( Task task )
+    {
+        task.terminationHook(&this.taskTerminationHook);
+        theScheduler.schedule(task);
     }
 
     /***************************************************************************
@@ -227,29 +201,26 @@ class TaskPool ( TaskT : Task ) : ObjectPool!(Task)
             if (this.num_busy() >= this.limit())
                 return false;
 
-            auto task = cast(TaskT) this.get(new OwnedTask);
+            auto task = cast(TaskT) this.get(new TaskT);
             assert (task !is null);
 
-            try
-            {
-                task.deserialize(serialized);
-                theScheduler.schedule(task);
-            }
-            catch (TaskKillException e)
-            {
-                // don't try recycling task upon TaskKillException as this is not
-                // normal code flow and it may have already been recycled by
-                // finishing on its own
-                throw e;
-            }
-            catch (Exception e)
-            {
-                this.recycle(task);
-                throw e;
-            }
+            task.deserialize(serialized);
+            this.startImpl(task);
 
             return true;
         }
+    }
+
+    /***************************************************************************
+
+        Used to recycle pool tasks when they finish
+
+    ***************************************************************************/
+
+    private void taskTerminationHook ( )
+    {
+        auto task = Task.getThis();
+        this.recycle(task);
     }
 }
 

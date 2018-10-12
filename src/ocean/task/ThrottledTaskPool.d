@@ -56,35 +56,6 @@ public class ThrottledTaskPool ( TaskT ) : TaskPool!(TaskT)
 
     /***************************************************************************
 
-        Task class used to process stream data. It inherits from user-supplied
-        task type to insert throttling hooks before and after its main fiber
-        method. Everything else is kept as is.
-
-    ***************************************************************************/
-
-    private class ProcessingTask : OwnedTask
-    {
-        /***********************************************************************
-
-            Overloaded method to call throttledResume on the throttler when
-            then task is finished.
-
-        ***********************************************************************/
-
-        override protected void run ( )
-        {
-            // Bug? Deduces type of `this.outer` as one of base class.
-            auto pool = cast(ThrottledTaskPool) this.outer;
-            assert (pool !is null);
-
-            super.run();
-
-            pool.throttler.throttledResume();
-        }
-    }
-
-    /***************************************************************************
-
         Constructor
 
         If this constructor is used, one must call `useThrottler` method before
@@ -180,26 +151,12 @@ public class ThrottledTaskPool ( TaskT ) : TaskPool!(TaskT)
         if (this.num_busy() >= this.limit())
             return false;
 
-        auto task = cast(TaskT) this.get(new ProcessingTask);
+        auto task = cast(TaskT) this.get(new TaskT);
         assert (task !is null);
 
-        try
-        {
-            task.copyArguments(args);
-            theScheduler.schedule(task);
-        }
-        catch (TaskKillException e)
-        {
-            // don't try recycling task upon TaskKillException as this is not
-            // normal code flow and it may have already been recycled by
-            // finishing on its own
-            throw e;
-        }
-        catch (Exception e)
-        {
-            this.recycle(task);
-            throw e;
-        }
+        task.copyArguments(args);
+        task.terminationHook(&this.throttlingHook);
+        this.startImpl(task);
 
         this.throttler.throttledSuspend();
 
@@ -231,31 +188,28 @@ public class ThrottledTaskPool ( TaskT ) : TaskPool!(TaskT)
             if (this.num_busy() >= this.limit())
                 return false;
 
-            auto task = cast(TaskT) this.get(new ProcessingTask);
+            auto task = cast(TaskT) this.get(new TaskT);
             assert (task !is null);
 
-            try
-            {
-                task.deserialize(serialized);
-                theScheduler.schedule(task);
-            }
-            catch (TaskKillException e)
-            {
-                // don't try recycling task upon TaskKillException as this is not
-                // normal code flow and it may have already been recycled by
-                // finishing on its own
-                throw e;
-            }
-            catch (Exception e)
-            {
-                this.recycle(task);
-                throw e;
-            }
+            task.deserialize(serialized);
+            task.terminationHook(&this.throttlingHook);
+            this.startImpl(task);
 
             this.throttler.throttledSuspend();
 
             return true;
         }
+    }
+
+    /***************************************************************************
+
+        Called upon owned task termination
+
+    ***************************************************************************/
+
+    private void throttlingHook ( )
+    {
+        this.throttler.throttledResume();
     }
 }
 
