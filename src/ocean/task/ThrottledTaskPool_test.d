@@ -24,34 +24,12 @@ import ocean.task.util.Timer;
 
 import ocean.io.model.ISuspendable;
 import ocean.io.Stdout;
+import ocean.io.select.client.TimerEvent;
+
 import ocean.core.Test;
 import ocean.core.Verify;
 
 static import core.thread;
-
-/*******************************************************************************
-
-    "stream" or "generator" class, one which keeps producing new records for
-    processing at throttled rate
-
-*******************************************************************************/
-
-class Generator : Task
-{
-    bool delegate(int) process_dg;
-
-    this ( typeof(this.process_dg) dg )
-    {
-        this.process_dg = dg;
-    }
-
-    override void run ( )
-    {
-        int i;
-        while (++i)
-            verify(process_dg(i));
-    }
-}
 
 /*******************************************************************************
 
@@ -81,6 +59,55 @@ class ProcessingTask : Task
     }
 }
 
+/*******************************************************************************
+
+    "stream" or "generator" class, one which keeps producing new records for
+    processing at throttled rate
+
+*******************************************************************************/
+
+class Generator : ISuspendable
+{
+    TimerEvent timer;
+    ThrottledTaskPool!(ProcessingTask) pool;
+    int counter;
+
+    this ( )
+    {
+        this.timer = new TimerEvent(&this.generate);
+        this.pool = new ThrottledTaskPool!(ProcessingTask)(10, 0);
+        this.pool.throttler.addSuspendable(this);
+    }
+
+    void start ( )
+    {
+        this.timer.set(0, 10, 0, 10);
+        this.resume();
+    }
+
+    override void resume ( )
+    {
+        theScheduler.epoll.register(this.timer);
+    }
+
+    override void suspend ( )
+    {
+        theScheduler.epoll.unregister(this.timer);
+    }
+
+    override bool suspended ( )
+    {
+        return this.timer.is_registered;
+    }
+
+    bool generate ( )
+    {
+        this.pool.start(this.counter);
+        ++this.counter;
+        return true;
+    }
+}
+
 unittest
 {
     SchedulerConfiguration config;
@@ -88,11 +115,9 @@ unittest
     config.task_queue_limit = 30;
     initScheduler(config);
 
-    auto task_pool = new ThrottledTaskPool!(ProcessingTask)(10, 0);
-    auto generator = new Generator(&task_pool.start);
-    task_pool.throttler.addSuspendable(generator);
+    auto generator = new Generator;
 
-    theScheduler.schedule(generator);
+    generator.start();
     theScheduler.eventLoop();
 
     // exact number of tasks that will be processed before the shutdown
