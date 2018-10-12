@@ -43,16 +43,24 @@ class ProcessingTask : Task
     int x;
 
     static int total;
+    static size_t recycle_count;
 
     void copyArguments ( int x )
     {
         this.x = x;
     }
 
+    override public void recycle ( )
+    {
+        recycle_count++;
+    }
+
     override void run ( )
     {
-        .wait(100);
+        test!("==")(theScheduler.getStats.worker_fiber_busy, 0);
+
         ++total;
+        .wait(100);
 
         if (this.x == 1000)
             theScheduler.shutdown();
@@ -81,7 +89,7 @@ class Generator : ISuspendable
 
     void start ( )
     {
-        this.timer.set(0, 10, 0, 10);
+        this.timer.set(0, 1, 0, 1);
         this.resume();
     }
 
@@ -111,8 +119,14 @@ class Generator : ISuspendable
 unittest
 {
     SchedulerConfiguration config;
-    config.worker_fiber_limit = 10;
-    config.task_queue_limit = 30;
+    with (config)
+    {
+        worker_fiber_limit = 10;
+        task_queue_limit = 30;
+        specialized_pools = [
+            PoolDescription(ProcessingTask.classinfo.name, 10240)
+        ];
+    }
     initScheduler(config);
 
     auto generator = new Generator;
@@ -120,9 +134,11 @@ unittest
     generator.start();
     theScheduler.eventLoop();
 
+    test!("==")(ProcessingTask.recycle_count, ProcessingTask.total);
+    test!("==")(generator.pool.num_busy(), 0);
+
     // exact number of tasks that will be processed before the shutdown
     // may vary but it must always be at most 1000 + task_queue_limit
     test!(">=")(ProcessingTask.total, 1000);
     test!("<=")(ProcessingTask.total, 1000 + config.task_queue_limit);
-
 }
