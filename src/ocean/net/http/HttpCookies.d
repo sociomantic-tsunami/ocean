@@ -191,7 +191,7 @@ class Cookie //: IWritable
 
         ***********************************************************************/
 
-        void produce (size_t delegate(Const!(void)[]) consume)
+        void produce (scope size_t delegate(Const!(void)[]) consume)
         {
                 consume (name);
 
@@ -310,7 +310,7 @@ class CookieStack
 
         **********************************************************************/
 
-        int opApply (int delegate(ref Cookie) dg)
+        int opApply (scope int delegate(ref Cookie) dg)
         {
                 int result = 0;
 
@@ -373,7 +373,7 @@ class HttpCookiesView //: IWritable
 
         **********************************************************************/
 
-        void produce (size_t delegate(Const!(void)[]) consume, istring eol = HttpConst.Eol)
+        void produce (scope size_t delegate(Const!(void)[]) consume, istring eol = HttpConst.Eol)
         {
                 foreach (cookie; parse)
                          cookie.produce (consume), consume (eol);

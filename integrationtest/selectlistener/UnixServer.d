@@ -99,7 +99,7 @@ private class UnixConnectionHandler: IFiberConnectionHandler
 
     ***************************************************************************/
 
-    public this ( FinalizeDg finalize_dg, EpollSelectDispatcher epoll )
+    public this ( scope FinalizeDg finalize_dg, EpollSelectDispatcher epoll )
     {
         super(epoll, new UnixSocket, finalize_dg);
 
