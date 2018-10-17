@@ -70,7 +70,7 @@ unittest
 
     initScheduler(SchedulerConfiguration.init);
 
-    const outstr = "Hello World!";
+    static immutable outstr = "Hello World!";
     char[outstr.length] instr;
 
     // Start a task that writes the test string to the pipe.
@@ -86,7 +86,7 @@ unittest
         override void run ( )
         {
             // Read only "Hello " to test readv().
-            const hello = "Hello ".length;
+            static immutable hello = "Hello ".length;
             intst.read(instr[0 .. hello]);
             auto world = instr[hello .. $];
 

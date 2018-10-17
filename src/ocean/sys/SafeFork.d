@@ -71,8 +71,8 @@ extern (C)
 
     int waitid(idtype_t, id_t, siginfo_t*, int);
 
-    const WEXITED = 0x00000004;
-    const WNOWAIT = 0x01000000;
+    static immutable WEXITED = 0x00000004;
+    static immutable WNOWAIT = 0x01000000;
 }
 
 
@@ -152,7 +152,7 @@ public class SafeFork
 
     ***************************************************************************/
 
-    public this ( void delegate () dg )
+    public this ( scope void delegate () dg )
     {
         this.dg = dg;
 

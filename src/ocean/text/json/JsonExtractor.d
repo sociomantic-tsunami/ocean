@@ -632,7 +632,7 @@ struct JsonExtractor
          **********************************************************************/
 
         public this ( Parser json, GetField[] fields_to_reset,
-                      IteratorDg iterator_dg, bool skip_null = false )
+                      scope IteratorDg iterator_dg, bool skip_null = false )
         {
             super(json, skip_null);
 
@@ -839,7 +839,7 @@ struct JsonExtractor
 
     unittest
     {
-        const content =
+        enum content =
         `{
             "id":"8c97472e-098e-4baa-aa63-4a3f2aab10c6",
             "imp":
@@ -979,7 +979,7 @@ struct JsonExtractor
         t.test!("==")(w.value, ""[]);
         t.test!("==")(w.type, Type.Empty);
 
-        const content2 = `{"imp":null}`;
+        enum content2 = `{"imp":null}`;
 
         try
         {
