@@ -221,12 +221,12 @@ public class UnixSocketListener ( CommandHandlerType ) : SelectListener!(
             char[0x100] buf;
             auto msgnul = strerror_r(errno, buf.ptr, buf.length);
             log.error("Unable to delete socket \"{}\": {}",
-                      this.address_pathnul[0 .. $ - 1],
+                      this.address_pathnul[0 .. strlen(this.address_pathnul.ptr)],
                       msgnul[0 .. strlen(msgnul)]);
         }
         else
         {
-            log.info("Deleted socket \"{}\"", this.address_pathnul[0 .. $ - 1]);
+            log.info("Deleted socket \"{}\"", this.address_pathnul[0 .. strlen(this.address_pathnul.ptr)]);
         }
     }
 }
