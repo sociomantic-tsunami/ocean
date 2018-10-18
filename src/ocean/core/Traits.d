@@ -2019,7 +2019,7 @@ template ParameterTupleOf( Fn )
         alias Tuple!(Params) ParameterTupleOf;
     else static if( is( Fn Params == delegate ) )
         alias Tuple!(ParameterTupleOf!(Params)) ParameterTupleOf;
-    else static if( is( Fn Params == Params* ) )
+    else static if( is( Fn Params : Params* ) )
         alias Tuple!(ParameterTupleOf!(Params)) ParameterTupleOf;
     else
         static assert( false, "Argument has no parameters." );
