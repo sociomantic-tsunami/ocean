@@ -122,7 +122,7 @@ abstract class HttpConnectionHandler : IFiberConnectionHandler
 
      **************************************************************************/
 
-    protected this ( EpollSelectDispatcher dispatcher, FinalizeDg finalizer,
+    protected this ( EpollSelectDispatcher dispatcher, scope FinalizeDg finalizer,
                      size_t stack_size,
                      HttpMethod[] supported_methods ... )
     {
@@ -147,7 +147,7 @@ abstract class HttpConnectionHandler : IFiberConnectionHandler
 
      **************************************************************************/
 
-    protected this ( EpollSelectDispatcher dispatcher, FinalizeDg finalizer,
+    protected this ( EpollSelectDispatcher dispatcher, scope FinalizeDg finalizer,
                      size_t stack_size,
                      HttpRequest request, HttpResponse response,
                      HttpMethod[] supported_methods ... )
