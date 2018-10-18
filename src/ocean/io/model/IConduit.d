@@ -131,7 +131,7 @@ interface ISelectable
 
 interface IOStream
 {
-        const Eof = -1;         /// The End-of-Flow identifer.
+        static immutable Eof = -1;         /// The End-of-Flow identifer.
 
         /***********************************************************************
 
@@ -308,9 +308,9 @@ interface InputBuffer : InputStream
 {
         void[] slice ();
 
-        bool next (size_t delegate (Const!(void)[]) scan);
+        bool next (scope size_t delegate (Const!(void)[]) scan);
 
-        size_t reader (size_t delegate(Const!(void)[]) consumer);
+        size_t reader (scope size_t delegate(Const!(void)[]) consumer);
 }
 
 /*******************************************************************************
@@ -327,7 +327,7 @@ interface OutputBuffer : OutputStream
 
         OutputBuffer append (Const!(void)[]);
 
-        size_t writer (size_t delegate(void[]) producer);
+        size_t writer (scope size_t delegate(void[]) producer);
 }
 
 

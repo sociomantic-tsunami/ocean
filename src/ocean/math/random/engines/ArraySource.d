@@ -28,8 +28,8 @@ import ocean.core.Verify;
 struct ArraySource{
     uint[] a;
     size_t i;
-    const int canCheckpoint=false; // implement?
-    const int canSeed=false;
+    enum int canCheckpoint=false; // implement?
+    enum int canSeed=false;
 
     static ArraySource opCall(uint[] a,size_t i=0)
     {

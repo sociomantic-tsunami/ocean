@@ -131,7 +131,7 @@ public struct FindFruct(T)
 
     void match (T[] what)
     {
-        this.what = what;
+        (&this).what = what;
     }
 
     /***********************************************************************
@@ -247,7 +247,7 @@ public struct FindFruct(T)
         T[]     what,
             content;
 
-        int opApply (int delegate (ref size_t index) dg)
+        int opApply (scope int delegate (ref size_t index) dg)
         {
             int    ret;
             size_t mark;
@@ -329,8 +329,8 @@ public struct SearchFruct(T)
     void match (Const!(T)[] what)
     {
         offsets[] = what.length + 1;
-        this.fore = true;
-        this.what = what;
+        (&this).fore = true;
+        (&this).what = what;
         reset;
     }
 
@@ -553,7 +553,7 @@ public struct SearchFruct(T)
 
     private void reset ()
     {
-        auto what = cast(char[]) this.what;
+        auto what = cast(char[]) (&this).what;
         if (fore)
             for (ptrdiff_t i=0; i < what.length; ++i)
                 offsets[what[i]] = what.length - i;
@@ -585,7 +585,7 @@ public struct SearchFruct(T)
         T[]    content;
         size_t delegate(T[], size_t) call;
 
-        int opApply (int delegate (ref size_t index) dg)
+        int opApply (scope int delegate (ref size_t index) dg)
         {
             int     ret;
             size_t  mark;
@@ -613,7 +613,7 @@ public struct SearchFruct(T)
 
         size_t      delegate(T[], size_t) call;
 
-        int opApply (int delegate (ref T[] token) dg)
+        int opApply (scope int delegate (ref T[] token) dg)
         {
             size_t  ret,
                     pos,
