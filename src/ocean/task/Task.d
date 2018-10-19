@@ -30,7 +30,6 @@ import ocean.transition;
 import ocean.core.array.Mutation : moveToEnd, reverse;
 import ocean.core.Buffer;
 import ocean.core.Verify;
-import ocean.io.model.ISuspendable;
 import ocean.task.internal.TaskExtensionMixins;
 import ocean.task.IScheduler;
 
@@ -148,7 +147,7 @@ public class TaskKillException : Exception
 
 *******************************************************************************/
 
-public abstract class Task : ISuspendable
+public abstract class Task
 {
     /***************************************************************************
 
