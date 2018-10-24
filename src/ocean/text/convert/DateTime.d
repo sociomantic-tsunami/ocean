@@ -304,7 +304,7 @@ private bool validateCharacters ( cstring str, cstring extra = "" )
 
 *******************************************************************************/
 
-private bool validateDate ( uint day, uint month, uint year )
+public bool validateDate ( uint day, uint month, uint year )
 {
     if ( year < 1900 )
     {
@@ -337,7 +337,7 @@ private bool validateDate ( uint day, uint month, uint year )
 
 *******************************************************************************/
 
-private bool validateTime ( int hour, int minute, int second )
+public bool validateTime ( int hour, int minute, int second )
 {
     if ( hour < 0 || hour > 23 )
     {
@@ -424,4 +424,24 @@ unittest
 
     testConversion("Sun, 09 Sep 2001 01:46:40 UTC", 1000000000,
         DateConversion.InternetMsgFmtDateTime);
+}
+
+unittest
+{
+    // test validateDate
+    test!("==")(validateDate(12, 12, 1899), false);
+    test!("==")(validateDate(12, -1, 1899), false);
+    test!("==")(validateDate(12, 13, 2017), false);
+    test!("==")(validateDate(-1, 12, 2017), false);
+    test!("==")(validateDate(32, 12, 2017), false);
+    test!("==")(validateDate(12, 12, 2017), true);
+
+    // // test validateTime
+    test!("==")(validateTime(-1, 12, 12), false);
+    test!("==")(validateTime(25, 12, 12), false);
+    test!("==")(validateTime(12, -1, 12), false);
+    test!("==")(validateTime(12, 62, 12), false);
+    test!("==")(validateTime(12, 12, -1), false);
+    test!("==")(validateTime(12, 12, 62), false);
+    test!("==")(validateTime(12, 12, 12), true);
 }
