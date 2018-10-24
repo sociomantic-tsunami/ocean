@@ -90,64 +90,6 @@ abstract public class ISuspendableThrottler
         }
     }
 
-    version (UnitTest)
-    {
-        import ocean.core.Test;
-    }
-    unittest
-    {
-        class SuspendableThrottler : ISuspendableThrottler
-        {
-            override protected bool suspend ( )
-            {
-                return false;
-            }
-
-            override protected bool resume ( )
-            {
-                return false;
-            }
-        }
-
-        class Suspendable : ISuspendable
-        {
-            bool suspended_ = false;
-
-            public void suspend ( )
-            {
-                this.suspended_ = true;
-            }
-
-            public void resume ( )
-            {
-                this.suspended_ = false;
-            }
-
-            public bool suspended ( )
-            {
-                return this.suspended_;
-            }
-        }
-
-        auto suspendable_throttler = new SuspendableThrottler;
-        auto suspendable = new Suspendable;
-
-        // add a suspended ISuspendable to a non suspended throttler
-        suspendable.suspend();
-        suspendable_throttler.addSuspendable(suspendable);
-
-        test!("==")(suspendable.suspended(), false,
-            "Suspended suspendable not resumed.");
-
-        suspendable_throttler.suspendAll();
-
-        // add a resumed ISuspendable to a suspended throttler
-        suspendable.resume();
-        suspendable_throttler.addSuspendable(suspendable);
-
-        test!("==")(suspendable.suspended(), true,
-            "Resumed suspendable not suspended.");
-    }
 
     /***************************************************************************
 
