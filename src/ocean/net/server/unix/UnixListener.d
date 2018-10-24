@@ -50,7 +50,7 @@ public class UnixListener : UnixSocketListener!( BasicCommandHandler )
     ***********************************************************************/
 
     public this ( cstring address_path, EpollSelectDispatcher epoll,
-                  BasicCommandHandler.Handler[istring] handlers,
+                  scope BasicCommandHandler.Handler[istring] handlers,
                   int mode = -1 )
     {
         this.handler = new BasicCommandHandler(handlers);
@@ -80,8 +80,8 @@ public class UnixListener : UnixSocketListener!( BasicCommandHandler )
     ***********************************************************************/
 
     public this ( istring address_path, EpollSelectDispatcher epoll,
-                  BasicCommandHandler.Handler[istring] handlers,
-                  BasicCommandHandler.InteractiveHandler[istring] interactive_handlers,
+                  scope BasicCommandHandler.Handler[istring] handlers,
+                  scope BasicCommandHandler.InteractiveHandler[istring] interactive_handlers,
                   int mode = -1 )
     {
         this.handler = new BasicCommandHandler(handlers, interactive_handlers);

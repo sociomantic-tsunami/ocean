@@ -94,8 +94,8 @@ abstract class IFiberConnectionHandlerBase : IConnectionHandler
     protected this ( EpollSelectDispatcher epoll,
                      size_t stack_size,
                      ISocket socket,
-                     FinalizeDg finalize_dg = null,
-                     ErrorDg error_dg = null )
+                     scope FinalizeDg finalize_dg = null,
+                     scope ErrorDg error_dg = null )
     {
         super(socket, finalize_dg, error_dg);
 
@@ -120,7 +120,7 @@ abstract class IFiberConnectionHandlerBase : IConnectionHandler
     ***************************************************************************/
 
     protected this ( EpollSelectDispatcher epoll, ISocket socket,
-                     FinalizeDg finalize_dg = null, ErrorDg error_dg = null )
+                     scope FinalizeDg finalize_dg = null, scope ErrorDg error_dg = null )
     {
         this(epoll, this.default_stack_size, socket, finalize_dg, error_dg);
     }
@@ -308,7 +308,7 @@ abstract class IFiberConnectionHandler : IFiberConnectionHandlerBase, Resettable
 
     protected this ( EpollSelectDispatcher epoll,
                      size_t stack_size, bool buffered_writer, ISocket socket,
-                     FinalizeDg finalize_dg = null, ErrorDg error_dg = null )
+                     scope FinalizeDg finalize_dg = null, scope ErrorDg error_dg = null )
     {
         this(epoll, buffered_writer?
                         new BufferedFiberSelectWriter(this.socket, this.fiber, this.io_warning, this.socket_error) :
@@ -337,7 +337,7 @@ abstract class IFiberConnectionHandler : IFiberConnectionHandlerBase, Resettable
 
     protected this ( EpollSelectDispatcher epoll, bool buffered_writer,
                      ISocket socket,
-                     FinalizeDg finalize_dg = null, ErrorDg error_dg = null )
+                     scope FinalizeDg finalize_dg = null, scope ErrorDg error_dg = null )
     {
         this(epoll, this.default_stack_size, buffered_writer, socket,
              finalize_dg, error_dg);
@@ -364,7 +364,7 @@ abstract class IFiberConnectionHandler : IFiberConnectionHandlerBase, Resettable
 
     protected this ( EpollSelectDispatcher epoll, size_t stack_size,
                      ISocket socket,
-                     FinalizeDg finalize_dg = null, ErrorDg error_dg = null )
+                     scope FinalizeDg finalize_dg = null, scope ErrorDg error_dg = null )
     {
         this(epoll, stack_size,
              this.use_buffered_writer_by_default, socket, finalize_dg, error_dg);
@@ -390,7 +390,7 @@ abstract class IFiberConnectionHandler : IFiberConnectionHandlerBase, Resettable
     ***************************************************************************/
 
     protected this ( EpollSelectDispatcher epoll, ISocket socket,
-                     FinalizeDg finalize_dg = null, ErrorDg error_dg = null )
+                     scope FinalizeDg finalize_dg = null, scope ErrorDg error_dg = null )
     {
         this(epoll, this.use_buffered_writer_by_default, socket,
              finalize_dg, error_dg);
@@ -419,7 +419,7 @@ abstract class IFiberConnectionHandler : IFiberConnectionHandlerBase, Resettable
     ***************************************************************************/
 
     private this ( EpollSelectDispatcher epoll, lazy SelectWriter writer,
-                   ISocket socket, FinalizeDg finalize_dg, ErrorDg error_dg,
+                   ISocket socket, scope FinalizeDg finalize_dg, scope ErrorDg error_dg,
                    size_t stack_size )
     {
         super(epoll, stack_size, socket, finalize_dg, error_dg);
