@@ -25,7 +25,7 @@ import ocean.meta.codegen.CTFE;
 /// ditto
 public template hasFeaturesFrom ( istring libname, ulong major, ulong minor )
 {
-    const hasFeaturesFrom = hasFeaturesFromFunc!(libname, major, minor)();
+    static immutable hasFeaturesFrom = hasFeaturesFromFunc!(libname, major, minor)();
 }
 
 ///
