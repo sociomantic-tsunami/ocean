@@ -1,5 +1,6 @@
-#!/bin/sh
+#!/bin/bash
 set -xe
+set -o pipefail
 
 # Enables printing of all potential GC allocation sources to stdout
 export DFLAGS=-vgc
