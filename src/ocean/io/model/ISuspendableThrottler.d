@@ -65,9 +65,7 @@ abstract public class ISuspendableThrottler
     /***************************************************************************
 
         Adds a suspendable to the list of suspendables which are to be
-        throttled if it's not already in there.
-        Also ensures that the state of the added suspendable is consistent
-        with the state of the throttler.
+        throttled. If it is already in the list, nothing happens.
 
         Params:
             s = suspendable
@@ -79,75 +77,13 @@ abstract public class ISuspendableThrottler
         if ( !this.suspendables.contains(s) )
         {
             this.suspendables ~= s;
-        }
-
-        if (this.suspended_ != s.suspended())
-        {
             if (this.suspended_)
+            {
                 s.suspend();
-            else
-                s.resume();
+            }
         }
     }
 
-    version (UnitTest)
-    {
-        import ocean.core.Test;
-    }
-    unittest
-    {
-        class SuspendableThrottler : ISuspendableThrottler
-        {
-            override protected bool suspend ( )
-            {
-                return false;
-            }
-
-            override protected bool resume ( )
-            {
-                return false;
-            }
-        }
-
-        class Suspendable : ISuspendable
-        {
-            bool suspended_ = false;
-
-            public void suspend ( )
-            {
-                this.suspended_ = true;
-            }
-
-            public void resume ( )
-            {
-                this.suspended_ = false;
-            }
-
-            public bool suspended ( )
-            {
-                return this.suspended_;
-            }
-        }
-
-        auto suspendable_throttler = new SuspendableThrottler;
-        auto suspendable = new Suspendable;
-
-        // add a suspended ISuspendable to a non suspended throttler
-        suspendable.suspend();
-        suspendable_throttler.addSuspendable(suspendable);
-
-        test!("==")(suspendable.suspended(), false,
-            "Suspended suspendable not resumed.");
-
-        suspendable_throttler.suspendAll();
-
-        // add a resumed ISuspendable to a suspended throttler
-        suspendable.resume();
-        suspendable_throttler.addSuspendable(suspendable);
-
-        test!("==")(suspendable.suspended(), true,
-            "Resumed suspendable not suspended.");
-    }
 
     /***************************************************************************
 
