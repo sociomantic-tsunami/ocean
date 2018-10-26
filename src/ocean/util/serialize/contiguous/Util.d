@@ -43,7 +43,19 @@ import ocean.core.Test;
 
 public Contiguous!(S) copy(S) ( in Contiguous!(S) src, ref Contiguous!(S) dst )
 {
-    Deserializer.deserialize(src.data, dst);
+    // We have to cast away `const` here since the `ptr`
+    // method does not support it.  We are not modifying
+    // anything so we do not break the `in` promise of
+    // the function signature.
+    if ((cast(Contiguous!(S)) src).ptr is null)
+    {
+        dst.reset();
+    }
+    else
+    {
+        Deserializer.deserialize(src.data, dst);
+    }
+
     return dst;
 }
 
@@ -104,6 +116,13 @@ unittest
 
     test!("==")(two.ptr.arr, t.arr);
     two.enforceIntegrity();
+
+    one.reset();
+    test!("is")(one.ptr, null);
+    test!("!is")(two.ptr, null);
+
+    copy(one, two);
+    test!("is")(two.ptr, null);
 }
 
 unittest
