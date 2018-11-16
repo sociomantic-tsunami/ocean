@@ -288,12 +288,12 @@ public class PoolThrottler : ISuspendableThrottler
         auto total = stats.task_queue_total;
         auto used = stats.task_queue_busy;
 
-        debug_trace("Throttler.suspend({}) : used = {}, total = {}, " ~
-            "pool.busy = {}, pool.limit = {}", this.suspend_point, used,
-            total, this.pool.num_busy(), this.pool.limit());
-
-        return used >= this.suspend_point
+        auto result = used >= this.suspend_point
             || (this.pool.num_busy() >= this.pool.limit() - 1);
+
+        debug_trace("Throttler.suspend -> {}", result);
+
+        return result;
     }
 
     /***************************************************************************
@@ -312,12 +312,12 @@ public class PoolThrottler : ISuspendableThrottler
         auto total = stats.task_queue_total;
         auto used = stats.task_queue_busy;
 
-        debug_trace("Throttler.resume({}) : used = {}, total = {}, " ~
-            "pool.busy = {}, pool.limit = {}", this.resume_point, used,
-            total, this.pool.num_busy(), this.pool.limit());
-
-        return used <= this.resume_point
+        auto result = used <= this.resume_point
             && (this.pool.num_busy() < this.pool.limit());
+
+        debug_trace("Throttler.resume -> {}", result);
+
+        return result;
     }
 }
 
