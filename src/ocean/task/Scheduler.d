@@ -660,6 +660,10 @@ final class Scheduler : IScheduler
                 task.kill();
             else
                 this.resumeTask(task);
+
+            // if calling last task resulted in a shutdown
+            if (this.state == State.Shutdown)
+                break;
         }
 
         // if there are tasks in the queue AND free worker fibers, process some
