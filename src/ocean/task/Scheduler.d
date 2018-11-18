@@ -656,12 +656,10 @@ final class Scheduler : IScheduler
         {
             Task task;
             verify(this.suspended_tasks.pop(task));
-            if (this.state == State.Shutdown)
-                task.kill();
-            else
-                this.resumeTask(task);
+            this.resumeTask(task);
 
-            // if calling last task resulted in a shutdown
+            // if calling last task resulted in a shutdown there will be no
+            // suspended tasks left (shutdown clears them)
             if (this.state == State.Shutdown)
                 break;
         }
