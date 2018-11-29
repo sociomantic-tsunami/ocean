@@ -8,3 +8,8 @@
         for during the last collection cycle.
     - `gc_run_percentage` The percentage of time that was spent by the
         garbage collector during the last collection cycle.
+
+* `ocean.util.app.DaemonApp`
+
+  `DaemonApp` class now contains the `reportGCStats()` method which will add
+  the GC stats to the stats log file.

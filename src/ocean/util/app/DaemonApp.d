@@ -56,6 +56,8 @@ public abstract class DaemonApp : Application,
         IArgumentsExtExtension, IConfigExtExtension, ILogExtExtension,
         ISignalExtExtension
 {
+    import ocean.application.components.GCStats;
+
     static import ocean.text.Arguments;
     public alias ocean.text.Arguments.Arguments Arguments;
     static import ocean.util.config.ConfigParser;
@@ -209,6 +211,14 @@ public abstract class DaemonApp : Application,
     ***************************************************************************/
 
     private CpuMemoryStats system_stats;
+
+    /***************************************************************************
+
+        Garbage collector stats
+
+    ***************************************************************************/
+
+    private GCStats gc_stats;
 
     /***************************************************************************
 
@@ -466,6 +476,7 @@ public abstract class DaemonApp : Application,
         this.registerExtension(this.reopenable_files_ext);
 
         this.system_stats = new CpuMemoryStats();
+        this.gc_stats = new GCStats();
     }
 
     /***************************************************************************
@@ -557,6 +568,9 @@ public abstract class DaemonApp : Application,
 
     override protected int run ( istring[] args )
     {
+        this.gc_stats.start();
+        scope(exit) this.gc_stats.stop();
+
         if (this.task_ext is null)
             return this.run(this.args, this.config);
 
@@ -650,6 +664,18 @@ public abstract class DaemonApp : Application,
     protected void reportSystemStats ( )
     {
         this.stats_ext.stats_log.add(this.system_stats.collect());
+    }
+
+    /***************************************************************************
+
+        Collects GC stats and reports them to stats log. Should be
+        called periodically (inside onStatsTimer).
+
+    ***************************************************************************/
+
+    protected void reportGCStats ( )
+    {
+        this.stats_ext.stats_log.add(this.gc_stats.collect());
     }
 
     /***************************************************************************
@@ -856,6 +882,7 @@ unittest
         override protected void onStatsTimer ( )
         {
             this.reportSystemStats();
+            this.reportGCStats();
             struct Treasure
             {
                 int copper, silver, gold;
