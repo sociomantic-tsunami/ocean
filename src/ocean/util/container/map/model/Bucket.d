@@ -80,7 +80,7 @@ public struct Bucket ( size_t V, K = hash_t )
 
          **********************************************************************/
 
-        public alias ubyte[V] Val;
+        public alias void[V] Val;
 
         public Val val;
 
