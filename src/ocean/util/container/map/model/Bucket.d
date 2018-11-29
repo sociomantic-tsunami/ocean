@@ -80,9 +80,20 @@ public struct Bucket ( size_t V, K = hash_t )
 
          **********************************************************************/
 
-        public alias void[V] Val;
+        public alias ubyte[V] Val;
 
-        public Val val;
+        union
+        {
+            public Val val;
+
+            /**********************************************************************
+
+            Mark this memory as potentially containing pointers and align size of data
+            to next multiple of (void*).sizeof.
+
+            **********************************************************************/
+            private void*[(V + (void*).sizeof - 1) / (void*).sizeof] _void;
+        }
 
         /**********************************************************************
 
@@ -93,14 +104,6 @@ public struct Bucket ( size_t V, K = hash_t )
          **********************************************************************/
 
         static assert(val.offsetof == 0);
-
-        /**********************************************************************
-
-            Add padding bytes to the struct to make sure the key is aligned too.
-
-         **********************************************************************/
-
-        private ubyte[V % size_t.sizeof] _padding;
 
         /**********************************************************************
 
