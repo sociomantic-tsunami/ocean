@@ -54,6 +54,8 @@ import ocean.core.array.Search;
 
 import ocean.util.container.AppendBuffer;
 
+import ocean.util.container.queue.DynamicQueue;
+
 import ocean.time.timeout.model.ITimeoutManager;
 
 import ocean.sys.Epoll;
@@ -89,6 +91,14 @@ public class EpollSelectDispatcher : IEpollSelectDispatcherInfo
      **************************************************************************/
 
     alias ISelectClient.Event Event;
+
+    /***************************************************************************
+
+        Delegate to be called each time select cycle finished.
+
+     **************************************************************************/
+
+    alias void delegate () SelectCycleCallback;
 
     /***************************************************************************
 
@@ -144,6 +154,15 @@ public class EpollSelectDispatcher : IEpollSelectDispatcherInfo
     ***************************************************************************/
 
     private epoll_event_t[] selected_set;
+
+    /***************************************************************************
+
+        Queue of delegates to be called (and dismissed) after the
+        epoll select cycle finishes.
+
+    ***************************************************************************/
+
+    private DynamicQueue!(SelectCycleCallback) select_cycle_callbacks;
 
     /***************************************************************************
 
@@ -269,6 +288,9 @@ public class EpollSelectDispatcher : IEpollSelectDispatcherInfo
         this.handle = this.timeout_enabled?
             new TimeoutSelectedKeysHandler(&this.unregister, this.e, this.timeout_manager, max_events) :
             new SelectedKeysHandler(&this.unregister, this.e);
+
+        this.select_cycle_callbacks = new DynamicQueue!(SelectCycleCallback);
+        this.select_cycle_callbacks.auto_shrink = false;
     }
 
     /***************************************************************************
@@ -298,6 +320,25 @@ public class EpollSelectDispatcher : IEpollSelectDispatcherInfo
         {
             close();
         }
+    }
+
+    /***************************************************************************
+
+        Adds new callback to the queue of delegates to be called after the
+        current select cycle. It will only be kept for a single cycle.
+
+        Params:
+            cb = callback to call once after the current cycle ends. Must return
+                `true` to block event loop from terminating in the current
+                cycle. Returning `false` is primarily intended for internal
+                epoll/scheduler facilities and unlikely to be of use in an
+                application code.
+
+    ***************************************************************************/
+
+    public void onCycleEnd ( SelectCycleCallback cb )
+    {
+        this.select_cycle_callbacks.push(cb);
     }
 
     /***************************************************************************
@@ -742,11 +783,16 @@ public class EpollSelectDispatcher : IEpollSelectDispatcherInfo
         if (select_cycle_hook !is null)
             caller_work_pending = select_cycle_hook();
 
-        while ( this.registered_clients.length && !this.shutdown_triggered )
+        while ( (this.registered_clients.length ||
+            this.select_cycle_callbacks.length) &&
+            !this.shutdown_triggered )
         {
+            caller_work_pending = false;
+
             try
             {
-                this.select(caller_work_pending);
+                this.select(caller_work_pending ||
+                    this.select_cycle_callbacks.length > 0);
             }
             catch (Exception e)
             {
@@ -759,6 +805,16 @@ public class EpollSelectDispatcher : IEpollSelectDispatcherInfo
 
             if (select_cycle_hook !is null)
                 caller_work_pending = select_cycle_hook();
+
+            auto count = this.select_cycle_callbacks.length();
+
+            for (int i; i < count; i++)
+            {
+                auto pcb = this.select_cycle_callbacks.pop();
+                (*pcb)();
+            }
+
+            this.select_cycle_callbacks.shrink();
         }
     }
 
