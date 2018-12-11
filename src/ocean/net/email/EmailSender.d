@@ -57,7 +57,7 @@ class EmailSender
 
     public this ( )
     {
-        this.process = new Process("sendmail -t", null);
+        this.process = new Process();
     }
 
 
@@ -162,7 +162,8 @@ class EmailSender
         {
             try
             {
-                execute;
+                setArgs("sendmail", "-t", "-f", sender).execute();
+
                 stdin.write("From: ");
                 stdin.write(sender);
                 stdin.write("\nTo: ");

@@ -1718,21 +1718,27 @@ real NaN(ulong payload)
 ulong getNaNPayload(real x)
 {
     verify(!!isNaN(x));
+    // x_ptr is needed to create a separate alias to x
+    // which the optimizer cannot see through
+    // this will prevent an optimization which
+    // will cause an ice in newer dmd versions
+    auto x_ptr = &x;
+
     static if (real.mant_dig == 53) {
-        ulong m = *cast(ulong *)(&x);
+        ulong m = *cast(ulong *)(x_ptr);
         // Make it look like an 80-bit significand.
         // Skip exponent, and quiet bit
         m &= 0x0007_FFFF_FFFF_FFFF;
         m <<= 10;
     } else static if (real.mant_dig==113) { // quadruple
         version(LittleEndian) {
-            ulong m = *cast(ulong*)(6+cast(ubyte*)(&x));
+            ulong m = *cast(ulong*)(6+cast(ubyte*)(x_ptr));
         } else {
-            ulong m = *cast(ulong*)(2+cast(ubyte*)(&x));
+            ulong m = *cast(ulong*)(2+cast(ubyte*)(x_ptr));
         }
         m>>=1; // there's no implicit bit
     } else {
-        ulong m = *cast(ulong *)(&x);
+        ulong m = *cast(ulong *)(x_ptr);
     }
     // ignore implicit bit and quiet bit
     ulong f = m & 0x3FFF_FF00_0000_0000L;
