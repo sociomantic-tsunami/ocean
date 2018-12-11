@@ -1144,12 +1144,12 @@ unittest
 public T[] removeShift ( T ) ( ref Buffer!(T) buffer, size_t index,
     size_t remove_elems = 1 )
 {
+    if ( remove_elems == 0 )
+        return buffer[];
+
     verify(index < buffer.length, "removeShift: index is >= buffer length");
     verify(index + remove_elems - 1 < buffer.length,
         "removeShift: end is >= buffer length");
-
-    if ( remove_elems == 0 )
-        return buffer[];
 
     auto end = index + remove_elems - 1;
     auto shift_elems = (buffer.length - end) - 1;
