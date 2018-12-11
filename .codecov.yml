@@ -1,5 +1,7 @@
 comment:
-    layout: "header"
+    layout: "diff"
+    behavior: default # update, if exists. Otherwise post new
+    require_changes: yes # only post the comment if coverage changes
 
 coverage:
     status:
