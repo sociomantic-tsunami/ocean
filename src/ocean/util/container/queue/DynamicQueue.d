@@ -226,6 +226,8 @@ unittest
     static struct S { int field; }
     auto queue = new DynamicQueue!(S);
 
+    queue.shrink();
+
     queue.push(S(1));
     test!("==")(queue.length, 1);
 
@@ -247,6 +249,7 @@ unittest
     test!("==")(queue.total_space(), 100 * S.sizeof);
     queue.shrink();
     test!("==")(queue.total_space(), 90 * S.sizeof);
+    test!("==")(*queue.pop(), S(10));
 
     test!("==")(queue.is_empty(), false);
     test!("==")(queue.willFit(size_t.max), true);
