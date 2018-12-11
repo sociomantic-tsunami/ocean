@@ -110,7 +110,7 @@ template KeylessMethods ( Node, alias eb_first, alias eb_last )
 
     ***************************************************************************/
 
-    public int opApply ( int delegate ( ref Node node ) dg )
+    public int opApply ( scope int delegate ( ref Node node ) dg )
     {
         int ret = 0;
 
@@ -129,7 +129,7 @@ template KeylessMethods ( Node, alias eb_first, alias eb_last )
 
     ***************************************************************************/
 
-    public int opApply_reverse ( int delegate ( ref Node node ) dg )
+    public int opApply_reverse ( scope int delegate ( ref Node node ) dg )
     {
         int ret = 0;
 

@@ -40,7 +40,7 @@ template Value ( size_t ValueSize )
 
     ***************************************************************************/
 
-    const is_dynamic = !ValueSize;
+    static immutable is_dynamic = !ValueSize;
 
     static if (is_dynamic)
     {
@@ -71,7 +71,7 @@ template Value ( size_t ValueSize )
 
             public void[] opAssign ( void[] val )
             {
-                return this.array = val;
+                return (&this).array = val;
             }
 
             /*******************************************************************
@@ -91,16 +91,16 @@ template Value ( size_t ValueSize )
 
             public void[] opSliceAssign ( void[] val )
             {
-                if (this.array is null)
+                if ((&this).array is null)
                 {
-                    this.array = new ubyte[val.length];
+                    (&this).array = new ubyte[val.length];
                 }
                 else
                 {
-                    this.array.length = val.length;
+                    (&this).array.length = val.length;
                 }
 
-                return this.array[] = val[];
+                return (&this).array[] = val[];
             }
 
             /*******************************************************************
@@ -112,7 +112,7 @@ template Value ( size_t ValueSize )
 
             public void[] opSlice ( )
             {
-                return this.array;
+                return (&this).array;
             }
 
             /*******************************************************************
@@ -128,7 +128,7 @@ template Value ( size_t ValueSize )
 
             public void[]* opCast ( )
             {
-                return &this.array;
+                return &(&this).array;
             }
         }
 
