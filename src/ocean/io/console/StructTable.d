@@ -172,11 +172,11 @@ public class StructTable ( S )
     {
         static if ( i == S.tupleof.length )
         {
-            const istring CellMethods = "";
+            static immutable istring CellMethods = "";
         }
         else
         {
-            const istring CellMethods = "protected char[] "
+            static immutable istring CellMethods = "protected char[] "
                 ~ fieldIdentifier!(S, i)
                 ~ "_string(" ~ typeof(S.tupleof[i]).stringof
                 ~ "* field){return this.defaultFieldString(field);}"
@@ -298,11 +298,11 @@ public class StructTable ( S )
     {
         static if ( i == S.tupleof.length )
         {
-            const istring ContentsRow = "";
+            static immutable istring ContentsRow = "";
         }
         else
         {
-            const istring ContentsRow = "this.addCell(this."
+            static immutable istring ContentsRow = "this.addCell(this."
                 ~ fieldIdentifier!(S, i)
                 ~ "_string(&item.tupleof[" ~ i.stringof ~ "]));"
                 ~ ContentsRow!(i + 1);
@@ -322,11 +322,11 @@ public class StructTable ( S )
     {
         static if ( i == S.tupleof.length )
         {
-            const istring HeaderRow = "";
+            static immutable istring HeaderRow = "";
         }
         else
         {
-            const istring HeaderRow = `this.addCell("` ~ fieldIdentifier!(S, i) ~
+            static immutable istring HeaderRow = `this.addCell("` ~ fieldIdentifier!(S, i) ~
                 `");` ~ HeaderRow!(i + 1);
         }
     }

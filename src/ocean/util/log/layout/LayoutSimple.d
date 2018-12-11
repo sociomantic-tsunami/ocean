@@ -64,7 +64,7 @@ public class LayoutSimple : Appender.Layout
 
     ***************************************************************************/
 
-    public override void format (LogEvent event, void delegate(cstring) dg)
+    public override void format (LogEvent event, scope void delegate(cstring) dg)
     {
         auto level = event.levelName;
 

@@ -97,7 +97,7 @@ class JsonParserIter(bool AllowNaN = false) : JsonParser!(char, AllowNaN)
 
      **************************************************************************/
 
-    public const TokenClass[Token.max + 1] token_classes =
+    public static immutable TokenClass[Token.max + 1] token_classes =
     [
         Token.Empty:       TokenClass.Other,
         Token.Name:        TokenClass.Other,
@@ -121,7 +121,7 @@ class JsonParserIter(bool AllowNaN = false) : JsonParser!(char, AllowNaN)
 
      **************************************************************************/
 
-    public const int[Token.max + 1] nestings =
+    public static immutable int[Token.max + 1] nestings =
     [
         Token.BeginObject: +1,
         Token.BeginArray:  +1,
@@ -197,7 +197,7 @@ class JsonParserIter(bool AllowNaN = false) : JsonParser!(char, AllowNaN)
 
      **************************************************************************/
 
-    public int opApply ( int delegate ( ref Token type, ref cstring value ) dg )
+    public int opApply ( scope int delegate ( ref Token type, ref cstring value ) dg )
     {
         int result = 0;
 
@@ -222,7 +222,7 @@ class JsonParserIter(bool AllowNaN = false) : JsonParser!(char, AllowNaN)
 
      **************************************************************************/
 
-    public int opApply ( int delegate ( ref Token type, ref cstring name,
+    public int opApply ( scope int delegate ( ref Token type, ref cstring name,
         ref cstring value ) dg )
     {
         int result = 0;
@@ -510,7 +510,7 @@ class JsonParserIter(bool AllowNaN = false) : JsonParser!(char, AllowNaN)
      **************************************************************************/
 
     private cstring nextNamedValue ( cstring name, out bool found,
-        bool delegate ( Token ) type_match_dg )
+        scope bool delegate ( Token ) type_match_dg )
     {
         bool got_name;
         foreach ( type, value; this )
