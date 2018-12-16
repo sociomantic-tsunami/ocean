@@ -26,6 +26,7 @@ import core.thread;
 import ocean.transition;
 import ocean.core.Enforce;
 import ocean.core.Verify;
+import ocean.core.TypeConvert;
 import ocean.io.select.EpollSelectDispatcher;
 import ocean.util.container.queue.FixedRingQueue;
 import ocean.meta.traits.Indirections;
@@ -81,20 +82,20 @@ final class Scheduler : IScheduler
 
     /***************************************************************************
 
-        Thrown when task is being added for later resuming via
-        Scheduler.processEvents but matching queue is full
-
-    ***************************************************************************/
-
-    private SuspendQueueFullException suspend_queue_full_e;
-
-    /***************************************************************************
-
         Worker fiber pool, allows reusing fiber memory to run different tasks
 
     ***************************************************************************/
 
     private FiberPoolWithQueue fiber_pool;
+
+    /***************************************************************************
+
+        Indicates if this.selectCycleHook is already registered for the next
+        epoll cycle.
+
+    ***************************************************************************/
+
+    bool select_cycle_hook_registered;
 
     /***************************************************************************
 
@@ -112,6 +113,15 @@ final class Scheduler : IScheduler
     ***************************************************************************/
 
     private SpecializedPools specialized_pools;
+
+    /***************************************************************************
+
+        Tracks how many tasks are currently pending resume via epoll
+        cycle callbacks.
+
+    ***************************************************************************/
+
+    private size_t cycle_pending_task_count;
 
     /***************************************************************************
 
@@ -152,14 +162,6 @@ final class Scheduler : IScheduler
     {
         return this.fiber_pool.task_queue_full_cb;
     }
-
-    /***************************************************************************
-
-        Queue of tasks to be resumed after next `this._epoll.select()` finishes
-
-    ***************************************************************************/
-
-    private FixedRingQueue!(Task) suspended_tasks;
 
     /***************************************************************************
 
@@ -216,15 +218,11 @@ final class Scheduler : IScheduler
             "Creating new Scheduler with following configuration:\n" ~
                 "\tworker_fiber_stack_size = {}\n" ~
                 "\tworker_fiber_limit = {}\n" ~
-                "\ttask_queue_limit = {}\n" ~
-                "\tsuspended_task_limit = {}",
+                "\ttask_queue_limit = {}\n",
             config.worker_fiber_stack_size,
             config.worker_fiber_limit,
-            config.task_queue_limit,
-            config.suspended_task_limit
+            config.task_queue_limit
         );
-
-        this.suspend_queue_full_e = new SuspendQueueFullException;
 
         verify(
             config.task_queue_limit >= config.worker_fiber_limit,
@@ -244,8 +242,6 @@ final class Scheduler : IScheduler
         );
 
         this.specialized_pools = new SpecializedPools(config.specialized_pools);
-
-        this.suspended_tasks = new FixedRingQueue!(Task)(config.suspended_task_limit);
     }
 
     /***************************************************************************
@@ -265,21 +261,15 @@ final class Scheduler : IScheduler
             return;
 
         debug_trace(
-            "Shutting down initiated. {} queued tasks will be " ~
-                " discarded, {} suspended tasks will be killed",
-            this.fiber_pool.queued_tasks.length(),
-            this.suspended_tasks.length()
+            "Shutting down initiated. {} queued tasks will be discarded",
+            this.fiber_pool.queued_tasks.length()
         );
 
         this.state = State.Shutdown;
         this.fiber_pool.queued_tasks.clear();
-
-        Task task;
-        while (this.suspended_tasks.pop(task))
-            task.kill();
         this.epoll.shutdown();
 
-        task = Task.getThis();
+        auto task = Task.getThis();
         if (task !is null)
             task.kill();
     }
@@ -300,8 +290,7 @@ final class Scheduler : IScheduler
         SchedulerStats stats =  {
             task_queue_busy : this.fiber_pool.queued_tasks.length(),
             task_queue_total : this.fiber_pool.queued_tasks.maxItems(),
-            suspended_queue_busy : this.suspended_tasks.length(),
-            suspended_queue_total : this.suspended_tasks.maxItems(),
+            suspended_tasks : this.cycle_pending_task_count,
             worker_fiber_busy : this.fiber_pool.num_busy(),
             worker_fiber_total : this.fiber_pool.limit()
         };
@@ -345,7 +334,10 @@ final class Scheduler : IScheduler
         try
         {
             if (!this.specialized_pools.run(task))
+            {
                 this.fiber_pool.runOrQueue(task);
+                this.registerCycleCallback();
+            }
         }
         catch (Exception e)
         {
@@ -380,6 +372,7 @@ final class Scheduler : IScheduler
     public void queue ( Task task )
     {
         this.fiber_pool.queue(task);
+        this.registerCycleCallback();
     }
 
     /***************************************************************************
@@ -558,7 +551,7 @@ final class Scheduler : IScheduler
         do
         {
             this.epoll.eventLoop(
-                &this.select_cycle_hook,
+                null,
                 this.exception_handler is null ? null :
                     &this.exceptionHandlerForEpoll
             );
@@ -566,11 +559,7 @@ final class Scheduler : IScheduler
                 "fibers still suspended)", this.fiber_pool.num_busy());
 
         }
-        // handles corner case which is likely to only happen in synthetic
-        // tests - when there are no/few events and tasks keep calling
-        // `processEvents` in a loop
-        while (this.suspended_tasks.length
-            || this.fiber_pool.queued_tasks.length);
+        while (this.fiber_pool.queued_tasks.length && this.cycle_pending_task_count);
 
         // cleans up any stalled worker fibers left after deregistration
         // of all events.
@@ -581,7 +570,6 @@ final class Scheduler : IScheduler
 
         verify(this.fiber_pool.num_busy() == 0);
         verify(this.fiber_pool.queued_tasks.length() == 0);
-        verify(this.suspended_tasks.length() == 0);
     }
 
     /***************************************************************************
@@ -597,11 +585,27 @@ final class Scheduler : IScheduler
 
     public void delayedResume ( Task task )
     {
-        enforce(
-            this.suspend_queue_full_e,
-            this.suspended_tasks.push(task),
-            this.suspend_queue_full_e.msg
-        );
+        static void resumer ( void* task_ )
+        {
+            auto task = cast(Task) task_;
+            theScheduler.cycle_pending_task_count--;
+
+            try
+            {
+                task.resume();
+            }
+            catch (Exception e)
+            {
+                if (theScheduler.exception_handler !is null)
+                    theScheduler.exception_handler(task, e);
+                else
+                    throw e;
+            }
+        }
+
+        auto cb = toContextDg!(resumer)(cast(void*) task);
+        this.cycle_pending_task_count++;
+        this.epoll.onCycleEnd(cb);
 
         debug_trace("task <{}> will be resumed after current epoll cycle",
             cast(void*) task);
@@ -631,79 +635,45 @@ final class Scheduler : IScheduler
 
     /***************************************************************************
 
+        Registers cycle callback if it is not already present (to avoid
+        duplicates)
+
+    ***************************************************************************/
+
+    private void registerCycleCallback ( )
+    {
+        if (!this.select_cycle_hook_registered)
+        {
+            this.select_cycle_hook_registered = true;
+            this.epoll.onCycleEnd(&this.selectCycleHook);
+        }
+    }
+
+    /***************************************************************************
+
         This method gets called each time `this._epoll.select()` cycle
         finishes. It takes care of suspended task queue
         ensuring everything will get resumed/run eventually.
 
-        Returns:
-            'true' if there are any pending tasks suspended via `processEvents`
-            left, 'false' otherwise.
-
     ***************************************************************************/
 
-    private bool select_cycle_hook ( )
+    private void selectCycleHook ( )
     {
-        // resuming queued tasks may result in more tasks being queued
-        // to avoid `select_cycle_hook()` call being infinite, remember
-        // initial count and process only that amount at one go
-        size_t current_count = this.suspended_tasks.length;
-
-        if (current_count)
-            debug_trace("resuming {} tasks suspended via processEvents",
-                current_count);
-
-        for (auto i = 0; i < current_count; ++i)
-        {
-            Task task;
-            verify(this.suspended_tasks.pop(task));
-            this.resumeTask(task);
-
-            // if calling last task resulted in a shutdown there will be no
-            // suspended tasks left (shutdown clears them)
-            if (this.state == State.Shutdown)
-                break;
-        }
-
         // if there are tasks in the queue AND free worker fibers, process some
-
-        bool queued = false;
 
         while (this.fiber_pool.num_busy() < this.fiber_pool.limit()
             && this.fiber_pool.queued_tasks.length)
         {
-            queued = true;
             Task task;
             auto success = this.fiber_pool.queued_tasks.pop(task);
             assert(success);
             this.schedule(task);
         }
 
-        return this.suspended_tasks.length > 0 || queued;
-    }
-
-    /***************************************************************************
-
-        Helper method which combines recurring pattern of resuming some task
-        and handling potential exceptions.
-
-        Params:
-            task = task to resume
-
-    ***************************************************************************/
-
-    private void resumeTask ( Task task )
-    {
-        try
-        {
-            task.resume();
-        }
-        catch (Exception e)
-        {
-            if (this.exception_handler !is null)
-                this.exception_handler(task, e);
-            else
-                throw e;
-        }
+        if (this.fiber_pool.queued_tasks.length)
+            this.epoll.onCycleEnd(&this.selectCycleHook);
+        else
+            this.select_cycle_hook_registered = false;
     }
 
     /***************************************************************************
@@ -911,7 +881,6 @@ public void initScheduler ( SchedulerConfiguration config,
     static bool is_scheduler_unused ( )
     {
         return _scheduler.fiber_pool.num_busy() == 0
-            && _scheduler.suspended_tasks.length() == 0
             && _scheduler.fiber_pool.queued_tasks.length() == 0;
     }
 

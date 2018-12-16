@@ -66,6 +66,7 @@ public interface IScheduler
 
         /// maximum amount of tasks that can be suspended via
         /// `theScheduler.processEvents` in between scheduler dispatch cycles
+        deprecated("Ignored, there is no limit anymore")
         size_t suspended_task_limit = 16;
 
         /// optional array that defines specialized worker fiber pools to be
@@ -98,8 +99,11 @@ public interface IScheduler
     {
         size_t task_queue_busy;
         size_t task_queue_total;
+        deprecated("Replaced by single `suspended_tasks`")
         size_t suspended_queue_busy;
+        deprecated("Replaced by single `suspended_tasks`")
         size_t suspended_queue_total;
+        size_t suspended_tasks;
         size_t worker_fiber_busy;
         size_t worker_fiber_total;
     }
@@ -355,6 +359,7 @@ package IScheduler _scheduler;
 
 ******************************************************************************/
 
+deprecated("Not thrown anymore")
 public class SuspendQueueFullException : Exception
 {
     this ( )
