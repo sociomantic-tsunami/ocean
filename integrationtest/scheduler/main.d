@@ -91,7 +91,6 @@ void main ( )
         worker_fiber_stack_size = 102400;
         worker_fiber_limit = 10;
         task_queue_limit = 100;
-        suspended_task_limit = 1000;
 
         specialized_pools = [
             PoolDescription(GeneratorTask.classinfo.name, 204800)
