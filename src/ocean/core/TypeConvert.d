@@ -19,6 +19,7 @@ module ocean.core.TypeConvert;
 
 import ocean.meta.traits.Indirections;
 import ocean.meta.types.Qualifiers;
+import ocean.meta.types.Function;
 import ocean.meta.types.Typedef;
 
 version ( UnitTest ) import ocean.core.Test;
@@ -323,14 +324,14 @@ unittest
             called
 
     Returns:
-        forged delegate that can be passed to any API expecting regular `void
-        delegate()`
+        forged delegate that can be passed to any API expecting regular `T
+        delegate()` where T is the return type of F
 
 *******************************************************************************/
 
-void delegate() toContextDg ( alias F ) ( void* context )
+ReturnTypeOf!(F) delegate() toContextDg ( alias F ) ( void* context )
 {
-    static assert (is(typeof(&F) == void function (void*)));
+    static assert (is(typeof({ F((void*).init); })));
 
     // This code makes use of two facts:
     //    1) The D ABI allows aggregate methods to be converted to delegates,
@@ -341,16 +342,16 @@ void delegate() toContextDg ( alias F ) ( void* context )
 
     static struct Fake
     {
-        void method ( )
+        ReturnTypeOf!(F) method ( )
         {
             void* context = cast(void*) this;
 
             // do real work via provided F function:
-            F(context);
+            return F(context);
         }
     }
 
-    void delegate() dg = &Fake.init.method;
+    auto dg = &Fake.init.method;
     dg.ptr = context;
     return dg;
 }
