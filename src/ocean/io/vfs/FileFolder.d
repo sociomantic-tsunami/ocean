@@ -209,7 +209,7 @@ class FileFolder : VfsFolder
 
         ***********************************************************************/
 
-        final int opApply (int delegate(ref VfsFolder) dg)
+        final int opApply (scope int delegate(ref VfsFolder) dg)
         {
                 int result;
 
@@ -269,7 +269,7 @@ class FileFolder : VfsFolder
 
         ***********************************************************************/
 
-        private char[][] files (ref VfsStats stats, VfsFilter filter = null)
+        private char[][] files (ref VfsStats stats, scope VfsFilter filter = null)
         {
                 char[][] files;
 
@@ -336,7 +336,7 @@ class FileGroup : VfsFiles
 
         ***********************************************************************/
 
-        this (FolderGroup host, VfsFilter filter)
+        this (FolderGroup host, scope VfsFilter filter)
         {
                 foreach (folder; host.members)
                         {
@@ -355,7 +355,7 @@ class FileGroup : VfsFiles
 
         ***********************************************************************/
 
-        final int opApply (int delegate(ref VfsFile) dg)
+        final int opApply (scope int delegate(ref VfsFile) dg)
         {
                 int  result;
                 auto host = new FileHost;
@@ -433,7 +433,7 @@ private class FolderGroup : VfsFolders
 
         ***********************************************************************/
 
-        final int opApply (int delegate(ref VfsFolder) dg)
+        final int opApply (scope int delegate(ref VfsFolder) dg)
         {
                 int  result;
 
@@ -538,7 +538,7 @@ private class FolderGroup : VfsFolders
 
         ***********************************************************************/
 
-        final FileGroup catalog (VfsFilter filter = null)
+        final FileGroup catalog (scope VfsFilter filter = null)
         {
                 return new FileGroup (this, filter);
         }

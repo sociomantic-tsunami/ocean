@@ -864,7 +864,7 @@ public class SAXException : Exception {
             // if current runtime defines `message` method in base Exception/Throwable
             // class, this method must override it to compile. In D2 mode the method
             // also needs to be marked as const to match base.
-            public override cstring message() /* d1to2fix_inject: const */ {
+            public override cstring message() const {
                     if (msg is null && next !is null) {
                             return next.msg;
                     }

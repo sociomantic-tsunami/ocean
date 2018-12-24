@@ -92,10 +92,10 @@ public struct WideUInt ( size_t N )
 
     public size_t decimal_digits ( )
     {
-        if (this.opEquals(0))
+        if ((&this).opEquals(0))
             return 1;
 
-        WideUInt copy = *this;
+        WideUInt copy = *(&this);
 
         size_t count;
         while (copy != 0)
@@ -134,7 +134,7 @@ public struct WideUInt ( size_t N )
     public istring toString ( )
     {
         mstring result;
-        this.toString((cstring s) { result ~= s; });
+        (&this).toString((cstring s) { result ~= s; });
         return assumeUnique(result);
     }
 
@@ -163,14 +163,14 @@ public struct WideUInt ( size_t N )
 
     ***************************************************************************/
 
-    public void toString ( void delegate (cstring) sink )
+    public void toString ( scope void delegate (cstring) sink )
     {
-        auto n = this.decimal_digits();
+        auto n = (&this).decimal_digits();
         static mstring buffer;
         buffer.length = n;
         enableStomping(buffer);
 
-        WideUInt copy = *this;
+        WideUInt copy = *(&this);
         for (ptrdiff_t idx = n-1; idx >= 0; --idx)
         {
             auto remainder = copy.divideBy(10);
@@ -191,7 +191,7 @@ public struct WideUInt ( size_t N )
 
     public void opAssign ( ulong rhs )
     {
-        this.assign(rhs);
+        (&this).assign(rhs);
     }
 
     unittest
@@ -226,13 +226,13 @@ public struct WideUInt ( size_t N )
 
     public equals_t opEquals ( ulong rhs )
     {
-        if (this.payload[0] != (rhs & uint.max))
+        if ((&this).payload[0] != (rhs & uint.max))
             return false;
 
-        if (this.payload[1] != (rhs >> 32))
+        if ((&this).payload[1] != (rhs >> 32))
             return false;
 
-        foreach (ref word; this.payload[2 .. N])
+        foreach (ref word; (&this).payload[2 .. N])
         {
             if (word != 0)
                 return false;
@@ -273,7 +273,7 @@ public struct WideUInt ( size_t N )
 
     public equals_t opEquals ( WideUInt rhs )
     {
-        return this.payload[] == rhs.payload[];
+        return (&this).payload[] == rhs.payload[];
     }
 
     unittest
@@ -343,8 +343,8 @@ public struct WideUInt ( size_t N )
 
     public void opAddAssign ( uint rhs )
     {
-        if (add(this.payload[0], rhs))
-            enforce(.wideint_exception, this.checkAndInc(1));
+        if (add((&this).payload[0], rhs))
+            enforce(.wideint_exception, (&this).checkAndInc(1));
     }
 
     unittest
@@ -378,13 +378,13 @@ public struct WideUInt ( size_t N )
     {
         ulong remainder = 0;
 
-        for (ptrdiff_t idx = this.payload.length - 1; idx >= 0; --idx)
+        for (ptrdiff_t idx = (&this).payload.length - 1; idx >= 0; --idx)
         {
-            remainder = (remainder << 32) + this.payload[idx];
+            remainder = (remainder << 32) + (&this).payload[idx];
             ulong result = remainder / rhs;
             remainder -= rhs * result;
             verify(result <= uint.max);
-            this.payload[idx] = cast(uint) result;
+            (&this).payload[idx] = cast(uint) result;
         }
 
         verify(remainder <= uint.max);
@@ -420,10 +420,10 @@ public struct WideUInt ( size_t N )
     {
         ulong overflow = 0;
 
-        for (size_t i = 0; i < this.payload.length; ++i)
+        for (size_t i = 0; i < (&this).payload.length; ++i)
         {
-            overflow += cast(ulong)(this.payload[i]) * rhs;
-            this.payload[i] = cast(uint) (overflow & uint.max);
+            overflow += cast(ulong)((&this).payload[i]) * rhs;
+            (&this).payload[i] = cast(uint) (overflow & uint.max);
             overflow >>= 32;
         }
 
@@ -448,23 +448,23 @@ public struct WideUInt ( size_t N )
     public double toDouble ( )
     {
         // find most significant word with non-zero value
-        int idx = this.payload.length-1;
-        while (this.payload[idx] == 0 && idx > 0)
+        int idx = (&this).payload.length-1;
+        while ((&this).payload[idx] == 0 && idx > 0)
             --idx;
 
         // if stored value <= ulong.max, just use plain cast
         if (idx < 2)
         {
-            ulong value = this.payload[1];
+            ulong value = (&this).payload[1];
             value <<= 32;
-            value |= this.payload[0];
+            value |= (&this).payload[0];
             return cast(double) value;
         }
 
         // else calculate floating point value from 3 most significant words
         double MAXWORD = pow(2.0, 32.0);
-        return ((this.payload[idx] * MAXWORD + this.payload[idx-1])
-                * MAXWORD + this.payload[idx-2])
+        return (((&this).payload[idx] * MAXWORD + (&this).payload[idx-1])
+                * MAXWORD + (&this).payload[idx-2])
             * ldexp(1.0, (idx-2)*32);
     }
 
@@ -497,9 +497,9 @@ public struct WideUInt ( size_t N )
         if (idx >= N)
             return false;
 
-        uint after = ++this.payload[idx];
+        uint after = ++(&this).payload[idx];
         if (after == 0)
-            return this.checkAndInc(idx+1);
+            return (&this).checkAndInc(idx+1);
 
         return true;
     }
@@ -524,9 +524,9 @@ public struct WideUInt ( size_t N )
 
     private void assign ( ulong value )
     {
-        this.payload[] = 0;
-        this.payload[0] = cast(uint) value;
-        this.payload[1] = cast(uint) (value >> 32);
+        (&this).payload[] = 0;
+        (&this).payload[0] = cast(uint) value;
+        (&this).payload[1] = cast(uint) (value >> 32);
     }
 
     /***************************************************************************
