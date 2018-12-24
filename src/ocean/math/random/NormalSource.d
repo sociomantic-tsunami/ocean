@@ -78,7 +78,7 @@ class NormalSource(RandG,T){
         return source.randomizeOp((T x){ return x*cast(T)sigma+cast(T)mu; },a);
     }
     /// initializes the variable with the result of mapping op on the random numbers (of type T)
-    U randomizeOp(U,S)(S delegate(T) op,ref U a){
+    U randomizeOp(U,S)(scope S delegate(T) op,ref U a){
         return source.randomizeOp(op,a);
     }
     /// normal distribution with different default sigma and mu
@@ -97,7 +97,7 @@ class NormalSource(RandG,T){
         /// chainable call style initialization of variables (thorugh a call to randomize)
         NormalDistribution opCall(U,S...)(ref U a,S args){
             randomize(a,args);
-            return *this;
+            return *(&this);
         }
         /// returns a single number
         T getRandom(){
