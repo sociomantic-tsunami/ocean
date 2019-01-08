@@ -46,6 +46,15 @@ public class ThrottledTaskPool ( TaskT ) : TaskPool!(TaskT)
 
     /***************************************************************************
 
+        Indicates that throttling hook has already been registered for a next
+        epoll cycle.
+
+    ***************************************************************************/
+
+    private bool hook_registered;
+
+    /***************************************************************************
+
         Throttler used to control tempo of data consumption from streams. By
         default internally defined PoolThrottler is used which is bound by
         task pool size limit.
@@ -155,7 +164,7 @@ public class ThrottledTaskPool ( TaskT ) : TaskPool!(TaskT)
         assert (task !is null);
 
         task.copyArguments(args);
-        task.terminationHook(&this.throttlingHook);
+        this.registerThrottlingHook();
         this.startImpl(task);
 
         this.throttler.throttledSuspend();
@@ -192,12 +201,27 @@ public class ThrottledTaskPool ( TaskT ) : TaskPool!(TaskT)
             assert (task !is null);
 
             task.deserialize(serialized);
-            task.terminationHook(&this.throttlingHook);
+            this.registerThrottlingHook();
             this.startImpl(task);
 
             this.throttler.throttledSuspend();
 
             return true;
+        }
+    }
+
+    /***************************************************************************
+
+        Registers throttling hook if not already present
+
+    ***************************************************************************/
+
+    void registerThrottlingHook ( )
+    {
+        if (!this.hook_registered)
+        {
+            this.hook_registered = true;
+            theScheduler.epoll.onCycleEnd(&this.throttlingHook);
         }
     }
 
@@ -210,6 +234,11 @@ public class ThrottledTaskPool ( TaskT ) : TaskPool!(TaskT)
     private void throttlingHook ( )
     {
         this.throttler.throttledResume();
+
+        if (this.num_busy() > 0)
+            theScheduler.epoll.onCycleEnd(&this.throttlingHook);
+        else
+            this.hook_registered = false;
     }
 }
 
