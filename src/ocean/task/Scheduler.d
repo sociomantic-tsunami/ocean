@@ -555,11 +555,18 @@ final class Scheduler : IScheduler
                 this.exception_handler is null ? null :
                     &this.exceptionHandlerForEpoll
             );
-            debug_trace("end of scheduler internal event loop cycle ({} worker " ~
-                "fibers still suspended)", this.fiber_pool.num_busy());
+
+            debug_trace(
+                "end of scheduler internal event loop cycle " ~
+                    "({} worker fibers still suspended, " ~
+                    "{} pending tasks to resume)",
+                this.fiber_pool.num_busy(),
+                this.cycle_pending_task_count
+            );
 
         }
-        while (this.fiber_pool.queued_tasks.length && this.cycle_pending_task_count);
+        while ((this.fiber_pool.queued_tasks.length ||
+            this.cycle_pending_task_count) && this.state != State.Shutdown);
 
         // cleans up any stalled worker fibers left after deregistration
         // of all events.
