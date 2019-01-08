@@ -118,20 +118,7 @@ class TaskPool ( TaskT : Task ) : ObjectPool!(Task)
 
     protected void startImpl ( Task task )
     {
-        // HACK: ocean scheduler disallows any context switching while handling
-        // termination hooks, but this is currently violated by swarm neo
-        // `resume` implementation for `ISuspendable`. Until swarm is fixed,
-        // this dirty hack ensures recycling always happens last among
-        // termination hooks.
-        //
-        // .tupleof is used here as a hack to access private field of a Task
-        // instance - by spec .tupleof always ignores protection attributes. To
-        // make sure this don't get funny if someone reorders fields in Task,
-        // static assert checks exact type.
-        static assert (is(typeof(task.tupleof[1]) == Buffer!(void delegate())));
-        insertShift(task.tupleof[1], 0, 1);
-        task.tupleof[1][0] = &this.taskTerminationHook;
-
+        task.terminationHook(&this.taskTerminationHook);
         theScheduler.schedule(task);
     }
 
