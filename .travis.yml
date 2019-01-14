@@ -39,6 +39,7 @@ jobs:
           env: DMD=1.081.* F=production DFLAGS=-release
         - <<: *test-matrix
           env: DMD=1.081.* F=production DFLAGS=-debug=ISelectClient
+          script: 2>/dev/null beaver dlang make
         - <<: *test-matrix
           env: DMD=1.081.* F=devel
         - <<: *test-matrix
