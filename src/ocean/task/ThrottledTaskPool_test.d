@@ -141,4 +141,16 @@ unittest
     // may vary but it must always be at most 1000 + task_queue_limit
     test!(">=")(ProcessingTask.total, 1000);
     test!("<=")(ProcessingTask.total, 1000 + config.task_queue_limit);
+
+    auto stats
+        = theScheduler.getSpecializedPoolStats(ProcessingTask.classinfo.name);
+    stats.visit(
+        ( ) { test(false); },
+        (ref Scheduler.SpecializedPoolStats s) {
+            // not exact comparison because tasks may be finish fast
+            // enough that throttling is never hit
+            test!("<=")(s.total_fibers, 10);
+            test!("==")(s.used_fibers, 0);
+        }
+    );
 }
