@@ -29,6 +29,7 @@ import ocean.meta.traits.Aggregates /* : hasMethod */;
 import ocean.meta.types.Function /* ParametersOf */;
 
 import ocean.transition;
+import ocean.core.Verify;
 
 debug (TaskScheduler)
     import ocean.io.Stdout;
@@ -120,7 +121,17 @@ public class ThrottledTaskPool ( TaskT ) : TaskPool!(TaskT)
                 "larger or equal to task queue size {}",
             suspend_point, total));
 
-        this.throttler = new PoolThrottler(this, suspend_point, resume_point);
+        auto name = TaskT.classinfo.name;
+
+        if (theScheduler.getSpecializedPoolStats(name).isDefined())
+        {
+            this.throttler = new SpecializedPoolThrottler(this,
+                suspend_point, resume_point, name);
+        }
+        else
+        {
+            this.throttler = new PoolThrottler(this, suspend_point, resume_point);
+        }
     }
 
     /***************************************************************************
@@ -346,6 +357,135 @@ public class PoolThrottler : ISuspendableThrottler
 
         debug_trace("Throttler.resume -> {}", result);
 
+        return result;
+    }
+}
+
+/*******************************************************************************
+
+    Throttler implementation intended to be used with a specialized task
+    pools.
+
+*******************************************************************************/
+
+public class SpecializedPoolThrottler : ISuspendableThrottler
+{
+    /***************************************************************************
+
+        Reference to the throttled pool
+
+    ***************************************************************************/
+
+    protected IPoolInfo pool;
+
+    /***************************************************************************
+
+      When amount of total queued tasks is >= this value, the input
+      will be suspended.
+
+    ***************************************************************************/
+
+    protected size_t suspend_point;
+
+    /***************************************************************************
+
+      When amount of total queued tasks is <= this value, the input
+      will be resumed.
+
+    ***************************************************************************/
+
+    protected size_t resume_point;
+
+    /***************************************************************************
+
+        String representation of the class name of the task handled by the host
+        task pool.
+
+    ***************************************************************************/
+
+    protected istring task_class_name;
+
+    /***************************************************************************
+
+        Constructor
+
+        Params:
+            pool = pool to base throttling decision on
+            suspend_point = when number of busy tasks reaches this count,
+                processing will get suspended
+            resume_point = when number of busy tasks reaches this count,
+                processing will get resumed
+            name = class name for the task type handled by the `pool`
+
+    ***************************************************************************/
+
+    public this ( IPoolInfo pool, size_t suspend_point, size_t resume_point,
+        istring name )
+    {
+        assert(suspend_point > resume_point);
+        assert(suspend_point < pool.limit());
+
+        this.pool = pool;
+        this.suspend_point = suspend_point;
+        this.resume_point = resume_point;
+        this.task_class_name = name;
+    }
+
+    /***************************************************************************
+
+        Check if the total number of active tasks has reached the desired
+        limit to suspend.
+
+        Checks both amount of unused tasks in this pool and amount of unused
+        tasks in global scheduler queue.
+
+    ***************************************************************************/
+
+    override protected bool suspend ( )
+    {
+        bool result;
+
+        auto stats = theScheduler.getSpecializedPoolStats(this.task_class_name);
+        stats.visit(
+            ( ) {
+                verify(false, "Specialized task pool throttler initalized " ~
+                    "with missing task class name");
+            },
+            (ref IScheduler.SpecializedPoolStats s) {
+                result = s.used_fibers >= this.suspend_point;
+            }
+        );
+
+        debug_trace("Throttler.suspend -> {}", result);
+        return result;
+    }
+
+    /***************************************************************************
+
+        Check if the total number of active tasks is below the desired
+        limit to resume.
+
+        Checks both amount of unused tasks in this pool and amount of unused
+        tasks in global scheduler queue.
+
+    ***************************************************************************/
+
+    override protected bool resume ( )
+    {
+        bool result;
+
+        auto stats = theScheduler.getSpecializedPoolStats(this.task_class_name);
+        stats.visit(
+            ( ) {
+                verify(false, "Specialized task pool throttler initalized " ~
+                    "with missing task class name");
+            },
+            (ref IScheduler.SpecializedPoolStats s) {
+                result = s.used_fibers <= this.resume_point;
+            }
+        );
+
+        debug_trace("Throttler.resume -> {}", result);
         return result;
     }
 }
