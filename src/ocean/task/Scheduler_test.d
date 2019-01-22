@@ -189,6 +189,13 @@ class MainTask : Task
 
         auto stats = theScheduler.getStats();
         test!("==")(stats.worker_fiber_busy, 1);
+
+        auto stats2_ = theScheduler
+            .getSpecializedPoolStats(AwaitedTask1.classinfo.name);
+        Scheduler.SpecializedPoolStats stats2;
+        test(stats2_.get(stats2));
+        test!("==")(stats2.used_fibers, 0);
+        test!("==")(stats2.total_fibers, 1);
     }
 }
 
