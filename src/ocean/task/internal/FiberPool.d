@@ -86,7 +86,7 @@ public class FiberPool : ObjectPool!(WorkerFiber)
         auto fiber = super.get(if_missing);
         if (fiber is null)
             return null;
-        verify(fiber.state() != Fiber.State.EXEC);
+        verify(fiber.state() == Fiber.State.TERM);
         return fiber;
     }
 
