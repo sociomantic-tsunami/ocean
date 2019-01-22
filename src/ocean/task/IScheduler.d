@@ -23,6 +23,7 @@ import ocean.task.Task;
 import ocean.meta.traits.Indirections : hasIndirections;
 import ocean.meta.types.Qualifiers;
 import ocean.io.select.EpollSelectDispatcher;
+import ocean.core.Optional;
 
 /*******************************************************************************
 
@@ -110,6 +111,18 @@ public interface IScheduler
 
     /***************************************************************************
 
+        Usage stats of a single specialized task pool
+
+    ***************************************************************************/
+
+    public struct SpecializedPoolStats
+    {
+        size_t used_fibers;
+        size_t total_fibers;
+    }
+
+    /***************************************************************************
+
         Getter for scheduler epoll instance. Necessary for integration with
         `ISelectClient` utilities so that new select client can be registered.
 
@@ -144,6 +157,16 @@ public interface IScheduler
     ***************************************************************************/
 
     public Stats getStats ( );
+
+    /***************************************************************************
+
+        Returns:
+            Stats struct for a specialized pool defined by `name` if there is
+            such pool. Empty Optional otherwise.
+
+    ***************************************************************************/
+
+    public Optional!(SpecializedPoolStats) getSpecializedPoolStats ( cstring name );
 
     /***************************************************************************
 

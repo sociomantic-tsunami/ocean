@@ -40,7 +40,7 @@ public class SpecializedPools
     private SpecializedPool[] mapping;
 
     /// mapping element
-    private static struct SpecializedPool
+    public static struct SpecializedPool
     {
         istring task_name;
         FiberPoolEager pool;
@@ -95,7 +95,7 @@ public class SpecializedPools
 
     ***************************************************************************/
 
-    public Optional!(SpecializedPool) findPool ( istring task )
+    public Optional!(SpecializedPool) findPool ( cstring task )
     {
         foreach (meta; this.mapping)
         {

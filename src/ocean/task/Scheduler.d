@@ -27,6 +27,7 @@ import ocean.transition;
 import ocean.core.Enforce;
 import ocean.core.Verify;
 import ocean.core.TypeConvert;
+import ocean.core.Optional;
 import ocean.io.select.EpollSelectDispatcher;
 import ocean.util.container.queue.FixedRingQueue;
 import ocean.meta.traits.Indirections;
@@ -295,6 +296,31 @@ final class Scheduler : IScheduler
             worker_fiber_total : this.fiber_pool.limit()
         };
         return stats;
+    }
+
+    /***************************************************************************
+
+        Returns:
+            Stats struct for a specialized pool defined by `name` if there is
+            such pool. Empty Optional otherwise.
+
+    ***************************************************************************/
+
+    public Optional!(SpecializedPoolStats) getSpecializedPoolStats ( cstring name )
+    {
+        Optional!(SpecializedPoolStats) result;
+
+        this.specialized_pools.findPool(name).visit(
+            ( ) { },
+            (ref SpecializedPools.SpecializedPool descr) {
+                result = optional(SpecializedPoolStats(
+                    descr.pool.num_busy(),
+                    descr.pool.length()
+                ));
+            }
+        );
+
+        return result;
     }
 
     /***************************************************************************
