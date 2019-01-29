@@ -271,10 +271,13 @@ public abstract class Task
 
         Params:
             fiber = the fiber to assign the task to
+            entry_point = optional custom entry point to replace
+                `this.entryPoint`
 
     ***************************************************************************/
 
-    public void assignTo ( WorkerFiber fiber )
+    public void assignTo ( WorkerFiber fiber,
+        void delegate() entry_point = null )
     {
         this.state_bitmask = TaskState.None;
 
@@ -283,7 +286,8 @@ public abstract class Task
         if (fiber.state == fiber.state.TERM)
         {
             // cast to ignore return value
-            this.fiber.reset(cast(void delegate()) &this.entryPoint);
+            this.fiber.reset(entry_point ? entry_point
+                : cast(void delegate()) &this.entryPoint);
         }
     }
 
@@ -780,9 +784,10 @@ public class TaskWith ( Extensions... ) : Task
 
     ***************************************************************************/
 
-    override public void assignTo ( WorkerFiber fiber )
+    override public void assignTo ( WorkerFiber fiber,
+        void delegate() entry_point = null )
     {
-        super.assignTo(fiber);
+        super.assignTo(fiber, entry_point);
 
         foreach (ref extension; this.extensions.tupleof)
         {

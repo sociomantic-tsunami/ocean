@@ -141,13 +141,12 @@ public class FiberPoolWithQueue : FiberPool
         auto fiber = this.get();
         debug_trace("running task <{}> via worker fiber <{}>",
             cast(void*) task, cast(void*) fiber);
-        task.assignTo(fiber);
         // `Task.entryPoint` is supposed to be entry method for worker fiber
         // but it does not allow to reuse worker fiber immediately for new tasks
         // waititing in the queue. Because of that a custom method is used as
         // entry point instead which will internally call `Task.entryPoint`
         // directly:
-        fiber.reset(&this.workerFiberMethod);
+        task.assignTo(fiber, &this.workerFiberMethod);
         task.resume();
     }
 
