@@ -70,7 +70,7 @@ public struct PidLock
 
     public void parseConfig ( ConfigParser config )
     {
-        this.pidlock_path = config.get("PidLock", "path", "").dup;
+        (&this).pidlock_path = config.get("PidLock", "path", "").dup;
     }
 
     /***************************************************************************
@@ -84,12 +84,12 @@ public struct PidLock
 
     public void lock ( )
     {
-        if (this.pidlock_path.length)
+        if ((&this).pidlock_path.length)
         {
             istring msg =
-                idup("Couldn't lock the pid lock file '" ~ this.pidlock_path
+                idup("Couldn't lock the pid lock file '" ~ (&this).pidlock_path
                  ~ "'. Probably another instance of the application is running.");
-            enforce(this.tryLockPidFile(), msg);
+            enforce((&this).tryLockPidFile(), msg);
         }
     }
 
@@ -104,14 +104,14 @@ public struct PidLock
 
     public void unlock ( )
     {
-        if (!this.is_locked)
+        if (!(&this).is_locked)
         {
             return;
         }
 
         // releases the lock and closes the lock file
-        this.enforcePosix!(close)(this.lock_fd);
-        this.enforcePosix!(unlink)(StringC.toCString(this.pidlock_path));
+        (&this).enforcePosix!(close)((&this).lock_fd);
+        (&this).enforcePosix!(unlink)(StringC.toCString((&this).pidlock_path));
     }
 
     /***************************************************************************
@@ -134,11 +134,11 @@ public struct PidLock
 
     private bool tryLockPidFile ( )
     {
-        this.lock_fd = this.enforcePosix!(open)(StringC.toCString(this.pidlock_path),
+        (&this).lock_fd = (&this).enforcePosix!(open)(StringC.toCString((&this).pidlock_path),
                 O_RDWR | O_CREAT, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
 
         // TODO these will be available in tango v1.6.0
-        const F_SETLK = 6;
+        enum F_SETLK = 6;
 
         // Lock the pidfile
         flock fl;
@@ -147,7 +147,7 @@ public struct PidLock
         fl.l_start = 0;
         fl.l_len = 0;
 
-        if (fcntl(this.lock_fd, F_SETLK, &fl) == -1)
+        if (fcntl((&this).lock_fd, F_SETLK, &fl) == -1)
         {
             // Region already locked, can't acquire a lock
             if (errno == EAGAIN || errno == EACCES)
@@ -161,14 +161,14 @@ public struct PidLock
         }
 
         // Clear the any previous contents of the file
-        this.enforcePosix!(ftruncate)(this.lock_fd, 0);
+        (&this).enforcePosix!(ftruncate)((&this).lock_fd, 0);
 
         char[512] buf;
         auto pid_string = snformat(buf, "{}\n", getpid());
 
-        this.writeNonInterrupted(this.lock_fd, pid_string);
+        (&this).writeNonInterrupted((&this).lock_fd, pid_string);
 
-        this.is_locked = true;
+        (&this).is_locked = true;
         return true;
     }
 

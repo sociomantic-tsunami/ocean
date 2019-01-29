@@ -784,7 +784,7 @@ extern (D):
 
 public c_long SSL_CTX_set_options (SSL_CTX* ctx, c_long op)
 {
-    const SSL_CTRL_OPTIONS = 32;
+    static immutable SSL_CTRL_OPTIONS = 32;
 
     return SSL_CTX_ctrl(ctx, SSL_CTRL_OPTIONS, op, null);
 }
