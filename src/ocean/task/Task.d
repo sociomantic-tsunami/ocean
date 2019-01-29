@@ -291,7 +291,7 @@ public abstract class Task : ISuspendable
     ***************************************************************************/
 
     public void assignTo ( WorkerFiber fiber,
-        void delegate() entry_point = null )
+        scope void delegate() entry_point = null )
     {
         this.state_bitmask = TaskState.None;
 
@@ -371,7 +371,7 @@ public abstract class Task : ISuspendable
 
     ***************************************************************************/
 
-    public void terminationHook (void delegate() hook)
+    public void terminationHook (scope void delegate() hook)
     {
         this.termination_hooks ~= hook;
     }
@@ -386,7 +386,7 @@ public abstract class Task : ISuspendable
 
     ***************************************************************************/
 
-    public void removeTerminationHook (void delegate() hook)
+    public void removeTerminationHook (scope void delegate() hook)
     {
         this.termination_hooks.length = .moveToEnd(this.termination_hooks[], hook);
     }
@@ -789,7 +789,7 @@ public class TaskWith ( Extensions... ) : Task
     ***************************************************************************/
 
     override public void assignTo ( WorkerFiber fiber,
-        void delegate() entry_point = null )
+        scope void delegate() entry_point = null )
     {
         super.assignTo(fiber, entry_point);
 
