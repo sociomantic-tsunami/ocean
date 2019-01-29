@@ -45,7 +45,7 @@ template isMutable( T )
     }
     else
     {
-        const isMutable = true;
+        static immutable isMutable = true;
     }
 }
 
@@ -107,7 +107,7 @@ static import ocean.text.convert.Integer_tango;
 
 template Octal(istring literal)
 {
-    const Octal = ocean.text.convert.Integer_tango.parse(literal, 8);
+    static immutable Octal = ocean.text.convert.Integer_tango.parse(literal, 8);
 }
 
 unittest
@@ -222,14 +222,14 @@ version (D_Version2)
 {
     template min_normal(T : real)
     {
-        const min_normal = T.min_normal;
+        static immutable min_normal = T.min_normal;
     }
 }
 else
 {
     template min_normal(T : real)
     {
-        const min_normal = T.min;
+        static immutable min_normal = T.min;
     }
 }
 
@@ -300,7 +300,7 @@ unittest
 
         equals_t opEquals (S rhs)
         {
-            return this.opCmp(rhs) == 0;
+            return (&this).opCmp(rhs) == 0;
         }
     }
 
