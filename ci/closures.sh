@@ -5,7 +5,7 @@ set -x
 export DFLAGS=-vgc
 
 # Prepare sources
-beaver dlang make d2conv || exit 1
+beaver dlang make || exit 1
 
 # Run tests and write compiler output to temporary file
 compiler_output=`mktemp`
