@@ -24,35 +24,37 @@ env:
 # Basic config is inherited from the global scope
 jobs:
     templates:
-        - &test-matrix
+        - &test-matrix-d2
           stage: Test
-          # Don't build tags already converted to D2
-          if: NOT tag =~ \+d2$
           after_success: beaver dlang codecov
           install: beaver dlang install
           script: beaver dlang make
+        - &test-matrix-d1
+          <<: *test-matrix-d2
+          # Don't build tags already converted to D2
+          if: NOT tag =~ \+d2$
     include:
         # Test matrix
-        - <<: *test-matrix
+        - <<: *test-matrix-d1
           env: DMD=1.081.* F=production
-        - <<: *test-matrix
+        - <<: *test-matrix-d1
           env: DMD=1.081.* F=production DFLAGS=-release
-        - <<: *test-matrix
+        - <<: *test-matrix-d1
           env: DMD=1.081.* F=production DFLAGS=-debug=ISelectClient
           script: 2>/dev/null beaver dlang make
-        - <<: *test-matrix
+        - <<: *test-matrix-d1
           env: DMD=1.081.* F=devel
-        - <<: *test-matrix
+        - <<: *test-matrix-d2
           env: DMD=2.071.2.s* F=production
-        - <<: *test-matrix
+        - <<: *test-matrix-d2
           env: DMD=2.071.2.s* F=devel
-        - <<: *test-matrix
+        - <<: *test-matrix-d2
           env: DMD=2.078.3.s* F=production
-        - <<: *test-matrix
+        - <<: *test-matrix-d2
           env: DMD=2.078.3.s* F=devel
-        - <<: *test-matrix
+        - <<: *test-matrix-d2
           env: DMD=2.078.* F=production
-        - <<: *test-matrix
+        - <<: *test-matrix-d2
           env: DMD=2.078.* F=devel
 
         # Additional stages
