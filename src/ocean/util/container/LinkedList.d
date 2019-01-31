@@ -172,7 +172,7 @@ class LinkedList (V, alias Reap = Container.reap,
 
         ***********************************************************************/
 
-        final int opApply (int delegate(ref V value) dg)
+        final int opApply (scope int delegate(ref V value) dg)
         {
                 return iterator.opApply (dg);
         }
@@ -1035,7 +1035,7 @@ class LinkedList (V, alias Reap = Container.reap,
 
                 ***************************************************************/
 
-                int opApply (int delegate(ref V value) dg)
+                int opApply (scope int delegate(ref V value) dg)
                 {
                         int result;
 
@@ -1141,7 +1141,7 @@ debug (LinkedList)
                 // use a chunk allocator, and presize the bucket[]
                 auto test = new LinkedList!(int, Container.reap, Container.Chunk);
                 test.cache (2000, 1_000_000);
-                const count = 1_000_000;
+                static immutable count = 1_000_000;
                 StopWatch w;
 
                 // benchmark adding

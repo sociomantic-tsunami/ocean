@@ -97,7 +97,7 @@ class TaskExt : IConfigExtExtension
 
     ***************************************************************************/
 
-    public int run ( int delegate () dg )
+    public int run ( scope int delegate () dg )
     {
         return runInTask(dg);
     }

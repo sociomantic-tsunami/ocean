@@ -18,7 +18,7 @@ import ocean.core.Test;
 
 unittest
 {
-    const istring original = "Hello \u262F \u0842 \uEFFF";
+    static immutable istring original = "Hello \u262F \u0842 \uEFFF";
     cstring r;
     toString(original, (cstring x) { r ~= x; return x.length; });
     test(original == r);
@@ -26,7 +26,7 @@ unittest
 
 unittest
 {
-    const wchar[] original = "Hello \u262F \u1666 \uEFFF"w;
+    static immutable wchar[] original = "Hello \u262F \u1666 \uEFFF"w;
     cstring r;
     toString(original, (cstring x) { r ~= x; return x.length; });
     test("Hello \u262F \u1666 \uEFFF" == r);
@@ -34,7 +34,7 @@ unittest
 
 unittest
 {
-    const dchar[] original = "Hello \u262F \u0842 \uE420"d;
+    static immutable dchar[] original = "Hello \u262F \u0842 \uE420"d;
     cstring r;
     toString(original, (cstring x) { r ~= x; return x.length; });
     test("Hello \u262F \u0842 \uE420" == r);

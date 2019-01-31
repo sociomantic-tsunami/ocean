@@ -213,7 +213,7 @@ align (1) union epoll_data_t
 
     Object obj ( Object o )
     {
-        return cast (Object) (this.ptr = cast (void*) o);
+        return cast (Object) ((&this).ptr = cast (void*) o);
     }
 
     /**************************************************************************
@@ -227,7 +227,7 @@ align (1) union epoll_data_t
 
     Object obj ( )
     {
-        return cast (Object) this.ptr;
+        return cast (Object) (&this).ptr;
     }
 }
 
@@ -513,7 +513,7 @@ struct Epoll
 
      **************************************************************************/
 
-    public const int fd_init = -1;
+    public enum int fd_init = -1;
 
     /**************************************************************************
 
@@ -540,7 +540,7 @@ struct Epoll
 
     public int create ( CreateFlags flags = CreateFlags.None )
     {
-        return this.fd = epoll_create1(
+        return (&this).fd = epoll_create1(
             setCloExec(flags, EpollCreateFlags.EPOLL_CLOEXEC)
         );
     }
@@ -566,7 +566,7 @@ struct Epoll
 
     public int ctl ( CtlOp op, int fd, epoll_event_t event )
     {
-        return epoll_ctl(this.fd, op, fd, &event);
+        return epoll_ctl((&this).fd, op, fd, &event);
     }
 
     template ctlT ( size_t i = 0 )
@@ -606,7 +606,7 @@ struct Epoll
                 event.events          = events;
                 event.data.tupleof[i] = data;
 
-                return epoll_ctl(this.fd, op, fd, &event);
+                return epoll_ctl((&this).fd, op, fd, &event);
             }
 
             mixin ctlT!(i + 1);
@@ -677,7 +677,7 @@ struct Epoll
         event.events   = events;
         event.data.obj = obj;
 
-        return epoll_ctl(this.fd, op, fd, &event);
+        return epoll_ctl((&this).fd, op, fd, &event);
     }
 
     /**************************************************************************
@@ -711,7 +711,7 @@ struct Epoll
         event.events   = events;
         event.data.u64 = u64;
 
-        return epoll_ctl(this.fd, op, fd, &event);
+        return epoll_ctl((&this).fd, op, fd, &event);
     }
 
     /**************************************************************************
@@ -745,7 +745,7 @@ struct Epoll
     body
     {
         verify(events.length <= int.max);
-        return epoll_wait(this.fd, events.ptr, cast (int) events.length, timeout_ms);
+        return epoll_wait((&this).fd, events.ptr, cast (int) events.length, timeout_ms);
     }
 
     /**************************************************************************
@@ -759,6 +759,6 @@ struct Epoll
 
     public int close ( )
     {
-        return .close(this.fd);
+        return .close((&this).fd);
     }
 }
