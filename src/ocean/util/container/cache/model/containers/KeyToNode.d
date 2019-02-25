@@ -69,6 +69,8 @@ class KeyToNode: HashMap!(TimeToIndex.Node*)
     /***************************************************************************
 
         Bucket elements allocator.
+        The elements are allocated only during container construction,
+        and never freed.
 
     ***************************************************************************/
 
@@ -85,22 +87,37 @@ class KeyToNode: HashMap!(TimeToIndex.Node*)
 
     public this ( size_t n )
     {
-        super(this.allocator = new ArrayAllocatedFreeBucketElements(n), n);
+        this.allocator = new ArrayAllocatedFreeBucketElements(n);
+        super(this.allocator, n);
     }
+}
 
-    /***************************************************************************
+unittest
+{
+    KeyToNode map = new KeyToNode(5);
+    (*map.put(1)) = new TimeToIndex.Node();
+    (*map.put(2)) = new TimeToIndex.Node();
+    (*map.put(3)) = new TimeToIndex.Node();
+    (*map.put(4)) = new TimeToIndex.Node();
+    (*map.put(5)) = new TimeToIndex.Node();
+    map.clear();
+    map.clear();
+    map.clear();
+}
 
-        Removes all elements from all buckets.
-
-        Returns:
-            this instance
-
-     **************************************************************************/
-
-    public override typeof(this) clear ( )
-    {
-        super.clear();
-        this.allocator.pool.clear();
-        return this;
-    }
+unittest
+{
+    KeyToNode map = new KeyToNode(100000);
+    map.clear();
+    map.put(9207674216414740734);
+    map.put(8595442437537477107);
+    map.clear();
+    map.put(8595442437537477107);
+    map.clear();
+    map.put(9207674216414740734);
+    map.put(8595442437537477106);
+    map.put(8595442437537477108);
+    map.put(8595442437537477110);
+    map.put(8595442437537477112);
+    map.clear();
 }
