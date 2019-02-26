@@ -54,7 +54,7 @@ struct Vector (V, int Size = 0)
         Vector* clear ()
         {
                 depth = 0;
-                return this;
+                return (&this);
         }
 
         /***********************************************************************
@@ -158,7 +158,7 @@ struct Vector (V, int Size = 0)
         {
                 foreach (v; value)
                          add (v);
-                return this;
+                return (&this);
         }
 
         /**********************************************************************

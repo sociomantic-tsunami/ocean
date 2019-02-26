@@ -408,12 +408,12 @@ public class Table
 
             *******************************************************************/
 
-            public typeof(this) setString ( cstring str )
+            public typeof((&this)) setString ( cstring str )
             {
                 this.type = Type.String;
                 this.contents.utf8.copy(str);
 
-                return this;
+                return (&this);
             }
 
 
@@ -431,14 +431,14 @@ public class Table
 
             *******************************************************************/
 
-            public typeof(this) setInteger ( ulong num,
+            public typeof((&this)) setInteger ( ulong num,
                 bool use_thousands_separator = true )
             {
                 this.type = Type.Integer;
                 this.use_thousands_separator = use_thousands_separator;
                 this.contents.integer = num;
 
-                return this;
+                return (&this);
             }
 
 
@@ -457,13 +457,13 @@ public class Table
 
             *******************************************************************/
 
-            public typeof(this) setBinaryMetric ( ulong num, cstring metric_string = "" )
+            public typeof((&this)) setBinaryMetric ( ulong num, cstring metric_string = "" )
             {
                 this.type = Type.BinaryMetric;
                 this.contents.integer = num;
                 this.metric_string.copy(metric_string);
 
-                return this;
+                return (&this);
             }
 
 
@@ -482,13 +482,13 @@ public class Table
 
             *******************************************************************/
 
-            public typeof(this) setDecimalMetric ( ulong num, cstring metric_string = "" )
+            public typeof((&this)) setDecimalMetric ( ulong num, cstring metric_string = "" )
             {
                 this.type = Type.DecimalMetric;
                 this.contents.integer = num;
                 this.metric_string.copy(metric_string);
 
-                return this;
+                return (&this);
             }
 
 
@@ -504,12 +504,12 @@ public class Table
 
             *******************************************************************/
 
-            public typeof(this) setFloat ( double num )
+            public typeof((&this)) setFloat ( double num )
             {
                 this.type = Type.Float;
                 this.contents.floating = num;
 
-                return this;
+                return (&this);
             }
 
 
@@ -522,11 +522,11 @@ public class Table
 
             *******************************************************************/
 
-            public typeof(this) setEmpty ( )
+            public typeof((&this)) setEmpty ( )
             {
                 this.type = Type.Empty;
 
-                return this;
+                return (&this);
             }
 
 
@@ -539,11 +539,11 @@ public class Table
 
             *******************************************************************/
 
-            public typeof(this) setDivider ( )
+            public typeof((&this)) setDivider ( )
             {
                 this.type = Type.Divider;
 
-                return this;
+                return (&this);
             }
 
 
@@ -556,11 +556,11 @@ public class Table
 
             *******************************************************************/
 
-            public typeof(this) setMerged ( )
+            public typeof((&this)) setMerged ( )
             {
                 this.type = Type.Merged;
 
-                return this;
+                return (&this);
             }
 
 
@@ -576,12 +576,12 @@ public class Table
 
             *******************************************************************/
 
-            public typeof(this) setForegroundColour ( Terminal.Colour colour )
+            public typeof((&this)) setForegroundColour ( Terminal.Colour colour )
             {
                 auto colour_str = Terminal.fg_colour_codes[colour];
                 this.fg_colour_string.concat(Terminal.CSI, colour_str);
 
-                return this;
+                return (&this);
             }
 
 
@@ -597,12 +597,12 @@ public class Table
 
             *******************************************************************/
 
-            public typeof(this) setBackgroundColour ( Terminal.Colour colour )
+            public typeof((&this)) setBackgroundColour ( Terminal.Colour colour )
             {
                 auto colour_str = Terminal.bg_colour_codes[colour];
                 this.bg_colour_string.concat(Terminal.CSI, colour_str);
 
-                return this;
+                return (&this);
             }
 
 

@@ -136,7 +136,7 @@ struct EscapeChars
     {
         verify (tokens.ptr !is null);
         verify (!memchr(tokens.ptr, '\0', tokens.length),
-                typeof (*this).stringof ~ ": NUL characters not allowed in tokens");
+                typeof (this).stringof ~ ": NUL characters not allowed in tokens");
         this.tokens.concat(tokens, "\0"[]);
     }
 }

@@ -1080,7 +1080,7 @@ class CircularList (V, alias Reap = Container.reap,
                     ++count;
                     // ignore this change
                     ++mutation;
-                    return *this;
+                    return this;
                 }
 
                 /***************************************************************
@@ -1096,7 +1096,7 @@ class CircularList (V, alias Reap = Container.reap,
                         rev ^= true;
                         next;
                         index = 0;
-                        return *this;
+                        return this;
                 }
         }
 }

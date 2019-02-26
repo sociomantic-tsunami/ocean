@@ -194,7 +194,7 @@ public static struct Job
     {
         if (this.finalize_results)
         {
-            this.finalize_results(this);
+            this.finalize_results((&this));
         }
 
         if (this.finish_callback_dgs.length)
@@ -218,7 +218,7 @@ public static struct Job
     public Job* registerCallback (scope void delegate(ssize_t) dg)
     {
         this.finish_callback_dgs ~= dg;
-        return this;
+        return (&this);
     }
 
     /***************************************************************************
@@ -230,7 +230,7 @@ public static struct Job
 
     public void recycle ()
     {
-        this.owner_queue.recycleJob(this, &lock_mutex, &unlock_mutex);
+        this.owner_queue.recycleJob((&this), &lock_mutex, &unlock_mutex);
     }
 }
 

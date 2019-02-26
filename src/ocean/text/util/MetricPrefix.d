@@ -85,7 +85,7 @@ public struct MetricPrefix
 
     **************************************************************************/
 
-    typeof (this) bin ( T : float ) ( T n )
+    typeof ((&this)) bin ( T : float ) ( T n )
     {
         this.scaled = n;
 
@@ -108,7 +108,7 @@ public struct MetricPrefix
 
         this.prefix = BinaryPrefixes[i];
 
-        return this;
+        return (&this);
     }
 
     public enum DecimalPrefixes = [cast(wchar)'p', 'n', 'µ', 'm', ' ', 'k', 'M', 'G', 'T'];
@@ -129,7 +129,7 @@ public struct MetricPrefix
 
     **************************************************************************/
 
-    typeof (this) dec ( T : float ) ( T n, int e = 0 )
+    typeof ((&this)) dec ( T : float ) ( T n, int e = 0 )
     {
         verify (-5 < e && e < 5);
 
@@ -159,7 +159,7 @@ public struct MetricPrefix
 
         this.prefix = DecimalPrefixes[i];
 
-        return this;
+        return (&this);
     }
 }
 

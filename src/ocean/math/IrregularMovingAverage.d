@@ -66,7 +66,7 @@ public struct IrregularMovingAverage (Time = time_t, Value = real)
 
     ***************************************************************************/
 
-    private alias typeof(*this) This;
+    private alias typeof(this) This;
 
 
     /***************************************************************************

@@ -169,7 +169,7 @@ struct TimeSpan
         TimeSpan opAddAssign(TimeSpan t)
         {
                 ticks_ += t.ticks_;
-                return *this;
+                return this;
         }
 
         /**
@@ -194,7 +194,7 @@ struct TimeSpan
         TimeSpan opSubAssign(TimeSpan t)
         {
                 ticks_ -= t.ticks_;
-                return *this;
+                return this;
         }
 
         /**
@@ -221,7 +221,7 @@ struct TimeSpan
         TimeSpan opMulAssign(long v)
         {
                 ticks_ *= v;
-                return *this;
+                return this;
         }
 
         /**
@@ -249,7 +249,7 @@ struct TimeSpan
         TimeSpan opDivAssign(long v)
         {
                 ticks_ /= v;
-                return *this;
+                return this;
         }
 
         /**
@@ -591,7 +591,7 @@ struct Time
         Time opAddAssign (TimeSpan t)
         {
                 ticks_ += t.ticks_;
-                return *this;
+                return this;
         }
 
         /**********************************************************************
@@ -639,7 +639,7 @@ struct Time
         Time opSubAssign (TimeSpan t)
         {
                 ticks_ -= t.ticks_;
-                return *this;
+                return this;
         }
 
         /**********************************************************************
@@ -653,7 +653,7 @@ struct Time
 
         Time date ()
         {
-                return *this - TimeOfDay.modulo24(ticks_);
+                return *(&this) - TimeOfDay.modulo24(ticks_);
         }
 
         /**********************************************************************

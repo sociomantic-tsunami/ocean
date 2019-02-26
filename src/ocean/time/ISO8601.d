@@ -111,8 +111,8 @@ public struct ExtendedDate {
    debug (Tango_ISO8601) private char[] toStr() {
       return Stdout.layout.convert(
          "{:d} and {:d}-{:d2}-{:d2} :: {:d2}:{:d2}:{:d2}.{:d3} and {:d2}, {}",
-         year_, years(*this), months(*this), days(*this),
-         hours(*this), mins(*this), .secs(*this), ms(*this),
+         year_, years(this), months(this), days(this),
+         hours(this), mins(this), .secs(this), ms(this),
          this.seconds, this.endOfDay);
    }
 }

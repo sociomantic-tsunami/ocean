@@ -160,7 +160,7 @@ public struct UtfString ( Char = char, bool pull_dchars = false )
 
     ***************************************************************************/
 
-    public alias typeof(this) This;
+    public alias typeof((&this)) This;
 
 
     /***************************************************************************
@@ -357,7 +357,7 @@ public struct UtfString ( Char = char, bool pull_dchars = false )
 
     public ArrayOutType opSlice ( size_t start, size_t end )
     {
-        verify(end > start, typeof(this).stringof ~ ".opSlice - end <= start!");
+        verify(end > start, typeof((&this)).stringof ~ ".opSlice - end <= start!");
 
         static if ( pull_dchars )
         {
@@ -389,7 +389,7 @@ public struct UtfString ( Char = char, bool pull_dchars = false )
                 char_count++;
             }
 
-            assert(false, typeof(this).stringof ~ ".opSlice - end > array length");
+            assert(false, typeof((&this)).stringof ~ ".opSlice - end > array length");
         }
     }
 
@@ -417,7 +417,7 @@ public struct UtfString ( Char = char, bool pull_dchars = false )
         output.length = 0;
 
         size_t i;
-        foreach ( c; *this )
+        foreach ( c; *(&this) )
         {
             if ( i >= start )
             {
@@ -448,7 +448,7 @@ public struct UtfString ( Char = char, bool pull_dchars = false )
     {
         size_t len;
 
-        foreach ( c; *this )
+        foreach ( c; *(&this) )
         {
             len++;
         }
