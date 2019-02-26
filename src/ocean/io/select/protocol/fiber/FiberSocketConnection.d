@@ -600,9 +600,10 @@ public class IFiberSocketConnection : IFiberSelectProtocol
 
                 debug ( ISelectClient )
                 {
+                    import core.stdc.string : strerror;
                     Stderr.formatln("[{}:{}]: {}",
                         this.address_, this.port_, StringC.toDString(
-                            this.socket_error.strerror(errnum))).flush();
+                            strerror(errnum))).flush();
                 }
 
                 switch (errnum)
