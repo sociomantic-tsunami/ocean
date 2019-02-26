@@ -54,7 +54,7 @@ struct TaskEvent
         {
             this.task = Task.getThis();
             debug_trace("Task {} suspended waiting for event {}",
-                cast(void*) this.task, cast(void*) this);
+                cast(void*) this.task, cast(void*) (&this));
             this.task.suspend();
         }
 
@@ -74,7 +74,7 @@ struct TaskEvent
         if (this.task !is null && this.task.suspended())
         {
             debug_trace("Resuming task {} by trigger of event {}",
-                cast(void*) this.task, cast(void*) this);
+                cast(void*) this.task, cast(void*) (&this));
             this.task.resume();
         }
     }

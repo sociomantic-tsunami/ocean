@@ -738,7 +738,7 @@ public struct Range ( T )
 
     public bool isSupersetOf ( This other )
     {
-        return other.isSubsetOf(*this);
+        return other.isSubsetOf(this);
     }
 
     unittest
@@ -791,7 +791,7 @@ public struct Range ( T )
 
     public bool isTessellatedBy ( This[] ranges )
     {
-        return (*this == extent(ranges)) && isContiguous(ranges);
+        return (*(&this) == extent(ranges)) && isContiguous(ranges);
     }
 
     unittest
@@ -1045,7 +1045,7 @@ public struct Range ( T )
         if ( this.is_empty || other.is_empty ) return 0;
 
         RangeEndpoint[4] a;
-        This.sortEndpoints(*this, other, a);
+        This.sortEndpoints(this, other, a);
 
         return a[0].owner_index != a[1].owner_index
                ? This(a[1].value, a[2].value).length : 0;
@@ -1186,17 +1186,17 @@ public struct Range ( T )
         // other empty -- no change
         if ( other.is_empty )
         {
-            lower = *this;
+            lower = this;
             return;
         }
 
         RangeEndpoint[4] a;
-        This.sortEndpoints(*this, other, a);
+        This.sortEndpoints(this, other, a);
 
         // no overlap
         if (a[0].owner_index == a[1].owner_index)
         {
-            lower = *this;
+            lower = this;
             return;
         }
 

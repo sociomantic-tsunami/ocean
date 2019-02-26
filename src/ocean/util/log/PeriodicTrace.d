@@ -173,7 +173,7 @@ struct PeriodicTracer
 
     ***************************************************************************/
 
-    public typeof(this) format (Args...) ( cstring fmt, Args args )
+    public typeof((&this)) format (Args...) ( cstring fmt, Args args )
     {
         if (this.timeToUpdate())
         {
@@ -188,7 +188,7 @@ struct PeriodicTracer
             else
                 Stderr.formatln("{}", this.formatted).flush;
         }
-        return this;
+        return (&this);
     }
 
 
@@ -209,7 +209,7 @@ struct PeriodicTracer
 
     ***************************************************************************/
 
-    public typeof(this) format (Args...) ( ulong interval, cstring fmt, Args args )
+    public typeof((&this)) format (Args...) ( ulong interval, cstring fmt, Args args )
     {
         this.interval = interval;
         return this.format(fmt, args);

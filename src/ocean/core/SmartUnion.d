@@ -103,7 +103,7 @@ struct SmartUnion ( U )
 
     mixin (AllMethods!(U, "", 0));
 
-    private alias typeof(*this) Type;
+    private alias typeof(this) Type;
 }
 
 ///

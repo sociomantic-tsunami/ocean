@@ -1609,7 +1609,7 @@ unittest
 
         bool compare ( Test2* old )
         {
-            return *old == *this;
+            return *old == this;
         }
     }
 
@@ -1621,7 +1621,7 @@ unittest
 
         bool compare ( OldStruct * o )
         {
-            return *o == *this;
+            return *o == this;
         }
     }
 
@@ -1653,12 +1653,12 @@ unittest
 
         bool compare ( OldKey * o )
         {
-            return *o == *this;
+            return *o == this;
         }
 
         OldKey old ( )
         {
-            return *this;
+            return this;
         }
     }
 

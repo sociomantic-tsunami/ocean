@@ -928,7 +928,7 @@ final class RandomG(SourceT=DefaultEngine)
         /// chainable call style initialization of variables (thorugh a call to randomize)
         UniformDistribution opCall(U,S...)(ref U a,S args){
             randomize(a,args);
-            return *this;
+            return this;
         }
         /// returns a random number
         T getRandom(){
@@ -954,7 +954,7 @@ final class RandomG(SourceT=DefaultEngine)
         /// chainable call style initialization of variables (thorugh a call to randomize)
         UniformRDistribution opCall(U)(ref U a){
             randomize(a);
-            return *this;
+            return this;
         }
         /// returns a random number
         T getRandom(){
@@ -982,7 +982,7 @@ final class RandomG(SourceT=DefaultEngine)
         /// chainable call style initialization of variables (thorugh a call to randomize)
         UniformRSymmDistribution opCall(U)(ref U a){
             randomize(a);
-            return *this;
+            return this;
         }
         /// returns a random number
         T getRandom(){
@@ -1009,7 +1009,7 @@ final class RandomG(SourceT=DefaultEngine)
         /// chainable call style initialization of variables (thorugh a call to randomize)
         UniformR2Distribution opCall(U,S...)(ref U a,S args){
             randomize(a,args);
-            return *this;
+            return this;
         }
         /// returns a random number
         T getRandom(){
@@ -1041,7 +1041,7 @@ final class RandomG(SourceT=DefaultEngine)
         /// chainable call style initialization of variables (thorugh a call to randomize)
         GammaDistribution opCall(U,S...)(ref U a,S args){
             randomize(a,args);
-            return *this;
+            return this;
         }
         /// returns a single random number
         T getRandom(T a=alpha,T t=theta)

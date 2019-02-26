@@ -95,7 +95,7 @@ align (1) struct LzoHeader ( bool LengthInline = true )
 
      **************************************************************************/
 
-    enum ErrMsgSource = typeof (*this).stringof;
+    enum ErrMsgSource = typeof (this).stringof;
 
     /**************************************************************************
 
@@ -162,7 +162,7 @@ align (1) struct LzoHeader ( bool LengthInline = true )
 
         void[] write ( void[] chunk )
         {
-            static assert ((*this).sizeof == SizeofTuple!(typeof (this.tupleof)),
+            static assert ((this).sizeof == SizeofTuple!(typeof (this.tupleof)),
                            this.ErrMsgSource ~ ": Bad data alignment");
 
             enforce!(CompressException)(chunk.length >= this.read_length,
@@ -172,7 +172,7 @@ align (1) struct LzoHeader ( bool LengthInline = true )
 
             this.crc32_ = this.crc32(this.strip(chunk));
 
-            *(cast (typeof (this)) chunk.ptr) = *this;
+            *(cast (typeof ((&this))) chunk.ptr) = this;
 
             return chunk;
         }
@@ -193,7 +193,7 @@ align (1) struct LzoHeader ( bool LengthInline = true )
 
          **************************************************************************/
 
-        typeof (this) uncompressed ( void[] payload )
+        typeof ((&this)) uncompressed ( void[] payload )
         {
             this.type = this.type.None;
 
@@ -203,7 +203,7 @@ align (1) struct LzoHeader ( bool LengthInline = true )
 
             this.crc32_ = this.crc32(payload);
 
-            return this;
+            return (&this);
         }
 
         /**************************************************************************
@@ -220,9 +220,9 @@ align (1) struct LzoHeader ( bool LengthInline = true )
 
          **************************************************************************/
 
-        typeof (this) start ( size_t total_uncompressed_length )
+        typeof ((&this)) start ( size_t total_uncompressed_length )
         {
-            *this = typeof (*this).init;
+            *(&this) = typeof (this).init;
 
             this.type = this.type.Start;
 
@@ -230,7 +230,7 @@ align (1) struct LzoHeader ( bool LengthInline = true )
 
             this.crc32_ = this.crc32();
 
-            return this;
+            return (&this);
         }
 
         /**************************************************************************
@@ -243,15 +243,15 @@ align (1) struct LzoHeader ( bool LengthInline = true )
 
          **************************************************************************/
 
-        typeof (this) stop ( )
+        typeof ((&this)) stop ( )
         {
-            *this = typeof (*this).init;
+            *(&this) = typeof (this).init;
 
             this.type = this.type.Stop;
 
             this.crc32_ = this.crc32();
 
-            return this;
+            return (&this);
         }
 
         /**************************************************************************
@@ -272,14 +272,14 @@ align (1) struct LzoHeader ( bool LengthInline = true )
 
          **************************************************************************/
 
-        typeof (this) readStart ( void[] chunk )
+        typeof ((&this)) readStart ( void[] chunk )
         {
             this.read(chunk);
 
             enforce!(CompressException)(this.type == Type.Start || this.type == Type.Stop,
                                          this.ErrMsgSource ~ ": Not a Start header as expected");
 
-            return this;
+            return (&this);
         }
 
         /**************************************************************************
@@ -362,7 +362,7 @@ align (1) struct LzoHeader ( bool LengthInline = true )
 
         void[] data ( )
         {
-            return (cast (void*) this)[0 .. this.read_length];
+            return (cast (void*) (&this))[0 .. this.read_length];
         }
 
         /**************************************************************************
@@ -377,7 +377,7 @@ align (1) struct LzoHeader ( bool LengthInline = true )
 
         void[] data_without_length ( )
         {
-            return (cast (void*) this)[size_t.sizeof .. this.read_length];
+            return (cast (void*) (&this))[size_t.sizeof .. this.read_length];
         }
 
         /**************************************************************************
@@ -456,11 +456,11 @@ align (1) struct LzoHeader ( bool LengthInline = true )
 
          **************************************************************************/
 
-        typeof(this) setHeader ( void[] chunk )
+        typeof((&this)) setHeader ( void[] chunk )
         {
             static if ( LengthInline )
             {
-                *this = *cast (typeof (this)) chunk.ptr;
+                *(&this) = *cast (typeof ((&this))) chunk.ptr;
             }
             else
             {
@@ -474,7 +474,7 @@ align (1) struct LzoHeader ( bool LengthInline = true )
                 this.uncompressed_length = *(cast(typeof(this.uncompressed_length)*) read_ptr);
             }
 
-            return this;
+            return (&this);
         }
 
         /**************************************************************************
@@ -485,7 +485,7 @@ align (1) struct LzoHeader ( bool LengthInline = true )
 
         uint crc32 ( void[] payload = null )
         {
-            uint crc32 = LzoCrc.crc32((cast (void*) this)[this.crc32_.offsetof + this.crc32_.sizeof .. this.length]);
+            uint crc32 = LzoCrc.crc32((cast (void*) (&this))[this.crc32_.offsetof + this.crc32_.sizeof .. this.length]);
 
             if (payload)
             {

@@ -181,7 +181,7 @@ public struct Bucket ( size_t V, K = hash_t )
         debug (HostingArrayMapBucket) if (element)
         {
             assert (element.bucket, "bucket not set in found element");
-            assert (element.bucket is this,
+            assert (element.bucket is (&this),
                     "element found is not from this bucket");
         }
     }
@@ -263,7 +263,7 @@ public struct Bucket ( size_t V, K = hash_t )
     public Element* add ( Element* element )
     in
     {
-        debug (HostingArrayMapBucket) element.bucket = this;
+        debug (HostingArrayMapBucket) element.bucket = (&this);
     }
     out
     {
@@ -319,7 +319,7 @@ public struct Bucket ( size_t V, K = hash_t )
 
             debug (HostingArrayMapBucket) if (removed)
             {
-                assert (removed.bucket is this,
+                assert (removed.bucket is (&this),
                         "element to remove is not from this bucket");
 
                 removed.bucket = null;

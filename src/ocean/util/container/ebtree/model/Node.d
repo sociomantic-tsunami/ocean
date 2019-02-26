@@ -75,7 +75,7 @@ struct Node ( eb_node, Key, alias eb_getkey, alias eb_next, alias eb_prev,
 
      **************************************************************************/
 
-    public typeof (this) next ( )
+    public typeof ((&this)) next ( )
     {
         return this.ebCall!(eb_next);
     }
@@ -89,7 +89,7 @@ struct Node ( eb_node, Key, alias eb_getkey, alias eb_next, alias eb_prev,
 
      **************************************************************************/
 
-    public typeof (this) prev ( )
+    public typeof ((&this)) prev ( )
     {
         return this.ebCall!(eb_prev);
     }
@@ -104,7 +104,7 @@ struct Node ( eb_node, Key, alias eb_getkey, alias eb_next, alias eb_prev,
 
      **************************************************************************/
 
-    public typeof (this) next_unique ( )
+    public typeof ((&this)) next_unique ( )
     {
         return this.ebCall!(eb_next_unique);
     }
@@ -120,7 +120,7 @@ struct Node ( eb_node, Key, alias eb_getkey, alias eb_next, alias eb_prev,
 
      **************************************************************************/
 
-    public typeof (this) prev_unique ( )
+    public typeof ((&this)) prev_unique ( )
     {
         return this.ebCall!(eb_prev_unique);
     }
@@ -134,11 +134,11 @@ struct Node ( eb_node, Key, alias eb_getkey, alias eb_next, alias eb_prev,
 
      **************************************************************************/
 
-    private typeof (this) remove ( )
+    private typeof ((&this)) remove ( )
     {
         eb_delete(&this.node_);
 
-        return this;
+        return (&this);
     }
 
     /**************************************************************************
@@ -154,11 +154,11 @@ struct Node ( eb_node, Key, alias eb_getkey, alias eb_next, alias eb_prev,
 
      **************************************************************************/
 
-    private typeof (this) ebCall ( alias eb_func ) ( )
+    private typeof ((&this)) ebCall ( alias eb_func ) ( )
     {
         static assert (is (typeof (eb_func(&this.node_)) == eb_node*));
 
-        return cast (typeof (this)) eb_func(&this.node_);
+        return cast (typeof ((&this))) eb_func(&this.node_);
     }
 }
 

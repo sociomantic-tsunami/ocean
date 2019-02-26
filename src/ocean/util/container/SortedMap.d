@@ -1011,7 +1011,7 @@ class SortedMap (K, V, alias Reap = Container.reap,
                             bump = &back;
                         else
                            bump = &fore;
-                        return *this;
+                        return this;
                 }
 
                 /***************************************************************
