@@ -61,7 +61,7 @@ public interface ILimitable : ILimitableInfo
 
      **************************************************************************/
 
-    const size_t unlimited = size_t.max;
+    static immutable size_t unlimited = size_t.max;
 
 
     /***************************************************************************

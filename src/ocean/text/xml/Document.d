@@ -255,7 +255,7 @@ class Document(T_) : PullParser!(T_)
 
         final Document header ()
         {
-                const header = `xml version="1.0" encoding="UTF-8"`;
+                static immutable header = `xml version="1.0" encoding="UTF-8"`;
                 root.prepend (root.create(XmlNodeType.PI, header));
                 return this;
         }
@@ -458,7 +458,7 @@ class Document(T_) : PullParser!(T_)
 
                 ***************************************************************/
 
-                int opApply (int delegate(ref Node) dg)
+                int opApply (scope int delegate(ref Node) dg)
                 {
                         int ret;
 
@@ -478,7 +478,7 @@ class Document(T_) : PullParser!(T_)
 
                 ***************************************************************/
 
-                Node name (T[] prefix, T[] local, bool delegate(Node) dg=null)
+                Node name (T[] prefix, T[] local, scope bool delegate(Node) dg=null)
                 {
                         for (auto n=node; n; n = n.nextSibling)
                             {
@@ -1718,7 +1718,7 @@ public class XmlPath(T)
 
                 ***************************************************************/
 
-                NodeSet filter (bool delegate(Node) filter)
+                NodeSet filter (scope bool delegate(Node) filter)
                 {
                         NodeSet set = {host};
                         auto mark = host.mark;
@@ -1736,7 +1736,7 @@ public class XmlPath(T)
 
                 ***************************************************************/
 
-                NodeSet child (bool delegate(Node) filter,
+                NodeSet child (scope bool delegate(Node) filter,
                                XmlNodeType type = XmlNodeType.Element)
                 {
                         NodeSet set = {host};
@@ -1757,7 +1757,7 @@ public class XmlPath(T)
 
                 ***************************************************************/
 
-                NodeSet attribute (bool delegate(Node) filter)
+                NodeSet attribute (scope bool delegate(Node) filter)
                 {
                         NodeSet set = {host};
                         auto mark = host.mark;
@@ -1776,7 +1776,7 @@ public class XmlPath(T)
 
                 ***************************************************************/
 
-                NodeSet descendant (bool delegate(Node) filter,
+                NodeSet descendant (scope bool delegate(Node) filter,
                                     XmlNodeType type = XmlNodeType.Element)
                 {
                         void traverse (Node parent)
@@ -1806,7 +1806,7 @@ public class XmlPath(T)
 
                 ***************************************************************/
 
-                NodeSet parent (bool delegate(Node) filter)
+                NodeSet parent (scope bool delegate(Node) filter)
                 {
                         NodeSet set = {host};
                         auto mark = host.mark;
@@ -1836,7 +1836,7 @@ public class XmlPath(T)
 
                 ***************************************************************/
 
-                NodeSet ancestor (bool delegate(Node) filter)
+                NodeSet ancestor (scope bool delegate(Node) filter)
                 {
                         NodeSet set = {host};
                         auto mark = host.mark;
@@ -1870,7 +1870,7 @@ public class XmlPath(T)
 
                 ***************************************************************/
 
-                NodeSet next (bool delegate(Node) filter,
+                NodeSet next (scope bool delegate(Node) filter,
                               XmlNodeType type = XmlNodeType.Element)
                 {
                         NodeSet set = {host};
@@ -1897,7 +1897,7 @@ public class XmlPath(T)
 
                 ***************************************************************/
 
-                NodeSet prev (bool delegate(Node) filter,
+                NodeSet prev (scope bool delegate(Node) filter,
                               XmlNodeType type = XmlNodeType.Element)
                 {
                         NodeSet set = {host};
@@ -1922,7 +1922,7 @@ public class XmlPath(T)
 
                 ***************************************************************/
 
-                int opApply (int delegate(ref Node) dg)
+                int opApply (scope int delegate(ref Node) dg)
                 {
                         int ret;
 
@@ -1963,7 +1963,7 @@ public class XmlPath(T)
 
                 ***************************************************************/
 
-                private void test (bool delegate(Node) filter, Node node)
+                private void test (scope bool delegate(Node) filter, Node node)
                 {
                         auto pop = host.push;
                         auto add = filter (node);
@@ -2176,7 +2176,7 @@ interface IXmlPrinter(T)
 
         ***********************************************************************/
 
-        void print (Node root, void delegate(T[][]...) emit);
+        void print (Node root, scope void delegate(T[][]...) emit);
 }
 }
 

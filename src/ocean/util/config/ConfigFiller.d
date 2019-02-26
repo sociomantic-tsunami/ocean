@@ -598,22 +598,22 @@ struct SetInfo ( T )
 public template IsSupported ( T )
 {
     static if ( is(T : bool) )
-        const IsSupported = true;
+        static immutable IsSupported = true;
     else static if ( isIntegerType!(T) || isRealType!(T) )
-        const IsSupported = true;
+        static immutable IsSupported = true;
     else static if ( is(ElementTypeOf!(T) U) )
     {
         static if ( isCharType!(U) ) // If it is a string
-            const IsSupported = true;
+            static immutable IsSupported = true;
         else static if ( isUTF8StringType!(U) ) // If it is string of strings
-            const IsSupported = true;
+            static immutable IsSupported = true;
         else static if ( isIntegerType!(U) || isRealType!(U) )
-            const IsSupported = true;
+            static immutable IsSupported = true;
         else
-            const IsSupported = false;
+            static immutable IsSupported = false;
     }
     else
-        const IsSupported = false;
+        static immutable IsSupported = false;
 }
 
 
@@ -825,7 +825,7 @@ struct ConfigIterator ( T, Source = ConfigParser )
 
     ***************************************************************************/
 
-    public int opApply ( int delegate ( ref istring name, ref T x ) dg )
+    public int opApply ( scope int delegate ( ref istring name, ref T x ) dg )
     {
         int result = 0;
 
@@ -868,7 +868,7 @@ struct ConfigIterator ( T, Source = ConfigParser )
 
     ***************************************************************************/
 
-    public int opApply ( int delegate ( ref istring name ) dg )
+    public int opApply ( scope int delegate ( ref istring name ) dg )
     {
         int result = 0;
 
@@ -1147,7 +1147,7 @@ unittest
 }
 unittest
 {
-    const config_text =
+    static immutable config_text =
 `
 [Section]
 str = I'm a string
@@ -1199,7 +1199,7 @@ pi = 3.14
 
 unittest
 {
-    const config_text =
+    static immutable config_text =
 `
 [Section]
 str = I'm a mutable string
@@ -1221,7 +1221,7 @@ str = I'm a mutable string
 
 unittest
 {
-    const config_text =
+    static immutable config_text =
 `
 [SectionArray]
 string_arr = Hello

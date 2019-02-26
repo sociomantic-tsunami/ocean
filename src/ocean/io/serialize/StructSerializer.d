@@ -134,7 +134,7 @@ struct StructSerializer ( bool AllowUnions = false )
 
     ***************************************************************************/
 
-    size_t dump ( S ) ( S* s, void delegate ( void[] data ) receive )
+    size_t dump ( S ) ( S* s, scope void delegate ( void[] data ) receive )
     {
         enforceStructPtr!("dump")(s);
         return transmit!(false)(s, receive);
@@ -177,7 +177,7 @@ struct StructSerializer ( bool AllowUnions = false )
 
     ***************************************************************************/
 
-    size_t load ( S ) ( S* s, void delegate ( void[] data ) receive )
+    size_t load ( S ) ( S* s, scope void delegate ( void[] data ) receive )
     {
         enforceStructPtr!("load")(s);
         return transmit!(true)(s, receive);
@@ -205,7 +205,7 @@ struct StructSerializer ( bool AllowUnions = false )
 
     ***************************************************************************/
 
-    size_t transmit ( bool receive, S ) ( S* s, void delegate ( void[] data ) transmit_data )
+    size_t transmit ( bool receive, S ) ( S* s, scope void delegate ( void[] data ) transmit_data )
     {
         .serializer_exception.enforce(s !is null,
                 typeof (*this).stringof ~ ".transmit (receive = " ~
@@ -416,7 +416,7 @@ struct StructSerializer ( bool AllowUnions = false )
 
     ***************************************************************************/
 
-    size_t transmitArrays ( bool receive, S ) ( S* s, void delegate ( void[] array ) transmit )
+    size_t transmitArrays ( bool receive, S ) ( S* s, scope void delegate ( void[] array ) transmit )
     {
         size_t bytes = 0;
 
@@ -460,7 +460,7 @@ struct StructSerializer ( bool AllowUnions = false )
 
     ***************************************************************************/
 
-    size_t transmitArray ( bool receive, T ) ( ref T[] array, void delegate ( void[] data ) transmit_dg )
+    size_t transmitArray ( bool receive, T ) ( ref T[] array, scope void delegate ( void[] data ) transmit_dg )
     {
         size_t len,
                bytes = len.sizeof;
@@ -479,11 +479,11 @@ struct StructSerializer ( bool AllowUnions = false )
 
         static if (is (T == struct))                                            // recurse into substruct
         {                                                                       // if it contains dynamic
-            const RecurseIntoStruct = hasIndirections!(typeof (T.tupleof));// arrays
+            enum RecurseIntoStruct = hasIndirections!(typeof (T.tupleof));// arrays
         }
         else
         {
-            const RecurseIntoStruct = false;
+            enum RecurseIntoStruct = false;
         }
 
         static if (is (T U == U[]))                                             // recurse into subarray
@@ -538,7 +538,7 @@ struct StructSerializer ( bool AllowUnions = false )
         foreach (i, ref field; s.tupleof)
         {
             alias typeof(field) T;
-            const field_name = fieldIdentifier!(S, i);
+            enum field_name = fieldIdentifier!(S, i);
 
             // imitate D1 style formatting for D2 typedef struct
             static if ( is(T == struct) && !isTypedef!(T) )
@@ -806,7 +806,7 @@ struct StructSerializer ( bool AllowUnions = false )
 
     template FieldInfo ( T, S, size_t i )
     {
-        const FieldInfo = '\'' ~ S.tupleof[i].stringof ~ "' of type '" ~ T.stringof ~ '\'';
+        enum FieldInfo = '\'' ~ S.tupleof[i].stringof ~ "' of type '" ~ T.stringof ~ '\'';
     }
 }
 

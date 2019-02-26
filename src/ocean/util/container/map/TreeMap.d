@@ -178,7 +178,7 @@ struct TreeMap ( T )
 
     ***********************************************************************/
 
-    public int opApply ( int delegate ( ref ulong key, ref T* value ) dg )
+    public int opApply ( scope int delegate ( ref ulong key, ref T* value ) dg )
     {
         int stop = 0;
 
@@ -372,7 +372,7 @@ struct TreeMap ( T )
             }
             else
             {
-                const istring msg = "malloc(" ~ Node.sizeof.stringof ~
+                enum istring msg = "malloc(" ~ Node.sizeof.stringof ~
                                    ") failed: Out of memory\n\0";
                 fputs(msg.ptr, stderr);
                 exit(EXIT_FAILURE);
@@ -476,7 +476,7 @@ unittest
 
 *******************************************************************************/
 
-private const eb_root empty_unique_ebtroot =
+private static immutable eb_root empty_unique_ebtroot =
     function ( )
     {
         eb_root root;

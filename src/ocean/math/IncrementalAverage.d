@@ -204,7 +204,7 @@ version (UnitTest)
 
     // Bit count to avoid deliberate loss of precision.
     // Ensures only 8 bits of precision could be lost.
-    const PRECISION = double.mant_dig - 8;
+    static immutable PRECISION = double.mant_dig - 8;
 }
 
 unittest
@@ -261,7 +261,7 @@ unittest
                   PRECISION);
 
 	inc_avg.clear();
-	const ADD = ulong.max/1_000_000;
+	static immutable ADD = ulong.max/1_000_000;
 	for (ulong i = 0; i < ulong.max; i += (ADD < ulong.max - i ? ADD : 1))
 		inc_avg.addToAverage(i%2); // 1 or 0
 	inc_avg.addToAverage(1); // One more add is missing
@@ -360,10 +360,10 @@ unittest
 {
     auto t = new NamedTest("Multiple insertion precision");
 
-    const value_1 = 3;
-    const value_2 = 7;
-    const value_3 = 11;
-    const freq = 1001;
+    static immutable value_1 = 3;
+    static immutable value_2 = 7;
+    static immutable value_3 = 11;
+    static immutable freq = 1001;
 
     IncrementalAverage single, multiple;
 
@@ -397,7 +397,7 @@ unittest
 
     IncrementalAverage distribution;
 
-    const value = 8.0;
+    static immutable value = 8.0;
 
     distribution.addToAverage(value);
 

@@ -213,7 +213,7 @@ struct S
 
     ***************************************************************************/
 
-    void testNullReferences ( ) /* d1to2fix_inject: const */
+    void testNullReferences ( ) const
     {
         foreach (s2_static_array_element; this.s2_static_array)
         {
@@ -245,7 +245,7 @@ struct S
 
     ***************************************************************************/
 
-    size_t serialized_length ( ) /* d1to2fix_inject: const */
+    size_t serialized_length ( ) const
     {
         static size_t s2_length ( ref Const!(S_2) s2 )
         {

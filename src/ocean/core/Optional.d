@@ -27,7 +27,7 @@ version(UnitTest)
 struct Optional ( T )
 {
     /// Alias to make code working with undefined state more readable
-    public const undefined = Optional!(T).init;
+    public enum undefined = Optional!(T).init;
 
     /// wrapped arbitrary value
     private T value;
@@ -84,8 +84,8 @@ struct Optional ( T )
 
     **************************************************************************/
 
-    public void visit ( void delegate() cb_undefined,
-        void delegate(ref T) cb_defined )
+    public void visit ( scope void delegate() cb_undefined,
+        scope void delegate(ref T) cb_defined )
     {
         if (this.defined)
             cb_defined(this.value);

@@ -108,7 +108,7 @@ private struct SmartUnionFormatter ( SU )
 
     ***************************************************************************/
 
-    public void toString ( void delegate ( cstring chunk ) sink )
+    public void toString ( scope void delegate ( cstring chunk ) sink )
     {
         if ( this.smart_union.active )
         {

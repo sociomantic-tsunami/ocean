@@ -68,7 +68,7 @@ public struct MetricPrefix
 
     dchar prefix = ' ';
 
-    public const BinaryPrefixes = [' ', 'K', 'M', 'G', 'T', 'P', 'E'];
+    public enum BinaryPrefixes = [' ', 'K', 'M', 'G', 'T', 'P', 'E'];
 
     /**************************************************************************
 
@@ -111,7 +111,7 @@ public struct MetricPrefix
         return this;
     }
 
-    public const DecimalPrefixes = [cast(wchar)'p', 'n', 'µ', 'm', ' ', 'k', 'M', 'G', 'T'];
+    public enum DecimalPrefixes = [cast(wchar)'p', 'n', 'µ', 'm', ' ', 'k', 'M', 'G', 'T'];
 
     /**************************************************************************
 
@@ -202,7 +202,7 @@ public struct MetricPrefix
 
 *******************************************************************************/
 
-public void splitBinaryPrefix ( ulong n, void delegate ( char prefix, uint order, ulong order_val ) output_dg )
+public void splitBinaryPrefix ( ulong n, scope void delegate ( char prefix, uint order, ulong order_val ) output_dg )
 {
     auto length = MetricPrefix.BinaryPrefixes.length;
     verify (length < int.max);

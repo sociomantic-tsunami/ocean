@@ -247,7 +247,7 @@ public struct FindFruct(T)
         T[]     what,
             content;
 
-        int opApply (int delegate (ref size_t index) dg)
+        int opApply (scope int delegate (ref size_t index) dg)
         {
             int    ret;
             size_t mark;
@@ -585,7 +585,7 @@ public struct SearchFruct(T)
         T[]    content;
         size_t delegate(T[], size_t) call;
 
-        int opApply (int delegate (ref size_t index) dg)
+        int opApply (scope int delegate (ref size_t index) dg)
         {
             int     ret;
             size_t  mark;
@@ -613,7 +613,7 @@ public struct SearchFruct(T)
 
         size_t      delegate(T[], size_t) call;
 
-        int opApply (int delegate (ref T[] token) dg)
+        int opApply (scope int delegate (ref T[] token) dg)
         {
             size_t  ret,
                     pos,
