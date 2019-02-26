@@ -139,7 +139,7 @@ struct TimeHistogram
         }
         body
         {
-            const type = typeof(TimeHistogram.bins[0]).stringof;
+            enum type = typeof(TimeHistogram.bins[0]).stringof;
 
             istring res;
 
@@ -238,7 +238,7 @@ struct TimeHistogram
         mixin("static assert(is(typeof(Bins.init." ~ bin_name ~ ")));");
 
         mixin("const offset = Bins.init." ~ bin_name ~ ".offsetof;");
-        const index = offset / this.bins[0].sizeof;
+        enum index = offset / this.bins[0].sizeof;
         return this.bins[index];
     }
 

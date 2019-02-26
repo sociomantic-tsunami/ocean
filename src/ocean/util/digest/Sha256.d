@@ -37,7 +37,7 @@ version(UnitTest) import ocean.core.Test;
 final class Sha256 : MerkleDamgard
 {
         private uint[8]         context;
-        private const uint      padChar = 0x80;
+        private static immutable uint      padChar = 0x80;
 
         /***********************************************************************
 

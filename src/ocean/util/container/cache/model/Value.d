@@ -40,7 +40,7 @@ template Value ( size_t ValueSize )
 
     ***************************************************************************/
 
-    const is_dynamic = !ValueSize;
+    static immutable is_dynamic = !ValueSize;
 
     static if (is_dynamic)
     {

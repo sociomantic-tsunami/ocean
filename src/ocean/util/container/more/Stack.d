@@ -308,7 +308,7 @@ public struct Stack ( V, int Size = 0 )
 
     ***************************************************************************/
 
-    int opApply ( int delegate(ref V value) dg )
+    int opApply ( scope int delegate(ref V value) dg )
     {
         int result;
 

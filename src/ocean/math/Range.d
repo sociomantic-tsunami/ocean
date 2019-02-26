@@ -64,8 +64,8 @@ public struct Range ( T )
 
     ***************************************************************************/
 
-    private const T null_min = T.max;
-    private const T null_max = T.min;
+    private enum T null_min = T.max;
+    private enum T null_max = T.min;
 
 
     /***************************************************************************

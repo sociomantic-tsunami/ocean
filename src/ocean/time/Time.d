@@ -99,17 +99,17 @@ struct TimeSpan
         /**
          * Minimum TimeSpan
          */
-        const TimeSpan min = {long.min};
+        enum TimeSpan min = {long.min};
 
         /**
          * Maximum TimeSpan
          */
-        const TimeSpan max = {long.max};
+        enum TimeSpan max = {long.max};
 
         /**
          * Zero TimeSpan.  Useful for comparisons.
          */
-        const TimeSpan zero = {0};
+        enum TimeSpan zero = {0};
 
         /**
          * Get the number of ticks that this timespan represents.  This can be
@@ -497,17 +497,17 @@ struct Time
         }
 
         /// Represents the smallest and largest Time value.
-        const Time min       = {minimum},
+        enum Time min       = {minimum},
                           max       = {maximum};
 
         /// Represents the epoch (1/1/0001)
-        const Time epoch     = {0};
+        enum Time epoch     = {0};
 
         /// Represents the epoch of 1/1/1601 (Commonly used in Windows systems)
-        const Time epoch1601 = {TimeSpan.Epoch1601};
+        enum Time epoch1601 = {TimeSpan.Epoch1601};
 
         /// Represents the epoch of 1/1/1970 (Commonly used in Unix systems)
-        const Time epoch1970 = {TimeSpan.Epoch1970};
+        enum Time epoch1970 = {TimeSpan.Epoch1970};
 
         /**********************************************************************
 

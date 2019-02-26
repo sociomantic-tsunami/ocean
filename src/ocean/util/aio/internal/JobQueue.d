@@ -215,7 +215,7 @@ public static struct Job
 
     ***************************************************************************/
 
-    public Job* registerCallback (void delegate(ssize_t) dg)
+    public Job* registerCallback (scope void delegate(ssize_t) dg)
     {
         this.finish_callback_dgs ~= dg;
         return this;

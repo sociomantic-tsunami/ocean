@@ -208,7 +208,7 @@ public class ReopenableFilesExt : IApplicationExtension, ISignalExtExtension
     *****************************************************************************/
 
     private void socketReloadCommand ( cstring[] args,
-            void delegate ( cstring response ) send_response )
+            scope void delegate ( cstring response ) send_response )
     {
         if (args.length == 0)
         {

@@ -258,7 +258,7 @@ struct addrinfo
 
      **************************************************************************/
 
-    int opApply ( int delegate ( ref typeof (*this) info ) dg )
+    int opApply ( scope int delegate ( ref typeof (*this) info ) dg )
     {
         int result = 0;
 

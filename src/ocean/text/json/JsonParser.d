@@ -460,7 +460,7 @@ public class JsonParserException : Exception
 
 unittest
 {
-    const istring json =
+    static immutable istring json =
     `{
         "glossary": {
             "title": "example glossary",

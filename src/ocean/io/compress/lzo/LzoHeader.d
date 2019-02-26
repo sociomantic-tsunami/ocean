@@ -95,7 +95,7 @@ align (1) struct LzoHeader ( bool LengthInline = true )
 
      **************************************************************************/
 
-    const ErrMsgSource = typeof (*this).stringof;
+    enum ErrMsgSource = typeof (*this).stringof;
 
     /**************************************************************************
 
@@ -138,11 +138,11 @@ align (1) struct LzoHeader ( bool LengthInline = true )
 
         static if ( LengthInline )
         {
-            const read_length = length;
+            enum read_length = length;
         }
         else
         {
-            const read_length = length - size_t.sizeof;
+            enum read_length = length - size_t.sizeof;
         }
 
         /**************************************************************************
@@ -617,15 +617,15 @@ template SizeofTuple ( T ... )
 {
     static if (T.length > 1)
     {
-        const SizeofTuple = T[0].sizeof + SizeofTuple!(T[1 .. $]);
+        static immutable SizeofTuple = T[0].sizeof + SizeofTuple!(T[1 .. $]);
     }
     else static if (T.length == 1)
     {
-        const SizeofTuple = T[0].sizeof;
+        static immutable SizeofTuple = T[0].sizeof;
     }
     else
     {
-        const size_t SizeofTuple = 0;
+        static immutable size_t SizeofTuple = 0;
     }
 }
 
@@ -708,11 +708,11 @@ unittest
 
     LzoHeader!() header;
 
-    const N = 1000;
+    static immutable N = 1000;
 
     ubyte[header.sizeof][N] start_header_data, stop_header_data;
 
-    const C = 10;
+    static immutable C = 10;
 
     scope chunks4k  = new void[][](C, 4 * 1024);
     scope chunks64k = new void[][](C, 64 * 1024);

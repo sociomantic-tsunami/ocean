@@ -268,7 +268,7 @@ struct BTreeMap(TreeKeyType, TreeValueType, int tree_degree)
 
     ***********************************************************************/
 
-    public int opApply (int delegate (ref KeyType value, ref ValueType) dg)
+    public int opApply (scope int delegate (ref KeyType value, ref ValueType) dg)
     {
         return this.impl.inorder(dg);
     }
@@ -286,7 +286,7 @@ struct BTreeMap(TreeKeyType, TreeValueType, int tree_degree)
 
     ***********************************************************************/
 
-    public int opApply (int delegate (ref ValueType) dg)
+    public int opApply (scope int delegate (ref ValueType) dg)
     {
         return this.impl.inorder(dg);
     }
@@ -655,7 +655,7 @@ version (UnitTest)
         char[48] name_buf;
         ubyte name_length;
 
-        cstring name () /* d1to2fix_inject: const */
+        cstring name () const
         {
             return name_buf[0..name_length];
         }

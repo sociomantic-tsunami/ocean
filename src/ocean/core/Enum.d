@@ -254,7 +254,7 @@ public interface IEnum
 
     ***************************************************************************/
 
-    public int opApply ( int delegate ( ref Const!(Name) name,
+    public int opApply ( scope int delegate ( ref Const!(Name) name,
         ref Const!(Value) value ) dg );
 
 
@@ -265,7 +265,7 @@ public interface IEnum
 
     ***************************************************************************/
 
-    public int opApply ( int delegate ( ref size_t i, ref Const!(Name) name,
+    public int opApply ( scope int delegate ( ref size_t i, ref Const!(Name) name,
         ref Const!(Value) value ) dg );
 }
 
@@ -300,11 +300,11 @@ public template EnumValues ( size_t i, T ... )
 
     static if ( i == T[0].length - 1 )
     {
-        const EnumValues = T[0][i] ~ "=" ~ T[1][i].stringof;
+        static immutable EnumValues = T[0][i] ~ "=" ~ T[1][i].stringof;
     }
     else
     {
-        const EnumValues = T[0][i] ~ "=" ~ T[1][i].stringof ~ ","
+        static immutable EnumValues = T[0][i] ~ "=" ~ T[1][i].stringof ~ ","
             ~ EnumValues!(i + 1, T);
     }
 }
@@ -330,17 +330,17 @@ public template SuperClassIndex ( size_t i, T ... )
 {
     static if ( i == T.length )
     {
-        const size_t SuperClassIndex = i;
+        static immutable size_t SuperClassIndex = i;
     }
     else
     {
         static if ( is(T[i] == class) && is(T[i] : IEnum) )
         {
-            const size_t SuperClassIndex = i;
+            static immutable size_t SuperClassIndex = i;
         }
         else
         {
-            const size_t SuperClassIndex = SuperClassIndex!(i + 1, T);
+            static immutable size_t SuperClassIndex = SuperClassIndex!(i + 1, T);
         }
     }
 }
@@ -402,13 +402,13 @@ public template EnumBase ( T ... )
 
     static if ( is(typeof(this) S == super) )
     {
-        private const super_class_index = SuperClassIndex!(0, S);
+        private static immutable super_class_index = SuperClassIndex!(0, S);
 
-        private const is_derived_enum = super_class_index < S.length;
+        private static immutable is_derived_enum = super_class_index < S.length;
     }
     else
     {
-        private const is_derived_enum = false;
+        private static immutable is_derived_enum = false;
     }
 
 
@@ -424,15 +424,15 @@ public template EnumBase ( T ... )
 
     static if ( is_derived_enum )
     {
-        public const _internal_names =
+        public static immutable _internal_names =
             S[super_class_index]._internal_names[0..$] ~ T[0].keys[0..$];
-        public const _internal_values =
+        public static immutable _internal_values =
             S[super_class_index]._internal_values[0..$] ~ T[0].values[0..$];
     }
     else
     {
-        public const _internal_names = T[0].keys;
-        public const _internal_values = T[0].values;
+        public static immutable _internal_names = T[0].keys;
+        public static immutable _internal_values = T[0].values;
     }
 
     static assert(_internal_names.length == _internal_values.length);
@@ -652,7 +652,7 @@ public template EnumBase ( T ... )
 
     ***************************************************************************/
 
-    public override int opApply ( int delegate ( ref Const!(Name) name,
+    public override int opApply ( scope int delegate ( ref Const!(Name) name,
         ref Const!(Value) value ) dg )
     {
         int res;
@@ -677,7 +677,7 @@ public template EnumBase ( T ... )
 
     ***************************************************************************/
 
-    public override int opApply ( int delegate ( ref size_t i,
+    public override int opApply ( scope int delegate ( ref size_t i,
         ref Const!(Name) name, ref Const!(Value) value ) dg )
     {
         int res;

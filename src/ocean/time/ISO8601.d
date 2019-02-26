@@ -758,7 +758,7 @@ byte getDecimal(T)(ref T* p, size_t len, ref FullDate fd, ubyte which) {
 // the DT is always UTC, so this just adds the offset to the date fields
 // another option would be to add time zone fields to DT and have this fill them
 
-byte getTimeZone(T, T2)(ref T* p, size_t len, ref FullDate fd, ubyte separators, bool delegate(T2[]) done) {
+byte getTimeZone(T, T2)(ref T* p, size_t len, ref FullDate fd, ubyte separators, scope bool delegate(T2[]) done) {
    static assert (is(Unqual!(T) == Unqual!(T2)));
    bool checkColon() { return .checkColon(p, separators); }
 
@@ -1521,7 +1521,7 @@ unittest {
     // unimplemented: intervals, durations, recurring intervals
 
     debug (Tango_ISO8601_Valgrind) {
-        size_t valgrind(size_t delegate(char[]) f, char[] s) {
+        size_t valgrind(scope size_t delegate(char[]) f, char[] s) {
             auto p = cast(char*)malloc(s.length);
             auto ps = p[0..s.length];
             ps[] = s[];

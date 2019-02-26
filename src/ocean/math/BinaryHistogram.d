@@ -45,7 +45,7 @@ public struct BinaryHistogram ( uint MaxPow2, istring Suffix = "" )
 
     /// The number of bins. (The specified number of powers of two, plus one bin
     /// for 0B and one for ≥1<<MaxPow2.)
-    private const NumBins = MaxPow2 + 2;
+    private enum NumBins = MaxPow2 + 2;
 
     /// The aggregated total from all calls to `add()`.
     public ulong total;
@@ -147,13 +147,13 @@ public struct BinaryHistogram ( uint MaxPow2, istring Suffix = "" )
 
         private static istring divisionBinVariables ( )
         {
-            const type = typeof(BinaryHistogram.bins[0]).stringof;
+            enum type = typeof(BinaryHistogram.bins[0]).stringof;
 
             istring res;
 
             istring formatCount ( ulong count )
             {
-                const prefixes = [""[], "Ki", "Mi", "Gi", "Ti", "Pi", "Ei"];
+                enum prefixes = [""[], "Ki", "Mi", "Gi", "Ti", "Pi", "Ei"];
 
                 uint prefix;
                 while ( (prefix < prefixes.length - 1) && count >= 1024 )
@@ -235,7 +235,7 @@ public struct BinaryHistogram ( uint MaxPow2, istring Suffix = "" )
         mixin("static assert(is(typeof(Bins.init." ~ bin_name ~ ")));");
 
         mixin("const offset = Bins.init." ~ bin_name ~ ".offsetof;");
-        const index = offset / this.bins[0].sizeof;
+        enum index = offset / this.bins[0].sizeof;
         return this.bins[index];
     }
 

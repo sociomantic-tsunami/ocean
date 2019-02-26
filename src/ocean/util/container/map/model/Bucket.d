@@ -411,17 +411,17 @@ char[] alignForSize(E...)(string[] names...)
 }
 
 unittest {
-  const x = alignForSize!(int[], char[3], short, double[5])("x", "y","z", "w");
+  static immutable x = alignForSize!(int[], char[3], short, double[5])("x", "y","z", "w");
   struct Foo{ int x; }
-  const y = alignForSize!(ubyte, Foo, cdouble)("x", "y","z");
+  static immutable y = alignForSize!(ubyte, Foo, cdouble)("x", "y","z");
 
   static if(size_t.sizeof == uint.sizeof)
   {
-      const passNormalX = x == "double[5u] w;\nint[] x;\nshort z;\nchar[3u] y;\n";
-      const passNormalY = y == "cdouble z;\nFoo y;\nubyte x;\n";
+      static immutable passNormalX = x == "double[5u] w;\nint[] x;\nshort z;\nchar[3u] y;\n";
+      static immutable passNormalY = y == "cdouble z;\nFoo y;\nubyte x;\n";
 
-      const passAbnormalX = x == "int[] x;\ndouble[5u] w;\nshort z;\nchar[3u] y;\n";
-      const passAbnormalY = y == "Foo y;\ncdouble z;\nubyte x;\n";
+      static immutable passAbnormalX = x == "int[] x;\ndouble[5u] w;\nshort z;\nchar[3u] y;\n";
+      static immutable passAbnormalY = y == "Foo y;\ncdouble z;\nubyte x;\n";
       // ^ blame http://d.puremagic.com/issues/show_bug.cgi?id=231
 
       static assert(passNormalX || double.alignof <= (int[]).alignof && passAbnormalX);

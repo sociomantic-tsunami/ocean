@@ -76,7 +76,7 @@ version(UnitTest) import ocean.core.Test;
 
 *******************************************************************************/
 
-public const dchar InvalidUnicode = cast(dchar)0xffffffff;
+public static immutable dchar InvalidUnicode = cast(dchar)0xffffffff;
 
 
 
@@ -210,7 +210,7 @@ public struct UtfString ( Char = char, bool pull_dchars = false )
 
     ***************************************************************************/
 
-    public int opApply ( int delegate ( ref size_t, ref size_t, ref OutType ) dg )
+    public int opApply ( scope int delegate ( ref size_t, ref size_t, ref OutType ) dg )
     {
         int res;
         size_t i;
@@ -245,7 +245,7 @@ public struct UtfString ( Char = char, bool pull_dchars = false )
 
     ***************************************************************************/
 
-    public int opApply ( int delegate ( ref size_t, ref OutType ) dg )
+    public int opApply ( scope int delegate ( ref size_t, ref OutType ) dg )
     {
         int res;
         size_t i;
@@ -279,7 +279,7 @@ public struct UtfString ( Char = char, bool pull_dchars = false )
 
     ***************************************************************************/
 
-    public int opApply ( int delegate ( ref OutType ) dg )
+    public int opApply ( scope int delegate ( ref OutType ) dg )
     {
         int res;
         size_t i;

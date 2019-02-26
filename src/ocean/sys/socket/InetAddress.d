@@ -104,19 +104,19 @@ struct InetAddress ( bool IPv6 = false )
     {
         alias sockaddr_in6 Addr;
 
-        const addrstrlen = INET6_ADDRSTRLEN,
+        enum addrstrlen = INET6_ADDRSTRLEN,
               family     = AF_INET6;
 
-        const Addr addr_init = {sin6_family: family};
+        enum Addr addr_init = {sin6_family: family};
     }
     else
     {
         alias sockaddr_in Addr;
 
-        const addrstrlen = INET_ADDRSTRLEN,
+        enum addrstrlen = INET_ADDRSTRLEN,
               family     = AF_INET;
 
-        const Addr addr_init = {sin_family: family};
+        enum Addr addr_init = {sin_family: family};
     }
 
     /**************************************************************************

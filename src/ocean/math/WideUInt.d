@@ -163,7 +163,7 @@ public struct WideUInt ( size_t N )
 
     ***************************************************************************/
 
-    public void toString ( void delegate (cstring) sink )
+    public void toString ( scope void delegate (cstring) sink )
     {
         auto n = this.decimal_digits();
         static mstring buffer;

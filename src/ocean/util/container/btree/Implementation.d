@@ -106,7 +106,7 @@ package struct BTreeMapImplementation (KeyType, ValueType, int tree_degree)
 
     ***************************************************************************/
 
-    private const degree = tree_degree;
+    private enum degree = tree_degree;
 
     /***************************************************************************
 
@@ -947,7 +947,7 @@ package struct BTreeMapImplementation (KeyType, ValueType, int tree_degree)
 
     ******************************************************************************/
 
-    package int inorder (int delegate(ref KeyType key, ref ValueType value) dg)
+    package int inorder (scope int delegate(ref KeyType key, ref ValueType value) dg)
     {
         if (this.root is null)
         {
@@ -971,7 +971,7 @@ package struct BTreeMapImplementation (KeyType, ValueType, int tree_degree)
 
     ******************************************************************************/
 
-    package int inorder (int delegate(ref ValueType value) dg)
+    package int inorder (scope int delegate(ref ValueType value) dg)
     {
         if (this.root is null)
         {
@@ -1065,7 +1065,7 @@ debug (BTreeMapSanity)
         /// Traverses the BTreeMap in the inorder, starting from root,
         /// and returns the btree's node.
         static void traverse (BTreeMap.BTreeMapNode* root, ref int current_height,
-                            void delegate(BTreeMap.BTreeMapNode* b, int current_height) dg)
+                            scope void delegate(BTreeMap.BTreeMapNode* b, int current_height) dg)
         {
             for (int i = 0; i < root.number_of_elements; i++)
             {

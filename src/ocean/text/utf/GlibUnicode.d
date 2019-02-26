@@ -187,7 +187,7 @@ struct GlibUnicode
 
      **************************************************************************/
 
-    static void convert ( dchar[] input, ref char[] output, Converter convert_fn )
+    static void convert ( dchar[] input, ref char[] output, scope Converter convert_fn )
     {
         char[6] tmp;
 
@@ -212,7 +212,7 @@ struct GlibUnicode
 
      **************************************************************************/
 
-    static void convert ( dchar[] input, ref dchar[] output, Converter convert_fn )
+    static void convert ( dchar[] input, ref dchar[] output, scope Converter convert_fn )
     {
         output.length = input.length;
 
@@ -232,7 +232,7 @@ struct GlibUnicode
 
      **************************************************************************/
 
-    static void convert ( ref dchar[] content, Converter convert_fn )
+    static void convert ( ref dchar[] content, scope Converter convert_fn )
     {
         foreach ( ref c; content )
         {

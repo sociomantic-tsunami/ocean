@@ -570,7 +570,7 @@ class Json(T) : JsonParser!(T)
         {
             private Attribute head;
 
-            int opApply (int delegate(ref Const!(T)[] key, ref Value val) dg)
+            int opApply (scope int delegate(ref Const!(T)[] key, ref Value val) dg)
             {
                 int res;
 
@@ -670,7 +670,7 @@ class Json(T) : JsonParser!(T)
 
          ***************************************************************/
 
-        bool toString (void delegate(Const!(T)[]) dg)
+        bool toString (scope void delegate(Const!(T)[]) dg)
         {
             if (type is Type.RawString)
                 dg(string);
@@ -829,7 +829,7 @@ class Json(T) : JsonParser!(T)
 
          ***************************************************************/
 
-        Value print (void delegate(Const!(T)[]) append, Const!(T)[] space=null, int decimals=2)
+        Value print (scope void delegate(Const!(T)[]) append, Const!(T)[] space=null, int decimals=2)
         {
             auto indent = 0;
 

@@ -177,7 +177,7 @@ public class Table
 
             *******************************************************************/
 
-            public const inter_cell_spacing = 3; // = " | "
+            public enum inter_cell_spacing = 3; // = " | "
 
 
             /*******************************************************************
@@ -910,7 +910,7 @@ public class Table
 
         ***********************************************************************/
 
-        public int opApply ( int delegate ( ref Cell cell ) dg )
+        public int opApply ( scope int delegate ( ref Cell cell ) dg )
         {
             int res;
             foreach ( cell; this.cells )
@@ -929,7 +929,7 @@ public class Table
 
         ***********************************************************************/
 
-        public int opApply ( int delegate ( ref size_t i, ref Cell cell ) dg )
+        public int opApply ( scope int delegate ( ref size_t i, ref Cell cell ) dg )
         {
             int res;
             foreach ( i, cell; this.cells )
@@ -1438,7 +1438,7 @@ unittest
         int records1, records2, bytes1, bytes2;
     }
 
-    const nodes =
+    static immutable nodes =
     [
         Node(123456, 789012, 345678, 901234),
         Node(901234, 123456, 789012, 345678),
@@ -1462,7 +1462,7 @@ unittest
 
     // note: The string literal embeds escape characters, which are used by
     // the table functions to set foreground/background colors in the console.
-const check =
+static immutable check =
 `------------------------------------------------------
  0xdb6db6e4 .. 0xedb6db76 [39m[49m| 0xedb6db77 .. 0xffffffff [39m[49m|
 ------------------------------------------------------
