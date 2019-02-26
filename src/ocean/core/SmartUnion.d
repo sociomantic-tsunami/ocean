@@ -86,15 +86,6 @@ struct SmartUnion ( U )
         return this._.active_names[this._.active];
     }
 
-    /***************************************************************************
-
-        Helper mixin to support final switch over a smart union: it handles the
-        `case none:` in D2-build and `default:` (including `case none:`) in D1.
-
-    ***************************************************************************/
-
-    public alias .handleInvalidCases handleInvalidCases;
-
     /**************************************************************************
 
         Member getter/setter method definitions string mixin
@@ -268,7 +259,7 @@ public void callWithActive ( alias Callable, SU ) ( SU smart_union )
 }
 
 ///
-version (D_Version2) unittest
+unittest
 {
     // This example is D2 only because it requires a function template,
     // `print`, and D1 doesn't allow defining a function template at the scope
@@ -303,19 +294,6 @@ version ( UnitTest )
     import ocean.io.Stdout;
 }
 
-/*******************************************************************************
-
-    Helper mixin to support final switch over a smart union: it handles the
-    `case none:` in D2-build and `default:` (including `case none:`) in D1.
-
-*******************************************************************************/
-
-private static immutable handleInvalidCases = "case none: assert(false);" ~
-    // The D2 build makes sure all enum cases are covered so in fact we don't
-    // need a default. However, D1 emits a compiler warning if a switch
-    // has no default so we add a default here just to avoid the warning.
-    "version (D_Version2){} else {default: assert(false);}";
-
 ///
 unittest
 {
@@ -335,7 +313,8 @@ unittest
         case b:
             break;
 
-        mixin(TestSmartUnion.handleInvalidCases);
+        case none:
+            assert(false);
     }
 }
 

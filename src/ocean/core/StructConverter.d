@@ -85,11 +85,7 @@ public void structConvert ( From, To ) ( ref From from, out To to,
     {
         foreach ( to_index, ref to_member; to.tupleof )
         {
-            // FIXME enum
-            version (D_Version2)
-                mixin(`enum convFuncName = "convert_" ~ FieldName!(to_index, To);`);
-            else
-                static immutable convFuncName = "convert_" ~ FieldName!(to_index, To);
+            enum convFuncName = "convert_" ~ FieldName!(to_index, To);
 
             static if (hasConvertFunction!(From, convFuncName, To)())
             {

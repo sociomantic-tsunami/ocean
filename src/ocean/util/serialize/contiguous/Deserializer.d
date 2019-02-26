@@ -1073,8 +1073,7 @@ struct Deserializer
 
     template StripQualifier ( T )
     {
-        version (D_Version2)
-            mixin("static assert (!is(T == immutable));");
+        static assert (!is(T == immutable));
         alias Unqual!(T) StripQualifier;
     }
 

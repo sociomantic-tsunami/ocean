@@ -42,51 +42,30 @@ import ocean.meta.types.Qualifiers;
 template Typedef(T, istring name, T initval)
 {
     static assert (name.length, "Can't create Typedef with an empty identifier");
-    version(D_Version2)
-    {
-        mixin(`
-            enum Typedef =
-                ("static struct " ~ name ~
-                "{ " ~
-                "alias IsTypedef = void;" ~
-                T.stringof ~ " value = " ~ initval.stringof ~ ";" ~
-                "alias value this;" ~
-                "this(" ~ T.stringof ~ " rhs) { this.value = rhs; }" ~
-                " }");
-        `);
-    }
-    else
-    {
-        mixin(`
-            const Typedef = ("typedef " ~ T.stringof ~ " " ~ name ~
-                " = " ~ initval.stringof ~ ";");
-        `);
-    }
+
+    enum Typedef =
+        ("static struct " ~ name ~
+        "{ " ~
+        "alias IsTypedef = void;" ~
+        T.stringof ~ " value = " ~ initval.stringof ~ ";" ~
+        "alias value this;" ~
+        "this(" ~ T.stringof ~ " rhs) { this.value = rhs; }" ~
+        " }");
 }
 
 /// ditto
 template Typedef(T, istring name)
 {
     static assert (name.length, "Can't create Typedef with an empty identifier");
-    version(D_Version2)
-    {
-        mixin(`
-            enum Typedef =
-                ("static struct " ~ name ~
-                "{ " ~
-                "alias IsTypedef = void;" ~
-                T.stringof ~ " value; " ~
-                "alias value this;" ~
-                "this(" ~ T.stringof ~ " rhs) { this.value = rhs; }" ~
-                " }");
-        `);
-    }
-    else
-    {
-        mixin(`
-            const Typedef = ("typedef " ~ T.stringof ~ " " ~ name ~ ";");
-        `);
-    }
+
+    enum Typedef =
+        ("static struct " ~ name ~
+        "{ " ~
+        "alias IsTypedef = void;" ~
+        T.stringof ~ " value; " ~
+        "alias value this;" ~
+        "this(" ~ T.stringof ~ " rhs) { this.value = rhs; }" ~
+        " }");
 }
 
 unittest
@@ -142,19 +121,7 @@ unittest
 
 template TypedefBaseType ( T )
 {
-    version (D_Version2)
-    {
-        alias typeof(T.value) TypedefBaseType;
-    }
-    else
-    {
-        // use mixin to avoid typedef keyword error from DMD2 when
-        // lexing/parsing
-        mixin("
-            static if (is(T Base == typedef))
-                alias Base TypedefBaseType;
-        ");
-    }
+    alias typeof(T.value) TypedefBaseType;
 }
 
 unittest

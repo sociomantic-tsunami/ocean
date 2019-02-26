@@ -586,17 +586,10 @@ private void handle (T) (T v, FormatInfo f, scope FormatterSink sf, scope ElemSi
 
 private template IsTypeofNull (T)
 {
-    version (D_Version2)
-    {
-        static if (is(T == typeof(null)))
-            public static immutable bool IsTypeofNull = true;
-        else
-            public static immutable bool IsTypeofNull = false;
-    }
+    static if (is(T == typeof(null)))
+        public static immutable bool IsTypeofNull = true;
     else
-    {
         public static immutable bool IsTypeofNull = false;
-    }
 }
 
 /*******************************************************************************
@@ -858,11 +851,8 @@ private void writePointer (in void* v, ref FormatInfo f, scope ElemSink se)
 {
     alias void* T;
 
-    version (D_Version2)
-        mixin("enum int l = (T.sizeof * 2);");
-    else
-        static immutable int l = (T.sizeof * 2); // Needs to be int to avoid suffix
-    static immutable defaultFormat = "X" ~ l.stringof ~ "#";
+    enum l = (T.sizeof * 2);
+    enum defaultFormat = "X" ~ l.stringof ~ "#";
 
     if (v is null)
         se("null", f);

@@ -309,21 +309,9 @@ struct Terminator
 
      **************************************************************************/
 
-    version (D_Version2)
+    extern (C) void terminate ( int code ) nothrow @nogc
     {
-        mixin(`
-        extern (C) void terminate ( int code ) nothrow @nogc
-        {
-            terminated = true;
-        }
-        `);
-    }
-    else
-    {
-        extern (C) void terminate ( int code )
-        {
-            terminated = true;
-        }
+        terminated = true;
     }
 }
 

@@ -501,10 +501,7 @@ unittest
     mixin(Typedef!(Typedefed*, "TypedefedPtr"));
 
     Typedefed* t1 =   cast(Typedefed*)   0xDEADBEEF_00000000;
-    version (D_Version2)
-        TypedefedPtr t2 = cast(Typedefed*)   0xDEADBEEF_DEADBEEF;
-    else
-        TypedefedPtr t2 = cast(TypedefedPtr) 0xDEADBEEF_DEADBEEF;
+    TypedefedPtr t2 = cast(Typedefed*)   0xDEADBEEF_DEADBEEF;
 
     test(format("{}", t1) == "0XDEADBEEF00000000");
     test(format("{}", t2) == "0XDEADBEEFDEADBEEF");
