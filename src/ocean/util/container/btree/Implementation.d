@@ -193,14 +193,14 @@ package struct BTreeMapImplementation (KeyType, ValueType, int tree_degree)
 
             this.splitChild(node, 0, r);
             auto ret = this.insertNonFull(node, key, unqualed_el);
-            debug (BTreeMapSanity) check_invariants(*this);
+            debug (BTreeMapSanity) check_invariants(this);
             this.content_version++;
             return ret;
         }
         else
         {
             auto ret = this.insertNonFull(this.root, key, unqualed_el);
-            debug (BTreeMapSanity) check_invariants(*this);
+            debug (BTreeMapSanity) check_invariants(this);
             this.content_version++;
             return ret;
         }
@@ -233,7 +233,7 @@ package struct BTreeMapImplementation (KeyType, ValueType, int tree_degree)
         // rebalanced internally by deleteFromNode
         verify(rebalance_parent == false);
 
-        debug (BTreeMapSanity) check_invariants(*this);
+        debug (BTreeMapSanity) check_invariants(this);
 
         if (res)
             this.content_version++;

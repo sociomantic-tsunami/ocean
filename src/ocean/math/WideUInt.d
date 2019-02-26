@@ -95,7 +95,7 @@ public struct WideUInt ( size_t N )
         if (this.opEquals(0))
             return 1;
 
-        WideUInt copy = *this;
+        WideUInt copy = this;
 
         size_t count;
         while (copy != 0)
@@ -170,7 +170,7 @@ public struct WideUInt ( size_t N )
         buffer.length = n;
         enableStomping(buffer);
 
-        WideUInt copy = *this;
+        WideUInt copy = this;
         for (ptrdiff_t idx = n-1; idx >= 0; --idx)
         {
             auto remainder = copy.divideBy(10);

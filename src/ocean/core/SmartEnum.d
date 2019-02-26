@@ -1207,7 +1207,7 @@ public struct TwoWayMap ( A )
     public size_t* indexOf ( KeyType a )
     {
         auto index = a in this.a_to_index;
-        enforce(index, typeof(this).stringof ~ ".indexOf - element not present in map");
+        enforce(index, typeof((&this)).stringof ~ ".indexOf - element not present in map");
         return index;
     }
 
@@ -1229,7 +1229,7 @@ public struct TwoWayMap ( A )
     public size_t* indexOf ( cstring b )
     {
         auto index = b in this.b_to_index;
-        enforce(index, typeof(this).stringof ~ ".indexOf - element not present in map");
+        enforce(index, typeof((&this)).stringof ~ ".indexOf - element not present in map");
         return index;
     }
 

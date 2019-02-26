@@ -645,7 +645,7 @@ struct PathParser
 
         PathParser dup ()
         {
-                auto ret = *this;
+                auto ret = this;
                 ret.fp = fp.dup;
                 return ret;
         }
@@ -920,7 +920,7 @@ struct PathParser
                 if (suffix_ < 0 || suffix_ is name_)
                     suffix_ = end_;
 
-                return *this;
+                return this;
         }
 }
 

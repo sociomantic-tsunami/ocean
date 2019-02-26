@@ -201,7 +201,7 @@ public struct SignalSet
 
     ***************************************************************************/
 
-    public typeof(*this) mask ( int how = SIG_SETMASK )
+    public typeof(this) mask ( int how = SIG_SETMASK )
     in
     {
         switch (how)
@@ -215,7 +215,7 @@ public struct SignalSet
     }
     body
     {
-        typeof(*this) old_set;
+        typeof(this) old_set;
 
         pthread_sigmask(how, &this.sigset, &old_set.sigset);
 
@@ -234,7 +234,7 @@ public struct SignalSet
 
     ***************************************************************************/
 
-    public typeof(*this) block ( )
+    public typeof(this) block ( )
     {
         return this.mask(SIG_BLOCK);
     }
@@ -251,7 +251,7 @@ public struct SignalSet
 
     ***************************************************************************/
 
-    public typeof(*this) unblock ( )
+    public typeof(this) unblock ( )
     {
         return this.mask(SIG_UNBLOCK);
     }
@@ -301,9 +301,9 @@ public struct SignalSet
 
     ***************************************************************************/
 
-    public static typeof(*this) getCurrent ( )
+    public static typeof(this) getCurrent ( )
     {
-        typeof(*this) current_set;
+        typeof(this) current_set;
 
         pthread_sigmask(SIG_SETMASK, null, &current_set.sigset);
 

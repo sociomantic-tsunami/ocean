@@ -46,7 +46,7 @@ struct eb_root
 
     bool is_empty ( )
     {
-        return !!eb_is_empty(this);
+        return !!eb_is_empty((&this));
     }
 
     /***************************************************************************
@@ -102,29 +102,29 @@ struct eb_node
 
     alias .eb_last last;
 
-    typeof (this) prev( )
+    typeof ((&this)) prev( )
     {
-        return eb_prev(this);
+        return eb_prev((&this));
     }
 
-    typeof (this) next ( )
+    typeof ((&this)) next ( )
     {
-        return eb_next(this);
+        return eb_next((&this));
     }
 
-    typeof (this) prev_unique ( )
+    typeof ((&this)) prev_unique ( )
     {
-        return eb_prev_unique(this);
+        return eb_prev_unique((&this));
     }
 
-    typeof (this) next_unique ( )
+    typeof ((&this)) next_unique ( )
     {
-        return eb_next_unique(this);
+        return eb_next_unique((&this));
     }
 
     void remove ( )
     {
-        eb_delete(this);
+        eb_delete((&this));
     }
 };
 

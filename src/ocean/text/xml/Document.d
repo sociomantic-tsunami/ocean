@@ -676,7 +676,7 @@ version (Filter)
                 Node prefix (T[] replace)
                 {
                         Array.copy(this.prefixed, replace);
-                        return this;
+                        return (&this);
                 }
 
                 /***************************************************************
@@ -699,7 +699,7 @@ version (Filter)
                 Node name (T[] replace)
                 {
                         Array.copy(this.localName, replace);
-                        return this;
+                        return (&this);
                 }
 
                 /***************************************************************
@@ -804,7 +804,7 @@ version (Filter)
 
                 final XmlPathT.NodeSet query ()
                 {
-                        return doc.xpath.start (this);
+                        return doc.xpath.start ((&this));
                 }
 
                 /***************************************************************
@@ -981,7 +981,7 @@ version (Filter)
                 {
                         auto node = create (XmlNodeType.Attribute, value);
                         attrib (node.set (prefix, local));
-                        return this;
+                        return (&this);
                 }
 
                 /***************************************************************
@@ -993,7 +993,7 @@ version (Filter)
                 private Node data_ (T[] data)
                 {
                         append (create (XmlNodeType.Data, data));
-                        return this;
+                        return (&this);
                 }
 
                 /***************************************************************
@@ -1005,7 +1005,7 @@ version (Filter)
                 private Node cdata_ (T[] cdata)
                 {
                         append (create (XmlNodeType.CData, cdata));
-                        return this;
+                        return (&this);
                 }
 
                 /***************************************************************
@@ -1017,7 +1017,7 @@ version (Filter)
                 private Node comment_ (T[] comment)
                 {
                         append (create (XmlNodeType.Comment, comment));
-                        return this;
+                        return (&this);
                 }
 
                 /***************************************************************
@@ -1029,7 +1029,7 @@ version (Filter)
                 private Node pi_ (T[] pi, T[] patch)
                 {
                         append (create(XmlNodeType.PI, pi).patch(patch));
-                        return this;
+                        return (&this);
                 }
 
                 /***************************************************************
@@ -1041,7 +1041,7 @@ version (Filter)
                 private Node doctype_ (T[] doctype)
                 {
                         append (create (XmlNodeType.Doctype, doctype));
-                        return this;
+                        return (&this);
                 }
 
                 /***************************************************************
@@ -1054,7 +1054,7 @@ version (Filter)
                 private void attrib (Node node)
                 {
                         verify (node.parent is null);
-                        node.host = this;
+                        node.host = (&this);
                         if (lastAttr)
                            {
                            lastAttr.nextSibling = node;
@@ -1075,7 +1075,7 @@ version (Filter)
                 private void append (Node node)
                 {
                         verify (node.parent is null);
-                        node.host = this;
+                        node.host = (&this);
                         if (lastChild)
                            {
                            lastChild.nextSibling = node;
@@ -1096,7 +1096,7 @@ version (Filter)
                 private void prepend (Node node)
                 {
                         verify (node.parent is null);
-                        node.host = this;
+                        node.host = (&this);
                         if (firstChild)
                            {
                            firstChild.prevSibling = node;
@@ -1117,7 +1117,7 @@ version (Filter)
                 {
                         Array.copy(this.localName, local);
                         Array.copy(this.prefixed, prefix);
-                        return this;
+                        return (&this);
                 }
 
                 /***************************************************************
@@ -1143,7 +1143,7 @@ version (Filter)
                 private Node remove()
                 {
                         if (! host)
-                              return this;
+                              return (&this);
 
                         mutate;
                         if (prevSibling && nextSibling)
@@ -1157,7 +1157,7 @@ version (Filter)
                         else
                            if (nextSibling)
                               {
-                              verify(host.firstChild == this);
+                              verify(host.firstChild == (&this));
                               parent.firstChild = nextSibling;
                               nextSibling.prevSibling = null;
                               nextSibling = null;
@@ -1168,7 +1168,7 @@ version (Filter)
                                  {
                                  if (prevSibling)
                                     {
-                                    verify(host.lastChild == this);
+                                    verify(host.lastChild == (&this));
                                     host.lastChild = prevSibling;
                                     prevSibling.nextSibling = null;
                                     prevSibling = null;
@@ -1176,8 +1176,8 @@ version (Filter)
                                     }
                                  else
                                     {
-                                    verify(host.firstChild == this);
-                                    verify(host.lastChild == this);
+                                    verify(host.firstChild == (&this));
+                                    verify(host.lastChild == (&this));
                                     host.firstChild = null;
                                     host.lastChild = null;
                                     host = null;
@@ -1187,7 +1187,7 @@ version (Filter)
                                  {
                                  if (prevSibling)
                                     {
-                                    verify(host.lastAttr == this);
+                                    verify(host.lastAttr == (&this));
                                     host.lastAttr = prevSibling;
                                     prevSibling.nextSibling = null;
                                     prevSibling = null;
@@ -1195,15 +1195,15 @@ version (Filter)
                                     }
                                  else
                                     {
-                                    verify(host.firstAttr == this);
-                                    verify(host.lastAttr == this);
+                                    verify(host.firstAttr == (&this));
+                                    verify(host.lastAttr == (&this));
                                     host.firstAttr = null;
                                     host.lastAttr = null;
                                     host = null;
                                     }
                                  }
 
-                        return this;
+                        return (&this);
                 }
 
                 /***************************************************************
@@ -1221,7 +1221,7 @@ version (Filter)
                 {
                         end = text.ptr + text.length;
                         start = text.ptr;
-                        return this;
+                        return (&this);
                 }
 
                 /***************************************************************
@@ -1233,12 +1233,12 @@ version (Filter)
 
                 private Node mutate ()
                 {
-                        auto node = this;
+                        auto node = (&this);
                         do {
                            node.end = null;
                            } while ((node = node.host) !is null);
 
-                        return this;
+                        return (&this);
                 }
 
                 /***************************************************************
@@ -1952,7 +1952,7 @@ public class XmlPath(T)
                 private NodeSet assign (uint mark)
                 {
                         nodes = host.slice (mark);
-                        return *this;
+                        return this;
                 }
 
                 /***************************************************************

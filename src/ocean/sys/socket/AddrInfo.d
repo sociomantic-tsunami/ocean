@@ -107,7 +107,7 @@ struct addrinfo
     socklen_t       ai_addrlen;               // The manpage says size_t: WRONG!
     sockaddr*       ai_addr;
     char*           ai_canonname;
-    typeof (this)   ai_next;
+    typeof ((&this))   ai_next;
 
     alias .INET6_ADDRSTRLEN INET6_ADDRSTRLEN;
     alias .INET_ADDRSTRLEN  INET_ADDRSTRLEN;
@@ -258,11 +258,11 @@ struct addrinfo
 
      **************************************************************************/
 
-    int opApply ( scope int delegate ( ref typeof (*this) info ) dg )
+    int opApply ( scope int delegate ( ref typeof (this) info ) dg )
     {
         int result = 0;
 
-        for (typeof (this) info = this; info && !result; info = info.ai_next)
+        for (typeof ((&this)) info = (&this); info && !result; info = info.ai_next)
         {
             result = dg(*info);
         }

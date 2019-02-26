@@ -130,7 +130,7 @@ struct Contiguous( S )
     {
         this.data.length = 0;
         enableStomping(this.data);
-        return *this;
+        return this;
     }
 
     debug(ContiguousIntegrity)
