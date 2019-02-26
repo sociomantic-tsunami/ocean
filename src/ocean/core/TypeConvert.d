@@ -57,19 +57,19 @@ version ( UnitTest ) import ocean.core.Test;
 
 *******************************************************************************/
 
-version (D_Version2) public Immut!(T)[] assumeUnique (T) (T[] input)
+public immutable(T)[] assumeUnique (T) (T[] input)
 {
     return .assumeUnique(input);
 }
 
-version (D_Version2) unittest
+unittest
 {
     auto s = assumeUnique("1234".dup);
     static assert(is(typeof(s) == istring));
     test!("==")(s, "1234");
 }
 
-public Immut!(T)[] assumeUnique (T) (ref T[] input)
+public immutable(T)[] assumeUnique (T) (ref T[] input)
 {
     auto tmp = input;
     input = null;

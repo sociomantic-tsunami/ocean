@@ -510,16 +510,11 @@ class TaskSelectTransceiver
     }
     body
     {
-        version (D_Version2)
-        {
-            // Work around a linker error caused by a druntime packagin bug: The
-            // druntime is by mistake currently not linked with the
-            // core.sys.posix.sys.uio module.
-            static dst_init = iovec.init;
-            iovec[2] dst = dst_init;
-        }
-        else
-            iovec[2] dst;
+        // Work around a linker error caused by a druntime packagin bug: The
+        // druntime is by mistake currently not linked with the
+        // core.sys.posix.sys.uio module.
+        static dst_init = iovec.init;
+        iovec[2] dst = dst_init;
 
         dst[0] = iovec(dst_a.ptr, dst_a.length);
         dst[1] = iovec(dst_b.ptr, dst_b.length);

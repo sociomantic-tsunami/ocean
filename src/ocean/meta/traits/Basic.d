@@ -644,24 +644,10 @@ public enum TypedefKind
 
 public template isTypedef (T)
 {
-    version (D_Version2)
-    {
-        static if (is(T.IsTypedef))
-            static immutable isTypedef = TypedefKind.Struct;
-        else
-            static immutable isTypedef = TypedefKind.None;
-    }
+    static if (is(T.IsTypedef))
+        static immutable isTypedef = TypedefKind.Struct;
     else
-    {
-        // use mixin to avoid typedef keyword error from DMD2 when
-        // lexing/parsing
-        mixin("
-        static if (is(T _ == typedef))
-            const isTypedef = TypedefKind.Keyword;
-        else
-            const isTypedef = TypedefKind.None;
-        ");
-    }
+        static immutable isTypedef = TypedefKind.None;
 }
 
 unittest
@@ -672,8 +658,5 @@ unittest
     static assert(!isTypedef!(double));
     static assert( isTypedef!(RealNum));
 
-    version (D_Version2)
-        static assert(isTypedef!(RealNum) == TypedefKind.Struct);
-    else
-        static assert(isTypedef!(RealNum) == TypedefKind.Keyword);
+    static assert(isTypedef!(RealNum) == TypedefKind.Struct);
 }

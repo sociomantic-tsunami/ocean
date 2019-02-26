@@ -128,16 +128,6 @@ version (UnitTest)
 }
 
 
-/// Workaround inability to replace those in string.
-version (D_Version2)
-{
-    private static immutable istring enum_id = "enum";
-}
-else
-{
-    private static immutable istring enum_id = "const";
-}
-
 /*******************************************************************************
 
     Abstract base class for SmartEnums. Contains no members, just provided as a
@@ -639,11 +629,11 @@ private template ShortestName ( T ... )
 private template DeclareConstants ( T ... )
 {
     static immutable istring DeclareConstants =
-        enum_id ~ " length = " ~ CTFE.toString(T.length) ~ "; " ~
-        enum_id ~ " min = " ~ CTFE.toString(MinValue!(T)) ~ "; " ~
-        enum_id ~ " max = " ~ CTFE.toString(MaxValue!(T)) ~ "; " ~
-        enum_id ~ " min_descr_length = " ~ CTFE.toString(ShortestName!(T)) ~ "; " ~
-        enum_id ~ " max_descr_length = " ~ CTFE.toString(LongestName!(T)) ~ "; ";
+        "enum length = " ~ CTFE.toString(T.length) ~ "; " ~
+        "enum min = " ~ CTFE.toString(MinValue!(T)) ~ "; " ~
+        "enum max = " ~ CTFE.toString(MaxValue!(T)) ~ "; " ~
+        "enum min_descr_length = " ~ CTFE.toString(ShortestName!(T)) ~ "; " ~
+        "enum max_descr_length = " ~ CTFE.toString(LongestName!(T)) ~ "; ";
 }
 
 

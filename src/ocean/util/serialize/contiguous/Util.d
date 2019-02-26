@@ -73,27 +73,11 @@ public Contiguous!(S) copy(S) ( in Contiguous!(S) src, ref Contiguous!(S) dst )
 
 *******************************************************************************/
 
-version (D_Version2)
+public Contiguous!(S) copy(S) ( ref const S src, ref Contiguous!(S) dst )
 {
-    // version has to be used here because `in ref` is not legal D1 and trying
-    // to use `Const!(T)` breaks IFTI
-    mixin(`
-    public Contiguous!(S) copy(S) ( ref const S src, ref Contiguous!(S) dst )
-    {
-        Serializer.serialize(src, dst.data);
-        dst = Deserializer.deserialize!(S)(dst.data);
-        return dst;
-    }
-    `);
-}
-else
-{
-    public Contiguous!(S) copy(S) ( ref S src, ref Contiguous!(S) dst )
-    {
-        Serializer.serialize(src, dst.data);
-        dst = Deserializer.deserialize!(S)(dst.data);
-        return dst;
-    }
+    Serializer.serialize(src, dst.data);
+    dst = Deserializer.deserialize!(S)(dst.data);
+    return dst;
 }
 
 unittest

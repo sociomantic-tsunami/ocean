@@ -1429,8 +1429,7 @@ unittest
     Const!(WithIndirection) cw = w;
     Const!(WithoutIndirection) cwo = wo;
 
-    version (D_Version2)
-        static assert(!is(typeof({ buffer1 ~= cw; })));
+    static assert(!is(typeof({ buffer1 ~= cw; })));
     buffer2 ~= cwo;
 }
 
@@ -1460,9 +1459,6 @@ unittest
     Const!(WithIndirection) cw = w;
     Const!(WithoutIndirection) cwo = wo;
 
-    version (D_Version2)
-    {
-        static assert(!is(typeof({ buffer1 ~= cw; })));
-        static assert(!is(typeof({ buffer2 ~= cwo; })));
-    }
+    static assert(!is(typeof({ buffer1 ~= cw; })));
+    static assert(!is(typeof({ buffer2 ~= cwo; })));
 }

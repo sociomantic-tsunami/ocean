@@ -1374,15 +1374,10 @@ unittest {
     test (mins(fd)  == 34);
     test (secs(fd)  == 30);
 
-    version (D_Version2) { }
-    else
-    {
-        // TODO: modulo fix is only available in 2.067+
-        test (t("03:04+07") == 8);
-        test (hours(fd) == 20);
-        test (mins(fd)  ==  4);
-        test (secs(fd)  ==  0);
-    }
+    test (t("03:04+07") == 8);
+    test (hours(fd) == 20);
+    test (mins(fd)  ==  4);
+    test (secs(fd)  ==  0);
 
     test (t("11,5+") == 4);
     test (hours(fd) == 11);

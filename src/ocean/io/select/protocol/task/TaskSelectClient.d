@@ -403,20 +403,12 @@ class TaskSelectClient: ISelectClient
     private int fd ( )
     {
         auto handle = this.iodev.fileHandle;
-        version (D_Version2)
+
+        static if (!is(typeof(handle) == int))
         {
-            static if (!is(typeof(handle) == int))
-            {
-                static assert(is(handle.IsTypedef));
-                static assert(is(typeof(handle.value) == int));
-            }
+            static assert(is(handle.IsTypedef));
+            static assert(is(typeof(handle.value) == int));
         }
-        else mixin(`
-            static if (is(typeof(handle) FD == typedef))
-                static assert(is(FD == int));
-            else
-                static assert(is(typeof(handle) == int));
-        `);
 
         return cast(int)handle;
     }

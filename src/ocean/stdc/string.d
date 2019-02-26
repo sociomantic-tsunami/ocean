@@ -15,11 +15,7 @@
 module ocean.stdc.string;
 
 public import core.stdc.string;
-
-version (D_Version2)
-{
-    public import core.stdc.wchar_;
-}
+public import core.stdc.wchar_;
 
 public import ocean.stdc.gnu.string;
 

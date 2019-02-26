@@ -714,7 +714,7 @@ unittest
 
 ******************************************************************************/
 
-version (D_Version2) unittest
+unittest
 {
     static struct IS
     {

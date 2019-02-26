@@ -280,11 +280,8 @@ public class StandardKeyHashingMap ( size_t V, K ) : Map!(V, K)
 
 public abstract class Map ( V, K ) : BucketSet!(V.sizeof, K)
 {
-    version (D_Version2)
-    {
-        // add to overload set explicitly
-        alias BucketSet!(V.sizeof, K).remove remove;
-    }
+    // add to overload set explicitly
+    alias BucketSet!(V.sizeof, K).remove remove;
 
     /***************************************************************************
 

@@ -128,8 +128,5 @@ unittest
     assert (fieldIdentifier!(TestStruct, 1) == "b");
 
     struct Foo { AliasSeq!(int, double, Object) fields; }
-    version (D_Version2)
-        static assert (fieldIdentifier!(Foo, 0) == "__fields_field_0");
-    else
-        static assert (fieldIdentifier!(Foo, 0) == "_fields_field_0");
+    static assert (fieldIdentifier!(Foo, 0) == "__fields_field_0");
 }
