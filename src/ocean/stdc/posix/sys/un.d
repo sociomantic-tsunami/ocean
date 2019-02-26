@@ -21,7 +21,7 @@ import core.sys.posix.sys.socket;
 
 extern (C):
 
-const UNIX_PATH_MAX = 108;
+static immutable UNIX_PATH_MAX = 108;
 
 align(1)
 struct sockaddr_un

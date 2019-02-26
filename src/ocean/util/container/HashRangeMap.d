@@ -292,7 +292,7 @@ public struct HashRangeMap ( Value )
 
     ***************************************************************************/
 
-    public int opApply ( int delegate ( ref HashRange r, ref Value v ) dg )
+    public int opApply ( scope int delegate ( ref HashRange r, ref Value v ) dg )
     {
         int result = 0;
         foreach (i, range; this.ranges)
@@ -637,11 +637,11 @@ version ( UnitTest )
     {
         static if (is(T == struct) || is(T == class) || is(T == interface))
         {
-            const hasAtomicEquality = is(typeof(T.opEquals));
+            static immutable hasAtomicEquality = is(typeof(T.opEquals));
         }
         else
         {
-            const hasAtomicEquality = isPrimitiveType!(T) || isPointerType!(T);
+            static immutable hasAtomicEquality = isPrimitiveType!(T) || isPointerType!(T);
         }
     }
 
@@ -650,11 +650,11 @@ version ( UnitTest )
     {
         static if (isArrayType!(T))
         {
-            const hasEquality = hasAtomicEquality!(StripAllArrays!(T));
+            static immutable hasEquality = hasAtomicEquality!(StripAllArrays!(T));
         }
         else
         {
-            const hasEquality = hasAtomicEquality!(T);
+            static immutable hasEquality = hasAtomicEquality!(T);
         }
     }
 

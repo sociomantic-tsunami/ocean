@@ -35,7 +35,7 @@ import core.stdc.errno;
 import core.stdc.stdlib;
 
 /// The payload of the HTTP response.
-const response_payload = "Hello World!";
+static immutable response_payload = "Hello World!";
 
 /// The server address, initialised in `main` and used by both the server and
 /// the client.
@@ -47,7 +47,7 @@ class TestHttpHandler: TaskHttpConnectionHandler
 {
     import ocean.io.Stdout;
 
-    public this ( FinalizeDg finalizer )
+    public this ( scope FinalizeDg finalizer )
     {
         super(finalizer, HttpMethod.Get);
     }
@@ -171,7 +171,7 @@ static class ResponseParser
     char[] response;
     /// The token that denotes the end of the HTTP header and the beginning of
     /// the payload.
-    const end_of_header_token = "\r\n\r\n";
+    static immutable end_of_header_token = "\r\n\r\n";
     /// true if `end_of_header_token` has been fond in `response`.
     bool have_payload;
     /// The index in `response` after `end_of_header_token`.

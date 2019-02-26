@@ -357,7 +357,7 @@ struct BitArray
      * Params:
      *  dg = The supplied code as a delegate.
      */
-    int opApply( int delegate(ref bool) dg )
+    int opApply( scope int delegate(ref bool) dg )
     {
         int result;
 
@@ -374,7 +374,7 @@ struct BitArray
 
 
     /** ditto */
-    int opApply( int delegate(ref size_t, ref bool) dg )
+    int opApply( scope int delegate(ref size_t, ref bool) dg )
     {
         int result;
 
@@ -1094,8 +1094,8 @@ unittest
 {
     auto t = new NamedTest("Test increase and decrease length of the BitArray");
 
-    const size_of_uint = uint.sizeof * 8;
-    const num_bits = (size_of_uint * 5) + 15;
+    static immutable size_of_uint = uint.sizeof * 8;
+    static immutable num_bits = (size_of_uint * 5) + 15;
 
     // Creates a BitArray and sets all the bits.
     scope bool_array = new bool[num_bits];
@@ -1111,7 +1111,7 @@ unittest
 
     // Increases the length of the BitArray and checks the former bits remain
     // set and the new ones are not.
-    const greater_length = size_of_uint * 7;
+    static immutable greater_length = size_of_uint * 7;
     static assert(greater_length > num_bits);
     bit_array.length = greater_length;
     foreach (pos, bit; bit_array)
@@ -1124,7 +1124,7 @@ unittest
 
     // Decreases the length of the BitArray to a shorter length than the
     // initial one and checks all bits remain set.
-    const lower_length = size_of_uint * 5;
+    static immutable lower_length = size_of_uint * 5;
     static assert(lower_length < num_bits);
     bit_array.length = lower_length;
     foreach (bit; bit_array)

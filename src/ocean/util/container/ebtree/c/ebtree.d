@@ -35,12 +35,12 @@ alias void eb_troot_t;
 /// See original's library documentation for details.
 struct eb_root
 {
-    const BITS          = 1;
-    const BRANCHES      = (1 << BITS);
+    enum BITS          = 1;
+    enum BRANCHES      = (1 << BITS);
 
-    const RGHT   = 1;
-    const NORMAL = cast(eb_troot_t*)0;
-    const UNIQUE = cast(eb_troot_t*)1;
+    enum RGHT   = 1;
+    enum NORMAL = cast(eb_troot_t*)0;
+    enum UNIQUE = cast(eb_troot_t*)1;
 
     eb_troot_t*[BRANCHES] b;
 

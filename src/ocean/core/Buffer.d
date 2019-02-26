@@ -113,7 +113,7 @@ struct Buffer ( T )
 
     ***************************************************************************/
 
-    size_t length ( ) /* d1to2fix_inject: const */
+    size_t length ( ) const
     {
         return this.data.length;
     }
@@ -170,7 +170,7 @@ struct Buffer ( T )
 
     ***************************************************************************/
 
-    Inout!(T[]) opSlice ( size_t begin, size_t end ) /* d1to2fix_inject: inout */
+    Inout!(T[]) opSlice ( size_t begin, size_t end ) inout
     {
         return this.data[begin .. end];
     }
@@ -184,7 +184,7 @@ struct Buffer ( T )
 
     ***************************************************************************/
 
-    Inout!(T[]) opSlice ( ) /* d1to2fix_inject: inout */
+    Inout!(T[]) opSlice ( ) inout
     {
         return this.data[];
     }

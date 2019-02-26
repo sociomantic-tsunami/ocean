@@ -97,7 +97,7 @@ public class Inotify : ISelectable
 
         ***********************************************************************/
 
-        public int opApply ( int delegate ( ref inotify_event* ) dg )
+        public int opApply ( scope int delegate ( ref inotify_event* ) dg )
         {
             //255 is the default max filename length in linux)
             char[inotify_event.sizeof + 255 + 1] buffer_temp;

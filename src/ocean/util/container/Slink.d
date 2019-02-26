@@ -336,7 +336,7 @@ struct Slink (V, K=KeyDummy, bool Identity = false, bool HashCache = false)
 
         ***********************************************************************/
 
-        final Ref copy (Ref delegate() alloc)
+        final Ref copy (scope Ref delegate() alloc)
         {
                 auto newlist = dup (alloc);
                 auto current = newlist;
@@ -356,7 +356,7 @@ struct Slink (V, K=KeyDummy, bool Identity = false, bool HashCache = false)
 
         ***********************************************************************/
 
-        private Ref dup (Ref delegate() alloc)
+        private Ref dup (scope Ref delegate() alloc)
         {
                 auto ret = alloc();
                 static if (is(typeof(K) == KeyDummy))
@@ -496,8 +496,8 @@ unittest
 {
     auto t = new NamedTest("Test nth() with an index out of bounds");
 
-    const total_items = 11;
-    const index_out_of_bounds = total_items * 2;
+    static immutable total_items = 11;
+    static immutable index_out_of_bounds = total_items * 2;
 
     auto slink = new Slink!(int);
     t.test!("==")(slink.nth(0).value, 0);

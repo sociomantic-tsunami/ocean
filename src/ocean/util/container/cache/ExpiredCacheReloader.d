@@ -316,7 +316,7 @@ class ExpiredCacheReloader ( S )
 
      **************************************************************************/
 
-    abstract protected void getData ( hash_t key, void delegate ( Contiguous!(S) data ) got );
+    abstract protected void getData ( hash_t key, scope void delegate ( Contiguous!(S) data ) got );
 
     /**************************************************************************
 

@@ -572,7 +572,7 @@ private void throwException( istring name )
 
 *******************************************************************************/
 
-private ProcMemInfo parseProcMemInfoData (cstring delegate() read_next_line)
+private ProcMemInfo parseProcMemInfoData (scope cstring delegate() read_next_line)
 {
     /// Helper function to strip leading spaces
     /// Params:

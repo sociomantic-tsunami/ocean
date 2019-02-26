@@ -138,7 +138,7 @@ public struct PidLock
                 O_RDWR | O_CREAT, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
 
         // TODO these will be available in tango v1.6.0
-        const F_SETLK = 6;
+        enum F_SETLK = 6;
 
         // Lock the pidfile
         flock fl;

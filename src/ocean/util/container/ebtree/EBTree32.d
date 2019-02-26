@@ -84,7 +84,7 @@ class EBTree32 ( bool signed = false ) : IEBTree
 
      **************************************************************************/
 
-    public const signed_key = signed;
+    public static immutable signed_key = signed;
 
     /**************************************************************************
 
@@ -117,7 +117,7 @@ class EBTree32 ( bool signed = false ) : IEBTree
 
          **********************************************************************/
 
-        public const is_signed = signed;
+        public enum is_signed = signed;
 
         /**********************************************************************
 
@@ -229,7 +229,7 @@ class EBTree32 ( bool signed = false ) : IEBTree
 
      **************************************************************************/
 
-    private const INodePool node_pool;
+    private static immutable INodePool node_pool;
 
     /**************************************************************************
 

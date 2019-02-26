@@ -131,11 +131,11 @@ version (UnitTest)
 /// Workaround inability to replace those in string.
 version (D_Version2)
 {
-    private const istring enum_id = "enum";
+    private static immutable istring enum_id = "enum";
 }
 else
 {
-    private const istring enum_id = "const";
+    private static immutable istring enum_id = "const";
 }
 
 /*******************************************************************************
@@ -378,7 +378,7 @@ public template SmartEnumCore ( BaseType )
 
     ***************************************************************************/
 
-    static public int opApply ( int delegate ( ref BaseType code, ref istring desc ) dg )
+    static public int opApply ( scope int delegate ( ref BaseType code, ref istring desc ) dg )
     {
         int res;
         foreach ( code, description; map )
@@ -396,7 +396,7 @@ public template SmartEnumCore ( BaseType )
 
     ***************************************************************************/
 
-    static public int opApply ( int delegate ( ref size_t index, ref BaseType code, ref istring desc ) dg )
+    static public int opApply ( scope int delegate ( ref size_t index, ref BaseType code, ref istring desc ) dg )
     {
         int res;
         foreach ( index, code, description; map )
@@ -433,11 +433,11 @@ private template EnumValuesList ( T ... )
 {
     static if ( T.length == 1 )
     {
-        const EnumValuesList = T[0].name ~ "=" ~ CTFE.toString(T[0].value);
+        static immutable EnumValuesList = T[0].name ~ "=" ~ CTFE.toString(T[0].value);
     }
     else
     {
-        const EnumValuesList = T[0].name ~ "=" ~ CTFE.toString(T[0].value) ~ "," ~ EnumValuesList!(T[1..$]);
+        static immutable EnumValuesList = T[0].name ~ "=" ~ CTFE.toString(T[0].value) ~ "," ~ EnumValuesList!(T[1..$]);
     }
 }
 
@@ -464,7 +464,7 @@ private template EnumValuesList ( T ... )
 
 private template DeclareEnum ( T ... )
 {
-    const DeclareEnum = "alias " ~ T[0].BaseType.stringof ~ " BaseType; enum : BaseType {" ~ EnumValuesList!(T) ~ "} ";
+    static immutable DeclareEnum = "alias " ~ T[0].BaseType.stringof ~ " BaseType; enum : BaseType {" ~ EnumValuesList!(T) ~ "} ";
 }
 
 
@@ -489,11 +489,11 @@ private template InitialiseMap ( T ... )
 {
     static if ( T.length == 1 )
     {
-        const InitialiseMap = `map["` ~ T[0].name ~ `"]=` ~ T[0].name ~ ";";
+        static immutable InitialiseMap = `map["` ~ T[0].name ~ `"]=` ~ T[0].name ~ ";";
     }
     else
     {
-        const InitialiseMap = `map["` ~ T[0].name ~ `"]=` ~ T[0].name ~ ";" ~ InitialiseMap!(T[1..$]);
+        static immutable InitialiseMap = `map["` ~ T[0].name ~ `"]=` ~ T[0].name ~ ";" ~ InitialiseMap!(T[1..$]);
     }
 }
 
@@ -523,7 +523,7 @@ private template InitialiseMap ( T ... )
 
 private template StaticThis ( T ... )
 {
-    const StaticThis = "static this() {" ~ InitialiseMap!(T) ~ "map.rehash;} ";
+    static immutable StaticThis = "static this() {" ~ InitialiseMap!(T) ~ "map.rehash;} ";
 }
 
 
@@ -540,11 +540,11 @@ private template MaxValue ( T ... )
 {
     static if ( T.length == 1 )
     {
-        const MaxValue = T[0].value;
+        static immutable MaxValue = T[0].value;
     }
     else
     {
-        const MaxValue = T[0].value > MaxValue!(T[1..$]) ? T[0].value : MaxValue!(T[1..$]);
+        static immutable MaxValue = T[0].value > MaxValue!(T[1..$]) ? T[0].value : MaxValue!(T[1..$]);
     }
 }
 
@@ -562,11 +562,11 @@ private template MinValue ( T ... )
 {
     static if ( T.length == 1 )
     {
-        const MinValue = T[0].value;
+        static immutable MinValue = T[0].value;
     }
     else
     {
-        const MinValue = T[0].value < MinValue!(T[1..$]) ? T[0].value : MinValue!(T[1..$]);
+        static immutable MinValue = T[0].value < MinValue!(T[1..$]) ? T[0].value : MinValue!(T[1..$]);
     }
 }
 
@@ -585,11 +585,11 @@ private template LongestName ( T ... )
 {
     static if ( T.length == 1 )
     {
-        const LongestName = T[0].name.length;
+        static immutable LongestName = T[0].name.length;
     }
     else
     {
-        const LongestName = T[0].name.length > LongestName!(T[1..$]) ? T[0].name.length : LongestName!(T[1..$]);
+        static immutable LongestName = T[0].name.length > LongestName!(T[1..$]) ? T[0].name.length : LongestName!(T[1..$]);
     }
 }
 
@@ -608,11 +608,11 @@ private template ShortestName ( T ... )
 {
     static if ( T.length == 1 )
     {
-        const ShortestName = T[0].name.length;
+        static immutable ShortestName = T[0].name.length;
     }
     else
     {
-        const ShortestName = T[0].name.length < ShortestName!(T[1..$]) ? T[0].name.length : ShortestName!(T[1..$]);
+        static immutable ShortestName = T[0].name.length < ShortestName!(T[1..$]) ? T[0].name.length : ShortestName!(T[1..$]);
     }
 }
 
@@ -638,7 +638,7 @@ private template ShortestName ( T ... )
 
 private template DeclareConstants ( T ... )
 {
-    const istring DeclareConstants =
+    static immutable istring DeclareConstants =
         enum_id ~ " length = " ~ CTFE.toString(T.length) ~ "; " ~
         enum_id ~ " min = " ~ CTFE.toString(MinValue!(T)) ~ "; " ~
         enum_id ~ " max = " ~ CTFE.toString(MaxValue!(T)) ~ "; " ~
@@ -665,7 +665,7 @@ private template DeclareConstants ( T ... )
 
 private template MixinCore ( T ... )
 {
-    const MixinCore = "mixin SmartEnumCore!(" ~ T[0].BaseType.stringof ~ ");";
+    static immutable MixinCore = "mixin SmartEnumCore!(" ~ T[0].BaseType.stringof ~ ");";
 }
 
 
@@ -692,7 +692,7 @@ public template SmartEnum ( istring Name, T ... )
 {
     static if ( T.length > 0 )
     {
-        const SmartEnum = "class " ~ Name ~ " : ISmartEnum { " ~ DeclareEnum!(T) ~
+        static immutable SmartEnum = "class " ~ Name ~ " : ISmartEnum { " ~ DeclareEnum!(T) ~
             DeclareConstants!(T) ~ StaticThis!(T) ~ MixinCore!(T) ~ "}";
     }
     else
@@ -772,7 +772,7 @@ public template AutoSmartEnum ( istring Name, BaseType, Strings ... )
 {
     static assert ( is(typeof(Strings[0]) : istring), "AutoSmartEnum - please only give immutable strings as template parameters");
 
-    const AutoSmartEnum = SmartEnum!(Name, CreateCodes!(BaseType, 0, Strings));
+    static immutable AutoSmartEnum = SmartEnum!(Name, CreateCodes!(BaseType, 0, Strings));
 }
 
 unittest
@@ -1156,7 +1156,7 @@ public struct TwoWayMap ( A )
 
     ***************************************************************************/
 
-    public int opApply ( int delegate ( ref KeyType a, ref ValueType b ) dg )
+    public int opApply ( scope int delegate ( ref KeyType a, ref ValueType b ) dg )
     {
         int res;
         foreach ( a, b; this.a_to_b )
@@ -1176,7 +1176,7 @@ public struct TwoWayMap ( A )
 
     ***************************************************************************/
 
-    public int opApply ( int delegate ( ref size_t index, ref KeyType a, ref ValueType b ) dg )
+    public int opApply ( scope int delegate ( ref size_t index, ref KeyType a, ref ValueType b ) dg )
     {
         int res;
         foreach ( a, b; this.a_to_b )
