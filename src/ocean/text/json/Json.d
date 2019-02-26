@@ -986,21 +986,11 @@ class Json(T) : JsonParser!(T)
                     if (type is typeid(void*))
                         va_arg!(void*)(args);
                     else
+                    if (type is typeid(null))
+                        va_arg!(void*)(args);
+                    else
                     {
-                        version (D_Version2)
-                        {
-                            // In D2 typeof(null) is not void* but special
-                            // type which is named exactly `typeof(null)`, same
-                            // applies for typeid.
-                            mixin("
-                                if (type is typeid(null))
-                                    va_arg!(void*)(args);
-                            ");
-                        }
-                        else
-                        {
-                            host.exception ("JsonValue.set :: unexpected type: "~type.toString);
-                        }
+                        host.exception ("JsonValue.set :: unexpected type: "~type.toString);
                     }
                 }
                 list ~= v;

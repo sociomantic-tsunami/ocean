@@ -120,10 +120,7 @@ struct BTreeMap(TreeKeyType, TreeValueType, int tree_degree)
     }
 
     // Disable constructor, so user always needs to use the makeBTreeMap method
-    version (D_Version2)
-    {
-        mixin("@disable this();");
-    }
+    @disable this();
 
     /**************************************************************************
 
@@ -615,23 +612,12 @@ unittest
     {
         int x;
 
-        version (D_Version2)
-        {
-            mixin("immutable this () {}");
-        }
+        immutable this () {};
     }
 
     // Test immutable support
     auto const_tree = makeBTreeMap!(void*, Const!(X), 2);
-
-    version (D_Version2)
-    {
-        mixin("Immut!(X) a = new immutable X;");
-    }
-    else
-    {
-        Immut!(X) a = new X;
-    }
+    auto a = new immutable X;
 
     const_tree.insert(cast(void*)&a, a);
     bool found;

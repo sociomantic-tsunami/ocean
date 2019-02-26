@@ -39,22 +39,12 @@ public import ocean.meta.types.Typedef;
 
 template isMutable( T )
 {
-    version (D_Version2)
-    {
-        mixin ("enum isMutable = !is(T == const) && !is(T == immutable);");
-    }
-    else
-    {
-        static immutable isMutable = true;
-    }
+    enum isMutable = !is(T == const) && !is(T == immutable);
 }
 
 unittest
 {
-    version (D_Version2)
-        static assert (!isMutable!(typeof("aaa"[0])));
-    else
-        static assert ( isMutable!(typeof("aaa"[0])));
+    static assert (!isMutable!(typeof("aaa"[0])));
 }
 
 /*******************************************************************************
@@ -82,14 +72,7 @@ void enableStomping(T)(ref T[] array)
         "Must not call `enableStomping` on const/immutable array"
     );
 
-    version(D_Version2)
-    {
-        assumeSafeAppend(array);
-    }
-    else
-    {
-        /* no-op */
-    }
+    assumeSafeAppend(array);
 }
 
 /*******************************************************************************
@@ -127,15 +110,7 @@ unittest
 
 *******************************************************************************/
 
-version (D_Version2)
-{
-    alias ModuleInfo* ModuleInfoPtr;
-}
-else
-{
-    alias ModuleInfo  ModuleInfoPtr;
-}
-
+alias ModuleInfo* ModuleInfoPtr;
 
 /*******************************************************************************
 
@@ -150,58 +125,13 @@ else
 
 istring global(istring decl)
 {
-    version (D_Version2)
-    {
-        return "__gshared " ~ decl ~ ";";
-    }
-    else
-    {
-        return decl ~ ";";
-    }
+    return "__gshared " ~ decl ~ ";";
 }
 
 unittest
 {
     mixin(global("int x = 42"));
     assert(x == 42);
-}
-
-/*******************************************************************************
-
-    D1 does not have notion of immutable and thus .idup built-in. However it is
-    necessary to make certain algorithms const-correct. Hiding D2 built-in
-    behind trivial wrapper function helps with that.
-
-    Params:
-        s = string to idup
-
-    Returns:
-        copy of s, immutable if compiled in D2 mode
-
-*******************************************************************************/
-
-version (D_Version2)
-{}
-else
-{
-    Immut!(T)[] idup(T)(T[] s)
-    {
-        return cast(Immut!(T)[]) s.dup;
-    }
-}
-
-unittest
-{
-    mstring s1;
-    istring s2 = idup(s1);
-    s2 = idup("aaa");
-    s2 = idup(cstring.init);
-
-    wchar[] w1;
-    Immut!(wchar)[] w2 = idup(w1);
-
-    dchar[] d1;
-    Immut!(dchar)[] d2 = idup(d1);
 }
 
 /*******************************************************************************
@@ -218,31 +148,14 @@ unittest
 
 *******************************************************************************/
 
-version (D_Version2)
+template min_normal(T : real)
 {
-    template min_normal(T : real)
-    {
-        static immutable min_normal = T.min_normal;
-    }
-}
-else
-{
-    template min_normal(T : real)
-    {
-        static immutable min_normal = T.min;
-    }
+    static immutable min_normal = T.min_normal;
 }
 
 unittest
 {
-    version (D_Version2)
-    {
-        static assert (min_normal!(double) == double.min_normal);
-    }
-    else
-    {
-        static assert (min_normal!(double) == double.min);
-    }
+    static assert (min_normal!(double) == double.min_normal);
 }
 
 /*******************************************************************************
@@ -270,14 +183,7 @@ istring genOpCmp(istring func_body)
     result ~= "override int opCmp(Object rhs)\n";
     result ~= func_body;
     result ~= "\n}\nelse\n{\n";
-    version (D_Version2)
-    {
-        result ~= "int opCmp(const typeof(this) rhs) const\n";
-    }
-    else
-    {
-        result ~= "int opCmp(typeof(*this) rhs)\n";
-    }
+    result ~= "int opCmp(const typeof(this) rhs) const\n";
     result ~= func_body;
     result ~= "\n}\n";
 
@@ -332,23 +238,6 @@ unittest
     assert (new C(2) > new C(1));
     assert (new C(2) >= new C(2));
     assert (new C(2) <= new C(2));
-
-    version (D_Version2) { }
-    else
-    {
-        // built-in sort is not available in D2 and importing ocean.core.Array
-        // introduces module cycle
-        auto s_arr = [ S(2), S(3), S(1) ];
-        auto c_arr = [ new C(2), new C(3), new C(1) ];
-        s_arr.sort;
-        c_arr.sort;
-
-        assert (s_arr == [ S(1), S(2), S(3) ]);
-        assert (c_arr <= [ new C(1), new C(2), new C(3) ]);
-        assert (c_arr >= [ new C(1), new C(2), new C(3) ]);
-        // Fails because we haven't overridden opEquals...
-        // assert (c_arr == [ new C(1), new C(2), new C(3) ]);
-    }
 }
 
 /*******************************************************************************
@@ -376,14 +265,7 @@ public istring genOpEquals(istring func_body)
     result ~= "override equals_t opEquals(Object rhs)\n";
     result ~= func_body;
     result ~= "\n}\nelse\n{\n";
-    version (D_Version2)
-    {
-        result ~= "bool opEquals(const typeof(this) rhs) const\n";
-    }
-    else
-    {
-        result ~= "int opEquals(typeof(*this) rhs)\n";
-    }
+    result ~= "bool opEquals(const typeof(this) rhs) const\n";
     result ~= func_body;
     result ~= "\n}\n";
 
@@ -444,25 +326,6 @@ unittest
     //assert (!(nil == new C(2)));
 }
 
-
-/*******************************************************************************
-
-    D2 differentiates between Exceptions ("normal" recoverable cases) and
-    Errors (fatal failures). Throwable is an exception hierarchy root that is
-    used a base for both.
-
-*******************************************************************************/
-
-version (D_Version2)
-{
-    // already provided by object.d
-}
-else
-{
-    alias Exception Throwable;
-}
-
-
 /*******************************************************************************
 
     In D1, typeof(this) is always a reference type to the aggregate, while in
@@ -476,21 +339,7 @@ else
 
 public template TypeofThis()
 {
-    version (D_Version2)
-    {
-        alias typeof(this) This;
-    }
-    else
-    {
-        static if (is(typeof(this) == class))
-        {
-            alias typeof(this) This;
-        }
-        else
-        {
-            alias typeof(*this) This;
-        }
-    }
+    alias typeof(this) This;
 }
 
 version (UnitTest)
@@ -578,26 +427,12 @@ else
 
 public template SliceIfD1StaticArray ( T )
 {
-    version (D_Version2)
-    {
-        alias T SliceIfD1StaticArray;
-    }
-    else
-    {
-        static if (isArrayType!(T) == ArrayKind.Static)
-            alias ElementTypeOf!(T)[] SliceIfD1StaticArray;
-        else
-            alias T SliceIfD1StaticArray;
-    }
+    alias T SliceIfD1StaticArray;
 }
 
 unittest
 {
-    version (D_Version2)
-        static assert (is(SliceIfD1StaticArray!(int[4]) == int[4]));
-    else
-        static assert (is(SliceIfD1StaticArray!(int[4]) == int[]));
-
+    static assert (is(SliceIfD1StaticArray!(int[4]) == int[4]));
     static assert (is(SliceIfD1StaticArray!(int[]) == int[]));
     static assert (is(SliceIfD1StaticArray!(double) == double));
 }

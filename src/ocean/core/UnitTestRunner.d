@@ -637,34 +637,21 @@ private scope class UnitTestRunner
 
         try
         {
-            version (D_Version2)
-                m.unitTest()();
-            else
-                m.unitTest();
+            m.unitTest()();
             return Result.Pass;
         }
         catch (TestException e)
         {
-            version (D_Version2)
-                e.toString((d) { err ~= d; });
-            else
-                err = sformat(err, "{}:{}: test failure: {}", e.file, e.line, e.message());
+            e.toString((d) { err ~= d; });
             return Result.Fail;
         }
         catch (SanityException e)
         {
-            version (D_Version2)
-                e.toString((d) { err ~= d; });
-            else
-                err = sformat(err, "{}:{}: sanity exception: {}", e.file, e.line, e.message());
+            e.toString((d) { err ~= d; });
         }
         catch (Exception e)
         {
-            version (D_Version2)
-                e.toString((d) { err ~= d; });
-            else
-                err = sformat(err, "{}:{}: unexpected exception {}: {}",
-                              e.file, e.line, e.classinfo.name, e.message());
+            e.toString((d) { err ~= d; });
         }
 
         return Result.Error;

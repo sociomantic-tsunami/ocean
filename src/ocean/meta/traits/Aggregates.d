@@ -38,11 +38,7 @@ import ocean.meta.types.Qualifiers;
 public template hasMember ( T, istring name )
 {
     static assert (isAggregateType!(T));
-
-    version (D_Version2)
-        mixin ("enum hasMember = __traits(hasMember, T, name);");
-    else
-        mixin ("const hasMember = is(typeof(T." ~ name ~ "));");
+    enum hasMember = __traits(hasMember, T, name);
 }
 
 ///

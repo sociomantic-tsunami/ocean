@@ -76,11 +76,8 @@ abstract class IIPSocket : ISocket
 {
     import ocean.sys.CloseOnExec;
 
-    version (D_Version2)
-    {
-        // add to overload set explicitly
-        alias ISocket.socket socket;
-    }
+    // add to overload set explicitly
+    alias ISocket.socket socket;
 
     /**************************************************************************
 

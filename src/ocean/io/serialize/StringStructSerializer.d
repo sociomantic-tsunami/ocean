@@ -894,18 +894,9 @@ unittest
 
     serializer.serialize(buffer, st);
 
-    version (D_Version2)
-    {
-        test!("==")(buffer.length, 50);
-        test!("==")(buffer, "struct StructWithTypedef:\n" ~
-                         "   AdskilletId a : 1000\n");
-    }
-    else
-    {
-        test!("==")(buffer.length, 44);
-        test!("==")(buffer, "struct StructWithTypedef:\n" ~
-                         "   ulong a : 1000\n");
-    }
+    test!("==")(buffer.length, 50);
+    test!("==")(buffer, "struct StructWithTypedef:\n" ~
+                     "   AdskilletId a : 1000\n");
 }
 
 unittest

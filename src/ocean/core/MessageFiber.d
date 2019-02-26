@@ -711,10 +711,7 @@ class MessageFiber
         this.killed = true;
         this.e_killed.set(file, line);
 
-        version (D_Version2)
-            this.fiber.call(Fiber.Rethrow.no);
-        else
-            this.fiber.call(false);
+        this.fiber.call(Fiber.Rethrow.no);
     }
 
     /**************************************************************************

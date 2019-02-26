@@ -54,13 +54,8 @@ struct Buffer ( T )
 
     ***************************************************************************/
 
-    version (D_Version2)
-    {
-        mixin(`
-            @disable this(this);
-            @disable void opAssign (Buffer!(T) other);
-        `);
-    }
+    @disable this(this);
+    @disable void opAssign (Buffer!(T) other);
 
     /***************************************************************************
 
@@ -129,11 +124,9 @@ struct Buffer ( T )
 
     void length ( size_t new_length )
     {
-        version (D_Version2)
-            assumeSafeAppend((&this).data);
-        (&this).data.length = new_length;
-        version (D_Version2)
-            assumeSafeAppend((&this).data);
+        assumeSafeAppend(this.data);
+        this.data.length = new_length;
+        assumeSafeAppend(this.data);
     }
 
     /***************************************************************************
@@ -148,13 +141,11 @@ struct Buffer ( T )
 
     void reserve ( size_t new_length )
     {
-        version (D_Version2)
-            assumeSafeAppend((&this).data);
-        auto old_length = (&this).data.length;
-        (&this).data.length = new_length;
-        (&this).data.length = old_length;
-        version (D_Version2)
-            assumeSafeAppend((&this).data);
+        assumeSafeAppend(this.data);
+        auto old_length = this.data.length;
+        this.data.length = new_length;
+        this.data.length = old_length;
+        assumeSafeAppend(this.data);
     }
 
     /***************************************************************************

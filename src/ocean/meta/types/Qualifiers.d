@@ -61,14 +61,7 @@ alias char[]         mstring;
 
 template Const(T)
 {
-    version(D_Version2)
-    {
-        mixin("alias const(T) Const;");
-    }
-    else
-    {
-        alias T Const;
-    }
+    alias const(T) Const;;
 }
 
 unittest
@@ -77,10 +70,7 @@ unittest
 
     static assert (is(Int));
 
-    version(D_Version2)
-    {
-        mixin("static assert (is(Int == const));");
-    }
+    static assert (is(Int == const));
 }
 
 /*******************************************************************************
@@ -101,14 +91,7 @@ unittest
 
 template Immut(T)
 {
-    version(D_Version2)
-    {
-        mixin("alias immutable(T) Immut;");
-    }
-    else
-    {
-        alias T Immut;
-    }
+    alias immutable(T) Immut;
 }
 
 unittest
@@ -117,10 +100,7 @@ unittest
 
     static assert (is(Int));
 
-    version(D_Version2)
-    {
-        mixin("static assert (is(Int == immutable));");
-    }
+    static assert (is(Int == immutable));
 }
 
 /*******************************************************************************
@@ -144,14 +124,7 @@ unittest
 
 template Inout(T)
 {
-    version(D_Version2)
-    {
-        mixin("alias inout(T) Inout;");
-    }
-    else
-    {
-        alias T Inout;
-    }
+    alias inout(T) Inout;
 }
 
 unittest
@@ -193,22 +166,13 @@ unittest
 
 template Unqual(T)
 {
-    version (D_Version2)
+    static if (is(T U == const U))
     {
-        mixin("
-            static if (is(T U == const U))
-            {
-                alias U Unqual;
-            }
-            else static if (is(T U == immutable U))
-            {
-                alias U Unqual;
-            }
-            else
-            {
-                alias T Unqual;
-            }
-        ");
+        alias U Unqual;
+    }
+    else static if (is(T U == immutable U))
+    {
+        alias U Unqual;
     }
     else
     {

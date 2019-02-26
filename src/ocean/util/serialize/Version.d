@@ -193,12 +193,9 @@ struct Version
         test!("==")(data_unver.length, 2);
     }
 
-    version (D_Version2)
+    static Const!(void)[] extract ( in void[] data, ref Version.Type ver )
     {
-        static Const!(void)[] extract ( in void[] data, ref Version.Type ver )
-        {
-            return extract(cast(void[]) data, ver);
-        }
+        return extract(cast(void[]) data, ver);
     }
 
     unittest

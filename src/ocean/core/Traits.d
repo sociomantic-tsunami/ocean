@@ -838,10 +838,8 @@ unittest
 
 /*******************************************************************************
 
-    Determines if T is a typedef.
-
     Typedef has been removed in D2 and this template will always evaluate to
-    false if compiled with version = D_Version2.
+    false.
 
     Evaluates to:
         T = type to check
@@ -849,58 +847,20 @@ unittest
 
 *******************************************************************************/
 
-version (D_Version2)
+public template isTypedef (T)
 {
-    public template isTypedef (T)
-    {
-        static immutable bool isTypedef = false;
-    }
-}
-else
-{
-    mixin("
-    public template isTypedef (T)
-    {
-        static if (is(T Orig == typedef))
-        {
-            const bool isTypedef = true;
-        }
-        else
-        {
-            const bool isTypedef = false;
-        }
-    }
-
-    unittest
-    {
-        typedef double RealNum;
-
-        static assert(!isTypedef!(int));
-        static assert(!isTypedef!(double));
-        static assert(isTypedef!(RealNum));
-    }");
+    static immutable bool isTypedef = false;
 }
 
 unittest
 {
     mixin(Typedef!(int, "MyInt"));
-
-    version (D_Version2)
-    {
-        static assert (!isTypedef!(MyInt)); // just a struct
-    }
-    else
-    {
-        static assert ( isTypedef!(MyInt));
-    }
+    static assert (!isTypedef!(MyInt)); // just a struct
 }
 
 /*******************************************************************************
 
-    Strips the typedef off T.
-
-    Typedef has been removed in D2 and this template is a no-op if compiled
-    with version = D_Version2.
+    Typedef has been removed in D2 and this template is a no-op
 
     Params:
         T = type to strip of typedef
@@ -910,50 +870,15 @@ unittest
 
 *******************************************************************************/
 
-version (D_Version2)
+public template StripTypedef (T)
 {
-    public template StripTypedef (T)
-    {
-        alias T StripTypedef;
-    }
-}
-else
-{
-    mixin("
-    public template StripTypedef ( T )
-    {
-        static if ( is ( T Orig == typedef ) )
-        {
-            alias StripTypedef!(Orig) StripTypedef;
-        }
-        else
-        {
-            alias T StripTypedef;
-        }
-    }
-
-    unittest
-    {
-        typedef int Foo;
-        typedef Foo Bar;
-        typedef Bar Goo;
-
-        static assert(is(StripTypedef!(Goo) == int));
-    }");
+    alias T StripTypedef;
 }
 
 unittest
 {
     mixin(Typedef!(int, "MyInt"));
-
-    version (D_Version2)
-    {
-        static assert (is(StripTypedef!(MyInt) == MyInt));
-    }
-    else
-    {
-        static assert (is(StripTypedef!(MyInt) == int));
-    }
+    static assert (is(StripTypedef!(MyInt) == MyInt));
 }
 
 /******************************************************************************
@@ -1979,19 +1904,7 @@ template ReturnTypeOf( Fn )
  */
 template ReturnTypeOf( alias fn )
 {
-    version(D_Version2)
-    {
-        alias ReturnTypeOf!(typeof(fn)) ReturnTypeOf;
-    }
-    else
-    {
-        mixin("
-        static if( is( typeof(fn) Base == typedef ) )
-            alias ReturnTypeOf!(Base) ReturnTypeOf;
-        else
-            alias ReturnTypeOf!(typeof(fn)) ReturnTypeOf;
-        ");
-    }
+    alias ReturnTypeOf!(typeof(fn)) ReturnTypeOf;
 }
 
 unittest
@@ -2031,19 +1944,7 @@ template ParameterTupleOf( Fn )
  */
 template ParameterTupleOf( alias fn )
 {
-    version(D_Version2)
-    {
-        alias ParameterTupleOf!(typeof(fn)) ParameterTupleOf;
-    }
-    else
-    {
-        mixin("
-        static if( is( typeof(fn) Base == typedef ) )
-            alias ParameterTupleOf!(Base) ParameterTupleOf;
-        else
-            alias ParameterTupleOf!(typeof(fn)) ParameterTupleOf;
-        ");
-    }
+    alias ParameterTupleOf!(typeof(fn)) ParameterTupleOf;
 }
 
 unittest
@@ -2153,14 +2054,7 @@ template KeyTypeOfAA(T){
 unittest
 {
     static assert (is(KeyTypeOfAA!(char[int])==int));
-    version(D_Version2)
-    {
-        mixin("static assert(is(KeyTypeOfAA!(char[][int[]])==const(int)[]));");
-    }
-    else
-    {
-        static assert (is(KeyTypeOfAA!(char[][int[]])==int[]));
-    }
+    static assert(is(KeyTypeOfAA!(char[][int[]])==const(int)[]));
 }
 
 /// type of the values of an AA
@@ -2179,14 +2073,7 @@ template staticArraySize(T)
 {
     static assert (isStaticArrayType!(T),"staticArraySize needs a static array as type");
     static assert (rankOfArray!(T)==1,"implemented only for 1d arrays...");
-    version(D_Version2)
-    {
-        static immutable size_t staticArraySize=(T).sizeof / typeof(T.init[0]).sizeof;
-    }
-    else
-    {
-        static immutable size_t staticArraySize=(T).sizeof / typeof(T.init).sizeof;
-    }
+    static immutable size_t staticArraySize=(T).sizeof / typeof(T.init[0]).sizeof;
 }
 
 unittest
@@ -2315,14 +2202,7 @@ public template hasMember(T, istring name)
         is(T == struct)
     );
 
-    version (D_Version2)
-    {
-        mixin ("enum hasMember = __traits(hasMember, T, name);");
-    }
-    else
-    {
-        mixin ("const hasMember = is(typeof(T." ~ name ~ "));");
-    }
+    enum hasMember = __traits(hasMember, T, name);
 }
 
 unittest

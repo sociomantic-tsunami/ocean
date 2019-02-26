@@ -454,24 +454,7 @@ mixin (global("Console.Output Cerr")); /// The standard error stream.
 
  ******************************************************************************/
 
-version (D_Version2)
-{
-    mixin(`
-    shared static this ()
-    {
-        constructor();
-    }
-    `);
-}
-else
-{
-    static this ()
-    {
-        constructor();
-    }
-}
-
-void constructor()
+shared static this ()
 {
     auto conduit = new Console.Conduit (0);
     Cin  = new Console.Input (conduit, conduit.redirected);
