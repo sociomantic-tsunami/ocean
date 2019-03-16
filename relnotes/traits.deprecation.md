@@ -22,3 +22,10 @@ Now contains `rankOfArray` utility previously present in `ocean.core.Traits`.
 
 New module providing `EnumBaseType` utility that reduces enum type to its base
 type.
+
+`ocean.core.Traits`
+
+All symbols in this module are deprecated now. Symbols that were not used by any
+of downstream applications got immediately removed. Please follow deprecation
+instructions for each of remaining symbols to switch to appropriate `ocean.meta`
+utility or direct `tupleof` usage.
