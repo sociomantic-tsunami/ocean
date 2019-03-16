@@ -99,3 +99,34 @@ unittest
     static assert ( hasMethod!(S, "foo2", int function(double)));
     static assert (!hasMethod!(S, "foo3", int delegate(double)));
 }
+
+/*******************************************************************************
+
+    Non-recursive aggregate field size calculation
+
+    Returns:
+        sum of individual sizes of all aggregate fields, identical to S.sizeof
+        if `align(1)` is used.
+
+*******************************************************************************/
+
+public template totalMemberSize ( S )
+{
+    static assert (isAggregateType!S);
+
+    private size_t calculate ( )
+    {
+        size_t size;
+        foreach (field; S.init.tupleof)
+            size += typeof(field).sizeof;
+        return size;
+    }
+
+    enum totalMemberSize = calculate();
+}
+
+unittest
+{
+    struct S { int x; byte[2] y; }
+    static assert (totalMemberSize!S == 6);
+}
