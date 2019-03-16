@@ -15,8 +15,6 @@
 
 module ocean.core.TypeConvert;
 
-
-
 import ocean.meta.traits.Indirections;
 import ocean.meta.types.Qualifiers;
 import ocean.meta.types.Function;
@@ -371,4 +369,74 @@ unittest
     test!("==")(cast(size_t) dg.ptr, 42);
     dg();
     test(done);
+}
+
+/*******************************************************************************
+
+    Helper function to wrap any callable type in a delegate. Most useful when
+    you need to pass function pointer as a delegate argument.
+
+    This function allocates a closure class for a delegate.
+
+    NB! toDg does not preserve any argument attributes of Func such as ref or
+    lazy.
+
+    Params:
+        f = function or function pointer or delegate
+
+    Returns:
+        delegate that internally calls f and does nothing else
+
+*******************************************************************************/
+
+ReturnTypeOf!(Func) delegate (ParametersOf!(Func)) toDg ( Func ) ( Func f )
+{
+    static assert (
+        is(Func == ReturnTypeOf!(Func) function (ParametersOf!(Func))),
+        "toDg does not preserve argument attributes!"
+    );
+
+    alias ParametersOf!(Func) ParameterTypes;
+
+    class Closure
+    {
+        private Func func;
+
+        this (Func func)
+        {
+            this.func = func;
+        }
+
+        ReturnTypeOf!(Func) call (ParameterTypes args)
+        {
+            return this.func(args);
+        }
+    }
+
+    auto closure = new Closure(f);
+
+    return &closure.call;
+}
+
+version ( UnitTest )
+{
+    int testToDgFoo() { return 42; }
+
+    void testToDgBar(int a, int b)
+    {
+        assert (a == 3);
+        assert (b == 4);
+    }
+
+    int testToDgBad(ref int x) { return x; }
+}
+
+unittest
+{
+    static assert (is(typeof(toDg(&testToDgFoo)) == int delegate()));
+    test (toDg(&testToDgFoo)() == 42);
+
+    toDg(&testToDgBar)(3, 4);
+
+    static assert(!is(typeof(toDg(&testToDgBad))));
 }
