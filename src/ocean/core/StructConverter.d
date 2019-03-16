@@ -21,7 +21,10 @@ module ocean.core.StructConverter;
 
 
 import ocean.transition;
-import ocean.core.Traits;
+import ocean.meta.codegen.Identifier;
+import ocean.meta.traits.Basic;
+import ocean.meta.types.Arrays : StripAllArrays;
+import ocean.core.TypeConvert : toDg;
 
 version(UnitTest) import ocean.core.Test;
 
@@ -85,15 +88,16 @@ public void structConvert ( From, To ) ( ref From from, out To to,
     {
         foreach ( to_index, ref to_member; to.tupleof )
         {
-            enum convFuncName = "convert_" ~ FieldName!(to_index, To);
+            enum fieldName = identifier!(to.tupleof[to_index]);
+            enum convFuncName = "convert_" ~ fieldName;
 
             static if (hasConvertFunction!(From, convFuncName, To)())
             {
                 callBestOverload!(From, To, convFuncName)(from, to, requestBuffer);
             }
-            else static if ( structHasMember!(FieldName!(to_index, To), From)() )
+            else static if (structHasMember!(fieldName, From)())
             {
-                auto from_field = getField!(FieldName!(to_index, To))(from);
+                auto from_field = getField!(fieldName)(from);
                 auto to_field = &to.tupleof[to_index];
 
                 copyField(from_field, to_field, requestBuffer);
@@ -101,7 +105,7 @@ public void structConvert ( From, To ) ( ref From from, out To to,
             else
             {
                 static assert ( false, "Unhandled field: " ~
-                            FieldName!(to_index, To) ~ " of type " ~
+                            fieldName ~ " of type " ~
                             typeof(to_member).stringof);
             }
         }
@@ -130,7 +134,7 @@ private void copyField ( From, To ) ( From* from_field, To* to_field,
 {
     static if ( is ( typeof(*to_field) : typeof(*from_field) ) )
     {
-        static if ( isStaticArrayType!(typeof((*to_field))) )
+        static if ( isArrayType!(typeof((*to_field))) == ArrayKind.Static )
         {
             (*to_field)[] = (*from_field)[];
         }
@@ -147,11 +151,11 @@ private void copyField ( From, To ) ( From* from_field, To* to_field,
         copyMember(*from_field, *to_field,
                    requestBuffer);
     }
-    else static if (isStaticArrayType!(typeof((*to_field))) &&
-                    isStaticArrayType!(typeof(*from_field)))
+    else static if (isArrayType!(typeof((*to_field))) == ArrayKind.Static &&
+                    isArrayType!(typeof(*from_field)) == ArrayKind.Static)
     {
-        alias BaseTypeOfArrays!(typeof(*to_field))   ToBaseType;
-        alias BaseTypeOfArrays!(typeof(*from_field)) FromBaseType;
+        alias StripAllArrays!(typeof(*to_field))   ToBaseType;
+        alias StripAllArrays!(typeof(*from_field)) FromBaseType;
 
         static if ( is(ToBaseType == struct) &&
                     is(FromBaseType == struct) )
@@ -170,11 +174,11 @@ private void copyField ( From, To ) ( From* from_field, To* to_field,
                  "." ~ convertToFunctionName(FieldName!(to_index, To)));
         }
     }
-    else static if (isDynamicArrayType!(typeof((*to_field))) &&
-                    isDynamicArrayType!(typeof(*from_field)))
+    else static if (isArrayType!(typeof((*to_field))) == ArrayKind.Dynamic &&
+                    isArrayType!(typeof(*from_field)) == ArrayKind.Dynamic)
     {
-        alias BaseTypeOfArrays!(typeof(*to_field))   ToBaseType;
-        alias BaseTypeOfArrays!(typeof(*from_field)) FromBaseType;
+        alias StripAllArrays!(typeof(*to_field))   ToBaseType;
+        alias StripAllArrays!(typeof(*from_field)) FromBaseType;
 
         static if ( is(ToBaseType == struct) &&
                     is(FromBaseType == struct) )
