@@ -17,3 +17,8 @@ of all aggregate members (non-recursively).
 `ocean.meta.traits.Arrays`
 
 Now contains `rankOfArray` utility previously present in `ocean.core.Traits`.
+
+`ocean.meta.types.Enum`
+
+New module providing `EnumBaseType` utility that reduces enum type to its base
+type.
