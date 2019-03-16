@@ -13,3 +13,7 @@ Deprecated `fieldIdentifier` because in D2 it is possible to use plain
 
 Now provides `totalMemberSize` trait which calculates sum of individual sizes
 of all aggregate members (non-recursively).
+
+`ocean.meta.traits.Arrays`
+
+Now contains `rankOfArray` utility previously present in `ocean.core.Traits`.
