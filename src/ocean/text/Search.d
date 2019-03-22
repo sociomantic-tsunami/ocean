@@ -17,7 +17,7 @@
 
 module ocean.text.Search;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers : mstring, cstring;
 
 import Util = ocean.text.Util;
 
@@ -31,9 +31,9 @@ version(UnitTest) import ocean.core.Test;
 
  ******************************************************************************/
 
-FindFruct!(T) find(T) (T[] what)
+FindFruct find (cstring what)
 {
-    return FindFruct!(T) (what);
+    return FindFruct(what);
 }
 
 /******************************************************************************
@@ -46,9 +46,9 @@ FindFruct!(T) find(T) (T[] what)
 
  ******************************************************************************/
 
-SearchFruct!(T) search(T) (T[] what)
+SearchFruct search (cstring what)
 {
-    return SearchFruct!(T) (what);
+    return SearchFruct(what);
 }
 
 /******************************************************************************
@@ -78,9 +78,9 @@ SearchFruct!(T) search(T) (T[] what)
 
  ******************************************************************************/
 
-public struct FindFruct(T)
+public struct FindFruct
 {
-    private T[] what;
+    private cstring what;
 
     /***********************************************************************
 
@@ -92,7 +92,7 @@ public struct FindFruct(T)
 
      ***********************************************************************/
 
-    size_t forward (T[] content, size_t ofs = 0)
+    size_t forward (cstring content, size_t ofs = 0)
     {
         return Util.index (content, what, ofs);
     }
@@ -107,7 +107,7 @@ public struct FindFruct(T)
 
      ***********************************************************************/
 
-    size_t reverse (T[] content, size_t ofs = size_t.max)
+    size_t reverse (cstring content, size_t ofs = size_t.max)
     {
         return Util.rindex (content, what, ofs);
     }
@@ -118,7 +118,7 @@ public struct FindFruct(T)
 
      ***********************************************************************/
 
-    T[] match ()
+    cstring match ()
     {
         return what;
     }
@@ -129,7 +129,7 @@ public struct FindFruct(T)
 
      ***********************************************************************/
 
-    void match (T[] what)
+    void match (cstring what)
     {
         this.what = what;
     }
@@ -140,7 +140,7 @@ public struct FindFruct(T)
 
      ***********************************************************************/
 
-    bool within (T[] content)
+    bool within (cstring content)
     {
         return forward(content) != content.length;
     }
@@ -151,7 +151,7 @@ public struct FindFruct(T)
 
      ***********************************************************************/
 
-    size_t count (T[] content)
+    size_t count (cstring content)
     {
         size_t mark, count;
 
@@ -169,7 +169,7 @@ public struct FindFruct(T)
 
      ***********************************************************************/
 
-    T[] replace (T[] content, T chr)
+    mstring replace (cstring content, char chr)
     {
         return replace (content, (&chr)[0..1]);
     }
@@ -183,9 +183,9 @@ public struct FindFruct(T)
 
      ***********************************************************************/
 
-    T[] replace (T[] content, T[] sub = null)
+    mstring replace (cstring content, cstring sub = null)
     {
-        T[] output;
+        mstring output;
 
         foreach (s; tokens (content, sub))
             output ~= s;
@@ -211,7 +211,7 @@ public struct FindFruct(T)
 
      ***********************************************************************/
 
-    Util.PatternFruct!(T) tokens (T[] content, T[] sub = null)
+    Util.PatternFruct!(const(char)) tokens (cstring content, cstring sub = null)
     {
         return Util.patterns (content, what, sub);
     }
@@ -231,7 +231,7 @@ public struct FindFruct(T)
 
      ***********************************************************************/
 
-    Indices indices (T[] content)
+    Indices indices (cstring content)
     {
         return Indices (what, content);
     }
@@ -244,8 +244,7 @@ public struct FindFruct(T)
 
     private struct Indices
     {
-        T[]     what,
-            content;
+        cstring what, content;
 
         int opApply (scope int delegate (ref size_t index) dg)
         {
@@ -290,9 +289,9 @@ public struct FindFruct(T)
 
  ******************************************************************************/
 
-public struct SearchFruct(T)
+public struct SearchFruct
 {
-    private Const!(T)[]     what;
+    private cstring         what;
     private bool            fore;
     private ptrdiff_t[256]  offsets = void;
 
@@ -302,7 +301,7 @@ public struct SearchFruct(T)
 
      ***********************************************************************/
 
-    static SearchFruct opCall (T[] what)
+    static SearchFruct opCall (cstring what)
     {
         SearchFruct find = void;
         find.match = what;
@@ -315,7 +314,7 @@ public struct SearchFruct(T)
 
      ***********************************************************************/
 
-    Const!(T)[] match ()
+    cstring match ()
     {
         return what;
     }
@@ -326,7 +325,7 @@ public struct SearchFruct(T)
 
      ***********************************************************************/
 
-    void match (Const!(T)[] what)
+    void match (cstring what)
     {
         offsets[] = what.length + 1;
         this.fore = true;
@@ -344,7 +343,7 @@ public struct SearchFruct(T)
 
      ***********************************************************************/
 
-    size_t forward (T[] content, size_t ofs = 0)
+    size_t forward (cstring content, size_t ofs = 0)
     {
         if (! fore)
             flip;
@@ -352,9 +351,9 @@ public struct SearchFruct(T)
         if (ofs > content.length)
             ofs = content.length;
 
-        return find (cast(char*) what.ptr, what.length * T.sizeof,
-                cast(char*) content.ptr, content.length * T.sizeof,
-                ofs * T.sizeof) / T.sizeof;
+        return find (cast(char*) what.ptr, what.length * char.sizeof,
+                cast(char*) content.ptr, content.length * char.sizeof,
+                ofs * char.sizeof) / char.sizeof;
     }
 
     /***********************************************************************
@@ -367,7 +366,7 @@ public struct SearchFruct(T)
 
      ***********************************************************************/
 
-    size_t reverse (T[] content, size_t ofs = size_t.max)
+    size_t reverse (cstring content, size_t ofs = size_t.max)
     {
         if (fore)
             flip;
@@ -375,9 +374,9 @@ public struct SearchFruct(T)
         if (ofs > content.length)
             ofs = content.length;
 
-        return rfind (cast(char*) what.ptr, what.length * T.sizeof,
-                cast(char*) content.ptr, content.length * T.sizeof,
-                ofs * T.sizeof) / T.sizeof;
+        return rfind (cast(char*) what.ptr, what.length * char.sizeof,
+                cast(char*) content.ptr, content.length * char.sizeof,
+                ofs * char.sizeof) / char.sizeof;
     }
 
     /***********************************************************************
@@ -386,7 +385,7 @@ public struct SearchFruct(T)
 
      ***********************************************************************/
 
-    bool within (T[] content)
+    bool within (cstring content)
     {
         return forward(content) != content.length;
     }
@@ -397,7 +396,7 @@ public struct SearchFruct(T)
 
      ***********************************************************************/
 
-    size_t count (T[] content)
+    size_t count (cstring content)
     {
         size_t mark, count;
 
@@ -415,7 +414,7 @@ public struct SearchFruct(T)
 
      ***********************************************************************/
 
-    T[] replace (T[] content, T chr)
+    mstring replace (cstring content, char chr)
     {
         return replace (content, (&chr)[0..1]);
     }
@@ -429,9 +428,9 @@ public struct SearchFruct(T)
 
      ***********************************************************************/
 
-    T[] replace (T[] content, T[] sub = null)
+    mstring replace (cstring content, cstring sub = null)
     {
-        T[] output;
+        mstring output;
 
         foreach (s; tokens (content, sub))
             output ~= s;
@@ -457,7 +456,7 @@ public struct SearchFruct(T)
 
      ***********************************************************************/
 
-    Substitute tokens (T[] content, T[] sub = null)
+    Substitute tokens (cstring content, cstring sub = null)
     {
         return Substitute (sub, what, content, &forward);
     }
@@ -477,7 +476,7 @@ public struct SearchFruct(T)
 
      ***********************************************************************/
 
-    Indices indices (T[] content)
+    Indices indices (cstring content)
     {
         return Indices (content, &forward);
     }
@@ -486,7 +485,7 @@ public struct SearchFruct(T)
 
      ***********************************************************************/
 
-    private size_t find (Const!(char)* what, size_t wlen, Const!(char)* content,
+    private size_t find (const(char)* what, size_t wlen, const(char)* content,
         size_t len, size_t ofs)
     {
         if (len == 0 && len < wlen)
@@ -508,8 +507,8 @@ public struct SearchFruct(T)
 
      ***********************************************************************/
 
-    private size_t rfind (Const!(char)* what, size_t wlen,
-        Const!(char)* content, size_t len, size_t ofs)
+    private size_t rfind (const(char)* what, size_t wlen,
+        const(char)* content, size_t len, size_t ofs)
     {
         if (len == 0 && len < wlen)
             return len;
@@ -529,7 +528,7 @@ public struct SearchFruct(T)
 
      ***********************************************************************/
 
-    private static bool matches (Const!(char)* a, Const!(char)* b, size_t length)
+    private static bool matches (const(char)* a, const(char)* b, size_t length)
     {
         while (length > size_t.sizeof)
             if (*cast(size_t*) a is *cast(size_t*) b)
@@ -553,13 +552,12 @@ public struct SearchFruct(T)
 
     private void reset ()
     {
-        auto what = cast(char[]) this.what;
         if (fore)
-            for (ptrdiff_t i=0; i < what.length; ++i)
-                offsets[what[i]] = what.length - i;
+            for (ptrdiff_t i=0; i < this.what.length; ++i)
+                offsets[this.what[i]] = this.what.length - i;
         else
-            for (ptrdiff_t i=what.length; i--;)
-                offsets[what[i]] = i+1;
+            for (ptrdiff_t i= this.what.length; i--;)
+                offsets[this.what[i]] = i+1;
     }
 
     /***********************************************************************
@@ -582,8 +580,8 @@ public struct SearchFruct(T)
 
     private struct Indices
     {
-        T[]    content;
-        size_t delegate(T[], size_t) call;
+        cstring content;
+        size_t delegate(cstring, size_t) call;
 
         int opApply (scope int delegate (ref size_t index) dg)
         {
@@ -607,18 +605,18 @@ public struct SearchFruct(T)
 
     private struct Substitute
     {
-        private T[] sub;
-        private Const!(T)[] what;
-        private T[] content;
+        private cstring sub;
+        private cstring what;
+        private cstring content;
 
-        size_t      delegate(T[], size_t) call;
+        size_t      delegate(cstring, size_t) call;
 
-        int opApply (scope int delegate (ref T[] token) dg)
+        int opApply (scope int delegate (ref cstring token) dg)
         {
             size_t  ret,
                     pos,
                     mark;
-            T[]     token;
+            cstring token;
 
             while ((pos = call (content, mark)) < content.length)
             {
