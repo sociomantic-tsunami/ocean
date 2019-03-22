@@ -109,7 +109,7 @@ public class SignalEvent : ISelectClient
 
     ***************************************************************************/
 
-    public this ( Handler handler, int[] signals ... )
+    public this ( scope Handler handler, int[] signals ... )
     {
         verify(handler !is null);
 

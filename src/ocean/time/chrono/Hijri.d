@@ -35,7 +35,7 @@ public class Hijri : Calendar {
   /**
    * Represents the current era.
    */
-  public const uint HIJRI_ERA = 1;
+  public static immutable uint HIJRI_ERA = 1;
 
   /**
    * Overridden. Returns a Time value set to the specified date and time in the specified _era.

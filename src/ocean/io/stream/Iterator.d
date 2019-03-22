@@ -118,7 +118,7 @@ class Iterator : InputFilter
 
         **********************************************************************/
 
-        int opApply (int delegate(ref cstring) dg)
+        int opApply (scope int delegate(ref cstring) dg)
         {
                 bool more;
                 int  result;
@@ -137,7 +137,7 @@ class Iterator : InputFilter
 
         **********************************************************************/
 
-        int opApply (int delegate(ref int, ref cstring) dg)
+        int opApply (scope int delegate(ref int, ref cstring) dg)
         {
                 bool more;
                 int  result,
@@ -158,7 +158,7 @@ class Iterator : InputFilter
 
         **********************************************************************/
 
-        int opApply (int delegate(ref int, ref cstring, ref cstring) dg)
+        int opApply (scope int delegate(ref int, ref cstring, ref cstring) dg)
         {
                 bool more;
                 int  result,
