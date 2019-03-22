@@ -86,38 +86,6 @@ char[] toString (Time time)
 
 /******************************************************************************
 
-  Template wrapper to make life simpler. Returns a text version
-  of the provided value.
-
-  See format() for details
-
- ******************************************************************************/
-
-wchar[] toString16 (Time time)
-{
-    wchar[32] tmp = void;
-
-    return format (tmp, time).dup;
-}
-
-/******************************************************************************
-
-  Template wrapper to make life simpler. Returns a text version
-  of the provided value.
-
-  See format() for details
-
- ******************************************************************************/
-
-dchar[] toString32 (Time time)
-{
-    dchar[32] tmp = void;
-
-    return format (tmp, time).dup;
-}
-
-/******************************************************************************
-
   RFC1123 formatted time
 
   Converts to the format "Sun, 06 Nov 1994 08:49:37 GMT", and
@@ -764,8 +732,8 @@ private static int parseInt(T) (ref T* p, T* e)
 
 unittest
 {
-    wchar[30] tmp;
-    Const!(wchar)[] s = "Sun, 06 Nov 1994 08:49:37 GMT";
+    char[30] tmp;
+    Const!(char)[] s = "Sun, 06 Nov 1994 08:49:37 GMT";
 
     auto time = parse (s);
     auto text = format (tmp, time);
