@@ -1114,7 +1114,7 @@ unittest
 unittest
 {
     // check with a separator of five spaces
-    with (new Json!(dchar))
+    with (new Json!(char))
     {
         root = object
             (

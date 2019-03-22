@@ -1,9 +1,6 @@
 /*******************************************************************************
 
-        Placeholder for a variety of wee functions. These functions are all
-        templated with the intent of being used for arrays of char, wchar,
-        and dchar. However, they operate correctly with other array types
-        also.
+        Placeholder for a variety of wee functions.
 
         Several of these functions return an index value, representing where
         some criteria was identified. When said criteria is not matched, the
@@ -106,6 +103,7 @@
 
 module ocean.text.Util;
 
+//import ocean.meta.types.Qualifiers : cstring, mstring;
 import ocean.transition;
 import ocean.core.Verify;
 
@@ -119,10 +117,10 @@ version (UnitTest) import ocean.core.Test;
 
 ******************************************************************************/
 
-T[] trim(T) (T[] source)
+inout(char)[] trim (inout(char)[] source)
 {
-        T*   head = source.ptr,
-             tail = head + source.length;
+        inout(char)*   head = source.ptr,
+                       tail = head + source.length;
 
         while (head < tail && isSpace(*head))
                ++head;
@@ -140,10 +138,10 @@ T[] trim(T) (T[] source)
 
 ******************************************************************************/
 
-T[] triml(T) (T[] source)
+inout(char)[] triml (inout(char)[] source)
 {
-        T*   head = source.ptr,
-             tail = head + source.length;
+        inout(char)*   head = source.ptr,
+                       tail = head + source.length;
 
         while (head < tail && isSpace(*head))
                ++head;
@@ -158,10 +156,10 @@ T[] triml(T) (T[] source)
 
 ******************************************************************************/
 
-T[] trimr(T) (T[] source)
+inout(char)[] trimr (inout(char)[] source)
 {
-        T*   head = source.ptr,
-             tail = head + source.length;
+        inout(char)*   head = source.ptr,
+                       tail = head + source.length;
 
         while (tail > head && isSpace(*(tail-1)))
                --tail;
@@ -176,10 +174,10 @@ T[] trimr(T) (T[] source)
 
 ******************************************************************************/
 
-T[] strip(T) (T[] source, T match)
+inout(char)[] strip (inout(char)[] source, char match)
 {
-        T*   head = source.ptr,
-             tail = head + source.length;
+        inout(char)*   head = source.ptr,
+                       tail = head + source.length;
 
         while (head < tail && *head is match)
                ++head;
@@ -197,10 +195,10 @@ T[] strip(T) (T[] source, T match)
 
 ******************************************************************************/
 
-T[] stripl(T) (T[] source, T match)
+inout(char)[] stripl (inout(char)[] source, char match)
 {
-        T*   head = source.ptr,
-             tail = head + source.length;
+        inout(char)* head = source.ptr,
+                     tail = head + source.length;
 
         while (head < tail && *head is match)
                ++head;
@@ -215,10 +213,10 @@ T[] stripl(T) (T[] source, T match)
 
 ******************************************************************************/
 
-T[] stripr(T) (T[] source, T match)
+inout(char)[] stripr (inout(char)[] source, char match)
 {
-        T*   head = source.ptr,
-             tail = head + source.length;
+        inout(char)* head = source.ptr,
+                     tail = head + source.length;
 
         while (tail > head && *(tail-1) is match)
                --tail;
@@ -233,7 +231,7 @@ T[] stripr(T) (T[] source, T match)
 
 ******************************************************************************/
 
-T[] chopl(T) (T[] source, T[] match)
+inout(char)[] chopl (inout(char)[] source, cstring match)
 {
         if (match.length <= source.length)
             if (source[0 .. match.length] == match)
@@ -249,7 +247,7 @@ T[] chopl(T) (T[] source, T[] match)
 
 ******************************************************************************/
 
-T[] chopr(T) (T[] source, T[] match)
+inout(char)[] chopr (inout(char)[] source, cstring match)
 {
         if (match.length <= source.length)
             if (source[$-match.length .. $] == match)
@@ -264,7 +262,7 @@ T[] chopr(T) (T[] source, T[] match)
 
 ******************************************************************************/
 
-T[] replace(T) (T[] source, T match, T replacement)
+mstring replace (mstring source, char match, char replacement)
 {
         foreach (ref c; source)
                  if (c is match)
@@ -279,20 +277,11 @@ T[] replace(T) (T[] source, T match, T replacement)
 
 ******************************************************************************/
 
-T[] substitute(T, TC1, TC2) (T[] source, TC1[] match, TC2[] replacement)
+mstring substitute (cstring source, cstring match, cstring replacement)
 {
-        static assert (is(Unqual!(TC1) == Unqual!(T)));
-        static assert (is(Unqual!(TC2) == Unqual!(T)));
+        mstring output;
 
-        T[] output;
-
-        // `patterns` normally expect same type for both source and
-        // replacement because it returns slice that can refer to either
-        // of those. But `substitute` doesn't care because it does
-        // allocation/appending of that slice anyway. Thus it is ok
-        // to do a cast that would be normally illegal as the slice
-        // is never stored or written to.
-        foreach (s; patterns (source, match, cast(T[]) replacement))
+        foreach (s; patterns (source, match, replacement))
         {
                     output ~= s;
         }
@@ -305,7 +294,7 @@ T[] substitute(T, TC1, TC2) (T[] source, TC1[] match, TC2[] replacement)
 
 ******************************************************************************/
 
-size_t count(T) (T[] source, T[] match)
+size_t count (cstring source, cstring match)
 {
         size_t c;
 
@@ -322,7 +311,7 @@ size_t count(T) (T[] source, T[] match)
 
 ******************************************************************************/
 
-bool contains(T) (T[] source, T match)
+bool contains (cstring source, char match)
 {
         return indexOf (source.ptr, match, source.length) != source.length;
 }
@@ -334,7 +323,7 @@ bool contains(T) (T[] source, T match)
 
 ******************************************************************************/
 
-bool containsPattern(T, TC) (T[] source, TC[] match)
+bool containsPattern (cstring source, cstring match)
 {
         return locatePattern (source, match) != source.length;
 }
@@ -356,9 +345,8 @@ unittest
 
 ******************************************************************************/
 
-size_t index(T, U = size_t, TC) (T[] source, TC[] match, U start=0)
+size_t index (cstring source, cstring match, size_t start=0)
 {
-        static assert (is(Unqual!(T) == Unqual!(TC)));
         return (match.length is 1) ? locate (source, match[0], start)
                                    : locatePattern (source, match, start);
 }
@@ -368,7 +356,7 @@ unittest
     char[] url;
     size_t start;
     cstring CSLASHSLASH = "://";
-    start = index!(typeof(url[0]), typeof(start))(url, CSLASHSLASH);
+    start = index(url, CSLASHSLASH);
 }
 
 /******************************************************************************
@@ -380,9 +368,8 @@ unittest
 
 ******************************************************************************/
 
-size_t rindex(T, TC) (T[] source, TC[] match, size_t start=size_t.max)
+size_t rindex (cstring source, cstring match, size_t start=size_t.max)
 {
-        static assert (is(Unqual!(T) == Unqual!(TC)));
         return (match.length is 1) ? locatePrior (source, match[0], start)
                                    : locatePatternPrior (source, match, start);
 }
@@ -396,10 +383,10 @@ size_t rindex(T, TC) (T[] source, TC[] match, size_t start=size_t.max)
 
 ******************************************************************************/
 
-size_t locate(T, U = size_t)(T[] source, T match, U start=0)
+size_t locate (cstring source, char match, size_t start=0)
 {
         if (start > source.length)
-            start = cast(U) source.length;
+            start = source.length;
 
         return indexOf (source.ptr+start, match, source.length - start) + start;
 }
@@ -408,7 +395,7 @@ unittest
 {
     size_t start;
     char[] url;
-    start = locate!(typeof(url[0]), typeof(start))(url, '/', start);
+    start = locate(url, '/', start);
 }
 
 /******************************************************************************
@@ -420,7 +407,7 @@ unittest
 
 ******************************************************************************/
 
-size_t locatePrior(T) (T[] source, T match, size_t start=size_t.max)
+size_t locatePrior (cstring source, char match, size_t start = size_t.max)
 {
         if (start > source.length)
             start = source.length;
@@ -440,13 +427,11 @@ size_t locatePrior(T) (T[] source, T match, size_t start=size_t.max)
 
 ******************************************************************************/
 
-size_t locatePattern(T, TC) (T[] source, TC[] match, size_t start=0)
+size_t locatePattern (cstring source, cstring match, size_t start=0)
 {
-        static assert (is(Unqual!(TC) == Unqual!(T)));
-
-        size_t    idx;
-        T*      p = source.ptr + start;
-        size_t    extent = source.length - start - match.length + 1;
+        size_t idx;
+        const(char)* p = source.ptr + start;
+        size_t extent = source.length - start - match.length + 1;
 
         if (match.length && extent <= source.length)
         {
@@ -477,7 +462,7 @@ size_t locatePattern(T, TC) (T[] source, TC[] match, size_t start=0)
 
 ******************************************************************************/
 
-size_t locatePatternPrior(T) (in T[] source, in T[] match, size_t start=size_t.max)
+size_t locatePatternPrior (cstring source, cstring match, size_t start=size_t.max)
 {
         auto len = source.length;
 
@@ -510,10 +495,8 @@ size_t locatePatternPrior(T) (in T[] source, in T[] match, size_t start=size_t.m
 
 ******************************************************************************/
 
-T[] head(T, TC) (T[] src, TC[] pattern, out T[] tail)
+inout(char)[] head (inout(char)[] src, cstring pattern, out inout(char)[] tail)
 {
-        static assert (is(Unqual!(T) == Unqual!(TC)));
-
         auto i = locatePattern (src, pattern);
         if (i != src.length)
            {
@@ -534,7 +517,7 @@ T[] head(T, TC) (T[] src, TC[] pattern, out T[] tail)
 
 ******************************************************************************/
 
-T[] tail(T) (T[] src, T[] pattern, out T[] head)
+inout(char)[] tail (inout(char)[] src, cstring pattern, out inout(char)[] head)
 {
         auto i = locatePatternPrior (src, pattern);
         if (i != src.length)
@@ -560,14 +543,16 @@ T[] tail(T) (T[] src, T[] pattern, out T[] head)
 
 ******************************************************************************/
 
-T1[][] delimit(T1, T2) (T1[] src, T2[] set)
+inout(char)[][] delimit (inout(char)[] src, cstring set)
 {
-        static assert (is(Unqual!(T1) == Unqual!(T2)));
+        typeof(return) result;
 
-        T1[][] result;
+        // Cast is needed to avoid instantiating `DelimFruct!(inout(char))`
+        // which can't compile. We cast segment back to `inout` after so the end
+        // result is still type-checked.
 
-        foreach (segment; delimiters (src, set))
-                 result ~= segment;
+        foreach (segment; delimiters (cast(cstring) src, set))
+                 result ~= cast(typeof(src)) segment;
         return result;
 }
 
@@ -582,12 +567,16 @@ T1[][] delimit(T1, T2) (T1[] src, T2[] set)
 
 ******************************************************************************/
 
-T[][] split(T) (T[] src, T[] pattern)
+inout(char)[][] split (inout(char)[] src, cstring pattern)
 {
-        T[][] result;
+        typeof(return) result;
 
-        foreach (segment; patterns (src, pattern))
-                 result ~= segment;
+        // Cast is needed to avoid instantiating `PatternFruct!(inout(char))`
+        // which can't compile. We cast segment back to `inout` after so the end
+        // result is still type-checked.
+
+        foreach (segment; patterns (cast(cstring) src, pattern))
+                 result ~= cast(typeof(src)) segment;
         return result;
 }
 
@@ -602,16 +591,20 @@ T[][] split(T) (T[] src, T[] pattern)
 
 ******************************************************************************/
 
-alias toLines splitLines;
-T[][] toLines(T) (T[] src)
+inout(char)[][] toLines (inout(char)[] src)
 {
+        typeof(return) result;
 
-        T[][] result;
+        // Cast is needed to avoid instantiating `LineFruct!(inout(char))`
+        // which can't compile. We cast line back to `inout` after so the end
+        // result is still type-checked.
 
-        foreach (line; lines (src))
-                 result ~= line;
+        foreach (line; lines (cast(cstring) src))
+                 result ~= cast(typeof(src)) line;
         return result;
 }
+
+alias toLines splitLines;
 
 /******************************************************************************
 
@@ -624,12 +617,17 @@ T[][] toLines(T) (T[] src)
 
 ******************************************************************************/
 
-T[] lineOf(T) (T[] src, size_t index)
+inout(char)[] lineOf (inout(char)[] src, size_t index)
 {
         int i = 0;
-        foreach (line; lines (src))
+
+        // Cast is needed to avoid instantiating `LineFruct!(inout(char))`
+        // which can't compile. We cast line back to `inout` after so the end
+        // result is still type-checked.
+
+        foreach (line; lines(cast(cstring) src))
                  if (i++ is index)
-                     return line;
+                     return cast(typeof(return)) line;
         return null;
 }
 
@@ -645,9 +643,9 @@ T[] lineOf(T) (T[] src, size_t index)
 
 ******************************************************************************/
 
-T[] join(T) (in T[][] src, in T[] postfix=null, T[] dst = null)
+mstring join (const(char[])[] src, cstring postfix=null, mstring dst = null)
 {
-        return combine!(T) (dst, null, postfix, src);
+        return combine(dst, null, postfix, src);
 }
 
 unittest
@@ -655,7 +653,7 @@ unittest
     test (join([ "aaa", "bbb", "ccc" ], ",") == "aaa,bbb,ccc");
 
     // ensure `join` works with differently qualified arguments
-    Const!(char[][]) mut = [ "xxx".dup, "yyy".dup, "zzz" ];
+    const(char[][]) mut = [ "xxx".dup, "yyy".dup, "zzz" ];
     char[20] buf;
     auto ret = join(mut, " ", buf);
     test (ret == "xxx yyy zzz");
@@ -677,9 +675,9 @@ unittest
 
 ******************************************************************************/
 
-T[] prefix(T) (T[] dst, T[] prefix, T[][] src...)
+mstring prefix (mstring dst, cstring prefix, const(char[])[] src...)
 {
-        return combine!(T) (dst, prefix, null, src);
+        return combine(dst, prefix, null, src);
 }
 
 /******************************************************************************
@@ -697,9 +695,9 @@ T[] prefix(T) (T[] dst, T[] prefix, T[][] src...)
 
 ******************************************************************************/
 
-T[] postfix(T) (T[] dst, T[] postfix, T[][] src...)
+mstring postfix (mstring dst, cstring postfix, cstring[] src...)
 {
-        return combine!(T) (dst, null, postfix, src);
+        return combine(dst, null, postfix, src);
 }
 
 /******************************************************************************
@@ -717,7 +715,7 @@ T[] postfix(T) (T[] dst, T[] postfix, T[][] src...)
 
 ******************************************************************************/
 
-T[] combine(T) (T[] dst, in T[] prefix, in T[] postfix, in T[][] src ...)
+mstring combine (mstring dst, cstring prefix, cstring postfix, const(char[])[] src ...)
 {
         size_t len = src.length * prefix.length +
                    src.length * postfix.length;
@@ -757,7 +755,7 @@ T[] combine(T) (T[] dst, in T[] prefix, in T[] postfix, in T[][] src ...)
 
 ******************************************************************************/
 
-Const!(TM)[] repeat(T, TM = Unqual!(T)) (T[] src, size_t count, TM[] dst=null)
+mstring repeat (cstring src, size_t count, mstring dst=null)
 {
         size_t len = src.length * count;
         if (len is 0)
@@ -778,12 +776,9 @@ Const!(TM)[] repeat(T, TM = Unqual!(T)) (T[] src, size_t count, TM[] dst=null)
 
 ******************************************************************************/
 
-bool isSpace(T) (T c)
+bool isSpace (char c)
 {
-        static if (T.sizeof is 1)
-                   return (c <= 32 && (c is ' ' || c is '\t' || c is '\r' || c is '\n' || c is '\f' || c is '\v'));
-        else
-           return (c <= 32 && (c is ' ' || c is '\t' || c is '\r' || c is '\n' || c is '\f' || c is '\v')) || (c is '\u2028' || c is '\u2029');
+        return (c <= 32 && (c is ' ' || c is '\t' || c is '\r' || c is '\n' || c is '\f' || c is '\v'));
 }
 
 /******************************************************************************
@@ -792,9 +787,8 @@ bool isSpace(T) (T c)
 
 ******************************************************************************/
 
-bool matching(T1, T2) (T1* s1, T2* s2, size_t length)
+bool matching (const(char)* s1, const(char)* s2, size_t length)
 {
-        static assert (is(Unqual!(T2) == Unqual!(T1)));
         return mismatch(s1, s2, length) is length;
 }
 
@@ -806,58 +800,36 @@ bool matching(T1, T2) (T1* s1, T2* s2, size_t length)
 
 ******************************************************************************/
 
-size_t indexOf(T) (T* str, T match, size_t length)
+size_t indexOf (const(char)* str, char match, size_t length)
 {
-        static if (T.sizeof == 1)
-                   enum : size_t {m1 = cast(size_t) 0x0101010101010101,
-                                  m2 = cast(size_t) 0x8080808080808080}
-        static if (T.sizeof == 2)
-                   enum : size_t {m1 = cast(size_t) 0x0001000100010001,
-                                  m2 = cast(size_t) 0x8000800080008000}
-        static if (T.sizeof == 4)
-                   enum : size_t {m1 = cast(size_t) 0x0000000100000001,
-                                  m2 = cast(size_t) 0x8000000080000000}
+        enum m1 = cast(size_t) 0x0101010101010101;
+        enum m2 = cast(size_t) 0x8080808080808080;
 
-        static if (T.sizeof < size_t.sizeof)
+        if (length)
         {
-                if (length)
-                   {
-                   size_t m = match;
-                   m += m << (8 * T.sizeof);
+           size_t m = match;
+           m += m << 8;
+           m += (m << (8 * 2));
+           m += (m << (8 * 4));
 
-                   static if (T.sizeof < size_t.sizeof / 2)
-                              m += (m << (8 * T.sizeof * 2));
+           auto p = str;
+           auto e = p + length - size_t.sizeof;
+           while (p < e)
+           {
+                 // clear matching T segments
+                 auto v = (*cast(size_t*) p) ^ m;
+                 // test for zero, courtesy of Alan Mycroft
+                 if ((v - m1) & ~v & m2)
+                      break;
+                 p += size_t.sizeof;
+           }
 
-                   static if (T.sizeof < size_t.sizeof / 4)
-                              m += (m << (8 * T.sizeof * 4));
-
-                   auto p = str;
-                   auto e = p + length - size_t.sizeof/T.sizeof;
-                   while (p < e)
-                         {
-                         // clear matching T segments
-                         auto v = (*cast(size_t*) p) ^ m;
-                         // test for zero, courtesy of Alan Mycroft
-                         if ((v - m1) & ~v & m2)
-                              break;
-                         p += size_t.sizeof/T.sizeof;
-                         }
-
-                   e += size_t.sizeof/T.sizeof;
-                   while (p < e)
-                          if (*p++ is match)
-                              return cast(size_t) (p - str - 1);
-                   }
-                return length;
+           e += size_t.sizeof;
+           while (p < e)
+                  if (*p++ is match)
+                      return cast(size_t) (p - str - 1);
         }
-        else
-        {
-                auto len = length;
-                for (auto p=str-1; len--;)
-                     if (*++p is match)
-                         return cast(size_t) (p - str);
-                return length;
-        }
+        return length;
 }
 
 /******************************************************************************
@@ -872,43 +844,30 @@ size_t indexOf(T) (T* str, T match, size_t length)
 
 ******************************************************************************/
 
-size_t mismatch(T1, T2) (T1* s1, T2* s2, size_t length)
+size_t mismatch (const(char)* s1, const(char)* s2, size_t length)
 {
-        static assert (is(Unqual!(T1) == Unqual!(T2)));
-        alias T1 T;
-
         verify(s1 && s2);
 
-        static if (T.sizeof < size_t.sizeof)
+        if (length)
         {
-                if (length)
-                   {
-                   auto start = s1;
-                   auto e = start + length - size_t.sizeof/T.sizeof;
+           auto start = s1;
+           auto e = start + length - size_t.sizeof;
 
-                   while (s1 < e)
-                         {
-                         if (*cast(size_t*) s1 != *cast(size_t*) s2)
-                             break;
-                         s1 += size_t.sizeof/T.sizeof;
-                         s2 += size_t.sizeof/T.sizeof;
-                         }
+           while (s1 < e)
+                 {
+                 if (*cast(size_t*) s1 != *cast(size_t*) s2)
+                     break;
+                 s1 += size_t.sizeof;
+                 s2 += size_t.sizeof;
+                 }
 
-                   e += size_t.sizeof/T.sizeof;
-                   while (s1 < e)
-                          if (*s1++ != *s2++)
-                              return s1 - start - 1;
-                   }
-                return length;
+           e += size_t.sizeof;
+           while (s1 < e)
+                  if (*s1++ != *s2++)
+                      return s1 - start - 1;
         }
-        else
-        {
-                auto len = length;
-                for (auto p=s1-1; len--;)
-                     if (*++p != *s2++)
-                         return p - s1;
-                return length;
-        }
+
+        return length;
 }
 
 /******************************************************************************
@@ -950,13 +909,14 @@ LineFruct!(T) lines(T) (T[] src)
                  ...
         ---
 
+        Has to be templated to propagate mutable/const input qualifier to
+        return struct.
+
 ******************************************************************************/
 
-DelimFruct!(T1) delimiters(T1, T2) (T1[] src, T2[] set)
+DelimFruct!T delimiters (T) (T[] src, cstring set)
 {
-        static assert (is(Unqual!(T1) == Unqual!(T2)));
-
-        DelimFruct!(T1) elements;
+        DelimFruct!T elements;
         elements.set = set;
         elements.src = src;
         return elements;
@@ -978,11 +938,9 @@ DelimFruct!(T1) delimiters(T1, T2) (T1[] src, T2[] set)
 
 ******************************************************************************/
 
-PatternFruct!(T) patterns(T, TC) (T[] src, TC[] pattern, T[] sub = null)
+PatternFruct!T patterns(T) (T[] src, cstring pattern, T[] sub = null)
 {
-        static assert (is(Unqual!(T) == Unqual!(TC)));
-
-        PatternFruct!(T) elements;
+        PatternFruct!T elements;
         elements.pattern = pattern;
         elements.sub = sub;
         elements.src = src;
@@ -1017,10 +975,9 @@ unittest
 
 ******************************************************************************/
 
-QuoteFruct!(T) quotes(T, TC) (T[] src, TC[] set)
+QuoteFruct!T quotes(T) (T[] src, cstring set)
 {
-        static assert (is(Unqual!(TC) == Unqual!(T)));
-        QuoteFruct!(T) quotes;
+        QuoteFruct!T quotes;
         quotes.set = set;
         quotes.src = src;
         return quotes;
@@ -1042,30 +999,15 @@ QuoteFruct!(T) quotes(T, TC) (T[] src, TC[] set)
 
 *******************************************************************************/
 
-Const!(char)[] layout(mstring output, cstring format, cstring[] arguments ...)
+cstring layout(mstring output, cstring format, const(char[])[] arguments ...)
 {
     return layout_(output, format, arguments);
 }
 
-/// ditto
-Const!(wchar)[] layout(wchar[] output, Const!(wchar)[] format, Const!(wchar)[][] arguments ...)
+private cstring layout_ (mstring output, cstring format, const(char[])[] arguments)
 {
-    return layout_(output, format, arguments);
-}
-
-/// ditto
-Const!(dchar)[] layout(dchar[] output, Const!(dchar)[] format, Const!(dchar)[][] arguments ...)
-{
-    return layout_(output, format, arguments);
-}
-
-private Const!(T)[] layout_(T, TC, T2) (T[] output, TC[] format, T2[][] arguments)
-{
-        static assert (is(Unqual!(T) == Unqual!(TC)));
-        static assert (is(Unqual!(T) == Unqual!(T2)));
-
-        static TC[] badarg   = "{index out of range}";
-        static TC[] toosmall = "{output buffer too small}";
+        static badarg   = "{index out of range}";
+        static toosmall = "{output buffer too small}";
 
         size_t  pos,
                 args;
@@ -1124,7 +1066,7 @@ private Const!(T)[] layout_(T, TC, T2) (T[] output, TC[] format, T2[][] argument
 
 ******************************************************************************/
 
-Const!(TM)[] unescape(T, TM = Unqual!(T)) (T[] src, TM[] dst = null)
+cstring unescape (cstring src, mstring dst = null)
 {
         ptrdiff_t delta;
         auto s = src.ptr;
@@ -1154,7 +1096,7 @@ Const!(TM)[] unescape(T, TM = Unqual!(T)) (T[] src, TM[] dst = null)
                  }
 
               // translate \char
-              TM c = s[1];
+              char c = s[1];
               switch (c)
                      {
                       case '\\':
@@ -1349,10 +1291,10 @@ private struct LineFruct(T)
 
 ******************************************************************************/
 
-private struct DelimFruct(T)
+private struct DelimFruct (T)
 {
-        private T[]         src;
-        private Const!(T)[] set;
+        private T[]     src;
+        private cstring set;
 
         int opApply (scope int delegate (ref T[] token) dg)
         {
@@ -1397,10 +1339,10 @@ private struct DelimFruct(T)
 
 ******************************************************************************/
 
-public struct PatternFruct(T)
+public struct PatternFruct (T)
 {
         private T[] src, sub;
-        private Const!(Unqual!(T))[] pattern;
+        private cstring pattern;
 
         int opApply (scope int delegate (ref T[] token) dg)
         {
@@ -1435,16 +1377,16 @@ public struct PatternFruct(T)
 
 ******************************************************************************/
 
-private struct QuoteFruct(T)
+private struct QuoteFruct (T)
 {
-        private Const!(T)[] src;
-        private Const!(T)[] set;
+        private T[]     src;
+        private cstring set;
 
-        int opApply (scope int delegate (ref Const!(T)[] token) dg)
+        int opApply (scope int delegate (ref T[] token) dg)
         {
                 int     ret;
                 size_t  mark;
-                Const!(T)[] token;
+                T[]     token;
 
                 if (set.length)
                     for (size_t i=0; i < src.length; ++i)
@@ -1487,23 +1429,10 @@ unittest
     test (indexOf ("abc".ptr, 'd', 3) is 3);
     test (indexOf ("abcabcabc".ptr, 'd', 9) is 9);
 
-    test (indexOf ("abc"d.ptr, cast(dchar)'c', 3) is 2);
-    test (indexOf ("abc"d.ptr, cast(dchar)'d', 3) is 3);
-
-    test (indexOf ("abc"w.ptr, cast(wchar)'c', 3) is 2);
-    test (indexOf ("abc"w.ptr, cast(wchar)'d', 3) is 3);
-    test (indexOf ("abcdefghijklmnopqrstuvwxyz"w.ptr, cast(wchar)'x', 25) is 23);
-
     test (mismatch ("abc".ptr, "abc".ptr, 3) is 3);
     test (mismatch ("abc".ptr, "abd".ptr, 3) is 2);
     test (mismatch ("abc".ptr, "acc".ptr, 3) is 1);
     test (mismatch ("abc".ptr, "ccc".ptr, 3) is 0);
-
-    test (mismatch ("abc"w.ptr, "abc"w.ptr, 3) is 3);
-    test (mismatch ("abc"w.ptr, "acc"w.ptr, 3) is 1);
-
-    test (mismatch ("abc"d.ptr, "abc"d.ptr, 3) is 3);
-    test (mismatch ("abc"d.ptr, "acc"d.ptr, 3) is 1);
 
     test (matching ("abc".ptr, "abc".ptr, 3));
     test (matching ("abc".ptr, "abb".ptr, 3) is false);
