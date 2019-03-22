@@ -27,7 +27,7 @@ import ocean.transition;
 
 struct HttpConst
 {
-        const istring Eol = "\r\n";
+        enum istring Eol = "\r\n";
 }
 
 /*******************************************************************************
@@ -51,66 +51,66 @@ struct HttpHeaderName
 struct HttpHeader
 {
         // size of both the request & response buffer (per thread)
-        const int IOBufferSize                 = 16 * 1024;
+        enum int IOBufferSize                 = 16 * 1024;
 
         // maximum length for POST parameters (to avoid DOS ...)
-        const int MaxPostParamSize             = 4 * 1024;
+        enum int MaxPostParamSize             = 4 * 1024;
 
-        const HttpHeaderName Version           = {"HTTP/1.1"};
-        const HttpHeaderName TextHtml          = {"text/html"};
+        enum HttpHeaderName Version           = {"HTTP/1.1"};
+        enum HttpHeaderName TextHtml          = {"text/html"};
 
-        const HttpHeaderName Accept            = {"Accept:"};
-        const HttpHeaderName AcceptCharset     = {"Accept-Charset:"};
-        const HttpHeaderName AcceptEncoding    = {"Accept-Encoding:"};
-        const HttpHeaderName AcceptLanguage    = {"Accept-Language:"};
-        const HttpHeaderName AcceptRanges      = {"Accept-Ranges:"};
-        const HttpHeaderName Age               = {"Age:"};
-        const HttpHeaderName Allow             = {"Allow:"};
-        const HttpHeaderName Authorization     = {"Authorization:"};
-        const HttpHeaderName CacheControl      = {"Cache-Control:"};
-        const HttpHeaderName Connection        = {"Connection:"};
-        const HttpHeaderName ContentEncoding   = {"Content-Encoding:"};
-        const HttpHeaderName ContentLanguage   = {"Content-Language:"};
-        const HttpHeaderName ContentLength     = {"Content-Length:"};
-        const HttpHeaderName ContentLocation   = {"Content-Location:"};
-        const HttpHeaderName ContentRange      = {"Content-Range:"};
-        const HttpHeaderName ContentType       = {"Content-Type:"};
-        const HttpHeaderName Cookie            = {"Cookie:"};
-        const HttpHeaderName Date              = {"Date:"};
-        const HttpHeaderName ETag              = {"ETag:"};
-        const HttpHeaderName Expect            = {"Expect:"};
-        const HttpHeaderName Expires           = {"Expires:"};
-        const HttpHeaderName From              = {"From:"};
-        const HttpHeaderName Host              = {"Host:"};
-        const HttpHeaderName Identity          = {"Identity:"};
-        const HttpHeaderName IfMatch           = {"If-Match:"};
-        const HttpHeaderName IfModifiedSince   = {"If-Modified-Since:"};
-        const HttpHeaderName IfNoneMatch       = {"If-None-Match:"};
-        const HttpHeaderName IfRange           = {"If-Range:"};
-        const HttpHeaderName IfUnmodifiedSince = {"If-Unmodified-Since:"};
-        const HttpHeaderName KeepAlive         = {"Keep-Alive:"};
-        const HttpHeaderName LastModified      = {"Last-Modified:"};
-        const HttpHeaderName Location          = {"Location:"};
-        const HttpHeaderName MaxForwards       = {"Max-Forwards:"};
-        const HttpHeaderName MimeVersion       = {"MIME-Version:"};
-        const HttpHeaderName Pragma            = {"Pragma:"};
-        const HttpHeaderName ProxyAuthenticate = {"Proxy-Authenticate:"};
-        const HttpHeaderName ProxyConnection   = {"Proxy-Connection:"};
-        const HttpHeaderName Range             = {"Range:"};
-        const HttpHeaderName Referrer          = {"Referer:"};
-        const HttpHeaderName RetryAfter        = {"Retry-After:"};
-        const HttpHeaderName Server            = {"Server:"};
-        const HttpHeaderName ServletEngine     = {"Servlet-Engine:"};
-        const HttpHeaderName SetCookie         = {"Set-Cookie:"};
-        const HttpHeaderName SetCookie2        = {"Set-Cookie2:"};
-        const HttpHeaderName TE                = {"TE:"};
-        const HttpHeaderName Trailer           = {"Trailer:"};
-        const HttpHeaderName TransferEncoding  = {"Transfer-Encoding:"};
-        const HttpHeaderName Upgrade           = {"Upgrade:"};
-        const HttpHeaderName UserAgent         = {"User-Agent:"};
-        const HttpHeaderName Vary              = {"Vary:"};
-        const HttpHeaderName Warning           = {"Warning:"};
-        const HttpHeaderName WwwAuthenticate   = {"WWW-Authenticate:"};
+        enum HttpHeaderName Accept            = {"Accept:"};
+        enum HttpHeaderName AcceptCharset     = {"Accept-Charset:"};
+        enum HttpHeaderName AcceptEncoding    = {"Accept-Encoding:"};
+        enum HttpHeaderName AcceptLanguage    = {"Accept-Language:"};
+        enum HttpHeaderName AcceptRanges      = {"Accept-Ranges:"};
+        enum HttpHeaderName Age               = {"Age:"};
+        enum HttpHeaderName Allow             = {"Allow:"};
+        enum HttpHeaderName Authorization     = {"Authorization:"};
+        enum HttpHeaderName CacheControl      = {"Cache-Control:"};
+        enum HttpHeaderName Connection        = {"Connection:"};
+        enum HttpHeaderName ContentEncoding   = {"Content-Encoding:"};
+        enum HttpHeaderName ContentLanguage   = {"Content-Language:"};
+        enum HttpHeaderName ContentLength     = {"Content-Length:"};
+        enum HttpHeaderName ContentLocation   = {"Content-Location:"};
+        enum HttpHeaderName ContentRange      = {"Content-Range:"};
+        enum HttpHeaderName ContentType       = {"Content-Type:"};
+        enum HttpHeaderName Cookie            = {"Cookie:"};
+        enum HttpHeaderName Date              = {"Date:"};
+        enum HttpHeaderName ETag              = {"ETag:"};
+        enum HttpHeaderName Expect            = {"Expect:"};
+        enum HttpHeaderName Expires           = {"Expires:"};
+        enum HttpHeaderName From              = {"From:"};
+        enum HttpHeaderName Host              = {"Host:"};
+        enum HttpHeaderName Identity          = {"Identity:"};
+        enum HttpHeaderName IfMatch           = {"If-Match:"};
+        enum HttpHeaderName IfModifiedSince   = {"If-Modified-Since:"};
+        enum HttpHeaderName IfNoneMatch       = {"If-None-Match:"};
+        enum HttpHeaderName IfRange           = {"If-Range:"};
+        enum HttpHeaderName IfUnmodifiedSince = {"If-Unmodified-Since:"};
+        enum HttpHeaderName KeepAlive         = {"Keep-Alive:"};
+        enum HttpHeaderName LastModified      = {"Last-Modified:"};
+        enum HttpHeaderName Location          = {"Location:"};
+        enum HttpHeaderName MaxForwards       = {"Max-Forwards:"};
+        enum HttpHeaderName MimeVersion       = {"MIME-Version:"};
+        enum HttpHeaderName Pragma            = {"Pragma:"};
+        enum HttpHeaderName ProxyAuthenticate = {"Proxy-Authenticate:"};
+        enum HttpHeaderName ProxyConnection   = {"Proxy-Connection:"};
+        enum HttpHeaderName Range             = {"Range:"};
+        enum HttpHeaderName Referrer          = {"Referer:"};
+        enum HttpHeaderName RetryAfter        = {"Retry-After:"};
+        enum HttpHeaderName Server            = {"Server:"};
+        enum HttpHeaderName ServletEngine     = {"Servlet-Engine:"};
+        enum HttpHeaderName SetCookie         = {"Set-Cookie:"};
+        enum HttpHeaderName SetCookie2        = {"Set-Cookie2:"};
+        enum HttpHeaderName TE                = {"TE:"};
+        enum HttpHeaderName Trailer           = {"Trailer:"};
+        enum HttpHeaderName TransferEncoding  = {"Transfer-Encoding:"};
+        enum HttpHeaderName Upgrade           = {"Upgrade:"};
+        enum HttpHeaderName UserAgent         = {"User-Agent:"};
+        enum HttpHeaderName Vary              = {"Vary:"};
+        enum HttpHeaderName Warning           = {"Warning:"};
+        enum HttpHeaderName WwwAuthenticate   = {"WWW-Authenticate:"};
 }
 
 
