@@ -44,9 +44,9 @@ jobs:
           env: DMD=2.078.3.s* F=devel DFLAGS=-debug=ISelectClient
           script: 2>/dev/null beaver dlang make
         - <<: *test-matrix-d2
-          env: DMD=2.078.* F=production
+          env: DMD=2.081.* F=production
         - <<: *test-matrix-d2
-          env: DMD=2.078.* F=devel
+          env: DMD=2.081.* F=devel
 
         # Additional stages
 
