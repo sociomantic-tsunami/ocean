@@ -51,7 +51,8 @@ class IBucketElementGCAllocator: IAllocator
 
     protected override void deallocate ( void* element )
     {
-        delete element;
+        import core.memory;
+        GC.free(element);
     }
 
     /***************************************************************************

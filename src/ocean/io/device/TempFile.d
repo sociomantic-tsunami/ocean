@@ -275,8 +275,9 @@ class TempFile : File
             istring prefix=DEFAULT_PREFIX,
             istring suffix=DEFAULT_SUFFIX)
     {
+        import core.memory;
         auto junk = new char[length];
-        scope(exit) delete junk;
+        scope(exit) GC.free(junk.ptr);
 
         foreach( ref c ; junk )
         {

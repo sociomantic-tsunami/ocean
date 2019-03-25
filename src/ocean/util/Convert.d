@@ -1018,7 +1018,6 @@ D toArrayFromArray(D,S)(S value)
     alias ElementTypeOf!(D) De;
 
     D result; result.length = value.length;
-    scope(failure) delete result;
 
     foreach( i,e ; value )
         result[i] = to!(De)(e);
