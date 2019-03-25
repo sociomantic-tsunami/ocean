@@ -13,7 +13,7 @@
 
 ******************************************************************************/
 
-module ocean.task.extensions.package_;
+module ocean.task.extensions;
 
 public import ocean.task.extensions.ExceptionForwarding;
 
