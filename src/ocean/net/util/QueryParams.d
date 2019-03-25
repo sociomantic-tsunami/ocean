@@ -335,26 +335,6 @@ class FullQueryParamSet: QueryParamSet
 
     /**************************************************************************
 
-        'foreach' iteration over parameter key/value pairs
-
-     **************************************************************************/
-
-    public override int opApply ( scope int delegate ( ref cstring key, ref cstring val ) dg )
-    {
-        int result = super.opApply(dg);
-
-        if (!result) foreach (ref remaining_element; this.remaining[])
-        {
-            this.iterate(remaining_element, dg, result);
-
-            if (result) break;
-        }
-
-        return result;
-    }
-
-    /**************************************************************************
-
         Resets everything.
 
      **************************************************************************/
@@ -478,8 +458,11 @@ unittest
         }
     }
 
-    foreach (f; found)
+    foreach (f; found[0..2])
         test(f);
+
+    foreach (f; found[2..4])
+        test(!f);
 
     params.reset();
     test(params["hello"] is null);
