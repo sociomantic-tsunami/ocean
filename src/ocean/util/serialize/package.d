@@ -74,6 +74,6 @@
 
 ******************************************************************************/
 
-module ocean.util.serialize.package_;
+module ocean.util.serialize;
 
-public import ocean.util.serialize.contiguous.package_;
+public import ocean.util.serialize.contiguous;

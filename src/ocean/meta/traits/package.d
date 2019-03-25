@@ -15,7 +15,7 @@
 
 *******************************************************************************/
 
-module ocean.meta.traits.package_;
+module ocean.meta.traits;
 
 public import ocean.meta.traits.Basic;
 public import ocean.meta.traits.Indirections;
