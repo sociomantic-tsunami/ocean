@@ -19,7 +19,7 @@ module ocean.util.container.cache.CachingStructLoader_test;
 
 import ocean.util.container.cache.CachingStructLoader,
        ocean.util.container.cache.ExpiringCache;
-import ocean.util.serialize.contiguous.package_;
+import ocean.util.serialize.contiguous;
 
 import ocean.io.select.EpollSelectDispatcher,
        ocean.io.select.client.TimerEvent;

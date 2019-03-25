@@ -22,7 +22,7 @@ import ocean.util.container.cache.ExpiringCache,
        ocean.util.container.cache.model.IExpiringCacheInfo;
 import CacheValue = ocean.util.container.cache.model.Value;
 
-import ocean.util.serialize.contiguous.package_;
+import ocean.util.serialize.contiguous;
 
 import core.stdc.time: time_t, time;
 

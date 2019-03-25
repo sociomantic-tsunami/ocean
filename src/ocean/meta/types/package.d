@@ -21,7 +21,7 @@
 
 *******************************************************************************/
 
-module ocean.meta.types.package_;
+module ocean.meta.types;
 
 public import ocean.meta.types.Arrays;
 public import ocean.meta.types.Enum;
