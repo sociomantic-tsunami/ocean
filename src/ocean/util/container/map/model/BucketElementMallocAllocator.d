@@ -362,6 +362,5 @@ version (UnitTest)
         // Test if creating a map with a bucket compiles.
         auto allocator = new
             BucketElementMallocAllocator!(Bucket!(hash_t.sizeof, hash_t));
-        delete allocator;
     }
 }

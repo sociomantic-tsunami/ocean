@@ -606,14 +606,18 @@ public abstract class IAggregatePool ( T ) : IPool, IFreeList!(ItemType_!(T))
     }
     body
     {
+        import core.memory;
+
         static if (is (ItemType == class))
         {
-            delete item.obj;
+            destroy(item.obj);
+            GC.free(cast(void*) item.obj);
             item.obj = null;
         }
         else
         {
-            delete item.ptr;
+            destroy(item.ptr);
+            GC.free(cast(void*) item.ptr);
             item.ptr = null;
         }
     }

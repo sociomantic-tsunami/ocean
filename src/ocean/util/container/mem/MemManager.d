@@ -185,7 +185,8 @@ private class GCMemManager ( bool gc_aware ) : IMemManager
 
     public override void destroy ( ubyte[] buffer )
     {
-        delete buffer;
+        import core.memory;
+        GC.free(buffer.ptr);
     }
 
     /***************************************************************************

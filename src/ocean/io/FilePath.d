@@ -780,7 +780,11 @@ class FilePath : PathView
                     if (filter is null || filter (p, info.folder))
                         paths ~= p;
                     else
-                       delete p;
+                    {
+                       import core.memory;
+                       destroy(p);
+                       GC.free(cast(void*) p);
+                    }
                     }
             return paths;
     }
