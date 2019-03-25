@@ -335,7 +335,8 @@ class MemoryDevice : IConduit
 
     override void close ( )
     {
-        delete this.data;
+        import core.memory;
+        GC.free(this.data.ptr);
         this.data = null;
         this.position = 0;
     }

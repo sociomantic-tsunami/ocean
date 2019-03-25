@@ -517,12 +517,13 @@ package struct FS
 
         scope (exit)
         {
+            import core.memory;
             core.sys.posix.dirent.closedir (dir);
-            delete sfnbuf;
+            GC.free(sfnbuf.ptr);
 
             // only delete when we dupped it
             if (folder[$-2] != '/')
-                delete prefix;
+                GC.free(prefix.ptr);
         }
 
         // ensure a trailing '/' is present
