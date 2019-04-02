@@ -701,6 +701,12 @@ public abstract class DaemonApp : Application,
         override this method with own behaviour. `super.onSignal` is not needed
         to be called when doing so.
 
+        Note that the default `onSignal` implementation handles `SIGTERM` and
+        calls `theScheduler.shutdown` upon receiving the signal. This results in
+        clean termination but may also cause some in-progress data loss from
+        killed tasks - any application that must never loose data needs to
+        implement own handler.
+
     ***************************************************************************/
 
     override public void onSignal ( int signum )
@@ -866,6 +872,12 @@ unittest
         }
 
         // Handle those signals we were interested in
+        //
+        // Note that DaemonApp provides default `onSignal` implementation
+        // that handles `SIGTERM` and calls `theScheduler.shutdown` upon
+        // receiving the signal. This results in clean termination but may also
+        // cause some in-progress data loss from killed tasks - any application
+        // that must never loose data needs to implement own handler.
         override public void onSignal ( int signal )
         {
             switch ( signal )
