@@ -13,7 +13,7 @@
 
  ******************************************************************************/
 
-module ocean.time.model.IMicrosecondsClock;
+deprecated module ocean.time.model.IMicrosecondsClock;
 
 
 

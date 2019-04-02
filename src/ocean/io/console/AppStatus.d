@@ -67,7 +67,6 @@ import ocean.io.Stdout;
 import ocean.io.Terminal;
 import ocean.io.model.IConduit;
 import ocean.text.convert.Formatter;
-import ocean.time.model.IMicrosecondsClock;
 import ocean.time.MicrosecondsClock;
 import ocean.transition;
 import ocean.util.container.AppendBuffer;
