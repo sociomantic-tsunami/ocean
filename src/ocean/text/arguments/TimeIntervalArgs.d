@@ -52,6 +52,7 @@ public void setupTimeIntervalArgs ( Arguments args, bool required )
         .params(1, 2)
         .help("Specify a time interval. It 1 or 2 values, where they can be:\n\t" ~
             "'now' an alias for the current timestamp\n\t" ~
+            "'yesterday' an alias for yesterdays date\n\t" ~
             "an integer for unix timestamps\n\t" ~
             "a time duration `{int}m`. Supported units are [m]inutes, [h]ours and [d]ays\n\t" ~
             "an iso1806 date (YYYY-MM-DD)");
@@ -152,7 +153,7 @@ public TimestampInterval processTimeIntervalArgs ( Arguments args )
     ISO 8601 date then the date_time will be added to the converted value.
 
     Params:
-        value = `now`, a string timestamp or iso8601 date
+        value = `now`, "yesterday", a string timestamp or iso8601 date
         date_time = seconds added to the converted iso8601 timestamp
 
     Returns:
@@ -165,6 +166,12 @@ private long parseDateString ( cstring value, long date_time )
     if ( value == "now" )
     {
         return time(null);
+    }
+
+    if ( value == "yesterday" )
+    {
+        auto cur_time = time(null) - SECONDS_IN_DAY;
+        return cur_time - (cur_time % SECONDS_IN_DAY);
     }
 
     long timestamp;
@@ -304,6 +311,18 @@ unittest
     setupTimeIntervalArgs(args, false);
     args.parse("--time-interval invalid 1m");
     Test.testThrown!(Exception)(processTimeIntervalArgs(args));
+
+    /// Test range for all of "yesterday"
+    args = new Arguments;
+
+    setupTimeIntervalArgs(args, false);
+    args.parse("--time-interval yesterday");
+    interval = processTimeIntervalArgs(args);
+
+    /// 03/31/2019 @ 12:00am(UTC)
+    Test.test!("==")(interval.begin, 1553990400);
+    /// 03/31/2019 @ 11:59pm (UTC)
+    Test.test!("==")(interval.end, 1554076799);
 }
 
 /******************************************************************************
