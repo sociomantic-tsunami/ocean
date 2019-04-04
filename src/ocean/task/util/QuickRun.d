@@ -36,7 +36,7 @@ import ocean.core.Verify;
 
 *******************************************************************************/
 
-public int quickRun ( int delegate () dg )
+public int quickRun ( scope int delegate () dg )
 {
     auto task = new DgTask(dg);
     theScheduler.queue(task);
@@ -71,7 +71,7 @@ private class DgTask : Task
     int delegate () dg;
     int result;
 
-    this (int delegate() dg)
+    this (scope int delegate() dg)
     {
         this.dg = dg;
     }

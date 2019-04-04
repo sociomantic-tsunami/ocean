@@ -294,11 +294,11 @@ struct MinMax ( T, T min, T max, T init = T.init )
     private void check_ ( bool found, cstring group, cstring name )
     {
         enforce!(ConfigException)(
-            Value(this.value) >= min,
+            Value((&this).value) >= min,
             format("Configuration key {}.{} is smaller than allowed minimum of {}",
                    group, name, min));
         enforce!(ConfigException)(
-            Value(this.value) <= max,
+            Value((&this).value) <= max,
             format("Configuration key {}.{} is bigger than allowed maximum of {}",
                    group, name, max));
     }
@@ -342,7 +342,7 @@ struct Min ( T, T min, T init = T.init )
     private void check_ ( bool found, cstring group, cstring name )
     {
         enforce!(ConfigException)(
-            Value(this.value) >= min,
+            Value((&this).value) >= min,
             format("Configuration key {}.{} is smaller than allowed minimum of {}",
                    group, name, min));
     }
@@ -387,7 +387,7 @@ struct Max ( T, T max, T init = T.init )
     private void check_ ( bool found, cstring group, cstring name )
     {
         enforce!(ConfigException)(
-            Value(this.value) <= max,
+            Value((&this).value) <= max,
             format("Configuration key {}.{} is bigger than allowed maximum of {}",
                    group, name, max));
     }
@@ -460,7 +460,7 @@ struct LimitCmp ( T, T init = T.init, alias comp = defComp!(T), Set... )
                     ~ typeof(el).stringof ~ " to " ~ T.stringof ~ " )"
             );
 
-            if ( comp(Value(this.value), el) )
+            if ( comp(Value((&this).value), el) )
                 return;
         }
 
@@ -474,7 +474,7 @@ struct LimitCmp ( T, T init = T.init, alias comp = defComp!(T), Set... )
         throw new ConfigException(
             format("Value '{}' of configuration key {}.{} is not within the "
                    ~ "set of allowed values ({})",
-                   Value(this.value), group, name, allowed_vals[2 .. $]));
+                   Value((&this).value), group, name, allowed_vals[2 .. $]));
     }
 }
 
@@ -553,7 +553,7 @@ struct SetInfo ( T )
     {
         if ( set )
         {
-            return Value(this.value);
+            return Value((&this).value);
         }
 
         return def;
@@ -581,7 +581,7 @@ struct SetInfo ( T )
 
     private void check_ ( bool found, cstring group, cstring name )
     {
-        this.set = found;
+        (&this).set = found;
     }
 }
 
@@ -598,22 +598,22 @@ struct SetInfo ( T )
 public template IsSupported ( T )
 {
     static if ( is(T : bool) )
-        const IsSupported = true;
+        static immutable IsSupported = true;
     else static if ( isIntegerType!(T) || isRealType!(T) )
-        const IsSupported = true;
+        static immutable IsSupported = true;
     else static if ( is(ElementTypeOf!(T) U) )
     {
         static if ( isCharType!(U) ) // If it is a string
-            const IsSupported = true;
+            static immutable IsSupported = true;
         else static if ( isUTF8StringType!(U) ) // If it is string of strings
-            const IsSupported = true;
+            static immutable IsSupported = true;
         else static if ( isIntegerType!(U) || isRealType!(U) )
-            const IsSupported = true;
+            static immutable IsSupported = true;
         else
-            const IsSupported = false;
+            static immutable IsSupported = false;
     }
     else
-        const IsSupported = false;
+        static immutable IsSupported = false;
 }
 
 
@@ -815,7 +815,7 @@ struct ConfigIterator ( T, Source = ConfigParser )
 
     invariant()
     {
-        assert(this.config !is null,
+        assert((&this).config !is null,
             "ConfigFiller.ConfigIterator: Cannot have null config");
     }
 
@@ -828,11 +828,11 @@ struct ConfigIterator ( T, Source = ConfigParser )
 
     ***************************************************************************/
 
-    public int opApply ( int delegate ( ref istring name, ref T x ) dg )
+    public int opApply ( scope int delegate ( ref istring name, ref T x ) dg )
     {
         int result = 0;
 
-        foreach ( key; this.config )
+        foreach ( key; (&this).config )
         {
             static if (is (T == struct))
             {
@@ -843,13 +843,13 @@ struct ConfigIterator ( T, Source = ConfigParser )
                 scope T instance = new T;
             }
 
-            if ( key.length > this.root.length
-                 && key[0 .. this.root.length] == this.root
-                 && key[this.root.length] == '.' )
+            if ( key.length > (&this).root.length
+                 && key[0 .. (&this).root.length] == (&this).root
+                 && key[(&this).root.length] == '.' )
             {
-                .fill(key, instance, this.config);
+                .fill(key, instance, (&this).config);
 
-                auto name = key[this.root.length + 1 .. $];
+                auto name = key[(&this).root.length + 1 .. $];
                 result = dg(name, instance);
 
                 if (result) break;
@@ -871,17 +871,17 @@ struct ConfigIterator ( T, Source = ConfigParser )
 
     ***************************************************************************/
 
-    public int opApply ( int delegate ( ref istring name ) dg )
+    public int opApply ( scope int delegate ( ref istring name ) dg )
     {
         int result = 0;
 
-        foreach ( key; this.config )
+        foreach ( key; (&this).config )
         {
-            if ( key.length > this.root.length
-                 && key[0 .. this.root.length] == this.root
-                 && key[this.root.length] == '.' )
+            if ( key.length > (&this).root.length
+                 && key[0 .. (&this).root.length] == (&this).root
+                 && key[(&this).root.length] == '.' )
             {
-                auto name = key[this.root.length + 1 .. $];
+                auto name = key[(&this).root.length + 1 .. $];
                 result = dg(name);
 
                 if (result) break;
@@ -906,9 +906,9 @@ struct ConfigIterator ( T, Source = ConfigParser )
 
     public void fill ( cstring name, ref T instance )
     {
-        auto key = this.root ~ "." ~ name;
+        auto key = (&this).root ~ "." ~ name;
 
-        .fill(key, instance, this.config);
+        .fill(key, instance, (&this).config);
     }
 }
 
@@ -1150,7 +1150,7 @@ unittest
 }
 unittest
 {
-    const config_text =
+    static immutable config_text =
 `
 [Section]
 str = I'm a string
@@ -1202,7 +1202,7 @@ pi = 3.14
 
 unittest
 {
-    const config_text =
+    static immutable config_text =
 `
 [Section]
 str = I'm a mutable string
@@ -1224,7 +1224,7 @@ str = I'm a mutable string
 
 unittest
 {
-    const config_text =
+    static immutable config_text =
 `
 [SectionArray]
 string_arr = Hello

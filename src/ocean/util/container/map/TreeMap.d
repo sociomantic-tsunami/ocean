@@ -85,7 +85,7 @@ struct TreeMap ( T )
 
     public bool is_empty ( ) // const
     {
-        return this.root.is_empty();
+        return (&this).root.is_empty();
     }
 
     /***************************************************************************
@@ -100,8 +100,8 @@ struct TreeMap ( T )
 
     public void reinit ( )
     {
-        this.root = eb_root.init;
-        this.root.unique = true;
+        (&this).root = eb_root.init;
+        (&this).root.unique = true;
     }
 
     /***************************************************************************
@@ -123,7 +123,7 @@ struct TreeMap ( T )
 
     public T* put ( ulong key, out bool added )
     {
-        return &(this.put_(key, added).value);
+        return &((&this).put_(key, added).value);
     }
 
     /***********************************************************************
@@ -140,7 +140,7 @@ struct TreeMap ( T )
 
     private T* opIn_r ( ulong key )
     {
-        return &((cast(Node*)eb64_lookup(&this.root, key)).value);
+        return &((cast(Node*)eb64_lookup(&(&this).root, key)).value);
     }
 
     /***********************************************************************
@@ -154,7 +154,7 @@ struct TreeMap ( T )
 
     public T* first ()
     {
-        return this.getBoundary!(true)();
+        return (&this).getBoundary!(true)();
     }
 
     /***********************************************************************
@@ -168,7 +168,7 @@ struct TreeMap ( T )
 
     public T* last ()
     {
-        return this.getBoundary!(false)();
+        return (&this).getBoundary!(false)();
     }
 
     /***********************************************************************
@@ -178,11 +178,11 @@ struct TreeMap ( T )
 
     ***********************************************************************/
 
-    public int opApply ( int delegate ( ref ulong key, ref T* value ) dg )
+    public int opApply ( scope int delegate ( ref ulong key, ref T* value ) dg )
     {
         int stop = 0;
 
-        for (auto eb_node = eb64_first(&this.root); eb_node && !stop;)
+        for (auto eb_node = eb64_first(&(&this).root); eb_node && !stop;)
         {
             // Backup node.next here because dg() may change or delete node!
             auto next = eb_node.next;
@@ -214,9 +214,9 @@ struct TreeMap ( T )
 
     public bool remove ( ulong key )
     {
-        if (auto node = this.nodeForKey(key))
+        if (auto node = (&this).nodeForKey(key))
         {
-            this.remove_(*node);
+            (&this).remove_(*node);
             return true;
         }
         else
@@ -266,7 +266,7 @@ struct TreeMap ( T )
         else
             alias eb64_last eb64_function;
 
-        return &((cast(Node*)eb64_function(&this.root)).value);
+        return &((cast(Node*)eb64_function(&(&this).root)).value);
     }
 
     /***********************************************************************
@@ -283,7 +283,7 @@ struct TreeMap ( T )
 
     private Node* nodeForKey ( ulong key )
     {
-        return cast(Node*)eb64_lookup(&this.root, key);
+        return cast(Node*)eb64_lookup(&(&this).root, key);
     }
 
     /***************************************************************************
@@ -313,7 +313,7 @@ struct TreeMap ( T )
             eb64_node* ebnode = &node.tupleof[0];
 
         ebnode.key = key;
-        eb64_node* added_ebnode = eb64_insert(&this.root, ebnode);
+        eb64_node* added_ebnode = eb64_insert(&(&this).root, ebnode);
         added = added_ebnode is ebnode;
 
         if (!added)
@@ -359,9 +359,9 @@ struct TreeMap ( T )
 
         Node* allocate ( )
         {
-            if (auto node = this.spare)
+            if (auto node = (&this).spare)
             {
-                this.spare = null;
+                (&this).spare = null;
                 return node;
             }
 
@@ -372,7 +372,7 @@ struct TreeMap ( T )
             }
             else
             {
-                const istring msg = "malloc(" ~ Node.sizeof.stringof ~
+                enum istring msg = "malloc(" ~ Node.sizeof.stringof ~
                                    ") failed: Out of memory\n\0";
                 fputs(msg.ptr, stderr);
                 exit(EXIT_FAILURE);
@@ -392,10 +392,10 @@ struct TreeMap ( T )
 
         void deallocate ( Node* node )
         {
-            if (this.spare is null)
+            if ((&this).spare is null)
             {
                 *node = (*node).init;
-                this.spare = node;
+                (&this).spare = node;
             }
             else
             {
@@ -476,7 +476,7 @@ unittest
 
 *******************************************************************************/
 
-private const eb_root empty_unique_ebtroot =
+private static immutable eb_root empty_unique_ebtroot =
     function ( )
     {
         eb_root root;

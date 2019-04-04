@@ -77,5 +77,5 @@ interface HttpParamsView
 
         **********************************************************************/
 
-        void produce (size_t delegate(Const!(void)[]) consume, cstring eol=null);
+        void produce (scope size_t delegate(Const!(void)[]) consume, cstring eol=null);
 }

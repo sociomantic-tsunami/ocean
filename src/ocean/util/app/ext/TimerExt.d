@@ -152,7 +152,7 @@ public class TimerExt : IApplicationExtension
 
     ***************************************************************************/
 
-    public void register ( EventDg dg, double period_s )
+    public void register ( scope EventDg dg, double period_s )
     {
         this.timer_set.register(dg, period_s);
     }
@@ -170,7 +170,7 @@ public class TimerExt : IApplicationExtension
 
     ***************************************************************************/
 
-    public void register ( EventDg dg, double init_s, double period_s )
+    public void register ( scope EventDg dg, double init_s, double period_s )
     {
         this.timer_set.register(dg, init_s, period_s);
     }
@@ -192,7 +192,7 @@ public class TimerExt : IApplicationExtension
 
     ***************************************************************************/
 
-    public void registerMicrosec ( EventDg dg, ulong init_microsec, ulong period_microsec )
+    public void registerMicrosec ( scope EventDg dg, ulong init_microsec, ulong period_microsec )
     {
         this.timer_set.registerMicrosec(dg, init_microsec, period_microsec);
     }
