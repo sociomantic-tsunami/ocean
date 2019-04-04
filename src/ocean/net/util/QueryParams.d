@@ -5,8 +5,6 @@
     - QueryParams splits an URI query parameter list into key/value pairs.
     - QueryParamSet parses an URI query parameter list and memorizes the values
       corresponding to keys in a list provided at instantiation.
-    - FullQueryParamSet extends QueryParamSet by adding the key/value pairs
-      whose keys are not in the list of keys provided at instantiation.
 
     TODO: The QueryParams class may be moved to ocean.text.
 
@@ -262,6 +260,7 @@ class QueryParamSet: ParamSet
 
 /******************************************************************************/
 
+deprecated
 class FullQueryParamSet: QueryParamSet
 {
     /**************************************************************************
@@ -429,7 +428,7 @@ unittest
 }
 
 
-unittest
+deprecated unittest
 {
     scope params = new FullQueryParamSet(',', ':', "hello", "world");
     params.parse("hello:1,world:2,Die:Katze,tritt");
