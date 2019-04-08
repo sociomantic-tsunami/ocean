@@ -476,7 +476,7 @@ public class StatsLog
         scope sink = (cstring v) { this.buffer ~= v; };
         foreach ( i, value; values.tupleof )
         {
-            auto value_name = fieldIdentifier!(T, i);
+            auto value_name = .identifier!(T.tupleof[i]);
 
             static if (is(typeof(value) : long))
                 long fmtd_value = value;

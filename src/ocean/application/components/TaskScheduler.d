@@ -44,12 +44,12 @@ public void parseSchedulerConfig ( ConfigParser parser,
 
     foreach (idx, ref field; config.tupleof)
     {
-        static if (fieldIdentifier!(SchedulerConfiguration, idx)
-            != "specialized_pools")
+        enum name = identifier!(SchedulerConfiguration.tupleof[idx]);
+        static if (name != "specialized_pools")
         {
             field = parser.get(
                 category,
-                fieldIdentifier!(SchedulerConfiguration, idx),
+                name,
                 field
             );
         }
