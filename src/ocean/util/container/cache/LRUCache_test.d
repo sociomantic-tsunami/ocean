@@ -146,7 +146,7 @@ unittest
         // Existing records should be updated to a new value. To enable
         // verification of the update, change the values to 4711 + i.
 
-        foreach (int i, ref record; records[0 .. n_overflow])
+        foreach (size_t i, ref record; records[0 .. n_overflow])
         {
             record.val = 4711 + i;
 

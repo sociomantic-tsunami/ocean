@@ -512,10 +512,10 @@ class Uri : UriView
     {
         size_t  ret;
         char[3] hex;
-        int     mark;
+        size_t  mark;
 
         hex[0] = '%';
-        foreach (int i, char c; s)
+        foreach (size_t i, char c; s)
         {
             if (! (map[c] & flags))
             {
@@ -845,11 +845,11 @@ class Uri : UriView
 
     private void parseAuthority (cstring auth)
     {
-        int     mark,
-                len = cast(int) auth.length;
+        size_t  mark,
+                len = auth.length;
 
         // get userinfo: (([^@]*)@?)
-        foreach (int i, char c; auth)
+        foreach (size_t i, char c; auth)
             if (c is '@')
             {
                 userinfo_ = decoder (auth[0 .. i]);
@@ -858,7 +858,7 @@ class Uri : UriView
             }
 
         // get port: (:(.*))?
-        for (int i=mark; i < len; ++i)
+        for (size_t i=mark; i < len; ++i)
             if (auth [i] is ':')
             {
                 port_ = Integer.atoi (auth [i+1 .. len]);
