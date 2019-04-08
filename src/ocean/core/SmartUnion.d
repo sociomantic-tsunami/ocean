@@ -383,7 +383,7 @@ private struct SmartUnionIntern ( U )
         istring[] names = ["none"[]];
         foreach ( i, F; typeof(U.init.tupleof) )
         {
-            names ~= fieldIdentifier!(U, i);
+            names ~= identifier!(U.tupleof[i]);
         }
         return names;
     }
@@ -411,7 +411,7 @@ private template MemberList ( uint i, size_t len, U )
     }
     else
     {
-        static immutable MemberList = "," ~ fieldIdentifier!(U, i) ~ MemberList!(i + 1, len, U);
+        static immutable MemberList = "," ~ identifier!(U.tupleof[i]) ~ MemberList!(i + 1, len, U);
     }
 }
 
@@ -474,7 +474,7 @@ private template MemberList ( uint i, size_t len, U )
 
 private template Methods ( U, uint i )
 {
-    static immutable member = fieldIdentifier!(U, i);
+    static immutable member = identifier!(U.tupleof[i]);
 
     static immutable member_access = "_.u." ~ member;
 

@@ -17,7 +17,8 @@ module ocean.application.components.GCStats;
 
 import core.memory;
 
-import ocean.core.Traits : hasMember, ParameterTupleOf;
+import ocean.meta.traits.Aggregates : hasMember;
+import ocean.meta.types.Function : ParametersOf;
 import ocean.time.MicrosecondsClock;
 
 /*******************************************************************************
@@ -32,10 +33,10 @@ public class GCStats
     static if ( hasMember!(GC, "monitor") )
     {
         /// The type of the gcEnd delegate
-        private alias ParameterTupleOf!(GC.monitor)[1] MonitorEndParams;
+        private alias ParametersOf!(GC.monitor)[1] MonitorEndParams;
 
         /// Integers used by the gcEnd delegate
-        private alias ParameterTupleOf!(MonitorEndParams)[0] MonitorInt;
+        private alias ParametersOf!(MonitorEndParams)[0] MonitorInt;
     }
     else
     {

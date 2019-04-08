@@ -446,9 +446,9 @@ private void handle (T) (T v, FormatInfo f, scope FormatterSink sf, scope ElemSi
         foreach (idx, ref m; v.tupleof)
         {
             static if (idx == 0)
-                sf("{ " ~ fieldIdentifier!(T, idx) ~ ": ");
+                sf("{ " ~ identifier!(T.tupleof[idx]) ~ ": ");
             else
-                sf(", " ~ fieldIdentifier!(T, idx) ~ ": ");
+                sf(", " ~ identifier!(T.tupleof[idx]) ~ ": ");
 
             // A bit ugly but it makes string much more readable
             handle(m, f, sf, se);
