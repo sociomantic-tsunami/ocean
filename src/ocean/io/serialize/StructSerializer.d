@@ -538,7 +538,7 @@ struct StructSerializer ( bool AllowUnions = false )
         foreach (i, ref field; s.tupleof)
         {
             alias typeof(field) T;
-            enum field_name = fieldIdentifier!(S, i);
+            enum field_name = identifier!(S.tupleof[i]);
 
             // imitate D1 style formatting for D2 typedef struct
             static if ( is(T == struct) && !isTypedef!(T) )
@@ -652,7 +652,7 @@ struct StructSerializer ( bool AllowUnions = false )
         foreach (i, T; typeof (S.tupleof))
         {
             T*   field      = &s.tupleof[i];
-            auto field_name = fieldIdentifier!(S, i);
+            auto field_name = identifier!(S.tupleof[i]);
 
             static if ( is(T == struct) )
             {

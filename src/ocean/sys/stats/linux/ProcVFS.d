@@ -658,7 +658,7 @@ private ProcMemInfo parseProcMemInfoData (scope cstring delegate() read_next_lin
         {
             foreach (i, FieldT; typeof(meminfo.tupleof))
             {
-                case fieldIdentifier!(typeof(meminfo.init), i):
+                case identifier!(typeof(meminfo.init).tupleof[i]):
                     // Using tupleof[i] instead of field
                     // as a workaround for
                     // https://issues.dlang.org/show_bug.cgi?id=16521
