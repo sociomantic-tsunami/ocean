@@ -688,7 +688,7 @@ private int parseShortDay(T) (ref T* p)
 
  ******************************************************************************/
 
-private uint parseFullDay(T) (ref T* p)
+private size_t parseFullDay(T) (ref T* p)
 {
     static  T[][] days = [
         "Sunday",
@@ -700,7 +700,7 @@ private uint parseFullDay(T) (ref T* p)
         "Saturday",
     ];
 
-    foreach (uint i, day; days)
+    foreach (size_t i, day; days)
         if (day == p[0..day.length])
         {
             p += day.length;

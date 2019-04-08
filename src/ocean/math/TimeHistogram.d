@@ -285,21 +285,21 @@ struct TimeHistogram
 
     ***************************************************************************/
 
-    private static uint binIndex ( ulong us )
+    private static size_t binIndex ( size_t us )
     {
         if (!us)
             return 0;
 
-        static Immut!(uint[4][2]) powers_of_10 = [
+        static Immut!(size_t[4][2]) powers_of_10 = [
             [1,     10,     100,     1_000],
             [1_000, 10_000, 100_000, 1_000_000]
         ];
 
-        foreach (uint i, p1000; powers_of_10)
+        foreach (size_t i, p1000; powers_of_10)
         {
             if (us < p1000[$ - 1])
             {
-                foreach (uint j, p; p1000[1 .. $])
+                foreach (size_t j, p; p1000[1 .. $])
                 {
                     if (us < p)
                     {

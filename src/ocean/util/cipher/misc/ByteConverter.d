@@ -244,7 +244,7 @@ struct ByteConverter
     {
         mstring output = new char[input.length];
 
-        foreach (int i, char c; input)
+        foreach (size_t i, char c; input)
             output[i] = cast(ubyte) ((c >= 'A' && c <= 'Z') ? c+32 : c);
 
         return output;
