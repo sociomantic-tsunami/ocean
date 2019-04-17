@@ -35,6 +35,12 @@ $O/test-%: override LDFLAGS += -lebtree
 $O/test-filesystemevent: override LDFLAGS += -lrt
 
 $O/test-httpserver: override LDFLAGS += -lglib-2.0
+$O/test-asyncio: override LDFLAGS += -lglib-2.0
+$O/test-signalext: override LDFLAGS += -lglib-2.0
+$O/test-reopenfiles: override LDFLAGS += -lglib-2.0
+$O/test-sysstats: override LDFLAGS += -lglib-2.0
+$O/test-taskext_daemon: override LDFLAGS += -lglib-2.0
+$O/test-unixsockext: override LDFLAGS += -lglib-2.0
 
 # Link unittests to all used libraries
 $O/%unittests: override LDFLAGS += -lglib-2.0 -lpcre -lxml2 -lxslt -lebtree \
