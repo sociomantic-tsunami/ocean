@@ -336,7 +336,16 @@ class ExpiringCache ( size_t ValueSize = 0 ) : Cache!(ValueSize, true),
             time_t access_time;
 
             cache_item = this.access(**node, access_time);
-            assert(cache_item !is null);
+            // XXX: This was previously an assert() but it was changed to
+            // verify() due to a compiler bug when using -release -inline -O.
+            // In that case the null check is removed by -release and it seems
+            // that due to compiler optimizations and inlining, the compiler
+            // ends up thinking that cache_item is null when used afterwards
+            // (in the following if statement for example). By using verify()
+            // instead of assert() we make sure the compiler can see there is a
+            // null check even when -release is used.
+            verify(cache_item !is null,
+                    "cache item existed, so it shouldn't be null");
             bool empty = cache_item.value_ref.length == 0;
 
             time_t used_lifetime = empty ? this.empty_lifetime : this.lifetime;
