@@ -405,37 +405,29 @@ unittest
 
 public long parseTimeInterval ( cstring value )
 {
-    if ( value == "" )
-    {
-        return 0;
-    }
-
     long result;
-    long tempValue;
 
-    char unit = value[value.length - 1];
-
-    if ( !toLong(value[0..$-1], tempValue) )
+    if ( value.length < 2 || !toLong(value[0..$-1], result) || result == 0 )
     {
         throw new Exception("The provided time interval has an invalid value.");
     }
 
+    char unit = value[value.length - 1];
     switch ( unit )
     {
         case 's':
-            result = tempValue;
             break;
 
         case 'm':
-            result = tempValue * 60;
+            result *= 60;
             break;
 
         case 'h':
-            result = tempValue * 3600;
+            result *= 3600;
             break;
 
         case 'd':
-            result = tempValue * 3600 * 24;
+            result *= 3600 * 24;
             break;
 
         default:
@@ -448,7 +440,6 @@ public long parseTimeInterval ( cstring value )
 ///
 unittest
 {
-    Test.test!("==")(parseTimeInterval(""), 0);
     Test.test!("==")(parseTimeInterval("1s"), 1);
     Test.test!("==")(parseTimeInterval("1m"), 60);
     Test.test!("==")(parseTimeInterval("2m"), 120);
@@ -457,6 +448,8 @@ unittest
     Test.test!("==")(parseTimeInterval("1d"), 3600 * 24);
     Test.test!("==")(parseTimeInterval("2d"), 3600 * 48);
 
+    Test.testThrown!(Exception)(parseTimeInterval(""), false);
+    Test.testThrown!(Exception)(parseTimeInterval("0s"), false);
     Test.testThrown!(Exception)(parseTimeInterval("2x"), false);
     Test.testThrown!(Exception)(parseTimeInterval("1xm"), false);
 }
