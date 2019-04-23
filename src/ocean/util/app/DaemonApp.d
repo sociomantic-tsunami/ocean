@@ -82,6 +82,7 @@ public abstract class DaemonApp : Application,
     import ocean.util.app.ExitException;
     import ocean.util.log.Logger;
     import ocean.util.log.Stats;
+    import ocean.util.prometheus.collector.Collector;
 
     static import core.sys.posix.signal;
 
@@ -668,6 +669,19 @@ public abstract class DaemonApp : Application,
 
     /***************************************************************************
 
+        Collects CPU and memory stats for incoming prometheus' requests. Should
+        be sent, as a callback, to the CollectorRegistry instance used in
+        prometheus request listener.
+
+    ***************************************************************************/
+
+    public void collectSystemStats ( Collector prometheus_collector )
+    {
+        prometheus_collector.collect(this.system_stats.collect());
+    }
+
+    /***************************************************************************
+
         Collects GC stats and reports them to stats log. Should be
         called periodically (inside onStatsTimer).
 
@@ -676,6 +690,19 @@ public abstract class DaemonApp : Application,
     protected void reportGCStats ( )
     {
         this.stats_ext.stats_log.add(this.gc_stats.collect());
+    }
+
+    /***************************************************************************
+
+        Collects GC stats for incoming prometheus' requests. Should be sent,
+        as a callback, to the CollectorRegistry instance used in prometheus
+        request listener.
+
+    ***************************************************************************/
+
+    public void collectGCStats ( Collector prometheus_collector )
+    {
+        prometheus_collector.collect(this.gc_stats.collect());
     }
 
     /***************************************************************************
