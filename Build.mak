@@ -37,6 +37,7 @@ $O/test-filesystemevent: override LDFLAGS += -lrt
 $O/test-httpserver: override LDFLAGS += -lglib-2.0
 $O/test-asyncio: override LDFLAGS += -lglib-2.0
 $O/test-signalext: override LDFLAGS += -lglib-2.0
+$O/test-prometheusstats: override LDFLAGS += -lglib-2.0
 $O/test-reopenfiles: override LDFLAGS += -lglib-2.0
 $O/test-sysstats: override LDFLAGS += -lglib-2.0
 $O/test-taskext_daemon: override LDFLAGS += -lglib-2.0
