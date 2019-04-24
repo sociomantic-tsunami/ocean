@@ -71,7 +71,7 @@ public struct VoidBufferAsArrayOf ( T )
     // The length of the buffer must always be an even multiple of T.sizeof.
     invariant ( )
     {
-        assert(this.buffer.length % T.sizeof == 0);
+        assert((&this).buffer.length % T.sizeof == 0);
     }
 
     /***************************************************************************
@@ -83,7 +83,7 @@ public struct VoidBufferAsArrayOf ( T )
 
     public T[] array ( )
     {
-        return cast(T[])(*this.buffer);
+        return cast(T[])(*(&this).buffer);
     }
 
     /***************************************************************************
@@ -95,7 +95,7 @@ public struct VoidBufferAsArrayOf ( T )
 
     public size_t length ( )
     {
-        return this.buffer.length / T.sizeof;
+        return (&this).buffer.length / T.sizeof;
     }
 
     /***************************************************************************
@@ -109,8 +109,8 @@ public struct VoidBufferAsArrayOf ( T )
 
     public void length ( size_t len )
     {
-        this.buffer.length = len * T.sizeof;
-        enableStomping(*this.buffer);
+        (&this).buffer.length = len * T.sizeof;
+        enableStomping(*(&this).buffer);
     }
 
     /***************************************************************************
@@ -133,7 +133,7 @@ public struct VoidBufferAsArrayOf ( T )
 
     public T[] opCatAssign ( in T[] arr )
     {
-        return cast(T[])((*this.buffer) ~= cast(void[])arr);
+        return cast(T[])((*(&this).buffer) ~= cast(void[])arr);
     }
 
     /***************************************************************************
@@ -153,7 +153,7 @@ public struct VoidBufferAsArrayOf ( T )
 
     public T[] opCatAssign ( in T element )
     {
-        return this.opCatAssign((&element)[0 .. 1]);
+        return (&this).opCatAssign((&element)[0 .. 1]);
     }
 }
 

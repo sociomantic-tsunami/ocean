@@ -169,7 +169,7 @@ public class Signals
 
     ***************************************************************************/
 
-    public this ( HandlerDg handler_dg )
+    public this ( scope HandlerDg handler_dg )
     {
         verify(handler_dg !is null);
         this.handler_dg = handler_dg;

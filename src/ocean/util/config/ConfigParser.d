@@ -103,11 +103,11 @@ public class ConfigParser
 
         ***********************************************************************/
 
-        public int opApply ( int delegate ( ref istring key, ref T val ) dg )
+        public int opApply ( scope int delegate ( ref istring key, ref T val ) dg )
         {
-            if ( this.vars !is null )
+            if ( (&this).vars !is null )
             {
-                foreach ( key, valnode; *this.vars )
+                foreach ( key, valnode; *(&this).vars )
                 {
                     auto val = conv!(T)(valnode.value);
 
@@ -126,9 +126,9 @@ public class ConfigParser
 
         ***********************************************************************/
 
-        public int opApply ( int delegate ( ref istring x ) dg )
+        public int opApply ( scope int delegate ( ref istring x ) dg )
         {
-            return this.opApply(
+            return (&this).opApply(
                 (ref istring key, ref istring val)
                 {
                     return dg(key);
@@ -287,7 +287,7 @@ public class ConfigParser
 
     ***************************************************************************/
 
-    public int opApply ( int delegate ( ref istring x ) dg )
+    public int opApply ( scope int delegate ( ref istring x ) dg )
     {
         int result = 0;
 
@@ -394,11 +394,11 @@ public class ConfigParser
         {
             T[] data;
 
-            int opApply ( int delegate ( ref T[] x ) dg )
+            int opApply ( scope int delegate ( ref T[] x ) dg )
             {
                 int result = 0;
 
-                foreach ( ref line; lines(this.data) )
+                foreach ( ref line; lines((&this).data) )
                 {
                     result = dg(line);
 
@@ -852,7 +852,7 @@ public class ConfigParser
 
     private static bool toBool ( cstring property )
     {
-        const istring[2][] BOOL_IDS =
+        static immutable istring[2][] BOOL_IDS =
         [
            ["false",    "true"],
            ["disabled", "enabled"],
@@ -1430,7 +1430,7 @@ three = teen
     // Test to ensure that a few hundred additional parses of the same
     // configuration does not allocate at all.
     testNoAlloc({
-            const num_parses = 200;
+            static immutable num_parses = 200;
             for (int i; i < num_parses; i++)
             {
                 Config.parseString(str2);

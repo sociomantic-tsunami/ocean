@@ -90,7 +90,7 @@ class ParamSet
 
      **************************************************************************/
 
-    public const ulong_dec_length = ulong.max.stringof.length;
+    public static immutable ulong_dec_length = ulong.max.stringof.length;
 
     /**************************************************************************
 
@@ -324,7 +324,7 @@ class ParamSet
 
      **************************************************************************/
 
-    bool access ( cstring key, void delegate ( cstring key, ref cstring val ) dg )
+    bool access ( cstring key, scope void delegate ( cstring key, ref cstring val ) dg )
     {
         Element* element = this.get_(key);
 
@@ -367,7 +367,7 @@ class ParamSet
 
      **************************************************************************/
 
-    public int opApply ( int delegate ( ref cstring key, ref cstring val ) dg )
+    public int opApply ( scope int delegate ( ref cstring key, ref cstring val ) dg )
     {
         int result = 0;
 
@@ -575,7 +575,7 @@ class ParamSet
      **************************************************************************/
 
     final protected void iterate ( ref Element element,
-                                   int delegate ( ref cstring key, ref cstring val ) dg,
+                                   scope int delegate ( ref cstring key, ref cstring val ) dg,
                                    ref int result )
     {
         with (element) if (val || !this.skip_null_values_on_iteration)
