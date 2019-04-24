@@ -225,7 +225,7 @@ class SortedMap (K, V, alias Reap = Container.reap,
 
         ***********************************************************************/
 
-        final int opApply (int delegate (ref V value) dg)
+        final int opApply (scope int delegate (ref V value) dg)
         {
                 return iterator.opApply ((ref K k, ref V v) {return dg(v);});
         }
@@ -235,7 +235,7 @@ class SortedMap (K, V, alias Reap = Container.reap,
 
         ***********************************************************************/
 
-        final int opApply (int delegate (ref K key, ref V value) dg)
+        final int opApply (scope int delegate (ref K key, ref V value) dg)
         {
                 return iterator.opApply (dg);
         }
@@ -963,7 +963,7 @@ class SortedMap (K, V, alias Reap = Container.reap,
 
                 ***************************************************************/
 
-                int opApply (int delegate(ref K key, ref V value) dg)
+                int opApply (scope int delegate(ref K key, ref V value) dg)
                 {
                         int result;
 
@@ -1011,7 +1011,7 @@ class SortedMap (K, V, alias Reap = Container.reap,
                             bump = &back;
                         else
                            bump = &fore;
-                        return *this;
+                        return *(&this);
                 }
 
                 /***************************************************************
@@ -1092,7 +1092,7 @@ debug (SortedMap)
                 // use a chunk allocator, and presize the bucket[]
                 auto test = new SortedMap!(int, int, Container.reap, Container.Chunk);
                 test.cache (1000, 500_000);
-                const count = 500_000;
+                static immutable count = 500_000;
                 StopWatch w;
 
                 auto keys = new int[count];

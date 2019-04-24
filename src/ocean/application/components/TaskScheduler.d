@@ -40,7 +40,7 @@ public void parseSchedulerConfig ( ConfigParser parser,
     if (parser is null)
         return;
 
-    const category = "SCHEDULER";
+    static immutable category = "SCHEDULER";
 
     foreach (idx, ref field; config.tupleof)
     {
@@ -92,7 +92,7 @@ public void parseSchedulerConfig ( ConfigParser parser,
 
 *******************************************************************************/
 
-public int runInTask ( int delegate () dg )
+public int runInTask ( scope int delegate () dg )
 {
     auto task = new class Task {
         int delegate() dg;

@@ -234,7 +234,7 @@ public interface IScheduler
 
     ***************************************************************************/
 
-    public void await ( Task task, void delegate (Task) finished_dg = null );
+    public void await ( Task task, scope void delegate (Task) finished_dg = null );
 
     /***************************************************************************
 

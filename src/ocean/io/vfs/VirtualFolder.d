@@ -208,7 +208,7 @@ class VirtualFolder : VfsHost
 
         ***********************************************************************/
 
-        final int opApply (int delegate(ref VfsFolder) dg)
+        final int opApply (scope int delegate(ref VfsFolder) dg)
         {
                 int result;
 
@@ -414,7 +414,7 @@ private class VirtualFolders : VfsFolders
 
         ***********************************************************************/
 
-        final int opApply (int delegate(ref VfsFolder) dg)
+        final int opApply (scope int delegate(ref VfsFolder) dg)
         {
                 int ret;
 
@@ -516,7 +516,7 @@ private class VirtualFolders : VfsFolders
 
         ***********************************************************************/
 
-        final VfsFiles catalog (VfsFilter filter = null)
+        final VfsFiles catalog (scope VfsFilter filter = null)
         {
                 return new VirtualFiles (this, filter);
         }
@@ -539,7 +539,7 @@ private class VirtualFiles : VfsFiles
 
         ***********************************************************************/
 
-        private this (VirtualFolders host, VfsFilter filter)
+        private this (VirtualFolders host, scope VfsFilter filter)
         {
                 foreach (group; host.members)
                          members ~= group.catalog (filter);
@@ -551,7 +551,7 @@ private class VirtualFiles : VfsFiles
 
         ***********************************************************************/
 
-        final int opApply (int delegate(ref VfsFile) dg)
+        final int opApply (scope int delegate(ref VfsFile) dg)
         {
                 int ret;
 
