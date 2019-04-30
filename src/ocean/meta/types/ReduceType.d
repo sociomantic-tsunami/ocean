@@ -212,3 +212,82 @@ private struct ReduceTypeImpl ( Reducer )
         return result;
     }
 }
+
+
+version (UnitTest)
+{
+    import ocean.meta.types.Qualifiers;
+
+    private struct TestAggregate
+    {
+        int x;
+        float[] y;
+        void* z;
+    }
+
+    private struct CheckPrimitiveReducer
+    {
+        alias bool Result;
+
+        Result visit ( T ) ( )
+        {
+            return isPrimitiveType!(T);
+        }
+    }
+}
+
+// Sanity test of instantiation of `ReduceType` with primitive types
+unittest
+{
+    assert(ReduceType!(int, CheckPrimitiveReducer));
+    assert(ReduceType!(void, CheckPrimitiveReducer));
+}
+
+// Sanity test of instantiation of `ReduceType` with aggregate types
+unittest
+{
+    assert(!ReduceType!(CheckPrimitiveReducer, CheckPrimitiveReducer));
+
+    // Exposes compilation error
+    // assert(ReduceType!(Const!TestAggregate, CheckPrimitiveReducer));
+}
+
+// Sanity test of instantiation of `ReduceType` with static array types
+unittest
+{
+    assert(ReduceType!(float[9], CheckPrimitiveReducer));
+    assert(ReduceType!(void[9], CheckPrimitiveReducer));
+}
+
+// Sanity test of instantiation of `ReduceType` with dynamic array types
+unittest
+{
+    assert(ReduceType!(char[], CheckPrimitiveReducer));
+    assert(ReduceType!(void[], CheckPrimitiveReducer));
+}
+
+// Sanity test of instantiation of `ReduceType` with function type
+unittest
+{
+    auto test_dg = delegate ( ) { return 0; };
+    assert(!ReduceType!(typeof(test_dg), CheckPrimitiveReducer));
+
+    auto test_fn = function ( ) { return 0; };
+    assert(!ReduceType!(typeof(test_fn), CheckPrimitiveReducer));
+}
+
+// Sanity test of instantiation of `ReduceType` with enums
+unittest
+{
+    enum TestEnum : int { ZERO, ONE, TWO }
+    assert(ReduceType!(TestEnum, CheckPrimitiveReducer));
+}
+
+// Sanity test of instantiation of `ReduceType` with pointer types
+unittest
+{
+    assert(ReduceType!(int*, CheckPrimitiveReducer));
+
+    // Exposes compilation error
+    // assert(ReduceType!(void*, CheckPrimitiveReducer));
+}
