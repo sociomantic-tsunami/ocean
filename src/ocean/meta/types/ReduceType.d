@@ -197,7 +197,22 @@ private struct ReduceTypeImpl ( Reducer )
         }
         else static if (isPointerType!(T))
         {
-            accumulate(result, reduce!(typeof(*T.init))());
+            // Dereferencing in typeof(*(void*).init) causes the compilation
+            // error `expression *null is void and has no value`, indicating
+            // that `void*` cannot be implicitly reduced.
+            // So, it must be handled explicitly.
+            // FIXME: https://github.com/sociomantic-tsunami/ocean/issues/704
+            // The above issue prevents using `static if(Unqual!(T) == void*)`
+            // here.
+            static if (is(T == void*) || is(T == const void*)
+                || is(T == immutable void*))
+            {
+                accumulate(result, reduce!(void)());
+            }
+            else
+            {
+                accumulate(result, reduce!(typeof(*T.init))());
+            }
         }
         else static if (is(T U == enum))
         {
@@ -247,9 +262,7 @@ unittest
 unittest
 {
     assert(!ReduceType!(CheckPrimitiveReducer, CheckPrimitiveReducer));
-
-    // Exposes compilation error
-    // assert(ReduceType!(Const!TestAggregate, CheckPrimitiveReducer));
+    assert(ReduceType!(Const!TestAggregate, CheckPrimitiveReducer));
 }
 
 // Sanity test of instantiation of `ReduceType` with static array types
@@ -287,7 +300,5 @@ unittest
 unittest
 {
     assert(ReduceType!(int*, CheckPrimitiveReducer));
-
-    // Exposes compilation error
-    // assert(ReduceType!(void*, CheckPrimitiveReducer));
+    assert(ReduceType!(void*, CheckPrimitiveReducer));
 }
