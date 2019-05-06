@@ -95,7 +95,7 @@ public class GCStats
     private void reset ( )
     {
         this.last_collected_timestamp = MicrosecondsClock.now_us();
-        this.stats.gc_run_duration = 0;
+        this.stats = Stats.init;
     }
 
     /**********************************************************************
