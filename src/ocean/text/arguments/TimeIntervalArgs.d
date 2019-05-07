@@ -2,42 +2,6 @@
 
     Handler for time interval CLI arguments
 
-    One Argument
-    ------------
-
-    Date:
-        Gives the range for that day.
-        "-t 2019-04-01" (start: 2019-04-01 00:00:00, end: 2019-04-01 23:59:59 )
-
-    TimeStamp
-        Gives a range from the provided timestamp plus one day.
-        "-t 1554132392" (start: 1554132392, end: 1554218791)
-
-    Timerange
-        Gives X amount in the past NOT including the current second.
-        "-t 1m" with now:1000 (start:940, end:999)
-
-    Two Arguments
-    -------------
-
-    Dates:
-        Start is parsed inclusively, end is parsed exclusively
-        eg. -t "2019-04-01 2019-04-02"
-            (start: 2019-04-01 00:00:00)
-            (  end: 2019-04-02 23:59:59)
-
-    TimeStamp
-        Start is treated as is, end is NOT included in final range.
-        eg. -t 100 200 = (begin: 100, end: 199)
-
-    Timerange
-        End range includes the starting second.
-        eg. -t 100 1m = (begin: 100, end: 159)
-        eg. -t 1m 100 = (begin: 60, end: 99)
-
-    Intended Range Usage
-        for ( long i = range.begin; i <= range.end; ++i )
-
     copyright: Copyright (c) 2018 dunnhumby Germany GmbH. All rights reserved
 
 *******************************************************************************/
@@ -92,10 +56,6 @@ public void setupTimeIntervalArgs ( Arguments args, bool required )
             "an integer for unix timestamps\n\t" ~
             "a time duration `{int}m`. Supported units are [m]inutes, [h]ours and [d]ays\n\t" ~
             "an iso1806 date (YYYY-MM-DD)");
-    args("time-interval-exclude")
-        .help("If not set, then a range of '-t 2019-04-01 2019-04-02' will \n" ~
-              "include the end date's data. eg. (end: 2019-04-02 23:59:59) \n" ~
-              "If set, end date data will not be included, eg.(end: 2019-04-01 23:59:59)");
 
     if ( required )
     {
@@ -118,8 +78,8 @@ public void setupTimeIntervalArgs ( Arguments args, bool required )
 
 public istring validateTimeIntervalArgs ( Arguments args )
 {
-    auto num_args = args["time-interval"].assigned.length;
-    if ( num_args < 1 || num_args > 2 )
+    if ( args["time-interval"].assigned.length < 1 ||
+        args["time-interval"].assigned.length > 2 )
     {
         return "The 'time-interval' argument must have 1 or 2 values";
     }
@@ -140,71 +100,68 @@ public TimestampInterval processTimeIntervalArgs ( Arguments args )
 {
     auto num_args = args["time-interval"].assigned.length;
     enforce(num_args >= 1 && num_args <= 2, "Not enough arguments provided");
-    bool include_end_date = !args["time-interval-exclude"].set;
 
-    long begin, end;
+    TimestampInterval interval;
 
     if ( num_args == 1 )
     {
         auto arg = args["time-interval"].assigned[0];
         if ( isTimeInterval(arg) )
         {
-            end = time(null);
-            begin = end - parseTimeInterval(arg);
+            interval.end = time(null);
+            interval.begin = interval.end - parseTimeInterval(arg);
         }
         else
         {
-            begin = parseDateString(arg);
-            end = begin + SECONDS_IN_DAY;
+            interval.begin = parseDateString(arg, 0);
+            interval.end = interval.begin + SECONDS_IN_DAY -1;
         }
     }
     else if ( num_args == 2 )
     {
-        cstring begin_arg = args["time-interval"].assigned[0];
-        cstring end_arg = args["time-interval"].assigned[1];
+        cstring begin = args["time-interval"].assigned[0];
+        cstring end = args["time-interval"].assigned[1];
 
-        if ( isTimeInterval(begin_arg) && isTimeInterval(end_arg) )
+        if ( isTimeInterval(begin) && isTimeInterval(end) )
         {
-            begin = time(null) - parseTimeInterval(begin_arg);
-            end = time(null) + parseTimeInterval(end_arg);
+            interval.begin = time(null) - parseTimeInterval(begin);
+            interval.end = time(null) + parseTimeInterval(end);
         }
-        else if ( isTimeInterval(begin_arg) )
+        else if ( isTimeInterval(begin) )
         {
-            end = parseDateString(end_arg, include_end_date);
-            begin = end - parseTimeInterval(begin_arg);
+            interval.end = parseDateString(end, SECONDS_IN_DAY - 1);
+            interval.begin = interval.end - parseTimeInterval(begin);
         }
-        else if ( isTimeInterval(end_arg) )
+        else if ( isTimeInterval(end) )
         {
-            begin = parseDateString(begin_arg);
-            end = begin + parseTimeInterval(end_arg);
+            interval.begin = parseDateString(begin, 0);
+            interval.end = interval.begin + parseTimeInterval(end);
         }
         else
         {
-            begin = parseDateString(begin_arg);
-            end = parseDateString(end_arg, include_end_date);
+            interval.begin = parseDateString(begin, 0);
+            interval.end = parseDateString(end, SECONDS_IN_DAY - 1);
         }
     }
-    //Don't include the last second in the range.
-    return TimestampInterval(begin, end-1);
+
+    return interval;
 }
 
 /**************************************************************************
 
     Converts a string interval to a unix timestamp. If the value is an
-    ISO 8601 date. If the value is a stirng date and from the end of the range
-    then we say the value is actually the next day
+    ISO 8601 date then the date_time will be added to the converted value.
 
     Params:
         value = `now`, "yesterday", a string timestamp or iso8601 date
-        include_end_date = For string dates, actually parse the next day to
-                           include the dates data.
+        date_time = seconds added to the converted iso8601 timestamp
 
     Returns:
         an unix timestamp
 
 **************************************************************************/
 
-private long parseDateString ( cstring value, bool include_end_date = false )
+private long parseDateString ( cstring value, long date_time )
 {
     if ( value == "now" )
     {
@@ -227,7 +184,8 @@ private long parseDateString ( cstring value, bool include_end_date = false )
     DateConversion dummy_conv;
     if ( timeToUnixTime(value, result, dummy_conv) )
     {
-        return result + (include_end_date ? SECONDS_IN_DAY : 0);
+        result += date_time;
+        return result;
     }
 
     enforce(isTimeInterval(value), cast(istring) ("`" ~ value ~ "` is an invalid time interval argument. " ~
@@ -239,7 +197,7 @@ private long parseDateString ( cstring value, bool include_end_date = false )
 /// Timestamp to use in unit tests;
 version ( UnitTest )
 {
-    // 2019-04-01 15:26:32
+    // 04/01/2019 @ 3:26pm (UTC)
     const TEST_TIME_NOW = 1554132392;
 
     /***************************************************************************
@@ -281,26 +239,15 @@ unittest
     timeToUnixTime("2014-03-09 00:00:00", dummy_time, dummy_conv);
 
     Test.test!("==")(interval.begin, dummy_time);
-    Test.test!("==")(interval.end, TEST_TIME_NOW - 1);
+    Test.test!("==")(interval.end, time(null));
 
     /// When the end date is provided
     args = new Arguments;
 
     setupTimeIntervalArgs(args, false);
-    args.parse("--time-interval now 2014-04-09");
+    args.parse("--time-interval now 2014-03-09");
     interval = processTimeIntervalArgs(args);
-    timeToUnixTime("2014-04-09 23:59:59", dummy_time, dummy_conv);
-
-    Test.test!("==")(interval.begin, time(null));
-    Test.test!("==")(interval.end, dummy_time);
-
-    /// When the end date is provided with exclusion arg
-    args = new Arguments;
-
-    setupTimeIntervalArgs(args, false);
-    args.parse("--time-interval now 2014-04-09 --time-interval-exclude");
-    interval = processTimeIntervalArgs(args);
-    timeToUnixTime("2014-04-08 23:59:59", dummy_time, dummy_conv);
+    timeToUnixTime("2014-03-09 23:59:59", dummy_time, dummy_conv);
 
     Test.test!("==")(interval.begin, time(null));
     Test.test!("==")(interval.end, dummy_time);
@@ -326,7 +273,7 @@ unittest
     interval = processTimeIntervalArgs(args);
 
     Test.test!("==")(interval.begin, 1000);
-    Test.test!("==")(interval.end, 1199);
+    Test.test!("==")(interval.end, 1200);
 
     /// Using interval starting with time duration
     args = new Arguments;
@@ -336,7 +283,7 @@ unittest
     interval = processTimeIntervalArgs(args);
 
     Test.test!("==")(interval.begin, 940);
-    Test.test!("==")(interval.end, 999);
+    Test.test!("==")(interval.end, 1000);
 
     /// Using interval ending with time duration
     args = new Arguments;
@@ -346,7 +293,7 @@ unittest
     interval = processTimeIntervalArgs(args);
 
     Test.test!("==")(interval.begin, 1000);
-    Test.test!("==")(interval.end, 1059);
+    Test.test!("==")(interval.end, 1060);
 
     /// Using two time durations
     args = new Arguments;
@@ -356,7 +303,7 @@ unittest
     interval = processTimeIntervalArgs(args);
 
     Test.test!("==")(interval.begin, TEST_TIME_NOW - 60);
-    Test.test!("==")(interval.end, TEST_TIME_NOW + 59);
+    Test.test!("==")(interval.end, TEST_TIME_NOW + 60);
 
     /// Using an invalid argument
     args = new Arguments;
@@ -376,18 +323,6 @@ unittest
     Test.test!("==")(interval.begin, 1553990400);
     /// 03/31/2019 @ 11:59pm (UTC)
     Test.test!("==")(interval.end, 1554076799);
-
-    /// Test last 2 hours of data receiving the last 2 hours of data.
-    args = new Arguments;
-
-    setupTimeIntervalArgs(args, false);
-    args.parse("--time-interval 2h");
-    interval = processTimeIntervalArgs(args);
-
-    /// 2019-04-01 13:26:32
-    Test.test!("==")(interval.begin, 1554125192);
-    /// 2019-04-01 15:26:31
-    Test.test!("==")(interval.end, 1554132391);
 }
 
 /******************************************************************************
