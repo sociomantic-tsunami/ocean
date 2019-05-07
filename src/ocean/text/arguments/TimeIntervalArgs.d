@@ -185,27 +185,6 @@ private long parseDateString ( cstring value, long date_time )
     return 0;
 }
 
-/// Timestamp to use in unit tests;
-version ( UnitTest )
-{
-    // 04/01/2019 @ 3:26pm (UTC)
-    const TEST_TIME_NOW = 1554132392;
-
-    /***************************************************************************
-
-        Params
-            _unused = Unused.
-
-        Returns:
-            Fake "now" time to use within the unit tests.
-
-    ***************************************************************************/
-
-    private time_t time ( tm* _unused )
-    {
-        return TEST_TIME_NOW;
-    }
-}
 
 /// Check the date arguments setup
 unittest
@@ -295,8 +274,8 @@ unittest
     args.parse("--time-interval 1m 1m");
     interval = processTimeIntervalArgs(args);
 
-    Test.test!("==")(interval.begin, TEST_TIME_NOW - 60);
-    Test.test!("==")(interval.end, TEST_TIME_NOW + 60);
+    Test.test!("==")(interval.begin, time(null) - 60);
+    Test.test!("==")(interval.end, time(null) + 60);
 
     /// Using an invalid argument
     args = new Arguments;
