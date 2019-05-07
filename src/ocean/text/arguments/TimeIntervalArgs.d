@@ -31,8 +31,7 @@ struct TimestampInterval
     long end;
 }
 
-/// Number of seconds in the day for creating day ranges.
-const SECONDS_IN_DAY = 86_400;
+
 
 /***************************************************************************
 
@@ -49,8 +48,8 @@ public void setupTimeIntervalArgs ( Arguments args, bool required )
 {
     auto interval = args("time-interval")
         .aliased('t')
-        .params(1, 2)
-        .help("Specify a time interval. It 1 or 2 values, where they can be:\n\t" ~
+        .params(2)
+        .help("Specify a time interval. It get 2 values, where they can be:\n\t" ~
             "'now' an alias for the current timestamp\n\t" ~
             "an integer for unix timestamps\n\t" ~
             "a time duration `{int}m`. Supported units are [m]inutes, [h]ours and [d]ays\n\t" ~
@@ -77,10 +76,10 @@ public void setupTimeIntervalArgs ( Arguments args, bool required )
 
 public istring validateTimeIntervalArgs ( Arguments args )
 {
-    if ( args["time-interval"].assigned.length < 1 ||
-        args["time-interval"].assigned.length > 2 )
+    if ( args["time-interval"].assigned.length != 2 &&
+        args["time-interval"].assigned.length != 0 )
     {
-        return "The 'time-interval' argument must have 1 or 2 values";
+        return "The 'time-interval' argument must have 2 values";
     }
 
     return null;
@@ -92,55 +91,54 @@ public istring validateTimeIntervalArgs ( Arguments args )
 
     Params:
         args = The arguments to process
+        default_interval = The interval in seconds that should be used when
+            dates are not set by the user
 
 ***************************************************************************/
 
-public TimestampInterval processTimeIntervalArgs ( Arguments args )
+public TimestampInterval processTimeIntervalArgs ( Arguments args,
+    long default_interval = 60 )
 {
-    auto num_args = args["time-interval"].assigned.length;
-    enforce(num_args >= 1 && num_args <= 2, "Not enough arguments provided");
-
     TimestampInterval interval;
 
-    if ( num_args == 1 )
-    {
-        auto arg = args["time-interval"].assigned[0];
-        if ( isTimeInterval(arg) )
-        {
-            interval.end = time(null);
-            interval.begin = interval.end - parseTimeInterval(arg);
-        }
-        else
-        {
-            interval.begin = parseDateString(arg, 0);
-            interval.end = interval.begin + SECONDS_IN_DAY -1;
-        }
-    }
-    else if ( num_args == 2 )
+    if ( args("time-interval").set && args["time-interval"].assigned.length == 2 )
     {
         cstring begin = args["time-interval"].assigned[0];
         cstring end = args["time-interval"].assigned[1];
+
+        interval.begin = parseDateString(begin, 0);
+        interval.end = parseDateString(end, 24 * 3600 - 1);
 
         if ( isTimeInterval(begin) && isTimeInterval(end) )
         {
             interval.begin = time(null) - parseTimeInterval(begin);
             interval.end = time(null) + parseTimeInterval(end);
         }
-        else if ( isTimeInterval(begin) )
+
+        if ( isTimeInterval(begin) && interval.begin == 0 )
         {
-            interval.end = parseDateString(end, SECONDS_IN_DAY - 1);
             interval.begin = interval.end - parseTimeInterval(begin);
         }
-        else if ( isTimeInterval(end) )
+
+        if ( isTimeInterval(end) && interval.end == 0 )
         {
-            interval.begin = parseDateString(begin, 0);
             interval.end = interval.begin + parseTimeInterval(end);
         }
-        else
-        {
-            interval.begin = parseDateString(begin, 0);
-            interval.end = parseDateString(end, SECONDS_IN_DAY - 1);
-        }
+    }
+
+    if ( interval.begin == 0 && interval.end == 0 )
+    {
+        interval.begin = time(null) - default_interval;
+    }
+
+    if ( interval.begin == 0 )
+    {
+        interval.begin = time(null);
+    }
+
+    if ( interval.end == 0 )
+    {
+        interval.end = time(null);
     }
 
     return interval;
@@ -214,14 +212,16 @@ unittest
 {
     long dummy_time;
     DateConversion dummy_conv;
-    TimestampInterval interval;
+    long default_interval = 60;
 
     auto args = new Arguments;
 
     /// When there is no begin and end date set
     setupTimeIntervalArgs(args, false);
     args.parse("");
-    Test.testThrown!(Exception)(processTimeIntervalArgs(args));
+    auto interval = processTimeIntervalArgs(args, default_interval);
+    Test.test!("<=")(interval.begin, time(null) - default_interval);
+    Test.test!("==")(interval.end, time(null));
 
     /// When the begin date is provided
     args = new Arguments;
