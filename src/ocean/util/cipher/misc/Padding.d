@@ -94,7 +94,7 @@ ubyte[] padPKCS5 ( ref ubyte[] buffer )
 {
     verify(buffer.length <= 8);
 
-    const PKCS5_BLOCK_SIZE = 8;
+    static immutable PKCS5_BLOCK_SIZE = 8;
     return padPKCS7(buffer, PKCS5_BLOCK_SIZE);
 }
 

@@ -139,7 +139,7 @@ struct TimeHistogram
         }
         body
         {
-            const type = typeof(TimeHistogram.bins[0]).stringof;
+            enum type = typeof(TimeHistogram.bins[0]).stringof;
 
             istring res;
 
@@ -196,9 +196,9 @@ struct TimeHistogram
 
     public ulong countMicros ( ulong us )
     {
-        this.count++;
-        this.total_time_micros += us;
-        this.bins[binIndex(us)]++;
+        (&this).count++;
+        (&this).total_time_micros += us;
+        (&this).bins[binIndex(us)]++;
         return us;
     }
 
@@ -213,11 +213,11 @@ struct TimeHistogram
     public double mean_time_micros ( )
     in
     {
-        assert(this.count || !this.total_time_micros);
+        assert((&this).count || !(&this).total_time_micros);
     }
     body
     {
-        return cast(double)this.total_time_micros / this.count;
+        return cast(double)(&this).total_time_micros / (&this).count;
     }
 
     /***************************************************************************
@@ -238,8 +238,8 @@ struct TimeHistogram
         mixin("static assert(is(typeof(Bins.init." ~ bin_name ~ ")));");
 
         mixin("const offset = Bins.init." ~ bin_name ~ ".offsetof;");
-        const index = offset / this.bins[0].sizeof;
-        return this.bins[index];
+        enum index = offset / (&this).bins[0].sizeof;
+        return (&this).bins[index];
     }
 
     unittest
@@ -258,7 +258,7 @@ struct TimeHistogram
 
     public Bins stats ( )
     {
-        return Bins.fromArray(this.bins);
+        return Bins.fromArray((&this).bins);
     }
 
     unittest
