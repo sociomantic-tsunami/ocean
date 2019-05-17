@@ -39,3 +39,5 @@ and then you can call the app with the `time-interval` argument:
 
     my_app --time-interval 2014-03-09 now
     my_app --time-interval now 1m
+    my_app --time-interval 1h --round
+
