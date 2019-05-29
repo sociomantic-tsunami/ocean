@@ -147,7 +147,7 @@ public long parseTimeArgument ( cstring op ) ( cstring value, long reference_tim
 {
     long result;
 
-    if ( isTimeInterval(value) )
+    if ( isRelativeTime(value) )
     {
         static if ( op == "+" )
         {
@@ -208,7 +208,7 @@ public TimestampInterval processTimeIntervalArgs ( Arguments args )
             include_end_date);
     }
 
-    if ( isTimeInterval(args["time-interval"].assigned[0]) )
+    if ( isRelativeTime(args["time-interval"].assigned[0]) )
     {
         return createTimestampInterval(
             args["time-interval"].assigned[0],
@@ -242,7 +242,7 @@ private TimestampInterval createTimestampInterval ( cstring str_begin,
 {
     auto reference_time = time(null);
 
-    if ( !isTimeInterval(str_end) )
+    if ( !isRelativeTime(str_end) )
     {
         reference_time = parseDateString(str_end, include_end_date);
     }
@@ -298,7 +298,7 @@ private long parseDateString ( cstring value, bool include_end_date = false )
         return result + (include_end_date ? SECONDS_IN_DAY : 0);
     }
 
-    enforce(isTimeInterval(value), cast(istring) ("`" ~ value ~ "` is an invalid time interval argument. " ~
+    enforce(isRelativeTime(value), cast(istring) ("`" ~ value ~ "` is an invalid time interval argument. " ~
         "Only `now`, unix timestamp, iso8601 date and durations are permited."));
 
     return 0;
@@ -536,7 +536,7 @@ unittest
 
 ******************************************************************************/
 
-public bool isTimeInterval ( cstring value )
+private bool isRelativeTime ( cstring value )
 {
     if (value == "")
     {
@@ -561,18 +561,21 @@ public bool isTimeInterval ( cstring value )
     return true;
 }
 
+/// ditto
+public deprecated alias isRelativeTime isTimeInterval;
+
 ///
 unittest
 {
-    Test.test!("==")(isTimeInterval(""), false);
-    Test.test!("==")(isTimeInterval("1s"), true);
-    Test.test!("==")(isTimeInterval("1m"), true);
-    Test.test!("==")(isTimeInterval("2m"), true);
-    Test.test!("==")(isTimeInterval("1h"), true);
-    Test.test!("==")(isTimeInterval("2h"), true);
-    Test.test!("==")(isTimeInterval("1d"), true);
-    Test.test!("==")(isTimeInterval("2d"), true);
+    Test.test!("==")(isRelativeTime(""), false);
+    Test.test!("==")(isRelativeTime("1s"), true);
+    Test.test!("==")(isRelativeTime("1m"), true);
+    Test.test!("==")(isRelativeTime("2m"), true);
+    Test.test!("==")(isRelativeTime("1h"), true);
+    Test.test!("==")(isRelativeTime("2h"), true);
+    Test.test!("==")(isRelativeTime("1d"), true);
+    Test.test!("==")(isRelativeTime("2d"), true);
 
-    Test.test!("==")(isTimeInterval("1x"), false);
-    Test.test!("==")(isTimeInterval("2xm"), false);
+    Test.test!("==")(isRelativeTime("1x"), false);
+    Test.test!("==")(isRelativeTime("2xm"), false);
 }
