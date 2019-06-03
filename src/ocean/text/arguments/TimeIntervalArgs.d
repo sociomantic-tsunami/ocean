@@ -225,15 +225,7 @@ public TimestampInterval processTimeIntervalArgs ( Arguments args )
     }
 
     begin = parseTimeArgument!("-")(begin_arg, reference_time, false);
-
-    if ( isTimeInterval(begin_arg) )
-    {
-        end = parseTimeArgument!("+")(end_arg, time(null), include_end_date);
-    }
-    else
-    {
-        end = parseTimeArgument!("+")(end_arg, begin, include_end_date);
-    }
+    end = parseTimeArgument!("+")(end_arg, begin, include_end_date);
 
     //Don't include the last second in the range.
     return TimestampInterval(begin, end-1);
@@ -409,7 +401,7 @@ unittest
     interval = processTimeIntervalArgs(args);
 
     Test.test!("==")(interval.begin, TEST_TIME_NOW - 60);
-    Test.test!("==")(interval.end, TEST_TIME_NOW + 59);
+    Test.test!("==")(interval.end, TEST_TIME_NOW - 1);
 
     /// Using an invalid argument
     args = new Arguments;
