@@ -200,32 +200,55 @@ public TimestampInterval processTimeIntervalArgs ( Arguments args )
     enforce(num_args >= 1 && num_args <= 2, "Not enough arguments provided");
     bool include_end_date = !args["time-interval-exclude"].set;
 
-    auto begin_arg = args["time-interval"].assigned[0];
-    cstring end_arg;
-
     if ( num_args == 2 )
     {
-        end_arg = args["time-interval"].assigned[1];
-    }
-    else if ( isTimeInterval(begin_arg) )
-    {
-        end_arg = "now";
-    }
-    else
-    {
-        end_arg = begin_arg;
+        return createTimestampInterval(
+            args["time-interval"].assigned[0],
+            args["time-interval"].assigned[1],
+            include_end_date);
     }
 
+    if ( isTimeInterval(args["time-interval"].assigned[0]) )
+    {
+        return createTimestampInterval(
+            args["time-interval"].assigned[0],
+            "now",
+            include_end_date);
+    }
+
+    return createTimestampInterval(
+        args["time-interval"].assigned[0],
+        args["time-interval"].assigned[0],
+        include_end_date);
+}
+
+/**************************************************************************
+
+    Create a TimestampInterval from two string values.
+
+    Params:
+        str_begin = `now`, "yesterday", a string timestamp or iso8601 date
+        str_end = `now`, "yesterday", a string timestamp or iso8601 date
+        include_end_date = For string dates, actually parse the next day to
+                           include the dates data.
+
+    Returns:
+        the parsed TimestampInterval
+
+**************************************************************************/
+
+private TimestampInterval createTimestampInterval ( cstring str_begin,
+    cstring str_end, bool include_end_date )
+{
     auto reference_time = time(null);
-    long begin, end;
 
-    if ( !isTimeInterval(end_arg) )
+    if ( !isTimeInterval(str_end) )
     {
-        reference_time = parseDateString(end_arg, include_end_date);
+        reference_time = parseDateString(str_end, include_end_date);
     }
 
-    begin = parseTimeArgument!("-")(begin_arg, reference_time, false);
-    end = parseTimeArgument!("+")(end_arg, begin, include_end_date);
+    auto begin = parseTimeArgument!("-")(str_begin, reference_time, false);
+    auto end = parseTimeArgument!("+")(str_end, begin, include_end_date);
 
     //Don't include the last second in the range.
     return TimestampInterval(begin, end-1);
