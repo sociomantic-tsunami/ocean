@@ -553,12 +553,7 @@ private bool isRelativeTime ( cstring value )
         return false;
     }
 
-    if ( unit != 's' &&  unit != 'm' && unit != 'h' && unit != 'd' )
-    {
-        return false;
-    }
-
-    return true;
+    return isValidTimeUnit(unit);
 }
 
 /// ditto
@@ -578,4 +573,42 @@ unittest
 
     Test.test!("==")(isRelativeTime("1x"), false);
     Test.test!("==")(isRelativeTime("2xm"), false);
+}
+
+
+/******************************************************************************
+
+    Check if a char value is a valid time unit
+
+    Params:
+        unit = the char to be checked
+
+    Returns:
+        true if the unit is valid
+
+******************************************************************************/
+
+private bool isValidTimeUnit ( char unit )
+{
+    return unit == 's' || unit == 'm' || unit == 'h' || unit == 'd';
+}
+
+/// Check if the unit is valid
+unittest
+{
+    Test.test!("==")(isValidTimeUnit('s'), true);
+    Test.test!("==")(isValidTimeUnit('m'), true);
+    Test.test!("==")(isValidTimeUnit('h'), true);
+    Test.test!("==")(isValidTimeUnit('d'), true);
+
+    size_t valid_units;
+    for ( char ch = 'a'; ch <= 'z'; ch++ )
+    {
+        if ( isValidTimeUnit(ch) )
+        {
+            valid_units++;
+        }
+    }
+
+    Test.test!("==")(valid_units, 4);
 }
