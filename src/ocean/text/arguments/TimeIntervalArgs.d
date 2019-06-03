@@ -100,7 +100,7 @@ public void setupTimeIntervalArgs ( Arguments args, bool required )
     auto interval = args("time-interval")
         .aliased('t')
         .params(1, 2)
-        .help("Specify a time interval. It 1 or 2 values, where they can be:\n\t" ~
+        .help("Specify a time interval. It takes 1 or 2 values, where they can be:\n\t" ~
             "'now' an alias for the current timestamp\n\t" ~
             "'yesterday' an alias for yesterdays date\n\t" ~
             "an integer for unix timestamps\n\t" ~
