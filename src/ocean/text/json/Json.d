@@ -980,7 +980,7 @@ class Json(T) : JsonParser!(T)
                     if (type is typeid(Composite))
                         v.set (va_arg!(Composite)(args));
                     else
-                    if (type is typeid(T[]))
+                    if (type is typeid(istring))
                         v.set (va_arg!(T[])(args));
                     else
                     if (type is typeid(void*))
