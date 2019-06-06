@@ -115,7 +115,7 @@ public class EpollSelectDispatcher : IEpollSelectDispatcherInfo
 
      **************************************************************************/
 
-    public const uint DefaultMaxEvents = 16;
+    public static immutable uint DefaultMaxEvents = 16;
 
     /**************************************************************************
 
@@ -336,7 +336,7 @@ public class EpollSelectDispatcher : IEpollSelectDispatcherInfo
 
     ***************************************************************************/
 
-    public void onCycleEnd ( SelectCycleCallback cb )
+    public void onCycleEnd ( scope SelectCycleCallback cb )
     {
         this.select_cycle_callbacks.push(cb);
     }
@@ -768,8 +768,8 @@ public class EpollSelectDispatcher : IEpollSelectDispatcherInfo
 
      **************************************************************************/
 
-    public void eventLoop ( bool delegate ( ) select_cycle_hook = null,
-        bool delegate (Exception) unhandled_exception_hook  = null )
+    public void eventLoop ( scope bool delegate ( ) select_cycle_hook = null,
+        scope bool delegate (Exception) unhandled_exception_hook  = null )
     {
         verify(!this.in_event_loop, "Event loop has already been started.");
 
