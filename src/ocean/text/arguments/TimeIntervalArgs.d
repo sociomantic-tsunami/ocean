@@ -198,9 +198,10 @@ public long parseTimeArgument ( cstring op ) ( cstring value, long reference_tim
     an iso8601 date, a timestamp, `now` or `yesterday`.
 
     If only one argument is provided, the second one will be infered:
+        - `yesterday` it's rewriten as `1d/d 1d`
         - relative times will use `now` as end
-        - `yesterday`, timestamps, dates and `now` will use the same value
-           as an end
+        - timestamps, dates and `now` will use the same value
+          as an end
 
     If the `time-interval-exclude` argument is not set, then a range of
     '-t 2019-04-01 2019-04-02' will include the end date's data.
@@ -219,6 +220,11 @@ public TimestampInterval processTimeIntervalArgs ( Arguments args )
     auto num_args = args["time-interval"].assigned.length;
     enforce(num_args >= 1 && num_args <= 2, "Not enough arguments provided");
     bool include_end_date = !args["time-interval-exclude"].set;
+
+    if ( args["time-interval"].assigned[0] == "yesterday" )
+    {
+        return createTimestampInterval("1d/d", "1d", include_end_date);
+    }
 
     if ( num_args == 2 )
     {
@@ -247,8 +253,8 @@ public TimestampInterval processTimeIntervalArgs ( Arguments args )
     Create a TimestampInterval from two string values.
 
     Params:
-        str_begin = `now`, "yesterday", a string timestamp or iso8601 date
-        str_end = `now`, "yesterday", a string timestamp or iso8601 date
+        str_begin = `now`, a string timestamp or iso8601 date
+        str_end = `now`, a string timestamp or iso8601 date
         include_end_date = For string dates, actually parse the next day to
                            include the dates data.
 
@@ -281,7 +287,7 @@ private TimestampInterval createTimestampInterval ( cstring str_begin,
     then we say the value is actually the next day
 
     Params:
-        value = `now`, "yesterday", a string timestamp or iso8601 date
+        value = `now`, a string timestamp or iso8601 date
         include_end_date = For string dates, actually parse the next day to
                            include the dates data.
 
@@ -295,14 +301,6 @@ private long parseDateString ( cstring value, bool include_end_date = false )
     if ( value == "now" )
     {
         return time(null);
-    }
-
-    if ( value == "yesterday" )
-    {
-        auto cur_time = time(null) - SECONDS_IN_DAY;
-
-        return cur_time - (cur_time % SECONDS_IN_DAY) +
-            (include_end_date ? SECONDS_IN_DAY : 0);
     }
 
     long timestamp;
