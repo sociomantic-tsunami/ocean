@@ -127,9 +127,67 @@ public istring validateTimeIntervalArgs ( Arguments args )
     return null;
 }
 
+
+/******************************************************************************
+
+    Parse one time interval argument
+
+    Params:
+        op = the math operation performed to the reference time.
+             Only "+", "-" is permitted.
+        value = the string that will be parsed
+        reference_time = reference timestamp for the relative intervals
+        include_end_date = For string dates, actually parse the next day to
+                           include the dates data.
+
+******************************************************************************/
+
+public long parseTimeArgument ( cstring op ) ( cstring value, long reference_time,
+    bool include_end_date )
+{
+    long result;
+
+    if ( isTimeInterval(value) )
+    {
+        static if ( op == "+" )
+        {
+            result = reference_time + parseTimeInterval(value);
+        }
+        else static if ( op == "-" )
+        {
+            result = reference_time - parseTimeInterval(value);
+        }
+        else
+        {
+            static assert(false, "Only `+` and `-` operations are supported.");
+        }
+    }
+    else
+    {
+        result = parseDateString(value, include_end_date);
+    }
+
+    return result;
+}
+
+
 /***************************************************************************
 
-    Process the time-interval argument
+    Process the time-interval arguments. It expects one or two
+    `time-interval` arguments. They can be a `relative time`,
+    an iso8601 date, a timestamp, `now` or `yesterday`.
+
+    If only one argument is provided, the second one will be infered:
+        - relative times will use `now` as end
+        - `yesterday`, timestamps, dates and `now` will use the same value
+           as an end
+
+    If the `time-interval-exclude` argument is not set, then a range of
+    '-t 2019-04-01 2019-04-02' will include the end date's data.
+    eg. (end: 2019-04-02 23:59:59).
+
+    If the `time-interval-exclude` argument is set, end date data will
+    not be included, eg.(end: 2019-04-01 23:59:59)
 
     Params:
         args = The arguments to process
@@ -142,48 +200,41 @@ public TimestampInterval processTimeIntervalArgs ( Arguments args )
     enforce(num_args >= 1 && num_args <= 2, "Not enough arguments provided");
     bool include_end_date = !args["time-interval-exclude"].set;
 
+    auto begin_arg = args["time-interval"].assigned[0];
+    cstring end_arg;
+
+    if ( num_args == 2 )
+    {
+        end_arg = args["time-interval"].assigned[1];
+    }
+    else if ( isTimeInterval(begin_arg) )
+    {
+        end_arg = "now";
+    }
+    else
+    {
+        end_arg = begin_arg;
+    }
+
+    auto reference_time = time(null);
     long begin, end;
 
-    if ( num_args == 1 )
+    if ( !isTimeInterval(end_arg) )
     {
-        auto arg = args["time-interval"].assigned[0];
-        if ( isTimeInterval(arg) )
-        {
-            end = time(null);
-            begin = end - parseTimeInterval(arg);
-        }
-        else
-        {
-            begin = parseDateString(arg);
-            end = begin + SECONDS_IN_DAY;
-        }
+        reference_time = parseDateString(end_arg, include_end_date);
     }
-    else if ( num_args == 2 )
-    {
-        cstring begin_arg = args["time-interval"].assigned[0];
-        cstring end_arg = args["time-interval"].assigned[1];
 
-        if ( isTimeInterval(begin_arg) && isTimeInterval(end_arg) )
-        {
-            begin = time(null) - parseTimeInterval(begin_arg);
-            end = time(null) + parseTimeInterval(end_arg);
-        }
-        else if ( isTimeInterval(begin_arg) )
-        {
-            end = parseDateString(end_arg, include_end_date);
-            begin = end - parseTimeInterval(begin_arg);
-        }
-        else if ( isTimeInterval(end_arg) )
-        {
-            begin = parseDateString(begin_arg);
-            end = begin + parseTimeInterval(end_arg);
-        }
-        else
-        {
-            begin = parseDateString(begin_arg);
-            end = parseDateString(end_arg, include_end_date);
-        }
+    begin = parseTimeArgument!("-")(begin_arg, reference_time, false);
+
+    if ( isTimeInterval(begin_arg) )
+    {
+        end = parseTimeArgument!("+")(end_arg, time(null), include_end_date);
     }
+    else
+    {
+        end = parseTimeArgument!("+")(end_arg, begin, include_end_date);
+    }
+
     //Don't include the last second in the range.
     return TimestampInterval(begin, end-1);
 }
@@ -214,7 +265,9 @@ private long parseDateString ( cstring value, bool include_end_date = false )
     if ( value == "yesterday" )
     {
         auto cur_time = time(null) - SECONDS_IN_DAY;
-        return cur_time - (cur_time % SECONDS_IN_DAY);
+
+        return cur_time - (cur_time % SECONDS_IN_DAY) +
+            (include_end_date ? SECONDS_IN_DAY : 0);
     }
 
     long timestamp;
