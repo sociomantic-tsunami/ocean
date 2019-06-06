@@ -35,7 +35,15 @@
         eg. -t 100 1m = (begin: 100, end: 159)
         eg. -t 1m 100 = (begin: 60, end: 99)
 
+    Division
+    -------------
+        All relative values and `now` can be rounded.
+        eg. -t 1h/h 1h = if the command is executed at 15:23:23 then
+                         begin = 14:00:00, end = 14:59:59
+        eg. -t now/d = will select the range between 00:00:00 and `now`
+
     Intended Range Usage
+    -------------
         for ( long i = range.begin; i <= range.end; ++i )
 
     copyright: Copyright (c) 2018 dunnhumby Germany GmbH. All rights reserved
@@ -67,8 +75,14 @@ struct TimestampInterval
     long end;
 }
 
-/// Number of seconds in the day for creating day ranges.
-const SECONDS_IN_DAY = 86_400;
+/// Number of seconds in a minute
+const SECONDS_IN_MINUTE = 60;
+
+/// Number of seconds in an hour
+const SECONDS_IN_HOUR = SECONDS_IN_MINUTE * 60;
+
+/// Number of seconds in the day
+const SECONDS_IN_DAY = SECONDS_IN_HOUR * 24;
 
 /***************************************************************************
 
@@ -91,7 +105,9 @@ public void setupTimeIntervalArgs ( Arguments args, bool required )
             "'yesterday' an alias for yesterdays date\n\t" ~
             "an integer for unix timestamps\n\t" ~
             "a time duration `{int}m`. Supported units are [m]inutes, [h]ours and [d]ays\n\t" ~
-            "an iso1806 date (YYYY-MM-DD)");
+            "an iso1806 date (YYYY-MM-DD)\n\t\n\t"~
+            "the relative values and 'now' can be rounded by [m]inutes, [h]ours and [d]ays.\n\t" ~
+            "eg. 1h/h will set the minutes and seconds to `0`");
     args("time-interval-exclude")
         .help("If not set, then a range of '-t 2019-04-01 2019-04-02' will \n" ~
               "include the end date's data. eg. (end: 2019-04-02 23:59:59) \n" ~
@@ -151,11 +167,11 @@ public long parseTimeArgument ( cstring op ) ( cstring value, long reference_tim
     {
         static if ( op == "+" )
         {
-            result = reference_time + parseTimeInterval(value);
+            result = reference_time + parseTimeInterval(removeTimeDivision(value));
         }
         else static if ( op == "-" )
         {
-            result = reference_time - parseTimeInterval(value);
+            result = reference_time - parseTimeInterval(removeTimeDivision(value));
         }
         else
         {
@@ -164,12 +180,16 @@ public long parseTimeArgument ( cstring op ) ( cstring value, long reference_tim
     }
     else
     {
-        result = parseDateString(value, include_end_date);
+        result = parseDateString(removeTimeDivision(value), include_end_date);
+    }
+
+    if ( isDividedTime(value) )
+    {
+        result = roundTime(result, getTimeUnit(value));
     }
 
     return result;
 }
-
 
 /***************************************************************************
 
@@ -218,7 +238,7 @@ public TimestampInterval processTimeIntervalArgs ( Arguments args )
 
     return createTimestampInterval(
         args["time-interval"].assigned[0],
-        args["time-interval"].assigned[0],
+        removeTimeDivision(args["time-interval"].assigned[0]),
         include_end_date);
 }
 
@@ -244,7 +264,7 @@ private TimestampInterval createTimestampInterval ( cstring str_begin,
 
     if ( !isRelativeTime(str_end) )
     {
-        reference_time = parseDateString(str_end, include_end_date);
+        reference_time = parseDateString(removeTimeDivision(str_end), include_end_date);
     }
 
     auto begin = parseTimeArgument!("-")(str_begin, reference_time, false);
@@ -456,6 +476,84 @@ unittest
     Test.test!("==")(interval.begin, 1554125192);
     /// 2019-04-01 15:26:31
     Test.test!("==")(interval.end, 1554132391);
+
+    /// Using time intervals with rounded hours
+    args = new Arguments;
+
+    setupTimeIntervalArgs(args, false);
+    args.parse("--time-interval 1h/h 1h");
+    interval = processTimeIntervalArgs(args);
+
+    timeToUnixTime("2019-04-01 14:00:00", dummy_time, dummy_conv);
+    Test.test!("==")(interval.begin, dummy_time);
+
+    timeToUnixTime("2019-04-01 14:59:59", dummy_time, dummy_conv);
+    Test.test!("==")(interval.end, dummy_time);
+
+    /// Using divided time intervals that start `now`
+    args = new Arguments;
+
+    setupTimeIntervalArgs(args, false);
+    args.parse("--time-interval now 1h/h");
+    interval = processTimeIntervalArgs(args);
+
+    timeToUnixTime("2019-04-01 15:26:32", dummy_time, dummy_conv);
+    Test.test!("==")(interval.begin, dummy_time);
+
+    timeToUnixTime("2019-04-01 15:59:59", dummy_time, dummy_conv);
+    Test.test!("==")(interval.end, dummy_time);
+
+    /// Select the yesterday interval with relative time
+    args = new Arguments;
+
+    setupTimeIntervalArgs(args, false);
+    args.parse("--time-interval 1d/d 1d");
+    interval = processTimeIntervalArgs(args);
+
+    timeToUnixTime("2019-03-31 00:00:00", dummy_time, dummy_conv);
+    Test.test!("==")(interval.begin, dummy_time);
+
+    timeToUnixTime("2019-03-31 23:59:59", dummy_time, dummy_conv);
+    Test.test!("==")(interval.end, dummy_time);
+
+    /// Using divided time intervals that ends `now`
+    args = new Arguments;
+
+    setupTimeIntervalArgs(args, false);
+    args.parse("--time-interval 1h/h now");
+    interval = processTimeIntervalArgs(args);
+
+    timeToUnixTime("2019-04-01 14:00:00", dummy_time, dummy_conv);
+    Test.test!("==")(interval.begin, dummy_time);
+
+    timeToUnixTime("2019-04-01 15:26:31", dummy_time, dummy_conv);
+    Test.test!("==")(interval.end, dummy_time);
+
+    /// Using divided `now`
+    args = new Arguments;
+
+    setupTimeIntervalArgs(args, false);
+    args.parse("--time-interval now/h now/m");
+    interval = processTimeIntervalArgs(args);
+
+    timeToUnixTime("2019-04-01 15:00:00", dummy_time, dummy_conv);
+    Test.test!("==")(interval.begin, dummy_time);
+
+    timeToUnixTime("2019-04-01 15:25:59", dummy_time, dummy_conv);
+    Test.test!("==")(interval.end, dummy_time);
+
+    /// Using one divided `now`
+    args = new Arguments;
+
+    setupTimeIntervalArgs(args, false);
+    args.parse("--time-interval now/h");
+    interval = processTimeIntervalArgs(args);
+
+    timeToUnixTime("2019-04-01 15:00:00", dummy_time, dummy_conv);
+    Test.test!("==")(interval.begin, dummy_time);
+
+    timeToUnixTime("2019-04-01 15:26:31", dummy_time, dummy_conv);
+    Test.test!("==")(interval.end, dummy_time);
 }
 
 /******************************************************************************
@@ -525,14 +623,14 @@ unittest
 
 /******************************************************************************
 
-    Checks if a string can be converted to a time interval
+    Checks if a string is a valid relative time
 
     Params:
         value = a string containing an integer and the first leter of a time
-            unit. The supported units are minutes, hours and days.
+            unit. The supported units are seconds, minutes, hours and days.
 
     Returns:
-        true, if the string is a valid interval
+        true, if the string is a valid relative time
 
 ******************************************************************************/
 
@@ -543,23 +641,22 @@ private bool isRelativeTime ( cstring value )
         return false;
     }
 
-    long result;
+    auto relative_value = removeTimeDivision(value);
+
     long tempValue;
 
-    char unit = value[value.length - 1];
-
-    if ( !toLong(value[0..$-1], tempValue) )
+    if ( !toLong(relative_value[0..$-1], tempValue) )
     {
         return false;
     }
 
-    return isValidTimeUnit(unit);
+    return isValidTimeUnit(value[value.length - 1]);
 }
 
 /// ditto
 public deprecated alias isRelativeTime isTimeInterval;
 
-///
+/// Validations for relative times
 unittest
 {
     Test.test!("==")(isRelativeTime(""), false);
@@ -570,11 +667,11 @@ unittest
     Test.test!("==")(isRelativeTime("2h"), true);
     Test.test!("==")(isRelativeTime("1d"), true);
     Test.test!("==")(isRelativeTime("2d"), true);
+    Test.test!("==")(isRelativeTime("2d/d"), true);
 
     Test.test!("==")(isRelativeTime("1x"), false);
     Test.test!("==")(isRelativeTime("2xm"), false);
 }
-
 
 /******************************************************************************
 
@@ -611,4 +708,181 @@ unittest
     }
 
     Test.test!("==")(valid_units, 4);
+}
+
+/******************************************************************************
+
+    Checks if a string contains a valid divided relative time
+
+    Params:
+        value = the relative time that will be validated
+
+    Returns:
+        true, if the string matches the pattern [some value]/[time unit]
+
+******************************************************************************/
+
+private bool isDividedTime ( cstring value )
+{
+    if ( value.length <= 2 )
+    {
+        return false;
+    }
+
+    auto last_index = value.length - 1;
+
+    if ( !isValidTimeUnit(value[last_index]) )
+    {
+        return false;
+    }
+
+    if ( value[last_index - 1] != '/' )
+    {
+        return false;
+    }
+
+    return true;
+}
+
+/// Validate divided time arguments
+unittest
+{
+    Test.test!("==")(isDividedTime(""), false);
+    Test.test!("==")(isDividedTime("d"), false);
+    Test.test!("==")(isDividedTime("1d"), false);
+    Test.test!("==")(isDividedTime("11d/dd"), false);
+    Test.test!("==")(isDividedTime("1d/x"), false);
+
+    Test.test!("==")(isDividedTime("11/d"), true);
+    Test.test!("==")(isDividedTime("d/d"), true);
+    Test.test!("==")(isDividedTime("11dd/d"), true);
+    Test.test!("==")(isDividedTime("1d/d"), true);
+}
+
+/******************************************************************************
+
+    Remove the time division from the relative time
+
+    Params:
+        value = the relative time
+
+    Returns:
+        the relative time without the division
+
+******************************************************************************/
+
+private cstring removeTimeDivision ( cstring value )
+{
+    if ( value.length < 2 || !isDividedTime(value) )
+    {
+        return value;
+    }
+
+    return value[0..$-2];
+}
+
+/// Validate divided time arguments
+unittest
+{
+    Test.test!("==")(removeTimeDivision(""), "");
+    Test.test!("==")(removeTimeDivision("d"), "d");
+    Test.test!("==")(removeTimeDivision("d/d"), "d");
+    Test.test!("==")(removeTimeDivision("1d"), "1d");
+    Test.test!("==")(removeTimeDivision("11/d"), "11");
+    Test.test!("==")(removeTimeDivision("11d/dd"), "11d/dd");
+    Test.test!("==")(removeTimeDivision("1d/x"), "1d/x");
+
+    Test.test!("==")(removeTimeDivision("11dd/d"), "11dd");
+    Test.test!("==")(removeTimeDivision("1d/d"), "1d");
+}
+
+/******************************************************************************
+
+    Get the division time unit from a string time
+
+    Params:
+        value = the string time
+
+    Returns:
+        the char representing the time unit or '?' in case of error
+
+******************************************************************************/
+
+private char getTimeUnit ( cstring value )
+{
+    if ( value == "" )
+    {
+        return '?';
+    }
+
+    auto last_index = value.length - 1;
+    auto unit = value[last_index];
+
+    if ( !isValidTimeUnit(unit) )
+    {
+        return '?';
+    }
+
+    return unit;
+}
+
+/// Getting the time unit
+unittest
+{
+    Test.test!("==")(getTimeUnit(""), '?');
+    Test.test!("==")(getTimeUnit("d"), 'd');
+    Test.test!("==")(getTimeUnit("/d"), 'd');
+    Test.test!("==")(getTimeUnit("/x"), '?');
+}
+
+
+/******************************************************************************
+
+    Round a timestamp to a particular time unit
+
+    Params:
+        value = the timestamp
+        unit = the time unit used for rounding
+
+    Returns:
+        the rounded timestamp
+
+******************************************************************************/
+
+private long roundTime ( long value, char unit )
+{
+    switch ( unit )
+    {
+        case 'm':
+            return value - value % SECONDS_IN_MINUTE;
+        case 'h':
+            return value - value % SECONDS_IN_HOUR;
+        case 'd':
+            return value - value % SECONDS_IN_DAY;
+        default:
+    }
+
+    return value;
+}
+
+unittest
+{
+    long actual_time;
+    long expected_time;
+    DateConversion dummy_conv;
+
+    timeToUnixTime("2019-04-01 14:12:34", actual_time, dummy_conv);
+    Test.test!("==")(roundTime(actual_time, 's'), actual_time);
+
+    timeToUnixTime("2019-04-01 14:12:00", expected_time, dummy_conv);
+    timeToUnixTime("2019-04-01 14:12:34", actual_time, dummy_conv);
+    Test.test!("==")(roundTime(actual_time, 'm'), expected_time);
+
+    timeToUnixTime("2019-04-01 14:00:00", expected_time, dummy_conv);
+    timeToUnixTime("2019-04-01 14:12:34", actual_time, dummy_conv);
+    Test.test!("==")(roundTime(actual_time, 'h'), expected_time);
+
+    timeToUnixTime("2019-04-01 00:00:00", expected_time, dummy_conv);
+    timeToUnixTime("2019-04-01 14:12:34", actual_time, dummy_conv);
+    Test.test!("==")(roundTime(actual_time, 'd'), expected_time);
 }
