@@ -281,22 +281,26 @@ private:
         {
             asm
             {
+                 naked;
                  fstsw AX;
                  // NOTE: If compiler supports SSE2, need to OR the result with
                  // the SSE2 status register.
                  // Clear all irrelevant bits
                  and EAX, 0x03D;
+                 ret;
             }
         }
         else version(D_InlineAsm_X86_64)
         {
             asm
             {
+                 naked;
                  fstsw AX;
                  // NOTE: If compiler supports SSE2, need to OR the result with
                  // the SSE2 status register.
                  // Clear all irrelevant bits
                  and RAX, 0x03D;
+                 ret;
             }
         } else {
            /*   SPARC:
