@@ -78,7 +78,7 @@ struct UCent
 
     public equals_t opEquals(UCent rhs)
     {
-        return this.opCmp(rhs) == 0;
+        return (&this).opCmp(rhs) == 0;
     }
 }
 
@@ -120,7 +120,7 @@ struct Cent
 
     public equals_t opEquals(Cent rhs)
     {
-        return this.opCmp(rhs) == 0;
+        return (&this).opCmp(rhs) == 0;
     }
 }
 

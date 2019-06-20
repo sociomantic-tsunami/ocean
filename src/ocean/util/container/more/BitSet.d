@@ -141,7 +141,7 @@ struct BitSet (int Count=0)
         {
                 BitSet x;
                 static if (Count == 0)
-                           x.bits.length = this.bits.length;
+                           x.bits.length = (&this).bits.length;
                 x.bits[] = bits[];
                 return x;
         }

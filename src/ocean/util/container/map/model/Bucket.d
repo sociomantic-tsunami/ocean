@@ -160,7 +160,7 @@ public struct Bucket ( size_t V, K = hash_t )
 
     public bool has_element ( )
     {
-        return this.first !is null;
+        return (&this).first !is null;
     }
 
     /**************************************************************************
@@ -187,7 +187,7 @@ public struct Bucket ( size_t V, K = hash_t )
     }
     body
     {
-        for (Element* element = this.first; element; element = element.next)
+        for (Element* element = (&this).first; element; element = element.next)
         {
             if (element.key == key)
             {
@@ -226,11 +226,11 @@ public struct Bucket ( size_t V, K = hash_t )
     }
     body
     {
-        Element* element = this.find(key);
+        Element* element = (&this).find(key);
 
         if (!element)
         {
-            element = this.add(new_element);
+            element = (&this).add(new_element);
 
             static if (isArrayType!(K) == ArrayKind.Static)
             {
@@ -271,7 +271,7 @@ public struct Bucket ( size_t V, K = hash_t )
         {
             // Check for cyclic links using 2 pointers, one which traverse
             // twice as fast as the first one
-            auto ptr1 = this.first;
+            auto ptr1 = (&this).first;
             auto ptr2 = ptr1;
 
             // Find meeting point
@@ -289,8 +289,8 @@ public struct Bucket ( size_t V, K = hash_t )
     }
     body
     {
-        element.next = this.first;
-        this.first   = element;
+        element.next = (&this).first;
+        (&this).first   = element;
 
         return element;
     }
@@ -328,22 +328,22 @@ public struct Bucket ( size_t V, K = hash_t )
     }
     body
     {
-        if (this.first !is null)
+        if ((&this).first !is null)
         {
-            if (this.first.key == key)
+            if ((&this).first.key == key)
             {
-                Element* removed = this.first;
+                Element* removed = (&this).first;
 
-                this.first   = this.first.next;
+                (&this).first   = (&this).first.next;
                 removed.next = null;
 
                 return removed;
             }
             else
             {
-                Element* element = this.first.next;
+                Element* element = (&this).first.next;
 
-                for (Element* prev = this.first; element;)
+                for (Element* prev = (&this).first; element;)
                 {
                     if (element.key == key)
                     {

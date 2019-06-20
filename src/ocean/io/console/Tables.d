@@ -410,8 +410,8 @@ public class Table
 
             public typeof((&this)) setString ( cstring str )
             {
-                this.type = Type.String;
-                this.contents.utf8.copy(str);
+                (&this).type = Type.String;
+                (&this).contents.utf8.copy(str);
 
                 return (&this);
             }
@@ -434,9 +434,9 @@ public class Table
             public typeof((&this)) setInteger ( ulong num,
                 bool use_thousands_separator = true )
             {
-                this.type = Type.Integer;
-                this.use_thousands_separator = use_thousands_separator;
-                this.contents.integer = num;
+                (&this).type = Type.Integer;
+                (&this).use_thousands_separator = use_thousands_separator;
+                (&this).contents.integer = num;
 
                 return (&this);
             }
@@ -459,9 +459,9 @@ public class Table
 
             public typeof((&this)) setBinaryMetric ( ulong num, cstring metric_string = "" )
             {
-                this.type = Type.BinaryMetric;
-                this.contents.integer = num;
-                this.metric_string.copy(metric_string);
+                (&this).type = Type.BinaryMetric;
+                (&this).contents.integer = num;
+                (&this).metric_string.copy(metric_string);
 
                 return (&this);
             }
@@ -484,9 +484,9 @@ public class Table
 
             public typeof((&this)) setDecimalMetric ( ulong num, cstring metric_string = "" )
             {
-                this.type = Type.DecimalMetric;
-                this.contents.integer = num;
-                this.metric_string.copy(metric_string);
+                (&this).type = Type.DecimalMetric;
+                (&this).contents.integer = num;
+                (&this).metric_string.copy(metric_string);
 
                 return (&this);
             }
@@ -506,8 +506,8 @@ public class Table
 
             public typeof((&this)) setFloat ( double num )
             {
-                this.type = Type.Float;
-                this.contents.floating = num;
+                (&this).type = Type.Float;
+                (&this).contents.floating = num;
 
                 return (&this);
             }
@@ -524,7 +524,7 @@ public class Table
 
             public typeof((&this)) setEmpty ( )
             {
-                this.type = Type.Empty;
+                (&this).type = Type.Empty;
 
                 return (&this);
             }
@@ -541,7 +541,7 @@ public class Table
 
             public typeof((&this)) setDivider ( )
             {
-                this.type = Type.Divider;
+                (&this).type = Type.Divider;
 
                 return (&this);
             }
@@ -558,7 +558,7 @@ public class Table
 
             public typeof((&this)) setMerged ( )
             {
-                this.type = Type.Merged;
+                (&this).type = Type.Merged;
 
                 return (&this);
             }
@@ -579,7 +579,7 @@ public class Table
             public typeof((&this)) setForegroundColour ( Terminal.Colour colour )
             {
                 auto colour_str = Terminal.fg_colour_codes[colour];
-                this.fg_colour_string.concat(Terminal.CSI, colour_str);
+                (&this).fg_colour_string.concat(Terminal.CSI, colour_str);
 
                 return (&this);
             }
@@ -600,7 +600,7 @@ public class Table
             public typeof((&this)) setBackgroundColour ( Terminal.Colour colour )
             {
                 auto colour_str = Terminal.bg_colour_codes[colour];
-                this.bg_colour_string.concat(Terminal.CSI, colour_str);
+                (&this).bg_colour_string.concat(Terminal.CSI, colour_str);
 
                 return (&this);
             }
@@ -615,7 +615,7 @@ public class Table
 
             public size_t width ( )
             {
-                switch ( this.type )
+                switch ( (&this).type )
                 {
                     case Cell.Type.Merged:
                     case Cell.Type.Empty:
@@ -623,20 +623,20 @@ public class Table
                         return 0;
                     case Cell.Type.BinaryMetric:
                         MetricPrefix metric;
-                        metric.bin(this.contents.integer);
-                        return this.floatWidth(metric.scaled) + 3 +
-                            this.metric_string.length;
+                        metric.bin((&this).contents.integer);
+                        return (&this).floatWidth(metric.scaled) + 3 +
+                            (&this).metric_string.length;
                     case Cell.Type.DecimalMetric:
                         MetricPrefix metric;
-                        metric.dec(this.contents.integer);
-                        return this.floatWidth(metric.scaled) + 2 +
-                            this.metric_string.length;
+                        metric.dec((&this).contents.integer);
+                        return (&this).floatWidth(metric.scaled) + 2 +
+                            (&this).metric_string.length;
                     case Cell.Type.Integer:
-                        return this.integerWidth(this.contents.integer);
+                        return (&this).integerWidth((&this).contents.integer);
                     case Cell.Type.Float:
-                        return this.floatWidth(this.contents.floating);
+                        return (&this).floatWidth((&this).contents.floating);
                     case Cell.Type.String:
-                        return utf8Length(this.contents.utf8);
+                        return utf8Length((&this).contents.utf8);
 
                     default:
                         assert(0);
@@ -667,13 +667,13 @@ public class Table
                     Terminal.CSI ~ Terminal.bg_colour_codes[Terminal.Colour.Default];
 
                 // set the colour of this cell
-                if ( this.fg_colour_string.length > 0 ||
-                     this.bg_colour_string.length > 0 )
+                if ( (&this).fg_colour_string.length > 0 ||
+                     (&this).bg_colour_string.length > 0 )
                 {
-                    output.format("{}{}", this.fg_colour_string, this.bg_colour_string);
+                    output.format("{}{}", (&this).fg_colour_string, (&this).bg_colour_string);
                 }
 
-                if ( this.type == Type.Divider )
+                if ( (&this).type == Type.Divider )
                 {
                     content_buf.length = width + inter_cell_spacing;
                     enableStomping(content_buf);
@@ -682,15 +682,15 @@ public class Table
                     output.format("{}", content_buf);
 
                     // reset colour to default
-                    if ( this.fg_colour_string.length > 0 ||
-                         this.bg_colour_string.length > 0 )
+                    if ( (&this).fg_colour_string.length > 0 ||
+                         (&this).bg_colour_string.length > 0 )
                     {
                         output.format("{}", default_colours);
                     }
                 }
                 else
                 {
-                    switch ( this.type )
+                    switch ( (&this).type )
                     {
                         case Type.Empty:
                             content_buf.length = 0;
@@ -701,19 +701,19 @@ public class Table
                             enableStomping(content_buf);
 
                             MetricPrefix metric;
-                            metric.bin(this.contents.integer);
+                            metric.bin((&this).contents.integer);
 
                             if ( metric.prefix == ' ' )
                             {
                                 sformat(content_buf,
                                     "{}      {}", cast(uint)metric.scaled,
-                                    this.metric_string);
+                                    (&this).metric_string);
                             }
                             else
                             {
                                 sformat(content_buf,
                                     "{} {}i{}", metric.scaled, metric.prefix,
-                                    this.metric_string);
+                                    (&this).metric_string);
                             }
                             break;
                         case Type.DecimalMetric:
@@ -721,42 +721,42 @@ public class Table
                             enableStomping(content_buf);
 
                             MetricPrefix metric;
-                            metric.dec(this.contents.integer);
+                            metric.dec((&this).contents.integer);
 
                             if ( metric.prefix == ' ' )
                             {
                                 sformat(content_buf,
                                     "{}     {}", cast(uint)metric.scaled,
-                                    this.metric_string);
+                                    (&this).metric_string);
                             }
                             else
                             {
                                 sformat(content_buf,
                                     "{} {}{}", metric.scaled, metric.prefix,
-                                    this.metric_string);
+                                    (&this).metric_string);
                             }
                             break;
                         case Type.Integer:
-                            if ( this.use_thousands_separator )
+                            if ( (&this).use_thousands_separator )
                             {
-                                DigitGrouping.format(this.contents.integer, content_buf);
+                                DigitGrouping.format((&this).contents.integer, content_buf);
                             }
                             else
                             {
                                 content_buf.length = 0;
                                 enableStomping(content_buf);
                                 sformat(content_buf,
-                                    "{}", this.contents.integer);
+                                    "{}", (&this).contents.integer);
                             }
                             break;
                         case Type.Float:
                             content_buf.length = 0;
                             enableStomping(content_buf);
                             sformat(content_buf,
-                                    "{}", this.contents.floating);
+                                    "{}", (&this).contents.floating);
                             break;
                         case Type.String:
-                            content_buf = this.contents.utf8;
+                            content_buf = (&this).contents.utf8;
                             break;
                         default:
                             return;
@@ -792,7 +792,7 @@ public class Table
 
             private size_t integerWidth ( ulong i )
             {
-                if ( this.use_thousands_separator )
+                if ( (&this).use_thousands_separator )
                 {
                     return DigitGrouping.length(i);
                 }

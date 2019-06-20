@@ -85,7 +85,7 @@ struct HttpTimeFormatter
 
     public mstring format ( time_t t )
     {
-        return this.format(this.buf, t);
+        return (&this).format((&this).buf, t);
     }
 
     /**************************************************************************
@@ -103,7 +103,7 @@ struct HttpTimeFormatter
 
     public mstring format ( )
     {
-        return this.format(this.buf);
+        return (&this).format((&this).buf);
     }
 
     /**************************************************************************

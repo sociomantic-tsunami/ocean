@@ -215,9 +215,9 @@ public struct UtfString ( Char = char, bool pull_dchars = false )
         int res;
         size_t i;
 
-        while ( i < this.string.length )
+        while ( i < (&this).string.length )
         {
-            Char[] process = this.string[i..$];
+            Char[] process = (&this).string[i..$];
 
             size_t width;
             auto c = This.extract(process, width);
@@ -250,9 +250,9 @@ public struct UtfString ( Char = char, bool pull_dchars = false )
         int res;
         size_t i;
 
-        while ( i < this.string.length )
+        while ( i < (&this).string.length )
         {
-            Char[] process = this.string[i..$];
+            Char[] process = (&this).string[i..$];
 
             size_t width;
             auto c = This.extract(process, width);
@@ -284,9 +284,9 @@ public struct UtfString ( Char = char, bool pull_dchars = false )
         int res;
         size_t i;
 
-        while ( i < this.string.length )
+        while ( i < (&this).string.length )
         {
-            Char[] process = this.string[i..$];
+            Char[] process = (&this).string[i..$];
 
             size_t width;
             auto c = This.extract(process, width);
@@ -319,7 +319,7 @@ public struct UtfString ( Char = char, bool pull_dchars = false )
 
     public OutType opIndex ( size_t index )
     {
-        verify(this.string.length > 0,
+        verify((&this).string.length > 0,
             This.stringof ~ ".opIndex - attempted to index into an empty string");
 
         size_t i;
@@ -328,7 +328,7 @@ public struct UtfString ( Char = char, bool pull_dchars = false )
         do
         {
             size_t width;
-            c = This.extract(this.string[i..$], width);
+            c = This.extract((&this).string[i..$], width);
             i += width;
         } while ( count++ < index );
 
@@ -361,7 +361,7 @@ public struct UtfString ( Char = char, bool pull_dchars = false )
 
         static if ( pull_dchars )
         {
-            return this.sliceCopy(start, end, this.slice_string);
+            return (&this).sliceCopy(start, end, (&this).slice_string);
         }
         else
         {
@@ -369,7 +369,7 @@ public struct UtfString ( Char = char, bool pull_dchars = false )
             size_t char_count;
             size_t src_i;
 
-            while ( src_i < this.string.length )
+            while ( src_i < (&this).string.length )
             {
                 if ( char_count == start )
                 {
@@ -377,10 +377,10 @@ public struct UtfString ( Char = char, bool pull_dchars = false )
                 }
                 if ( char_count >= end )
                 {
-                    return this.string[start_i .. src_i];
+                    return (&this).string[start_i .. src_i];
                 }
 
-                Char[] process = this.string[src_i..$];
+                Char[] process = (&this).string[src_i..$];
 
                 size_t width;
                 This.extract(process, width);
@@ -474,7 +474,7 @@ public struct UtfString ( Char = char, bool pull_dchars = false )
     public OutType extract ( bool consume = false )
     {
         size_t width;
-        return this.extract(width, consume);
+        return (&this).extract(width, consume);
     }
 
 
@@ -496,10 +496,10 @@ public struct UtfString ( Char = char, bool pull_dchars = false )
 
     public OutType extract ( out size_t width, bool consume = false )
     {
-        auto extracted = This.extract(this.string, width);
+        auto extracted = This.extract((&this).string, width);
         if ( consume )
         {
-            this.string = this.string[width..$];
+            (&this).string = (&this).string[width..$];
         }
 
         return extracted;

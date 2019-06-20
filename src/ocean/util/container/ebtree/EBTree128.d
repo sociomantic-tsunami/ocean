@@ -124,7 +124,7 @@ class EBTree128 ( bool signed = false ) : IEBTree
 
         public equals_t opEquals(Key rhs)
         {
-            return this.opCmp(rhs) == 0;
+            return (&this).opCmp(rhs) == 0;
         }
     }
 

@@ -730,7 +730,7 @@ version (Filter)
                             foreach (child; children)
                                      if (child.id is XmlNodeType.Data)
                                          return child.value (val);
-                        Array.copy(this.rawValue, val);
+                        Array.copy((&this).rawValue, val);
                         mutate;
                 }
 
@@ -1277,7 +1277,7 @@ version (Filter)
 
                 private void migrate (Document host)
                 {
-                        this.doc = host;
+                        (&this).doc = host;
                         foreach (attr; attributes)
                                  attr.migrate (host);
                         foreach (child; children)

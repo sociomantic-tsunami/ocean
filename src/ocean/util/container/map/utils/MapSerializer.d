@@ -1640,7 +1640,7 @@ unittest
 
         bool compare ( OldStruct* old )
         {
-            return old.old == this.old &&
+            return old.old == (&this).old &&
                    old.old+1 == a_bit_newer;
         }
     }
@@ -1759,7 +1759,7 @@ unittest
 
         bool compare ( StructPrevious* olds )
         {
-            return this.hello42 == (olds.hello + 42);
+            return (&this).hello42 == (olds.hello + 42);
         }
 
         static struct StructPrevious
@@ -1770,7 +1770,7 @@ unittest
 
             bool compare ( StructNext* news )
             {
-                return this.hello == (news.hello42 - 42);
+                return (&this).hello == (news.hello42 - 42);
             }
         }
     }

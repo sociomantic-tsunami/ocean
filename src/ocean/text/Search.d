@@ -131,7 +131,7 @@ public struct FindFruct
 
     void match (cstring what)
     {
-        this.what = what;
+        (&this).what = what;
     }
 
     /***********************************************************************
@@ -328,8 +328,8 @@ public struct SearchFruct
     void match (cstring what)
     {
         offsets[] = what.length + 1;
-        this.fore = true;
-        this.what = what;
+        (&this).fore = true;
+        (&this).what = what;
         reset;
     }
 

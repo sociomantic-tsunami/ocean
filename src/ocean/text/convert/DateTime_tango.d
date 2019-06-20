@@ -172,7 +172,7 @@ struct DateTimeLocale
 
         auto res=Result(output);
         scope sink = (cstring v) { res ~= v; return v.length; };
-        this.formatCustom(sink, dateTime, layout);
+        (&this).formatCustom(sink, dateTime, layout);
         return res.get;
     }
 
@@ -968,7 +968,7 @@ public struct AsPrettyStr
     {
         // Layout defaults to 'G'
         scope dg = (cstring s) { sink(s); return s.length; };
-        DateTimeDefault.format(dg, this.value, "");
+        DateTimeDefault.format(dg, (&this).value, "");
     }
 }
 

@@ -530,7 +530,7 @@ struct RedBlack (V, A = AttributeDummy)
                 if (left is null && right is null)
                    {
                    if (color is BLACK)
-                       root = this.fixAfterDeletion (root);
+                       root = (&this).fixAfterDeletion (root);
 
                    // Unlink  (Couldn't before since fixAfterDeletion needs parent ptr)
                    if (parent)

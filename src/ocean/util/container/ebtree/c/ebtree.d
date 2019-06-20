@@ -62,7 +62,7 @@ struct eb_root
 
     bool unique ( )
     {
-        return this.b[RGHT] is UNIQUE;
+        return (&this).b[RGHT] is UNIQUE;
     }
 
     /***************************************************************************
@@ -84,7 +84,7 @@ struct eb_root
 
     bool unique ( bool enable )
     {
-        this.b[RGHT] = enable? UNIQUE : NORMAL;
+        (&this).b[RGHT] = enable? UNIQUE : NORMAL;
         return enable;
     }
 }

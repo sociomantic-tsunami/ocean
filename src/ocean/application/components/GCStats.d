@@ -40,6 +40,9 @@ public class GCStats
     }
     else
     {
+        pragma(msg, "There will be no gc stats! You need to use dmd transitional:");
+        pragma(msg, "https://github.com/sociomantic-tsunami/dmd-transitional");
+
         /// Default type for integers used by monitor
         private alias long MonitorInt;
     }

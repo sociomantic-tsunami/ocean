@@ -87,7 +87,7 @@ public struct MetricPrefix
 
     typeof ((&this)) bin ( T : float ) ( T n )
     {
-        this.scaled = n;
+        (&this).scaled = n;
 
         int i;
 
@@ -104,9 +104,9 @@ public struct MetricPrefix
             i /= 10;
         }
 
-        this.scaled = ldexpf(this.scaled, i * -10);
+        (&this).scaled = ldexpf((&this).scaled, i * -10);
 
-        this.prefix = BinaryPrefixes[i];
+        (&this).prefix = BinaryPrefixes[i];
 
         return (&this);
     }
@@ -133,7 +133,7 @@ public struct MetricPrefix
     {
         verify (-5 < e && e < 5);
 
-        this.scaled = n;
+        (&this).scaled = n;
 
         int i = 4;
 
@@ -144,7 +144,7 @@ public struct MetricPrefix
                 for (i += e; (n > 1000) && (i+1 < DecimalPrefixes.length); i++)
                 {
                     n           /= 1000;
-                    this.scaled /= 1000;
+                    (&this).scaled /= 1000;
                 }
             }
             else
@@ -152,12 +152,12 @@ public struct MetricPrefix
                 for (i += e; (n < 1) && (i-1 > 0); i--)
                 {
                     n           *= 1000;
-                    this.scaled *= 1000;
+                    (&this).scaled *= 1000;
                 }
             }
         }
 
-        this.prefix = DecimalPrefixes[i];
+        (&this).prefix = DecimalPrefixes[i];
 
         return (&this);
     }

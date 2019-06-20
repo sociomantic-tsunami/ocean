@@ -46,8 +46,8 @@ struct Optional ( T )
 
     public void opAssign ( T rhs )
     {
-        this.defined = true;
-        this.value = rhs;
+        (&this).defined = true;
+        (&this).value = rhs;
     }
 
     /**************************************************************************
@@ -58,7 +58,7 @@ struct Optional ( T )
 
     public void reset()
     {
-        this.tupleof[] = Optional.undefined.tupleof[];
+        (&this).tupleof[] = Optional.undefined.tupleof[];
     }
 
     /**************************************************************************
@@ -87,8 +87,8 @@ struct Optional ( T )
     public void visit ( scope void delegate() cb_undefined,
         scope void delegate(ref T) cb_defined )
     {
-        if (this.defined)
-            cb_defined(this.value);
+        if ((&this).defined)
+            cb_defined((&this).value);
         else
             cb_undefined();
     }
@@ -111,9 +111,9 @@ struct Optional ( T )
 
     public bool get ( ref T value )
     {
-        if (this.defined)
-            value = this.value;
-        return this.defined;
+        if ((&this).defined)
+            value = (&this).value;
+        return (&this).defined;
     }
 
     /**************************************************************************
@@ -125,7 +125,7 @@ struct Optional ( T )
 
     public bool isDefined ( )
     {
-        return this.defined;
+        return (&this).defined;
     }
 }
 

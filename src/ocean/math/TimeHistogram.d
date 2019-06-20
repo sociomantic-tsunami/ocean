@@ -196,9 +196,9 @@ struct TimeHistogram
 
     public ulong countMicros ( ulong us )
     {
-        this.count++;
-        this.total_time_micros += us;
-        this.bins[binIndex(us)]++;
+        (&this).count++;
+        (&this).total_time_micros += us;
+        (&this).bins[binIndex(us)]++;
         return us;
     }
 
@@ -213,11 +213,11 @@ struct TimeHistogram
     public double mean_time_micros ( )
     in
     {
-        assert(this.count || !this.total_time_micros);
+        assert((&this).count || !(&this).total_time_micros);
     }
     body
     {
-        return cast(double)this.total_time_micros / this.count;
+        return cast(double)(&this).total_time_micros / (&this).count;
     }
 
     /***************************************************************************
@@ -258,7 +258,7 @@ struct TimeHistogram
 
     public Bins stats ( )
     {
-        return Bins.fromArray(this.bins);
+        return Bins.fromArray((&this).bins);
     }
 
     unittest
