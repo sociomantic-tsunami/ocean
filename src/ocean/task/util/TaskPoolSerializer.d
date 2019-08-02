@@ -137,6 +137,8 @@ public class TaskPoolSerializer
         Params:
             task_pool = The task pool that the tasks will be loaded in to.
             load_file_path = The file path of the file to load.
+            args = Parameters matching the task's 'deserialize()' excluding
+                   the deserialized buffer itself.
 
         Returns:
             The number of items loaded from the file.
@@ -147,7 +149,8 @@ public class TaskPoolSerializer
 
     ***************************************************************************/
 
-    public size_t load ( TaskPoolT ) ( TaskPoolT task_pool, cstring load_file_path )
+    public size_t load ( TaskPoolT, Args ... ) ( TaskPoolT task_pool,
+        cstring load_file_path, Args args )
     {
         if ( !FilePath(load_file_path).exists ) return 0;
 
@@ -155,7 +158,7 @@ public class TaskPoolSerializer
         scope ( success )
             FilePath(load_file_path).remove();
 
-        return this.load(task_pool, file);
+        return this.load(task_pool, file, args);
     }
 
     /***************************************************************************
@@ -165,6 +168,8 @@ public class TaskPoolSerializer
         Params:
             task_pool = The task pool that the tasks will be loaded in to.
             stream = InputStream containing the serialized tasks.
+            args = Parameters matching the task's 'deserialize()' excluding
+                   the deserialized buffer itself.
 
         Returns:
             The number of tasks loaded from the stream.
@@ -175,7 +180,8 @@ public class TaskPoolSerializer
 
     ***************************************************************************/
 
-    public size_t load ( TaskPoolT ) ( TaskPoolT task_pool, InputStream stream )
+    public size_t load ( TaskPoolT, Args ... ) ( TaskPoolT task_pool,
+        InputStream stream, Args args)
     {
         static assert(is(typeof(TaskPoolT.TaskType.deserialize)),
             "Must contain `deserialize` method for restoring");
@@ -189,12 +195,11 @@ public class TaskPoolSerializer
         while ( tasks_loaded < total_items )
         {
             SimpleStreamSerializerArrays.read(stream, this.serialize_buffer);
-            task_pool.restore(this.serialize_buffer);
+            task_pool.restore(this.serialize_buffer, args);
             ++tasks_loaded;
         }
 
         enforce!("==")(tasks_loaded, total_items);
         return tasks_loaded;
     }
-
 }
