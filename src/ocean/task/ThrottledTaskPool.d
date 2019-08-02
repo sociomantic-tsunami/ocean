@@ -150,75 +150,18 @@ public class ThrottledTaskPool ( TaskT ) : TaskPool!(TaskT)
 
     /***************************************************************************
 
-        Rewrite of TaskPool.start changed to use `ProcessingTask` as actual
-        task type instead of plain OwnedTask. Right now it is done by dumb
-        copy-paste, if that pattern will appear more often, TaskPool base
-        class may need a slight refactoring to support it.
+        Register throttling hook and check for suspend when starting a task.
 
         Params:
-            args = same set of args as defined by `copyArguments` method of
-                user-supplied task class, will be forwarded to it.
-
-        Returns:
-            False if the pool is at maximum capacity;
+            task = The task being started from the throttled task pool.
 
     ***************************************************************************/
 
-    override public bool start ( ParametersOf!(TaskT.copyArguments) args )
+    override protected void startImpl ( Task task )
     {
-        assert (this.throttler !is null);
-
-        if (this.num_busy() >= this.limit())
-            return false;
-
-        auto task = cast(TaskT) this.get(new TaskT);
-        assert (task !is null);
-
-        task.copyArguments(args);
         this.registerThrottlingHook();
-        this.startImpl(task);
-
+        super.startImpl(task);
         this.throttler.throttledSuspend();
-
-        return true;
-    }
-
-    static if (hasMethod!(TaskT, "deserialize", void delegate(void[])))
-    {
-        /***********************************************************************
-
-            Starts a task in the same manner as `start` but instead calls
-            a restore method on the derived task with a serialized buffer of the
-            state. This is to support dumping and loading tasks from disk.
-
-            Params:
-                serialized = same set of args as defined by `serialized` method
-                    of user-supplied task class, will be forwarded to it.
-
-            Returns:
-                'false' if new task can't be started because pool limit is
-                reached for now, 'true' otherwise
-
-        ***********************************************************************/
-
-        override public bool restore ( void[] serialized )
-        {
-            assert (this.throttler !is null);
-
-            if (this.num_busy() >= this.limit())
-                return false;
-
-            auto task = cast(TaskT) this.get(new TaskT);
-            assert (task !is null);
-
-            task.deserialize(serialized);
-            this.registerThrottlingHook();
-            this.startImpl(task);
-
-            this.throttler.throttledSuspend();
-
-            return true;
-        }
     }
 
     /***************************************************************************
