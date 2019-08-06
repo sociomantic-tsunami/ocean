@@ -235,7 +235,7 @@ package bool handleRadix ( cstring str, bool allow_radix,
 /*********************************************************************
 
     Convert a string of hex digits to a byte array. This is only useful
-    for RT strings. If one needs to do this with literals, x"FF FF" is
+    for RT strings. If one needs to do this with literals, "\xFF\xFF" is
     a better approach.
 
     Params:
