@@ -71,3 +71,23 @@ unittest
     static assert (rankOfArray!(real[][]) == 2);
     static assert (rankOfArray!(real[2][]) == 2);
 }
+
+/*******************************************************************************
+
+    Params:
+        T = any array type
+
+    Returns:
+        The type of values stored in the array
+
+*******************************************************************************/
+
+template arrayValue ( T : U[], U )
+{
+    alias arrayValue = U;
+}
+
+unittest
+{
+    static assert (is(arrayValue!(real[]) == real));
+}
