@@ -20,6 +20,7 @@
 module ocean.meta.codegen.CTFE;
 
 import ocean.meta.types.Qualifiers;
+import ocean.text.Ascii : toUpper;
 
 /*******************************************************************************
 
@@ -118,4 +119,56 @@ unittest
     static assert (stripQualifiedPrefix("aa.bb.cc") == "cc");
     assert (stripQualifiedPrefix("aabb") == "aabb");
     static assert (stripQualifiedPrefix("aabb") == "aabb");
+}
+
+
+/******************************************************************************
+
+    Converts a snake_case name to a PascalCase.
+
+    This function is designed for use at compile time and is thus not careful
+    about avoiding allocations.
+
+    Params:
+        value = the snake_case value
+
+    Returns:
+        The value in camel case
+
+******************************************************************************/
+
+string snakeToPascal ( string value )
+{
+    string result;
+    bool shouldCapitalize = true;
+
+    foreach ( ch; value )
+    {
+        if ( ch == '_' )
+        {
+            shouldCapitalize = true;
+            continue;
+        }
+
+        if ( shouldCapitalize )
+        {
+            result ~= toUpper([ch]);
+            shouldCapitalize = false;
+        }
+        else
+        {
+            result ~= ch;
+        }
+    }
+
+    return result;
+}
+
+///
+unittest
+{
+    assert (snakeToPascal("") == "");
+    assert (snakeToPascal("a") == "A");
+    assert (snakeToPascal("Aaaa") == "Aaaa");
+    assert (snakeToPascal("aaaa_bbbbb") == "AaaaBbbbb");
 }
