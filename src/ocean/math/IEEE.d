@@ -280,13 +280,13 @@ private:
         version (InlineAsm_X86_Any)
         {
             ushort sw;
-            asm pure nothrow @nogc { fstsw sw; }
+            asm { fstsw sw; }
 
             // OR the result with the SSE2 status register (MXCSR).
             if (haveSSE)
             {
                 uint mxcsr;
-                asm pure nothrow @nogc { stmxcsr mxcsr; }
+                asm { stmxcsr mxcsr; }
                 return (sw | mxcsr) & EXCEPTIONS_MASK;
             }
             else return sw & EXCEPTIONS_MASK;
@@ -295,7 +295,7 @@ private:
         {
            /*
                int retval;
-               asm pure nothrow @nogc { st %fsr, retval; }
+               asm { st %fsr, retval; }
                return retval;
             */
            assert(0, "Not yet supported");
