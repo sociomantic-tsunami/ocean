@@ -277,36 +277,37 @@ private:
 private:
     static IeeeFlags getIeeeFlags()
     {
-        version(D_InlineAsm_X86)
+        version (InlineAsm_X86_Any)
         {
-            asm
+            ushort sw;
+            asm pure nothrow @nogc { fstsw sw; }
+
+            // OR the result with the SSE2 status register (MXCSR).
+            if (haveSSE)
             {
-                 fstsw AX;
-                 // NOTE: If compiler supports SSE2, need to OR the result with
-                 // the SSE2 status register.
-                 // Clear all irrelevant bits
-                 and EAX, 0x03D;
+                uint mxcsr;
+                asm pure nothrow @nogc { stmxcsr mxcsr; }
+                return (sw | mxcsr) & EXCEPTIONS_MASK;
             }
+            else return sw & EXCEPTIONS_MASK;
         }
-        else version(D_InlineAsm_X86_64)
+        else version (SPARC)
         {
-            asm
-            {
-                 fstsw AX;
-                 // NOTE: If compiler supports SSE2, need to OR the result with
-                 // the SSE2 status register.
-                 // Clear all irrelevant bits
-                 and RAX, 0x03D;
-            }
-        } else {
-           /*   SPARC:
+           /*
                int retval;
-               asm { st %fsr, retval; }
+               asm pure nothrow @nogc { st %fsr, retval; }
                return retval;
             */
-           static assert(0, "Not yet supported");
-       }
+           assert(0, "Not yet supported");
+        }
+        else version (ARM)
+        {
+            assert(false, "Not yet supported.");
+        }
+        else
+            assert(0, "Not yet supported");
     }
+
     static void resetIeeeFlags()
     {
         version (D_InlineAsm_X86)
