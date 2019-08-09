@@ -73,6 +73,19 @@ else version (D_InlineAsm_X86_64)
     version = InlineAsm_X86_Any;
 }
 
+version (X86_64) version = StaticallyHaveSSE;
+version (X86) version (OSX) version = StaticallyHaveSSE;
+
+version (StaticallyHaveSSE)
+{
+    private enum bool haveSSE = true;
+}
+else version (X86)
+{
+    static import core.cpuid;
+    private alias haveSSE = core.cpuid.sse;
+}
+
 static import tsm = core.stdc.math;
 
 // Standard Tango NaN payloads.
