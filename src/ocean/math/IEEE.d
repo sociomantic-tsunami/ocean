@@ -63,6 +63,16 @@ version (Naked_D_InlineAsm_X86) {
     // Needed for cos(), sin(), tan() on GNU.
     static import core.stdc.math;
 }
+
+version (D_InlineAsm_X86)
+{
+    version = InlineAsm_X86_Any;
+}
+else version (D_InlineAsm_X86_64)
+{
+    version = InlineAsm_X86_Any;
+}
+
 static import tsm = core.stdc.math;
 
 // Standard Tango NaN payloads.
