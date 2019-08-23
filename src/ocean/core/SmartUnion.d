@@ -261,11 +261,6 @@ public void callWithActive ( alias Callable, SU ) ( SU smart_union )
 ///
 unittest
 {
-    // This example is D2 only because it requires a function template,
-    // `print`, and D1 doesn't allow defining a function template at the scope
-    // of a function, including a `unittest`. In D1 this example works if
-    // `print`, is defined outside of function scope.
-
     union TestUnion
     {
         int a;
