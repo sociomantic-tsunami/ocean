@@ -423,15 +423,6 @@ private void handle (T) (T v, FormatInfo f, scope FormatterSink sf, scope ElemSi
         nullWrapper(&v,
                     v.toString((cstring e) { se(e, f); }),
                     se("null", f));
-    else static if (is(typeof(v.toString((size_t delegate(cstring)).init))))
-    {
-        pragma(msg, "Deprecation: Please change toString to accept ",
-               "`scope FormatterSink` instead of `size_t delegate(cstring)` in ",
-               T.stringof);
-        nullWrapper(&v,
-                    v.toString((cstring e) { se(e, f); return e.length; }),
-                    se("null", f));
-    }
     else static if (is(typeof(v.toString()) : cstring))
         nullWrapper(&v, se(v.toString(), f), se("null", f));
     else static if (is(T == interface))
