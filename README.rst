@@ -20,13 +20,7 @@ eventually merged into Ocean.
 D2 Compatibility
 ================
 
-By default all development in Ocean is done in D1, but using a subset that is
-almost D2 comptaible (and with the help of d1to2fix_, it can be fully converted
-to D2, and you checkout ``+d2`` tags which contain D2 code).
-
-Also, as far as D2 upstream get serious about hassle-free upgrading to new
-compiler versions, expect Ocean to lag behind latest upstream releases for
-a few versions.
+Since v5.0.0_, Ocean is a D2-only library.
 
 
 Build / Use
@@ -70,23 +64,6 @@ If you plan to use the provided ``Makefile`` (you need it to convert code to
 D2, or to run the tests), you need to also checkout the submodules with ``git
 submodule update --init``. This will fetch the `Makd
 <https://github.com/sociomantic-tsunami/makd>`_ project in ``submodules/makd``.
-
-Conversion to D2
-----------------
-
-Once you have all the dependencies installed, you need to convert the code to
-D2 (if you want to use it in D2). For this you also need to build/install the
-`d1to2fix <https://github.com/sociomantic-tsunami/d1to2fix>`_ tool.
-
-Also, make sure you have the Makd submodule properly updated (see the previous
-section for instructions), then just type::
-
-  make d2conv
-
-To run the tests using D2 you can use::
-
-  make DVER=2
-
 
 Versioning
 ==========
@@ -141,4 +118,3 @@ Contributing
 
 See the guide for `contributing to Neptune-versioned libraries
 <https://github.com/sociomantic-tsunami/neptune/blob/v0.x.x/doc/library-contributor.rst>`_.
-
