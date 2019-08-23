@@ -783,8 +783,7 @@ unittest
     test!("in")(name1, n);
     test!("in")(name2, n);
     test!("in")(name3, n);
-    // `!in` doesn't exist in D1 :(
-    test(!("NON_EXISTENT".dup in n), "Found non existent description!");
+    test!("!in")("NON_EXISTENT".dup, n);
 }
 
 /*******************************************************************************
