@@ -371,7 +371,7 @@ abstract class IBucketElementFreeList: IAllocator
 
      **************************************************************************/
 
-    scope class ParkingStack: IParkingStack
+    class ParkingStack: IParkingStack
     {
         /**********************************************************************
 

@@ -188,7 +188,7 @@ class HttpHeaderParser : IHttpHeaderParser
 
      **************************************************************************/
 
-    private static scope class SplitHeaderLines : ISplitIterator
+    private static class SplitHeaderLines : ISplitIterator
     {
         /**************************************************************************
 

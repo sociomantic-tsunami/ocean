@@ -89,7 +89,7 @@ public class SuspendableThrottlerCount : ISuspendableThrottlerCount
         this.count++;
         super.throttledSuspend();
     }
-    
+
     // WORKAROUND: DMD 2.068 had difficulties  resolving multiple overloads of
     // `add` when one came from alias and other was "native" method. Creating
     // distinct name (`inc`) allowed to disambugate it manually
@@ -185,7 +185,7 @@ public class SuspendableThrottlerCount : ISuspendableThrottlerCount
 
 unittest
 {
-    scope class SuspendableThrottlerCount_Test : ISuspendableThrottlerCount_Test
+    static class SuspendableThrottlerCount_Test : ISuspendableThrottlerCount_Test
     {
         private SuspendableThrottlerCount count;
 
@@ -328,7 +328,7 @@ version ( UnitTest )
 {
     private import ocean.core.Test;
 
-    abstract scope class ISuspendableThrottlerCount_Test
+    abstract class ISuspendableThrottlerCount_Test
     {
         static immutable suspend = 10;
         static immutable resume = 2;
