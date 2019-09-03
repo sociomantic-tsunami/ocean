@@ -30,11 +30,11 @@ import ocean.transition;
 import ocean.io.model.IConduit: ISelectable;
 import ocean.stdc.posix.sys.socket: getsockname, getpeername, socklen_t, sockaddr;
 import ocean.stdc.posix.arpa.inet: ntohs, inet_ntop, INET_ADDRSTRLEN, INET6_ADDRSTRLEN;
-import ocean.stdc.posix.netinet.in_: sa_family_t, in_port_t, sockaddr_in, sockaddr_in6, in_addr, in6_addr;
 import ocean.sys.ErrnoException;
 
 import core.stdc.errno;
 import core.stdc.string: strlen, strerror_r;
+import core.sys.posix.netinet.in_: sa_family_t, in_port_t, sockaddr_in, sockaddr_in6, in_addr, in6_addr;
 import consts = core.sys.posix.sys.socket;
 
 

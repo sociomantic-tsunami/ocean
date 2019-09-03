@@ -40,3 +40,7 @@ $O/test-unixsockext: override LDFLAGS += -lglib-2.0
 $O/%unittests: override LDFLAGS += -lglib-2.0 -lpcre -lxml2 -lxslt -lebtree \
 		-lreadline -lhistory -llzo2 -lbz2 -lz -ldl -lgcrypt -lgpg-error -lrt \
 		-lssl -lcrypto
+
+# Remove deprecated modules from testing:
+TEST_FILTER_OUT += \
+	$C/src/ocean/stdc/posix/netinet/in_.d
