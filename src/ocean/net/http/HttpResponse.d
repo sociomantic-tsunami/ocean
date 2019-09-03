@@ -419,7 +419,7 @@ class HttpResponse : HttpHeader
 
          **********************************************************************/
 
-        scope class IncrementalValue
+        class IncrementalValue
         {
             /******************************************************************
 

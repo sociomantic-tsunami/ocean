@@ -61,7 +61,7 @@ class IBucketElementGCAllocator: IAllocator
 
     ***************************************************************************/
 
-    static scope class ParkingStack: IParkingStack
+    static class ParkingStack: IParkingStack
     {
         /***********************************************************************
 

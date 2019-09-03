@@ -95,7 +95,7 @@ import core.runtime: Runtime;
 
 ******************************************************************************/
 
-private scope class UnitTestRunner
+private class UnitTestRunner
 {
 
     /**************************************************************************

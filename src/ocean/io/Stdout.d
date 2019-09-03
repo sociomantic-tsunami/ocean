@@ -279,7 +279,7 @@ public class TerminalOutput : FormatOutput
 
     ***************************************************************************/
 
-    public scope class TextColour
+    public class TextColour
     {
         /***********************************************************************
 
@@ -361,12 +361,12 @@ public class TerminalOutput : FormatOutput
 
     /***************************************************************************
 
-        Background colour scope class. Resets the default background colour, if
+        Background colour class. Resets the default background colour, if
         it has been changed, when scope exits.
 
     ***************************************************************************/
 
-    public scope class BackgroundColour
+    public class BackgroundColour
     {
         /***********************************************************************
 

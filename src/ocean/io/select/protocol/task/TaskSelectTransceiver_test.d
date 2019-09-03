@@ -38,7 +38,7 @@ unittest
 
     // This TaskSelectTransceiver subclass uses a tiny 3-bytes buffer to test
     // the reading loop.
-    static scope class TestTaskSelectTransceiver: TaskSelectTransceiver
+    static class TestTaskSelectTransceiver: TaskSelectTransceiver
     {
         this ( IODevice iodev )
         {
