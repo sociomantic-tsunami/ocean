@@ -17,23 +17,11 @@
 
 module ocean.time.StopWatch;
 
-// CLOCK_MONOTONIC and clock_gettime will be added to core.sys.posix.time in
-// tangort v1.7.0, see tangort issue #6.
-import core.sys.posix.time; // clockid_t, timespec
+import core.sys.posix.time;
 
 version (UnitTest)
 {
     import ocean.core.Test;
-}
-
-extern (C) private
-{
-    enum: clockid_t
-    {
-        CLOCK_MONOTONIC = 1
-    }
-
-    int clock_gettime(clockid_t clk_id, timespec* t);
 }
 
 /*******************************************************************************
@@ -74,9 +62,6 @@ extern (C) private
 
 public struct StopWatch
 {
-         // TODO: From tangort v1.7.0 import clock_gettime and CLOCK_MONOTONIC.
-        import core.sys.posix.time: timespec;
-
         import ocean.core.ExceptionDefinitions : PlatformException;
 
 
