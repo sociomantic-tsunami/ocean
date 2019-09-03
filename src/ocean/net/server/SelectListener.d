@@ -26,24 +26,16 @@ module ocean.net.server.SelectListener;
 
 import ocean.transition;
 import ocean.core.Verify;
-
 import ocean.io.select.client.model.ISelectClient;
 import ocean.net.server.connection.IConnectionHandler;
 import ocean.net.server.connpool.SelectListenerPool;
 import ocean.net.server.connpool.ISelectListenerPoolInfo;
-
 import ocean.util.container.pool.model.IPoolInfo;
-
 import ocean.text.convert.Formatter;
-
-import core.stdc.errno:            errno;
-
 import ocean.sys.socket.model.ISocket;
-
 import ocean.io.select.protocol.generic.ErrnoIOException: SocketError;
-
-
 import ocean.util.log.Logger;
+import core.stdc.errno: errno;
 
 /*******************************************************************************
 
@@ -51,7 +43,7 @@ import ocean.util.log.Logger;
 
 *******************************************************************************/
 
-static private Logger log;
+private Logger log;
 static this ( )
 {
     log = Log.lookup("ocean.net.server.SelectListener");
