@@ -34,8 +34,3 @@ Inout!(char)* strchrnul(Inout!(char)* str, int c);
 Inout!(wchar_t)* wcschrnul(Inout!(wchar_t)* wstr, wchar_t wc);
 Inout!(void)* memmem(Inout!(void)* haystack, size_t hlen,
                     in void *needle, size_t nlen);
-
-static if (__VERSION__ < 2070)
-{
-    char*    strerror_r(int errnum, char *buf, size_t buflen);
-}

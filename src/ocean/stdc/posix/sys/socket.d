@@ -39,12 +39,3 @@ enum
     SOCK_CLOEXEC  = 0x8_0000, /* Atomically set close-on-exec flag for the
                                  new descriptor(s).  */
 }
-
-static if (__VERSION__ < 2067)
-{
-    enum
-    {
-        AF_IPX = 4,
-        AF_APPLETALK = 5,
-    }
-}
