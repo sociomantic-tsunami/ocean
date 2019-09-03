@@ -161,7 +161,7 @@ struct Buffer ( T )
 
     ***************************************************************************/
 
-    Inout!(T[]) opSlice ( size_t begin, size_t end ) inout
+    inout(T[]) opSlice ( size_t begin, size_t end ) inout
     {
         return this.data[begin .. end];
     }
@@ -175,7 +175,7 @@ struct Buffer ( T )
 
     ***************************************************************************/
 
-    Inout!(T[]) opSlice ( ) inout
+    inout(T[]) opSlice ( ) inout
     {
         return this.data[];
     }

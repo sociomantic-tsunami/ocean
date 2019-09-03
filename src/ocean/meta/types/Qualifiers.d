@@ -34,9 +34,9 @@ module ocean.meta.types.Qualifiers;
 
 *******************************************************************************/
 
-alias Immut!(char)[] istring;
-alias Const!(char)[] cstring;
-alias char[]         mstring;
+alias string        istring;
+alias const(char)[] cstring;
+alias char[]        mstring;
 
 /*******************************************************************************
 
@@ -59,12 +59,13 @@ alias char[]         mstring;
 
 *******************************************************************************/
 
+deprecated("Use `const` directly instead")
 template Const(T)
 {
     alias const(T) Const;
 }
 
-unittest
+deprecated unittest
 {
     alias Const!(int[]) Int;
 
@@ -80,7 +81,7 @@ unittest
     Example:
 
     ---
-    Immut!(char)[] foo()
+    immutable(char)[] foo()
     {
         return "aaa"; // ok, immutable
         return new char[]; // error, mutable
@@ -89,14 +90,15 @@ unittest
 
 *******************************************************************************/
 
+deprecated("Use `immutable` directly instead")
 template Immut(T)
 {
     alias immutable(T) Immut;
 }
 
-unittest
+deprecated unittest
 {
-    alias Immut!(int[]) Int;
+    alias immutable(int[]) Int;
 
     static assert (is(Int));
 
@@ -122,19 +124,20 @@ unittest
 
 *******************************************************************************/
 
+deprecated("Use `inout` directly instead")
 template Inout(T)
 {
     alias inout(T) Inout;
 }
 
-unittest
+deprecated unittest
 {
     alias Inout!(char[]) Str;
 
     Str foo ( Str arg ) { return arg; }
 
     char[] s1 = foo("aaa".dup);
-    Immut!(char)[] s2 = foo("aaa");
+    immutable(char)[] s2 = foo("aaa");
 }
 
 /*******************************************************************************

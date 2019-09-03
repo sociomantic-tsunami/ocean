@@ -28,9 +28,9 @@ wchar_t* wmempcpy(wchar_t* wto, wchar_t* wfrom, size_t size);
 wchar_t* wcsdup (in wchar_t* ws);
 char*    strndup(in char* s, size_t size);
 int      strverscmp(in char* s1, in char* s2);
-Inout!(void)* rawmemchr(Inout!(void)* block, int c);
-Inout!(void)* memrchr(Inout!(void)* block, int c, size_t size);
-Inout!(char)* strchrnul(Inout!(char)* str, int c);
-Inout!(wchar_t)* wcschrnul(Inout!(wchar_t)* wstr, wchar_t wc);
-Inout!(void)* memmem(Inout!(void)* haystack, size_t hlen,
+inout(void)* rawmemchr(inout(void)* block, int c);
+inout(void)* memrchr(inout(void)* block, int c, size_t size);
+inout(char)* strchrnul(inout(char)* str, int c);
+inout(wchar_t)* wcschrnul(inout(wchar_t)* wstr, wchar_t wc);
+inout(void)* memmem(inout(void)* haystack, size_t hlen,
                     in void *needle, size_t nlen);

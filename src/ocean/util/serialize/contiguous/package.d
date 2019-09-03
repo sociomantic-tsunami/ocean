@@ -723,7 +723,7 @@ unittest
 
     static struct II
     {
-        Immut!(int) s;
+        immutable(int) s;
     }
 
     IS s1 = IS("Hello world");
@@ -765,7 +765,7 @@ unittest
         S1[] nested;
     }
 
-    auto s = Const!(S2)([ Const!(S1)("Hello world") ]);
+    auto s = const(S2)([ const(S1)("Hello world") ]);
     void[] buffer;
 
     Serializer.serialize(s, buffer);
@@ -790,9 +790,9 @@ unittest
 
 struct ConstS
 {
-    Const!(int) n = 3;
-    Const!(char[][]) a = ["Hello", "World"];
-    Const!(char[])[2][3] b = [
+    const(int) n = 3;
+    const(char[][]) a = ["Hello", "World"];
+    const(char[])[2][3] b = [
         ["Die", "Katze"], ["tritt", "die"], ["Treppe", "krumm."]
     ];
 }
@@ -879,11 +879,11 @@ unittest
 
 *******************************************************************************/
 
-static Const!(Struct)* trivialDeserialize ( Struct )
-    ( Const!(void)[] serializer_output )
+static const(Struct)* trivialDeserialize ( Struct )
+    ( const(void)[] serializer_output )
 {
     verify(serializer_output.length >= Struct.sizeof);
-    return cast(Const!(Struct)*)serializer_output.ptr;
+    return cast(const(Struct)*)serializer_output.ptr;
 }
 
 /*******************************************************************************
@@ -912,12 +912,12 @@ static size_t serialArrayLength ( T : Element[], Element ) ( T array )
 /*******************************************************************************
 
     `testArray!(op)(a, b)` is equivalent to
-    `testArray!(op)(cast(Const!(void)[])a, cast(Const!(void)[])b)`, which allows
+    `testArray!(op)(cast(const(void)[])a, cast(const(void)[])b)`, which allows
     for `testArray!(op)(a, null)` avoiding D2 trouble with `typeof(null)`.
 
 *******************************************************************************/
 
 template testArray ( istring op )
 {
-    alias test!(op, Const!(void)[], Const!(void)[]) testArray;
+    alias test!(op, const(void)[], const(void)[]) testArray;
 }

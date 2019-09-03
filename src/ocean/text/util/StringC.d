@@ -122,7 +122,7 @@ class StringC
 
     ***************************************************************************/
 
-    public static Inout!(char)[] toDString ( Inout!(char)* str )
+    public static inout(char)[] toDString ( inout(char)* str )
     {
         return str ? str[0 .. strlen(str)] : null;
     }
@@ -141,7 +141,7 @@ class StringC
 
     ***************************************************************************/
 
-    public static Inout!(Wchar)[] toDString ( Inout!(Wchar)* str )
+    public static inout(Wchar)[] toDString ( inout(Wchar)* str )
     {
         return str ? str[0 .. wcslen(str)] : null;
     }

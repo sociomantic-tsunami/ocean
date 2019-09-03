@@ -340,6 +340,7 @@ unittest
 
 *******************************************************************************/
 
+deprecated("Use `typeof(this)` directly")
 public template TypeofThis()
 {
     alias typeof(this) This;
@@ -347,22 +348,22 @@ public template TypeofThis()
 
 version (unittest)
 {
-    private struct FooClass
+    deprecated private struct FooClass
     {
         mixin TypeofThis;
     }
-    private struct FooStruct
+    deprecated private struct FooStruct
     {
         mixin TypeofThis;
     }
 
-    private union FooUnion
+    deprecated private union FooUnion
     {
         mixin TypeofThis;
     }
 }
 
-unittest
+deprecated unittest
 {
     static assert (is(FooClass.This == FooClass));
     static assert (is(FooStruct.This == FooStruct));
@@ -428,12 +429,13 @@ else
 
 *******************************************************************************/
 
+deprecated("This utility is a no-op, use `T` directly")
 public template SliceIfD1StaticArray ( T )
 {
     alias T SliceIfD1StaticArray;
 }
 
-unittest
+deprecated unittest
 {
     static assert (is(SliceIfD1StaticArray!(int[4]) == int[4]));
     static assert (is(SliceIfD1StaticArray!(int[]) == int[]));
