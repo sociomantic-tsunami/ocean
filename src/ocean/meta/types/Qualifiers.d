@@ -61,7 +61,7 @@ alias char[]         mstring;
 
 template Const(T)
 {
-    alias const(T) Const;;
+    alias const(T) Const;
 }
 
 unittest
