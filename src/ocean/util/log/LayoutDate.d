@@ -1,62 +1,58 @@
 /*******************************************************************************
 
-        Copyright:
-            Copyright (c) 2004 Kris Bell.
-            Some parts copyright (c) 2009-2016 dunnhumby Germany GmbH.
-            All rights reserved.
+    Copyright:
+        Copyright (c) 2004 Kris Bell.
+        Some parts copyright (c) 2009-2016 dunnhumby Germany GmbH.
+        All rights reserved.
 
-        License:
-            Tango Dual License: 3-Clause BSD License / Academic Free License v3.0.
-            See LICENSE_TANGO.txt for details.
+    License:
+        Tango Dual License: 3-Clause BSD License / Academic Free License v3.0.
+        See LICENSE_TANGO.txt for details.
 
-        Version: Initial release: May 2004
+    Version: Initial release: May 2004
 
-        Authors: Kris
+    Authors: Kris
 
 *******************************************************************************/
 
 module ocean.util.log.LayoutDate;
 
-import ocean.transition;
-
+import ocean.meta.types.Qualifiers;
+import Integer = ocean.text.convert.Integer_tango;
 import ocean.text.Util;
-
-import ocean.time.Clock,
-       ocean.time.WallClock;
-
+import ocean.time.Clock;
+import ocean.time.WallClock;
 import ocean.util.log.Appender;
 import ocean.util.log.Event;
 
-import Integer = ocean.text.convert.Integer_tango;
 
 /*******************************************************************************
 
-        A layout with ISO-8601 date information prefixed to each message
+    A layout with ISO-8601 date information prefixed to each message
 
 *******************************************************************************/
 
 public class LayoutDate : Appender.Layout
 {
-        private bool localTime;
+    private bool localTime;
 
-        /***********************************************************************
+    /***************************************************************************
 
-                Ctor with indicator for local vs UTC time. Default is
-                local time.
+        Ctor with indicator for local vs UTC time. Default is local time.
 
-        ***********************************************************************/
+    ***************************************************************************/
 
-        this (bool localTime = true)
-        {
-                this.localTime = localTime;
-        }
+    this (bool localTime = true)
+    {
+        this.localTime = localTime;
+    }
 
-        /***********************************************************************
+    /***************************************************************************
 
-                Subclasses should implement this method to perform the
-                formatting of the actual message content.
+        Subclasses should implement this method to perform the formatting
+        of the actual message content.
 
-        ***********************************************************************/
+    ***************************************************************************/
 
     public override void format (LogEvent event, scope void delegate(cstring) dg)
     {
@@ -83,14 +79,14 @@ public class LayoutDate : Appender.Layout
         dg(event.toString);
     }
 
-        /**********************************************************************
+    /**************************************************************************
 
-                Convert an integer to a zero prefixed text representation
+        Convert an integer to a zero prefixed text representation
 
-        **********************************************************************/
+    ***************************************************************************/
 
-        private cstring convert (char[] tmp, long i)
-        {
-                return Integer.formatter (tmp, i, 'u', '?', 8);
-        }
+    private cstring convert (char[] tmp, long i)
+    {
+        return Integer.formatter (tmp, i, 'u', '?', 8);
+    }
 }
