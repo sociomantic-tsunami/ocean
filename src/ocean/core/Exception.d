@@ -15,10 +15,8 @@
 
 module ocean.core.Exception;
 
-
-import ocean.transition;
-
 static import ocean.core.Enforce;
+import ocean.meta.types.Qualifiers;
 
 version (UnitTest)
 {
