@@ -25,6 +25,12 @@ import ocean.time.WallClock;
 import ocean.util.log.Appender;
 import ocean.util.log.Event;
 
+version (UnitTest)
+{
+    import ocean.core.Test;
+    import ocean.transition : enableStomping;
+    import ocean.util.log.model.ILogger;
+}
 
 /*******************************************************************************
 
@@ -89,4 +95,24 @@ public class LayoutDate : Appender.Layout
     {
         return Integer.formatter (tmp, i, 'u', '?', 8);
     }
+}
+
+unittest
+{
+       mstring result = new mstring(2048);
+       result.length = 0;
+       enableStomping(result);
+
+       scope dg = (cstring v) { result ~= v; };
+       scope layout = new LayoutDate(false);
+       LogEvent event = {
+           msg_: "Have you met Ted?",
+               name_: "Barney",
+               time_: Time.fromUnixTime(1525048962) + TimeSpan.fromMillis(420),
+               level_: ILogger.Level.Warn,
+               host_: null,
+       };
+
+       testNoAlloc(layout.format(event, dg));
+       test!("==")(result, "2018-04-30 00:42:42,420 Warn [Barney] - Have you met Ted?");
 }
