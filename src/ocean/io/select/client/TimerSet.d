@@ -390,7 +390,7 @@ public class TimerSet ( EventData ) : TimerEventTimeoutManager
     }
 }
 
-version ( UnitTest )
+version (unittest)
 {
     import ocean.io.Stdout;
     import ocean.io.select.EpollSelectDispatcher;

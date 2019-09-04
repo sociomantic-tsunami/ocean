@@ -26,7 +26,7 @@ import ocean.core.ExceptionDefinitions;
 import ocean.text.convert.Formatter;
 import ocean.text.Util;
 
-version(UnitTest) import ocean.core.Test;
+version (unittest) import ocean.core.Test;
 
 import core.stdc.stdlib;
 import core.stdc.string;

@@ -409,7 +409,7 @@ class AddressIPSocket ( bool IPv6 = false ) : IPSocket!(IPv6), IAddressIPSocketI
 // Test that methods that accept IP addresses in presentation notation
 // correctly accept valid and reject invalid addresses.
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.core.Test;
     import core.stdc.errno: errno, EINVAL, EBADF;

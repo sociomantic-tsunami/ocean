@@ -72,7 +72,7 @@ import ocean.io.device.File;
 import ocean.core.ExceptionDefinitions: IOException;
 import ocean.stdc.posix.fcntl : O_DIRECT; // Linux only
 
-version ( UnitTest )
+version (unittest)
 {
     import ocean.core.Test;
 }

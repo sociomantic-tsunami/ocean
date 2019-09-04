@@ -103,7 +103,7 @@ public class HMAC: MessageDigestCore
 
 /******************************************************************************/
 
-version ( UnitTest )
+version (unittest)
 {
     import ocean.core.Test;
 }

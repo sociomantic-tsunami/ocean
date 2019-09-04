@@ -40,7 +40,7 @@ import ocean.transition;
 
 public alias GcryptWithIV!(Algorithm.GCRY_CIPHER_3DES, Mode.GCRY_CIPHER_MODE_CFB) TripleDES;
 
-version ( UnitTest )
+version (unittest)
 {
     import ocean.core.Test;
 }

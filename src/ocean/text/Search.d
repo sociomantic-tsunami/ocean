@@ -21,7 +21,7 @@ import ocean.meta.types.Qualifiers : mstring, cstring;
 
 import Util = ocean.text.Util;
 
-version(UnitTest) import ocean.core.Test;
+version (unittest) import ocean.core.Test;
 
 /******************************************************************************
 

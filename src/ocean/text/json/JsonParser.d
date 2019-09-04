@@ -21,7 +21,7 @@ import ocean.transition;
 import ocean.core.Exception;
 import ocean.util.container.more.Stack;
 
-version(UnitTest) import ocean.core.Test;
+version (unittest) import ocean.core.Test;
 
 /*******************************************************************************
 

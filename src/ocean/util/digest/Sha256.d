@@ -28,7 +28,7 @@ public  import ocean.util.digest.Digest;
 
 import ocean.util.digest.MerkleDamgard;
 
-version(UnitTest) import ocean.core.Test;
+version (unittest) import ocean.core.Test;
 
 /*******************************************************************************
 

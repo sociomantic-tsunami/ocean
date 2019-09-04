@@ -30,7 +30,7 @@ import ocean.text.util.SplitIterator: ChrSplitIterator;
 
 import ocean.stdc.string: memmove;
 
-version(UnitTest) import ocean.core.Test;
+version (unittest) import ocean.core.Test;
 
 extern (C) private
 {

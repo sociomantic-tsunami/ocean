@@ -27,7 +27,7 @@ public  import ocean.core.ByteSwap;
 
 public  import ocean.util.digest.Digest;
 
-version(UnitTest) import ocean.core.Test;
+version (unittest) import ocean.core.Test;
 
 /*******************************************************************************
 

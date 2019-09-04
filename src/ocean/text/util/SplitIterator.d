@@ -33,7 +33,7 @@ import ocean.stdc.posix.sys.types: ssize_t;
 import ocean.io.Stdout;
 import ocean.text.Search: SearchFruct, search;
 
-version(UnitTest) import ocean.core.Test;
+version (unittest) import ocean.core.Test;
 
 /******************************************************************************
 

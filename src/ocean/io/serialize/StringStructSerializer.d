@@ -553,7 +553,7 @@ public class StringStructSerializer ( Char )
     }
 }
 
-version(UnitTest)
+version (unittest)
 {
     import ocean.core.Test;
     import core.stdc.time;

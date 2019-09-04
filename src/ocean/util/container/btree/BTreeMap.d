@@ -327,7 +327,7 @@ public BTreeMap!(KeyType, ValueType, tree_degree) makeBTreeMap
     return tree;
 }
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.util.container.btree.BTreeMapRange;
 }
@@ -403,7 +403,7 @@ unittest
 
 */
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.core.Test;
 }
@@ -627,7 +627,7 @@ unittest
     test(const_tree.remove(cast(void*)&a));
 }
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.core.Test;
     import ocean.core.Enforce;

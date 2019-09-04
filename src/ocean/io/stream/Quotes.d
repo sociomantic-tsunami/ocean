@@ -21,7 +21,7 @@ import ocean.transition;
 
 import ocean.io.stream.Iterator;
 
-version(UnitTest) import ocean.core.Test;
+version (unittest) import ocean.core.Test;
 
 /*******************************************************************************
 
@@ -121,7 +121,7 @@ class Quotes : Iterator
 
 *******************************************************************************/
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.io.device.Array;
     import ocean.text.Util;

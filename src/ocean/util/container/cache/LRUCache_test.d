@@ -16,7 +16,7 @@
 module ocean.util.container.cache.LRUCache_test;
 
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.util.container.cache.LRUCache;
     import ocean.core.Array: shuffle;

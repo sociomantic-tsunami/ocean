@@ -2052,7 +2052,7 @@ public class XmlPath(T)
         }
 }
 
-version ( UnitTest )
+version (unittest)
 {
     import ocean.core.Test;
     import ocean.text.xml.DocPrinter;

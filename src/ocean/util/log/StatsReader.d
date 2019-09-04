@@ -30,7 +30,7 @@ import ocean.io.model.IConduit;
 import ocean.io.stream.Iterator;
 import ocean.io.stream.Lines;
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.io.device.Array;
     import ocean.util.app.DaemonApp;

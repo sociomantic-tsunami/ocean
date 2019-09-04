@@ -762,7 +762,7 @@ class IPSocket ( bool IPv6 = false ) : IIPSocket
 
 /******************************************************************************/
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.core.Test;
 }

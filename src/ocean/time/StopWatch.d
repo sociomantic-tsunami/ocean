@@ -19,7 +19,7 @@ module ocean.time.StopWatch;
 
 import core.sys.posix.time;
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.core.Test;
 }

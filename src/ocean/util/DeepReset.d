@@ -22,7 +22,7 @@ import ocean.transition;
 import ocean.core.Array;
 import ocean.meta.traits.Basic /* isArrayType */;
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.core.Test;
 }

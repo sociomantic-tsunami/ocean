@@ -123,7 +123,7 @@ public void deallocate (Item) (ref Item[] arr_to_deallocate)
 
 *******************************************************************************/
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.core.Test;
     void testFunctions (T) ()

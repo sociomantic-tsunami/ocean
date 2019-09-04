@@ -32,7 +32,7 @@ import ocean.core.Verify;
 
 debug (ISelectClient) import ocean.io.Stdout;
 
-version (UnitTest)
+version (unittest)
 {
     debug = EpollFdSanity;
 }

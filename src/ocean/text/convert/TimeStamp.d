@@ -49,7 +49,7 @@ import Integer = ocean.text.convert.Integer_tango;
 
 import ocean.core.Verify;
 
-version(UnitTest) import ocean.core.Test;
+version (unittest) import ocean.core.Test;
 
 /******************************************************************************
 

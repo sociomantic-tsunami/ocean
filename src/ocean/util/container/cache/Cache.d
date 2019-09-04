@@ -218,7 +218,7 @@ debug (CacheTimes)
     import core.sys.posix.time: ctime_r;
 }
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.core.Test;
 }
@@ -961,7 +961,7 @@ class Cache ( T, bool TrackCreateTimes = false ) : Cache!(T.sizeof, TrackCreateT
 
 *******************************************************************************/
 
-version (UnitTest)
+version (unittest)
 {
     import core.sys.posix.stdlib: srand48, mrand48, drand48;
     import core.sys.posix.unistd: getpid;

@@ -36,7 +36,7 @@ import ocean.math.Math;
 import ocean.math.IEEE;
 import ocean.core.Verify;
 
-version(UnitTest)
+version (unittest)
 {
     import ocean.core.Test;
 }

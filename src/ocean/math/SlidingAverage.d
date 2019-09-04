@@ -202,7 +202,7 @@ public class SlidingAverage ( T )
 
 *******************************************************************************/
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.util.Convert: to;
     import ocean.core.Test;

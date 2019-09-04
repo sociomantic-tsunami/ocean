@@ -116,7 +116,7 @@ unittest
     testAES_IV!(AES256_CBC, KEY, IV);
 }
 
-version ( UnitTest )
+version (unittest)
 {
     import ocean.core.Test;
 

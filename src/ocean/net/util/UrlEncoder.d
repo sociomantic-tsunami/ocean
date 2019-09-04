@@ -21,7 +21,7 @@ import ocean.transition;
 import ocean.core.Verify;
 import core.stdc.ctype: isgraph;
 
-version(UnitTest) import ocean.core.Test;
+version (unittest) import ocean.core.Test;
 
 /******************************************************************************
 

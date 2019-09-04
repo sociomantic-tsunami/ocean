@@ -24,7 +24,7 @@ import ocean.transition;
 
 import core.stdc.time: time_t;
 
-version (UnitTest)
+version (unittest)
 {
     import core.stdc.time;
     import ocean.core.Test;

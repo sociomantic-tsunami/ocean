@@ -32,7 +32,7 @@ module ocean.util.encode.Base64;
 import ocean.transition;
 import ocean.core.Verify;
 
-version (UnitTest) import ocean.core.Test;
+version (unittest) import ocean.core.Test;
 
 
 /*******************************************************************************

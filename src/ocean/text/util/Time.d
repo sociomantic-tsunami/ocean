@@ -304,7 +304,7 @@ public void extractTimePeriods ( ulong s, out uint years, out uint days,
 }
 
 
-version ( UnitTest )
+version (unittest)
 {
     import ocean.core.Test;
 }

@@ -18,7 +18,7 @@ module ocean.util.cipher.misc.ByteConverter;
 
 import ocean.transition;
 
-version ( UnitTest )
+version (unittest)
 {
     import ocean.core.Test;
 }

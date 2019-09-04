@@ -35,7 +35,7 @@ import Integer = ocean.text.convert.Integer_tango;
 
 import Float = ocean.text.convert.Float;
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.core.Test;
 }

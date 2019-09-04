@@ -24,7 +24,7 @@ import ocean.meta.codegen.CTFE;
 import ocean.meta.types.Qualifiers;
 import ocean.meta.types.Function;
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.meta.types.Typedef;
 }

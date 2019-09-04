@@ -488,7 +488,7 @@ version (OceanPerformanceTest)
     import ocean.core.internal.gcInterface: gc_disable, gc_enable;
 }
 
-version ( UnitTest )
+version (unittest)
 {
     import ocean.core.Test;
     import core.stdc.time: time;

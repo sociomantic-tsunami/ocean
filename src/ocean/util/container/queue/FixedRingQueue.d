@@ -30,7 +30,7 @@ import ocean.util.container.queue.model.IByteQueue;
 
 import ocean.util.container.mem.MemManager;
 
-version(UnitTest) import ocean.core.Test;
+version (unittest) import ocean.core.Test;
 
 import ocean.transition;
 

@@ -25,7 +25,7 @@ module ocean.math.Range;
 import ocean.transition;
 import ocean.core.Verify;
 
-version ( UnitTest )
+version (unittest)
 {
     import ocean.text.convert.Formatter;
     import ocean.core.Test;
@@ -106,7 +106,7 @@ public struct Range ( T )
 
         ubyte owner_index;
 
-        version ( UnitTest )
+        version (unittest)
         {
             // useful for test!("==")
             public istring toString ()
@@ -216,7 +216,7 @@ public struct Range ( T )
         assert(This.isValid((&this).min_, (&this).max_));
     }
 
-    version ( UnitTest )
+    version (unittest)
     {
         public istring toString()
         {

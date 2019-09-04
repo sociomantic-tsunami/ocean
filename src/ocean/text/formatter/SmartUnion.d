@@ -149,7 +149,7 @@ private struct SmartUnionFormatter ( SU )
     }
 }
 
-version ( UnitTest )
+version (unittest)
 {
     import ocean.core.Test;
 }

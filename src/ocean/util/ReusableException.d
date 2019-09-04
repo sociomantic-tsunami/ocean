@@ -44,7 +44,7 @@ class ReusableException : Exception
     this ( ) { super(null); }
 }
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.core.Test;
     import ocean.core.Enforce;

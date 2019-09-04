@@ -683,7 +683,7 @@ private void[] acquireBuffer ( FreeList!(ubyte[]) buffer_pool, size_t capacity )
 
 *******************************************************************************/
 
-version ( UnitTest )
+version (unittest)
 {
     import ocean.core.Test;
 }

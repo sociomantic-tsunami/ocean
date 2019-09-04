@@ -26,7 +26,7 @@ import ocean.time.Time: Date, TimeOfDay;
 import core.stdc.time: time_t, tm;
 import core.sys.posix.time: timegm;
 
-version(UnitTest) import ocean.core.Test;
+version (unittest) import ocean.core.Test;
 
 /******************************************************************************
 

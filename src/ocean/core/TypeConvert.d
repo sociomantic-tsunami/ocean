@@ -20,7 +20,7 @@ import ocean.meta.types.Qualifiers;
 import ocean.meta.types.Function;
 import ocean.meta.types.Typedef;
 
-version ( UnitTest ) import ocean.core.Test;
+version (unittest) import ocean.core.Test;
 
 
 /*******************************************************************************
@@ -108,7 +108,7 @@ public To downcast ( To, From ) ( From value )
     return cast(To)value;
 }
 
-version ( UnitTest )
+version (unittest)
 {
     class A { }
     class B : A { }
@@ -276,7 +276,7 @@ template arrayOf (T)
     }
 }
 
-version (UnitTest)
+version (unittest)
 {
     static immutable _arrayOf_global_scope = arrayOf!(byte)(1, 2, 3);
 }
@@ -418,7 +418,7 @@ ReturnTypeOf!(Func) delegate (ParametersOf!(Func)) toDg ( Func ) ( Func f )
     return &closure.call;
 }
 
-version ( UnitTest )
+version (unittest)
 {
     int testToDgFoo() { return 42; }
 

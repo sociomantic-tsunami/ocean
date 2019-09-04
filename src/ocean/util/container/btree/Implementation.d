@@ -1142,7 +1142,7 @@ unittest
     }
 }
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.util.container.mem.MemManager;
     import ocean.math.random.Random;

@@ -55,7 +55,7 @@ import ocean.math.Math;
 import ocean.math.IEEE;
 import ocean.core.Verify;
 
-version(UnitTest) import ocean.core.Test;
+version (unittest) import ocean.core.Test;
 
 /* These functions are based on code from:
 Cephes Math Library, Release 2.3:  October, 1995

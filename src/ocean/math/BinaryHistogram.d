@@ -252,7 +252,7 @@ public struct BinaryHistogram ( uint MaxPow2, istring Suffix = "" )
     }
 }
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.core.Test;
     import ocean.util.log.Stats;

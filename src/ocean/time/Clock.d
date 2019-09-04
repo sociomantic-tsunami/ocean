@@ -23,7 +23,7 @@ import ocean.sys.Common;
 
 import ocean.core.ExceptionDefinitions;
 
-version(UnitTest) import ocean.core.Test;
+version (unittest) import ocean.core.Test;
 
 /******************************************************************************
 

@@ -45,7 +45,7 @@ import ocean.util.app.ext.model.ILogExtExtension;
 import ocean.util.app.ext.model.ISignalExtExtension;
 
 import ocean.transition;
-version (UnitTest) import ocean.core.Test;
+version (unittest) import ocean.core.Test;
 import ocean.core.Verify;
 import ocean.task.IScheduler;
 

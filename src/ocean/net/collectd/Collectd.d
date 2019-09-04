@@ -107,7 +107,7 @@ import ocean.text.util.StringSearch; // locateChar
 import ocean.net.collectd.SocketReader;
 public import ocean.net.collectd.Identifier;
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.core.Test;
     import ocean.io.Stdout : Stdout;

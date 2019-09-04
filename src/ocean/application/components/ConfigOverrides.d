@@ -159,7 +159,7 @@ private istring parseArg ( istring opt, out istring category,
     return null;
 }
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.core.Test : NamedTest;
     import ocean.core.Array : startsWith;

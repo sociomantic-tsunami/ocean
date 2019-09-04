@@ -21,7 +21,7 @@ import ocean.transition;
 import ocean.core.BitManip;
 import ocean.core.Verify;
 
-version(UnitTest) import ocean.core.Test;
+version (unittest) import ocean.core.Test;
 
 /**
  * This struct represents an array of boolean values, each of which occupy one
@@ -1085,7 +1085,7 @@ struct BitArray
     }
 }
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.core.Test : NamedTest;
 }

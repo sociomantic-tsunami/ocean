@@ -47,7 +47,7 @@ import ocean.util.aio.internal.MutexOps;
 import ocean.util.aio.internal.AioScheduler;
 import ocean.util.aio.JobNotification;
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.core.Test;
     import ocean.task.Scheduler;

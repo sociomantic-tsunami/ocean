@@ -1023,7 +1023,7 @@ public abstract class EpollProcess
 
 *******************************************************************************/
 
-version ( UnitTest )
+version (unittest)
 {
     import ocean.core.Test;
 }

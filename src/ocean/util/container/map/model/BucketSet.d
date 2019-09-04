@@ -47,7 +47,7 @@ import ocean.core.BitManip: bsr;
 
 import ocean.util.container.map.model.BucketElementGCAllocator;
 
-version(UnitTest) import ocean.core.Test;
+version (unittest) import ocean.core.Test;
 
 /******************************************************************************
 

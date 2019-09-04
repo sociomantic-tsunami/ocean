@@ -33,7 +33,7 @@ debug (TaskScheduler)
     import ocean.io.Stdout;
 }
 
-version (UnitTest)
+version (unittest)
 {
     debug = TaskTimerInvariant;
 }

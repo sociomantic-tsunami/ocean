@@ -127,7 +127,7 @@ public class HashMap ( V ) : Map!(V, hash_t)
 
     ***************************************************************************/
 
-    version ( UnitTest )
+    version (unittest)
     {
         import ocean.core.Test;
         import ocean.meta.traits.Basic : isFloatingPointType;

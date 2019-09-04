@@ -51,7 +51,7 @@ static import core.stdc.math;
 import ocean.math.IEEE;
 import ocean.core.Verify;
 
-version(UnitTest) import ocean.core.Test;
+version (unittest) import ocean.core.Test;
 
 version(TangoNoAsm) {
 
@@ -2178,7 +2178,7 @@ T divRoundEven(T)(T a, T b)
     }
 }
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.math.Math : rndlong;
 }

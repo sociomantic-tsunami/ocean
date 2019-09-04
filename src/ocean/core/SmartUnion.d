@@ -186,7 +186,7 @@ unittest
 
 }
 
-version (UnitTest)
+version (unittest)
 {
     class C1
     {
@@ -284,7 +284,7 @@ unittest
     }
 }
 
-version ( UnitTest )
+version (unittest)
 {
     import ocean.io.Stdout;
 }

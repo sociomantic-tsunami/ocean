@@ -361,7 +361,7 @@ public bool validateTime ( int hour, int minute, int second )
 
 *******************************************************************************/
 
-version ( UnitTest )
+version (unittest)
 {
     import ocean.core.Test;
     import ocean.text.convert.Formatter;

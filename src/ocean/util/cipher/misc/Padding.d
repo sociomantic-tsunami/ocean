@@ -19,7 +19,7 @@ module ocean.util.cipher.misc.Padding;
 import ocean.transition;
 import ocean.core.Verify;
 
-version ( UnitTest )
+version (unittest)
 {
     import ocean.core.Test;
 }

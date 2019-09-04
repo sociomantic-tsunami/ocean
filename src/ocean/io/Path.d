@@ -66,7 +66,7 @@ import ocean.transition;
 
 import core.stdc.string : memmove;
 
-version (UnitTest) import ocean.core.Test;
+version (unittest) import ocean.core.Test;
 
 import core.stdc.stdio;
 import core.stdc.string;

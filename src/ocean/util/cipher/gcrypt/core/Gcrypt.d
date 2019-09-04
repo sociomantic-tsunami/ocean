@@ -31,7 +31,7 @@ import ocean.util.cipher.gcrypt.c.gcrypt;
 import ocean.transition;
 import ocean.core.Verify;
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.core.Test;
 }
@@ -342,7 +342,7 @@ private class GcryptBase ( Algorithm algorithm, Mode mode )
 
     ***************************************************************************/
 
-    version ( UnitTest )
+    version (unittest)
     {
         /***********************************************************************
 
@@ -571,7 +571,7 @@ public class GcryptWithIV ( Algorithm algorithm, Mode mode )
 
     ***************************************************************************/
 
-    version ( UnitTest )
+    version (unittest)
     {
         /***********************************************************************
 

@@ -66,7 +66,7 @@ import core.stdc.errno: errno, EINTR, ENOENT, EEXIST, ENOMEM, EINVAL;
 
 debug ( ISelectClient ) import ocean.io.Stdout;
 
-version (UnitTest)
+version (unittest)
 {
     debug = EpollFdSanity;
 }

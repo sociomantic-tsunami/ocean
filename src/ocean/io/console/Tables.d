@@ -136,7 +136,7 @@ import ocean.io.Stdout;
 
 import ocean.io.Terminal;
 
-version(UnitTest) import ocean.core.Test;
+version (unittest) import ocean.core.Test;
 
 /*******************************************************************************
 
@@ -1411,7 +1411,7 @@ public class Table
     }
 }
 
-version ( UnitTest ) import ocean.io.device.Array : Array;
+version (unittest) import ocean.io.device.Array : Array;
 
 unittest
 {

@@ -25,7 +25,7 @@ import Integer = ocean.text.convert.Integer_tango;
 
 import Utf = ocean.text.convert.Utf : toString;
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.core.Test;
 }
@@ -708,7 +708,7 @@ package struct XmlText(Ch)
 
  *******************************************************************************/
 
-version (UnitTest)
+version (unittest)
 {
     /***********************************************************************
 

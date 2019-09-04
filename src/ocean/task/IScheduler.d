@@ -343,7 +343,7 @@ public bool isSchedulerUsed ( )
     return _scheduler !is null;
 }
 
-version (UnitTest)
+version (unittest)
 {
     /***************************************************************************
 

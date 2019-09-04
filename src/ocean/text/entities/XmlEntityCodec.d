@@ -59,7 +59,7 @@ public alias MarkupEntityCodec!(XmlEntitySet) XmlEntityCodec;
 
 *******************************************************************************/
 
-version ( UnitTest )
+version (unittest)
 {
     void encodeTest ( Char ) ( XmlEntityCodec codec, Const!(Char)[] str,
         Const!(Char)[] expected_result )

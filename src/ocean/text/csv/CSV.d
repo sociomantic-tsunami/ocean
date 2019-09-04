@@ -54,7 +54,7 @@ import ocean.io.model.IConduit;
 
 import ocean.core.Verify;
 
-version(UnitTest) import ocean.core.Test;
+version (unittest) import ocean.core.Test;
 
 
 /*******************************************************************************
@@ -255,7 +255,7 @@ public class CSV
 
 *******************************************************************************/
 
-version ( UnitTest )
+version (unittest)
 {
     import ocean.io.device.Array;
 }

@@ -109,7 +109,7 @@ import ocean.util.container.AppendBuffer;
 
 import ocean.io.serialize.StructSerializer;
 
-version ( UnitTest )
+version (unittest)
 {
     import ocean.core.Test;
 }

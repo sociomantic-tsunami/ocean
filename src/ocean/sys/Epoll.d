@@ -20,7 +20,7 @@ import ocean.transition;
 import ocean.core.Verify;
 import core.sys.posix.unistd: close;
 
-version (UnitTest)
+version (unittest)
 {
     debug = EpollFdSanity;
     import ocean.core.Test;

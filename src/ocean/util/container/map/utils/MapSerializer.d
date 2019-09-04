@@ -1295,7 +1295,7 @@ class MapSerializer
 
 *******************************************************************************/
 
-version ( UnitTest )
+version (unittest)
 {
     import ocean.io.device.MemoryDevice,
            ocean.io.digest.Fnv1,
@@ -1838,7 +1838,7 @@ unittest
                      hash_t, SinglePrevious)(Iterations);
 }
 
-version (UnitTest)
+version (unittest)
 {
     // Make sure structs with a StructNext can be instantiated
     struct S ( ubyte V )

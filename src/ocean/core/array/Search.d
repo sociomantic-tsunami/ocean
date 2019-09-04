@@ -32,7 +32,7 @@ import ocean.core.Buffer;
 import ocean.core.array.DefaultPredicates;
 import ocean.core.Verify;
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.core.Test;
 }

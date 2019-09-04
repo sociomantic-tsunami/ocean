@@ -20,7 +20,7 @@ module ocean.util.digest.Crc32;
 import ocean.transition;
 public import ocean.util.digest.Digest;
 
-version(UnitTest) import ocean.core.Test;
+version (unittest) import ocean.core.Test;
 
 
 /** This class implements the CRC-32 checksum algorithm.

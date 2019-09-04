@@ -487,7 +487,7 @@ struct Slink (V, K=KeyDummy, bool Identity = false, bool HashCache = false)
 
 }
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.core.Test : NamedTest;
 }

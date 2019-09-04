@@ -26,7 +26,7 @@ import ocean.meta.traits.Basic;
 import ocean.meta.types.Arrays : StripAllArrays;
 import ocean.core.TypeConvert : toDg;
 
-version(UnitTest) import ocean.core.Test;
+version (unittest) import ocean.core.Test;
 
 /***************************************************************************
 
@@ -374,7 +374,7 @@ private bool isOldOverload ( From, istring func_name, To ) ( )
     }`);
 }
 
-version (UnitTest)
+version (unittest)
 {
     struct Test ( ubyte Ver )
     {
@@ -533,7 +533,7 @@ private TypeOf!(field_name, Struct)* getField ( istring field_name, Struct )
         }`);
 }
 
-version(UnitTest)
+version (unittest)
 {
     void[] testAlloc( size_t s )
     {
@@ -674,7 +674,7 @@ unittest
 
 // multiple conversion overloads
 
-version(UnitTest)
+version (unittest)
 {
     // can't place those structs inside unit test block because of
     // forward reference issue

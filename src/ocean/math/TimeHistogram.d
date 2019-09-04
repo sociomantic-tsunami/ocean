@@ -320,7 +320,7 @@ struct TimeHistogram
     }
 }
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.core.Test;
 }

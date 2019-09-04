@@ -35,7 +35,7 @@ import core.stdc.fenv;
 
 import core.stdc.math;
 
-version(UnitTest) import ocean.core.Test;
+version (unittest) import ocean.core.Test;
 
 /*******************************************************************************
 

@@ -122,7 +122,7 @@ import CTFE = ocean.meta.codegen.CTFE;
 import ocean.core.Tuple;
 import ocean.core.Verify;
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.core.Test;
 }

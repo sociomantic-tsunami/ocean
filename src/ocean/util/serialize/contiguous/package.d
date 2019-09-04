@@ -136,7 +136,7 @@ public import ocean.util.serialize.contiguous.Contiguous,
               ocean.util.serialize.contiguous.Serializer,
               ocean.util.serialize.contiguous.Util;
 
-version(UnitTest):
+version (unittest):
 
 /******************************************************************************
 

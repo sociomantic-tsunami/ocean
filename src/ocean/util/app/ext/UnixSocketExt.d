@@ -241,7 +241,7 @@ public class UnixSocketExt : IApplicationExtension, IConfigExtExtension
     }
 }
 
-version ( UnitTest )
+version (unittest)
 {
     import ocean.util.app.DaemonApp;
 }

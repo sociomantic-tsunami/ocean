@@ -229,7 +229,7 @@ private struct ReduceTypeImpl ( Reducer )
 }
 
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.meta.types.Qualifiers;
 
