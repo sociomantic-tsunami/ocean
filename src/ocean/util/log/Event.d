@@ -90,6 +90,7 @@ public struct LogEvent
     }
 
     /// Convert a time value (in milliseconds) to ascii
+    deprecated("Use a direct call to `sformat` instead")
     static mstring toMilli (mstring s, TimeSpan time)
     {
         verify (s.length > 0);
