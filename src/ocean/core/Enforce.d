@@ -15,8 +15,7 @@
 
 module ocean.core.Enforce;
 
-
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.text.convert.Formatter;
 
 
