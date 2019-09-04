@@ -20,7 +20,7 @@ module ocean.net.http.consts.HttpMethod;
 
 import ocean.transition;
 
-version(UnitTest) import ocean.core.Test;
+version (unittest) import ocean.core.Test;
 
 /******************************************************************************
 

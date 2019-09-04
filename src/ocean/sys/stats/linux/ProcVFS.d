@@ -33,7 +33,7 @@ import ocean.meta.traits.Basic;
 import ocean.meta.codegen.Identifier;
 import ocean.text.util.StringC;
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.core.Test;
 }
@@ -675,7 +675,7 @@ private ProcMemInfo parseProcMemInfoData (scope cstring delegate() read_next_lin
     return meminfo;
 }
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.io.Stdout;
 }

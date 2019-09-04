@@ -190,7 +190,7 @@ public class AutoCtorPool ( T, Args ... ) : ObjectPool!(T)
 
 
 
-version ( UnitTest )
+version (unittest)
 {
     class Class
     {

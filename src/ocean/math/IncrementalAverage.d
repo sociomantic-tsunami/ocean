@@ -196,7 +196,7 @@ public struct IncrementalAverage
 }
 
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.core.Test : NamedTest;
 

@@ -27,7 +27,7 @@
 
 module ocean.io.select.selector.EpollFdSanity;
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.core.Test;
 }

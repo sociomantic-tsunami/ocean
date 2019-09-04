@@ -33,7 +33,7 @@ import ocean.core.TypeConvert;
 
 static import ocean.text.convert.Hex;
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.core.Test;
 }

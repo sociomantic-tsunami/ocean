@@ -20,7 +20,7 @@ import ocean.transition;
 
 import ocean.core.Array: concat;
 import ocean.core.Verify;
-version (UnitTest) import ocean.core.Test;
+version (unittest) import ocean.core.Test;
 
 import ocean.stdc.string: strcspn, memmove, memcpy, memchr, strlen;
 

@@ -1267,7 +1267,7 @@ static this ()
         rand.seed(&(ArraySource(a).next));
     }
 
-    version(UnitTest){
+    version (unittest){
         set_array_source(9); // http://dilbert.com/strip/2001-10-25
     } else {
         URandom r;
@@ -1275,7 +1275,7 @@ static this ()
     }
 }
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.math.random.engines.KISS;
     import ocean.math.random.engines.CMWC;

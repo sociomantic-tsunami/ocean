@@ -616,7 +616,7 @@ import ocean.util.container.SortedMap;
 import ocean.util.container.more.Stack;
 import ocean.core.Verify;
 
-version(UnitTest) import ocean.core.Test;
+version (unittest) import ocean.core.Test;
 
 /*******************************************************************************
 

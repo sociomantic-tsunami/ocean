@@ -539,7 +539,7 @@ class FiberSelectReader : IFiberSelectProtocol
 
 /******************************************************************************/
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.io.select.client.model.ISelectClient;
     import ocean.io.select.fiber.SelectFiber;

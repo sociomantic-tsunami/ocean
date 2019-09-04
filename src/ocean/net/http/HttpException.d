@@ -100,7 +100,7 @@ class HttpException : HttpServerException
         }
     }
 
-    version ( UnitTest )
+    version (unittest)
     {
         import ocean.core.Test;
     }

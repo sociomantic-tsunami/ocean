@@ -21,7 +21,7 @@ import ocean.math.Math;
 import ocean.math.IEEE;
 import ocean.core.Verify;
 
-version(UnitTest) import ocean.core.Test;
+version (unittest) import ocean.core.Test;
 
 private {   // Rational polynomial approximations to j0, y0, j1, y1.
 

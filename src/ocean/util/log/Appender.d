@@ -28,7 +28,7 @@ import ocean.text.convert.Formatter;
 import ocean.util.log.Event;
 import ocean.util.log.model.ILogger;
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.core.Test;
     import ocean.time.Clock;

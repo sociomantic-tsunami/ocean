@@ -999,7 +999,7 @@ class PriorityCache(T) : ICacheInfo
     }
 }
 
-version (UnitTest) import ocean.core.Test;
+version (unittest) import ocean.core.Test;
 
 // Test documentation example
 unittest

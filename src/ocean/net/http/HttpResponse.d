@@ -56,7 +56,7 @@ import ocean.net.http.time.HttpTimeFormatter;
 
 import ocean.util.container.AppendBuffer;
 
-version (UnitTest)
+version (unittest)
     import ocean.core.Test;
 
 /******************************************************************************/

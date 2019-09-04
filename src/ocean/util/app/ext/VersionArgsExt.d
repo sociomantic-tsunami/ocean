@@ -190,7 +190,7 @@ class VersionArgsExt : IApplicationExtension, IArgumentsExtExtension,
 
         if (output.length)
         {
-            version ( UnitTest ) { } // suppress console output in unittests
+            version (unittest) { } // suppress console output in unittests
             else
                 Stdout.formatln("{}", output);
             app.exit(0);
@@ -394,7 +394,7 @@ class VersionArgsExt : IApplicationExtension, IArgumentsExtExtension,
 
 }
 
-version ( UnitTest )
+version (unittest)
 {
     import ocean.core.Test;
     import ocean.util.app.ext.ArgumentsExt;

@@ -159,7 +159,7 @@ public bool pop ( T ) ( ITypedQueue!(T) q, ref T t )
 }
 
 
-version ( UnitTest )
+version (unittest)
 {
     /**************************************************************************
 

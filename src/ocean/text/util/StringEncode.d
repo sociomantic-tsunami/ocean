@@ -45,7 +45,7 @@ module ocean.text.util.StringEncode;
 
 import ocean.transition;
 
-version(UnitTest) import ocean.core.Test;
+version (unittest) import ocean.core.Test;
 
 static if (__VERSION__ < 2073)
 {

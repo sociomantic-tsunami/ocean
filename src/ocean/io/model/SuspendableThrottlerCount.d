@@ -324,7 +324,7 @@ abstract public class ISuspendableThrottlerCount : ISuspendableThrottler
 
 *******************************************************************************/
 
-version ( UnitTest )
+version (unittest)
 {
     private import ocean.core.Test;
 

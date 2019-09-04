@@ -22,7 +22,7 @@ import core.stdc.time: tm, time_t;
 import core.sys.posix.sys.time : timeval, gettimeofday;
 import ocean.core.TypeConvert;
 
-version ( UnitTest )
+version (unittest)
 {
     import ocean.core.Test;
 }

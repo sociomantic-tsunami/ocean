@@ -33,7 +33,7 @@ import ocean.core.Buffer;
 import ocean.core.array.DefaultPredicates;
 import ocean.core.Verify;
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.core.Test;
     import ocean.text.convert.Formatter;
@@ -2106,7 +2106,7 @@ T quickselect ( T, Pred = DefaultPredicates.IsLess!(T) )
     return arr[pivot_index];
 }
 
-version (UnitTest)
+version (unittest)
 {
     void verifySelect ( T, istring file = __FILE__, int line = __LINE__ )
         ( T[] buf, size_t k, T expected_value )

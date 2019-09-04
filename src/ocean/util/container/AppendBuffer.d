@@ -33,7 +33,7 @@ import ocean.meta.traits.Indirections;
 
 import ocean.core.Verify;
 
-version(UnitTest) import ocean.core.Test;
+version (unittest) import ocean.core.Test;
 
 /******************************************************************************
 

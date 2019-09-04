@@ -29,7 +29,7 @@ import ocean.core.Verify;
 import ocean.stdc.string: strncasecmp, memcmp;
 private alias strncasecmp memicmp;
 
-version(UnitTest) import ocean.core.Test;
+version (unittest) import ocean.core.Test;
 
 /******************************************************************************
 

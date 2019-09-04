@@ -35,7 +35,7 @@ import ocean.text.convert.Utf;
 import ocean.text.convert.Float;
 import ocean.text.convert.Integer_tango;
 
-version(UnitTest) import ocean.core.Test;
+version (unittest) import ocean.core.Test;
 
 import Ascii = ocean.text.Ascii;
 
@@ -1124,7 +1124,7 @@ D toImpl(D,S)(S value)
         mixin unsupported;
 }
 
-version (UnitTest)
+version (unittest)
 {
     bool ex(T)(lazy T v)
     {

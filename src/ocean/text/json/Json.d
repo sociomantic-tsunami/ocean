@@ -31,7 +31,7 @@ import ocean.text.json.JsonParser;
 
 import Float = ocean.text.convert.Float;
 
-version(UnitTest) import ocean.core.Test;
+version (unittest) import ocean.core.Test;
 
 /*******************************************************************************
 

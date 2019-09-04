@@ -22,7 +22,7 @@ import ocean.core.Verify;
 import ocean.meta.traits.Indirections;
 import ocean.core.Enforce;
 
-version(UnitTest)
+version (unittest)
 {
     import ocean.core.Test;
     debug = ContiguousIntegrity;
@@ -296,7 +296,7 @@ package template ensureValueTypeMember ( S, size_t i, T )
                   " is a or contains an unsupported reference type");
 }
 
-version (UnitTest)
+version (unittest)
     import core.stdc.string: memset;
 
 unittest

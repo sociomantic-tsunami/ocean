@@ -34,7 +34,7 @@ import ocean.util.serialize.contiguous.Serializer;
 import ocean.util.serialize.contiguous.Deserializer;
 import ocean.util.serialize.contiguous.Contiguous;
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.core.array.Search : rfind;
     import ocean.core.Test;
@@ -414,7 +414,7 @@ public class VersionHandlingException : Exception
     }
 }
 
-version(UnitTest)
+version (unittest)
 {
     struct Multi_Test1
     {
@@ -503,7 +503,7 @@ unittest
 
 // error handling
 
-version (UnitTest)
+version (unittest)
 {
     struct Multi_Test2
     {
@@ -547,7 +547,7 @@ unittest
 }
 
 
-version (UnitTest):
+version (unittest):
 
 /*******************************************************************************
 

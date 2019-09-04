@@ -18,7 +18,7 @@
 
 module ocean.core.Optional;
 
-version(UnitTest)
+version (unittest)
 {
     import ocean.core.Test;
 }

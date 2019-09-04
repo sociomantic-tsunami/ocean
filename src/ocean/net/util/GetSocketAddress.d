@@ -315,7 +315,7 @@ class GetSocketAddress
 
 *******************************************************************************/
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.core.Test;
     import core.stdc.errno: EBADF;

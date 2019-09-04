@@ -19,7 +19,7 @@ module ocean.sys.ErrnoException;
 import ocean.transition;
 import core.stdc.errno;
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.core.Test;
 }

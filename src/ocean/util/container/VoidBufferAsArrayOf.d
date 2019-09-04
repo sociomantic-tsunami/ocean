@@ -183,7 +183,7 @@ unittest
     foreach ( e; s_array.array() ) { }
 }
 
-version ( UnitTest )
+version (unittest)
 {
     import ocean.core.Test;
 

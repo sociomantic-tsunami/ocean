@@ -28,7 +28,7 @@ import c_string = ocean.stdc.string;
 
 import ocean.math.Math:   min;
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.core.Test;
 }

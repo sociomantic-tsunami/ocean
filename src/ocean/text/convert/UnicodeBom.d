@@ -24,7 +24,7 @@ import ocean.core.ByteSwap;
 
 import  Utf = ocean.text.convert.Utf;
 
-version(UnitTest) import ocean.core.Test;
+version (unittest) import ocean.core.Test;
 
 /*******************************************************************************
 

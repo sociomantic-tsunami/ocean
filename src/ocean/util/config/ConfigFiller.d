@@ -70,7 +70,7 @@ import ocean.io.Stdout;
 
 import ocean.text.convert.Formatter;
 
-version (UnitTest) import ocean.core.Test;
+version (unittest) import ocean.core.Test;
 
 /*******************************************************************************
 
@@ -1050,7 +1050,7 @@ package void readFields ( T, Source )
     readFieldsImpl(group, reference, config);
 }
 
-version ( UnitTest )
+version (unittest)
 {
     class SolarSystemEntity
     {
@@ -1287,7 +1287,7 @@ float_arr = 10.2
     test!("==")(array_struct.float_arr, float_array);
 }
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.io.Stdout;
     import ConfigFiller = ocean.util.config.ConfigFiller;

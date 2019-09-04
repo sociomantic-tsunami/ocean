@@ -38,7 +38,7 @@ import ocean.task.internal.FiberPoolWithQueue;
 import ocean.task.internal.SpecializedPools;
 import ocean.task.util.Timer;
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.core.Test;
     import ocean.io.Stdout;
@@ -922,7 +922,7 @@ public void initScheduler ( SchedulerConfiguration config,
 
     _scheduler = new Scheduler(config, epoll);
 
-    version(UnitTest)
+    version (unittest)
     {
         _scheduler.exception_handler = (Task t, Exception e) {
             if (t !is null)

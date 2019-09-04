@@ -27,7 +27,7 @@ import ocean.core.Verify;
 import TextUtil = ocean.text.Util;
 import Path = ocean.io.Path;
 import ocean.sys.Environment;
-version(UnitTest) import ocean.core.Test;
+version (unittest) import ocean.core.Test;
 
 import core.exception : onOutOfMemoryError;
 import core.stdc.stdlib;

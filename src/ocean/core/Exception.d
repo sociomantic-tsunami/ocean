@@ -18,7 +18,7 @@ module ocean.core.Exception;
 static import ocean.core.Enforce;
 import ocean.meta.types.Qualifiers;
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.core.Test;
 }
@@ -303,7 +303,7 @@ unittest
     test!("==")(e.message(), "aaa4242");
 }
 
-version (UnitTest)
+version (unittest)
 {
     private class SomeReusableException : Exception
     {
@@ -342,7 +342,7 @@ public template DefaultExceptionCtor()
     }
 }
 
-version (UnitTest)
+version (unittest)
 {
     public class CardBoardException : Exception
     {

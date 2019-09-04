@@ -43,7 +43,7 @@ import ocean.transition;
 import ocean.core.Buffer;
 import ocean.core.TypeConvert;
 
-version (UnitTest)
+version (unittest)
     import ocean.core.Test;
 
 /*******************************************************************************
@@ -258,7 +258,7 @@ public class FreeList ( T ) : IFreeList!(ItemType_!(T))
 
 *******************************************************************************/
 
-version ( UnitTest )
+version (unittest)
 {
     import ocean.core.Test;
 

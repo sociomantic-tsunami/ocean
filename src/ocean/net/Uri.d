@@ -21,7 +21,7 @@ import ocean.core.Buffer;
 import ocean.stdc.string : memchr;
 import Integer = ocean.text.convert.Integer_tango;
 
-version ( UnitTest )
+version (unittest)
 {
     import ocean.core.Test;
 }

@@ -15,7 +15,7 @@ module ocean.util.container.more.Stack;
 
 import ocean.core.Enforce;
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.core.Test;
 }
@@ -328,7 +328,7 @@ unittest
     testThrown!(StackBoundsException)(stack.pop());
 }
 
-version(UnitTest)
+version (unittest)
 {
     static void runTests ( T ) ( NamedTest t, T stack )
     {

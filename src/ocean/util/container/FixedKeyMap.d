@@ -67,7 +67,7 @@ import ocean.core.Enforce;
 
 debug import ocean.io.Stdout;
 
-version(UnitTest) import ocean.core.Test;
+version (unittest) import ocean.core.Test;
 
 
 /*******************************************************************************

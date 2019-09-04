@@ -31,7 +31,7 @@ import ocean.util.container.cache.Cache;
 
 import core.stdc.time: time_t;
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.core.Test;
 }

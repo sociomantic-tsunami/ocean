@@ -521,7 +521,7 @@ public void configureLogger
     setupLoggerLevel(log, name, settings);
 }
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.core.Array : copy;
     import ocean.core.Test : test;

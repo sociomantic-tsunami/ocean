@@ -90,7 +90,7 @@ public class MessageDigest: MessageDigestCore
 
 /******************************************************************************/
 
-version ( UnitTest )
+version (unittest)
 {
     import ocean.core.Test;
 }

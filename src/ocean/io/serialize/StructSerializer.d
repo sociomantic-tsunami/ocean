@@ -817,7 +817,7 @@ struct StructSerializer ( bool AllowUnions = false )
 
 *******************************************************************************/
 
-version ( UnitTest )
+version (unittest)
 {
     import ocean.core.Test;
 
@@ -915,7 +915,7 @@ unittest
 
 *******************************************************************************/
 
-version (UnitTest)
+version (unittest)
 {
 
 

@@ -31,7 +31,7 @@ import ocean.util.cipher.gcrypt.core.KeyDerivationCore;
 
 public alias KeyDerivationCore!(KDF.GCRY_KDF_PBKDF2, Hasher.GCRY_MD_SHA256) PBKDF2;
 
-version ( UnitTest )
+version (unittest)
 {
     import ocean.transition;
     import ocean.core.Test;

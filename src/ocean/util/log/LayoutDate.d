@@ -24,7 +24,7 @@ import ocean.time.WallClock;
 import ocean.util.log.Appender;
 import ocean.util.log.Event;
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.core.Test;
     import ocean.transition : enableStomping;

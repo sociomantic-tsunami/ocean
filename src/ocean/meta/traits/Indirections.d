@@ -25,7 +25,7 @@ import ocean.meta.types.ReduceType;
 import ocean.meta.types.Arrays;
 import ocean.meta.traits.Basic;
 
-version(UnitTest)
+version (unittest)
 {
     import ocean.meta.types.Qualifiers;
 }

@@ -209,7 +209,7 @@ class EmailSender
     }
 }
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.core.Tuple: Tuple;
 }

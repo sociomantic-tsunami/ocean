@@ -253,7 +253,7 @@ public bool floatStringToInt ( T = ulong ) ( cstring float_str, out T value,
     return true;
 }
 
-version ( UnitTest )
+version (unittest)
 {
     import ocean.core.Test;
 }

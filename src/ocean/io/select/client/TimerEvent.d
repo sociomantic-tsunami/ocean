@@ -114,7 +114,7 @@ class TimerEvent : ITimerEvent
     }
 }
 
-version ( UnitTest )
+version (unittest)
 {
     import ocean.io.select.EpollSelectDispatcher;
 }
@@ -389,7 +389,7 @@ abstract class ITimerEvent : ISelectClient, ISelectable
 }
 
 
-version ( UnitTest )
+version (unittest)
 {
     import ocean.core.Test;
     import core.sys.posix.time;

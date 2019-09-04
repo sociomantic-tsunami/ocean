@@ -22,13 +22,13 @@ module ocean.io.stream.Buffered;
 import core.stdc.string;
 
 import ocean.transition;
-version (UnitTest)  import ocean.core.Test;
+version (unittest)  import ocean.core.Test;
 import ocean.core.Verify;
 
 public import ocean.io.model.IConduit;
 
 import ocean.io.device.Conduit;
-version (UnitTest) import ocean.io.device.MemoryDevice;
+version (unittest) import ocean.io.device.MemoryDevice;
 
 
 /// Shorthand aliases

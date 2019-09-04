@@ -21,7 +21,7 @@ import ocean.math.Math;
 import ocean.math.IEEE;
 import ocean.core.Verify;
 
-version(UnitTest) import ocean.core.Test;
+version (unittest) import ocean.core.Test;
 
 private:
 

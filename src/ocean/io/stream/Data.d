@@ -36,7 +36,7 @@ import ocean.io.device.Conduit;
 
 import ocean.io.stream.Buffered;
 
-version(UnitTest) import ocean.core.Test;
+version (unittest) import ocean.core.Test;
 
 /*******************************************************************************
 
@@ -461,7 +461,7 @@ class DataOutput : OutputFilter
 
 *******************************************************************************/
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.io.device.Array;
 }

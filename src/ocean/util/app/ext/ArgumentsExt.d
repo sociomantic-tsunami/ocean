@@ -242,7 +242,7 @@ class ArgumentsExt : IApplicationExtension
 
 *******************************************************************************/
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.core.Test;
     import ocean.util.app.Application;

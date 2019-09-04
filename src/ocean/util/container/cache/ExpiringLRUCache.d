@@ -28,7 +28,7 @@ import ocean.util.container.cache.LRUCache;
 
 import core.stdc.time: time_t;
 
-version(UnitTest) import ocean.core.Test;
+version (unittest) import ocean.core.Test;
 
 /*******************************************************************************
 

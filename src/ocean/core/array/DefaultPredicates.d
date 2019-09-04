@@ -18,7 +18,7 @@
 
 module ocean.core.array.DefaultPredicates;
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.core.Test;
     import ocean.transition;

@@ -17,7 +17,7 @@ module ocean.core.BitManip;
 
 public import core.bitop;
 
-version(UnitTest) import ocean.core.Test;
+version (unittest) import ocean.core.Test;
 
 /**
  * Reverses the order of bits in a 64-bit integer.

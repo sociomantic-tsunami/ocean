@@ -70,7 +70,7 @@ import ocean.util.log.model.ILogger;
 import ocean.util.log.Hierarchy;
 
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.core.Test;
 }

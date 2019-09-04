@@ -26,7 +26,7 @@ import ocean.math.Range;
 
 import ocean.transition;
 
-version ( UnitTest )
+version (unittest)
 {
     import ocean.core.Test;
 }
@@ -627,7 +627,7 @@ unittest
 }
 
 
-version ( UnitTest )
+version (unittest)
 {
     import ocean.meta.traits.Basic;
     import ocean.meta.types.Arrays;

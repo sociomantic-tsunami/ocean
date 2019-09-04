@@ -24,7 +24,7 @@ import Integer = ocean.text.convert.Integer_tango;
 
 import ocean.core.TypeConvert;
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.core.Test;
 }

@@ -450,7 +450,7 @@ public class EofException : Exception
 
     mixin DefaultExceptionCtor;
 
-    version ( UnitTest )
+    version (unittest)
     {
         import ocean.io.device.MemoryDevice;
     }
@@ -471,7 +471,7 @@ public class EofException : Exception
 }
 
 
-version ( UnitTest )
+version (unittest)
 {
     version (UnitTestVerbose) import ocean.io.Stdout;
     import ocean.io.device.MemoryDevice;

@@ -38,7 +38,7 @@ module ocean.math.IEEE;
 import ocean.transition;
 import ocean.core.Verify;
 
-version(UnitTest) import ocean.core.Test;
+version (unittest) import ocean.core.Test;
 
 version(TangoNoAsm) {
 
@@ -56,7 +56,7 @@ version (X86_64){
 
 version (Naked_D_InlineAsm_X86) {
     // Don't include this extra dependency unless we need to.
-    version (UnitTest) {
+    version (unittest) {
         static import core.stdc.math;
     }
 } else {

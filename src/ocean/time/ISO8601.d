@@ -47,7 +47,7 @@ import ocean.math.Math : min;
 private alias Time DT;
 private alias ExtendedDate FullDate;
 
-version(UnitTest) import ocean.core.Test;
+version (unittest) import ocean.core.Test;
 
 /** An extended date type, wrapping a Time together with some additional
  * information. */

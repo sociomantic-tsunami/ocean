@@ -105,7 +105,7 @@ import ocean.core.Array : bsearch, sort;
 
 import ocean.util.container.AppendBuffer;
 
-version(UnitTest) import ocean.core.Test;
+version (unittest) import ocean.core.Test;
 
 
 /*******************************************************************************

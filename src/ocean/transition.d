@@ -342,7 +342,7 @@ public template TypeofThis()
     alias typeof(this) This;
 }
 
-version (UnitTest)
+version (unittest)
 {
     private struct FooClass
     {

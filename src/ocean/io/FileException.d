@@ -105,7 +105,7 @@ class FileException : ErrnoException
     }
 }
 
-version (UnitTest)
+version (unittest)
 {
     import core.sys.posix.stdio;
     import ocean.core.Test;

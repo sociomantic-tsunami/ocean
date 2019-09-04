@@ -35,7 +35,7 @@ import ocean.core.ExceptionDefinitions; // IllegalArgumentException
 import ocean.text.convert.Formatter;
 import ocean.text.util.StringSearch; // locateChar
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.core.Test;
 }
@@ -280,7 +280,7 @@ public struct Identifier
     }
 
 
-    version (UnitTest)
+    version (unittest)
     {
         /***********************************************************************
 

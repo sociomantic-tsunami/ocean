@@ -33,7 +33,7 @@ import ocean.core.Verify;
 import ocean.task.internal.TaskExtensionMixins;
 import ocean.task.IScheduler;
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.core.Test;
 }

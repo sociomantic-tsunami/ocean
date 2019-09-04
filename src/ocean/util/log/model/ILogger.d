@@ -26,7 +26,7 @@ module ocean.util.log.model.ILogger;
 import ocean.stdc.string;
 import ocean.transition;
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.core.Test;
 }

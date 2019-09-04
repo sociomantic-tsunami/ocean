@@ -27,7 +27,7 @@ import ocean.util.digest.Sha01;
 
 public  import ocean.util.digest.Digest;
 
-version(UnitTest) import ocean.core.Test;
+version (unittest) import ocean.core.Test;
 
 /*******************************************************************************
 

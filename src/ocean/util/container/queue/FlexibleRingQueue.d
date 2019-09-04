@@ -842,7 +842,7 @@ class FlexibleByteRingQueue : IRingQueue!(IByteQueue)
 
 *******************************************************************************/
 
-version ( UnitTest )
+version (unittest)
 {
     import ocean.io.model.IConduit: IConduit;
 }
@@ -906,7 +906,7 @@ unittest
 
 *******************************************************************************/
 
-version ( UnitTest )
+version (unittest)
 {
     import ocean.io.device.MemoryDevice;
 }
@@ -1118,7 +1118,7 @@ unittest
 
 *******************************************************************************/
 
-version ( UnitTest )
+version (unittest)
 {
     // Uncomment the next line to see UnitTest output
     // version = UnitTestVerbose;

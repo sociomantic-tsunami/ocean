@@ -354,7 +354,7 @@ public BucketElementMallocAllocator!(Map.Bucket)
 
 
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.util.container.map.model.Bucket;
     unittest

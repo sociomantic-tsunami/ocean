@@ -322,7 +322,7 @@ public struct BTreeMapRange(BTreeMap)
     }
 }
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.math.random.Random;
     import ocean.core.Test;

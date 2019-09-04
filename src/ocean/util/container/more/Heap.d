@@ -19,7 +19,7 @@ module ocean.util.container.more.Heap;
 
 import ocean.core.ExceptionDefinitions;
 
-version(UnitTest) import ocean.core.Test;
+version (unittest) import ocean.core.Test;
 
 bool minHeapCompare(T)(T a, T b) {return a <= b;}
 bool maxHeapCompare(T)(T a, T b) {return a >= b;}
@@ -345,7 +345,7 @@ unittest
         test (h.size == 0);
 }
 
-version (UnitTest)
+version (unittest)
 {
     long[] swapped;
     size_t[] indices;

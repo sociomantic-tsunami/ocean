@@ -721,7 +721,7 @@ private int connect_ ( TaskSelectTransceiver tst, lazy bool socket_connect )
     TODO: Remove handling of EINTR or this note when this is clarified. */
 }
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.io.select.protocol.generic.ErrnoIOException;
     import ocean.task.Task;
@@ -784,7 +784,7 @@ unittest
     }
 }
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.sys.socket.IPSocket;
 }
