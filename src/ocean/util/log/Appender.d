@@ -27,6 +27,17 @@ import ocean.io.model.IConduit;
 import ocean.util.log.Event;
 import ocean.util.log.model.ILogger;
 
+version (UnitTest)
+{
+    import ocean.core.Test;
+    import ocean.time.Clock;
+    import ocean.time.Time;
+    import ocean.transition : enableStomping;
+    import ocean.util.log.Hierarchy;
+    import ocean.util.log.Logger;
+    import ocean.util.log.model.ILogger;
+}
+
 
 /// Base class for all Appenders
 public class Appender
@@ -284,4 +295,24 @@ public class LayoutTimer : Appender.Layout
         dg("- ");
         dg(event.toString);
     }
+}
+
+unittest
+{
+       mstring result = new mstring(2048);
+       result.length = 0;
+       enableStomping(result);
+
+       scope dg = (cstring v) { result ~= v; };
+       scope layout = new LayoutTimer();
+       LogEvent event = {
+           msg_: "Have you met Ted?",
+           name_: "Barney",
+           time_: Clock.startTime() + TimeSpan.fromMillis(420),
+           level_: ILogger.Level.Warn,
+           host_: new HierarchyT!(Logger)("test"),
+       };
+
+       testNoAlloc(layout.format(event, dg));
+       test!("==")(result, "420 Warn [Barney] test- Have you met Ted?");
 }
