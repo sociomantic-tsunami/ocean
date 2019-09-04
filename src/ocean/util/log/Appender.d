@@ -24,6 +24,7 @@ import ocean.transition;
 import ocean.core.Verify;
 import ocean.core.ExceptionDefinitions;
 import ocean.io.model.IConduit;
+import ocean.text.convert.Formatter;
 import ocean.util.log.Event;
 import ocean.util.log.model.ILogger;
 
@@ -281,19 +282,10 @@ public class LayoutTimer : Appender.Layout
 
     ***************************************************************************/
 
-    public override void format (LogEvent event, scope void delegate(cstring) dg)
+    public override void format (LogEvent event, scope FormatterSink dg)
     {
-        char[20] tmp = void;
-
-        dg(event.toMilli (tmp, event.span));
-        dg(" ");
-        dg(event.levelName);
-        dg(" [");
-        dg(event.name);
-        dg("] ");
-        dg(event.host.label);
-        dg("- ");
-        dg(event.toString);
+        sformat(dg, "{} {} [{}] {}- {}", event.span.millis(), event.levelName,
+            event.name, event.host.label, event);
     }
 }
 
