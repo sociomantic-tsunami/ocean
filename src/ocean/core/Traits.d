@@ -535,7 +535,7 @@ public template TemplateInstanceArgs (alias Template, Type : Template!(TA), TA..
     public alias TA TemplateInstanceArgs;
 }
 
-deprecated("Use ocean.meta.traits.Basic.isStringType")
+deprecated("Use ocean.meta.traits.Arrays.isUTF8StringType")
 template isStringType( T )
 {
     static immutable bool isStringType = is( T : char[] )  ||
