@@ -41,7 +41,8 @@
 
     Usage example for a hypothetical client who writes numbers to a socket
     ---
-    module NotifyingQueueExample;
+    // Workaround: https://github.com/dlang/dub/issues/1761
+    module_ NotifyingQueueExample;
 
     import ocean.util.container.queue.NotifyingQueue;
 

@@ -13,7 +13,8 @@
     for example:
 
     ---
-    module tester;
+    // Workaround: https://github.com/dlang/dub/issues/1761
+    module_ tester;
     import ocean.core.UnitTestRunner;
     import mymodule;
     ---
