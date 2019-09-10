@@ -17,11 +17,10 @@
 
 module ocean.time.Clock;
 
-public  import ocean.time.Time;
-
-import ocean.sys.Common;
-
+import core.sys.posix.sys.time;
+import core.sys.posix.time;
 import ocean.core.ExceptionDefinitions;
+public import ocean.time.Time;
 
 version (unittest) import ocean.core.Test;
 
