@@ -41,36 +41,36 @@
 
     Usage example for a hypothetical client who writes numbers to a socket
     ---
-        module NotifyingQueueExample;
+    module NotifyingQueueExample;
 
-        import ocean.util.container.queue.NotifyingQueue;
+    import ocean.util.container.queue.NotifyingQueue;
 
-        void main ( )
+    void main ( )
+    {
+        auto notifying_queue = new NotifyingByteQueue(1024 * 40);
+
+        void notee ( )
         {
-            auto notifying_queue = new NotifyingByteQueue(1024 * 40);
-
-            void notee ( )
+            while (true)
             {
-                while (true)
+                auto popped = cast(char[]) notifying_queue.pop()
+
+                if ( popped !is null )
                 {
-                    auto popped = cast(char[]) notifying_queue.pop()
-
-                    if ( popped !is null )
-                    {
-                        Stdout.formatln("Popped from the queue: {}", popped);
-                    }
-                    else break;
+                    Stdout.formatln("Popped from the queue: {}", popped);
                 }
-
-                notifying_queue.ready(&notee);
+                else break;
             }
 
             notifying_queue.ready(&notee);
-
-            numbers.sendNumber(23);
-            numbers.sendNumber(85);
-            numbers.sendNumber(42);
         }
+
+        notifying_queue.ready(&notee);
+
+        numbers.sendNumber(23);
+        numbers.sendNumber(85);
+        numbers.sendNumber(42);
+    }
     ---
 
     Copyright:
@@ -743,4 +743,3 @@ unittest
 {
     auto q = new NotifyingQueue!(char)(256);
 }
-
