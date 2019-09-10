@@ -10,7 +10,8 @@
     object and initialize it on construction:
 
     ---
-    module superapp.main;
+    // Workaround: https://github.com/dlang/dub/issues/1761
+    module_ superapp.main;
 
     import ocean.transition;
     import ocean.util.log.Logger;
