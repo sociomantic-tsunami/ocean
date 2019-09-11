@@ -1050,4 +1050,3 @@ unittest
 
     scope proc2 = new MyProcess(epoll2);
 }
-
