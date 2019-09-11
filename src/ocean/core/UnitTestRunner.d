@@ -631,7 +631,7 @@ private class UnitTestRunner
 
     ***************************************************************************/
 
-    private Result timedTest ( ModuleInfoPtr m, out timeval tv, ref mstring err )
+    private Result timedTest ( ModuleInfo* m, out timeval tv, ref mstring err )
     {
         timeval start = this.now();
         scope (exit) tv = elapsedTime(start);
