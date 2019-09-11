@@ -200,9 +200,6 @@ public struct Log
     /// Stores all the existing `Logger` in a hierarchical manner
     private static HierarchyT!(Logger) hierarchy_;
 
-    /// Time elapsed since the first logger instantiation
-    private static Time beginTime;
-
     /// Logger stats
     private static Stats logger_stats;
 
@@ -294,7 +291,6 @@ public struct Log
     {
         if (This.hierarchy_ is null)
         {
-            This.beginTime = Clock.now;
             This.hierarchy_ = new HierarchyT!(Logger)("ocean");
         }
         return This.hierarchy_;
@@ -758,13 +754,13 @@ public final class Logger : ILogger
     /***************************************************************************
 
         Returns:
-            Time since the first logger instantiation
+            Time since the program start
 
     ***************************************************************************/
 
     public TimeSpan runtime ()
     {
-        return Clock.now - Log.beginTime;
+        return Clock.now - Clock.startTime();
     }
 
     /***************************************************************************
@@ -1044,4 +1040,10 @@ unittest
     test!("==")(appender.buffers[4].message,
                 "This is some arg fmt - 42 - object.Object - 1337.00");
     test!("==")(appender.buffers[5].message, "Just some more allocation tests");
+}
+
+unittest
+{
+    Logger log = (new Logger(Log.hierarchy(), "dummy")).additive(false);
+    test!(">=")(log.runtime(), TimeSpan.fromNanos(0));
 }
