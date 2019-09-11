@@ -110,6 +110,7 @@ unittest
 
 *******************************************************************************/
 
+deprecated("Replace `ModuleInfoPtr` with `ModuleInfo*`")
 alias ModuleInfo* ModuleInfoPtr;
 
 /*******************************************************************************
@@ -123,12 +124,13 @@ alias ModuleInfo* ModuleInfoPtr;
 
 *******************************************************************************/
 
+deprecated("Replace `mixin(global('decl'));` with `__gshared decl;`")
 istring global(istring decl)
 {
     return "__gshared " ~ decl ~ ";";
 }
 
-unittest
+deprecated unittest
 {
     mixin(global("int x = 42"));
     assert(x == 42);
@@ -148,12 +150,13 @@ unittest
 
 *******************************************************************************/
 
+deprecated("Replace call to `min_normal!(T)` with `T.min_normal`")
 template min_normal(T : real)
 {
     static immutable min_normal = T.min_normal;
 }
 
-unittest
+deprecated unittest
 {
     static assert (min_normal!(double) == double.min_normal);
 }
