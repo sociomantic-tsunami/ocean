@@ -1767,13 +1767,13 @@ real hypot(real x, real y)
     // If both are huge, avoid overflow by scaling by 1/sqrt(real.max/2).
     // If both are tiny, avoid underflow by scaling by sqrt(real.min_normal*real.epsilon).
 
-    static immutable real SQRTMIN = 0x8.0p-8195L; // 0.5 * sqrt(min_normal!(real)); // This is a power of 2.
+    static immutable real SQRTMIN = 0x8.0p-8195L; // 0.5 * sqrt(real.min_normal); // This is a power of 2.
     static immutable real SQRTMAX = 1.0L / SQRTMIN; // 2^^((max_exp)/2) = nextUp(sqrt(real.max))
 
     static assert(2 * (SQRTMAX / 2) * (SQRTMAX / 2) <= real.max);
 
     // Proves that sqrt(real.max) ~~  0.5/sqrt(real.min_normal)
-    static assert(min_normal!(real) * real.max > 2 && min_normal!(real) * real.max <= 4);
+    static assert(real.min_normal * real.max > 2 && real.min_normal * real.max <= 4);
 
     real u = fabs(x);
     real v = fabs(y);
@@ -1827,8 +1827,8 @@ unittest
         [ 9.0,   9.0 * real.epsilon, 9.0],
         [ 0xb.0p+8188L /+88 / (64 * sqrt(real.min_normal))+/, 0xd.2p+8188L /+105 / (64 * sqrt(real.min_normal))+/, 0x8.9p+8189L /+137 / (64 * sqrt(real.min_normal))+/],
         [ 0xb.0p+8187L /+88 / (128 * sqrt(real.min_normal))+/, 0xd.2p+8187L /+105 / (128 * sqrt(real.min_normal))+/, 0x8.9p+8188L /+137 / (128 * sqrt(real.min_normal))+/],
-        [ 3 * min_normal!(real) * real.epsilon, 4 * min_normal!(real) * real.epsilon, 5 * min_normal!(real) * real.epsilon],
-        [ min_normal!(real), min_normal!(real),  0x1.6a09e667f3bcc908p-16382L /+sqrt(2.0L) * real,min_normal+/],
+        [ 3 * real.min_normal * real.epsilon, 4 * real.min_normal * real.epsilon, 5 * real.min_normal * real.epsilon],
+        [ real.min_normal, real.min_normal,  0x1.6a09e667f3bcc908p-16382L /+sqrt(2.0L) * real,min_normal+/],
         [ real.max / 2.0, real.max / 2.0, 0x1.6a09e667f3bcc908p+16383L /+real.max / sqrt(2.0L)+/],
         [ 0x1.6a09e667f3bcc908p+16383L /+real.max / sqrt(2.0L)+/, 0x1.6a09e667f3bcc908p+16383L /+real.max / sqrt(2.0L)+/, real.max],
         [ real.max, 1.0, real.max],
