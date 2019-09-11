@@ -32,7 +32,7 @@ import Text = ocean.text.Util;
 
 private
 {
-    mixin(global("extern (C) extern char** environ"));
+    __gshared extern (C) extern char** environ;
 }
 
 import core.sys.posix.stdlib;

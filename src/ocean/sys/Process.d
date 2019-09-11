@@ -38,7 +38,7 @@ import ocean.stdc.posix.sys.wait;
 
 private
 {
-    mixin(global("extern (C) extern char** environ"));
+    __gshared extern (C) extern char** environ;
 }
 
 debug (Process)

@@ -46,7 +46,7 @@ public extern (C)
 
     ***************************************************************************/
 
-    extern mixin(global("rl_command_func_t rl_abort;"));
+    extern __gshared rl_command_func_t rl_abort;
 
     /***************************************************************************
 
@@ -55,7 +55,7 @@ public extern (C)
 
     ***************************************************************************/
 
-    extern mixin(global("rl_command_func_t rl_insert;"));
+    extern __gshared rl_command_func_t rl_insert;
 
     /***************************************************************************
 

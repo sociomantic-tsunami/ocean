@@ -643,7 +643,7 @@ public abstract class EpollProcess
 
     ***************************************************************************/
 
-    private mixin(global("static GlobalProcessMonitor process_monitor"));
+    private __gshared static GlobalProcessMonitor process_monitor;
 
 
     /***************************************************************************

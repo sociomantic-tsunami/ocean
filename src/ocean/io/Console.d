@@ -443,9 +443,9 @@ struct Console
 
  ******************************************************************************/
 
-mixin (global("Console.Input  Cin"));  /// The standard input stream.
-mixin (global("Console.Output Cout")); /// The standard output stream.
-mixin (global("Console.Output Cerr")); /// The standard error stream.
+public __gshared Console.Input Cin;  /// The standard input stream.
+public __gshared Console.Output Cout; /// The standard output stream.
+public __gshared Console.Output Cerr; /// The standard error stream.
 
 
 /******************************************************************************
