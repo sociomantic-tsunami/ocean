@@ -35,7 +35,7 @@ import ocean.transition;
 
 *******************************************************************************/
 
-mixin(global("IMemManager noScanMallocMemManager"));
+__gshared IMemManager noScanMallocMemManager;
 
 
 /*******************************************************************************
@@ -44,7 +44,7 @@ mixin(global("IMemManager noScanMallocMemManager"));
 
 *******************************************************************************/
 
-mixin(global("IMemManager mallocMemManager"));
+__gshared IMemManager mallocMemManager;
 
 
 /*******************************************************************************
@@ -54,7 +54,7 @@ mixin(global("IMemManager mallocMemManager"));
 
 *******************************************************************************/
 
-mixin(global("IMemManager noScanGcMemManager"));
+__gshared IMemManager noScanGcMemManager;
 
 
 /*******************************************************************************
@@ -63,7 +63,7 @@ mixin(global("IMemManager noScanGcMemManager"));
 
 *******************************************************************************/
 
-mixin(global("IMemManager gcMemManager"));
+__gshared IMemManager gcMemManager;
 
 shared static this ( )
 {
