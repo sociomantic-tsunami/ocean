@@ -112,5 +112,3 @@ enum gcry_cipher_modes
     GCRY_CIPHER_MODE_POLY1305 = 10,  /* Poly1305 based AEAD mode. */
     GCRY_CIPHER_MODE_OCB      = 11   /* OCB3 mode.  */
 }
-
-

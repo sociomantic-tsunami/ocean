@@ -148,4 +148,3 @@ abstract class Digest
                 return buffer;
         }
 }
-

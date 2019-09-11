@@ -408,5 +408,3 @@ abstract package class MerkleDamgard : Digest
                    return (x << n) | (x >> (32-n));
         }
 }
-
-

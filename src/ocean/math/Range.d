@@ -19,9 +19,6 @@
 
 module ocean.math.Range;
 
-
-
-
 import ocean.transition;
 import ocean.core.Verify;
 
@@ -30,8 +27,6 @@ version (unittest)
     import ocean.text.convert.Formatter;
     import ocean.core.Test;
 }
-
-
 
 /*******************************************************************************
 
