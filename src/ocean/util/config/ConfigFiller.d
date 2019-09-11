@@ -967,13 +967,11 @@ private void readFieldsImpl ( T, Source )
         {
             static if (is(Type U : U[]) && !isUTF8StringType!(Type))
             {
-                reference.tupleof[si] =
-                    config.getListStrict!(SliceIfD1StaticArray!(U))(group, key);
+                reference.tupleof[si] = config.getListStrict!(U)(group, key);
             }
             else
             {
-                reference.tupleof[si] =
-                    config.getStrict!(SliceIfD1StaticArray!(Type))(group, key);
+                reference.tupleof[si] = config.getStrict!(Type)(group, key);
             }
 
             debug (Config) Stdout.formatln("Config Debug: {}.{} = {}", group,

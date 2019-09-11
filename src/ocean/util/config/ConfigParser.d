@@ -576,12 +576,11 @@ public class ConfigParser
 
     ***************************************************************************/
 
-    public SliceIfD1StaticArray!(T) get ( T ) ( cstring category, cstring key,
-            T default_value )
+    public T get ( T ) ( cstring category, cstring key, T default_value )
     {
         if ( exists(category, key) )
         {
-            return getStrict!(SliceIfD1StaticArray!(T))(category, key);
+            return getStrict!(T)(category, key);
         }
         return default_value;
     }
