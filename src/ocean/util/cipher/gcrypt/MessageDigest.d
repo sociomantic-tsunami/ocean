@@ -29,7 +29,6 @@
 module ocean.util.cipher.gcrypt.MessageDigest;
 
 import ocean.util.cipher.gcrypt.core.MessageDigestCore;
-import ocean.transition;
 import ocean.util.cipher.gcrypt.c.md;
 
 /*******************************************************************************
@@ -57,7 +56,7 @@ public class MessageDigest: MessageDigestCore
     ***************************************************************************/
 
     public this ( gcry_md_algos algorithm, gcry_md_flags flags = cast(gcry_md_flags)0,
-                     istring file = __FILE__, int line = __LINE__ )
+                  string file = __FILE__, int line = __LINE__ )
     {
         super(algorithm, flags, file, line);
     }
@@ -81,7 +80,7 @@ public class MessageDigest: MessageDigestCore
 
     ***************************************************************************/
 
-    public ubyte[] calculate ( Const!(ubyte)[][] input_data ... )
+    public ubyte[] calculate ( const(ubyte)[][] input_data ... )
     {
         gcry_md_reset(this.md);
         return this.calculate_(input_data);
@@ -98,7 +97,7 @@ version (unittest)
 unittest
 {
     // http://csrc.nist.gov/groups/ST/toolkit/documents/Examples/SHA224.pdf
-    static Immut!(ubyte)[] sha224_hash = [
+    static immutable(ubyte)[] sha224_hash = [
         0x75, 0x38, 0x8B, 0x16, 0x51, 0x27, 0x76,
         0xCC, 0x5D, 0xBA, 0x5D, 0xA1, 0xFD, 0x89,
         0x01, 0x50, 0xB0, 0xC6, 0x45, 0x5C, 0xB4,
@@ -109,22 +108,22 @@ unittest
 
     test!("==")(
         md.calculate(
-            cast(Immut!(ubyte)[])"abcdbcdec",
-            cast(Immut!(ubyte)[])"defdefgefghfghig",
-            cast(Immut!(ubyte)[])"hi",
-            cast(Immut!(ubyte)[])"jhijkijkljklmklmnlmnomno",
-            cast(Immut!(ubyte)[])"pnopq"
+            cast(immutable(ubyte)[])"abcdbcdec",
+            cast(immutable(ubyte)[])"defdefgefghfghig",
+            cast(immutable(ubyte)[])"hi",
+            cast(immutable(ubyte)[])"jhijkijkljklmklmnlmnomno",
+            cast(immutable(ubyte)[])"pnopq"
         ),
         sha224_hash
     );
 
     test!("==")(
         md.calculate([
-            cast(Immut!(ubyte)[])"abcdbcdec",
-            cast(Immut!(ubyte)[])"defdefgefghfghig",
-            cast(Immut!(ubyte)[])"hi",
-            cast(Immut!(ubyte)[])"jhijkijkljklmklmnlmnomno",
-            cast(Immut!(ubyte)[])"pnopq"
+            cast(immutable(ubyte)[])"abcdbcdec",
+            cast(immutable(ubyte)[])"defdefgefghfghig",
+            cast(immutable(ubyte)[])"hi",
+            cast(immutable(ubyte)[])"jhijkijkljklmklmnlmnomno",
+            cast(immutable(ubyte)[])"pnopq"
         ]),
         sha224_hash
     );

@@ -25,8 +25,6 @@
 module ocean.util.cipher.gcrypt.core.MessageDigestCore;
 
 
-import ocean.transition;
-
 /******************************************************************************/
 
 abstract class MessageDigestCore
@@ -59,7 +57,7 @@ abstract class MessageDigestCore
     ***************************************************************************/
 
     protected this ( gcry_md_algos algorithm, gcry_md_flags flags = cast(gcry_md_flags)0,
-                     istring file = __FILE__, int line = __LINE__ )
+                     string file = __FILE__, int line = __LINE__ )
     out
     {
         assert(this.md !is null);
@@ -102,7 +100,7 @@ abstract class MessageDigestCore
 
     ***************************************************************************/
 
-    protected ubyte[] calculate_ ( Const!(ubyte)[][] input_data )
+    protected ubyte[] calculate_ ( const(ubyte)[][] input_data )
     {
         foreach (chunk; input_data)
         {

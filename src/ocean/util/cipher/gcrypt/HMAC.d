@@ -24,9 +24,7 @@
 
 module ocean.util.cipher.gcrypt.HMAC;
 
-
 import ocean.util.cipher.gcrypt.core.MessageDigestCore;
-import ocean.transition;
 import ocean.util.cipher.gcrypt.c.md;
 
 /******************************************************************************/
@@ -52,7 +50,7 @@ public class HMAC: MessageDigestCore
     ***************************************************************************/
 
     public this ( gcry_md_algos algorithm, gcry_md_flags flags = cast(gcry_md_flags)0,
-                     istring file = __FILE__, int line = __LINE__ )
+                  string file = __FILE__, int line = __LINE__ )
     {
         super(algorithm, flags | flags.GCRY_MD_FLAG_HMAC, file, line);
     }
@@ -86,7 +84,7 @@ public class HMAC: MessageDigestCore
 
     ***************************************************************************/
 
-    public ubyte[] calculate ( Const!(ubyte)[] key, Const!(ubyte)[][] input_data ... )
+    public ubyte[] calculate (const(ubyte)[] key, const(ubyte)[][] input_data ... )
     {
         gcry_md_reset(this.md);
 
@@ -111,21 +109,21 @@ version (unittest)
 unittest
 {
     // https://tools.ietf.org/html/rfc4231#section-4.2
-    static Immut!(ubyte)[] sha224_hmac = [
+    static immutable(ubyte)[] sha224_hmac = [
         0x89, 0x6f, 0xb1, 0x12, 0x8a, 0xbb, 0xdf,
         0x19, 0x68, 0x32, 0x10, 0x7c, 0xd4, 0x9d,
         0xf3, 0x3f, 0x47, 0xb4, 0xb1, 0x16, 0x99,
         0x12, 0xba, 0x4f, 0x53, 0x68, 0x4b, 0x22
     ];
 
-    Immut!(ubyte)[20] key = 0x0b;
+    immutable(ubyte)[20] key = 0x0b;
     scope hmacgen = new HMAC(gcry_md_algos.GCRY_MD_SHA224);
     test!("==")(
         hmacgen.calculate(
             key,
-            cast(Immut!(ubyte)[])"Hi",
-            cast(Immut!(ubyte)[])" ",
-            cast(Immut!(ubyte)[])"There"
+            cast(immutable(ubyte)[])"Hi",
+            cast(immutable(ubyte)[])" ",
+            cast(immutable(ubyte)[])"There"
         ),
         sha224_hmac
     );
@@ -134,9 +132,9 @@ unittest
         hmacgen.calculate(
             key,
             [
-                cast(Immut!(ubyte)[])"Hi",
-                cast(Immut!(ubyte)[])" ",
-                cast(Immut!(ubyte)[])"There"
+                cast(immutable(ubyte)[])"Hi",
+                cast(immutable(ubyte)[])" ",
+                cast(immutable(ubyte)[])"There"
             ]
         ),
         sha224_hmac

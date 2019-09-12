@@ -25,8 +25,6 @@ module ocean.util.cipher.gcrypt.c.general;
 
 public import ocean.util.cipher.gcrypt.c.libversion;
 
-import ocean.transition;
-
 extern (C):
 
 /// See original's library documentation for details.
@@ -104,14 +102,14 @@ enum gcry_ctl_cmds
 }
 
 /// See original's library documentation for details.
-gcry_error_t gcry_control ( gcry_ctl_cmds CMD, ...);
+gcry_error_t gcry_control (gcry_ctl_cmds CMD, ...);
 
 // The function gcry_strerror returns a pointer to a statically allocated string
 // containing a description of the error code contained in the error value err.
 // This string can be used to output a diagnostic message to the user.
-Const!(char)* gcry_strerror (gcry_error_t err);
+const(char)* gcry_strerror (gcry_error_t err);
 
 // The function gcry_strsource returns a pointer to a statically allocated
 // string containing a description of the error source contained in the error
 // value err. This string can be used to output a diagnostic message to the user.
-Const!(char)* gcry_strsource (gcry_error_t err);
+const(char)* gcry_strsource (gcry_error_t err);

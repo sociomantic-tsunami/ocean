@@ -23,8 +23,6 @@
 
 module ocean.util.cipher.gcrypt.c.gcrypt;
 
-import ocean.transition;
-
 public import ocean.util.cipher.gcrypt.c.general;
 
 extern (C):
@@ -37,19 +35,19 @@ gcry_error_t gcry_cipher_open (gcry_cipher_hd_t* hd, gcry_cipher_algos algo,
 void gcry_cipher_close (gcry_cipher_hd_t h);
 
 /// See original's library documentation for details.
-gcry_error_t gcry_cipher_setkey (gcry_cipher_hd_t h, Const!(void)* k, size_t l);
+gcry_error_t gcry_cipher_setkey (gcry_cipher_hd_t h, const(void)* k, size_t l);
 
 /// See original's library documentation for details.
-gcry_error_t gcry_cipher_setiv (gcry_cipher_hd_t h, Const!(void)* k, size_t l);
+gcry_error_t gcry_cipher_setiv (gcry_cipher_hd_t h, const(void)* k, size_t l);
 
 
 /// See original's library documentation for details.
-gcry_error_t gcry_cipher_encrypt (gcry_cipher_hd_t h, Const!(void)* out_,
-    size_t outsize, Const!(void)* in_, size_t inlen);
+gcry_error_t gcry_cipher_encrypt (gcry_cipher_hd_t h, const(void)* out_,
+    size_t outsize, const(void)* in_, size_t inlen);
 
 /// See original's library documentation for details.
-gcry_error_t gcry_cipher_decrypt (gcry_cipher_hd_t h, Const!(void)* out_,
-    size_t outsize, Const!(void)* in_, size_t inlen);
+gcry_error_t gcry_cipher_decrypt (gcry_cipher_hd_t h, const(void)* out_,
+    size_t outsize, const(void)* in_, size_t inlen);
 
 
 /// See original's library documentation for details.

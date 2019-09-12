@@ -25,8 +25,6 @@ module ocean.util.cipher.gcrypt.c.md;
 
 public import ocean.util.cipher.gcrypt.c.general;
 
-import ocean.transition;
-
 extern (C):
 
 /// See original's library documentation for details.
@@ -84,7 +82,7 @@ gcry_error_t gcry_md_ctl (gcry_md_hd_t hd, int cmd,
                           void* buffer, size_t buflen);
 
 /// See original's library documentation for details.
-void gcry_md_write (gcry_md_hd_t hd, Const!(void)* buffer, size_t length);
+void gcry_md_write (gcry_md_hd_t hd, const(void)* buffer, size_t length);
 
 /// See original's library documentation for details.
 ubyte* gcry_md_read (gcry_md_hd_t hd, gcry_md_algos algo = gcry_md_algos.init);
@@ -103,7 +101,7 @@ extern (D) ubyte[] gcry_md_read_slice (gcry_md_hd_t hd, gcry_md_algos algo = gcr
 
 /// See original's library documentation for details.
 void gcry_md_hash_buffer (gcry_md_algos algo, void* digest,
-                          Const!(void)* buffer, size_t length);
+                          const(void)* buffer, size_t length);
 
 /// See original's library documentation for details.
 gcry_md_algos gcry_md_get_algo (gcry_md_hd_t hd);
@@ -126,16 +124,16 @@ gcry_error_t gcry_md_algo_info (gcry_md_algos algo, gcry_ctl_cmds what, void* bu
                                size_t* nbytes);
 
 /// See original's library documentation for details.
-Const!(char)* gcry_md_algo_name (gcry_md_algos algo);
+const(char)* gcry_md_algo_name (gcry_md_algos algo);
 
 /// See original's library documentation for details.
-int gcry_md_map_name (Const!(char)* name);
+int gcry_md_map_name (const(char)* name);
 
 /// See original's library documentation for details.
-gcry_error_t gcry_md_setkey (gcry_md_hd_t hd, Const!(void)* key, size_t keylen);
+gcry_error_t gcry_md_setkey (gcry_md_hd_t hd, const(void)* key, size_t keylen);
 
 /// See original's library documentation for details.
-void gcry_md_debug (gcry_md_hd_t hd, Const!(char)* suffix);
+void gcry_md_debug (gcry_md_hd_t hd, const(char)* suffix);
 
 
 /// See original's library documentation for details.

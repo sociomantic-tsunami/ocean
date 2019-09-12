@@ -27,8 +27,6 @@
 module ocean.util.cipher.gcrypt.TripleDES;
 
 import ocean.util.cipher.gcrypt.core.Gcrypt;
-import ocean.transition;
-
 
 /*******************************************************************************
 
@@ -43,15 +41,16 @@ public alias GcryptWithIV!(Algorithm.GCRY_CIPHER_3DES, Mode.GCRY_CIPHER_MODE_CFB
 version (unittest)
 {
     import ocean.core.Test;
+    import ocean.meta.types.Qualifiers;
 }
 
 /// Usage example
 unittest
 {
     // TripleDES requires a key of length 24 bytes
-    auto key = cast(Immut!(ubyte)[])"a key of 24 bytesa key o";
+    auto key = cast(immutable(ubyte)[])"a key of 24 bytesa key o";
     // TripleDES requires an initialisation vector of length 8 bytes.
-    auto iv = cast(Immut!(ubyte)[])"iv8bytes";
+    auto iv = cast(immutable(ubyte)[])"iv8bytes";
 
     istring text = "This is a text we are going to encrypt";
     mstring encrypted_text, decrypted_text;
@@ -81,6 +80,6 @@ unittest
 // Test that only 24-bytes keys are allowed
 unittest
 {
-    auto key = cast(Immut!(ubyte)[])"a key of 24 bytesa key o";
+    auto key = cast(immutable(ubyte)[])"a key of 24 bytesa key o";
     TripleDES.testFixedKeyLength(key);
 }
