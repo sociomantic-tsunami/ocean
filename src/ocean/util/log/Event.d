@@ -26,7 +26,7 @@ module ocean.util.log.Event;
 import ocean.transition;
 import ocean.core.Verify;
 import ocean.time.Clock;
-import ocean.util.log.model.ILogger;
+import ocean.util.log.ILogger;
 
 ///
 public struct LogEvent

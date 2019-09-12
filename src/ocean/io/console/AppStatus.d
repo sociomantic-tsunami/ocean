@@ -73,9 +73,9 @@ import ocean.util.container.AppendBuffer;
 import ocean.text.convert.Integer;
 
 import ocean.util.log.Event;
+import ocean.util.log.ILogger;
 import ocean.util.log.InsertConsole;
 import ocean.util.log.layout.LayoutMessageOnly;
-import ocean.util.log.model.ILogger;
 
 
 /// Ditto

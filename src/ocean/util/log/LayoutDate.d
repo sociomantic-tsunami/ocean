@@ -28,7 +28,7 @@ version (unittest)
 {
     import ocean.core.Test;
     import ocean.transition : enableStomping;
-    import ocean.util.log.model.ILogger;
+    import ocean.util.log.ILogger;
 }
 
 /*******************************************************************************

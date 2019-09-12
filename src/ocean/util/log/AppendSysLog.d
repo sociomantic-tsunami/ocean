@@ -20,7 +20,7 @@ import ocean.transition;
 import ocean.core.Verify;
 import ocean.util.log.Appender;
 import ocean.util.log.Event;
-import ocean.util.log.model.ILogger;
+import ocean.util.log.ILogger;
 
 import core.sys.posix.syslog;
 
