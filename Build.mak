@@ -44,4 +44,5 @@ $O/%unittests: override LDFLAGS += -lglib-2.0 -lpcre -lxml2 -lxslt -lebtree \
 # Remove deprecated modules from testing:
 TEST_FILTER_OUT += \
 	$C/src/ocean/stdc/posix/netinet/in_.d \
-	$C/src/ocean/stdc/posix/sys/types.d
+	$C/src/ocean/stdc/posix/sys/types.d   \
+	$C/src/ocean/util/log/model/ILogger.d

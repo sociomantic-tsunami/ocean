@@ -26,7 +26,7 @@ import ocean.core.ExceptionDefinitions;
 import ocean.io.model.IConduit;
 import ocean.text.convert.Formatter;
 import ocean.util.log.Event;
-import ocean.util.log.model.ILogger;
+import ocean.util.log.ILogger;
 
 version (unittest)
 {
@@ -36,7 +36,6 @@ version (unittest)
     import ocean.transition : enableStomping;
     import ocean.util.log.Hierarchy;
     import ocean.util.log.Logger;
-    import ocean.util.log.model.ILogger;
 }
 
 

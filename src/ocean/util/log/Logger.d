@@ -65,8 +65,8 @@ import ocean.text.convert.Formatter;
 import ocean.time.Clock;
 import ocean.util.log.Appender;
 import ocean.util.log.Event;
-import ocean.util.log.model.ILogger;
 import ocean.util.log.Hierarchy;
+import ocean.util.log.ILogger;
 
 version (unittest)
 {
