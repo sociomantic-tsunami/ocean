@@ -18,8 +18,6 @@
 
 module ocean.util.cipher.gcrypt.c.kdf;
 
-import ocean.transition;
-
 public import ocean.util.cipher.gcrypt.c.gpgerror;
 
 extern (C):
@@ -36,7 +34,7 @@ enum gcry_kdf_algos
 }
 
 /* Derive a key from a passphrase.  */
-gpg_error_t gcry_kdf_derive (Const!(void)* passphrase, size_t passphraselen,
-                             int algo, int subalgo, Const!(void)* salt,
+gpg_error_t gcry_kdf_derive (const(void)* passphrase, size_t passphraselen,
+                             int algo, int subalgo, const(void)* salt,
                              size_t saltlen, ulong iterations,
                              size_t keysize, void* keybuffer);

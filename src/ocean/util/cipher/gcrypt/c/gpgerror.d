@@ -26,10 +26,9 @@
 
 module ocean.util.cipher.gcrypt.c.gpgerror;
 
-public import ocean.util.cipher.gcrypt.c.libversion;
-
-import ocean.transition;
 import ocean.core.Verify;
+public import ocean.util.cipher.gcrypt.c.libversion;
+import core.stdc.string;
 
 extern (C):
 
@@ -650,12 +649,10 @@ GPG_ERR_SOURCE gpg_err_source (gpg_error_t err)
 }
 
 /// See original's library documentation for details.
-Const!(char)* gpg_strerror(gpg_error_t err);
+const(char)* gpg_strerror(gpg_error_t err);
 
 /// See original's library documentation for details.
 int gpg_strerror_r(gpg_error_t err, char* buf, size_t buflen);
-
-import ocean.stdc.string;
 
 extern (D) int gpg_strerror_r(uint err, ref char[] msg)
 {
@@ -668,7 +665,7 @@ extern (D) int gpg_strerror_r(uint err, ref char[] msg)
 }
 
 /// See original's library documentation for details.
-Const!(char)* gpg_strsource (uint err);
+const(char)* gpg_strsource (uint err);
 
 /// See original's library documentation for details.
 GPG_ERR_CODE gpg_err_code_from_errno(int err);
@@ -686,5 +683,5 @@ GPG_ERR_CODE gpg_err_code_from_syserror();
 void gpg_err_set_errno(int err);
 
 /// See original's library documentation for details.
-Const!(char)* gpgrt_check_version (Const!(char)* req_version);
-Const!(char)* gpg_error_check_version(Const!(char)* req_version);
+const(char)* gpgrt_check_version (const(char)* req_version);
+const(char)* gpg_error_check_version(const(char)* req_version);
