@@ -78,8 +78,6 @@ public class SuspendableThrottlerCount : ISuspendableThrottlerCount
 
         Increases the count of pending items and throttles the suspendables.
 
-        Aliased as opPostInc.
-
     ***************************************************************************/
 
     public void inc ( )
@@ -90,11 +88,16 @@ public class SuspendableThrottlerCount : ISuspendableThrottlerCount
         super.throttledSuspend();
     }
 
+    /// ditto
+    public void opUnary ( string op ) ( ) if (op == "++")
+    {
+        return this.inc();
+    }
+
     // WORKAROUND: DMD 2.068 had difficulties  resolving multiple overloads of
     // `add` when one came from alias and other was "native" method. Creating
     // distinct name (`inc`) allowed to disambugate it manually
     public alias inc add;
-    public alias inc opPostInc;
 
 
     /***************************************************************************
@@ -103,8 +106,6 @@ public class SuspendableThrottlerCount : ISuspendableThrottlerCount
 
         Params:
             n = number of pending items to add
-
-        Aliased as opAddAssign.
 
     ***************************************************************************/
 
@@ -116,14 +117,16 @@ public class SuspendableThrottlerCount : ISuspendableThrottlerCount
         super.throttledSuspend();
     }
 
-    public alias add opAddAssign;
+    /// ditto
+    public void opOpAssign ( string op ) ( size_t n ) if (op == "+")
+    {
+        this.add(n);
+    }
 
 
     /***************************************************************************
 
         Decreases the count of pending items and throttles the suspendables.
-
-        Aliased as opPostDec.
 
     ***************************************************************************/
 
@@ -135,11 +138,16 @@ public class SuspendableThrottlerCount : ISuspendableThrottlerCount
         super.throttledResume();
     }
 
+    /// ditto
+    public void opUnary ( string op ) ( ) if (op == "--")
+    {
+        return this.dec();
+    }
+
     // WORKAROUND: DMD 2.068 had difficulties  resolving multiple overloads of
     // `remove` when one came from alias and other was "native" method. Creating
     // distinct name (`dec`) allowed to disambugate it manually
     public alias dec remove;
-    public alias dec opPostDec;
 
 
     /***************************************************************************
@@ -148,8 +156,6 @@ public class SuspendableThrottlerCount : ISuspendableThrottlerCount
 
         Params:
             n = number of pending items to remove
-
-        Aliased as opSubAssign.
 
     ***************************************************************************/
 
@@ -160,7 +166,11 @@ public class SuspendableThrottlerCount : ISuspendableThrottlerCount
         super.throttledResume();
     }
 
-    public alias remove opSubAssign;
+    /// ditto
+    public void opOpAssign ( string op ) ( size_t n ) if (op == "-")
+    {
+        this.remove(n);
+    }
 
 
     /***************************************************************************
