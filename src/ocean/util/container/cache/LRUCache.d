@@ -39,6 +39,11 @@
     returns null otherwise.
     For fixed length values the record value reference is a slice to the record
     value.
+
+    N.B. only get methods with `refresh` in their name update the recency of
+    an item. If you use a plain `get()` this won't happen and the item may get
+    evicted sooner than you might think.
+
     Usage example:
 
     ---
