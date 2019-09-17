@@ -574,7 +574,7 @@ public class BufferedDirectReadFile: InputStream
 
     ***************************************************************************/
 
-    static private class DirectReadFile : File
+    static protected class DirectReadFile : File
     {
         override public void open (cstring path, Style style = this.ReadExisting)
         {
