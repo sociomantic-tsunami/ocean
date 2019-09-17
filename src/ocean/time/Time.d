@@ -149,52 +149,32 @@ struct TimeSpan
         `));
 
         /**
-         * Add the TimeSpan given to this TimeSpan returning a new TimeSpan.
+         * Add or subtract the TimeSpan given to this TimeSpan returning a
+         * new TimeSpan.
          *
-         * Params: t = A TimeSpan value to add
-         * Returns: A TimeSpan value that is the sum of this instance and t.
+         * Params:  op = operation to perform
+         *          t = A TimeSpan value to add or subtract
+         * Returns: A TimeSpan value that is the result of this instance, the
+         *          operation, and t.
          */
-        TimeSpan opAdd(TimeSpan t)
+        TimeSpan opBinary (string op) (TimeSpan t) if (op == "+" || op == "-")
         {
-                return TimeSpan(ticks_ + t.ticks_);
+            mixin("return TimeSpan(ticks_ " ~ op ~ " t.ticks_);");
         }
 
         /**
-         * Add the specified TimeSpan to this TimeSpan, assigning the result
-         * to this instance.
+         * Add or subtract the specified TimeSpan to this TimeSpan, assigning
+         * the result to this instance.
          *
-         * Params: t = A TimeSpan value to add
-         * Returns: a copy of this instance after adding t.
+         * Params:  op = operation to perform
+         *          t = A TimeSpan value to add or subtract
+         * Returns: a copy of this instance after adding or subtracting t.
          */
-        TimeSpan opAddAssign(TimeSpan t)
-        {
-                ticks_ += t.ticks_;
-                return this;
-        }
 
-        /**
-         * Subtract the specified TimeSpan from this TimeSpan.
-         *
-         * Params: t = A TimeSpan to subtract
-         * Returns: A new timespan which is the difference between this
-         * instance and t
-         */
-        TimeSpan opSub(TimeSpan t)
+        TimeSpan opOpAssign (string op) (TimeSpan t) if (op == "+" || op == "-")
         {
-                return TimeSpan(ticks_ - t.ticks_);
-        }
-
-        /**
-         *
-         * Subtract the specified TimeSpan from this TimeSpan and assign the
-         *
-         * Params: t = A TimeSpan to subtract
-         * Returns: A copy of this instance after subtracting t.
-         */
-        TimeSpan opSubAssign(TimeSpan t)
-        {
-                ticks_ -= t.ticks_;
-                return this;
+            mixin("ticks_ " ~ op ~ "= t.ticks_;");
+            return this;
         }
 
         /**
@@ -202,74 +182,50 @@ struct TimeSpan
          * used to convert to a different unit.  Use the unit accessors
          * instead.  This should only be used as a scaling mechanism.  For
          * example, if you have a timeout and you want to sleep for twice the
-         * timeout, you would use timeout * 2.
+         * timeout, you would use timeout * 2. Returns a new TimeSpan.
          *
-         * Params: v = A multiplier to use for scaling this time span.
+         * Params: op = operation to perform
+         *         v = A multiplier or divisor to use for scaling this time span.
          * Returns: A new TimeSpan that is scaled by v
          */
-        TimeSpan opMul(long v)
+        TimeSpan opBinary (string op) (long v) if (op == "*" || op == "/")
         {
-                return TimeSpan(ticks_ * v);
+                mixin("return TimeSpan(ticks_ " ~ op ~ " v);");
         }
 
         /**
          * Scales this TimeSpan and assigns the result to this instance.
          *
-         * Params: v = A multipler to use for scaling
+         * Params: op = operation to perform
+         *         v = A multipler or divisor to use for scaling
          * Returns: A copy of this instance after scaling
          */
-        TimeSpan opMulAssign(long v)
+        TimeSpan opOpAssign (string op) (long v) if (op == "*" || op == "/")
         {
-                ticks_ *= v;
-                return this;
-        }
-
-        /**
-         * Divide the TimeSpan by the specified amount.  This should not be
-         * used to convert to a different unit.  Use the unit accessors
-         * instead.  This should only be used as a scaling mechanism.  For
-         * example, if you have a timeout and you want to sleep for half the
-         * timeout, you would use timeout / 2.
-         *
-         *
-         * Params: v = A divisor to use for scaling this time span.
-         * Returns: A new TimeSpan that is divided by v
-         */
-        TimeSpan opDiv(long v)
-        {
-                return TimeSpan(ticks_ / v);
-        }
-
-        /**
-         * Divides this TimeSpan and assigns the result to this instance.
-         *
-         * Params: v = A multipler to use for dividing
-         * Returns: A copy of this instance after dividing
-         */
-        TimeSpan opDivAssign(long v)
-        {
-                ticks_ /= v;
+                mixin("ticks_ " ~ op ~ "= v;");
                 return this;
         }
 
         /**
          * Perform integer division with the given time span.
          *
-         * Params: t = A divisor used for dividing
+         * Params: op = operation to perform
+         *         t = A divisor used for dividing
          * Returns: The result of integer division between this instance and
          * t.
          */
-        long opDiv(TimeSpan t)
+        long opBinary (string op) (TimeSpan t) if (op == "/")
         {
                 return ticks_ / t.ticks;
         }
 
         /**
-         * Negate a time span
+         * Negate a time span. Returns a new TimeSpan.
          *
+         * Params:  op = operation to perform
          * Returns: The negative equivalent to this time span
          */
-        TimeSpan opNeg()
+        TimeSpan opUnary (string op) () if (op == "-")
         {
                 return TimeSpan(-ticks_);
         }
@@ -564,50 +520,37 @@ struct Time
 
         /**********************************************************************
 
-                Adds the specified time span to the time, returning a new
-                time.
-
-                Params:  t = A TimeSpan value.
-                Returns: A Time that is the sum of this instance and t.
-
-        **********************************************************************/
-
-        Time opAdd (TimeSpan t)
-        {
-                return Time (ticks_ + t.ticks_);
-        }
-
-        /**********************************************************************
-
-                Adds the specified time span to the time, assigning
-                the result to this instance.
-
-                Params:  t = A TimeSpan value.
-                Returns: The current Time instance, with t added to the
-                         time.
-
-        **********************************************************************/
-
-        Time opAddAssign (TimeSpan t)
-        {
-                ticks_ += t.ticks_;
-                return this;
-        }
-
-        /**********************************************************************
-
-                Subtracts the specified time span from the time,
+                Adds or subtracts the specified time span to the time,
                 returning a new time.
 
-                Params:  t = A TimeSpan value.
-                Returns: A Time whose value is the value of this instance
-                         minus the value of t.
+                Params:  op = operation to perform
+                         t = A TimeSpan value.
+                Returns: A Time that is the sum or difference of this instance
+                         and t.
 
         **********************************************************************/
 
-        Time opSub (TimeSpan t)
+        Time opBinary (string op) (TimeSpan t) if (op == "+" || op == "-")
         {
-                return Time (ticks_ - t.ticks_);
+            mixin("return Time(ticks_ " ~ op ~ " t.ticks_);");
+        }
+
+        /**********************************************************************
+
+                Adds or subtracts the specified time span to the time, assigning
+                the result to this instance.
+
+                Params:  op = operation to perform
+                         t = A TimeSpan value.
+                Returns: The current Time instance, with t added or subtracted
+                         to the time.
+
+        **********************************************************************/
+
+        Time opOpAssign (string op) (TimeSpan t) if (op == "+" || op == "-")
+        {
+                mixin("ticks_ " ~ op ~ "= t.ticks_;");
+                return this;
         }
 
         /**********************************************************************
@@ -615,31 +558,16 @@ struct Time
                 Returns a time span which represents the difference in time
                 between this and the given Time.
 
-                Params:  t = A Time value.
+                Params:  op = operation to perform
+                         t = A Time value.
                 Returns: A TimeSpan which represents the difference between
                          this and t.
 
         **********************************************************************/
 
-        TimeSpan opSub (Time t)
+        TimeSpan opBinary (string op) (Time t) if (op == "-")
         {
                 return TimeSpan(ticks_ - t.ticks_);
-        }
-
-        /**********************************************************************
-
-                Subtracts the specified time span from the time,
-
-                Params:  t = A TimeSpan value.
-                Returns: The current Time instance, with t subtracted
-                         from the time.
-
-        **********************************************************************/
-
-        Time opSubAssign (TimeSpan t)
-        {
-                ticks_ -= t.ticks_;
-                return this;
         }
 
         /**********************************************************************
