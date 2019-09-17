@@ -121,7 +121,7 @@ public class Distribution ( T )
 {
     /***************************************************************************
 
-        List of values, appended to by the opAddAssign method.
+        List of values, appended to by the opOpAssign!"~" method.
 
     ***************************************************************************/
 
@@ -132,7 +132,7 @@ public class Distribution ( T )
 
         Indicates whether the list of values has been sorted (which is required
         by the methods: lessThanCount, greaterThanCount, percentValue).
-        opAddAssign() and clear() reset the sorted flag to false.
+        opOpAssign() and clear() reset the sorted flag to false.
 
         TODO: it might be better to always maintain the list in sorted order?
 
@@ -161,11 +161,12 @@ public class Distribution ( T )
         Adds a value to the list.
 
         Params:
+            op = operation to perform
             value = value to add
 
     ***************************************************************************/
 
-    public void opCatAssign ( T value )
+    public void opOpAssign ( string op ) ( T value ) if (op == "~")
     {
         this.values.append(value);
         this.sorted = false;

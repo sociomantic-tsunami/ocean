@@ -1,6 +1,9 @@
 ### Replace D1 operator overloads with D2 operator overloads
 
 `ocean.io.model.SuspendableThrottlerCount`
+`ocean.math.Distribution`
+`ocean.math.SlidingAverage`
+`ocean.math.WideUInt`
 
 DMD 2.088.0 has deprecated D1 operator overloads, which are expected to
 be replaced with the newer D2 `op{Unary,Binary,BinaryRight,OpAssign}`

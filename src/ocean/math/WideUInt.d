@@ -327,6 +327,7 @@ public struct WideUInt ( size_t N )
         Increment current value by one fitting in uint
 
         Params:
+            op = operation to perform
             rhs = value to increment with. Limited to `uint` for now to simplify
                 internal arithmetic.
 
@@ -336,7 +337,7 @@ public struct WideUInt ( size_t N )
 
     ***************************************************************************/
 
-    public void opAddAssign ( uint rhs )
+    public void opOpAssign ( string op ) ( uint rhs ) if (op == "+")
     {
         if (add(this.payload[0], rhs))
             enforce(.wideint_exception, this.checkAndInc(1));
