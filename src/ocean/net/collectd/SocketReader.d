@@ -20,14 +20,13 @@
 module ocean.net.collectd.SocketReader;
 
 
-
 import ocean.transition;
 import ocean.core.Verify;
-import ocean.stdc.posix.sys.types; // ssize_t
 import ocean.sys.ErrnoException;
 import ocean.sys.socket.model.ISocket;
 import ocean.text.util.StringSearch; // locateChar
 
+import core.sys.posix.sys.types; // ssize_t
 
 /*******************************************************************************
 

@@ -17,11 +17,11 @@ module ocean.sys.socket.model.ISocket;
 
 import ocean.transition;
 import ocean.stdc.posix.sys.socket;
-import ocean.stdc.posix.sys.types: ssize_t;
 import ocean.io.device.Conduit: ISelectable;
 import ocean.io.device.IODevice: IODevice;
 import ocean.sys.socket.InetAddress;
 import core.sys.posix.netinet.in_: AF_INET, AF_INET6, IPPROTO_TCP;
+import core.sys.posix.sys.types: ssize_t;
 import core.sys.posix.unistd: close;
 
 // FIXME: somehow the import above doesn't result in this symbol being
