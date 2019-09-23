@@ -19,14 +19,9 @@
 
 module ocean.sys.CpuAffinity;
 
-
-
-
 import ocean.transition;
 
-import ocean.stdc.posix.sys.types : pid_t;
-
-
+import core.sys.posix.sys.types : pid_t;
 
 /*******************************************************************************
 
@@ -205,4 +200,3 @@ static:
         }
     }
 }
-
