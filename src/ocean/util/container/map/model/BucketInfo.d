@@ -512,7 +512,9 @@ class BucketInfo
 
     package void clearResize ( size_t n )
     {
+        enableStomping(this.buckets);
         this.buckets.length             = n;
+        enableStomping(this.bucket_list_indices);
         this.bucket_list_indices.length = n;
 
         /*
