@@ -36,7 +36,9 @@ import ocean.transition;
 
 abstract class CliApp : Application, IArgumentsExtExtension
 {
-    import ocean.text.Arguments : Arguments;
+    static import ocean.text.Arguments;
+    public alias ocean.text.Arguments.Arguments Arguments;
+
     import ocean.util.app.ext.ArgumentsExt;
     import ocean.util.app.ext.VersionArgsExt;
     import ocean.util.app.ext.TaskExt;
