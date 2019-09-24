@@ -88,9 +88,6 @@ public void handleArgs ( Arguments args, ConfigParser config )
         verify (error is null,
              "Unexpected error while processing overrides, errors " ~
              "should have been caught by the validateArgs() method");
-        verify (config.exists(category, key),
-            "Attempt to override non-existent config entry"
-        );
 
         if ( !value.length )
         {
