@@ -46,3 +46,21 @@ unittest
     static assert (isUTF8StringType!(Immut!(char)[]));
     static assert (!isUTF8StringType!(wchar[]));
 }
+
+
+/**
+ * Count the []'s on an array type
+ */
+template rankOfArray(T) {
+    static if(is(T S : S[])) {
+        const uint rankOfArray = 1 + rankOfArray!(S);
+    } else {
+        const uint rankOfArray = 0;
+    }
+}
+
+unittest
+{
+    static assert (rankOfArray!(real[][]) == 2);
+    static assert (rankOfArray!(real[2][]) == 2);
+}
