@@ -75,7 +75,8 @@ struct EscapeChars
         {
             (&this).copyTokens(tokens);
 
-            str ~= '\0';                                                        // append a 0 to the end, as it is stripped in the scope(exit)
+            // append a 0 to the end, as it is stripped in the scope(exit)
+            str ~= '\0';
 
             scope (exit)
             {
@@ -99,7 +100,8 @@ struct EscapeChars
 
             str.length = str.length + ((&this).occurrences.length * escape.length);
 
-            str[$ - 1] = '\0';                                                  // append a 0 to the end, as it is stripped in the scope(exit)
+            // append a 0 to the end, as it is stripped in the scope(exit)
+            str[$ - 1] = '\0';
 
             foreach_reverse (i, occurrence; (&this).occurrences)
             {
