@@ -87,7 +87,7 @@ public struct StopWatch
 
         double sec ()
         {
-                return multiplier * (&this).microsec;
+                return multiplier * this.microsec;
         }
 
         /***********************************************************************

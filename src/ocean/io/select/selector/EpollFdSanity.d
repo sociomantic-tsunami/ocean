@@ -119,7 +119,7 @@ public struct FdObjEpollData
 
     public bool verifyFd (int fd)
     {
-        return (&this).fd == (fd & 0xFF);
+        return this.fd == (fd & 0xFF);
     }
 }
 

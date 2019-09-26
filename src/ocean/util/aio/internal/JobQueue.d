@@ -192,16 +192,16 @@ public static struct Job
 
     public void finished ()
     {
-        if ((&this).finalize_results)
+        if (this.finalize_results)
         {
-            this.finalize_results((&this));
+            this.finalize_results(&this);
         }
 
-        if ((&this).finish_callback_dgs.length)
+        if (this.finish_callback_dgs.length)
         {
-            foreach (dg; (&this).finish_callback_dgs)
+            foreach (dg; this.finish_callback_dgs)
             {
-                dg((&this).return_value);
+                dg(this.return_value);
             }
         }
     }
@@ -218,7 +218,7 @@ public static struct Job
     public Job* registerCallback (scope void delegate(ssize_t) dg)
     {
         this.finish_callback_dgs ~= dg;
-        return (&this);
+        return &this;
     }
 
     /***************************************************************************
@@ -230,7 +230,7 @@ public static struct Job
 
     public void recycle ()
     {
-        this.owner_queue.recycleJob((&this), &lock_mutex, &unlock_mutex);
+        this.owner_queue.recycleJob(&this, &lock_mutex, &unlock_mutex);
     }
 }
 

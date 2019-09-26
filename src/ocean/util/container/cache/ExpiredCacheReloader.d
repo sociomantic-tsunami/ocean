@@ -80,11 +80,11 @@ class ExpiredCacheReloader ( S )
 
          **********************************************************************/
 
-        static typeof((&this)) opCall ( void[] data )
+        static typeof(&this) opCall ( void[] data )
         {
             verify (data.length == typeof(this).sizeof);
 
-            return cast(typeof((&this)))data.ptr;
+            return cast(typeof(&this))data.ptr;
         }
     }
 

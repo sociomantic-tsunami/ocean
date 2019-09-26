@@ -98,7 +98,7 @@ struct Buffer ( T )
 
     void reset ( )
     {
-        (&this).length = 0;
+        this.length = 0;
     }
 
     /***************************************************************************
@@ -110,7 +110,7 @@ struct Buffer ( T )
 
     size_t length ( ) const
     {
-        return (&this).data.length;
+        return this.data.length;
     }
 
     /***************************************************************************
@@ -163,7 +163,7 @@ struct Buffer ( T )
 
     Inout!(T[]) opSlice ( size_t begin, size_t end ) inout
     {
-        return (&this).data[begin .. end];
+        return this.data[begin .. end];
     }
 
     /***************************************************************************
@@ -177,7 +177,7 @@ struct Buffer ( T )
 
     Inout!(T[]) opSlice ( ) inout
     {
-        return (&this).data[];
+        return this.data[];
     }
 }
 

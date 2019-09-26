@@ -71,7 +71,7 @@ struct SmartUnion ( U )
 
      **************************************************************************/
 
-    Active active ( ) { return (&this)._.active; }
+    Active active ( ) { return this._.active; }
 
     /***************************************************************************
 
@@ -83,7 +83,7 @@ struct SmartUnion ( U )
 
     public istring active_name ( )
     {
-        return (&this)._.active_names[(&this)._.active];
+        return this._.active_names[this._.active];
     }
 
     /**************************************************************************
