@@ -164,7 +164,7 @@ class Retry
 
     ***************************************************************************/
 
-    public this ( SuccessDecider success_decide = null )
+    public this ( scope SuccessDecider success_decide = null )
     {
         this.success_decide = success_decide ? success_decide : &this.default_success_decide;
     }
@@ -303,7 +303,7 @@ class WaitRetry : Retry
 
     ***************************************************************************/
 
-    public this ( uint retry_wait_ms, SuccessDecider success_decide = null )
+    public this ( uint retry_wait_ms, scope SuccessDecider success_decide = null )
     {
         this.retry_wait_ms = retry_wait_ms;
 

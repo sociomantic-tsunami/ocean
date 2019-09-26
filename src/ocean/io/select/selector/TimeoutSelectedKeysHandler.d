@@ -79,7 +79,7 @@ class TimeoutSelectedKeysHandler: SelectedKeysHandler
 
     ***************************************************************************/
 
-    public this ( UnregisterDg unregister, EpollException e,
+    public this ( scope UnregisterDg unregister, EpollException e,
                   ITimeoutManager timeout_manager, uint num_clients = 0 )
     {
         super(unregister, e);
@@ -106,7 +106,7 @@ class TimeoutSelectedKeysHandler: SelectedKeysHandler
     ***************************************************************************/
 
     public override void opCall ( epoll_event_t[] selected_set,
-        bool delegate (Exception) unhandled_exception_hook )
+        scope bool delegate (Exception) unhandled_exception_hook )
     {
         if (this.timeout_manager.us_left < timeout_manager.us_left.max)
         {
@@ -196,8 +196,8 @@ class TimeoutSelectedKeysHandler: SelectedKeysHandler
     ***************************************************************************/
 
     extern (C) private static int cmpPtr ( bool searching ) (
-        /* d1to2fix_inject: scope */ Const!(void*) a_,
-        /* d1to2fix_inject: scope */ Const!(void*) b_ )
+        scope Const!(void*) a_,
+        scope Const!(void*) b_ )
     {
         static if (searching)
         {

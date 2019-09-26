@@ -40,7 +40,7 @@ public class CollectorRegistry
 
     ***************************************************************************/
 
-    public this ( CollectionDg[] callbacks )
+    public this ( scope CollectionDg[] callbacks )
     {
         this.collector = new Collector();
         this.collector_callbacks = callbacks;
@@ -57,7 +57,7 @@ public class CollectorRegistry
 
     ***************************************************************************/
 
-    public void addCollector ( CollectionDg collector )
+    public void addCollector ( scope CollectionDg collector )
     {
         this.collector_callbacks ~= collector;
     }

@@ -68,7 +68,7 @@ struct TimestampInterval
 }
 
 /// Number of seconds in the day for creating day ranges.
-const SECONDS_IN_DAY = 86_400;
+static immutable SECONDS_IN_DAY = 86_400;
 
 /***************************************************************************
 
@@ -240,7 +240,7 @@ private long parseDateString ( cstring value, bool include_end_date = false )
 version ( UnitTest )
 {
     // 2019-04-01 15:26:32
-    const TEST_TIME_NOW = 1554132392;
+    static immutable TEST_TIME_NOW = 1554132392;
 
     /***************************************************************************
 

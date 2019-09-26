@@ -208,7 +208,7 @@ class TaskSelectTransceiver
 
     ***************************************************************************/
 
-    public void readConsume ( size_t delegate ( void[] data ) consume )
+    public void readConsume ( scope size_t delegate ( void[] data ) consume )
     {
         this.buffered_reader.readConsume(consume, &this.deviceRead);
     }
@@ -663,7 +663,7 @@ import ocean.text.util.ClassName;
 *******************************************************************************/
 
 public int connect ( Socket: IODevice ) ( TaskSelectTransceiver tst,
-    bool delegate ( Socket socket ) socket_connect )
+    scope bool delegate ( Socket socket ) socket_connect )
 {
     auto socket = cast(Socket)tst.iodev;
     verify(socket !is null, "connect: Unable to cast the I/O " ~
