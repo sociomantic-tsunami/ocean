@@ -213,7 +213,7 @@ class Process
         /// Convenience overload that format this as a string
         public istring toString ()
         {
-            return format("{}", (&this));
+            return format("{}", &this);
         }
     }
 

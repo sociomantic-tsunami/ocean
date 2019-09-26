@@ -209,7 +209,7 @@ unittest
 
         equals_t opEquals (S rhs)
         {
-            return (&this).opCmp(rhs) == 0;
+            return this.opCmp(rhs) == 0;
         }
     }
 

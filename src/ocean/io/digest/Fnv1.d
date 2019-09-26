@@ -353,7 +353,7 @@ public class Fnv1Generic ( bool FNV1A = false, T = hash_t ) : FnvDigest
 
          public ubyte[] opCall ( DigestType value )
          {
-             (&this).value = value;
+             this.value = value;
 
              version (LittleEndian) toBigEnd(array);
 
@@ -832,4 +832,3 @@ unittest
 
     test (chash == mhash, "Combined hash failed");
 }
-

@@ -490,10 +490,10 @@ struct BitArray
      */
     int opCmp( BitArray rhs )
     {
-        auto len = (&this).length;
+        auto len = this.length;
         if( rhs.length < len )
             len = rhs.length;
-        uint* p1 = (&this).ptr;
+        uint* p1 = this.ptr;
         uint* p2 = rhs.ptr;
         size_t n = len / 32;
         size_t i;
@@ -510,7 +510,7 @@ struct BitArray
             uint v2=p2[i] & mask;
             if (v1 != v2) return ((v1<v2)?-1:1);
         }
-        return (((&this).length<rhs.length)?-1:(((&this).length==rhs.length)?0:1));
+        return ((this.length<rhs.length)?-1:((this.length==rhs.length)?0:1));
     }
 
     unittest
@@ -582,13 +582,13 @@ struct BitArray
      */
     BitArray opCom()
     {
-        auto dim = (&this).dim();
+        auto dim = this.dim();
 
         BitArray result;
 
         result.length = len;
         for( size_t i = 0; i < dim; ++i )
-            result.ptr[i] = ~(&this).ptr[i];
+            result.ptr[i] = ~this.ptr[i];
         if( len & 31 )
             result.ptr[dim - 1] &= ~(~0 << (len & 31));
         return result;
@@ -625,13 +625,13 @@ struct BitArray
     {
         verify(len == rhs.length);
 
-        auto dim = (&this).dim();
+        auto dim = this.dim();
 
         BitArray result;
 
         result.length = len;
         for( size_t i = 0; i < dim; ++i )
-            result.ptr[i] = (&this).ptr[i] & rhs.ptr[i];
+            result.ptr[i] = this.ptr[i] & rhs.ptr[i];
         return result;
     }
 
@@ -668,13 +668,13 @@ struct BitArray
     {
         verify(len == rhs.length);
 
-        auto dim = (&this).dim();
+        auto dim = this.dim();
 
         BitArray result;
 
         result.length = len;
         for( size_t i = 0; i < dim; ++i )
-            result.ptr[i] = (&this).ptr[i] | rhs.ptr[i];
+            result.ptr[i] = this.ptr[i] | rhs.ptr[i];
         return result;
     }
 
@@ -711,13 +711,13 @@ struct BitArray
     {
         verify(len == rhs.length);
 
-        auto dim = (&this).dim();
+        auto dim = this.dim();
 
         BitArray result;
 
         result.length = len;
         for( size_t i = 0; i < dim; ++i )
-            result.ptr[i] = (&this).ptr[i] ^ rhs.ptr[i];
+            result.ptr[i] = this.ptr[i] ^ rhs.ptr[i];
         return result;
     }
 
@@ -753,13 +753,13 @@ struct BitArray
     {
         verify(len == rhs.length);
 
-        auto dim = (&this).dim();
+        auto dim = this.dim();
 
         BitArray result;
 
         result.length = len;
         for( size_t i = 0; i < dim; ++i )
-            result.ptr[i] = (&this).ptr[i] & ~rhs.ptr[i];
+            result.ptr[i] = this.ptr[i] & ~rhs.ptr[i];
         return result;
     }
 
@@ -792,7 +792,7 @@ struct BitArray
     {
         BitArray result;
 
-        result = (&this).dup;
+        result = this.dup;
         result.length = len + 1;
         result[len] = rhs;
         return result;
@@ -817,7 +817,7 @@ struct BitArray
     {
         BitArray result;
 
-        result = (&this).dup();
+        result = this.dup();
         result ~= rhs;
         return result;
     }
@@ -891,7 +891,7 @@ struct BitArray
     {
         verify(len == rhs.length);
 
-        auto dim = (&this).dim();
+        auto dim = this.dim();
 
         for( size_t i = 0; i < dim; ++i )
             ptr[i] &= rhs.ptr[i];
@@ -928,7 +928,7 @@ struct BitArray
     {
         verify(len == rhs.length);
 
-        auto dim = (&this).dim();
+        auto dim = this.dim();
 
         for( size_t i = 0; i < dim; ++i )
             ptr[i] |= rhs.ptr[i];
@@ -966,7 +966,7 @@ struct BitArray
     {
         verify(len == rhs.length);
 
-        auto dim = (&this).dim();
+        auto dim = this.dim();
 
         for( size_t i = 0; i < dim; ++i )
             ptr[i] ^= rhs.ptr[i];
@@ -1004,7 +1004,7 @@ struct BitArray
     {
         verify(len == rhs.length);
 
-        auto dim = (&this).dim();
+        auto dim = this.dim();
 
         for( size_t i = 0; i < dim; ++i )
             ptr[i] &= ~rhs.ptr[i];

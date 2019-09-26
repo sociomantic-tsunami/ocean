@@ -443,7 +443,7 @@ class Json(T) : JsonParser!(T)
         {
             name = key;
             value = val;
-            return (&this);
+            return &this;
         }
     }
 
@@ -468,7 +468,7 @@ class Json(T) : JsonParser!(T)
         Composite reset ()
         {
             head = tail = null;
-            return (&this);
+            return &this;
         }
 
         /***************************************************************
@@ -483,7 +483,7 @@ class Json(T) : JsonParser!(T)
                 tail.next = a, tail = a;
             else
                 head = tail = a;
-            return (&this);
+            return &this;
         }
 
         /***************************************************************
@@ -496,7 +496,7 @@ class Json(T) : JsonParser!(T)
         {
             foreach (attr; set)
                 append (attr);
-            return (&this);
+            return &this;
         }
 
         /***************************************************************
@@ -625,7 +625,7 @@ class Json(T) : JsonParser!(T)
 
         equals_t opEquals (JsonValue rhs)
         {
-            return *(&this) is rhs;
+            return this is rhs;
         }
 
         /***************************************************************
@@ -728,7 +728,7 @@ class Json(T) : JsonParser!(T)
         {
             type = escaped ? Type.String : Type.RawString;
             string = str;
-            return (&this);
+            return &this;
         }
 
         /***************************************************************
@@ -741,7 +741,7 @@ class Json(T) : JsonParser!(T)
         {
             type = Type.Object;
             object = obj;
-            return (&this);
+            return &this;
         }
 
         /***************************************************************
@@ -754,7 +754,7 @@ class Json(T) : JsonParser!(T)
         {
             type = Type.Number;
             number = num;
-            return (&this);
+            return &this;
         }
 
         /***************************************************************
@@ -766,7 +766,7 @@ class Json(T) : JsonParser!(T)
         Value set (bool b)
         {
             type = b ? Type.True : Type.False;
-            return (&this);
+            return &this;
         }
 
         /***************************************************************
@@ -779,7 +779,7 @@ class Json(T) : JsonParser!(T)
         {
             type = Type.Array;
             array = a;
-            return (&this);
+            return &this;
         }
 
         /***************************************************************
@@ -791,7 +791,7 @@ class Json(T) : JsonParser!(T)
         Value reset ()
         {
             type = Type.Null;
-            return (&this);
+            return &this;
         }
 
         /***************************************************************
@@ -929,8 +929,8 @@ class Json(T) : JsonParser!(T)
                 }
             }
 
-            printValue ((&this));
-            return (&this);
+            printValue(&this);
+            return &this;
         }
 
         /***************************************************************
@@ -942,7 +942,7 @@ class Json(T) : JsonParser!(T)
         private Value set (Type type)
         {
             this.type = type;
-            return (&this);
+            return &this;
         }
 
         /***************************************************************

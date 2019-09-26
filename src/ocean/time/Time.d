@@ -653,7 +653,7 @@ struct Time
 
         Time date ()
         {
-                return *(&this) - TimeOfDay.modulo24(ticks_);
+                return this - TimeOfDay.modulo24(ticks_);
         }
 
         /**********************************************************************

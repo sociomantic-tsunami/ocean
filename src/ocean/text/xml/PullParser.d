@@ -679,10 +679,10 @@ package struct XmlText(Ch)
 
     final void reset(Ch[] newText)
     {
-        (&this).text = newText;
-        (&this).len = newText.length;
-        (&this).point = text.ptr;
-        (&this).end = point + len;
+        this.text = newText;
+        this.len = newText.length;
+        this.point = text.ptr;
+        this.end = point + len;
     }
 
     static Const!(ubyte[64]) name =

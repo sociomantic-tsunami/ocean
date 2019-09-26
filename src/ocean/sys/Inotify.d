@@ -102,7 +102,7 @@ public class Inotify : ISelectable
             int result = 0;
 
             ssize_t read_bytes;
-            read_loop: while ( (read_bytes = read((&this).outer.fd, buffer.ptr, buffer.length)) > 0 )
+            read_loop: while ( (read_bytes = read(this.outer.fd, buffer.ptr, buffer.length)) > 0 )
             {
                 inotify_event *i_event;
 

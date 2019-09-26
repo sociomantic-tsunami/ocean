@@ -143,9 +143,9 @@ public struct StatsLine
     {
         StatsLine stats_line;
 
-        stats_line.line = (&this).line.dup;
-        stats_line.date = (&this).date.dup;
-        stats_line.time = (&this).time.dup;
+        stats_line.line = this.line.dup;
+        stats_line.date = this.date.dup;
+        stats_line.time = this.time.dup;
 
         return stats_line;
     }
@@ -245,7 +245,7 @@ public class StatsLogReader
         {
             int result;
 
-            foreach (line; (&this).lines)
+            foreach (line; this.lines)
             {
                 if (line.length == 0)
                 {

@@ -300,12 +300,12 @@ class Cache ( size_t ValueSize = 0, bool TrackCreateTimes = false ) : CacheBase!
         {
             static if ( is_dynamic )
             {
-                (&this).value = value;
-                return &(&this).value;
+                this.value = value;
+                return &this.value;
             }
             else
             {
-                return (&this).value[] = value[];
+                return this.value[] = value[];
             }
         }
 
@@ -313,14 +313,14 @@ class Cache ( size_t ValueSize = 0, bool TrackCreateTimes = false ) : CacheBase!
         {
             ValueRef value_ref ( )
             {
-                return &(&this).value;
+                return &this.value;
             }
         }
         else
         {
             ValueRef value_ref ( )
             {
-                return (&this).value[];
+                return this.value[];
             }
         }
     }
@@ -1524,4 +1524,3 @@ unittest
         }
     }
 }
-

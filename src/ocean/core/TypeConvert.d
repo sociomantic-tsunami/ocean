@@ -342,7 +342,7 @@ ReturnTypeOf!(F) delegate() toContextDg ( alias F ) ( void* context )
     {
         ReturnTypeOf!(F) method ( )
         {
-            void* context = cast(void*) (&this);
+            void* context = cast(void*) &this;
 
             // do real work via provided F function:
             return F(context);
