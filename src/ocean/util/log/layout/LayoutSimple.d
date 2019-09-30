@@ -23,6 +23,11 @@ import ocean.time.WallClock;
 import ocean.util.log.Appender;
 import ocean.util.log.Event;
 
+version (unittest)
+{
+    import ocean.core.Test;
+    import ocean.util.log.model.ILogger;
+}
 
 /*******************************************************************************
 
@@ -88,4 +93,22 @@ public class LayoutSimple : Appender.Layout
     {
         return Integer.formatter(tmp, i, 'u', '?', 8);
     }
+}
+
+unittest
+{
+    mstring result = new mstring(2048);
+    result.length = 0;
+    enableStomping(result);
+
+    scope dg = (cstring v) { result ~= v; };
+    scope layout = new LayoutSimple();
+    LogEvent event = {
+        msg_: "Have you met Ted?",
+        name_: "Barney",
+        level_: ILogger.Level.Warn,
+    };
+
+    testNoAlloc(layout.format(event, dg));
+    test!("==")(result, "Warn [Barney] - Have you met Ted?");
 }
