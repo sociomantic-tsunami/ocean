@@ -305,7 +305,7 @@ public M* GetField ( size_t i, M, T ) ( T* t )
 
 *******************************************************************************/
 
-deprecated("Use ocean.meta.codegen.Identifier.identifier!(T.tupleof[i])")
+deprecated("Use ocean.meta.codegen.Identifier.fieldIdentifier!(T, i)")
 public template FieldName ( size_t i, T )
 {
     static if ( !isCompoundType!(T) )
