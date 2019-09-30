@@ -641,8 +641,6 @@ template SizeofTuple ( T ... )
 
 version (unittest):
 
-import ocean.io.Stdout : Stderr;
-
 import ocean.time.StopWatch;
 
 import ocean.text.util.MetricPrefix;
