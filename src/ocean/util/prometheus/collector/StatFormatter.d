@@ -14,8 +14,6 @@
 
 module ocean.util.prometheus.collector.StatFormatter;
 
-import ocean.net.http.TaskHttpConnectionHandler;
-
 import core.stdc.time;
 import ocean.meta.traits.Basic;
 import ocean.meta.codegen.Identifier;
