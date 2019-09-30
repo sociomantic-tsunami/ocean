@@ -8,13 +8,19 @@
 
 module integrationtest.signalext.main;
 
-import ocean.transition;
-
-import core.sys.posix.signal;
 import ocean.core.Test;
 import ocean.sys.ErrnoException;
+import ocean.text.util.StringC;
+import ocean.transition;
 import ocean.util.app.DaemonApp;
+import ocean.io.device.File;
+import Path = ocean.io.Path;
 import ocean.io.select.client.TimerEvent;
+import ocean.io.select.EpollSelectDispatcher;
+
+import core.sys.posix.signal;
+import core.sys.posix.stdlib : mkdtemp;
+import core.sys.posix.unistd;
 
 /// Counters incremented from original and application's
 /// signal handler
@@ -23,8 +29,6 @@ private int app_counter;
 
 class MyApp : DaemonApp
 {
-    import ocean.io.select.EpollSelectDispatcher;
-
     private EpollSelectDispatcher epoll;
 
     this ( )
@@ -67,12 +71,6 @@ class MyApp : DaemonApp
         this.epoll.shutdown();
     }
 }
-
-import ocean.io.device.File;
-import Path = ocean.io.Path;
-import ocean.text.util.StringC;
-import core.sys.posix.unistd;
-import ocean.stdc.posix.stdlib : mkdtemp;
 
 version(UnitTest) {} else
 void main(istring[] args)
