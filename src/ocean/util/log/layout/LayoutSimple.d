@@ -15,11 +15,8 @@
 
 module ocean.util.log.layout.LayoutSimple;
 
+import ocean.text.convert.Formatter;
 import ocean.transition;
-import Integer = ocean.text.convert.Integer_tango;
-import ocean.text.Util;
-import ocean.time.Clock;
-import ocean.time.WallClock;
 import ocean.util.log.Appender;
 import ocean.util.log.Event;
 
@@ -69,29 +66,9 @@ public class LayoutSimple : Appender.Layout
 
     ***************************************************************************/
 
-    public override void format (LogEvent event, scope void delegate(cstring) dg)
+    public override void format (LogEvent event, scope FormatterSink dg)
     {
-        auto level = event.levelName;
-
-        // format date according to ISO-8601 (lightweight formatter)
-        char[20] tmp = void;
-        char[256] tmp2 = void;
-        dg(layout(tmp2, "%0 [%1] - ",
-                  level,
-                  event.name
-               ));
-        dg(event.toString);
-    }
-
-    /**********************************************************************
-
-        Convert an integer to a zero prefixed text representation
-
-    **********************************************************************/
-
-    private cstring convert (mstring tmp, long i)
-    {
-        return Integer.formatter(tmp, i, 'u', '?', 8);
+        sformat(dg, "{} [{}] - {}", event.levelName, event.name, event);
     }
 }
 
