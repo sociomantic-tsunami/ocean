@@ -11,11 +11,9 @@
 
 *******************************************************************************/
 
-
+deprecated("Import `core.sys.posix.stdlib` or `ocean.stdc.posix.gnu.stdlib` directly")
 module ocean.stdc.posix.stdlib;
 
 public import core.sys.posix.stdlib;
 
 public import ocean.stdc.posix.gnu.stdlib;
-
-extern (C) char* mkdtemp(char*);
