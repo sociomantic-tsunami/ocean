@@ -31,11 +31,7 @@ import ocean.text.json.JsonParser;
 
 import Float = ocean.text.convert.Float;
 
-version (UnitTest)
-{
-    import ocean.core.Test;
-    import ocean.io.Stdout;
-}
+version (UnitTest) import ocean.core.Test;
 
 ///
 unittest
@@ -49,7 +45,8 @@ unittest
 
     // Convert back to text format:
 
-    Stdout.formatln("{}", json.value.print());
+    test!("==")(json.value.print(),
+        `{"t":true,"n":null,"array":["world", [4, 5]]}`);
 
 
     // Constructing json within your code leverages a handful of factories
