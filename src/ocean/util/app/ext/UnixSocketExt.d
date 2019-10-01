@@ -105,7 +105,7 @@ public class UnixSocketExt : IApplicationExtension, IConfigExtExtension
     ***************************************************************************/
 
     deprecated ("Use the appropriate overload of UnixSocketExt.addHandler.")
-    public void addInteractiveHandler ( istring command, InteractiveHandler handler )
+    public void addInteractiveHandler ( istring command, scope InteractiveHandler handler )
     {
         this.unix_socket.commands.addHandler(command, handler);
     }
@@ -118,7 +118,7 @@ public class UnixSocketExt : IApplicationExtension, IConfigExtExtension
 
     ***************************************************************************/
 
-    public void addHandler ( istring command, Handler handler )
+    public void addHandler ( istring command, scope Handler handler )
     {
         this.unix_socket.commands.addHandler(command, handler);
     }
@@ -131,7 +131,7 @@ public class UnixSocketExt : IApplicationExtension, IConfigExtExtension
 
     ***************************************************************************/
 
-    public void addHandler ( istring command, InteractiveHandler handler )
+    public void addHandler ( istring command, scope InteractiveHandler handler )
     {
         this.unix_socket.commands.addHandler(command, handler);
     }
@@ -146,7 +146,7 @@ public class UnixSocketExt : IApplicationExtension, IConfigExtExtension
 
     ***************************************************************************/
 
-    public void addHandler ( istring command, RawSocketHandler handler )
+    public void addHandler ( istring command, scope RawSocketHandler handler )
     {
         this.unix_socket.commands.addHandler(command, handler);
     }
@@ -294,8 +294,8 @@ unittest
         }
 
         private void test ( cstring[] args,
-            void delegate ( cstring response ) send_response,
-            void delegate ( ref mstring response ) wait_reply )
+            scope void delegate ( cstring response ) send_response,
+            scope void delegate ( ref mstring response ) wait_reply )
         {
             send_response("Test request received");
         }

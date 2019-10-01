@@ -111,7 +111,7 @@ public struct StatsLine
 
     **************************************************************************/
 
-    public cstring opIndex (cstring key) /* d1to2fix_inject: const */
+    public cstring opIndex (cstring key) const
     {
         auto position = find(line[], key);
 
@@ -143,9 +143,9 @@ public struct StatsLine
     {
         StatsLine stats_line;
 
-        stats_line.line = this.line.dup;
-        stats_line.date = this.date.dup;
-        stats_line.time = this.time.dup;
+        stats_line.line = (&this).line.dup;
+        stats_line.date = (&this).date.dup;
+        stats_line.time = (&this).time.dup;
 
         return stats_line;
     }
@@ -241,11 +241,11 @@ public class StatsLogReader
 
         ***************************************************************************/
 
-        public int opApply ( int delegate(ref Const!(char[])) dg )
+        public int opApply ( scope int delegate(ref Const!(char[])) dg )
         {
             int result;
 
-            foreach (line; this.lines)
+            foreach (line; (&this).lines)
             {
                 if (line.length == 0)
                 {
@@ -321,7 +321,7 @@ public class StatsLogReader
 
     ***************************************************************************/
 
-    public int opApply ( int delegate(ref Const!(StatsLine)) dg )
+    public int opApply ( scope int delegate(ref Const!(StatsLine)) dg )
     {
         int result;
 
@@ -345,7 +345,7 @@ public class StatsLogReader
 
     ******************************************************************************/
 
-    public int opApply ( int delegate(ref size_t index, ref Const!(StatsLine)) dg )
+    public int opApply ( scope int delegate(ref size_t index, ref Const!(StatsLine)) dg )
     {
         int result;
         size_t index;

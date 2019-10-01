@@ -63,7 +63,7 @@ public class PrometheusHandler : HttpConnectionHandler
 
     ***************************************************************************/
 
-    public this ( FinalizeDg finalizer, CollectorRegistry collector_registry,
+    public this ( scope FinalizeDg finalizer, CollectorRegistry collector_registry,
         EpollSelectDispatcher epoll,
         size_t stack_size = HttpConnectionHandler.default_stack_size )
     {
