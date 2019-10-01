@@ -36,6 +36,7 @@
 
 module ocean.util.container.map.model.BucketSet;
 
+import ocean.transition;
 
 import ocean.util.container.map.model.Bucket,
        ocean.util.container.map.model.BucketInfo,
@@ -613,6 +614,7 @@ public abstract class BucketSet ( size_t V, K = hash_t ) : IBucketSet
                 // Resize the array of buckets and the bucket_info and calculate
                 // the new bucket_mask.
 
+                enableStomping(this.buckets);
                 this.buckets.length = n_new;
 
                 .clear(this.buckets[0 .. (n_prev < $)? n_prev : $]);
