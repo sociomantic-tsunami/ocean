@@ -39,11 +39,11 @@ public void verify ( bool ok, lazy istring msg = "",
 {
     static SanityException exc;
 
-    if (exc is null)
-        exc = new SanityException("");
-
     if (!ok)
     {
+        if (exc is null)
+            exc = new SanityException("");
+
         exc.file = file;
         exc.line = line;
         exc.msg = msg;
