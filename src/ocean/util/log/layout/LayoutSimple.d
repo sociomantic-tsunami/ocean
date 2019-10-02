@@ -23,7 +23,7 @@ import ocean.util.log.Event;
 version (unittest)
 {
     import ocean.core.Test;
-    import ocean.util.log.model.ILogger;
+    import ocean.util.log.ILogger;
 }
 
 /*******************************************************************************
