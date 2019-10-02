@@ -21,8 +21,7 @@
 module ocean.util.log.layout.LayoutStatsLog;
 
 import ocean.transition;
-import Integer = ocean.text.convert.Integer_tango;
-import ocean.text.Util;
+import ocean.text.convert.Formatter;
 import ocean.time.Clock;
 import ocean.time.WallClock;
 import ocean.util.log.Appender;
@@ -64,35 +63,15 @@ public class LayoutStatsLog : Appender.Layout
 
     public override void format (LogEvent event, scope void delegate(cstring) dg)
     {
-        auto level = event.levelName;
-
         // convert time to field values
-        auto tm = event.time;
-        auto dt = (localTime) ? WallClock.toDate(tm) : Clock.toDate(tm);
+        const tm = event.time;
+        const dt = (localTime) ? WallClock.toDate(tm) : Clock.toDate(tm);
 
         // format date according to ISO-8601 (lightweight formatter)
-        char[20] tmp = void;
-        char[256] tmp2 = void;
-        dg(layout(tmp2, "%0-%1-%2 %3:%4:%5,%6 ",
-                  convert(tmp[0..4],   dt.date.year),
-                  convert(tmp[4..6],   dt.date.month),
-                  convert(tmp[6..8],   dt.date.day),
-                  convert(tmp[8..10],  dt.time.hours),
-                  convert(tmp[10..12], dt.time.minutes),
-                  convert(tmp[12..14], dt.time.seconds),
-                  convert(tmp[14..17], dt.time.millis)));
-        dg(event.toString);
-    }
-
-    /***************************************************************************
-
-        Convert an integer to a zero prefixed text representation
-
-    ***************************************************************************/
-
-    private cstring convert (mstring tmp, long i)
-    {
-        return Integer.formatter(tmp, i, 'u', '?', 8);
+        sformat(dg, "{u4}-{u2}-{u2} {u2}:{u2}:{u2},{u2} {}",
+            dt.date.year, dt.date.month, dt.date.day,
+            dt.time.hours, dt.time.minutes, dt.time.seconds, dt.time.millis,
+            event);
     }
 }
 
