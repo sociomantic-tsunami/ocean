@@ -160,7 +160,7 @@ public class SuspendableThrottlerCount : ISuspendableThrottlerCount
         super.throttledResume();
     }
 
-    public alias add opSubAssign;
+    public alias remove opSubAssign;
 
 
     /***************************************************************************
@@ -174,6 +174,52 @@ public class SuspendableThrottlerCount : ISuspendableThrottlerCount
     {
         return this.count;
     }
+}
+
+unittest
+{
+    import ocean.core.Test : test;
+
+    // Helper class to allow us to test operator overloads
+    // without touching other parts of the class logic
+    static class OpsTest : SuspendableThrottlerCount
+    {
+        this ()
+        {
+            size_t suspend_point = 8;
+            size_t resume_point = 3;
+            super(suspend_point, resume_point);
+        }
+
+        override void inc () { this.count++; }
+        override void dec () { this.count--; }
+
+        override void add (size_t n) { this.count += n; }
+        override void remove (size_t n) { this.count -= n; }
+    }
+
+    scope ops_test = new OpsTest;
+    test!"=="(ops_test.length, 0);
+
+    ops_test++;
+    test!"=="(ops_test.length, 1);
+    test(!ops_test.suspend);
+    test(ops_test.resume);
+
+    ops_test += 7;
+    test!"=="(ops_test.length, 8);
+    test(ops_test.suspend);
+    test(!ops_test.resume);
+
+    ops_test--;
+    test!"=="(ops_test.length, 7);
+    test(!ops_test.suspend);
+    test(!ops_test.resume);
+
+    ops_test -= 4;
+    test!"=="(ops_test.length, 3);
+    test(!ops_test.suspend);
+    test(ops_test.resume);
 }
 
 
