@@ -31,60 +31,58 @@ import ocean.text.json.JsonParser;
 
 import Float = ocean.text.convert.Float;
 
-version(UnitTest) import ocean.core.Test;
+version (unittest) import ocean.core.Test;
+
+///
+unittest
+{
+
+    // Typical usage is as follows:
+
+    auto json = new Json!(char);
+    json.parse(`{"t": true, "n":null, "array":["world", [4, 5]]}`);
+
+
+    // Convert back to text format:
+
+    test!("==")(json.value.print(),
+        `{"t":true,"n":null,"array":["world", [4, 5]]}`);
+
+
+    // Constructing json within your code leverages a handful of factories
+    // within a document instance. This example creates a document from an
+    // array of values:
+
+    with (json)
+        value = array (true, false, null, "text");
+    test!("==")(json.value.print(), `[true, false, null, "text"]`);
+
+
+    // Setting the document to contain a simple object instead:
+
+    with (json)
+        value = object (pair("a", value(10)));
+    test!("==")(json.value.print(), `{"a":10}`);
+
+
+    // Objects may be constructed with multiple attribute pairs like so:
+
+    with (json)
+        value = object (pair("a", value(10)), pair("b", value(true)));
+    test!("==")(json.value.print(), `{"a":10,"b":true}`);
+
+
+    // Substitute arrays, or other objects as values where appropriate:
+
+    with (json)
+        value = object (pair("a", array(10, true, object(pair("b")))));
+    test!("==")(json.value.print(), `{"a":[10, true, {"b":null}]}`);
+}
+
 
 /*******************************************************************************
 
-    Parse json text into a set of inter-related structures. Typical
-    usage is as follows:
-    ---
-    auto json = new Json!(char);
-    json.parse (`{"t": true, "n":null, "array":["world", [4, 5]]}`);
-    ---
-
-    Converting back to text format employs a delegate. This one emits
-    document content to the console:
-    ---
-    json.print ((char[] s) {Stdout(s);});
-    ---
-
-    Constructing json within your code leverages a handful of factories
-    within a document instance. This example creates a document from an
-    array of values:
-    ---
-    auto json = new Json!(char);
-
-    // [true, false, null, "text"]
-    with (json)
-    value = array (true, false, null, "text");
-    ---
-
-    Setting the document to contain a simple object instead:
-    ---
-    // {"a" : 10}
-    with (json)
-    value = object (pair("a", value(10)));
-    ---
-
-    Objects may be constructed with multiple attribute pairs like so:
-    ---
-    // {"a" : 10, "b" : true}
-    with (json)
-    value = object (pair("a", value(10)), pair("b", value(true)));
-    ---
-
-    Substitute arrays, or other objects as values where appropriate:
-    ---
-    // {"a" : [10, true, {"b" : null}]}
-    with (json)
-    value = object (pair("a", array(10, true, object(pair("b")))));
-    ---
-
-    TODO: document how to extract content
-
-    Big thanks to dhasenan for suggesting the construction notation. We
-    can't make effective use of operator-overloading, due to the use of
-    struct pointers, so this syntax turned out to be the next best thing.
+    Parse json text into a set of inter-related structures.
 
  *******************************************************************************/
 
@@ -445,7 +443,7 @@ class Json(T) : JsonParser!(T)
         {
             name = key;
             value = val;
-            return (&this);
+            return &this;
         }
     }
 
@@ -470,7 +468,7 @@ class Json(T) : JsonParser!(T)
         Composite reset ()
         {
             head = tail = null;
-            return (&this);
+            return &this;
         }
 
         /***************************************************************
@@ -485,7 +483,7 @@ class Json(T) : JsonParser!(T)
                 tail.next = a, tail = a;
             else
                 head = tail = a;
-            return (&this);
+            return &this;
         }
 
         /***************************************************************
@@ -498,7 +496,7 @@ class Json(T) : JsonParser!(T)
         {
             foreach (attr; set)
                 append (attr);
-            return (&this);
+            return &this;
         }
 
         /***************************************************************
@@ -627,7 +625,7 @@ class Json(T) : JsonParser!(T)
 
         equals_t opEquals (JsonValue rhs)
         {
-            return *(&this) is rhs;
+            return this is rhs;
         }
 
         /***************************************************************
@@ -730,7 +728,7 @@ class Json(T) : JsonParser!(T)
         {
             type = escaped ? Type.String : Type.RawString;
             string = str;
-            return (&this);
+            return &this;
         }
 
         /***************************************************************
@@ -743,7 +741,7 @@ class Json(T) : JsonParser!(T)
         {
             type = Type.Object;
             object = obj;
-            return (&this);
+            return &this;
         }
 
         /***************************************************************
@@ -756,7 +754,7 @@ class Json(T) : JsonParser!(T)
         {
             type = Type.Number;
             number = num;
-            return (&this);
+            return &this;
         }
 
         /***************************************************************
@@ -768,7 +766,7 @@ class Json(T) : JsonParser!(T)
         Value set (bool b)
         {
             type = b ? Type.True : Type.False;
-            return (&this);
+            return &this;
         }
 
         /***************************************************************
@@ -781,7 +779,7 @@ class Json(T) : JsonParser!(T)
         {
             type = Type.Array;
             array = a;
-            return (&this);
+            return &this;
         }
 
         /***************************************************************
@@ -793,7 +791,7 @@ class Json(T) : JsonParser!(T)
         Value reset ()
         {
             type = Type.Null;
-            return (&this);
+            return &this;
         }
 
         /***************************************************************
@@ -931,8 +929,8 @@ class Json(T) : JsonParser!(T)
                 }
             }
 
-            printValue ((&this));
-            return (&this);
+            printValue(&this);
+            return &this;
         }
 
         /***************************************************************
@@ -944,7 +942,7 @@ class Json(T) : JsonParser!(T)
         private Value set (Type type)
         {
             this.type = type;
-            return (&this);
+            return &this;
         }
 
         /***************************************************************
@@ -980,7 +978,7 @@ class Json(T) : JsonParser!(T)
                     if (type is typeid(Composite))
                         v.set (va_arg!(Composite)(args));
                     else
-                    if (type is typeid(T[]))
+                    if (type is typeid(istring))
                         v.set (va_arg!(T[])(args));
                     else
                     if (type is typeid(void*))

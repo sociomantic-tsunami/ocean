@@ -21,7 +21,7 @@ import ocean.math.Math;
 import ocean.math.IEEE;
 import ocean.core.Verify;
 
-version(UnitTest) import ocean.core.Test;
+version (unittest) import ocean.core.Test;
 
 private:
 
@@ -463,7 +463,7 @@ unittest {
     real power(real x) {
         ++powercalls;
         ++numCalls;
-        return pow(x, n) + min_normal!(double);
+        return pow(x, n) + double.min_normal;
     }
     int [] power_nvals = [3, 5, 7, 9, 19, 25];
     // Alefeld paper states that pow(x,n) is a very poor case, where bisection

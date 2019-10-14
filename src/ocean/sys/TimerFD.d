@@ -15,24 +15,14 @@
 
 module ocean.sys.TimerFD;
 
-
-
-
+import ocean.io.model.IConduit: ISelectable;
+import ocean.meta.codegen.Identifier;
 import ocean.sys.ErrnoException;
 
-import ocean.io.model.IConduit: ISelectable;
-
-import ocean.meta.codegen.Identifier;
-
-import core.sys.posix.time: time_t, timespec, itimerspec, CLOCK_REALTIME;
-
-import ocean.stdc.posix.sys.types: ssize_t;
-
-import core.sys.posix.unistd: read, close;
-
 import core.stdc.errno: EAGAIN, EWOULDBLOCK, errno;
-
-
+import core.sys.posix.time: time_t, timespec, itimerspec, CLOCK_REALTIME;
+import core.sys.posix.sys.types: ssize_t;
+import core.sys.posix.unistd: read, close;
 
 /*******************************************************************************
 

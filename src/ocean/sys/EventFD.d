@@ -80,17 +80,10 @@
 
 module ocean.sys.EventFD;
 
-
-
-
 import ocean.io.model.IConduit;
 
-import ocean.stdc.posix.sys.types: ssize_t;
-
+import core.sys.posix.sys.types: ssize_t;
 import core.sys.posix.unistd: read, write, close;
-
-
-
 
 /*******************************************************************************
 
@@ -266,4 +259,3 @@ public class EventFD : ISelectable
         return .read(this.fd, &n, n.sizeof);
     }
 }
-

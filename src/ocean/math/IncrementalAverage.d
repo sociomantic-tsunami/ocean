@@ -83,13 +83,13 @@ public struct IncrementalAverage
         if (count == 0)
             return;
 
-        (&this).count_ += count;
+        this.count_ += count;
 
-        auto delta = (value - (&this).average_) * count;
+        auto delta = (value - this.average_) * count;
 
-        (&this).average_ += delta / (&this).count_;
+        this.average_ += delta / this.count_;
 
-        (&this).mean_of_square += delta * (value - (&this).average_);
+        this.mean_of_square += delta * (value - this.average_);
     }
 
 
@@ -102,7 +102,7 @@ public struct IncrementalAverage
 
     public double average ()
     {
-        return (&this).average_;
+        return this.average_;
     }
 
 
@@ -115,7 +115,7 @@ public struct IncrementalAverage
 
     public ulong count ()
     {
-        return (&this).count_;
+        return this.count_;
     }
 
 
@@ -127,9 +127,9 @@ public struct IncrementalAverage
 
     public void clear ()
     {
-        (&this).average_ = 0;
-        (&this).count_ = 0;
-        (&this).mean_of_square = 0;
+        this.average_ = 0;
+        this.count_ = 0;
+        this.mean_of_square = 0;
     }
 
     /***************************************************************************
@@ -163,13 +163,13 @@ public struct IncrementalAverage
 
     public double variance (double correction_factor = 0)
     {
-        if ((&this).count_ < 2)
+        if (this.count_ < 2)
             return 0;
 
-        verify((&this).count_ > correction_factor, "Correction factor is same "
+        verify(this.count_ > correction_factor, "Correction factor is same "
                ~ "size or bigger than the number of elements added.");
 
-        return (&this).mean_of_square / ((&this).count_ - correction_factor);
+        return this.mean_of_square / (this.count_ - correction_factor);
     }
 
     /***************************************************************************
@@ -191,12 +191,12 @@ public struct IncrementalAverage
 
     public double stdDeviation (double correction_factor = 0)
     {
-        return sqrt((&this).variance(correction_factor));
+        return sqrt(this.variance(correction_factor));
     }
 }
 
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.core.Test : NamedTest;
 

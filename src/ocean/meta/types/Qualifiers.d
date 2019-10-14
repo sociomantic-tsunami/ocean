@@ -61,7 +61,7 @@ alias char[]         mstring;
 
 template Const(T)
 {
-    alias const(T) Const;;
+    alias const(T) Const;
 }
 
 unittest
@@ -139,7 +139,7 @@ unittest
 
 /*******************************************************************************
 
-    In D1 does nothing. In D2 strips top-most type qualifier.
+    Strips top-most type qualifier.
 
     This is a small helper useful for adapting templated code where template
     parameter can possibly be deduced as const or immutable. Using this type
@@ -151,12 +151,12 @@ unittest
     ---
     void foo(Element)(Element[] buf)
     {
-        // this causes an error with D2 if element
+        // this causes an error if element
         // gets deduced as const
         Element tmp;
         tmp = Element.init;
 
-        // this is ok in both d1 and D2
+        // this is ok
         Unqual!(Element) tmp;
         tmp = Element.init;
     }

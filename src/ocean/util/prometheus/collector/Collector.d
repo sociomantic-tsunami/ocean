@@ -185,7 +185,7 @@ public class Collector
     }
 }
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.core.Test;
     import ocean.transition;

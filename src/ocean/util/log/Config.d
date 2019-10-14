@@ -87,7 +87,7 @@ import ocean.util.log.InsertConsole;
 import ocean.util.log.Appender;
 import ocean.util.log.AppendStderrStdout;
 import ocean.util.log.Event;
-import ocean.util.log.model.ILogger;
+import ocean.util.log.ILogger;
 
 // Log layouts
 import ocean.util.log.layout.LayoutMessageOnly;
@@ -521,7 +521,7 @@ public void configureLogger
     setupLoggerLevel(log, name, settings);
 }
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.core.Array : copy;
     import ocean.core.Test : test;

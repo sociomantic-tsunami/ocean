@@ -26,22 +26,15 @@
 module ocean.io.select.protocol.fiber.FiberSelectWriter;
 
 import ocean.transition;
-
 import ocean.core.Verify;
-
 import ocean.io.select.protocol.fiber.model.IFiberSelectProtocol;
-
 import ocean.io.select.client.model.ISelectClient;
-
 import ocean.io.device.IODevice: IOutputDevice;
-
-import core.stdc.errno: errno, EAGAIN, EWOULDBLOCK, EINTR;
-
 import ocean.stdc.posix.sys.socket: setsockopt;
+import core.stdc.errno: errno, EAGAIN, EWOULDBLOCK, EINTR;
+import core.sys.posix.netinet.in_: IPPROTO_TCP;
 
-import ocean.stdc.posix.netinet.in_: IPPROTO_TCP;
-
-static if (__VERSION__ >= 2000 && __VERSION__ < 2073)
+static if (__VERSION__ < 2073)
     enum { TCP_CORK = 3 }
 else static if (__VERSION__ >= 2077)
     import core.sys.linux.netinet.tcp: TCP_CORK;

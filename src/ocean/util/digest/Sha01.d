@@ -25,7 +25,7 @@ import ocean.core.ByteSwap;
 
 import ocean.util.digest.MerkleDamgard;
 
-version(UnitTest) import ocean.core.Test;
+version (unittest) import ocean.core.Test;
 
 /*******************************************************************************
 

@@ -38,7 +38,7 @@ import ocean.text.UnicodeData;
 import ocean.text.convert.Utf;
 import ocean.core.Verify;
 
-version(UnitTest) import ocean.core.Test;
+version (unittest) import ocean.core.Test;
 
 
 /**

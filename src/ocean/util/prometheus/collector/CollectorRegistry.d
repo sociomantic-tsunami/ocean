@@ -95,7 +95,7 @@ public class CollectorRegistry
     }
 }
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.core.Test;
     import Traits = ocean.core.Traits;

@@ -374,7 +374,7 @@ private void handle (T) (T v, FormatInfo f, scope FormatterSink sf, scope ElemSi
      */
 
     // `typeof(null)` matches way too many things
-    static if (IsTypeofNull!(T))
+    static if (is(T == typeof(null)))
         se("null", f);
 
     // Cannot print enum member name in D1, so just print the value
@@ -559,29 +559,6 @@ private void handle (T) (T v, FormatInfo f, scope FormatterSink sf, scope ElemSi
                        ~ T.stringof);
 }
 
-
-/*******************************************************************************
-
-        Helper template to detect `typeof(null)`.
-
-        In D2, `typeof(null)` is a special type, as it has conversion rules like
-        not other type. In D1, it is just `void*`.
-        Since D2 version will match many cases in `handle` because it converts
-        to many different type, we need to single it out, however we cannot
-        just check for `is(T == typeof(null))` as it would mean `== void*` in D1
-
-        Params:
-            T   = Type to check
-
-*******************************************************************************/
-
-private template IsTypeofNull (T)
-{
-    static if (is(T == typeof(null)))
-        public static immutable bool IsTypeofNull = true;
-    else
-        public static immutable bool IsTypeofNull = false;
-}
 
 /*******************************************************************************
 

@@ -19,21 +19,17 @@
 
 module ocean.text.util.SplitIterator;
 
-
 import ocean.transition;
-
 import ocean.core.Array: concat, copy;
 import ocean.core.Verify;
-
-import ocean.stdc.string: strlen, memchr, strcspn;
-import core.stdc.ctype: isspace;
-
-import ocean.stdc.posix.sys.types: ssize_t;
-
 import ocean.io.Stdout;
 import ocean.text.Search: SearchFruct, search;
 
-version(UnitTest) import ocean.core.Test;
+import core.stdc.string: strlen, memchr, strcspn;
+import core.stdc.ctype: isspace;
+import core.sys.posix.sys.types: ssize_t;
+
+version (unittest) import ocean.core.Test;
 
 /******************************************************************************
 

@@ -92,7 +92,7 @@ public class StructPool ( T ) : IAggregatePool!(T)
 
 
 
-version ( UnitTest )
+version (unittest)
 {
     struct Struct
     {

@@ -20,11 +20,11 @@ import ocean.transition;
 
 import core.stdc.errno;
 import core.stdc.string;
-import ocean.stdc.posix.arpa.inet;
-import ocean.stdc.posix.netinet.in_: sockaddr_in, sockaddr_in6;
 import ocean.stdc.posix.sys.socket;
+import core.sys.posix.arpa.inet;
+import core.sys.posix.netinet.in_: sockaddr_in, sockaddr_in6;
 
-static if (__VERSION__ >= 2000 && __VERSION__ < 2073)
+static if (__VERSION__ < 2073)
 {
     extern (C)
     {

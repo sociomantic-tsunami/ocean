@@ -27,8 +27,6 @@
 module ocean.util.cipher.gcrypt.Twofish;
 
 import ocean.util.cipher.gcrypt.core.Gcrypt;
-import ocean.transition;
-
 
 /*******************************************************************************
 
@@ -40,18 +38,19 @@ import ocean.transition;
 
 public alias GcryptWithIV!(Algorithm.GCRY_CIPHER_TWOFISH, Mode.GCRY_CIPHER_MODE_CFB) Twofish;
 
-version ( UnitTest )
+version (unittest)
 {
     import ocean.core.Test;
+    import ocean.meta.types.Qualifiers;
 }
 
 /// Usage example
 unittest
 {
     // Twofish requires a key of length 32 bytes
-    auto key = cast(Immut!(ubyte)[])"a key of 32 bytesa key of32bytes";
+    auto key = cast(immutable(ubyte)[])"a key of 32 bytesa key of32bytes";
     // Twofish requires an initialisation vector of length 16 bytes.
-    auto iv = cast(Immut!(ubyte)[])"a iv of 16 bytes";
+    auto iv = cast(immutable(ubyte)[])"a iv of 16 bytes";
 
     istring text = "This is a text we are going to encrypt";
     mstring encrypted_text, decrypted_text;
@@ -81,6 +80,6 @@ unittest
 // Test that only keys of the provided length are allowed
 unittest
 {
-    auto key = cast(Immut!(ubyte)[])"a key of 32 bytesa key of32bytes";
+    auto key = cast(immutable(ubyte)[])"a key of 32 bytesa key of32bytes";
     Twofish.testFixedKeyLength(key);
 }

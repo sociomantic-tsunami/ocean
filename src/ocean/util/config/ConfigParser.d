@@ -105,9 +105,9 @@ public class ConfigParser
 
         public int opApply ( scope int delegate ( ref istring key, ref T val ) dg )
         {
-            if ( (&this).vars !is null )
+            if ( this.vars !is null )
             {
-                foreach ( key, valnode; *(&this).vars )
+                foreach ( key, valnode; *this.vars )
                 {
                     auto val = conv!(T)(valnode.value);
 
@@ -128,7 +128,7 @@ public class ConfigParser
 
         public int opApply ( scope int delegate ( ref istring x ) dg )
         {
-            return (&this).opApply(
+            return this.opApply(
                 (ref istring key, ref istring val)
                 {
                     return dg(key);
@@ -398,7 +398,7 @@ public class ConfigParser
             {
                 int result = 0;
 
-                foreach ( ref line; lines((&this).data) )
+                foreach ( ref line; lines(this.data) )
                 {
                     result = dg(line);
 
@@ -576,12 +576,11 @@ public class ConfigParser
 
     ***************************************************************************/
 
-    public SliceIfD1StaticArray!(T) get ( T ) ( cstring category, cstring key,
-            T default_value )
+    public T get ( T ) ( cstring category, cstring key, T default_value )
     {
         if ( exists(category, key) )
         {
-            return getStrict!(SliceIfD1StaticArray!(T))(category, key);
+            return getStrict!(T)(category, key);
         }
         return default_value;
     }
@@ -1155,7 +1154,7 @@ unittest
 }
 
 
-version ( UnitTest )
+version (unittest)
 {
     import ocean.core.Test;
 }

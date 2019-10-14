@@ -31,7 +31,7 @@ import ocean.math.IEEE;
 import ocean.math.ErrorFunction;
 import ocean.core.Verify;
 
-version(UnitTest) import ocean.core.Test;
+version (unittest) import ocean.core.Test;
 
 //------------------------------------------------------------------
 
@@ -283,7 +283,7 @@ unittest {
     test(gamma(real.infinity) == real.infinity);
     test(gamma(real.max) == real.infinity);
     test(isNaN(gamma(-real.infinity)));
-    test(gamma(min_normal!(real)*real.epsilon) == real.infinity);
+    test(gamma(real.min_normal*real.epsilon) == real.infinity);
     test(gamma(MAXGAMMA)< real.infinity);
     test(gamma(MAXGAMMA*2) == real.infinity);
 
@@ -404,8 +404,8 @@ unittest {
     test(logGamma(-50.0) == real.infinity);
     test(isIdentical(0.0L, logGamma(1.0L)));
     test(isIdentical(0.0L, logGamma(2.0L)));
-    test(logGamma(min_normal!(real)*real.epsilon) == real.infinity);
-    test(logGamma(-min_normal!(real)*real.epsilon) == real.infinity);
+    test(logGamma(real.min_normal*real.epsilon) == real.infinity);
+    test(logGamma(-real.min_normal*real.epsilon) == real.infinity);
 
     // x, correct loggamma(x), correct d/dx loggamma(x).
     static real[] testpoints = [

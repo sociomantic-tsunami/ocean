@@ -121,7 +121,7 @@ class Lines : Iterator
 
 *******************************************************************************/
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.io.device.Array;
 }

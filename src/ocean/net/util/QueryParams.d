@@ -32,7 +32,7 @@ import ocean.text.util.SplitIterator: ChrSplitIterator;
 
 import ocean.util.container.AppendBuffer: AppendBuffer, IAppendBufferReader;
 
-version(UnitTest) import ocean.core.Test;
+version (unittest) import ocean.core.Test;
 
 /******************************************************************************
 

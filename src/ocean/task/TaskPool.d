@@ -180,17 +180,17 @@ class TaskPool ( TaskT : Task ) : ObjectPool!(Task)
             current_task.suspend();
     }
 
-    static if (hasMethod!(TaskT, "deserialize", void delegate(void[])))
+    static if (__traits(hasMember, TaskT, "deserialize"))
     {
         /***********************************************************************
 
             Starts a task in the same manner as `start` but instead calls the
-            `deserialize()` method on the derived task with a serialized buffer
-            of the state. This is to support dumping and loading tasks from disk.
+            `deserialize()` method on the derived task with arguments supported.
+            This is to support dumping and loading tasks from disk.
 
             Params:
-                serialized = Buffer containing serialized data for restoring
-                             the internal state of a task.
+                args = Arguments matching the function arguments of the
+                       'deserialize()' function of the task type.
 
             Returns:
                 'false' if new task can't be started because pool limit is reached
@@ -198,7 +198,7 @@ class TaskPool ( TaskT : Task ) : ObjectPool!(Task)
 
         ***********************************************************************/
 
-        public bool restore ( void[] serialized )
+        public bool restore  ( ParametersOf!(TaskT.deserialize) args )
         {
             if (this.num_busy() >= this.limit())
                 return false;
@@ -206,7 +206,7 @@ class TaskPool ( TaskT : Task ) : ObjectPool!(Task)
             auto task = cast(TaskT) this.get(new TaskT);
             assert (task !is null);
 
-            task.deserialize(serialized);
+            task.deserialize(args);
             this.startImpl(task);
 
             return true;

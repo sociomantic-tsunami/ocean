@@ -86,16 +86,14 @@ unittest
 }
 
 
-
 import ocean.transition;
 import ocean.core.Enforce;
 import ocean.core.Verify;
 import ocean.core.Exception;
+import ocean.net.collectd.SocketReader;
+public import ocean.net.collectd.Identifier;
 import ocean.stdc.posix.sys.un;
-import core.stdc.time; // time
-import ocean.stdc.posix.sys.types; // time_t
 import ocean.sys.ErrnoException;
-import core.sys.posix.sys.socket;  // SOCK_DGRAM
 import ocean.sys.socket.UnixSocket;
 import ocean.text.Util;
 import Float = ocean.text.convert.Float;
@@ -104,10 +102,11 @@ import ocean.text.convert.Integer;
 import Conv = ocean.util.Convert;
 import ocean.text.util.StringSearch; // locateChar
 
-import ocean.net.collectd.SocketReader;
-public import ocean.net.collectd.Identifier;
+import core.stdc.time; // time
+import core.sys.posix.sys.socket;  // SOCK_DGRAM
+import core.sys.posix.sys.types; // time_t
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.core.Test;
     import ocean.io.Stdout : Stdout;

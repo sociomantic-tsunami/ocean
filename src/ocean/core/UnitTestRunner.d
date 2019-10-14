@@ -13,7 +13,8 @@
     for example:
 
     ---
-    module tester;
+    // Workaround: https://github.com/dlang/dub/issues/1761
+    module_ tester;
     import ocean.core.UnitTestRunner;
     import mymodule;
     ---
@@ -95,7 +96,7 @@ import core.runtime: Runtime;
 
 ******************************************************************************/
 
-private scope class UnitTestRunner
+private class UnitTestRunner
 {
 
     /**************************************************************************
@@ -630,7 +631,7 @@ private scope class UnitTestRunner
 
     ***************************************************************************/
 
-    private Result timedTest ( ModuleInfoPtr m, out timeval tv, ref mstring err )
+    private Result timedTest ( ModuleInfo* m, out timeval tv, ref mstring err )
     {
         timeval start = this.now();
         scope (exit) tv = elapsedTime(start);

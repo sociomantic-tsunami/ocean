@@ -62,7 +62,7 @@ public template TemplateInstanceArgs (alias Template, Type : Template!(TA), TA..
     public alias TA TemplateInstanceArgs;
 }
 
-version (UnitTest)
+version (unittest)
 {
     private class BaseTestClass (T) {}
     private class DerivedTestClass (T) : BaseTestClass!(T) {}

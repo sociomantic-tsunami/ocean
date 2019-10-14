@@ -58,7 +58,7 @@ import ocean.util.log.Appender;
 import ocean.util.log.Logger;
 
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.util.app.DaemonApp;
 }

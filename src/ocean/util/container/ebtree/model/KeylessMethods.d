@@ -158,7 +158,7 @@ template KeylessMethods ( Node, alias eb_first, alias eb_last )
     private Node* ebCall ( alias eb_func, T ... ) ( T args )
     {
         static assert (is (typeof (eb_func(&this.root, args)) ==
-                           typeof (&Node.init.node_)));
+                           typeof (Node.node_)*));
 
         return cast (Node*) eb_func(&this.root, args);
     }

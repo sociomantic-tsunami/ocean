@@ -22,7 +22,7 @@ import ocean.util.digest.Digest;
 
 import ocean.core.ByteSwap;
 
-version(UnitTest) import ocean.core.Test;
+version (unittest) import ocean.core.Test;
 
 
 /******************************************************************************
@@ -353,7 +353,7 @@ public class Fnv1Generic ( bool FNV1A = false, T = hash_t ) : FnvDigest
 
          public ubyte[] opCall ( DigestType value )
          {
-             (&this).value = value;
+             this.value = value;
 
              version (LittleEndian) toBigEnd(array);
 
@@ -710,7 +710,7 @@ public class Fnv1Generic ( bool FNV1A = false, T = hash_t ) : FnvDigest
 **************************************************************************/
 
 
-version ( UnitTest )
+version (unittest)
 {
     // Uncomment the next line to see UnitTest output
     // version = UnitTestVerbose;
@@ -832,4 +832,3 @@ unittest
 
     test (chash == mhash, "Combined hash failed");
 }
-

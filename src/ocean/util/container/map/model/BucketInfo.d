@@ -67,14 +67,14 @@ class BucketInfo
 
         public equals_t opEquals (Bucket rhs)
         {
-            return (&this).opCmp(rhs) == 0;
+            return this.opCmp(rhs) == 0;
         }
 
         /**********************************************************************/
 
         debug (BucketInfo) private void print ( )
         {
-            Stderr.format(" {,2}/{,2}", (&this).index, (&this).length);
+            Stderr.format(" {,2}/{,2}", this.index, this.length);
         }
     }
 
@@ -512,7 +512,9 @@ class BucketInfo
 
     package void clearResize ( size_t n )
     {
+        enableStomping(this.buckets);
         this.buckets.length             = n;
+        enableStomping(this.bucket_list_indices);
         this.bucket_list_indices.length = n;
 
         /*
@@ -561,7 +563,7 @@ class BucketInfo
 
 *******************************************************************************/
 
-version (UnitTest):
+version (unittest):
 
 import ocean.core.Test;
 

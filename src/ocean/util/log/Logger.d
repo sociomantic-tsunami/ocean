@@ -10,7 +10,8 @@
     object and initialize it on construction:
 
     ---
-    module superapp.main;
+    // Workaround: https://github.com/dlang/dub/issues/1761
+    module_ superapp.main;
 
     import ocean.transition;
     import ocean.util.log.Logger;
@@ -60,17 +61,14 @@ import ocean.transition;
 import ocean.core.Verify;
 import ocean.core.ExceptionDefinitions;
 import ocean.io.model.IConduit;
-import ocean.sys.Common;
 import ocean.text.convert.Formatter;
 import ocean.time.Clock;
 import ocean.util.log.Appender;
 import ocean.util.log.Event;
-import ocean.util.log.model.ILogger;
-
 import ocean.util.log.Hierarchy;
+import ocean.util.log.ILogger;
 
-
-version (UnitTest)
+version (unittest)
 {
     import ocean.core.Test;
 }
@@ -146,7 +144,7 @@ public struct Log
         {
             uint total;
 
-            foreach (field; (&this).tupleof)
+            foreach (field; this.tupleof)
             {
                 total += field;
             }
@@ -157,7 +155,7 @@ public struct Log
         /// Resets the counters
         private void reset ()
         {
-            foreach (ref field; (&this).tupleof)
+            foreach (ref field; this.tupleof)
             {
                 field = field.init;
             }
@@ -177,19 +175,19 @@ public struct Log
             with (Level) switch (event_level)
             {
             case Trace:
-                (&this).logged_trace++;
+                this.logged_trace++;
                 break;
             case Info:
-                (&this).logged_info++;
+                this.logged_info++;
                 break;
             case Warn:
-                (&this).logged_warn++;
+                this.logged_warn++;
                 break;
             case Error:
-                (&this).logged_error++;
+                this.logged_error++;
                 break;
             case Fatal:
-                (&this).logged_fatal++;
+                this.logged_fatal++;
                 break;
             case None:
                 break;
@@ -201,9 +199,6 @@ public struct Log
 
     /// Stores all the existing `Logger` in a hierarchical manner
     private static HierarchyT!(Logger) hierarchy_;
-
-    /// Time elapsed since the first logger instantiation
-    private static Time beginTime;
 
     /// Logger stats
     private static Stats logger_stats;
@@ -296,7 +291,6 @@ public struct Log
     {
         if (This.hierarchy_ is null)
         {
-            This.beginTime = Clock.now;
             This.hierarchy_ = new HierarchyT!(Logger)("ocean");
         }
         return This.hierarchy_;
@@ -760,13 +754,13 @@ public final class Logger : ILogger
     /***************************************************************************
 
         Returns:
-            Time since the first logger instantiation
+            Time since the program start
 
     ***************************************************************************/
 
     public TimeSpan runtime ()
     {
-        return Clock.now - Log.beginTime;
+        return Clock.now - Clock.startTime();
     }
 
     /***************************************************************************
@@ -1046,4 +1040,10 @@ unittest
     test!("==")(appender.buffers[4].message,
                 "This is some arg fmt - 42 - object.Object - 1337.00");
     test!("==")(appender.buffers[5].message, "Just some more allocation tests");
+}
+
+unittest
+{
+    Logger log = (new Logger(Log.hierarchy(), "dummy")).additive(false);
+    test!(">=")(log.runtime(), TimeSpan.fromNanos(0));
 }

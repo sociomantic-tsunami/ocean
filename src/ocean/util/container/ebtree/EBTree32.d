@@ -174,7 +174,7 @@ class EBTree32 ( bool signed = false ) : IEBTree
 
         private EBTree32!(signed).Key opCast ( )
         {
-            return ((cast (int) (&this).hi) << 0x10) | (&this).lo;
+            return ((cast (int) this.hi) << 0x10) | this.lo;
         }
     }
 

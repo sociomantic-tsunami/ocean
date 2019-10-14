@@ -35,9 +35,9 @@ class TaskSelectTransceiver
     import core.stdc.errno: errno, EAGAIN, EWOULDBLOCK, EINTR;
     import ocean.stdc.posix.sys.uio: iovec, readv;
     import ocean.stdc.posix.sys.socket: setsockopt;
-    import ocean.stdc.posix.netinet.in_: IPPROTO_TCP;
+    import core.sys.posix.netinet.in_: IPPROTO_TCP;
 
-    static if (__VERSION__ >= 2000 && __VERSION__ < 2073)
+    static if (__VERSION__ < 2073)
         enum { TCP_CORK = 3 }
     else static if (__VERSION__ >= 2077)
         import core.sys.linux.netinet.tcp: TCP_CORK;
@@ -721,7 +721,7 @@ private int connect_ ( TaskSelectTransceiver tst, lazy bool socket_connect )
     TODO: Remove handling of EINTR or this note when this is clarified. */
 }
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.io.select.protocol.generic.ErrnoIOException;
     import ocean.task.Task;
@@ -784,7 +784,7 @@ unittest
     }
 }
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.sys.socket.IPSocket;
 }

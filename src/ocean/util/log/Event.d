@@ -26,7 +26,7 @@ module ocean.util.log.Event;
 import ocean.transition;
 import ocean.core.Verify;
 import ocean.time.Clock;
-import ocean.util.log.model.ILogger;
+import ocean.util.log.ILogger;
 
 ///
 public struct LogEvent
@@ -86,10 +86,11 @@ public struct LogEvent
     /// Return the logger level name of this event.
     cstring levelName ()
     {
-        return ILogger.convert((&this).level_);
+        return ILogger.convert(this.level_);
     }
 
     /// Convert a time value (in milliseconds) to ascii
+    deprecated("Use a direct call to `sformat` instead")
     static mstring toMilli (mstring s, TimeSpan time)
     {
         verify (s.length > 0);

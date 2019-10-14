@@ -21,8 +21,8 @@
 
 module ocean.util.cipher.gcrypt.AES;
 
+import ocean.meta.types.Qualifiers;
 import ocean.util.cipher.gcrypt.core.Gcrypt;
-import ocean.transition;
 
 
 /*******************************************************************************
@@ -116,13 +116,13 @@ unittest
     testAES_IV!(AES256_CBC, KEY, IV);
 }
 
-version ( UnitTest )
+version (unittest)
 {
     import ocean.core.Test;
 
     void testAES ( Cipher, istring str_key ) ( )
     {
-        auto key = cast(Immut!(ubyte)[])str_key;
+        auto key = cast(immutable(ubyte)[])str_key;
 
         // Test that only keys of the provided length are allowed
         Cipher.testFixedKeyLength(key);
@@ -154,8 +154,8 @@ version ( UnitTest )
 
     void testAES_IV ( Cipher, istring str_key, istring str_iv ) ( )
     {
-        auto key = cast(Immut!(ubyte)[])str_key;
-        auto iv = cast(Immut!(ubyte)[])str_iv;
+        auto key = cast(immutable(ubyte)[])str_key;
+        auto iv = cast(immutable(ubyte)[])str_iv;
 
         // Test that only keys of the provided length are allowed
         Cipher.testFixedKeyLength(key);

@@ -36,7 +36,7 @@ import ocean.core.Verify;
 
 *******************************************************************************/
 
-version ( UnitTest )
+version (unittest)
 {
     import ocean.util.app.Application;
 }
@@ -254,7 +254,7 @@ public class TimerExt : IApplicationExtension
 }
 
 
-version ( UnitTest )
+version (unittest)
 {
     import ocean.util.app.Application;
 

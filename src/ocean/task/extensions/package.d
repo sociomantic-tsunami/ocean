@@ -17,7 +17,7 @@ module ocean.task.extensions;
 
 public import ocean.task.extensions.ExceptionForwarding;
 
-version (UnitTest)
+version (unittest)
 {
     import core.thread;
     import ocean.core.Test;

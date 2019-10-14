@@ -19,7 +19,7 @@ module ocean.util.container.more.Heap;
 
 import ocean.core.ExceptionDefinitions;
 
-version(UnitTest) import ocean.core.Test;
+version (unittest) import ocean.core.Test;
 
 bool minHeapCompare(T)(T a, T b) {return a <= b;}
 bool maxHeapCompare(T)(T a, T b) {return a >= b;}
@@ -162,7 +162,7 @@ struct Heap (T, alias Compare = minHeapCompare!(T), alias Move = defaultHeapSwap
         /** reset this heap, and use the provided host for value elements */
         void clear (T[] host)
         {
-                (&this).heap = host;
+                this.heap = host;
                 clear;
         }
 
@@ -187,8 +187,8 @@ struct Heap (T, alias Compare = minHeapCompare!(T), alias Move = defaultHeapSwap
         Heap clone ()
         {
                 Heap other;
-                other.heap = (&this).heap.dup;
-                other.next = (&this).next;
+                other.heap = this.heap.dup;
+                other.next = this.next;
                 return other;
         }
 
@@ -345,7 +345,7 @@ unittest
         test (h.size == 0);
 }
 
-version (UnitTest)
+version (unittest)
 {
     long[] swapped;
     size_t[] indices;

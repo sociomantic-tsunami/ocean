@@ -34,7 +34,7 @@ import ocean.util.serialize.contiguous.Serializer;
 import ocean.util.serialize.contiguous.Deserializer;
 import ocean.util.serialize.contiguous.Contiguous;
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.core.array.Search : rfind;
     import ocean.core.Test;
@@ -414,7 +414,7 @@ public class VersionHandlingException : Exception
     }
 }
 
-version(UnitTest)
+version (unittest)
 {
     struct Multi_Test1
     {
@@ -503,7 +503,7 @@ unittest
 
 // error handling
 
-version (UnitTest)
+version (unittest)
 {
     struct Multi_Test2
     {
@@ -547,7 +547,7 @@ unittest
 }
 
 
-version (UnitTest):
+version (unittest):
 
 /*******************************************************************************
 
@@ -784,7 +784,7 @@ struct Test3
 
         void compare ( NamedTest t, Version0 other )
         {
-            foreach (index, ref element; (&this).tupleof)
+            foreach (index, ref element; this.tupleof)
             {
                 t.test!("==")(element, other.tupleof[index]);
             }
@@ -792,7 +792,7 @@ struct Test3
 
         void compare ( NamedTest t, Version1 other )
         {
-            foreach (index, ref element; (&this).tupleof)
+            foreach (index, ref element; this.tupleof)
             {
                 enum name = this.tupleof[index].stringof[
                     rfind(this.tupleof[index].stringof, "."[]) + 1 .. $
@@ -800,7 +800,7 @@ struct Test3
 
                 static if (name == "nested_arr")
                 {
-                    foreach (i, elem; (&this).nested_arr)
+                    foreach (i, elem; this.nested_arr)
                     {
                         t.test!("==")(elem.a, other.nested_arr[i].a);
                     }
@@ -851,7 +851,7 @@ struct Test3
 
         void compare ( NamedTest t, Version0 other )
         {
-            foreach (index, ref member; (&this).tupleof)
+            foreach (index, ref member; this.tupleof)
             {
                 enum name = this.tupleof[index].stringof[
                     rfind(this.tupleof[index].stringof, "."[]) + 1 .. $
@@ -859,7 +859,7 @@ struct Test3
 
                 static if (name == "nested_arr")
                 {
-                    foreach (i, ref nested; (&this).nested_arr)
+                    foreach (i, ref nested; this.nested_arr)
                     {
                         test!("==")(nested.a, other.nested_arr[i].a);
                         test!("==")(nested.b, other.nested_arr[i].a + 1);
@@ -867,7 +867,7 @@ struct Test3
                 }
                 else static if (name == "c")
                 {
-                    test!("==")((&this).c, other.b - other.a);
+                    test!("==")(this.c, other.b - other.a);
                 }
                 else
                 {
@@ -878,7 +878,7 @@ struct Test3
 
         void compare ( NamedTest t, Version1 other )
         {
-            foreach (index, ref element; (&this).tupleof)
+            foreach (index, ref element; this.tupleof)
             {
                 t.test!("==")(element, other.tupleof[index]);
             }
@@ -886,7 +886,7 @@ struct Test3
 
         void compare ( NamedTest t, Version2 other )
         {
-            foreach (index, ref member; (&this).tupleof)
+            foreach (index, ref member; this.tupleof)
             {
                 enum name = this.tupleof[index].stringof[
                     rfind(this.tupleof[index].stringof, "."[]) + 1 .. $
@@ -894,7 +894,7 @@ struct Test3
 
                 static if (name == "nested_arr")
                 {
-                    foreach (i, ref nested; (&this).nested_arr)
+                    foreach (i, ref nested; this.nested_arr)
                     {
                         test!("==")(nested.a, other.nested_arr[i].a);
                         test!("==")(nested.b, other.nested_arr[i].a / 2);
@@ -902,7 +902,7 @@ struct Test3
                 }
                 else static if (name == "c")
                 {
-                    test!("==")((&this).c, other.d);
+                    test!("==")(this.c, other.d);
                 }
                 else
                 {
@@ -948,7 +948,7 @@ struct Test3
 
         void compare ( NamedTest t, ref Version1 other )
         {
-            foreach (index, ref member; (&this).tupleof)
+            foreach (index, ref member; this.tupleof)
             {
                 enum name = this.tupleof[index].stringof[
                     rfind(this.tupleof[index].stringof, "."[]) + 1 .. $
@@ -956,14 +956,14 @@ struct Test3
 
                 static if (name == "nested_arr")
                 {
-                    foreach (i, ref nested; (&this).nested_arr)
+                    foreach (i, ref nested; this.nested_arr)
                     {
                         test!("==")(nested.a, other.nested_arr[i].b * 2);
                     }
                 }
                 else static if (name == "d")
                 {
-                    test!("==")((&this).d, other.c);
+                    test!("==")(this.d, other.c);
                 }
                 else
                 {
@@ -974,7 +974,7 @@ struct Test3
 
         void compare ( NamedTest t, ref Version2 other )
         {
-            foreach (index, member; (&this).tupleof)
+            foreach (index, member; this.tupleof)
             {
                 t.test!("==")(member, other.tupleof[index]);
             }

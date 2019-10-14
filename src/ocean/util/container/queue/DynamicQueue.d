@@ -24,7 +24,7 @@ import ocean.core.Buffer;
 import ocean.core.array.Mutation : removeShift;
 import ocean.util.container.queue.model.IQueue;
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.core.Test;
 }

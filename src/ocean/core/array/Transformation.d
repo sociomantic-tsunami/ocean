@@ -31,7 +31,7 @@ import ocean.core.Buffer;
 
 import ocean.core.array.Search;
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.core.Test;
 }

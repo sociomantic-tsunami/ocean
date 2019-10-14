@@ -123,7 +123,7 @@ public class LinkedListQueue ( T, alias gc_tracking_policy = GCTrackingPolicy.re
 
         public QueueItem* find ( T find_value )
         {
-            for ( auto p = (&this); p; p = p.next )
+            for ( auto p = &this; p; p = p.next )
                  if ( find_value == p.value )
                      return p;
             return null;

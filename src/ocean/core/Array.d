@@ -85,7 +85,7 @@ unittest
     test(bcontains(arr, 5L));
 }
 
-version ( UnitTest )
+version (unittest)
 {
 
     // Tests string concatenation function against results of the normal ~ operator

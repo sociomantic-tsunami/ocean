@@ -643,7 +643,7 @@ public abstract class EpollProcess
 
     ***************************************************************************/
 
-    private mixin(global("static GlobalProcessMonitor process_monitor"));
+    private __gshared static GlobalProcessMonitor process_monitor;
 
 
     /***************************************************************************
@@ -1023,7 +1023,7 @@ public abstract class EpollProcess
 
 *******************************************************************************/
 
-version ( UnitTest )
+version (unittest)
 {
     import ocean.core.Test;
 }
@@ -1050,4 +1050,3 @@ unittest
 
     scope proc2 = new MyProcess(epoll2);
 }
-

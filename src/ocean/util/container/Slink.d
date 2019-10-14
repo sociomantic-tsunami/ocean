@@ -88,13 +88,13 @@ struct Slink (V, K=KeyDummy, bool Identity = false, bool HashCache = false)
                 {
                         static if (Identity == true)
                         {
-                           for (auto p=(&this); p; p = p.next)
+                           for (auto p= &this; p; p = p.next)
                                 if (key is p.key)
                                     return p;
                         }
                         else
                         {
-                           for (auto p=(&this); p; p = p.next)
+                           for (auto p= &this; p; p = p.next)
                                 if (key == p.key)
                                     return p;
                         }
@@ -105,13 +105,13 @@ struct Slink (V, K=KeyDummy, bool Identity = false, bool HashCache = false)
                 {
                         static if (Identity == true)
                         {
-                           for (auto p=(&this); p; p = p.next)
+                           for (auto p= &this; p; p = p.next)
                                 if (key is p.key && value == p.value)
                                     return p;
                         }
                         else
                         {
-                           for (auto p=(&this); p; p = p.next)
+                           for (auto p= &this; p; p = p.next)
                                 if (key == p.key && value == p.value)
                                     return p;
                         }
@@ -123,13 +123,13 @@ struct Slink (V, K=KeyDummy, bool Identity = false, bool HashCache = false)
                         int i = 0;
                         static if (Identity == true)
                         {
-                           for (auto p=(&this); p; p = p.next, ++i)
+                           for (auto p= &this; p; p = p.next, ++i)
                                 if (key is p.key)
                                     return i;
                         }
                         else
                         {
-                           for (auto p=(&this); p; p = p.next, ++i)
+                           for (auto p= &this; p; p = p.next, ++i)
                                 if (key == p.key)
                                     return i;
                         }
@@ -141,13 +141,13 @@ struct Slink (V, K=KeyDummy, bool Identity = false, bool HashCache = false)
                         int i = 0;
                         static if (Identity == true)
                         {
-                           for (auto p=(&this); p; p = p.next, ++i)
+                           for (auto p= &this; p; p = p.next, ++i)
                                 if (key is p.key && value == p.value)
                                     return i;
                         }
                         else
                         {
-                           for (auto p=(&this); p; p = p.next, ++i)
+                           for (auto p= &this; p; p = p.next, ++i)
                                 if (key == p.key && value == p.value)
                                     return i;
                         }
@@ -159,13 +159,13 @@ struct Slink (V, K=KeyDummy, bool Identity = false, bool HashCache = false)
                         int c = 0;
                         static if (Identity == true)
                         {
-                           for (auto p=(&this); p; p = p.next)
+                           for (auto p= &this; p; p = p.next)
                                 if (key is p.key)
                                     ++c;
                         }
                         else
                         {
-                           for (auto p=(&this); p; p = p.next)
+                           for (auto p= &this; p; p = p.next)
                                 if (key == p.key)
                                     ++c;
                         }
@@ -177,13 +177,13 @@ struct Slink (V, K=KeyDummy, bool Identity = false, bool HashCache = false)
                         int c = 0;
                         static if (Identity == true)
                         {
-                           for (auto p=(&this); p; p = p.next)
+                           for (auto p= &this; p; p = p.next)
                                 if (key is p.key && value == p.value)
                                     ++c;
                         }
                         else
                         {
-                           for (auto p=(&this); p; p = p.next)
+                           for (auto p= &this; p; p = p.next)
                                 if (key == p.key && value == p.value)
                                     ++c;
                         }
@@ -203,7 +203,7 @@ struct Slink (V, K=KeyDummy, bool Identity = false, bool HashCache = false)
         {
                 next = n;
                 value = v;
-                return (&this);
+                return &this;
         }
 
         /***********************************************************************
@@ -246,7 +246,7 @@ struct Slink (V, K=KeyDummy, bool Identity = false, bool HashCache = false)
 
         final Ref find (V element)
         {
-                for (auto p = (&this); p; p = p.next)
+                for (auto p = &this; p; p = p.next)
                      if (element == p.value)
                          return p;
                 return null;
@@ -262,7 +262,7 @@ struct Slink (V, K=KeyDummy, bool Identity = false, bool HashCache = false)
         final int index (V element)
         {
                 int i;
-                for (auto p = (&this); p; p = p.next, ++i)
+                for (auto p = &this; p; p = p.next, ++i)
                      if (element == p.value)
                          return i;
 
@@ -278,7 +278,7 @@ struct Slink (V, K=KeyDummy, bool Identity = false, bool HashCache = false)
         final int count (V element)
         {
                 int c;
-                for (auto p = (&this); p; p = p.next)
+                for (auto p = &this; p; p = p.next)
                      if (element == p.value)
                          ++c;
                 return c;
@@ -293,7 +293,7 @@ struct Slink (V, K=KeyDummy, bool Identity = false, bool HashCache = false)
         final int count ()
         {
                 int c;
-                for (auto p = (&this); p; p = p.next)
+                for (auto p = &this; p; p = p.next)
                      ++c;
                 return c;
         }
@@ -307,7 +307,7 @@ struct Slink (V, K=KeyDummy, bool Identity = false, bool HashCache = false)
 
         final Ref tail ()
         {
-                auto p = (&this);
+                auto p = &this;
                 while (p.next)
                        p = p.next;
                 return p;
@@ -323,7 +323,7 @@ struct Slink (V, K=KeyDummy, bool Identity = false, bool HashCache = false)
         {
                 enforce(n >= 0);
 
-                auto p = (&this);
+                auto p = &this;
                 for (long i; i < n && p; ++i)
                      p = p.next;
                 return p;
@@ -487,7 +487,7 @@ struct Slink (V, K=KeyDummy, bool Identity = false, bool HashCache = false)
 
 }
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.core.Test : NamedTest;
 }

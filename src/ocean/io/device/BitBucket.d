@@ -23,7 +23,7 @@ import ocean.transition;
 
 import ocean.io.device.Conduit;
 
-version(UnitTest) import ocean.core.Test;
+version (unittest) import ocean.core.Test;
 
 /*******************************************************************************
 

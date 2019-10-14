@@ -26,7 +26,7 @@ import ocean.core.ExceptionDefinitions;
 import ocean.text.convert.Formatter;
 import ocean.text.Util;
 
-version(UnitTest) import ocean.core.Test;
+version (unittest) import ocean.core.Test;
 
 import core.stdc.stdlib;
 import core.stdc.string;
@@ -38,7 +38,7 @@ import ocean.stdc.posix.sys.wait;
 
 private
 {
-    mixin(global("extern (C) extern char** environ"));
+    __gshared extern (C) extern char** environ;
 }
 
 debug (Process)
@@ -213,7 +213,7 @@ class Process
         /// Convenience overload that format this as a string
         public istring toString ()
         {
-            return format("{}", (&this));
+            return format("{}", &this);
         }
     }
 

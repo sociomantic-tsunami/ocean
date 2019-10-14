@@ -24,7 +24,7 @@ import ocean.meta.codegen.CTFE;
 import ocean.meta.types.Qualifiers;
 import ocean.meta.types.Function;
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.meta.types.Typedef;
 }
@@ -73,7 +73,7 @@ unittest
     Template to get the name of the ith member of a struct / class.
 
     Used over plain `identifier` when iterating over aggregate fields with
-    `.tupleof` as D1 compiler refuses to pass such field as template alias
+    `.tupleof` as compiler refuses to pass such field as template alias
     parameter.
 
     Params:
@@ -85,13 +85,12 @@ unittest
 
 *******************************************************************************/
 
-deprecated("Use ocean.meta.codegen.identifier!(T.tupleof[i])")
 public template fieldIdentifier ( T, size_t i )
 {
     enum fieldIdentifier = identifier!(T.tupleof[i]);
 }
 
-deprecated unittest
+unittest
 {
     static struct TestStruct
     {

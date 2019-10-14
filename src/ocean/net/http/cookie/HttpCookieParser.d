@@ -24,7 +24,7 @@ module ocean.net.http.cookie.HttpCookieParser;
 import ocean.transition;
 import ocean.net.util.QueryParams: QueryParamSet;
 
-version(UnitTest) import ocean.core.Test;
+version (unittest) import ocean.core.Test;
 
 /******************************************************************************/
 

@@ -52,7 +52,7 @@ import ocean.text.convert.DateTime;
 import ocean.text.convert.Integer;
 import ocean.transition;
 
-version (UnitTest)
+version (unittest)
 {
     import Test = ocean.core.Test;
 }
@@ -237,7 +237,7 @@ private long parseDateString ( cstring value, bool include_end_date = false )
 }
 
 /// Timestamp to use in unit tests;
-version ( UnitTest )
+version (unittest)
 {
     // 2019-04-01 15:26:32
     static immutable TEST_TIME_NOW = 1554132392;

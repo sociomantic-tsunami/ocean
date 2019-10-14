@@ -15,14 +15,16 @@
 
 module ocean.util.log.layout.LayoutSimple;
 
+import ocean.text.convert.Formatter;
 import ocean.transition;
-import Integer = ocean.text.convert.Integer_tango;
-import ocean.text.Util;
-import ocean.time.Clock;
-import ocean.time.WallClock;
 import ocean.util.log.Appender;
 import ocean.util.log.Event;
 
+version (unittest)
+{
+    import ocean.core.Test;
+    import ocean.util.log.ILogger;
+}
 
 /*******************************************************************************
 
@@ -64,28 +66,26 @@ public class LayoutSimple : Appender.Layout
 
     ***************************************************************************/
 
-    public override void format (LogEvent event, scope void delegate(cstring) dg)
+    public override void format (LogEvent event, scope FormatterSink dg)
     {
-        auto level = event.levelName;
-
-        // format date according to ISO-8601 (lightweight formatter)
-        char[20] tmp = void;
-        char[256] tmp2 = void;
-        dg(layout(tmp2, "%0 [%1] - ",
-                  level,
-                  event.name
-               ));
-        dg(event.toString);
+        sformat(dg, "{} [{}] - {}", event.levelName, event.name, event);
     }
+}
 
-    /**********************************************************************
+unittest
+{
+    mstring result = new mstring(2048);
+    result.length = 0;
+    enableStomping(result);
 
-        Convert an integer to a zero prefixed text representation
+    scope dg = (cstring v) { result ~= v; };
+    scope layout = new LayoutSimple();
+    LogEvent event = {
+        msg_: "Have you met Ted?",
+        name_: "Barney",
+        level_: ILogger.Level.Warn,
+    };
 
-    **********************************************************************/
-
-    private cstring convert (mstring tmp, long i)
-    {
-        return Integer.formatter(tmp, i, 'u', '?', 8);
-    }
+    testNoAlloc(layout.format(event, dg));
+    test!("==")(result, "Warn [Barney] - Have you met Ted?");
 }

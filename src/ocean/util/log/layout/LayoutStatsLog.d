@@ -21,13 +21,17 @@
 module ocean.util.log.layout.LayoutStatsLog;
 
 import ocean.transition;
-import Integer = ocean.text.convert.Integer_tango;
-import ocean.text.Util;
+import ocean.text.convert.Formatter;
 import ocean.time.Clock;
 import ocean.time.WallClock;
 import ocean.util.log.Appender;
 import ocean.util.log.Event;
 
+version (unittest)
+{
+    import ocean.core.Test;
+    import ocean.util.log.ILogger;
+}
 
 /*******************************************************************************
 
@@ -59,34 +63,34 @@ public class LayoutStatsLog : Appender.Layout
 
     public override void format (LogEvent event, scope void delegate(cstring) dg)
     {
-        auto level = event.levelName;
-
         // convert time to field values
-        auto tm = event.time;
-        auto dt = (localTime) ? WallClock.toDate(tm) : Clock.toDate(tm);
+        const tm = event.time;
+        const dt = (localTime) ? WallClock.toDate(tm) : Clock.toDate(tm);
 
         // format date according to ISO-8601 (lightweight formatter)
-        char[20] tmp = void;
-        char[256] tmp2 = void;
-        dg(layout(tmp2, "%0-%1-%2 %3:%4:%5,%6 ",
-                  convert(tmp[0..4],   dt.date.year),
-                  convert(tmp[4..6],   dt.date.month),
-                  convert(tmp[6..8],   dt.date.day),
-                  convert(tmp[8..10],  dt.time.hours),
-                  convert(tmp[10..12], dt.time.minutes),
-                  convert(tmp[12..14], dt.time.seconds),
-                  convert(tmp[14..17], dt.time.millis)));
-        dg(event.toString);
+        sformat(dg, "{u4}-{u2}-{u2} {u2}:{u2}:{u2},{u2} {}",
+            dt.date.year, dt.date.month, dt.date.day,
+            dt.time.hours, dt.time.minutes, dt.time.seconds, dt.time.millis,
+            event);
     }
+}
 
-    /***************************************************************************
+unittest
+{
+    mstring result = new mstring(2048);
+    result.length = 0;
+    enableStomping(result);
 
-        Convert an integer to a zero prefixed text representation
+    scope dg = (cstring v) { result ~= v; };
+    scope layout = new LayoutStatsLog(false);
+    LogEvent event = {
+        msg_: "Baguette: 420, Radler: +Inf",
+        name_: "Irrelevant",
+        time_: Time.fromUnixTime(1525048962) + TimeSpan.fromMillis(420),
+        level_: ILogger.Level.Warn,
+        host_: null,
+    };
 
-    ***************************************************************************/
-
-    private cstring convert (mstring tmp, long i)
-    {
-        return Integer.formatter(tmp, i, 'u', '?', 8);
-    }
+    testNoAlloc(layout.format(event, dg));
+    test!("==")(result, "2018-04-30 00:42:42,420 Baguette: 420, Radler: +Inf");
 }

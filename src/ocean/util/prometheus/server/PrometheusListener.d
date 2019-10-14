@@ -126,7 +126,7 @@ public class PrometheusListener :
     }
 }
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.stdc.posix.sys.socket;
     import ocean.sys.socket.IPSocket;

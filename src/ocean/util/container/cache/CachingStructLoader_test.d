@@ -26,7 +26,7 @@ import ocean.io.select.EpollSelectDispatcher,
 
 import core.sys.posix.time;
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.core.Test;
 }

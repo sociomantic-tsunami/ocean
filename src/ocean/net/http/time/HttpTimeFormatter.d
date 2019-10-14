@@ -26,7 +26,7 @@ import core.stdc.time:       time_t, tm, time;
 import core.sys.posix.time: gmtime_r, localtime_r;
 import core.stdc.stdlib:     lldiv;
 
-version(UnitTest) import ocean.core.Test;
+version (unittest) import ocean.core.Test;
 
 /******************************************************************************/
 
@@ -85,7 +85,7 @@ struct HttpTimeFormatter
 
     public mstring format ( time_t t )
     {
-        return (&this).format((&this).buf, t);
+        return this.format(this.buf, t);
     }
 
     /**************************************************************************
@@ -103,7 +103,7 @@ struct HttpTimeFormatter
 
     public mstring format ( )
     {
-        return (&this).format((&this).buf);
+        return this.format(this.buf);
     }
 
     /**************************************************************************

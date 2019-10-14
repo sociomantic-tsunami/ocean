@@ -21,18 +21,18 @@ import ocean.meta.types.Qualifiers;
 
 /*******************************************************************************
 
-    Replacement for `typedef` which is completely deprecated. It generates
-    usual `typedef` when built with D1 compiler and wrapper struct with
-    `alias this` when built with D2 compiler.
+    Replacement for `typedef` which is completely deprecated.
+
+    It generates a wrapper struct with `alias this`.
 
     Used as mixin(Typedef!(hash_t, "MyHash"))
 
-    D2 version has `IsTypedef` member alias defined so that any struct type
-    can be quickly checked if it originates from typedef via
-    `is(typeof(S.IsTypedef))`. This is a hack reserved for backwards
-    compatibility in libraries and should be never relied upon in user code.
+    `IsTypedef` member alias is defined so that any struct type can be quickly
+    checked if it originates from typedef via `is(typeof(S.IsTypedef))`.
+    This is a hack reserved for backwards compatibility in libraries and should
+    never be relied upon in user code.
 
-    Template Parameters:
+    Parameters:
         T       = type to typedef
         name    = identifier string for new type
         initval = optional default value for that type

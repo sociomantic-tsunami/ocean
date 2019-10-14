@@ -19,19 +19,14 @@
 
 module ocean.math.Range;
 
-
-
-
 import ocean.transition;
 import ocean.core.Verify;
 
-version ( UnitTest )
+version (unittest)
 {
     import ocean.text.convert.Formatter;
     import ocean.core.Test;
 }
-
-
 
 /*******************************************************************************
 
@@ -106,12 +101,12 @@ public struct Range ( T )
 
         ubyte owner_index;
 
-        version ( UnitTest )
+        version (unittest)
         {
             // useful for test!("==")
             public istring toString ()
             {
-                return format("<{}|{}>", (&this).value, cast(char)('A' + (&this).owner_index));
+                return format("<{}|{}>", this.value, cast(char)('A' + this.owner_index));
             }
         }
     }
@@ -213,20 +208,20 @@ public struct Range ( T )
 
     invariant()
     {
-        assert(This.isValid((&this).min_, (&this).max_));
+        assert(This.isValid(this.min_, this.max_));
     }
 
-    version ( UnitTest )
+    version (unittest)
     {
         public istring toString()
         {
-            auto msg = format("{}({}, {}", This.stringof, (&this).min_, (&this).max_);
+            auto msg = format("{}({}, {}", This.stringof, this.min_, this.max_);
 
-            if ((&this).is_empty)
+            if (this.is_empty)
             {
                 msg ~= " empty";
             }
-            else if ((&this).is_full_range)
+            else if (this.is_full_range)
             {
                 msg ~= " full";
             }
@@ -395,7 +390,7 @@ public struct Range ( T )
 
     public T min ( )
     {
-        return (&this).min_;
+        return this.min_;
     }
 
 
@@ -408,7 +403,7 @@ public struct Range ( T )
 
     public T max ( )
     {
-        return (&this).max_;
+        return this.max_;
     }
 
 
@@ -426,7 +421,7 @@ public struct Range ( T )
 
     public T min ( T min )
     {
-        return (&this).min_ = min;
+        return this.min_ = min;
     }
 
 
@@ -444,7 +439,7 @@ public struct Range ( T )
 
     public T max ( T max )
     {
-        return (&this).max_ = max;
+        return this.max_ = max;
     }
 
 
@@ -457,7 +452,7 @@ public struct Range ( T )
 
     public bool is_empty ( )
     {
-        return This.isEmpty((&this).min_, (&this).max_);
+        return This.isEmpty(this.min_, this.max_);
     }
 
 
@@ -470,7 +465,7 @@ public struct Range ( T )
 
     public bool is_full_range ( )
     {
-        return This.isFullRange((&this).min_, (&this).max_);
+        return This.isFullRange(this.min_, this.max_);
     }
 
 
@@ -488,7 +483,7 @@ public struct Range ( T )
 
     public bool is_valid ( )
     {
-        return This.isValid((&this).min_, (&this).max_);
+        return This.isValid(this.min_, this.max_);
     }
 
 
@@ -505,11 +500,11 @@ public struct Range ( T )
 
     public size_t length ( )
     {
-        enforce(!(&this).is_full_range, This.stringof ~ ".length(): full range");
+        enforce(!this.is_full_range, This.stringof ~ ".length(): full range");
 
-        if ( (&this).is_empty ) return 0;
+        if ( this.is_empty ) return 0;
 
-        return ((&this).max_ - (&this).min_) + 1;
+        return (this.max_ - this.min_) + 1;
     }
 
     unittest
@@ -536,10 +531,10 @@ public struct Range ( T )
 
     public bool contains ( T x )
     {
-        if ((&this).is_empty)
+        if (this.is_empty)
             return false;
 
-        return (&this).min_ <= x && x <= (&this).max_;
+        return this.min_ <= x && x <= this.max_;
     }
 
     unittest
@@ -581,7 +576,7 @@ public struct Range ( T )
 
     public equals_t opEquals ( This other )
     {
-        return (&this).min_ == other.min && (&this).max_ == other.max_;
+        return this.min_ == other.min && this.max_ == other.max_;
     }
 
     unittest
@@ -682,10 +677,10 @@ public struct Range ( T )
 
     public bool isSubsetOf ( This other )
     {
-        if ( (&this).is_empty || other.is_empty )
+        if ( this.is_empty || other.is_empty )
             return false;
 
-        return (&this).min_ >= other.min_ && (&this).max_ <= other.max_;
+        return this.min_ >= other.min_ && this.max_ <= other.max_;
     }
 
     unittest
@@ -791,7 +786,7 @@ public struct Range ( T )
 
     public bool isTessellatedBy ( This[] ranges )
     {
-        return (*(&this) == extent(ranges)) && isContiguous(ranges);
+        return (this == extent(ranges)) && isContiguous(ranges);
     }
 
     unittest
@@ -874,7 +869,7 @@ public struct Range ( T )
 
     public bool isCoveredBy ( This[] ranges )
     {
-        return (&this).isSubsetOf(extent(ranges)) && !hasGap(ranges);
+        return this.isSubsetOf(extent(ranges)) && !hasGap(ranges);
     }
 
     unittest
@@ -1039,10 +1034,10 @@ public struct Range ( T )
 
     public size_t overlapAmount ( Range other )
     {
-        enforce(!((&this).is_full_range && other.is_full_range),
+        enforce(!(this.is_full_range && other.is_full_range),
                  This.stringof ~ ".overlapAmount(): both ranges are full");
 
-        if ( (&this).is_empty || other.is_empty ) return 0;
+        if ( this.is_empty || other.is_empty ) return 0;
 
         RangeEndpoint[4] a;
         This.sortEndpoints(this, other, a);
@@ -1115,9 +1110,9 @@ public struct Range ( T )
 
     public bool overlaps ( This other )
     {
-        if ( (&this).is_empty || other.is_empty ) return false;
+        if ( this.is_empty || other.is_empty ) return false;
 
-        return !(other.max_ < (&this).min_ || other.min > (&this).max_);
+        return !(other.max_ < this.min_ || other.min > this.max_);
     }
 
     unittest
@@ -1181,7 +1176,7 @@ public struct Range ( T )
     public void subtract ( This other, out This lower, out This upper )
     {
         // this empty -- empty result
-        if ( (&this).is_empty ) return;
+        if ( this.is_empty ) return;
 
         // other empty -- no change
         if ( other.is_empty )

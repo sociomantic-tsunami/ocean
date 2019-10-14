@@ -15,7 +15,7 @@ module ocean.util.container.more.Stack;
 
 import ocean.core.Enforce;
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.core.Test;
 }
@@ -59,7 +59,7 @@ public struct Stack ( V, int Size = 0 )
     Stack* clear ( )
     {
         depth = 0;
-        return (&this);
+        return &this;
     }
 
     /***************************************************************************
@@ -140,7 +140,7 @@ public struct Stack ( V, int Size = 0 )
             enforce(.e_bounds, depth < stack.length);
             stack[depth++] = value;
         }
-        return (&this);
+        return &this;
     }
 
     /***************************************************************************
@@ -158,7 +158,7 @@ public struct Stack ( V, int Size = 0 )
     {
         foreach (v; value)
             push (v);
-        return (&this);
+        return &this;
     }
 
     /***************************************************************************
@@ -255,7 +255,7 @@ public struct Stack ( V, int Size = 0 )
             p++;
         }
         *p = t;
-        return (&this);
+        return &this;
     }
 
     /***************************************************************************
@@ -282,7 +282,7 @@ public struct Stack ( V, int Size = 0 )
             p--;
         }
         *p = t;
-        return (&this);
+        return &this;
     }
 
     /***************************************************************************
@@ -328,7 +328,7 @@ unittest
     testThrown!(StackBoundsException)(stack.pop());
 }
 
-version(UnitTest)
+version (unittest)
 {
     static void runTests ( T ) ( NamedTest t, T stack )
     {

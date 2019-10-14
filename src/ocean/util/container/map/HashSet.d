@@ -47,7 +47,7 @@ module ocean.util.container.map.HashSet;
 import ocean.util.container.map.Set;
 
 version (UnitTestVerbose) import ocean.io.Stdout;
-version (UnitTest) import ocean.core.Test;
+version (unittest) import ocean.core.Test;
 
 
 

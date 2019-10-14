@@ -27,7 +27,7 @@
 
 module ocean.io.select.selector.EpollFdSanity;
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.core.Test;
 }
@@ -119,7 +119,7 @@ public struct FdObjEpollData
 
     public bool verifyFd (int fd)
     {
-        return (&this).fd == (fd & 0xFF);
+        return this.fd == (fd & 0xFF);
     }
 }
 

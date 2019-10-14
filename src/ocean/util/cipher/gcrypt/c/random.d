@@ -25,8 +25,6 @@ module ocean.util.cipher.gcrypt.c.random;
 
 import ocean.util.cipher.gcrypt.c.general;
 
-import ocean.transition;
-
 extern (C):
 
 /// See original's library documentation for details.
@@ -43,7 +41,7 @@ void gcry_randomize (void* buffer, size_t length,
                      gcry_random_level level);
 
 /// See original's library documentation for details.
-gcry_error_t gcry_random_add_bytes (Const!(void)* buffer, size_t length,
+gcry_error_t gcry_random_add_bytes (const(void)* buffer, size_t length,
                                     int quality = -1);
 
 /// See original's library documentation for details.

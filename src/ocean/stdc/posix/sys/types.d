@@ -11,7 +11,7 @@
 
 *******************************************************************************/
 
-
+deprecated("Import `core.sys.posix.sys.types` instead")
 module ocean.stdc.posix.sys.types;
 
 public import core.sys.posix.sys.types;

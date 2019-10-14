@@ -19,7 +19,7 @@ module ocean.sys.ErrnoException;
 import ocean.transition;
 import core.stdc.errno;
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.core.Test;
 }
@@ -418,10 +418,10 @@ public struct Caller ( T )
 
     public ReturnTypeOf!(T) call ( ParametersOf!(T) args )
     {
-        auto ret = (&this).fn(args);
+        auto ret = this.fn(args);
         if (!verify(ret))
-            throw e.useGlobalErrno(e.func_name, (&this).original_file,
-                (&this).original_line);
+            throw e.useGlobalErrno(e.func_name, this.original_file,
+                this.original_line);
         return ret;
     }
 }

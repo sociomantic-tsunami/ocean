@@ -70,7 +70,7 @@ import ocean.io.Stdout;
 
 import ocean.text.convert.Formatter;
 
-version (UnitTest) import ocean.core.Test;
+version (unittest) import ocean.core.Test;
 
 /*******************************************************************************
 
@@ -294,11 +294,11 @@ struct MinMax ( T, T min, T max, T init = T.init )
     private void check_ ( bool found, cstring group, cstring name )
     {
         enforce!(ConfigException)(
-            Value((&this).value) >= min,
+            Value(this.value) >= min,
             format("Configuration key {}.{} is smaller than allowed minimum of {}",
                    group, name, min));
         enforce!(ConfigException)(
-            Value((&this).value) <= max,
+            Value(this.value) <= max,
             format("Configuration key {}.{} is bigger than allowed maximum of {}",
                    group, name, max));
     }
@@ -342,7 +342,7 @@ struct Min ( T, T min, T init = T.init )
     private void check_ ( bool found, cstring group, cstring name )
     {
         enforce!(ConfigException)(
-            Value((&this).value) >= min,
+            Value(this.value) >= min,
             format("Configuration key {}.{} is smaller than allowed minimum of {}",
                    group, name, min));
     }
@@ -387,7 +387,7 @@ struct Max ( T, T max, T init = T.init )
     private void check_ ( bool found, cstring group, cstring name )
     {
         enforce!(ConfigException)(
-            Value((&this).value) <= max,
+            Value(this.value) <= max,
             format("Configuration key {}.{} is bigger than allowed maximum of {}",
                    group, name, max));
     }
@@ -460,7 +460,7 @@ struct LimitCmp ( T, T init = T.init, alias comp = defComp!(T), Set... )
                     ~ typeof(el).stringof ~ " to " ~ T.stringof ~ " )"
             );
 
-            if ( comp(Value((&this).value), el) )
+            if ( comp(Value(this.value), el) )
                 return;
         }
 
@@ -474,7 +474,7 @@ struct LimitCmp ( T, T init = T.init, alias comp = defComp!(T), Set... )
         throw new ConfigException(
             format("Value '{}' of configuration key {}.{} is not within the "
                    ~ "set of allowed values ({})",
-                   Value((&this).value), group, name, allowed_vals[2 .. $]));
+                   Value(this.value), group, name, allowed_vals[2 .. $]));
     }
 }
 
@@ -553,7 +553,7 @@ struct SetInfo ( T )
     {
         if ( set )
         {
-            return Value((&this).value);
+            return Value(this.value);
         }
 
         return def;
@@ -581,7 +581,7 @@ struct SetInfo ( T )
 
     private void check_ ( bool found, cstring group, cstring name )
     {
-        (&this).set = found;
+        this.set = found;
     }
 }
 
@@ -812,7 +812,7 @@ struct ConfigIterator ( T, Source = ConfigParser )
 
     invariant()
     {
-        assert((&this).config !is null,
+        assert(this.config !is null,
             "ConfigFiller.ConfigIterator: Cannot have null config");
     }
 
@@ -829,7 +829,7 @@ struct ConfigIterator ( T, Source = ConfigParser )
     {
         int result = 0;
 
-        foreach ( key; (&this).config )
+        foreach ( key; this.config )
         {
             static if (is (T == struct))
             {
@@ -840,13 +840,13 @@ struct ConfigIterator ( T, Source = ConfigParser )
                 scope T instance = new T;
             }
 
-            if ( key.length > (&this).root.length
-                 && key[0 .. (&this).root.length] == (&this).root
-                 && key[(&this).root.length] == '.' )
+            if ( key.length > this.root.length
+                 && key[0 .. this.root.length] == this.root
+                 && key[this.root.length] == '.' )
             {
-                .fill(key, instance, (&this).config);
+                .fill(key, instance, this.config);
 
-                auto name = key[(&this).root.length + 1 .. $];
+                auto name = key[this.root.length + 1 .. $];
                 result = dg(name, instance);
 
                 if (result) break;
@@ -872,13 +872,13 @@ struct ConfigIterator ( T, Source = ConfigParser )
     {
         int result = 0;
 
-        foreach ( key; (&this).config )
+        foreach ( key; this.config )
         {
-            if ( key.length > (&this).root.length
-                 && key[0 .. (&this).root.length] == (&this).root
-                 && key[(&this).root.length] == '.' )
+            if ( key.length > this.root.length
+                 && key[0 .. this.root.length] == this.root
+                 && key[this.root.length] == '.' )
             {
-                auto name = key[(&this).root.length + 1 .. $];
+                auto name = key[this.root.length + 1 .. $];
                 result = dg(name);
 
                 if (result) break;
@@ -903,9 +903,9 @@ struct ConfigIterator ( T, Source = ConfigParser )
 
     public void fill ( cstring name, ref T instance )
     {
-        auto key = (&this).root ~ "." ~ name;
+        auto key = this.root ~ "." ~ name;
 
-        .fill(key, instance, (&this).config);
+        .fill(key, instance, this.config);
     }
 }
 
@@ -967,13 +967,11 @@ private void readFieldsImpl ( T, Source )
         {
             static if (is(Type U : U[]) && !isUTF8StringType!(Type))
             {
-                reference.tupleof[si] =
-                    config.getListStrict!(SliceIfD1StaticArray!(U))(group, key);
+                reference.tupleof[si] = config.getListStrict!(U)(group, key);
             }
             else
             {
-                reference.tupleof[si] =
-                    config.getStrict!(SliceIfD1StaticArray!(Type))(group, key);
+                reference.tupleof[si] = config.getStrict!(Type)(group, key);
             }
 
             debug (Config) Stdout.formatln("Config Debug: {}.{} = {}", group,
@@ -1050,7 +1048,7 @@ package void readFields ( T, Source )
     readFieldsImpl(group, reference, config);
 }
 
-version ( UnitTest )
+version (unittest)
 {
     class SolarSystemEntity
     {
@@ -1287,7 +1285,7 @@ float_arr = 10.2
     test!("==")(array_struct.float_arr, float_array);
 }
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.io.Stdout;
     import ConfigFiller = ocean.util.config.ConfigFiller;

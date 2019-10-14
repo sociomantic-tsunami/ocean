@@ -33,7 +33,7 @@ import ocean.meta.traits.Basic;
 import ocean.meta.codegen.Identifier;
 import ocean.text.util.StringC;
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.core.Test;
 }
@@ -321,7 +321,7 @@ public struct ProcUptime
         {
             Time res_time;
 
-            auto t = ((&this).seconds * 100 + (&this).cents) -
+            auto t = (this.seconds * 100 + this.cents) -
                 (rhs.seconds * 100 + rhs.cents);
 
             res_time.seconds = t / 100;
@@ -675,7 +675,7 @@ private ProcMemInfo parseProcMemInfoData (scope cstring delegate() read_next_lin
     return meminfo;
 }
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.io.Stdout;
 }

@@ -21,8 +21,6 @@
 
 module ocean.util.cipher.gcrypt.core.KeyDerivationCore;
 
-
-import ocean.transition;
 import ocean.util.cipher.gcrypt.c.kdf;
 import ocean.util.cipher.gcrypt.c.md;
 
@@ -62,7 +60,7 @@ public class KeyDerivationCore ( KDF algorithm, Hasher hasher )
 
     ***************************************************************************/
 
-    private Const!(ubyte)[] passphrase;
+    private const(ubyte)[] passphrase;
 
     /***************************************************************************
 
@@ -70,7 +68,7 @@ public class KeyDerivationCore ( KDF algorithm, Hasher hasher )
 
     ***************************************************************************/
 
-    private Const!(ubyte)[] salt;
+    private const(ubyte)[] salt;
 
     /***************************************************************************
 

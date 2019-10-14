@@ -71,7 +71,7 @@ struct SmartUnion ( U )
 
      **************************************************************************/
 
-    Active active ( ) { return (&this)._.active; }
+    Active active ( ) { return this._.active; }
 
     /***************************************************************************
 
@@ -83,7 +83,7 @@ struct SmartUnion ( U )
 
     public istring active_name ( )
     {
-        return (&this)._.active_names[(&this)._.active];
+        return this._.active_names[this._.active];
     }
 
     /**************************************************************************
@@ -186,7 +186,7 @@ unittest
 
 }
 
-version (UnitTest)
+version (unittest)
 {
     class C1
     {
@@ -261,11 +261,6 @@ public void callWithActive ( alias Callable, SU ) ( SU smart_union )
 ///
 unittest
 {
-    // This example is D2 only because it requires a function template,
-    // `print`, and D1 doesn't allow defining a function template at the scope
-    // of a function, including a `unittest`. In D1 this example works if
-    // `print`, is defined outside of function scope.
-
     union TestUnion
     {
         int a;
@@ -289,7 +284,7 @@ unittest
     }
 }
 
-version ( UnitTest )
+version (unittest)
 {
     import ocean.io.Stdout;
 }

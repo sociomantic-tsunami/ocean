@@ -61,11 +61,9 @@
 
         foreach ( busy_item; pool.new BusyItemsIterator )
 
-    This is because the iterators are declared as scope classes, meaning that
-    the compiler should enforce that they can *only* be newed as scope (i.e. on
-    the stack). Unfortunately the compiler doesn't always enforce this
-    requirement, and will allow a scope class to be allocated on the heap in
-    certain situations, one of these being the foreach situation shown above.
+    This is because the iterators are designed as scope classes, meaning that
+    `new`ing them won't GC allocate (and thus can't trigger a collection).
+    In case like the above, the absence of `scope` means a GC allocation.
 
     Note about ref iteration over pools:
 
@@ -669,7 +667,7 @@ public abstract class IAggregatePool ( T ) : IPool, IFreeList!(ItemType_!(T))
 
     ***************************************************************************/
 
-    protected abstract scope class IItemsIterator
+    protected abstract class IItemsIterator
     {
         protected Item[] iteration_items;
 
@@ -764,7 +762,7 @@ public abstract class IAggregatePool ( T ) : IPool, IFreeList!(ItemType_!(T))
 
     ***************************************************************************/
 
-    protected abstract scope class SafeItemsIterator : IItemsIterator
+    protected abstract class SafeItemsIterator : IItemsIterator
     {
         /***********************************************************************
 
@@ -813,7 +811,7 @@ public abstract class IAggregatePool ( T ) : IPool, IFreeList!(ItemType_!(T))
 
     ***************************************************************************/
 
-    protected abstract scope class UnsafeItemsIterator : IItemsIterator
+    protected abstract class UnsafeItemsIterator : IItemsIterator
     {
         /***********************************************************************
 
@@ -862,7 +860,7 @@ public abstract class IAggregatePool ( T ) : IPool, IFreeList!(ItemType_!(T))
 
     ***************************************************************************/
 
-    public scope class AllItemsIterator : SafeItemsIterator
+    public class AllItemsIterator : SafeItemsIterator
     {
         this ( )
         {
@@ -876,7 +874,7 @@ public abstract class IAggregatePool ( T ) : IPool, IFreeList!(ItemType_!(T))
 
     ***************************************************************************/
 
-    public scope class ReadOnlyAllItemsIterator : UnsafeItemsIterator
+    public class ReadOnlyAllItemsIterator : UnsafeItemsIterator
     {
         this ( )
         {
@@ -890,7 +888,7 @@ public abstract class IAggregatePool ( T ) : IPool, IFreeList!(ItemType_!(T))
 
     ***************************************************************************/
 
-    public scope class BusyItemsIterator : SafeItemsIterator
+    public class BusyItemsIterator : SafeItemsIterator
     {
         this ( )
         {
@@ -904,7 +902,7 @@ public abstract class IAggregatePool ( T ) : IPool, IFreeList!(ItemType_!(T))
 
     ***************************************************************************/
 
-    public scope class ReadOnlyBusyItemsIterator : UnsafeItemsIterator
+    public class ReadOnlyBusyItemsIterator : UnsafeItemsIterator
     {
         this ( )
         {
@@ -918,7 +916,7 @@ public abstract class IAggregatePool ( T ) : IPool, IFreeList!(ItemType_!(T))
 
     ***************************************************************************/
 
-    public scope class IdleItemsIterator : SafeItemsIterator
+    public class IdleItemsIterator : SafeItemsIterator
     {
         this ( )
         {
@@ -932,7 +930,7 @@ public abstract class IAggregatePool ( T ) : IPool, IFreeList!(ItemType_!(T))
 
     ***************************************************************************/
 
-    public scope class ReadOnlyIdleItemsIterator : UnsafeItemsIterator
+    public class ReadOnlyIdleItemsIterator : UnsafeItemsIterator
     {
         this ( )
         {
@@ -943,7 +941,7 @@ public abstract class IAggregatePool ( T ) : IPool, IFreeList!(ItemType_!(T))
 
 
 
-version ( UnitTest )
+version (unittest)
 {
     import ocean.core.Test;
 
@@ -1271,4 +1269,3 @@ version ( UnitTest )
         }
     }
 }
-

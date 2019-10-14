@@ -25,7 +25,7 @@ module ocean.util.log.Hierarchy;
 
 import ocean.transition;
 import ocean.core.ExceptionDefinitions;
-import ocean.util.log.model.ILogger;
+import ocean.util.log.ILogger;
 
 
 /// Ditto

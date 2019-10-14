@@ -109,7 +109,7 @@ public istring getBuildInfoString ( istring app_name, VersionInfo ver,
     return s;
 }
 
-version ( UnitTest )
+version (unittest)
 {
     import ocean.core.Test;
 }

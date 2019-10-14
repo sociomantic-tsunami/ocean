@@ -16,18 +16,14 @@
 
 module ocean.sys.Inotify;
 
-import ocean.text.util.StringC;
-import ocean.sys.ErrnoException;
-
-import core.sys.linux.sys.inotify;
-
 import ocean.io.model.IConduit: ISelectable;
+import ocean.sys.ErrnoException;
+import ocean.text.util.StringC;
 
-import ocean.stdc.posix.sys.types: ssize_t;
-import core.sys.posix.unistd: read, close;
 import core.stdc.errno: EAGAIN, EWOULDBLOCK, errno;
-
-
+import core.sys.linux.sys.inotify;
+import core.sys.posix.sys.types: ssize_t;
+import core.sys.posix.unistd: read, close;
 
 /*******************************************************************************
 
@@ -106,7 +102,7 @@ public class Inotify : ISelectable
             int result = 0;
 
             ssize_t read_bytes;
-            read_loop: while ( (read_bytes = read((&this).outer.fd, buffer.ptr, buffer.length)) > 0 )
+            read_loop: while ( (read_bytes = read(this.outer.fd, buffer.ptr, buffer.length)) > 0 )
             {
                 inotify_event *i_event;
 

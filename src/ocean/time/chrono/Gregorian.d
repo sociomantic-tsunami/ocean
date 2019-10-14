@@ -25,7 +25,7 @@ import ocean.time.chrono.Calendar;
 
 import ocean.core.ExceptionDefinitions;
 
-version(UnitTest) import ocean.core.Test;
+version (unittest) import ocean.core.Test;
 
 /**
  * $(ANCHOR _Gregorian)

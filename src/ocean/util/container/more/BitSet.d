@@ -128,7 +128,7 @@ struct BitSet (int Count=0)
         BitSet* clr ()
         {
                 bits[] = 0;
-                return (&this);
+                return &this;
         }
 
         /**********************************************************************
@@ -141,7 +141,7 @@ struct BitSet (int Count=0)
         {
                 BitSet x;
                 static if (Count == 0)
-                           x.bits.length = (&this).bits.length;
+                           x.bits.length = this.bits.length;
                 x.bits[] = bits[];
                 return x;
         }
@@ -168,6 +168,6 @@ struct BitSet (int Count=0)
                 i = i / width;
                 if (i >= bits.length)
                     bits.length = i + 1;
-                return (&this);
+                return &this;
         }
 }

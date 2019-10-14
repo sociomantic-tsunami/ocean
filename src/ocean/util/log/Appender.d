@@ -24,8 +24,19 @@ import ocean.transition;
 import ocean.core.Verify;
 import ocean.core.ExceptionDefinitions;
 import ocean.io.model.IConduit;
+import ocean.text.convert.Formatter;
 import ocean.util.log.Event;
-import ocean.util.log.model.ILogger;
+import ocean.util.log.ILogger;
+
+version (unittest)
+{
+    import ocean.core.Test;
+    import ocean.time.Clock;
+    import ocean.time.Time;
+    import ocean.transition : enableStomping;
+    import ocean.util.log.Hierarchy;
+    import ocean.util.log.Logger;
+}
 
 
 /// Base class for all Appenders
@@ -270,18 +281,29 @@ public class LayoutTimer : Appender.Layout
 
     ***************************************************************************/
 
-    public override void format (LogEvent event, scope void delegate(cstring) dg)
+    public override void format (LogEvent event, scope FormatterSink dg)
     {
-        char[20] tmp = void;
-
-        dg(event.toMilli (tmp, event.span));
-        dg(" ");
-        dg(event.levelName);
-        dg(" [");
-        dg(event.name);
-        dg("] ");
-        dg(event.host.label);
-        dg("- ");
-        dg(event.toString);
+        sformat(dg, "{} {} [{}] {}- {}", event.span.millis(), event.levelName,
+            event.name, event.host.label, event);
     }
+}
+
+unittest
+{
+       mstring result = new mstring(2048);
+       result.length = 0;
+       enableStomping(result);
+
+       scope dg = (cstring v) { result ~= v; };
+       scope layout = new LayoutTimer();
+       LogEvent event = {
+           msg_: "Have you met Ted?",
+           name_: "Barney",
+           time_: Clock.startTime() + TimeSpan.fromMillis(420),
+           level_: ILogger.Level.Warn,
+           host_: new HierarchyT!(Logger)("test"),
+       };
+
+       testNoAlloc(layout.format(event, dg));
+       test!("==")(result, "420 Warn [Barney] test- Have you met Ted?");
 }

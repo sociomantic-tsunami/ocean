@@ -31,9 +31,8 @@ import ocean.util.cipher.gcrypt.core.KeyDerivationCore;
 
 public alias KeyDerivationCore!(KDF.GCRY_KDF_PBKDF2, Hasher.GCRY_MD_SHA256) PBKDF2;
 
-version ( UnitTest )
+version (unittest)
 {
-    import ocean.transition;
     import ocean.core.Test;
     import ocean.text.convert.Hex;
 }
@@ -42,8 +41,8 @@ version ( UnitTest )
 unittest
 {
     // Set up the passphrase and salt
-    auto passphrase = cast(Immut!(ubyte)[])"passphrase";
-    auto salt = cast(Immut!(ubyte)[])"salt";
+    auto passphrase = cast(immutable(ubyte)[])"passphrase";
+    auto salt = cast(immutable(ubyte)[])"salt";
 
     // Create the key derivation instance
     auto pbkdf2 = new PBKDF2(passphrase, salt);

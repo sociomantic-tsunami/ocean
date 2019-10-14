@@ -23,10 +23,8 @@
 
 module ocean.util.cipher.gcrypt.c.libversion;
 
-import ocean.transition;
-
 // The minimum version supported by the bindings
-public istring gcrypt_version = "1.5.0";
+public string gcrypt_version = "1.5.0";
 
 /*******************************************************************************
 
@@ -44,4 +42,4 @@ shared static this ( )
 }
 
 /// See original's library documentation for details.
-extern (C) Const!(char)* gcry_check_version ( Const!(char)* req_version);
+extern (C) const(char)* gcry_check_version (const(char)* req_version);

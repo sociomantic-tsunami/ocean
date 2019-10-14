@@ -19,7 +19,7 @@ module ocean.task.internal.TaskExtensionMixins;
 
 import ocean.transition;
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.core.Test;
     import ocean.core.Tuple;

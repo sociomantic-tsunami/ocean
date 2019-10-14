@@ -660,3 +660,63 @@ unittest
 
     static assert(isTypedef!(RealNum) == TypedefKind.Struct);
 }
+
+/******************************************************************************
+
+    Check if the type of a member inside a struct or class is a D manifest
+    constant
+
+    Params:
+        T = The struct that will be checked
+        name = The struct member that will be checked
+
+******************************************************************************/
+
+bool isManifestConstant ( T, string name ) ( )
+{
+    mixin(`return is(typeof(T.init.`~name~`)) && !is(typeof(&T.init.`~name~`));`);
+}
+
+unittest
+{
+    struct Test
+    {
+        enum manifest = 2;
+        int notManifest1;
+        enum CustomType : int {
+            a = 1, b = 2
+        }
+
+        CustomType notManifest2;
+    }
+
+    static assert(isManifestConstant!(Test, "manifest"));
+    static assert(!isManifestConstant!(Test, "CustomType"));
+    static assert(!isManifestConstant!(Test, "notManifest1"));
+    static assert(!isManifestConstant!(Test, "notManifest2"));
+}
+
+
+
+/******************************************************************************
+
+    Check if a constant is manifest constant
+
+    Params:
+        T = The constant
+
+******************************************************************************/
+
+bool isManifestConstant ( alias T ) ( )
+{
+    return is(typeof(T)) && !is(typeof(&T));
+}
+
+unittest
+{
+    enum manifest = 3;
+    int notManifest;
+
+    static assert(isManifestConstant!(manifest));
+    static assert(!isManifestConstant!(notManifest));
+}

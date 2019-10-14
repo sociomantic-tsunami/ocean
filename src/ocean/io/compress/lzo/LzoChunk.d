@@ -57,7 +57,7 @@ import      ocean.io.compress.CompressException;
 
 import      ocean.core.Enforce;
 
-version(UnitTest) import ocean.core.Test;
+version (unittest) import ocean.core.Test;
 
 /*******************************************************************************
 
@@ -247,7 +247,7 @@ class LzoChunk ( bool LengthInline = true )
     }
 }
 
-version (UnitTest):
+version (unittest):
 
 /*******************************************************************************
 

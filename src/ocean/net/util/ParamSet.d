@@ -43,7 +43,7 @@ import ocean.text.convert.Formatter;
 
 import core.stdc.ctype:  tolower;
 
-version(UnitTest) import ocean.core.Test;
+version (unittest) import ocean.core.Test;
 
 /******************************************************************************
 

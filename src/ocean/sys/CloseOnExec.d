@@ -95,7 +95,7 @@ import ocean.transition;
 
 *******************************************************************************/
 
-mixin(global("bool open_with_close_on_exec = true"));
+__gshared bool open_with_close_on_exec = true;
 
 /*******************************************************************************
 

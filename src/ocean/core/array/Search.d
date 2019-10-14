@@ -22,17 +22,15 @@
 
 module ocean.core.array.Search;
 
-
 import ocean.transition;
-
-import ocean.stdc.posix.sys.types; // ssize_t;
-
-import ocean.meta.traits.Basic;
 import ocean.core.Buffer;
 import ocean.core.array.DefaultPredicates;
 import ocean.core.Verify;
+import ocean.meta.traits.Basic;
 
-version (UnitTest)
+import core.sys.posix.sys.types; // ssize_t;
+
+version (unittest)
 {
     import ocean.core.Test;
 }
@@ -1525,4 +1523,3 @@ unittest
     test(removeSuffix([1,2], (int[]).init) == [ 1, 2 ]);
     test(removeSuffix((int[]).init, [1,2]) == cast(int[]) null);
 }
-

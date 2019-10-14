@@ -15,28 +15,18 @@
 
 module ocean.sys.socket.IPSocket;
 
-
+import ocean.core.TypeConvert;
+import ocean.io.device.Conduit: ISelectable;
+import ocean.io.device.IODevice: InputDevice, IOutputDevice;
+import ocean.stdc.posix.sys.socket;
+import ocean.sys.socket.InetAddress;
+import ocean.sys.socket.model.ISocket;
+import ocean.text.convert.Formatter;
 import ocean.transition;
 
-import ocean.stdc.posix.sys.socket;
-
-import ocean.stdc.posix.netinet.in_: AF_INET, AF_INET6;
-
+import core.sys.posix.netinet.in_: AF_INET, AF_INET6;
+import core.sys.posix.sys.types: ssize_t;
 import core.sys.posix.unistd: close;
-
-import ocean.stdc.posix.sys.types: ssize_t;
-
-import ocean.io.device.Conduit: ISelectable;
-
-import ocean.io.device.IODevice: InputDevice, IOutputDevice;
-
-import ocean.sys.socket.InetAddress;
-
-import ocean.core.TypeConvert;
-
-import ocean.sys.socket.model.ISocket;
-
-import ocean.text.convert.Formatter;
 
 /******************************************************************************
 
@@ -772,7 +762,7 @@ class IPSocket ( bool IPv6 = false ) : IIPSocket
 
 /******************************************************************************/
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.core.Test;
 }

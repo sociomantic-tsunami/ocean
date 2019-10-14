@@ -73,7 +73,6 @@
         matching (s1*, s2*, length)                 // low-level compare
         isSpace (match)                             // is whitespace?
         unescape(source, output)                    // convert '\' prefixes
-        layout (destination, format ...)            // featherweight printf
         lines (str)                                 // foreach lines
         quotes (str, set)                           // foreach quotes
         delimiters (str, set)                       // foreach delimiters
@@ -107,7 +106,7 @@ module ocean.text.Util;
 import ocean.transition;
 import ocean.core.Verify;
 
-version (UnitTest) import ocean.core.Test;
+version (unittest) import ocean.core.Test;
 
 
 /******************************************************************************
@@ -999,6 +998,7 @@ QuoteFruct!T quotes(T) (T[] src, cstring set)
 
 *******************************************************************************/
 
+deprecated("Use `ocean.text.convert.Formatter : snformat` instead")
 cstring layout(mstring output, cstring format, const(char[])[] arguments ...)
 {
     return layout_(output, format, arguments);
@@ -1522,8 +1522,6 @@ unittest
     foreach (element; quotes ("1 'avcc   cc ' 3", " "))
         q ~= element;
     test (q.length is 3 && q[0] == "1" && q[1] == "'avcc   cc '" && q[2] == "3");
-
-    test (layout (tmp, "%1,%%%c %0", "abc", "efg") == "efg,%c abc");
 
     x = split ("one, two, three", ",");
     test (x.length is 3 && x[0] == "one" && x[1] == " two" && x[2] == " three");

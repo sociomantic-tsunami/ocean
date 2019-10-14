@@ -24,7 +24,7 @@ import ocean.transition;
 
 import core.stdc.time: time_t;
 
-version (UnitTest)
+version (unittest)
 {
     import core.stdc.time;
     import ocean.core.Test;
@@ -653,7 +653,7 @@ struct Time
 
         Time date ()
         {
-                return *(&this) - TimeOfDay.modulo24(ticks_);
+                return this - TimeOfDay.modulo24(ticks_);
         }
 
         /**********************************************************************

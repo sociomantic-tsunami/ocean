@@ -60,7 +60,7 @@ public struct SignalSet
 
     public void clear ( )
     {
-        sigemptyset(&(&this).sigset);
+        sigemptyset(&this.sigset);
     }
 
 
@@ -72,7 +72,7 @@ public struct SignalSet
 
     public void setAll ( )
     {
-        sigfillset(&(&this).sigset);
+        sigfillset(&this.sigset);
     }
 
 
@@ -89,9 +89,13 @@ public struct SignalSet
 
     public void remove ( int signal )
     {
-        sigdelset(&(&this).sigset, signal);
+        sigdelset(&this.sigset, signal);
     }
 
+    // deprecated not only because D1 binary operators are being deprecated
+    // in more recent D2 versions, but because this is an inappropriate way
+    // to represent removing signals from the mask
+    deprecated("Use `remove` method instead of subtraction operator!")
     public alias remove opSub;
 
 
@@ -108,9 +112,13 @@ public struct SignalSet
 
     public void add ( int signal )
     {
-        sigaddset(&(&this).sigset, signal);
+        sigaddset(&this.sigset, signal);
     }
 
+    // deprecated not only because D1 binary operators are being deprecated
+    // in more recent D2 versions, but because this is an inappropriate way
+    // to represent adding signals to the mask
+    deprecated("Use `add` method instead of addition operator!")
     public alias add opAdd;
 
 
@@ -129,10 +137,14 @@ public struct SignalSet
     {
         foreach ( signal; signals )
         {
-            (&this).remove(signal);
+            this.remove(signal);
         }
     }
 
+    // deprecated not only because D1 binary operators are being deprecated
+    // in more recent D2 versions, but because this is an inappropriate way
+    // to represent removing signals from the mask
+    deprecated("Use `remove` method instead of subtraction operator!")
     public alias remove opSub;
 
 
@@ -151,10 +163,14 @@ public struct SignalSet
     {
         foreach ( signal; signals )
         {
-            (&this).add(signal);
+            this.add(signal);
         }
     }
 
+    // deprecated not only because D1 binary operators are being deprecated
+    // in more recent D2 versions, but because this is an inappropriate way
+    // to represent adding signals to the mask
+    deprecated("Use `add` method instead of addition operator!")
     public alias add opAdd;
 
 
@@ -172,7 +188,7 @@ public struct SignalSet
 
     public bool isSet ( int signal )
     {
-        return !!sigismember(&(&this).sigset, signal);
+        return !!sigismember(&this.sigset, signal);
     }
 
     /***************************************************************************
@@ -217,7 +233,7 @@ public struct SignalSet
     {
         typeof(this) old_set;
 
-        pthread_sigmask(how, &(&this).sigset, &old_set.sigset);
+        pthread_sigmask(how, &this.sigset, &old_set.sigset);
 
         return old_set;
     }
@@ -236,7 +252,7 @@ public struct SignalSet
 
     public typeof(this) block ( )
     {
-        return (&this).mask(SIG_BLOCK);
+        return this.mask(SIG_BLOCK);
     }
 
     /***************************************************************************
@@ -253,7 +269,7 @@ public struct SignalSet
 
     public typeof(this) unblock ( )
     {
-        return (&this).mask(SIG_UNBLOCK);
+        return this.mask(SIG_UNBLOCK);
     }
 
     /***************************************************************************
@@ -268,7 +284,7 @@ public struct SignalSet
 
     public void callBlocked ( lazy void op )
     {
-        auto old_sigset = (&this).block();
+        auto old_sigset = this.block();
 
         scope ( exit )
         {
@@ -277,7 +293,7 @@ public struct SignalSet
                 sigset_t pending;
                 sigpending(&pending);
 
-                foreach ( signal; (&this).signals )
+                foreach ( signal; this.signals )
                 {
                     if ( sigismember(&pending, signal) )
                     {
@@ -319,6 +335,6 @@ public struct SignalSet
 
     public sigset_t opCast ( )
     {
-        return (&this).sigset;
+        return this.sigset;
     }
 }

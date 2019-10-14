@@ -817,7 +817,7 @@ struct StructSerializer ( bool AllowUnions = false )
 
 *******************************************************************************/
 
-version ( UnitTest )
+version (unittest)
 {
     import ocean.core.Test;
 
@@ -915,7 +915,7 @@ unittest
 
 *******************************************************************************/
 
-version (UnitTest)
+version (unittest)
 {
 
 
@@ -970,29 +970,29 @@ version (UnitTest)
 
         void push (T element)
         {
-            if ((&this).elements.length == (&this).write)
+            if (this.elements.length == this.write)
             {
-                if ((&this).elements.length < (&this).maxLength)
+                if (this.elements.length < this.maxLength)
                 {
-                    (&this).elements.length = (&this).elements.length + 1;
+                    this.elements.length = this.elements.length + 1;
                 }
                 else
                 {
-                    (&this).write = 0;
+                    this.write = 0;
                 }
             }
 
             static if (isArrayType!(T))
             {
-                (&this).elements[(&this).write].length = element.length;
-                (&this).elements[(&this).write][] = element[];
+                this.elements[this.write].length = element.length;
+                this.elements[this.write][] = element[];
             }
             else
             {
-                (&this).elements[(&this).write] = element;
+                this.elements[this.write] = element;
             }
 
-            ++(&this).write;
+            ++this.write;
         }
 
         /***********************************************************************
@@ -1008,14 +1008,14 @@ version (UnitTest)
 
         T* get (size_t offset=0)
         {
-            if (offset < (&this).elements.length)
+            if (offset < this.elements.length)
             {
-                if (cast(int)((&this).write - 1 - offset) < 0)
+                if (cast(int)(this.write - 1 - offset) < 0)
                 {
-                    return &elements[$ - offset + (&this).write - 1];
+                    return &elements[$ - offset + this.write - 1];
                 }
 
-                return &elements[(&this).write - 1 - offset];
+                return &elements[this.write - 1 - offset];
             }
 
             throw new Exception("Element does not exist");

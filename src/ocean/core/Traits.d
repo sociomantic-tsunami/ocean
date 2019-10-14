@@ -305,7 +305,7 @@ public M* GetField ( size_t i, M, T ) ( T* t )
 
 *******************************************************************************/
 
-deprecated("Use ocean.meta.codegen.Identifier.identifier!(T.tupleof[i])")
+deprecated("Use ocean.meta.codegen.Identifier.fieldIdentifier!(T, i)")
 public template FieldName ( size_t i, T )
 {
     static if ( !isCompoundType!(T) )
@@ -535,7 +535,7 @@ public template TemplateInstanceArgs (alias Template, Type : Template!(TA), TA..
     public alias TA TemplateInstanceArgs;
 }
 
-deprecated("Use ocean.meta.traits.Basic.isStringType")
+deprecated("Use ocean.meta.traits.Arrays.isUTF8StringType")
 template isStringType( T )
 {
     static immutable bool isStringType = is( T : char[] )  ||

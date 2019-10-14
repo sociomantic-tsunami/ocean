@@ -35,21 +35,14 @@
 
 module ocean.text.convert.TimeStamp;
 
-import ocean.transition;
-
-import ocean.time.Time;
-
 import ocean.core.ExceptionDefinitions;
-
-import Util = ocean.text.Util;
-
+import ocean.core.Verify;
+import ocean.transition;
+import ocean.time.Time;
+import ocean.text.convert.Formatter;
 import ocean.time.chrono.Gregorian;
 
-import Integer = ocean.text.convert.Integer_tango;
-
-import ocean.core.Verify;
-
-version(UnitTest) import ocean.core.Test;
+version (unittest) import ocean.core.Test;
 
 /******************************************************************************
 
@@ -102,34 +95,21 @@ Const!(T)[] format(T, U=Time) (T[] output, U t)
 
 Const!(T)[] format(T) (T[] output, Time t)
 {
-    static Const!(T)[][] Months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+    static immutable T[][] Months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
         "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-    static Const!(T)[][] Days   = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    static immutable T[][] Days   = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-    Const!(T)[] convert (T[] tmp, long i)
-    {
-        return Integer.formatter!(T) (tmp, i, 'u', 0, 8);
-    }
-
-    verify (output.length >= 29);
+    verify(output.length >= 29);
     if (t is t.max)
-        throw new IllegalArgumentException ("TimeStamp.format :: invalid Time argument");
+        throw new IllegalArgumentException("TimeStamp.format :: invalid Time argument");
 
     // convert time to field values
-    auto time = t.time;
-    auto date = Gregorian.generic.toDate (t);
+    const time = t.time;
+    const date = Gregorian.generic.toDate(t);
 
-    // use the featherweight formatter ...
-    T[14] tmp = void;
-    return Util.layout (output, cast(Const!(T)[])"%0, %1 %2 %3 %4:%5:%6 GMT",
-            Days[date.dow],
-            convert (tmp[0..2], date.day),
-            Months[date.month-1],
-            convert (tmp[2..6], date.year),
-            convert (tmp[6..8], time.hours),
-            convert (tmp[8..10], time.minutes),
-            convert (tmp[10..12], time.seconds)
-            );
+    return snformat(output, "{}, {u2} {} {u4} {u2}:{u2}:{u2} GMT",
+                    Days[date.dow], date.day, Months[date.month-1], date.year,
+                    time.hours, time.minutes, time.seconds);
 }
 
 unittest
@@ -155,30 +135,17 @@ Const!(T)[] format8601(T, U=Time) (T[] output, U t)
 
 Const!(T)[] format8601(T) (T[] output, Time t)
 {
-    Const!(T)[] convert (T[] tmp, long i)
-    {
-        return Integer.formatter!(T) (tmp, i, 'u', 0, 8);
-    }
-
-
-    verify (output.length >= 29);
+    verify(output.length >= 29);
     if (t is t.max)
-        throw new IllegalArgumentException ("TimeStamp.format :: invalid Time argument");
+        throw new IllegalArgumentException("TimeStamp.format :: invalid Time argument");
 
     // convert time to field values
-    auto time = t.time;
-    auto date = Gregorian.generic.toDate (t);
+    const time = t.time;
+    const date = Gregorian.generic.toDate(t);
 
-    // use the featherweight formatter ...
-    T[20] tmp = void;
-    return Util.layout (output, cast(T[]) "%0-%1-%2T%3%:%4:%5Z",
-            convert (tmp[0..4], date.year),
-            convert (tmp[4..6], date.month),
-            convert (tmp[6..8], date.day),
-            convert (tmp[8..10], time.hours),
-            convert (tmp[10..12], time.minutes),
-            convert (tmp[12..14], time.seconds)
-            );
+    return snformat(output, "{u4}-{u2}-{u2}T{u2}:{u2}:{u2}Z",
+                    date.year, date.month, date.day,
+                    time.hours, time.minutes, time.seconds);
 }
 
 unittest

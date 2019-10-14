@@ -66,7 +66,7 @@ import ocean.core.Array : contains, find;
 
 import ocean.io.model.IConduit;
 
-version(UnitTest) import ocean.core.Test;
+version (unittest) import ocean.core.Test;
 
 /*******************************************************************************
 
@@ -286,7 +286,7 @@ public class HeadingsCSV
 
 *******************************************************************************/
 
-version ( UnitTest )
+version (unittest)
 {
     import ocean.io.device.Array;
 }

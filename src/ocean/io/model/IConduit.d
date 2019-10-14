@@ -329,5 +329,3 @@ interface OutputBuffer : OutputStream
 
         size_t writer (scope size_t delegate(void[]) producer);
 }
-
-

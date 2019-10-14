@@ -25,7 +25,7 @@ import ocean.text.xml.Document;
 
 import ocean.core.ExceptionDefinitions : XmlException;
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.text.xml.Document;
     import ocean.core.Test;

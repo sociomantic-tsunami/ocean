@@ -25,7 +25,7 @@ import Integer = ocean.text.convert.Integer_tango;
 
 import Utf = ocean.text.convert.Utf : toString;
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.core.Test;
 }
@@ -679,10 +679,10 @@ package struct XmlText(Ch)
 
     final void reset(Ch[] newText)
     {
-        (&this).text = newText;
-        (&this).len = newText.length;
-        (&this).point = text.ptr;
-        (&this).end = point + len;
+        this.text = newText;
+        this.len = newText.length;
+        this.point = text.ptr;
+        this.end = point + len;
     }
 
     static Const!(ubyte[64]) name =
@@ -708,7 +708,7 @@ package struct XmlText(Ch)
 
  *******************************************************************************/
 
-version (UnitTest)
+version (unittest)
 {
     /***********************************************************************
 

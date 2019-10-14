@@ -21,7 +21,7 @@ import ocean.transition;
 import ocean.core.Exception;
 import ocean.util.container.more.Stack;
 
-version(UnitTest) import ocean.core.Test;
+version (unittest) import ocean.core.Test;
 
 /*******************************************************************************
 
@@ -64,9 +64,9 @@ class JsonParser(T, bool AllowNaN = false)
 
         void reset (Const!(T)[] text)
         {
-            (&this).text = text;
-            (&this).ptr = text.ptr;
-            (&this).end = (&this).ptr + text.length;
+            this.text = text;
+            this.ptr = text.ptr;
+            this.end = this.ptr + text.length;
         }
     }
 

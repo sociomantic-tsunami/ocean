@@ -342,7 +342,7 @@ class MemoryDevice : IConduit
     }
 }
 
-version ( UnitTest )
+version (unittest)
 {
     import ocean.core.Test;
 }

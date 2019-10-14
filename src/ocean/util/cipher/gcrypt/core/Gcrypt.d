@@ -25,13 +25,11 @@
 
 module ocean.util.cipher.gcrypt.core.Gcrypt;
 
-
-
-import ocean.util.cipher.gcrypt.c.gcrypt;
-import ocean.transition;
 import ocean.core.Verify;
+import ocean.meta.types.Qualifiers;
+import ocean.util.cipher.gcrypt.c.gcrypt;
 
-version (UnitTest)
+version (unittest)
 {
     import ocean.core.Test;
 }
@@ -342,7 +340,7 @@ private class GcryptBase ( Algorithm algorithm, Mode mode )
 
     ***************************************************************************/
 
-    version ( UnitTest )
+    version (unittest)
     {
         /***********************************************************************
 
@@ -427,7 +425,7 @@ private class GcryptBase ( Algorithm algorithm, Mode mode )
 
         ***********************************************************************/
 
-        public static void testFixedKeyLength (Const!(ubyte)[] key)
+        public static void testFixedKeyLength (const(ubyte)[] key)
         {
             // Too short should fail
             testThrown!(GcryptException)(new typeof(this)(key[0 .. $-1]));
@@ -571,7 +569,7 @@ public class GcryptWithIV ( Algorithm algorithm, Mode mode )
 
     ***************************************************************************/
 
-    version ( UnitTest )
+    version (unittest)
     {
         /***********************************************************************
 
