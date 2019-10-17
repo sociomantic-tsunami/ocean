@@ -723,7 +723,7 @@ unittest
 
     static struct II
     {
-        Immut!(int) s;
+        immutable(int) s;
     }
 
     IS s1 = IS("Hello world");

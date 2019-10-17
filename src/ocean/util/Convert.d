@@ -947,7 +947,7 @@ D toStringFromChar(D,S)(S value)
     static if( is( D == S[] ) )
     {
         static if (is(S == const(char))
-                   || is(S == Immut!(char)))
+                   || is(S == immutable(char)))
         {
             if( 0x20 <= value && value <= 0x7e )
                 return (&CHARS[value-0x20])[0..1];

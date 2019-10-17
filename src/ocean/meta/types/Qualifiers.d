@@ -34,7 +34,7 @@ module ocean.meta.types.Qualifiers;
 
 *******************************************************************************/
 
-alias Immut!(char)[] istring;
+alias immutable(char)[] istring;
 alias const(char)[] cstring;
 alias char[]         mstring;
 
@@ -80,7 +80,7 @@ unittest
     Example:
 
     ---
-    Immut!(char)[] foo()
+    immutable(char)[] foo()
     {
         return "aaa"; // ok, immutable
         return new char[]; // error, mutable
@@ -134,7 +134,7 @@ unittest
     Str foo ( Str arg ) { return arg; }
 
     char[] s1 = foo("aaa".dup);
-    Immut!(char)[] s2 = foo("aaa");
+    immutable(char)[] s2 = foo("aaa");
 }
 
 /*******************************************************************************
