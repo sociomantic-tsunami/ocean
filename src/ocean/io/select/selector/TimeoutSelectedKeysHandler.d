@@ -144,7 +144,7 @@ class TimeoutSelectedKeysHandler: SelectedKeysHandler
 
                     verify(client !is null);
 
-                    Const!(void)* typed_ptr = timed_out_clients.ptr;
+                    const(void)* typed_ptr = timed_out_clients.ptr;
                     if (!bsearch(cast (void*) client, typed_ptr,
                                  timed_out_clients.length, timed_out_clients[0].sizeof, &cmpPtr!(true)))
                     {
@@ -196,8 +196,8 @@ class TimeoutSelectedKeysHandler: SelectedKeysHandler
     ***************************************************************************/
 
     extern (C) private static int cmpPtr ( bool searching ) (
-        scope Const!(void*) a_,
-        scope Const!(void*) b_ )
+        scope const(void*) a_,
+        scope const(void*) b_ )
     {
         static if (searching)
         {

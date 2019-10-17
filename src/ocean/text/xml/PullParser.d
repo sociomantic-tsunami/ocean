@@ -110,7 +110,7 @@ public enum XmlTokenType
 
 class PullParser(ChMut = char)
 {
-    alias Const!(ChMut)  Ch;
+    alias const(ChMut)  Ch;
 
     public int           depth;
     public Ch[]          prefix;
@@ -685,7 +685,7 @@ package struct XmlText(Ch)
         this.end = point + len;
     }
 
-    static Const!(ubyte[64]) name =
+    static const(ubyte[64]) name =
     [
         // 0   1   2   3   4   5   6   7   8   9   A   B   C   D   E   F
         0,  1,  1,  1,  1,  1,  1,  1,  1,  0,  0,  1,  1,  0,  1,  1,  // 0
@@ -694,7 +694,7 @@ package struct XmlText(Ch)
         1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  0,  1,  1,  1,  0,  0   // 3
     ];
 
-    static Const!(ubyte[64]) attributeName =
+    static const(ubyte[64]) attributeName =
     [
         // 0   1   2   3   4   5   6   7   8   9   A   B   C   D   E   F
         0,  1,  1,  1,  1,  1,  1,  1,  1,  0,  0,  1,  1,  0,  1,  1,  // 0

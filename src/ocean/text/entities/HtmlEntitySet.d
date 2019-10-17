@@ -193,7 +193,7 @@ public class HtmlEntitySet : XmlEntitySet
 
     ***************************************************************************/
 
-    public override Const!(Entity)[] entities ( )
+    public override const(Entity)[] entities ( )
     {
         return This.html_entities;
     }

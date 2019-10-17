@@ -616,7 +616,7 @@ unittest
     }
 
     // Test immutable support
-    auto const_tree = makeBTreeMap!(void*, Const!(X), 2);
+    auto const_tree = makeBTreeMap!(void*, const(X), 2);
     auto a = new immutable X;
 
     const_tree.insert(cast(void*)&a, a);

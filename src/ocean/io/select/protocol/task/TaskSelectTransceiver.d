@@ -233,7 +233,7 @@ class TaskSelectTransceiver
     public void writeValue ( T ) ( in T value )
     {
         static if (T.sizeof)
-            this.write((cast(Const!(void*))&value)[0 .. value.sizeof]);
+            this.write((cast(const(void*))&value)[0 .. value.sizeof]);
     }
 
     /***************************************************************************
@@ -253,7 +253,7 @@ class TaskSelectTransceiver
 
     ***************************************************************************/
 
-    public void write ( Const!(void)[] data )
+    public void write ( const(void)[] data )
     {
         while (data.length)
             data = data[this.deviceWrite(data) .. $];
@@ -546,7 +546,7 @@ class TaskSelectTransceiver
 
     ***************************************************************************/
 
-    private size_t deviceWrite ( Const!(void)[] src )
+    private size_t deviceWrite ( const(void)[] src )
     {
         debug (Raw) Stdout.formatln(
             "[{}] Write  {:X2} ({} bytes)", this.iodev.fileHandle,

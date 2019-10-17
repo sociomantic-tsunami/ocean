@@ -70,7 +70,7 @@ class Iterator : InputFilter
 
         ***********************************************************************/
 
-        abstract protected size_t scan (Const!(void)[] data);
+        abstract protected size_t scan (const(void)[] data);
 
         /***********************************************************************
 
@@ -213,7 +213,7 @@ class Iterator : InputFilter
 
         ***********************************************************************/
 
-        protected final size_t set (Const!(char)* content, size_t start, size_t end)
+        protected final size_t set (const(char)* content, size_t start, size_t end)
         {
                 slice = content [start .. end];
                 return end;
@@ -227,7 +227,7 @@ class Iterator : InputFilter
 
         ***********************************************************************/
 
-        protected final size_t set (Const!(char)* content, size_t start, size_t end, size_t next)
+        protected final size_t set (const(char)* content, size_t start, size_t end, size_t next)
         {
                 slice = content [start .. end];
                 delim = content [end .. next+1];
@@ -288,9 +288,9 @@ class Iterator : InputFilter
                     return true;
 
                 // consume trailing token
-                source.reader ((Const!(void)[] arr)
+                source.reader ((const(void)[] arr)
                               {
-                              slice = (cast(Const!(char)*) arr.ptr) [0 .. arr.length];
+                              slice = (cast(const(char)*) arr.ptr) [0 .. arr.length];
                               return arr.length;
                               });
                 return false;

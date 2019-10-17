@@ -62,7 +62,7 @@ public class XmlEntitySet : IEntitySet
 
     ***************************************************************************/
 
-    public override Const!(Entity)[] entities ( )
+    public override const(Entity)[] entities ( )
     {
         return This.xml_entities;
     }

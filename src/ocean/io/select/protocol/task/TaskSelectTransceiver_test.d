@@ -53,7 +53,7 @@ unittest
     scope intst = new TestTaskSelectTransceiver(new class IODevice
     {
         Handle fileHandle ( ) { return cast(Handle)pipefd[0]; }
-        override ssize_t write ( Const!(void)[] src ) { assert(false); }
+        override ssize_t write ( const(void)[] src ) { assert(false); }
     });
 
     // Create an output-only task select transceiver for the writing end of the
@@ -62,7 +62,7 @@ unittest
     {
         Handle fileHandle ( ) { return cast(Handle)pipefd[1]; }
         override ssize_t read ( void[] dst ) { assert(false); }
-        override ssize_t write ( Const!(void)[] src )
+        override ssize_t write ( const(void)[] src )
         {
             return .write(pipefd[1], src.ptr, src.length);
         }

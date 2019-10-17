@@ -235,7 +235,7 @@ interface IOutputDevice : ISelectable
 
      **************************************************************************/
 
-    ssize_t write ( Const!(void)[] dst );
+    ssize_t write ( const(void)[] dst );
 }
 
 /******************************************************************************
@@ -290,5 +290,5 @@ abstract class IODevice : InputDevice, IOutputDevice
 
      **************************************************************************/
 
-    abstract public ssize_t write ( Const!(void)[] src );
+    abstract public ssize_t write ( const(void)[] src );
 }

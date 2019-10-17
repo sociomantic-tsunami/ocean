@@ -241,7 +241,7 @@ public class StatsLogReader
 
         ***************************************************************************/
 
-        public int opApply ( scope int delegate(ref Const!(char[])) dg )
+        public int opApply ( scope int delegate(ref const(char[])) dg )
         {
             int result;
 
@@ -295,7 +295,7 @@ public class StatsLogReader
 
     ***************************************************************************/
 
-    public Const!(StatsLine) last ( )
+    public const(StatsLine) last ( )
     {
         auto last_line = Buffer!(char)();
 
@@ -306,7 +306,7 @@ public class StatsLogReader
 
         enforce(last_line.length > 0, "The stats are empty");
 
-        Const!(StatsLine) stats_line = StatsLine(last_line[]);
+        const(StatsLine) stats_line = StatsLine(last_line[]);
 
         return stats_line;
     }
@@ -321,13 +321,13 @@ public class StatsLogReader
 
     ***************************************************************************/
 
-    public int opApply ( scope int delegate(ref Const!(StatsLine)) dg )
+    public int opApply ( scope int delegate(ref const(StatsLine)) dg )
     {
         int result;
 
         foreach (line; this.lines)
         {
-            Const!(StatsLine) stats_line = StatsLine(line);
+            const(StatsLine) stats_line = StatsLine(line);
             result = dg(stats_line);
 
             if ( result != 0 )
@@ -345,14 +345,14 @@ public class StatsLogReader
 
     ******************************************************************************/
 
-    public int opApply ( scope int delegate(ref size_t index, ref Const!(StatsLine)) dg )
+    public int opApply ( scope int delegate(ref size_t index, ref const(StatsLine)) dg )
     {
         int result;
         size_t index;
 
         foreach (line; this.lines)
         {
-            Const!(StatsLine) stats_line = StatsLine(line);
+            const(StatsLine) stats_line = StatsLine(line);
             result = dg(index, stats_line);
             index++;
 

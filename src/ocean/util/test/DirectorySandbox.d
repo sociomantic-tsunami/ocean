@@ -45,7 +45,7 @@ class DirectorySandbox
     private mstring old_cwd;
 
     /// List of subdirectories to create
-    private Const!(cstring)[] subdirectories;
+    private const(cstring)[] subdirectories;
 
     /***************************************************************************
 

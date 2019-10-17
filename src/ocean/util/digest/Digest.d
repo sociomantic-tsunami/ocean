@@ -72,7 +72,7 @@ abstract class Digest
 
         *********************************************************************/
 
-        abstract Digest update (Const!(void)[] data);
+        abstract Digest update (const(void)[] data);
 
         /********************************************************************
 

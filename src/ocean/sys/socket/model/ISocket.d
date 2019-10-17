@@ -803,7 +803,7 @@ public abstract class ISocket : IODevice
 
      **************************************************************************/
 
-    public int setsockopt ( int level, int optname, Const!(void)[] src )
+    public int setsockopt ( int level, int optname, const(void)[] src )
     {
         return .setsockopt(this.fd, level, optname, src.ptr, cast(uint)src.length);
     }
@@ -861,7 +861,7 @@ public abstract class ISocket : IODevice
 
      **************************************************************************/
 
-    override public ssize_t write ( Const!(void)[] src )
+    override public ssize_t write ( const(void)[] src )
     {
         return this.send(src, 0);
     }
@@ -998,7 +998,7 @@ public abstract class ISocket : IODevice
 
      **************************************************************************/
 
-    public ssize_t send ( Const!(void)[] src, int flags )
+    public ssize_t send ( const(void)[] src, int flags )
     {
         return .send(this.fd, src.ptr, src.length,
                      this.suppress_sigpipe? flags | MSG_NOSIGNAL : flags);

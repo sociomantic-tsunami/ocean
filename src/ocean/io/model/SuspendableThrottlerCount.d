@@ -289,7 +289,7 @@ abstract public class ISuspendableThrottlerCount : ISuspendableThrottler
 
     ***************************************************************************/
 
-    public Const!(size_t) suspend_point;
+    public const(size_t) suspend_point;
 
 
     /***************************************************************************
@@ -299,7 +299,7 @@ abstract public class ISuspendableThrottlerCount : ISuspendableThrottler
 
     ***************************************************************************/
 
-    public Const!(size_t) resume_point;
+    public const(size_t) resume_point;
 
 
     /***************************************************************************

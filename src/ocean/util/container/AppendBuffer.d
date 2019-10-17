@@ -201,7 +201,7 @@ public class AppendBuffer ( T, Base: AppendBufferImpl ): Base, IAppendBufferRead
     }
     else
     {
-        alias Const!(T) ParamT;
+        alias const(T) ParamT;
     }
 
     /**********************************************************************
@@ -1124,7 +1124,7 @@ private abstract class AppendBufferImpl: IAppendBufferBase
 
      **************************************************************************/
 
-    protected void[] copy_ ( Const!(void)[] src )
+    protected void[] copy_ ( const(void)[] src )
     out (dst)
     {
         if (this.limited_)
@@ -1163,7 +1163,7 @@ private abstract class AppendBufferImpl: IAppendBufferBase
 
      **************************************************************************/
 
-    protected void[] copy_ ( Const!(void)[] chunk, size_t start, size_t end )
+    protected void[] copy_ ( const(void)[] chunk, size_t start, size_t end )
     {
         verify (!(chunk.length % this.e), typeof (this).stringof ~ ": data alignment mismatch");
         verify (start <= end,             typeof (this).stringof ~ ": slice start behind end index");
@@ -1426,8 +1426,8 @@ unittest
     buffer1 ~= w;
     buffer2 ~= wo;
 
-    Const!(WithIndirection) cw = w;
-    Const!(WithoutIndirection) cwo = wo;
+    const(WithIndirection) cw = w;
+    const(WithoutIndirection) cwo = wo;
 
     static assert(!is(typeof({ buffer1 ~= cw; })));
     buffer2 ~= cwo;
@@ -1456,8 +1456,8 @@ unittest
     buffer1 ~= w;
     buffer2 ~= wo;
 
-    Const!(WithIndirection) cw = w;
-    Const!(WithoutIndirection) cwo = wo;
+    const(WithIndirection) cw = w;
+    const(WithoutIndirection) cwo = wo;
 
     static assert(!is(typeof({ buffer1 ~= cw; })));
     static assert(!is(typeof({ buffer2 ~= cwo; })));

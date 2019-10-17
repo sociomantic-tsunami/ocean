@@ -117,7 +117,7 @@ class Json(T) : JsonParser!(T)
 
      ***********************************************************************/
 
-    final Value parse (Const!(T)[] json)
+    final Value parse (const(T)[] json)
     {
         nesting = 0;
         attrib.reset;
@@ -149,7 +149,7 @@ class Json(T) : JsonParser!(T)
 
      ***********************************************************************/
 
-    final Const!(T)[] toString (Const!(T)[] space=null, int decimals=2)
+    final const(T)[] toString (const(T)[] space=null, int decimals=2)
     {
         return root.print (space, decimals);
     }
@@ -182,7 +182,7 @@ class Json(T) : JsonParser!(T)
 
      ***********************************************************************/
 
-    final Value value (Const!(T)[] v)
+    final Value value (const(T)[] v)
     {
         return createValue.set (v);
     }
@@ -238,7 +238,7 @@ class Json(T) : JsonParser!(T)
 
      ***********************************************************************/
 
-    Attribute pair (Const!(T)[] name, Value value = null)
+    Attribute pair (const(T)[] name, Value value = null)
     {
         if (value is null)
             value = createValue;
@@ -428,7 +428,7 @@ class Json(T) : JsonParser!(T)
     struct NameValue
     {
         private Attribute       next;
-        public  Const!(T)[]     name;
+        public  const(T)[]     name;
         public  Value           value;
 
         /***************************************************************
@@ -439,7 +439,7 @@ class Json(T) : JsonParser!(T)
 
          ***************************************************************/
 
-        Attribute set (Const!(T)[] key, Value val)
+        Attribute set (const(T)[] key, Value val)
         {
             name = key;
             value = val;
@@ -528,7 +528,7 @@ class Json(T) : JsonParser!(T)
 
          ***************************************************************/
 
-        Value value (Const!(T)[] name)
+        Value value (const(T)[] name)
         {
             auto a = head;
             while (a)
@@ -568,7 +568,7 @@ class Json(T) : JsonParser!(T)
         {
             private Attribute head;
 
-            int opApply (scope int delegate(ref Const!(T)[] key, ref Value val) dg)
+            int opApply (scope int delegate(ref const(T)[] key, ref Value val) dg)
             {
                 int res;
 
@@ -597,7 +597,7 @@ class Json(T) : JsonParser!(T)
         {
             Value[]         array;
             real            number;
-            Const!(T)[]     string;
+            const(T)[]     string;
             Composite       object;
         }
 
@@ -648,7 +648,7 @@ class Json(T) : JsonParser!(T)
 
          ***************************************************************/
 
-        Const!(T)[] toString (T[] dst = null)
+        const(T)[] toString (T[] dst = null)
         {
             if (type is Type.RawString)
                 return string;
@@ -668,7 +668,7 @@ class Json(T) : JsonParser!(T)
 
          ***************************************************************/
 
-        bool toString (scope void delegate(Const!(T)[]) dg)
+        bool toString (scope void delegate(const(T)[]) dg)
         {
             if (type is Type.RawString)
                 dg(string);
@@ -724,7 +724,7 @@ class Json(T) : JsonParser!(T)
 
          ***************************************************************/
 
-        Value set (Const!(T)[] str, bool escaped = false)
+        Value set (const(T)[] str, bool escaped = false)
         {
             type = escaped ? Type.String : Type.RawString;
             string = str;
@@ -800,10 +800,10 @@ class Json(T) : JsonParser!(T)
 
          ***************************************************************/
 
-        Const!(T)[] print (Const!(T)[] space=null, int decimals=2)
+        const(T)[] print (const(T)[] space=null, int decimals=2)
         {
             T[] tmp;
-            void append (Const!(T)[] s) { tmp ~= s; }
+            void append (const(T)[] s) { tmp ~= s; }
             print (&append, space, decimals);
             return tmp;
         }
@@ -815,9 +815,9 @@ class Json(T) : JsonParser!(T)
 
          ***************************************************************/
 
-        Value print (OutputStream s, Const!(T)[] space=null, int decimals=2)
+        Value print (OutputStream s, const(T)[] space=null, int decimals=2)
         {
-            return print ((Const!(T)[] t){s.write(t);}, space, decimals);
+            return print ((const(T)[] t){s.write(t);}, space, decimals);
         }
 
         /***************************************************************
@@ -827,7 +827,7 @@ class Json(T) : JsonParser!(T)
 
          ***************************************************************/
 
-        Value print (scope void delegate(Const!(T)[]) append, Const!(T)[] space=null, int decimals=2)
+        Value print (scope void delegate(const(T)[]) append, const(T)[] space=null, int decimals=2)
         {
             auto indent = 0;
 

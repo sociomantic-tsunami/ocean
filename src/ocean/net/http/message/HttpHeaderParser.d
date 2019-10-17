@@ -56,7 +56,7 @@ public alias long ssize_t;
 
  ******************************************************************************/
 
-extern (C) private char* g_strstr_len(Const!(char)* haystack, ssize_t haystack_len, Const!(char)* needle);
+extern (C) private char* g_strstr_len(const(char)* haystack, ssize_t haystack_len, const(char)* needle);
 
 /******************************************************************************
 

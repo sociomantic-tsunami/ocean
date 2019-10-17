@@ -68,7 +68,7 @@ struct Buffer ( T )
         alias ubyte ElementType;
         mixin VoidBufferImpl Impl;
     }
-    else static if (is(typeof({ T x; Const!(T) y; x = y; })))
+    else static if (is(typeof({ T x; const(T) y; x = y; })))
     {
         alias T ElementType;
         mixin NoIndirectionsBufferImpl Impl;

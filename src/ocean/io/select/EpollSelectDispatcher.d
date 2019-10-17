@@ -443,7 +443,7 @@ public class EpollSelectDispatcher : IEpollSelectDispatcherInfo
                 {
                     /// Predicate for finding the ISelectClient inside
                     /// array of epoll_event_t entries.
-                    scope entry_to_client = (Const!(epoll_event_t) entry) {
+                    scope entry_to_client = (const(epoll_event_t) entry) {
                         return entry.data.ptr == cast(void*)client;
                     };
 

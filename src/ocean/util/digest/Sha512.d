@@ -295,7 +295,7 @@ final class Sha512 : MerkleDamgard
 
 *******************************************************************************/
 
-private static Const!(ulong[]) K =
+private static const(ulong[]) K =
 [
         0x428a2f98d728ae22, 0x7137449123ef65cd, 0xb5c0fbcfec4d3b2f, 0xe9b5dba58189dbbc,
         0x3956c25bf348b538, 0x59f111f1b605d019, 0x923f82a4af194f9b, 0xab1c5ed5da6d8118,
@@ -323,7 +323,7 @@ private static Const!(ulong[]) K =
 
 *******************************************************************************/
 
-private static Const!(ulong[8]) initial =
+private static const(ulong[8]) initial =
 [
         0x6a09e667f3bcc908,
         0xbb67ae8584caa73b,

@@ -313,7 +313,7 @@ private static uint[] K =
 
 *******************************************************************************/
 
-private static Const!(uint[8]) initial =
+private static const(uint[8]) initial =
 [
         0x6a09e667,
         0xbb67ae85,

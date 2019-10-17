@@ -5,7 +5,7 @@
     ---
     istring blah = "Hello there, my name is Jeff.";
     scope encodebuf = new char[allocateEncodeSize(blah.length)];
-    mstring encoded = encode(cast(Const!(ubyte)[])blah, encodebuf);
+    mstring encoded = encode(cast(const(ubyte)[])blah, encodebuf);
 
     scope decodebuf = new ubyte[encoded.length];
     if (cast(cstring)decode(encoded, decodebuf) == "Hello there, my name is Jeff.")
@@ -185,7 +185,7 @@ public int encodeChunk (istring table = defaultEncodeTable)
     size_t tripletCount = data.length / 3;
     int rtn = 0;
     char *rtnPtr = buff.ptr;
-    Const!(ubyte) *dataPtr = data.ptr;
+    const(ubyte) *dataPtr = data.ptr;
 
     if (data.length > 0)
     {
@@ -220,7 +220,7 @@ public int encodeChunk (istring table = defaultEncodeTable)
     Example:
     ---
     char[512] encodebuf;
-    mstring myEncodedString = encode(cast(Const!(ubyte)[])"Hello, how are you today?", encodebuf);
+    mstring myEncodedString = encode(cast(const(ubyte)[])"Hello, how are you today?", encodebuf);
     Stdout(myEncodedString).newline; // SGVsbG8sIGhvdyBhcmUgeW91IHRvZGF5Pw==
     ---
 
@@ -242,7 +242,7 @@ public mstring encode (istring table = defaultEncodeTable)
         int bytesEncoded = 0;
         int numBytes = encodeChunk!(table)(data, buff, bytesEncoded);
         char *rtnPtr = buff.ptr + bytesEncoded;
-        Const!(ubyte)* dataPtr = data.ptr + numBytes;
+        const(ubyte)* dataPtr = data.ptr + numBytes;
         auto tripletFraction = data.length - (dataPtr - data.ptr);
 
         switch (tripletFraction)
@@ -490,7 +490,7 @@ public ubyte[] decode (Table...) (cstring data, ubyte[] buff)
 unittest
 {
     istring str = "Hello, how are you today?";
-    Const!(ubyte)[] payload = cast(Const!(ubyte)[]) str;
+    const(ubyte)[] payload = cast(const(ubyte)[]) str;
 
     // encodeChunktest
     {
@@ -527,14 +527,14 @@ unittest
     // single padding test
     {
         // try the string with the single `=` padding, and without it
-        auto result = cast(Const!(ubyte)[])"any carnal pleasure.";
+        auto result = cast(const(ubyte)[])"any carnal pleasure.";
         test!("==")(result, decode("YW55IGNhcm5hbCBwbGVhc3VyZS4="));
         test!("==")(result, decode("YW55IGNhcm5hbCBwbGVhc3VyZS4"));
     }
 
     // short decode test, double-= padding
     {
-        auto result = cast(Const!(ubyte)[])"M";
+        auto result = cast(const(ubyte)[])"M";
 
         test!("==")(result, decode("TQ"));
         test!("==")(result, decode("TQ="));
@@ -542,7 +542,7 @@ unittest
     }
     // ditto, with a single = required for padding
     {
-        auto result = cast(Const!(ubyte)[])"Ma";
+        auto result = cast(const(ubyte)[])"Ma";
 
         test!("==")(result, decode("TWE"));
         test!("==")(result, decode("TWE="));
@@ -553,7 +553,7 @@ unittest
     // has less than two bytes needed for the decoding in which case
     // it will be silently ignored
     {
-        auto result = cast(Const!(ubyte)[])"Maq";
+        auto result = cast(const(ubyte)[])"Maq";
         // B should be ignored since it's missing the second byte
         test!("==")(result, decode("TWFxB"));
     }
@@ -570,7 +570,7 @@ unittest
 unittest
 {
     istring str = "Hello, how are you today?";
-    Const!(ubyte)[] payload = cast(Const!(ubyte)[]) str;
+    const(ubyte)[] payload = cast(const(ubyte)[]) str;
     cstring result = encode(payload, false);
     test!("==")(result, "SGVsbG8sIGhvdyBhcmUgeW91IHRvZGF5Pw");
 
@@ -681,7 +681,7 @@ unittest
 unittest
 {
     istring str = "Why so serious?";
-    Const!(ubyte)[] payload = cast(Const!(ubyte)[]) str;
+    const(ubyte)[] payload = cast(const(ubyte)[]) str;
 
     // encodeChunktest
     {

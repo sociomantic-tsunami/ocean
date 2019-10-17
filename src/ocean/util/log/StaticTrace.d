@@ -176,7 +176,7 @@ unittest
 {
     class FakeStream : OutputStream
     {
-            override size_t write (Const!(void)[] src) { return src.length; }
+            override size_t write (const(void)[] src) { return src.length; }
             override OutputStream copy (InputStream src, size_t max = -1) { return this; }
             override OutputStream output () { return this; }
             override long seek (long offset, Anchor anchor = Anchor.Begin) { return offset; }

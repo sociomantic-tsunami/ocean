@@ -463,8 +463,8 @@ unittest
         }
     }
 
-    Const!(Answer_struct) as = Answer_struct(42);
-    auto ac = new Const!(Answer_class);
+    const(Answer_struct) as = Answer_struct(42);
+    auto ac = new const(Answer_class);
 
     test(format("{}", ai) == "42");
     test(format("{:f2}", ad) == "42.00", format("{:f2}", ad));

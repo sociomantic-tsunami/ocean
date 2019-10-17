@@ -354,7 +354,7 @@ class DataOutput : OutputFilter
 
         ***********************************************************************/
 
-        final uint array (Const!(void)[] src)
+        final uint array (const(void)[] src)
         {
                 auto len = src.length;
                 int32 (cast(int) len);
@@ -439,7 +439,7 @@ class DataOutput : OutputFilter
 
         ***********************************************************************/
 
-        final override size_t write (Const!(void)[] data)
+        final override size_t write (const(void)[] data)
         {
                 eat (data.ptr, data.length);
                 return data.length;
@@ -449,7 +449,7 @@ class DataOutput : OutputFilter
 
         ***********************************************************************/
 
-        private final void eat (Const!(void)* src, size_t bytes)
+        private final void eat (const(void)* src, size_t bytes)
         {
                 auto count = output.write (src[0..bytes]);
                 verify(count == bytes);

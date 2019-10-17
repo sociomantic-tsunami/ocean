@@ -149,7 +149,7 @@ class Document(T_) : PullParser!(T_)
 {
         public alias NodeImpl*  Node;
 
-        private alias Const!(T_)     T;
+        private alias const(T_)     T;
         private alias T_             MutT;
         private alias XmlPath!(MutT) XmlPathT;
 

@@ -142,7 +142,7 @@ class UnicodeBom(T) : BomSniffer
 
     ***********************************************************************/
 
-    final Const!(T)[] decode (void[] content, T[] dst=null, size_t* ate=null)
+    final const(T)[] decode (void[] content, T[] dst=null, size_t* ate=null)
     {
         // look for a BOM
         auto info = test (content);
@@ -230,9 +230,9 @@ class UnicodeBom(T) : BomSniffer
 
     ***********************************************************************/
 
-    static Const!(T)[] into (void[] x, uint type, T[] dst=null, size_t* ate = null)
+    static const(T)[] into (void[] x, uint type, T[] dst=null, size_t* ate = null)
     {
-        Const!(T)[] ret;
+        const(T)[] ret;
 
         static if (is (T == char))
         {
@@ -272,7 +272,7 @@ class UnicodeBom(T) : BomSniffer
             {
                 if (ate)
                     *ate = x.length;
-                ret = cast(Const!(dchar)[]) x;
+                ret = cast(const(dchar)[]) x;
             }
             else
                 if (type == Utf8)
@@ -296,9 +296,9 @@ class UnicodeBom(T) : BomSniffer
 
     ***********************************************************************/
 
-    static Const!(void)[] from (T[] x, uint type, void[] dst=null, size_t* ate=null)
+    static const(void)[] from (T[] x, uint type, void[] dst=null, size_t* ate=null)
     {
-        Const!(void)[] ret;
+        const(void)[] ret;
 
         static if (is (T == char))
         {
@@ -362,7 +362,7 @@ class BomSniffer
 {
     private bool     found;        // was an encoding discovered?
     private Encoding encoder;      // the current encoding
-    private Const!(Info)* settings;     // pointer to encoding configuration
+    private const(Info)* settings;     // pointer to encoding configuration
 
     private struct  Info
     {
@@ -377,7 +377,7 @@ class BomSniffer
 
     private enum {Utf8, Utf16, Utf32};
 
-    private static Const!(Info[]) lookup = [
+    private static const(Info[]) lookup = [
         {Utf8,  Encoding.Unknown,  null,        true,  false, false, Encoding.UTF_8},
         {Utf8,  Encoding.UTF_8N,   null,        true,  false, false, Encoding.UTF_8},
         {Utf8,  Encoding.UTF_8,    "\xEF\xBB\xBF",   false},
@@ -420,7 +420,7 @@ class BomSniffer
 
     ***********************************************************************/
 
-    final Const!(void)[] signature ()
+    final const(void)[] signature ()
     {
         return settings.bom;
     }
@@ -445,7 +445,7 @@ class BomSniffer
 
     ***********************************************************************/
 
-    static final Const!(Info)* test (void[] content)
+    static final const(Info)* test (void[] content)
     {
         for (auto info=lookup.ptr+lookup.length; --info >= lookup.ptr;)
         {

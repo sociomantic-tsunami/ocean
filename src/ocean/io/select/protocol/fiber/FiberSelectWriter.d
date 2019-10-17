@@ -75,7 +75,7 @@ class FiberSelectWriter : IFiberSelectProtocol
 
      **************************************************************************/
 
-    private Const!(void)[] data_slice = null;
+    private const(void)[] data_slice = null;
 
     /**************************************************************************
 
@@ -169,7 +169,7 @@ class FiberSelectWriter : IFiberSelectProtocol
 
      **************************************************************************/
 
-    public typeof (this) send ( Const!(void)[] data )
+    public typeof (this) send ( const(void)[] data )
 /*    in // FIXME: causes an unknown (i.e. uninvestigated) problem, for example in the queue monitor
     {
         assert (this.data_slice is null);

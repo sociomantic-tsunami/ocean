@@ -83,11 +83,11 @@ class Quotes : Iterator
         ***********************************************************************/
 
         protected override
-        size_t scan (Const!(void)[] data)
+        size_t scan (const(void)[] data)
         {
                 char quote = 0;
                 int  escape = 0;
-                auto content = (cast(Const!(char)*) data.ptr) [0 .. data.length];
+                auto content = (cast(const(char)*) data.ptr) [0 .. data.length];
 
                 foreach (i, c; content)
                          // within a quote block?

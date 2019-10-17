@@ -49,7 +49,7 @@ version (unittest) import ocean.core.Test;
  *     output = this output buffer will be used unless too small
  * Returns: the case mapped string
  */
-char[] toUpper(Const!(char)[] input, char[] output = null) {
+char[] toUpper(const(char)[] input, char[] output = null) {
 
     dchar[1] buf;
     // assume most common case: String stays the same length
@@ -99,7 +99,7 @@ char[] toUpper(Const!(char)[] input, char[] output = null) {
  *     output = this output buffer will be used unless too small
  * Returns: the case mapped string
  */
-wchar[] toUpper(Const!(wchar)[] input, wchar[] output = null) {
+wchar[] toUpper(const(wchar)[] input, wchar[] output = null) {
 
     dchar[1] buf;
     // assume most common case: String stays the same length
@@ -147,7 +147,7 @@ wchar[] toUpper(Const!(wchar)[] input, wchar[] output = null) {
  *     output = this output buffer will be used unless too small
  * Returns: the case mapped string
  */
-dchar[] toUpper(Const!(dchar)[] input, dchar[] output = null) {
+dchar[] toUpper(const(dchar)[] input, dchar[] output = null) {
 
     // assume most common case: String stays the same length
     if (input.length > output.length)
@@ -187,7 +187,7 @@ dchar[] toUpper(Const!(dchar)[] input, dchar[] output = null) {
  *     output = this output buffer will be used unless too small
  * Returns: the case mapped string
  */
-char[] toLower(Const!(char)[] input, char[] output = null) {
+char[] toLower(const(char)[] input, char[] output = null) {
 
     dchar[1] buf;
     // assume most common case: String stays the same length
@@ -237,7 +237,7 @@ char[] toLower(Const!(char)[] input, char[] output = null) {
  *     output = this output buffer will be used unless too small
  * Returns: the case mapped string
  */
-wchar[] toLower(Const!(wchar)[] input, wchar[] output = null) {
+wchar[] toLower(const(wchar)[] input, wchar[] output = null) {
 
     dchar[1] buf;
     // assume most common case: String stays the same length
@@ -286,7 +286,7 @@ wchar[] toLower(Const!(wchar)[] input, wchar[] output = null) {
  *     output = this output buffer will be used unless too small
  * Returns: the case mapped string
  */
-dchar[] toLower(Const!(dchar)[] input, dchar[] output = null) {
+dchar[] toLower(const(dchar)[] input, dchar[] output = null) {
 
     // assume most common case: String stays the same length
     if (input.length > output.length)
@@ -326,7 +326,7 @@ dchar[] toLower(Const!(dchar)[] input, dchar[] output = null) {
  *     output = this output buffer will be used unless too small
  * Returns: the case mapped string
  */
-char[] toFold(Const!(char)[] input, char[] output = null) {
+char[] toFold(const(char)[] input, char[] output = null) {
 
     dchar[1] buf;
     // assume most common case: String stays the same length
@@ -371,7 +371,7 @@ char[] toFold(Const!(char)[] input, char[] output = null) {
  *     output = this output buffer will be used unless too small
  * Returns: the case mapped string
  */
-wchar[] toFold(Const!(wchar)[] input, wchar[] output = null) {
+wchar[] toFold(const(wchar)[] input, wchar[] output = null) {
 
     dchar[1] buf;
     // assume most common case: String stays the same length
@@ -415,7 +415,7 @@ wchar[] toFold(Const!(wchar)[] input, wchar[] output = null) {
  *     output = this output buffer will be used unless too small
  * Returns: the case mapped string
  */
-dchar[] toFold(Const!(dchar)[] input, dchar[] output = null) {
+dchar[] toFold(const(dchar)[] input, dchar[] output = null) {
 
     // assume most common case: String stays the same length
     if (input.length > output.length)

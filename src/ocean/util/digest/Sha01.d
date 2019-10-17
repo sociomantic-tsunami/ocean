@@ -181,7 +181,7 @@ package abstract class Sha01 : MerkleDamgard
 
         ***********************************************************************/
 
-        protected static Const!(uint[]) K =
+        protected static const(uint[]) K =
         [
                 0x5A827999,
                 0x6ED9EBA1,
@@ -193,7 +193,7 @@ package abstract class Sha01 : MerkleDamgard
 
         ***********************************************************************/
 
-        private static Const!(uint[5]) initial =
+        private static const(uint[5]) initial =
         [
                 0x67452301,
                 0xEFCDAB89,

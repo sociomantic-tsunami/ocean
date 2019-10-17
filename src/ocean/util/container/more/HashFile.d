@@ -83,7 +83,7 @@ class HashFile(K, V)
         private ulong                   waterLine;
 
         // supported block sizes
-        public static Const!(BlockSize) EighthK  = {128-1},
+        public static const(BlockSize) EighthK  = {128-1},
                                         QuarterK = {256-1},
                                         HalfK    = {512-1},
                                         OneK     = {1024*1-1},

@@ -255,5 +255,5 @@ static class ResponseParser
 /// - null if not found or
 /// - a_ptr if b_len == 0.
 extern (C) Inout!(void)* memmem (
-    Inout!(void)* a_ptr, size_t a_len, Const!(void)* b_ptr, size_t b_len
+    Inout!(void)* a_ptr, size_t a_len, const(void)* b_ptr, size_t b_len
 );

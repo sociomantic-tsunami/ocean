@@ -85,7 +85,7 @@ final class Crc32 : Digest
         }
 
         /** */
-        override Crc32 update (Const!(void)[] input)
+        override Crc32 update (const(void)[] input)
         {
                 uint r = result; // DMD optimization
                 foreach (ubyte value; cast(ubyte[]) input)
