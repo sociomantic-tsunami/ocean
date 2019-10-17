@@ -43,7 +43,7 @@ template isUTF8StringType ( T )
 unittest
 {
     static assert (isUTF8StringType!(char[]));
-    static assert (isUTF8StringType!(Immut!(char)[]));
+    static assert (isUTF8StringType!(immutable(char)[]));
     static assert (!isUTF8StringType!(wchar[]));
 }
 

@@ -71,7 +71,7 @@ public immutable(T)[] assumeUnique (T) (ref T[] input)
 {
     auto tmp = input;
     input = null;
-    return cast(Immut!(T)[]) tmp;
+    return cast(immutable(T)[]) tmp;
 }
 
 unittest

@@ -270,7 +270,7 @@ class Document(T_) : PullParser!(T_)
 
         ***********************************************************************/
 
-        final Document header (Immut!(T)[] encoding)
+        final Document header (immutable(T)[] encoding)
         {
                 if (encoding.length)
                     encoding = `xml version="1.0" encoding="`~encoding~`"`;

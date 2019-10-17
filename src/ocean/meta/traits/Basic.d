@@ -384,7 +384,7 @@ unittest
 {
     static assert (staticArrayLength!(int[][5]) == 5);
     static assert (staticArrayLength!(char[42]) == 42);
-    static assert (staticArrayLength!(Immut!(mstring[2])) == 2);
+    static assert (staticArrayLength!(immutable(mstring[2])) == 2);
 }
 
 /*******************************************************************************
@@ -430,7 +430,7 @@ unittest
     }
 
     static assert (!isPointerType!(Eggs));
-    static assert ( isPointerType!(Immut!(Eggs*)));
+    static assert ( isPointerType!(immutable(Eggs*)));
 
     struct Bacon { }
 

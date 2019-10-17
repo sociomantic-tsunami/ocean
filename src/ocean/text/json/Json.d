@@ -507,9 +507,9 @@ class Json(T) : JsonParser!(T)
 
          ***************************************************************/
 
-        Value[Immut!(T)[]] hashmap ()
+        Value[immutable(T)[]] hashmap ()
         {
-            Value[Immut!(T)[]] members;
+            Value[immutable(T)[]] members;
 
             auto a = head;
             while (a)

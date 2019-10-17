@@ -82,7 +82,7 @@ unittest
 
         union
         {
-            Immut!(int)[2][2] x;
+            immutable(int)[2][2] x;
             S1 y;
         }
     }
@@ -98,7 +98,7 @@ unittest
 
     static struct S4
     {
-        Immut!(int[])[10] x;
+        immutable(int[])[10] x;
     }
 
     static assert ( hasIndirections!(S4));
@@ -176,7 +176,7 @@ unittest
     static assert(!containsMultiDimensionalDynamicArrays!(int[ ][3][ ]));
     static assert(!containsMultiDimensionalDynamicArrays!(int[3][3][ ]));
     static assert( containsMultiDimensionalDynamicArrays!(int[ ][ ][3]));
-    static assert(!containsMultiDimensionalDynamicArrays!(Immut!(int[3])[ ][3]));
+    static assert(!containsMultiDimensionalDynamicArrays!(immutable(int[3])[ ][3]));
     static assert(!containsMultiDimensionalDynamicArrays!(int[ ][3][3]));
     static assert(!containsMultiDimensionalDynamicArrays!(int[3][3][3]));
 
@@ -245,7 +245,7 @@ unittest
         Arr[3][4] arr;
     }
 
-    static assert( containsDynamicArray!(Immut!(S2)));
+    static assert( containsDynamicArray!(immutable(S2)));
 }
 
 private struct DynArrayReducer
