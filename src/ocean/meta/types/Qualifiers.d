@@ -110,7 +110,7 @@ unittest
     Example:
 
     ---
-    Inout!(char[]) foo(Inout!(char[]) arg)
+    inout(char[]) foo(inout(char[]) arg)
     {
         return arg;
     }
