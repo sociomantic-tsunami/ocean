@@ -946,7 +946,7 @@ D toStringFromChar(D,S)(S value)
 {
     static if( is( D == S[] ) )
     {
-        static if (is(S == Const!(char))
+        static if (is(S == const(char))
                    || is(S == Immut!(char)))
         {
             if( 0x20 <= value && value <= 0x7e )

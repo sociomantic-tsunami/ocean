@@ -41,9 +41,9 @@ struct ByteConverter
          *     A integral of type T created with the supplied bytes placed
          *     in the specified byte order.
          */
-        static T to (T) (Const!(void)[] x_)
+        static T to (T) (const(void)[] x_)
         {
-            auto x = cast(Const!(ubyte)[])x_;
+            auto x = cast(const(ubyte)[])x_;
 
             T result = ((x[0] & 0xff)       |
                        ((x[1] & 0xff) << 8));
@@ -75,7 +75,7 @@ struct ByteConverter
          *     Integral input of type T split into its respective bytes
          *     with the bytes placed in the specified byte order.
          */
-        static ubyte[] from (T) (Const!(T) input)
+        static ubyte[] from (T) (const(T) input)
         {
             ubyte[] output = new ubyte[T.sizeof];
 
@@ -104,9 +104,9 @@ struct ByteConverter
     struct BigEndian
     {
 
-        static T to (T) (Const!(void)[] x_)
+        static T to (T) (const(void)[] x_)
         {
-            auto x = cast(Const!(ubyte)[])x_;
+            auto x = cast(const(ubyte)[])x_;
 
             static if (is(T == ushort) || is(T == short))
             {
@@ -176,7 +176,7 @@ struct ByteConverter
      *     input
      */
 
-    static mstring hexEncode(Const!(void)[] input_)
+    static mstring hexEncode(const(void)[] input_)
     {
         mstring buffer;
 
@@ -195,9 +195,9 @@ struct ByteConverter
      *     input
      */
 
-    static mstring hexEncode(Const!(void)[] input_, ref mstring output)
+    static mstring hexEncode(const(void)[] input_, ref mstring output)
     {
-        auto input = cast(Const!(ubyte)[])input_;
+        auto input = cast(const(ubyte)[])input_;
         // make sure our buffer is big enough (2 hex digits per byte).
         output.length = input.length * 2;
 

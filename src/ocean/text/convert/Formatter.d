@@ -107,7 +107,7 @@ public alias void delegate(cstring) FormatterSink;
 
 *******************************************************************************/
 
-private alias void delegate(cstring, ref Const!(FormatInfo)) ElemSink;
+private alias void delegate(cstring, ref const(FormatInfo)) ElemSink;
 
 
 /*******************************************************************************
@@ -233,7 +233,7 @@ public bool sformat (Args...) (scope FormatterSink sink, cstring fmt, Args args)
     size_t nextIndex;
 
     // A delegate to write elements according to the FormatInfo
-    scope elemSink = (cstring str, ref Const!(FormatInfo) f)
+    scope elemSink = (cstring str, ref const(FormatInfo) f)
     {
         widthSink(sink, str, f);
     };
@@ -297,7 +297,7 @@ public bool sformat (Args...) (scope FormatterSink sink, cstring fmt, Args args)
 
 *******************************************************************************/
 
-private void widthSink (scope FormatterSink sink, cstring str, ref Const!(FormatInfo) f)
+private void widthSink (scope FormatterSink sink, cstring str, ref const(FormatInfo) f)
 {
     if (f.flags & Flags.Width)
     {
@@ -499,16 +499,16 @@ private void handle (T) (T v, FormatInfo f, scope FormatterSink sf, scope ElemSi
 
     // UTF-8 strings and chars (UTF-16 and UTF-32 unsupported)
     else static if (is(T : cstring)
-                    || is(T : Const!(wchar)[])
-                    || is(T : Const!(dchar)[]))
+                    || is(T : const(wchar)[])
+                    || is(T : const(dchar)[]))
     {
         if (f.flags & Flags.Nested) sf(`"`);
         UTF.toString(v, (cstring val) { se(val, f); return val.length; });
         if (f.flags & Flags.Nested) sf(`"`);
     }
     else static if (is(typeof((&v)[0 .. 1]) : cstring)
-                    || is(typeof((&v)[0 .. 1]) : Const!(wchar)[])
-                    || is(typeof((&v)[0 .. 1]) : Const!(dchar)[]))
+                    || is(typeof((&v)[0 .. 1]) : const(wchar)[])
+                    || is(typeof((&v)[0 .. 1]) : const(dchar)[]))
     {
         Unqual!(T)[3] b = "'_'";
         b[1] = v;
@@ -541,7 +541,7 @@ private void handle (T) (T v, FormatInfo f, scope FormatterSink sf, scope ElemSi
         alias ElementTypeOf!(T) A;
 
         static if (is(Unqual!(A) == void))
-            handle!(Const!(ubyte)[])(cast(Const!(ubyte)[]) v, f, sf, se);
+            handle!(const(ubyte)[])(cast(const(ubyte)[]) v, f, sf, se);
         else
         {
             sf("[");
@@ -718,7 +718,7 @@ private FormatInfo consume (scope FormatterSink sink, ref cstring fmt)
 
 *******************************************************************************/
 
-private cstring forwardSlice (ref cstring s, Const!(char)* p)
+private cstring forwardSlice (ref cstring s, const(char)* p)
 out (ret)
 {
     assert(s.ptr == p);
@@ -747,7 +747,7 @@ body
 
 *******************************************************************************/
 
-private Const!(char)* skipSpace (Const!(char)* s, Const!(char)* end)
+private const(char)* skipSpace (const(char)* s, const(char)* end)
 {
     while (s < end && *s == ' ')
         ++s;
@@ -800,7 +800,7 @@ private void writeSpace (scope FormatterSink s, size_t n)
 
 *******************************************************************************/
 
-private bool readNumber (out size_t f, ref Const!(char)* s)
+private bool readNumber (out size_t f, ref const(char)* s)
 {
     if (*s >= '0' && *s <= '9')
     {

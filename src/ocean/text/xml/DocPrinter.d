@@ -82,10 +82,10 @@ class DocPrinter(T)
 
         ***********************************************************************/
 
-        final Const!(T)[] print (Doc doc, T[] content=null)
+        final const(T)[] print (Doc doc, T[] content=null)
         {
                 if(content !is null)
-                    print (doc.tree, (Const!(T)[][] s...)
+                    print (doc.tree, (const(T)[][] s...)
                         {
                             size_t i=0;
                             foreach(t; s)
@@ -99,7 +99,7 @@ class DocPrinter(T)
                             content.length = i;
                         });
                 else
-                    print (doc.tree, (Const!(T)[][] s...){foreach(t; s) content ~= t;});
+                    print (doc.tree, (const(T)[][] s...){foreach(t; s) content ~= t;});
                 return content;
         }
 
@@ -111,7 +111,7 @@ class DocPrinter(T)
 
         final void print (Doc doc, OutputStream stream)
         {
-                print (doc.tree, (Const!(T)[][] s...){foreach(t; s) stream.write(t);});
+                print (doc.tree, (const(T)[][] s...){foreach(t; s) stream.write(t);});
         }
 
         /***********************************************************************
@@ -120,13 +120,13 @@ class DocPrinter(T)
 
         ***********************************************************************/
 
-        final void print (Node root, scope void delegate(Const!(T)[][]...) emit)
+        final void print (Node root, scope void delegate(const(T)[][]...) emit)
         {
                 T[256] tmp;
                 T[256] spaces = ' ';
 
                 // ignore whitespace from mixed-model values
-                Const!(T)[] rawValue (Node node)
+                const(T)[] rawValue (Node node)
                 {
                         foreach (c; node.rawValue)
                                  if (c > 32)

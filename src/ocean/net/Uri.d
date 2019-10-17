@@ -47,7 +47,7 @@ version (unittest)
 class Uri : UriView
 {
     // simplistic string appender
-    private alias size_t delegate(Const!(void)[]) Consumer;
+    private alias size_t delegate(const(void)[]) Consumer;
 
     /// old method names
     public alias port        getPort;
@@ -77,7 +77,7 @@ class Uri : UriView
 
     private static immutable istring hexDigits = "0123456789abcdef";
 
-    private static Const!(SchemePort[]) schemePorts = [
+    private static const(SchemePort[]) schemePorts = [
         {"coffee",      80},
         {"file",        InvalidPort},
         {"ftp",         21},
@@ -481,7 +481,7 @@ class Uri : UriView
     final size_t produce (ref Buffer!(char) buffer)
     {
         buffer.reset();
-        return this.produce((Const!(void)[] chunk) {
+        return this.produce((const(void)[] chunk) {
             buffer ~= cast(mstring) chunk;
             return buffer.length;
         });
@@ -547,7 +547,7 @@ class Uri : UriView
     static mstring encode (cstring text, int flags)
     {
         void[] s;
-        encode ((Const!(void)[] v) {s ~= v; return  v.length;}, text, flags);
+        encode ((const(void)[] v) {s ~= v; return  v.length;}, text, flags);
         return cast(mstring) s;
     }
 
@@ -1021,7 +1021,7 @@ unittest
         working_buffer.length = 0;
         enableStomping(working_buffer);
 
-        Uri.encode((Const!(void)[] data)
+        Uri.encode((const(void)[] data)
         {
             working_buffer ~= cast (cstring) data;
             return data.length;

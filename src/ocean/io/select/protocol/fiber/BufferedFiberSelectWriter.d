@@ -192,7 +192,7 @@ class BufferedFiberSelectWriter : FiberSelectWriter
 
      **************************************************************************/
 
-    public override typeof (this) send ( Const!(void)[] data )
+    public override typeof (this) send ( const(void)[] data )
     {
         if (data.length < this.buffer.capacity)
         {

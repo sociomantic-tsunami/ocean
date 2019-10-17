@@ -165,7 +165,7 @@ public void  SSL_load_error_strings ();
 
 *******************************************************************************/
 
-public Const!(char *) ERR_reason_error_string (c_ulong e);
+public const(char *) ERR_reason_error_string (c_ulong e);
 
 
 /*******************************************************************************
@@ -206,7 +206,7 @@ public c_ulong ERR_get_error ();
 
 *******************************************************************************/
 
-public int SSL_get_error (Const!(SSL)* ssl, int ret);
+public int SSL_get_error (const(SSL)* ssl, int ret);
 
 
 /*******************************************************************************
@@ -304,7 +304,7 @@ public int SSL_do_handshake (SSL* ssl);
 
 *******************************************************************************/
 
-public SSL_CTX* SSL_CTX_new (Const!(ssl_method_st)* meth);
+public SSL_CTX* SSL_CTX_new (const(ssl_method_st)* meth);
 
 
 /*******************************************************************************
@@ -335,7 +335,7 @@ public void SSL_CTX_free (SSL_CTX* ctx);
 
 *******************************************************************************/
 
-public int SSL_write (SSL *ssl, Const!(void*) buf, int num);
+public int SSL_write (SSL *ssl, const(void*) buf, int num);
 
 
 /*******************************************************************************
@@ -408,7 +408,7 @@ public void SSL_CTX_set_verify_depth (SSL_CTX* ctx, int depth);
 *******************************************************************************/
 
 public int SSL_CTX_load_verify_locations (SSL_CTX* ctx,
-    Const!(char*) CAfile, Const!(char*) CApath);
+    const(char*) CAfile, const(char*) CApath);
 
 
 /*******************************************************************************
@@ -424,7 +424,7 @@ public int SSL_CTX_load_verify_locations (SSL_CTX* ctx,
 
 *******************************************************************************/
 
-public c_long SSL_get_verify_result (Const!(SSL)* ssl);
+public c_long SSL_get_verify_result (const(SSL)* ssl);
 
 
 /*******************************************************************************
@@ -443,7 +443,7 @@ public c_long SSL_get_verify_result (Const!(SSL)* ssl);
 
 *******************************************************************************/
 
-public int SSL_set_cipher_list (SSL* ssl, Const!(char*) str);
+public int SSL_set_cipher_list (SSL* ssl, const(char*) str);
 
 
 /*******************************************************************************
@@ -521,7 +521,7 @@ public void X509_free (X509* a);
 
 *******************************************************************************/
 
-public X509* SSL_get_peer_certificate (Const!(SSL)* s);
+public X509* SSL_get_peer_certificate (const(SSL)* s);
 
 
 /*******************************************************************************
@@ -545,7 +545,7 @@ public X509* SSL_get_peer_certificate (Const!(SSL)* s);
 *******************************************************************************/
 
 public int EVP_DigestSignInit (EVP_MD_CTX* ctx, EVP_PKEY_CTX** pctx,
-                    Const!(EVP_MD)* type, ENGINE* e, EVP_PKEY* pkey);
+                    const(EVP_MD)* type, ENGINE* e, EVP_PKEY* pkey);
 
 
 /*******************************************************************************
@@ -565,7 +565,7 @@ public int EVP_DigestSignInit (EVP_MD_CTX* ctx, EVP_PKEY_CTX** pctx,
 
 *******************************************************************************/
 
-public int EVP_DigestUpdate (EVP_MD_CTX* ctx, Const!(void)* d, size_t cnt);
+public int EVP_DigestUpdate (EVP_MD_CTX* ctx, const(void)* d, size_t cnt);
 
 
 /*******************************************************************************
@@ -587,7 +587,7 @@ public int EVP_DigestUpdate (EVP_MD_CTX* ctx, Const!(void)* d, size_t cnt);
 
 *******************************************************************************/
 
-public int EVP_DigestSignFinal (EVP_MD_CTX* ctx, Const!(void)* signature,
+public int EVP_DigestSignFinal (EVP_MD_CTX* ctx, const(void)* signature,
     size_t* sig_len);
 
 
@@ -670,7 +670,7 @@ public int EVP_PKEY_set1_RSA (EVP_PKEY* pkey, RSA* rsa);
 
 *******************************************************************************/
 
-public Const!(EVP_MD)* EVP_sha256 ();
+public const(EVP_MD)* EVP_sha256 ();
 
 
 /*******************************************************************************
@@ -714,7 +714,7 @@ public void RSA_free (RSA* rsa);
 *******************************************************************************/
 
 private RSA* d2i_RSAPrivateKey (RSA** ptr_to_ptr_which_must_be_null,
-    Const!(void)** ptr_to_ptr_which_gets_corrupted, c_long len);
+    const(void)** ptr_to_ptr_which_gets_corrupted, c_long len);
 
 
 
@@ -802,7 +802,7 @@ public c_long SSL_CTX_set_options (SSL_CTX* ctx, c_long op)
 
 *******************************************************************************/
 
-public RSA * decodeRSAPrivateKey (Const!(void)[] key)
+public RSA * decodeRSAPrivateKey (const(void)[] key)
 {
     // If this isn't null, memory corruption will happen
 

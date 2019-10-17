@@ -194,7 +194,7 @@ package struct FS
 
         ***********************************************************************/
 
-        static mstring join (Const!(char[])[] paths...)
+        static mstring join (const(char[])[] paths...)
         {
                 mstring result;
 
@@ -1102,7 +1102,7 @@ bool remove (cstring name)
 
 *******************************************************************************/
 
-cstring[] remove (Const!(char[])[] paths)
+cstring[] remove (const(char[])[] paths)
 {
         cstring[] failed;
         foreach (path; paths)
@@ -1262,7 +1262,7 @@ mstring[] collate (cstring path, cstring pattern, bool recurse=false)
 
 *******************************************************************************/
 
-mstring join (Const!(char[])[] paths...)
+mstring join (const(char[])[] paths...)
 {
         return FS.join (paths);
 }

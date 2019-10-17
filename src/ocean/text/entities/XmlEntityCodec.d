@@ -61,8 +61,8 @@ public alias MarkupEntityCodec!(XmlEntitySet) XmlEntityCodec;
 
 version (unittest)
 {
-    void encodeTest ( Char ) ( XmlEntityCodec codec, Const!(Char)[] str,
-        Const!(Char)[] expected_result )
+    void encodeTest ( Char ) ( XmlEntityCodec codec, const(Char)[] str,
+        const(Char)[] expected_result )
     {
         Char[] encoded;
 
@@ -79,8 +79,8 @@ version (unittest)
         verify(encoded == expected_result);
     }
 
-    void decodeTest ( Char ) ( XmlEntityCodec codec, Const!(Char)[] str,
-        Const!(Char)[] expected_result )
+    void decodeTest ( Char ) ( XmlEntityCodec codec, const(Char)[] str,
+        const(Char)[] expected_result )
     {
         Char[] decoded;
 
@@ -101,8 +101,8 @@ version (unittest)
     {
         struct Test
         {
-            Const!(Char)[] before;
-            Const!(Char)[] after;
+            const(Char)[] before;
+            const(Char)[] after;
         }
 
         scope codec = new XmlEntityCodec;

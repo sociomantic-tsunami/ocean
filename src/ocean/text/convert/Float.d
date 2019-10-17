@@ -182,9 +182,9 @@ private bool negative (NumType x)
 
 *******************************************************************************/
 
-public Const!(T)[] format (T, V) (T[] output, V v, in T[] fmt)
+public const(T)[] format (T, V) (T[] output, V v, in T[] fmt)
 {
-    static assert(is(V : Const!(real)),
+    static assert(is(V : const(real)),
                   "Float.format only support floating point types or types that"
                   ~ "implicitly convert to them");
 
@@ -233,7 +233,7 @@ public Const!(T)[] format (T, V) (T[] output, V v, in T[] fmt)
 
 T[] format(T) (T[] dst, NumType x, int decimals=Dec, int e=Exp, bool pad=Pad)
 {
-    Const!(char)*  end, str;
+    const(char)*  end, str;
     int       exp,
               sign,
               mode=5;
@@ -335,7 +335,7 @@ T[] format(T) (T[] dst, NumType x, int decimals=Dec, int e=Exp, bool pad=Pad)
 
  ******************************************************************************/
 
-private Const!(char)* convertl (char* buf, real value, int ndigit,
+private const(char)* convertl (char* buf, real value, int ndigit,
     int *decpt, int *sign, int fflag)
 {
     if ((*sign = negative(value)) != 0)
@@ -418,13 +418,13 @@ private Const!(char)* convertl (char* buf, real value, int ndigit,
 NumType parse(T) (in T[] src, uint* ate=null)
 {
     T           c;
-    Const!(T)*  p;
+    const(T)*  p;
     int         exp;
     bool        sign;
     uint        radix;
     NumType     value = 0.0;
 
-    static bool match (Const!(T)* aa, in T[] bb)
+    static bool match (const(T)* aa, in T[] bb)
     {
         foreach (b; bb)
         {

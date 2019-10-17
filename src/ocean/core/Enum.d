@@ -254,8 +254,8 @@ public interface IEnum
 
     ***************************************************************************/
 
-    public int opApply ( scope int delegate ( ref Const!(Name) name,
-        ref Const!(Value) value ) dg );
+    public int opApply ( scope int delegate ( ref const(Name) name,
+        ref const(Value) value ) dg );
 
 
     /***************************************************************************
@@ -265,8 +265,8 @@ public interface IEnum
 
     ***************************************************************************/
 
-    public int opApply ( scope int delegate ( ref size_t i, ref Const!(Name) name,
-        ref Const!(Value) value ) dg );
+    public int opApply ( scope int delegate ( ref size_t i, ref const(Name) name,
+        ref const(Value) value ) dg );
 }
 
 
@@ -295,8 +295,8 @@ public interface IEnum
 public template EnumValues ( size_t i, T ... )
 {
     static assert(T.length == 2);
-    static assert(is(typeof(T[0]) : Const!(istring[])));
-    static assert(is(typeof(T[1]) : Const!(int[])));
+    static assert(is(typeof(T[0]) : const(istring[])));
+    static assert(is(typeof(T[1]) : const(int[])));
 
     static if ( i == T[0].length - 1 )
     {
@@ -389,8 +389,8 @@ public template EnumBase ( T ... )
     ***************************************************************************/
 
     static assert(T.length == 1);
-    static assert(is(typeof(T[0].keys) : Const!(char[][])));
-    static assert(is(typeof(T[0].values) : Const!(int[])));
+    static assert(is(typeof(T[0].keys) : const(char[][])));
+    static assert(is(typeof(T[0].values) : const(int[])));
 
 
     /***************************************************************************
@@ -652,8 +652,8 @@ public template EnumBase ( T ... )
 
     ***************************************************************************/
 
-    public override int opApply ( scope int delegate ( ref Const!(Name) name,
-        ref Const!(Value) value ) dg )
+    public override int opApply ( scope int delegate ( ref const(Name) name,
+        ref const(Value) value ) dg )
     {
         int res;
         foreach ( i, name; this.names )
@@ -678,7 +678,7 @@ public template EnumBase ( T ... )
     ***************************************************************************/
 
     public override int opApply ( scope int delegate ( ref size_t i,
-        ref Const!(Name) name, ref Const!(Value) value ) dg )
+        ref const(Name) name, ref const(Value) value ) dg )
     {
         int res;
         foreach ( i, name; this.names )

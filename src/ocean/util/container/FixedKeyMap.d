@@ -139,7 +139,7 @@ public class FixedKeyMap ( K, V )
 
     ***************************************************************************/
 
-    public this ( Const!(K[]) keys )
+    public this ( const(K[]) keys )
     {
         this.keys.copy(keys);
         sort(this.keys);
@@ -178,7 +178,7 @@ public class FixedKeyMap ( K, V )
 
     ***************************************************************************/
 
-    public V opIndex ( Const!(K) key )
+    public V opIndex ( const(K) key )
     {
         return this.values[this.keyIndex(key, true)];
     }
@@ -197,7 +197,7 @@ public class FixedKeyMap ( K, V )
 
     ***************************************************************************/
 
-    public void opIndexAssign ( V value, Const!(K) key )
+    public void opIndexAssign ( V value, const(K) key )
     {
         this.values[this.keyIndex(key, true)] = value;
     }
@@ -216,7 +216,7 @@ public class FixedKeyMap ( K, V )
 
     ***************************************************************************/
 
-    public V* opIn_r ( Const!(K) key )
+    public V* opIn_r ( const(K) key )
     {
         auto pos = this.keyIndex(key, false);
         auto found = pos < this.keys.length;
@@ -297,7 +297,7 @@ public class FixedKeyMap ( K, V )
 
     ***************************************************************************/
 
-    private size_t keyIndex ( Const!(K) key, bool throw_if_not_found )
+    private size_t keyIndex ( const(K) key, bool throw_if_not_found )
     {
         size_t pos;
         auto found = ocean.core.Array.bsearch(this.keys, key, pos);

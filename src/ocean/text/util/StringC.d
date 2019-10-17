@@ -176,7 +176,7 @@ unittest
     // String literals are null terminated
     istring r1 = StringC.toDString("Hello".ptr);
     test!("==")(r1, "Hello");
-    Const!(char)* const_empty = "".ptr;
+    const(char)* const_empty = "".ptr;
     test(const_empty !is null);
     cstring r2 = StringC.toDString(const_empty);
     test!("is")(const_empty, r2.ptr);

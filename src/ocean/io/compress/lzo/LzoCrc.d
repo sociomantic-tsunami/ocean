@@ -46,7 +46,7 @@ struct LzoCrc
 
     uint crc32 ( uint crc32_in, in void[] data )
     {
-        return lzo_crc32(crc32_in, cast (Const!(ubyte)*) data.ptr,
+        return lzo_crc32(crc32_in, cast (const(ubyte)*) data.ptr,
             castFrom!(size_t).to!(int)(data.length));
     }
 

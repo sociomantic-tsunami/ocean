@@ -237,7 +237,7 @@ public class StringEncode ( istring fromcode, istring tocode ) : StringEncoder
         // Do the conversion. Keep trying until there is no E2BIG error.
         size_t inbytesleft  = input.length;
         size_t outbytesleft = output.length;
-        Const!(char)* inptr  = input.ptr;
+        const(char)* inptr  = input.ptr;
         char* outptr = output.ptr;
 
         ptrdiff_t result;

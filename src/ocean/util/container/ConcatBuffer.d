@@ -129,7 +129,7 @@ public class ConcatBuffer ( T )
 
     ***************************************************************************/
 
-    public T[] add ( Const!(T)[] data )
+    public T[] add ( const(T)[] data )
     {
         return this.add(data.length)[] = data[];
     }
@@ -280,7 +280,7 @@ public class SliceBuffer ( T ) : ConcatBuffer!(T)
 
     ***************************************************************************/
 
-    override public T[] add ( Const!(T)[] data )
+    override public T[] add ( const(T)[] data )
     {
         auto slice = super.add(data);
         this.slices ~= slice;

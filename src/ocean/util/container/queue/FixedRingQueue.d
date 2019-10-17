@@ -195,7 +195,7 @@ class FixedByteRingQueue : FixedRingQueueBase!(IByteQueue)
 
         if (element_in_queue)
         {
-            Const!(void)[] element_ = element;
+            const(void)[] element_ = element;
             element_in_queue[] = element_[];
             return true;
         }

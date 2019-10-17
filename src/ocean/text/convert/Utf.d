@@ -66,9 +66,9 @@ import ocean.transition;
 
  *******************************************************************************/
 
-Const!(char)[]  toString (Const!(char)[] src, char[] dst=null, size_t* ate=null) {return src;}
-Const!(wchar)[] toString (Const!(wchar)[] src, wchar[] dst, size_t* ate=null) {return src;}
-Const!(dchar)[] toString (Const!(dchar)[] src, dchar[] dst, size_t* ate=null) {return src;}
+const(char)[]  toString (const(char)[] src, char[] dst=null, size_t* ate=null) {return src;}
+const(wchar)[] toString (const(wchar)[] src, wchar[] dst, size_t* ate=null) {return src;}
+const(dchar)[] toString (const(dchar)[] src, dchar[] dst, size_t* ate=null) {return src;}
 
 
 /*******************************************************************************
@@ -89,19 +89,19 @@ Const!(dchar)[] toString (Const!(dchar)[] src, dchar[] dst, size_t* ate=null) {r
 
 *******************************************************************************/
 
-public void toString (Const!(char)[] input, scope size_t delegate(cstring) dg)
+public void toString (const(char)[] input, scope size_t delegate(cstring) dg)
 {
     dg(input);
 }
 
 /// Ditto
-public void toString (Const!(wchar)[] input, scope size_t delegate(cstring) dg)
+public void toString (const(wchar)[] input, scope size_t delegate(cstring) dg)
 {
     char[4] buff;
     foreach (size_t idx, wchar c; input)
     {
         if (c < 0x80)
-            dg((cast(Const!(char)*) &c)[0 .. 1]);
+            dg((cast(const(char)*) &c)[0 .. 1]);
         else if (c < 0x0800)
         {
             buff[0] = cast(char)(0xc0 | ((c >> 6) & 0x3f));
@@ -121,13 +121,13 @@ public void toString (Const!(wchar)[] input, scope size_t delegate(cstring) dg)
 }
 
 /// Ditto
-public void toString (Const!(dchar)[] input, scope size_t delegate(cstring) dg)
+public void toString (const(dchar)[] input, scope size_t delegate(cstring) dg)
 {
     char[4] buff;
     foreach (size_t idx, dchar c; input)
     {
         if (c < 0x80)
-            dg((cast(Const!(char)*) &c)[0 .. 1]);
+            dg((cast(const(char)*) &c)[0 .. 1]);
         else if (c < 0x0800)
         {
             buff[0] = cast(char)(0xc0 | ((c >> 6) & 0x3f));
@@ -188,7 +188,7 @@ public void toString (Const!(dchar)[] input, scope size_t delegate(cstring) dg)
 
  *******************************************************************************/
 
-mstring toString (Const!(wchar)[] input, mstring output=null, size_t* ate=null)
+mstring toString (const(wchar)[] input, mstring output=null, size_t* ate=null)
 {
     if (ate)
         *ate = input.length;
@@ -280,7 +280,7 @@ wchar[] toString16 (cstring input, wchar[] output=null, size_t* ate=null)
     int     produced;
     auto    pIn = input.ptr;
     auto    pMax = pIn + input.length;
-    Const!(char)* pValid;
+    const(char)* pValid;
 
     if (ate is null)
     {
@@ -376,7 +376,7 @@ wchar[] toString16 (cstring input, wchar[] output=null, size_t* ate=null)
 
  *******************************************************************************/
 
-mstring toString (Const!(dchar)[] input, mstring output=null, size_t* ate=null)
+mstring toString (const(dchar)[] input, mstring output=null, size_t* ate=null)
 {
     if (ate)
         *ate = input.length;
@@ -466,12 +466,12 @@ mstring toString (Const!(dchar)[] input, mstring output=null, size_t* ate=null)
 
  *******************************************************************************/
 
-dchar[] toString32 (Const!(char)[] input, dchar[] output=null, size_t* ate=null)
+dchar[] toString32 (const(char)[] input, dchar[] output=null, size_t* ate=null)
 {
     int     produced;
     auto    pIn = input.ptr;
     auto    pMax = pIn + input.length;
-    Const!(char)* pValid;
+    const(char)* pValid;
 
     if (ate is null)
         if (input.length > output.length)
@@ -573,7 +573,7 @@ dchar[] toString32 (Const!(char)[] input, dchar[] output=null, size_t* ate=null)
 
  *******************************************************************************/
 
-wchar[] toString16 (Const!(dchar)[] input, wchar[] output=null, size_t* ate=null)
+wchar[] toString16 (const(dchar)[] input, wchar[] output=null, size_t* ate=null)
 {
     if (ate)
         *ate = input.length;
@@ -644,12 +644,12 @@ wchar[] toString16 (Const!(dchar)[] input, wchar[] output=null, size_t* ate=null
 
  *******************************************************************************/
 
-dchar[] toString32 (Const!(wchar)[] input, dchar[] output=null, size_t* ate=null)
+dchar[] toString32 (const(wchar)[] input, dchar[] output=null, size_t* ate=null)
 {
     int     produced;
     auto    pIn = input.ptr;
     auto    pMax = pIn + input.length;
-    Const!(wchar)* pValid;
+    const(wchar)* pValid;
 
     if (ate is null)
         if (input.length > output.length)
@@ -726,7 +726,7 @@ dchar decode (cstring src, ref size_t ate)
 
  *******************************************************************************/
 
-dchar decode (Const!(wchar)[] src, ref size_t ate)
+dchar decode (const(wchar)[] src, ref size_t ate)
 {
     dchar[1] ret;
     return toString32 (src, ret, &ate)[0];
@@ -777,7 +777,7 @@ bool isValid (dchar c)
 
  *******************************************************************************/
 
-Const!(T)[] fromString8 (T) (cstring s, T[] dst)
+const(T)[] fromString8 (T) (cstring s, T[] dst)
 {
     static if (is(T == char))
         return s;
@@ -799,18 +799,18 @@ Const!(T)[] fromString8 (T) (cstring s, T[] dst)
 
  *******************************************************************************/
 
-Const!(char)[] fromString16 (Const!(wchar)[] s, char[] dst)
+const(char)[] fromString16 (const(wchar)[] s, char[] dst)
 {
     return .toString (s, dst);
 }
 
-Const!(wchar)[] fromString16 (Const!(wchar)[] s, wchar[] dst)
+const(wchar)[] fromString16 (const(wchar)[] s, wchar[] dst)
 {
     return s;
 }
 
 
-Const!(dchar)[] fromString16 (Const!(wchar)[] s, dchar[] dst)
+const(dchar)[] fromString16 (const(wchar)[] s, dchar[] dst)
 {
     return .toString32 (s, dst);
 }
@@ -825,17 +825,17 @@ Const!(dchar)[] fromString16 (Const!(wchar)[] s, dchar[] dst)
 
  *******************************************************************************/
 
-Const!(char)[] fromString32 (Const!(dchar)[] s, char[] dst)
+const(char)[] fromString32 (const(dchar)[] s, char[] dst)
 {
     return .toString (s, dst);
 }
 
-Const!(wchar)[] fromString32 (Const!(dchar)[] s, wchar[] dst)
+const(wchar)[] fromString32 (const(dchar)[] s, wchar[] dst)
 {
     return .toString16 (s, dst);
 }
 
-Const!(dchar)[] fromString32 (Const!(dchar)[] s, dchar[] dst)
+const(dchar)[] fromString32 (const(dchar)[] s, dchar[] dst)
 {
     return s;
 }

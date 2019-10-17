@@ -43,7 +43,7 @@ TC[] unescape(T, TC = Unqual!(T)) (T[] src, TC[] dst = null)
 {
         size_t content;
 
-        void append (Const!(Unqual!(T))[] s)
+        void append (const(Unqual!(T))[] s)
         {
                 if (content + s.length > dst.length)
                     dst.length = dst.length + s.length + 1024;
@@ -76,7 +76,7 @@ TC[] escape(T, TC = Unqual!(T)) (T[] src, TC[] dst = null)
 {
         size_t content;
 
-        void append (Const!(Unqual!(T))[] s)
+        void append (const(Unqual!(T))[] s)
         {
                 if (content + s.length > dst.length)
                     dst.length = dst.length + s.length + 1024;

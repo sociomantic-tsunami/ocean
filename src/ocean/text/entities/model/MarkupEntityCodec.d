@@ -115,17 +115,17 @@ public class MarkupEntityCodec ( E : IEntitySet ) : IEntityCodec!(E)
 
     ***************************************************************************/
 
-    public override char[] encode ( Const!(char)[] text, ref char[] encoded )
+    public override char[] encode ( const(char)[] text, ref char[] encoded )
     {
         return this.encode_(text, encoded);
     }
 
-    public override wchar[] encode ( Const!(wchar)[] text, ref wchar[] encoded )
+    public override wchar[] encode ( const(wchar)[] text, ref wchar[] encoded )
     {
         return this.encode_(text, encoded);
     }
 
-    public override dchar[] encode ( Const!(dchar)[] text, ref dchar[] encoded )
+    public override dchar[] encode ( const(dchar)[] text, ref dchar[] encoded )
     {
         return this.encode_(text, encoded);
     }
@@ -144,17 +144,17 @@ public class MarkupEntityCodec ( E : IEntitySet ) : IEntityCodec!(E)
 
     ***************************************************************************/
 
-    public override mstring decode ( Const!(char)[] text, ref mstring decoded )
+    public override mstring decode ( const(char)[] text, ref mstring decoded )
     {
         return this.decode_(text, decoded);
     }
 
-    public override wchar[] decode ( Const!(wchar)[] text, ref wchar[] decoded )
+    public override wchar[] decode ( const(wchar)[] text, ref wchar[] decoded )
     {
         return this.decode_(text, decoded);
     }
 
-    public override dchar[] decode ( Const!(dchar)[] text, ref dchar[] decoded )
+    public override dchar[] decode ( const(dchar)[] text, ref dchar[] decoded )
     {
         return this.decode_(text, decoded);
     }
@@ -172,17 +172,17 @@ public class MarkupEntityCodec ( E : IEntitySet ) : IEntityCodec!(E)
 
     ***************************************************************************/
 
-    public override bool containsUnencoded ( Const!(char)[] text )
+    public override bool containsUnencoded ( const(char)[] text )
     {
         return this.containsUnencoded_(text);
     }
 
-    public override bool containsUnencoded ( Const!(wchar)[] text )
+    public override bool containsUnencoded ( const(wchar)[] text )
     {
         return this.containsUnencoded_(text);
     }
 
-    public override bool containsUnencoded ( Const!(dchar)[] text )
+    public override bool containsUnencoded ( const(dchar)[] text )
     {
         return this.containsUnencoded_(text);
     }
@@ -200,17 +200,17 @@ public class MarkupEntityCodec ( E : IEntitySet ) : IEntityCodec!(E)
 
     ***************************************************************************/
 
-    public override bool containsEncoded ( Const!(char)[] text )
+    public override bool containsEncoded ( const(char)[] text )
     {
         return this.containsEncoded_(text);
     }
 
-    public override bool containsEncoded ( Const!(wchar)[] text )
+    public override bool containsEncoded ( const(wchar)[] text )
     {
         return this.containsEncoded_(text);
     }
 
-    public override bool containsEncoded ( Const!(dchar)[] text )
+    public override bool containsEncoded ( const(dchar)[] text )
     {
         return this.containsEncoded_(text);
     }

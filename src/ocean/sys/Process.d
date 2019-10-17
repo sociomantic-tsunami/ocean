@@ -248,7 +248,7 @@ class Process
      *            Note: The class will use only slices, .dup when necessary.
      *
      */
-    public this(Const!(mstring)[] args ...)
+    public this(const(mstring)[] args ...)
     {
         if(args.length == 1)
             _args = splitArgs(args[0]);
@@ -279,7 +279,7 @@ class Process
      *            also be empty.
      *            Note: The class will use only slices, .dup when necessary.
      */
-    public this(bool copyEnv, Const!(mstring)[] args ...)
+    public this(bool copyEnv, const(mstring)[] args ...)
     {
         _copyEnv = copyEnv;
         this(args);
@@ -339,7 +339,7 @@ class Process
      * env      = associative array of strings with the process' environment
      *            variables; the variable name must be the key of each entry.
      */
-    public this(Const!(mstring)[] args, istring[istring] env)
+    public this(const(mstring)[] args, istring[istring] env)
     {
         verify(args.length > 0);
         verify(args[0].length > 0);
@@ -435,7 +435,7 @@ class Process
      *
      * Returns: the arguments that were set.
      */
-    public cstring[] args(cstring progname, Const!(mstring)[] args ...)
+    public cstring[] args(cstring progname, const(mstring)[] args ...)
     {
         return _args.copy(progname ~ args);
     }
@@ -461,7 +461,7 @@ class Process
      *
      */
 
-    public void argsWithCommand(Const!(mstring)[] args)
+    public void argsWithCommand(const(mstring)[] args)
     {
         _args.copy(args);
     }
@@ -486,7 +486,7 @@ class Process
      * Returns: a reference to this for chaining
      *
      */
-    public Process setArgs(cstring progname, Const!(mstring)[] args ...)
+    public Process setArgs(cstring progname, const(mstring)[] args ...)
     {
         this.args(progname, args);
         return this;

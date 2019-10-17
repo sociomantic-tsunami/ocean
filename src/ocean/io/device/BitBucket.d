@@ -42,7 +42,7 @@ class BitBucket : Conduit
 
         override size_t read (void[] dst) { return Eof; }
 
-        override size_t write (Const!(void)[] src) { return src.length; }
+        override size_t write (const(void)[] src) { return src.length; }
 
         override void detach () { }
 }

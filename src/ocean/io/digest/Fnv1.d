@@ -387,7 +387,7 @@ public class Fnv1Generic ( bool FNV1A = false, T = hash_t ) : FnvDigest
 
      **************************************************************************/
 
-    public override This update ( Const!(void)[] data )
+    public override This update ( const(void)[] data )
     {
         this.digest = this.fnv1(data, this.digest);
 
@@ -550,7 +550,7 @@ public class Fnv1Generic ( bool FNV1A = false, T = hash_t ) : FnvDigest
 
     public static DigestType fnv1 ( U ) ( U data, DigestType digest = INIT )
     {
-        Const!(ubyte)[] data_;
+        const(ubyte)[] data_;
 
         static if (is (Unqual!(U) : ubyte[]))
         {
@@ -560,16 +560,16 @@ public class Fnv1Generic ( bool FNV1A = false, T = hash_t ) : FnvDigest
         {
             static if (V.sizeof == 1)
             {
-                data_ = cast(Const!(ubyte)[])data;
+                data_ = cast(const(ubyte)[])data;
             }
             else
             {
-                data_ = (cast(Const!(ubyte)*)data.ptr)[0 .. data.length * V.sizeof];
+                data_ = (cast(const(ubyte)*)data.ptr)[0 .. data.length * V.sizeof];
             }
         }
         else
         {
-            data_ = cast(Const!(ubyte)[])((cast(Const!(void)*)&data)[0 .. data.sizeof]);
+            data_ = cast(const(ubyte)[])((cast(const(void)*)&data)[0 .. data.sizeof]);
         }
 
         foreach (d; data_)

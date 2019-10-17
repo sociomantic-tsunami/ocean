@@ -789,7 +789,7 @@ class FlexibleByteRingQueue : IRingQueue!(IByteQueue)
                             itoa(start))
                     );
 
-                    auto header = cast(Const!(Header)*)data[start .. pos].ptr;
+                    auto header = cast(const(Header)*)data[start .. pos].ptr;
 
                     enforce!(ValidationError)(
                         (data.length - pos) >= header.length,
@@ -1155,7 +1155,7 @@ unittest
         test((cast(FlexibleByteRingQueue.Header*) queue.get_data.ptr).length == 1);
 
         {
-            Const!(void)[] expected = "1";
+            const(void)[] expected = "1";
             test(queue.get_data[FlexibleByteRingQueue.Header.sizeof ..
                               1+FlexibleByteRingQueue.Header.sizeof] ==
                                 expected);

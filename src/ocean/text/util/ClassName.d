@@ -17,19 +17,19 @@ module ocean.text.util.ClassName;
 import ocean.stdc.gnu.string;
 import ocean.transition;
 
-istring classname ( Const!(Object) o )
+istring classname ( const(Object) o )
 {
     istring mod;
 
     return classname(o, mod);
 }
 
-istring classname ( Const!(Object) o, out istring mod )
+istring classname ( const(Object) o, out istring mod )
 {
     istring str = o.classinfo.name;
 
-    Const!(void)* result = memrchr(str.ptr, '.', str.length);
-    Const!(char)* lastdot = cast(Const!(char)*) result;
+    const(void)* result = memrchr(str.ptr, '.', str.length);
+    const(char)* lastdot = cast(const(char)*) result;
 
     if (lastdot)
     {

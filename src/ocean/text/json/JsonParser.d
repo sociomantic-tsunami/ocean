@@ -58,11 +58,11 @@ class JsonParser(T, bool AllowNaN = false)
 
     private struct Iterator
     {
-        Const!(T)*   ptr;
-        Const!(T)*   end;
-        Const!(T)[]  text;
+        const(T)*   ptr;
+        const(T)*   end;
+        const(T)[]  text;
 
-        void reset (Const!(T)[] text)
+        void reset (const(T)[] text)
         {
             this.text = text;
             this.ptr = text.ptr;
@@ -72,7 +72,7 @@ class JsonParser(T, bool AllowNaN = false)
 
     protected Iterator              str;
     private Stack!(State, 16)       state;
-    private Const!(T)*              curLoc;
+    private const(T)*              curLoc;
     private ptrdiff_t               curLen;
     private State                   curState;
     protected Token                 curType;
@@ -87,7 +87,7 @@ class JsonParser(T, bool AllowNaN = false)
 
     ***************************************************************************/
 
-    this (Const!(T)[] text = null)
+    this (const(T)[] text = null)
     {
         this.exception = new JsonParserException();
         this.reset(text);
@@ -131,7 +131,7 @@ class JsonParser(T, bool AllowNaN = false)
     }
 
     /// Returns: The current value of the token
-    final Const!(T)[] value ()
+    final const(T)[] value ()
     {
         return this.curLoc[0 .. this.curLen];
     }
@@ -148,7 +148,7 @@ class JsonParser(T, bool AllowNaN = false)
 
     ***************************************************************************/
 
-    bool reset (Const!(T)[] json = null)
+    bool reset (const(T)[] json = null)
     {
         this.state.clear();
         this.str.reset(json);
@@ -188,7 +188,7 @@ class JsonParser(T, bool AllowNaN = false)
 
     ***************************************************************************/
 
-    protected final void expected (cstring token, Const!(T)* point)
+    protected final void expected (cstring token, const(T)* point)
     {
         auto diff = cast(int) (point - this.str.text.ptr);
         throw this.exception.set("expected ").append(token).append(" @input[")
@@ -389,7 +389,7 @@ class JsonParser(T, bool AllowNaN = false)
     }
 
     ///
-    private bool match (Const!(T)[] name, Token token)
+    private bool match (const(T)[] name, Token token)
     {
         auto i = name.length;
         if (this.str.ptr[0 .. i] == name)
@@ -442,7 +442,7 @@ class JsonParser(T, bool AllowNaN = false)
     }
 
     ///
-    private int escaped (Const!(T)* p)
+    private int escaped (const(T)* p)
     {
         int i;
 

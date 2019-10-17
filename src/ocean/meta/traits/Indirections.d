@@ -78,7 +78,7 @@ unittest
 
     static struct S2
     {
-        Const!(S1)[5] a;
+        const(S1)[5] a;
 
         union
         {
@@ -182,7 +182,7 @@ unittest
 
     static assert(!containsMultiDimensionalDynamicArrays!(void));
     static assert(!containsMultiDimensionalDynamicArrays!(void[]));
-    static assert( containsMultiDimensionalDynamicArrays!(Const!(void[])[]));
+    static assert( containsMultiDimensionalDynamicArrays!(const(void[])[]));
     static assert(!containsMultiDimensionalDynamicArrays!(void[][3]));
 
     struct A
@@ -203,7 +203,7 @@ unittest
     {
         int x;
         float[][3][] y;
-        Const!(char)[] z;
+        const(char)[] z;
     }
 
     static assert(!containsMultiDimensionalDynamicArrays!(C));
@@ -237,11 +237,11 @@ unittest
     {
         int[] x;
     }
-    static assert ( containsDynamicArray!(Const!(S)));
+    static assert ( containsDynamicArray!(const(S)));
 
     static struct S2
     {
-        struct Arr { Const!(int[]) x; }
+        struct Arr { const(int[]) x; }
         Arr[3][4] arr;
     }
 
