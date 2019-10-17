@@ -61,16 +61,11 @@ alias char[]         mstring;
 
 template Const(T)
 {
-    alias const(T) Const;
-}
-
-unittest
-{
-    alias Const!(int[]) Int;
-
-    static assert (is(Int));
-
-    static assert (is(Int == const));
+    // workaround for deprecating Const
+    // https://issues.dlang.org/show_bug.cgi?id=10181
+    deprecated("Use const")
+    alias const(T) Temp;
+    alias Temp Const;
 }
 
 /*******************************************************************************
@@ -91,16 +86,11 @@ unittest
 
 template Immut(T)
 {
-    alias immutable(T) Immut;
-}
-
-unittest
-{
-    alias Immut!(int[]) Int;
-
-    static assert (is(Int));
-
-    static assert (is(Int == immutable));
+    // workaround for deprecating Immut
+    // https://issues.dlang.org/show_bug.cgi?id=10181
+    deprecated("Use immutable")
+    alias immutable(T) Temp;
+    alias Temp Immut;
 }
 
 /*******************************************************************************
@@ -124,17 +114,11 @@ unittest
 
 template Inout(T)
 {
-    alias inout(T) Inout;
-}
-
-unittest
-{
-    alias Inout!(char[]) Str;
-
-    Str foo ( Str arg ) { return arg; }
-
-    char[] s1 = foo("aaa".dup);
-    immutable(char)[] s2 = foo("aaa");
+    // workaround for deprecating Inout
+    // https://issues.dlang.org/show_bug.cgi?id=10181
+    deprecated("Use inout")
+    alias inout(T) Temp;
+    alias Temp Inout;
 }
 
 /*******************************************************************************
