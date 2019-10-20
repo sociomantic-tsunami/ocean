@@ -13,11 +13,7 @@ override DFLAGS += -w -version=GLIBC
 # symbols internally. Disable it on explicit flag to make possible regression
 # testing in D upstream.
 ifneq ($(ALLOW_DEPRECATIONS),1)
-	ifeq ($(DVER),2)
 	override DFLAGS += -de
-	else
-	override DFLAGS := $(filter-out -di,$(DFLAGS))
-	endif
 endif
 
 # Remove coverage files
