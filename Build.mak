@@ -9,6 +9,12 @@ export ASSERT_ON_STOMPING_PREVENTION=1
 # Common D compiler flags
 override DFLAGS += -w -version=GLIBC
 
+# Ubuntu bionic requires builds to use position independent code and
+# dmd-compiler does not set the flag -fPIC by default
+ifeq ($(DC),dmd-transitional)
+override DFLAGS += -fPIC
+endif
+
 # Treat deprecations as errors to ensure ocean doesn't use own deprecated
 # symbols internally. Disable it on explicit flag to make possible regression
 # testing in D upstream.
