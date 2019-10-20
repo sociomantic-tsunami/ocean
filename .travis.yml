@@ -47,6 +47,17 @@ jobs:
           env: DMD=2.085.* F=production
         - <<: *test-matrix-d2
           env: DMD=2.085.* F=devel
+        - <<: *test-matrix-d2
+          env: DIST=bionic DMD=2.078.3.s* F=production
+        - <<: *test-matrix-d2
+          env: DIST=bionic DMD=2.078.3.s* F=devel
+        - <<: *test-matrix-d2
+          env: DIST=bionic DMD=2.078.3.s* F=devel DFLAGS=-debug=ISelectClient
+          script: 2>/dev/null beaver dlang make
+        - <<: *test-matrix-d2
+          env: DIST=bionic DMD=2.085.* F=production
+        - <<: *test-matrix-d2
+          env: DIST=bionic DMD=2.085.* F=devel
 
         # Additional stages
 
