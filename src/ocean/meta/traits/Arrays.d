@@ -35,13 +35,13 @@ import ocean.meta.types.Qualifiers;
 template isUTF8StringType ( T )
 {
     static immutable isUTF8StringType =
-           isArrayType!(T) == ArrayKind.Dynamic
-        && is(Unqual!(ElementTypeOf!(T)) == char);
+        isBasicArrayType!(T) && is(Unqual!(ElementTypeOf!(T)) == char);
 }
 
 ///
 unittest
 {
+    static assert (isUTF8StringType!(char[1]));
     static assert (isUTF8StringType!(char[]));
     static assert (isUTF8StringType!(Immut!(char)[]));
     static assert (!isUTF8StringType!(wchar[]));
