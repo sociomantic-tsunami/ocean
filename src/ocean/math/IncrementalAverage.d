@@ -262,8 +262,15 @@ unittest
 
     inc_avg.clear();
     static immutable ADD = ulong.max/1_000_000;
-    for (ulong i = 0; i < ulong.max; i += (ADD < ulong.max - i ? ADD : 1))
+    for (ulong i = 0; i < ulong.max;)
+    {
         inc_avg.addToAverage(i%2); // 1 or 0
+
+        if (ADD < (ulong.max - i))
+            i += ADD;
+        else
+            i++;
+    }
     inc_avg.addToAverage(1); // One more add is missing
     t.test!(">=")(feqrel(inc_avg.average(), 0.5), PRECISION);
 }
