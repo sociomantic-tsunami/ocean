@@ -194,12 +194,6 @@ struct BitArray
         return this;
     }
 
-    deprecated("Please use initialize instead")
-    void init( void[] target, size_t numbits )
-    {
-        this.initialize(target, numbits);
-    }
-
     /**
      * Map BitArray onto target, with numbits being the number of bits in the
      * array. Does not copy the data.  This is the inverse of opCast.
