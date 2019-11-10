@@ -211,60 +211,60 @@ unittest
 {
     auto t = new NamedTest("Incremental Average - basic unit tests");
 
-	IncrementalAverage inc_avg;
+    IncrementalAverage inc_avg;
 
     t.test!("==")(inc_avg.count, 0);
     t.test!(">=")(feqrel(inc_avg.average(), 0.0), PRECISION);
 
-	inc_avg.addToAverage(1);
+    inc_avg.addToAverage(1);
     t.test!(">=")(feqrel(inc_avg.average(), 1.0), PRECISION);
 
-	inc_avg.clear();
-	t.test!("==")(inc_avg.count, 0);
+    inc_avg.clear();
+    t.test!("==")(inc_avg.count, 0);
     t.test!(">=")(feqrel(inc_avg.average(), 0.0), PRECISION);
 
-	inc_avg.addToAverage(10);
-	inc_avg.addToAverage(20);
+    inc_avg.addToAverage(10);
+    inc_avg.addToAverage(20);
     t.test!("==")(inc_avg.count, 2);
     t.test!(">=")(feqrel(inc_avg.average(), 15.0), PRECISION);
 
-	inc_avg.clear();
-	inc_avg.addToAverage(-10);
+    inc_avg.clear();
+    inc_avg.addToAverage(-10);
     t.test!(">=")(feqrel(inc_avg.average(), -10.0), PRECISION);
-	inc_avg.addToAverage(-20);
+    inc_avg.addToAverage(-20);
     t.test!(">=")(feqrel(inc_avg.average(), -15.0), PRECISION);
 
-	inc_avg.clear();
-	inc_avg.addToAverage(-10, uint.max);
-	inc_avg.addToAverage(10, uint.max);
+    inc_avg.clear();
+    inc_avg.addToAverage(-10, uint.max);
+    inc_avg.addToAverage(10, uint.max);
     t.test!("==")(inc_avg.count, 2UL * uint.max);
     t.test!(">=")(feqrel(inc_avg.average(), 0.0), PRECISION);
 
-	inc_avg.clear();
-	inc_avg.addToAverage(long.max);
+    inc_avg.clear();
+    inc_avg.addToAverage(long.max);
     t.test!(">=")(feqrel(inc_avg.average(), cast(double)long.max), PRECISION);
-	inc_avg.addToAverage(cast(ulong)long.max + 10);
+    inc_avg.addToAverage(cast(ulong)long.max + 10);
     t.test!(">=")(feqrel(inc_avg.average(), cast(double)long.max) + 5,
                   PRECISION);
 
-	inc_avg.clear();
-	inc_avg.addToAverage(long.max / 2.0);
-	inc_avg.addToAverage(long.max * 1.25);
+    inc_avg.clear();
+    inc_avg.addToAverage(long.max / 2.0);
+    inc_avg.addToAverage(long.max * 1.25);
     // (0.5 + 1.25) / 2 = 0.875
     t.test!(">=")(feqrel(inc_avg.average(), long.max * 0.875), PRECISION);
 
-	inc_avg.clear();
-	inc_avg.addToAverage(long.min);
+    inc_avg.clear();
+    inc_avg.addToAverage(long.min);
     t.test!(">=")(feqrel(inc_avg.average(), cast(double)long.min), PRECISION);
-	inc_avg.addToAverage(cast(double)long.min - 10);
+    inc_avg.addToAverage(cast(double)long.min - 10);
     t.test!(">=")(feqrel(inc_avg.average(), cast(double)long.min - 5),
                   PRECISION);
 
-	inc_avg.clear();
-	static immutable ADD = ulong.max/1_000_000;
-	for (ulong i = 0; i < ulong.max; i += (ADD < ulong.max - i ? ADD : 1))
-		inc_avg.addToAverage(i%2); // 1 or 0
-	inc_avg.addToAverage(1); // One more add is missing
+    inc_avg.clear();
+    static immutable ADD = ulong.max/1_000_000;
+    for (ulong i = 0; i < ulong.max; i += (ADD < ulong.max - i ? ADD : 1))
+        inc_avg.addToAverage(i%2); // 1 or 0
+    inc_avg.addToAverage(1); // One more add is missing
     t.test!(">=")(feqrel(inc_avg.average(), 0.5), PRECISION);
 }
 
