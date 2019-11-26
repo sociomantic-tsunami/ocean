@@ -162,6 +162,23 @@ struct TimeSpan
             mixin("return TimeSpan(ticks_ " ~ op ~ " t.ticks_);");
         }
 
+        unittest
+        {
+            TimeSpan time_span;
+            time_span.ticks_ = 5;
+
+            TimeSpan test_span;
+            test_span.ticks_ = 10;
+
+            auto res = time_span + test_span;
+            test!("==")(res.ticks(), 15);
+
+            test_span.ticks_ = 3;
+
+            res = time_span - test_span;
+            test!("==")(res.ticks(), 2);
+        }
+
         /**
          * Add or subtract the specified TimeSpan to this TimeSpan, assigning
          * the result to this instance.
@@ -175,6 +192,23 @@ struct TimeSpan
         {
             mixin("ticks_ " ~ op ~ "= t.ticks_;");
             return this;
+        }
+
+        unittest
+        {
+            TimeSpan time_span;
+            time_span.ticks_ = 5;
+
+            TimeSpan test_span;
+            test_span.ticks_ = 10;
+
+            time_span += test_span;
+            test!("==")(time_span.ticks(), 15);
+
+            test_span.ticks_ = 3;
+
+            time_span -= test_span;
+            test!("==")(time_span.ticks(), 12);
         }
 
         /**
@@ -193,6 +227,18 @@ struct TimeSpan
                 mixin("return TimeSpan(ticks_ " ~ op ~ " v);");
         }
 
+        unittest
+        {
+            TimeSpan time_span;
+            time_span.ticks_ = 5;
+
+            auto res = time_span * 10;
+            test!("==")(res.ticks(), 50);
+
+            res = time_span / 5;
+            test!("==")(res.ticks(), 1);
+        }
+
         /**
          * Scales this TimeSpan and assigns the result to this instance.
          *
@@ -204,6 +250,18 @@ struct TimeSpan
         {
                 mixin("ticks_ " ~ op ~ "= v;");
                 return this;
+        }
+
+        unittest
+        {
+            TimeSpan time_span;
+            time_span.ticks_ = 5;
+
+            time_span *= 10;
+            test!("==")(time_span.ticks(), 50);
+
+            time_span /= 5;
+            test!("==")(time_span.ticks(), 10);
         }
 
         /**
@@ -219,6 +277,17 @@ struct TimeSpan
                 return ticks_ / t.ticks;
         }
 
+        unittest
+        {
+            TimeSpan time_span;
+            time_span.ticks_ = 10;
+
+            TimeSpan test_span;
+            test_span.ticks_ = 5;
+
+            test!("==")(time_span / test_span, 2);
+        }
+
         /**
          * Negate a time span. Returns a new TimeSpan.
          *
@@ -228,6 +297,16 @@ struct TimeSpan
         TimeSpan opUnary (string op) () if (op == "-")
         {
                 return TimeSpan(-ticks_);
+        }
+
+        unittest
+        {
+            TimeSpan time_span;
+            time_span.ticks_ = 10;
+
+            auto res = (-time_span);
+
+            test!("==")(res.ticks(), -10);
         }
 
         /**
@@ -535,6 +614,23 @@ struct Time
             mixin("return Time(ticks_ " ~ op ~ " t.ticks_);");
         }
 
+        unittest
+        {
+            Time time_span;
+            time_span.ticks_ = 5;
+
+            TimeSpan test_span;
+            test_span.ticks_ = 10;
+
+            auto res = time_span + test_span;
+            test!("==")(res.ticks(), 15);
+
+            test_span.ticks_ = 3;
+
+            res = time_span - test_span;
+            test!("==")(res.ticks(), 2);
+        }
+
         /**********************************************************************
 
                 Adds or subtracts the specified time span to the time, assigning
@@ -553,6 +649,23 @@ struct Time
                 return this;
         }
 
+        unittest
+        {
+            Time time_span;
+            time_span.ticks_ = 5;
+
+            TimeSpan test_span;
+            test_span.ticks_ = 10;
+
+            time_span += test_span;
+            test!("==")(time_span.ticks(), 15);
+
+            test_span.ticks_ = 3;
+
+            time_span -= test_span;
+            test!("==")(time_span.ticks(), 12);
+        }
+
         /**********************************************************************
 
                 Returns a time span which represents the difference in time
@@ -568,6 +681,18 @@ struct Time
         TimeSpan opBinary (string op) (Time t) if (op == "-")
         {
                 return TimeSpan(ticks_ - t.ticks_);
+        }
+
+        unittest
+        {
+            Time time_span;
+            time_span.ticks_ = 5;
+
+            TimeSpan test_span;
+            test_span.ticks_ = 3;
+
+            auto res = time_span - test_span;
+            test!("==")(res.ticks(), 2);
         }
 
         /**********************************************************************
