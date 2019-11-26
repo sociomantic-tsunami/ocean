@@ -491,4 +491,13 @@ public class SlidingAverageTime ( T ) : SlidingAverage!(T)
 unittest
 {
     auto avg_stats = new SlidingAverageTime!(size_t)(100, 50, 1000);
+
+    test!("==")(avg_stats.current, 0, "Failed SlidingAverageTime initial value");
+
+    avg_stats++;
+    test!("==")(avg_stats.current, 1, "Failed SlidingAverageTime increment value");
+
+    avg_stats += 3;
+    test!("==")(avg_stats.current, 4, "Failed SlidingAverageTime add value");
+
 }
