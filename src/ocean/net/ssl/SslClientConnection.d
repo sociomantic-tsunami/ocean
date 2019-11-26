@@ -442,7 +442,7 @@ public class SslClientConnection
     *******************************************************************/
 
     public void ssl_error ( cstring host_name, istring func_name,
-            Const!(char*) c_msg, istring file = __FILE__, long line = __LINE__ )
+            const(char*) c_msg, istring file = __FILE__, long line = __LINE__ )
     {
         throw this.exception.set(host_name, func_name, StringC.toDString(c_msg),
             file, line);
@@ -469,8 +469,8 @@ public class SslClientConnection
 *******************************************************************************/
 
 
-public ulong initializeSslAndCreateCtx ( Const!(char *) ca_path,
-    Const!(char *) ca_file = null )
+public ulong initializeSslAndCreateCtx ( const(char *) ca_path,
+    const(char *) ca_file = null )
 {
     globalSslContext = null;
 

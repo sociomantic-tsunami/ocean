@@ -140,7 +140,7 @@ int    pcre_config(int what, void* where);
 int    pcre_copy_named_substring(pcre* code, char* subject, int* ovector, int stringcount, char* stringname, char* buffer, int buffersize);
 int    pcre_copy_substring(char* subject, int* ovector, int stringcount, int stringnumber, char* buffer, int buffersize);
 int    pcre_dfa_exec(pcre* code, pcre_extra* extra, char* subject, int length, int startoffset, int options, int* ovector, int ovecsize, int* workspace, int wscount);
-int    pcre_exec(pcre* code, pcre_extra* extra, Const!(char)* subject, int length, int startoffset, int options, int* ovector, int ovecsize);
+int    pcre_exec(pcre* code, pcre_extra* extra, const(char)* subject, int length, int startoffset, int options, int* ovector, int ovecsize);
 void   pcre_free_substring(char* stringptr);
 void   pcre_free_substring_list(char** stringptr);
 int    pcre_fullinfo(pcre* code, pcre_extra* extra, int what, void* where);

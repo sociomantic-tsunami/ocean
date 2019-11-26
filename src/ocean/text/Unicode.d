@@ -49,7 +49,7 @@ version (unittest) import ocean.core.Test;
  *     output = this output buffer will be used unless too small
  * Returns: the case mapped string
  */
-char[] toUpper(Const!(char)[] input, char[] output = null) {
+char[] toUpper(const(char)[] input, char[] output = null) {
 
     dchar[1] buf;
     // assume most common case: String stays the same length
@@ -99,7 +99,7 @@ char[] toUpper(Const!(char)[] input, char[] output = null) {
  *     output = this output buffer will be used unless too small
  * Returns: the case mapped string
  */
-wchar[] toUpper(Const!(wchar)[] input, wchar[] output = null) {
+wchar[] toUpper(const(wchar)[] input, wchar[] output = null) {
 
     dchar[1] buf;
     // assume most common case: String stays the same length
@@ -147,7 +147,7 @@ wchar[] toUpper(Const!(wchar)[] input, wchar[] output = null) {
  *     output = this output buffer will be used unless too small
  * Returns: the case mapped string
  */
-dchar[] toUpper(Const!(dchar)[] input, dchar[] output = null) {
+dchar[] toUpper(const(dchar)[] input, dchar[] output = null) {
 
     // assume most common case: String stays the same length
     if (input.length > output.length)
@@ -187,7 +187,7 @@ dchar[] toUpper(Const!(dchar)[] input, dchar[] output = null) {
  *     output = this output buffer will be used unless too small
  * Returns: the case mapped string
  */
-char[] toLower(Const!(char)[] input, char[] output = null) {
+char[] toLower(const(char)[] input, char[] output = null) {
 
     dchar[1] buf;
     // assume most common case: String stays the same length
@@ -237,7 +237,7 @@ char[] toLower(Const!(char)[] input, char[] output = null) {
  *     output = this output buffer will be used unless too small
  * Returns: the case mapped string
  */
-wchar[] toLower(Const!(wchar)[] input, wchar[] output = null) {
+wchar[] toLower(const(wchar)[] input, wchar[] output = null) {
 
     dchar[1] buf;
     // assume most common case: String stays the same length
@@ -286,7 +286,7 @@ wchar[] toLower(Const!(wchar)[] input, wchar[] output = null) {
  *     output = this output buffer will be used unless too small
  * Returns: the case mapped string
  */
-dchar[] toLower(Const!(dchar)[] input, dchar[] output = null) {
+dchar[] toLower(const(dchar)[] input, dchar[] output = null) {
 
     // assume most common case: String stays the same length
     if (input.length > output.length)
@@ -326,7 +326,7 @@ dchar[] toLower(Const!(dchar)[] input, dchar[] output = null) {
  *     output = this output buffer will be used unless too small
  * Returns: the case mapped string
  */
-char[] toFold(Const!(char)[] input, char[] output = null) {
+char[] toFold(const(char)[] input, char[] output = null) {
 
     dchar[1] buf;
     // assume most common case: String stays the same length
@@ -371,7 +371,7 @@ char[] toFold(Const!(char)[] input, char[] output = null) {
  *     output = this output buffer will be used unless too small
  * Returns: the case mapped string
  */
-wchar[] toFold(Const!(wchar)[] input, wchar[] output = null) {
+wchar[] toFold(const(wchar)[] input, wchar[] output = null) {
 
     dchar[1] buf;
     // assume most common case: String stays the same length
@@ -415,7 +415,7 @@ wchar[] toFold(Const!(wchar)[] input, wchar[] output = null) {
  *     output = this output buffer will be used unless too small
  * Returns: the case mapped string
  */
-dchar[] toFold(Const!(dchar)[] input, dchar[] output = null) {
+dchar[] toFold(const(dchar)[] input, dchar[] output = null) {
 
     // assume most common case: String stays the same length
     if (input.length > output.length)
@@ -588,12 +588,12 @@ bool isPrintable(dchar ch) {
 unittest {
     // 1) No Buffer passed, no resize, no SpecialCase
 
-    Immut!(char)[] testString1utf8 = "\u00E4\u00F6\u00FC";
-    Immut!(wchar)[] testString1utf16 = "\u00E4\u00F6\u00FC";
-    Immut!(dchar)[] testString1utf32 = "\u00E4\u00F6\u00FC";
-    Immut!(char)[] refString1utf8 = "\u00C4\u00D6\u00DC";
-    Immut!(wchar)[] refString1utf16 = "\u00C4\u00D6\u00DC";
-    Immut!(dchar)[] refString1utf32 = "\u00C4\u00D6\u00DC";
+    immutable(char)[] testString1utf8 = "\u00E4\u00F6\u00FC";
+    immutable(wchar)[] testString1utf16 = "\u00E4\u00F6\u00FC";
+    immutable(dchar)[] testString1utf32 = "\u00E4\u00F6\u00FC";
+    immutable(char)[] refString1utf8 = "\u00C4\u00D6\u00DC";
+    immutable(wchar)[] refString1utf16 = "\u00C4\u00D6\u00DC";
+    immutable(dchar)[] refString1utf32 = "\u00C4\u00D6\u00DC";
     char[] resultString1utf8 = toUpper(testString1utf8);
     test(resultString1utf8 == refString1utf8);
     wchar[] resultString1utf16 = toUpper(testString1utf16);
@@ -633,12 +633,12 @@ unittest {
     // 4) Buffer passed, resize necessary, extensive SpecialCase
 
 
-    Immut!(char)[] testString2utf8 = "\uFB03\uFB04\uFB05";
-    Immut!(wchar)[] testString2utf16 = "\uFB03\uFB04\uFB05";
-    Immut!(dchar)[] testString2utf32 = "\uFB03\uFB04\uFB05";
-    Immut!(char)[] refString2utf8 = "\u0046\u0046\u0049\u0046\u0046\u004C\u0053\u0054";
-    Immut!(wchar)[] refString2utf16 = "\u0046\u0046\u0049\u0046\u0046\u004C\u0053\u0054";
-    Immut!(dchar)[] refString2utf32 = "\u0046\u0046\u0049\u0046\u0046\u004C\u0053\u0054";
+    immutable(char)[] testString2utf8 = "\uFB03\uFB04\uFB05";
+    immutable(wchar)[] testString2utf16 = "\uFB03\uFB04\uFB05";
+    immutable(dchar)[] testString2utf32 = "\uFB03\uFB04\uFB05";
+    immutable(char)[] refString2utf8 = "\u0046\u0046\u0049\u0046\u0046\u004C\u0053\u0054";
+    immutable(wchar)[] refString2utf16 = "\u0046\u0046\u0049\u0046\u0046\u004C\u0053\u0054";
+    immutable(dchar)[] refString2utf32 = "\u0046\u0046\u0049\u0046\u0046\u004C\u0053\u0054";
     resultString1utf8 = toUpper(testString2utf8,buffer2utf8);
     test(resultString1utf8.ptr != buffer2utf8.ptr);
     test(resultString1utf8 == refString2utf8);
@@ -655,12 +655,12 @@ unittest {
 unittest {
     // 1) No Buffer passed, no resize, no SpecialCase
 
-    Immut!(char)[] testString1utf8 = "\u00C4\u00D6\u00DC";
-    Immut!(wchar)[] testString1utf16 = "\u00C4\u00D6\u00DC";
-    Immut!(dchar)[] testString1utf32 = "\u00C4\u00D6\u00DC";
-    Immut!(char)[] refString1utf8 = "\u00E4\u00F6\u00FC";
-    Immut!(wchar)[] refString1utf16 = "\u00E4\u00F6\u00FC";
-    Immut!(dchar)[] refString1utf32 = "\u00E4\u00F6\u00FC";
+    immutable(char)[] testString1utf8 = "\u00C4\u00D6\u00DC";
+    immutable(wchar)[] testString1utf16 = "\u00C4\u00D6\u00DC";
+    immutable(dchar)[] testString1utf32 = "\u00C4\u00D6\u00DC";
+    immutable(char)[] refString1utf8 = "\u00E4\u00F6\u00FC";
+    immutable(wchar)[] refString1utf16 = "\u00E4\u00F6\u00FC";
+    immutable(dchar)[] refString1utf32 = "\u00E4\u00F6\u00FC";
     char[] resultString1utf8 = toLower(testString1utf8);
     test(resultString1utf8 == refString1utf8);
     wchar[] resultString1utf16 = toLower(testString1utf16);
@@ -699,12 +699,12 @@ unittest {
 
     // 4) Buffer passed, resize necessary, extensive SpecialCase
 
-    Immut!(char)[] testString2utf8 = "\u0130\u0130\u0130";
-    Immut!(wchar)[] testString2utf16 = "\u0130\u0130\u0130";
-    Immut!(dchar)[] testString2utf32 = "\u0130\u0130\u0130";
-    Immut!(char)[] refString2utf8 = "\u0069\u0307\u0069\u0307\u0069\u0307";
-    Immut!(wchar)[] refString2utf16 = "\u0069\u0307\u0069\u0307\u0069\u0307";
-    Immut!(dchar)[] refString2utf32 = "\u0069\u0307\u0069\u0307\u0069\u0307";
+    immutable(char)[] testString2utf8 = "\u0130\u0130\u0130";
+    immutable(wchar)[] testString2utf16 = "\u0130\u0130\u0130";
+    immutable(dchar)[] testString2utf32 = "\u0130\u0130\u0130";
+    immutable(char)[] refString2utf8 = "\u0069\u0307\u0069\u0307\u0069\u0307";
+    immutable(wchar)[] refString2utf16 = "\u0069\u0307\u0069\u0307\u0069\u0307";
+    immutable(dchar)[] refString2utf32 = "\u0069\u0307\u0069\u0307\u0069\u0307";
     resultString1utf8 = toLower(testString2utf8,buffer2utf8);
     test(resultString1utf8.ptr != buffer2utf8.ptr);
     test(resultString1utf8 == refString2utf8);
@@ -717,13 +717,13 @@ unittest {
 }
 
 unittest {
-    Immut!(char)[] testString1utf8 = "?!Mädchen \u0390\u0390,;";
-    Immut!(char)[] testString2utf8 = "?!MÄDCHEN \u03B9\u0308\u0301\u03B9\u0308\u0301,;";
+    immutable(char)[] testString1utf8 = "?!Mädchen \u0390\u0390,;";
+    immutable(char)[] testString2utf8 = "?!MÄDCHEN \u03B9\u0308\u0301\u03B9\u0308\u0301,;";
     test(toFold(testString1utf8) == toFold(testString2utf8));
-    Immut!(wchar)[] testString1utf16 = "?!Mädchen \u0390\u0390,;";
-    Immut!(wchar)[] testString2utf16 = "?!MÄDCHEN \u03B9\u0308\u0301\u03B9\u0308\u0301,;";
+    immutable(wchar)[] testString1utf16 = "?!Mädchen \u0390\u0390,;";
+    immutable(wchar)[] testString2utf16 = "?!MÄDCHEN \u03B9\u0308\u0301\u03B9\u0308\u0301,;";
     test(toFold(testString1utf16) == toFold(testString2utf16));
-    Immut!(wchar)[] testString1utf32 = "?!Mädchen \u0390\u0390,;";
-    Immut!(wchar)[] testString2utf32 = "?!MÄDCHEN \u03B9\u0308\u0301\u03B9\u0308\u0301,;";
+    immutable(wchar)[] testString1utf32 = "?!Mädchen \u0390\u0390,;";
+    immutable(wchar)[] testString2utf32 = "?!MÄDCHEN \u03B9\u0308\u0301\u03B9\u0308\u0301,;";
     test(toFold(testString1utf32) == toFold(testString2utf32));
 }

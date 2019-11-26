@@ -221,4 +221,4 @@ private istring getHostName ()
 
 }
 
-private extern(C) size_t strnlen(Const!(char)* s, size_t maxlen);
+private extern(C) size_t strnlen(const(char)* s, size_t maxlen);

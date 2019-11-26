@@ -290,7 +290,7 @@ struct TimeHistogram
         if (!us)
             return 0;
 
-        static Immut!(size_t[4][2]) powers_of_10 = [
+        static immutable(size_t[4][2]) powers_of_10 = [
             [1,     10,     100,     1_000],
             [1_000, 10_000, 100_000, 1_000_000]
         ];

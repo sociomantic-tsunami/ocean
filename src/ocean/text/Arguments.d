@@ -786,7 +786,7 @@ public class Arguments
 
     ***************************************************************************/
 
-    private Const!(istring)[] msgs;
+    private const(istring)[] msgs;
 
 
     /***************************************************************************
@@ -934,7 +934,7 @@ public class Arguments
 
     ***************************************************************************/
 
-    public bool parse ( Const!(istring)[] input, bool sloppy = false )
+    public bool parse ( const(istring)[] input, bool sloppy = false )
     {
         bool done;
         int error;
@@ -1130,7 +1130,7 @@ public class Arguments
 
     ***************************************************************************/
 
-    public Arguments errors ( Const!(istring)[] errors )
+    public Arguments errors ( const(istring)[] errors )
     {
         if ( errors.length is errmsg.length )
         {
@@ -1748,7 +1748,7 @@ public class Arguments
 
         ***********************************************************************/
 
-        public Const!(istring)[] options;
+        public const(istring)[] options;
 
 
         /***********************************************************************
@@ -1757,7 +1757,7 @@ public class Arguments
 
         ***********************************************************************/
 
-        public Const!(istring)[] deefalts;
+        public const(istring)[] deefalts;
 
 
         /***********************************************************************
@@ -1887,7 +1887,7 @@ public class Arguments
 
         ***********************************************************************/
 
-        public Const!(istring)[] assigned ( )
+        public const(istring)[] assigned ( )
         {
             return values.length ? values : deefalts;
         }
@@ -2301,7 +2301,7 @@ public class Arguments
 
         ***********************************************************************/
 
-        public Argument restrict ( Const!(istring)[] options... )
+        public Argument restrict ( const(istring)[] options... )
         {
             this.options = options.dup;
 

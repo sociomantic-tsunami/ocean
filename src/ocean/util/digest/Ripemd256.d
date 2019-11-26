@@ -48,7 +48,7 @@ final class Ripemd256 : MerkleDamgard
 
         ***********************************************************************/
 
-        private static Const!(uint[8]) initial =
+        private static const(uint[8]) initial =
         [
   				0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476,
   				0x76543210, 0xfedcba98, 0x89abcdef, 0x01234567

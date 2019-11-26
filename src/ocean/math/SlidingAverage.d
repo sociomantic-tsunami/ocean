@@ -393,8 +393,8 @@ public class SlidingAverageTime ( T ) : SlidingAverage!(T)
         Adds current value to the time window history.
         Calculates the new average and returns it
 
-        This pushes the data accumulated using opPostInc, opAddAssign and
-        opAssign to the list of values used to calculate the average.
+        This pushes the data accumulated using opUnary!"++", opOpAssign!"+"
+        and opAssign to the list of values used to calculate the average.
 
         Note: This should be called by a timer periodically according to the
               resolution given in the constructor
@@ -455,12 +455,15 @@ public class SlidingAverageTime ( T ) : SlidingAverage!(T)
 
         Increments the current value by one
 
+        Params:
+            op = operation to perform
+
         Returns:
             new current value
 
     ***************************************************************************/
 
-    public T opPostInc ( )
+    public T opUnary ( string op ) ( ) if (op == "++")
     {
         return this.current++;
     }
@@ -471,6 +474,7 @@ public class SlidingAverageTime ( T ) : SlidingAverage!(T)
         Adds the given value to the current value
 
         Params:
+            op = operation to perform
             val = value to add to the current value
 
         Returns:
@@ -478,7 +482,7 @@ public class SlidingAverageTime ( T ) : SlidingAverage!(T)
 
     ***************************************************************************/
 
-    public T opAddAssign ( T val )
+    public T opOpAssign ( string op ) ( T val ) if (op == "+")
     {
         return this.current += val;
     }
@@ -487,4 +491,13 @@ public class SlidingAverageTime ( T ) : SlidingAverage!(T)
 unittest
 {
     auto avg_stats = new SlidingAverageTime!(size_t)(100, 50, 1000);
+
+    test!("==")(avg_stats.current, 0, "Failed SlidingAverageTime initial value");
+
+    avg_stats++;
+    test!("==")(avg_stats.current, 1, "Failed SlidingAverageTime increment value");
+
+    avg_stats += 3;
+    test!("==")(avg_stats.current, 4, "Failed SlidingAverageTime add value");
+
 }

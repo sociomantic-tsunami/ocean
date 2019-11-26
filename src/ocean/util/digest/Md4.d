@@ -311,7 +311,7 @@ class Md4 : MerkleDamgard
 
         ***********************************************************************/
 
-        private static Const!(uint[4]) initial =
+        private static const(uint[4]) initial =
         [
                 0x67452301,
                 0xefcdab89,

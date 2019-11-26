@@ -64,7 +64,7 @@ version (unittest) import ocean.core.Test;
 
  ******************************************************************************/
 
-extern (C) private int g_ascii_strncasecmp ( Const!(char)* s1, Const!(char)* s2, size_t n );
+extern (C) private int g_ascii_strncasecmp ( const(char)* s1, const(char)* s2, size_t n );
 
 /******************************************************************************/
 

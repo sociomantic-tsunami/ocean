@@ -194,6 +194,11 @@ struct BitArray
         return this;
     }
 
+    deprecated("Please use initialize instead")
+    void init( void[] target, size_t numbits )
+    {
+        this.initialize(target, numbits);
+    }
 
     /**
      * Map BitArray onto target, with numbits being the number of bits in the
@@ -203,7 +208,7 @@ struct BitArray
      *  target  = The array to map.
      *  numbits = The number of bits to map in target.
      */
-    void init( void[] target, size_t numbits )
+    void initialize( void[] target, size_t numbits )
     {
         verify(numbits <= target.length * 8);
         verify((target.length & 3) == 0);
@@ -220,7 +225,7 @@ struct BitArray
         void[] buf;
 
         buf = cast(void[])a;
-        b.init( buf, a.length );
+        b.initialize( buf, a.length );
 
         test( b[0] == 1 );
         test( b[1] == 0 );

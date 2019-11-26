@@ -90,10 +90,10 @@ char[] toString (Time time)
 
  ******************************************************************************/
 
-Const!(T)[] format(T, U=Time) (T[] output, U t)
+const(T)[] format(T, U=Time) (T[] output, U t)
 {return format!(T)(output, cast(Time) t);}
 
-Const!(T)[] format(T) (T[] output, Time t)
+const(T)[] format(T) (T[] output, Time t)
 {
     static immutable T[][] Months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
         "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -130,10 +130,10 @@ unittest
 
  ******************************************************************************/
 
-Const!(T)[] format8601(T, U=Time) (T[] output, U t)
+const(T)[] format8601(T, U=Time) (T[] output, U t)
 {return format!(T)(output, cast(Time) t);}
 
-Const!(T)[] format8601(T) (T[] output, Time t)
+const(T)[] format8601(T) (T[] output, Time t)
 {
     verify(output.length >= 29);
     if (t is t.max)
@@ -700,7 +700,7 @@ private static int parseInt(T) (ref T* p, T* e)
 unittest
 {
     char[30] tmp;
-    Const!(char)[] s = "Sun, 06 Nov 1994 08:49:37 GMT";
+    const(char)[] s = "Sun, 06 Nov 1994 08:49:37 GMT";
 
     auto time = parse (s);
     auto text = format (tmp, time);

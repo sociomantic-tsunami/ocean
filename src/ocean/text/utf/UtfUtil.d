@@ -378,7 +378,7 @@ unittest
 
 *******************************************************************************/
 
-public Inout!(mstring) limitStringLength ( Inout!(mstring) str, size_t max_len )
+public inout(mstring) limitStringLength ( inout(mstring) str, size_t max_len )
 {
     if ( str.length <= max_len )
     {

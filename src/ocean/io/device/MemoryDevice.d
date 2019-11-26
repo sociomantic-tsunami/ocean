@@ -69,7 +69,7 @@ class MemoryDevice : IConduit
 
     ***************************************************************************/
 
-    public Const!(void)[] peek ()
+    public const(void)[] peek ()
     {
         return data;
     }
@@ -131,7 +131,7 @@ class MemoryDevice : IConduit
 
     ***************************************************************************/
 
-    override size_t write ( Const!(void)[] src )
+    override size_t write ( const(void)[] src )
     {
         if ( this.position + src.length > this.data.length )
         {

@@ -720,30 +720,6 @@ unittest
     test!("==")(count, 2);
 }
 
-/*******************************************************************************
-
-    Template to create a tuple of enum codes from 0 to the length of the passed
-    tuple of strings.
-
-    Params:
-        BaseType = base type of enum
-        i = counter (used recursively)
-        Strings = variadic list of descriptions of the enum values
-
-*******************************************************************************/
-
-private template CreateCodes ( BaseType, uint i, Strings ... )
-{
-    static if ( Strings.length == 1 )
-    {
-        alias Tuple!(SmartEnumValue!(BaseType)(Strings[0], i)) CreateCodes;
-    }
-    else
-    {
-        alias Tuple!(SmartEnumValue!(BaseType)(Strings[0], i), CreateCodes!(BaseType, i + 1, Strings[1 .. $])) CreateCodes;
-    }
-}
-
 
 /*******************************************************************************
 
@@ -762,7 +738,8 @@ public template AutoSmartEnum ( istring Name, BaseType, Strings ... )
 {
     static assert ( is(typeof(Strings[0]) : istring), "AutoSmartEnum - please only give immutable strings as template parameters");
 
-    static immutable AutoSmartEnum = SmartEnum!(Name, CreateCodes!(BaseType, 0, Strings));
+    static immutable AutoSmartEnum = autoSmartEnumImpl(Name, BaseType.stringof,
+        Strings);
 }
 
 unittest
@@ -784,6 +761,77 @@ unittest
     test!("in")(name2, n);
     test!("in")(name3, n);
     test!("!in")("NON_EXISTENT".dup, n);
+}
+
+
+/*******************************************************************************
+
+    CTFE function to mixin a SmartEnum class with the codes automatically
+    generated, starting at 0.
+
+    Params:
+        name = name of the class to be created
+        basetype = base type of enum
+        members = variadic list of descriptions of the enum values
+
+*******************************************************************************/
+
+private istring autoSmartEnumImpl ( istring name, istring basetype,
+    istring[] members ... )
+{
+    // Create two strings, one to declare the members, and one to populate
+    // the map.
+    // Also determine the minimum and maximum length of each member name
+
+    istring declstr = null;
+    istring mapstr = null;
+
+    long maxlen = members[0].length;
+    long minlen = members[0].length;
+
+    foreach ( i, s ; members )
+    {
+        if ( s.length > maxlen )
+        {
+            maxlen = s.length;
+        }
+        if ( s.length < minlen )
+        {
+            minlen = s.length;
+        }
+
+        // declstr will be of the form "A=0,B=1,C=2"
+
+        if ( i > 0 )
+        {
+                declstr ~= ",";
+        }
+
+        declstr ~= s ~ "=" ~ CTFE.toString(i);
+
+        // mapstr will be of the form  `map["A"]=A;map["B"]=B;`
+
+        mapstr ~= `map["` ~ s ~ `"]=` ~ s ~ `;`;
+    }
+
+    return  "class " ~ name ~ " : ISmartEnum {"
+        ~ " alias " ~ basetype ~ " BaseType; enum : BaseType {"
+        ~ declstr ~ "} enum length = " ~ CTFE.toString(members.length)
+        ~ "; enum min = 0; enum max = " ~ CTFE.toString(members.length - 1)
+        ~ "; enum min_descr_length = " ~ CTFE.toString(minlen)
+        ~ "; enum max_descr_length = " ~ CTFE.toString(maxlen)
+        ~ "; static this() {" ~ mapstr ~ "map.rehash;} mixin SmartEnumCore!("
+        ~ basetype~ ");}";
+}
+
+unittest
+{
+    test!("==")(autoSmartEnumImpl("Name", "int", "aa", "bbbb", "c"),
+        `class Name : ISmartEnum { alias int BaseType; enum : BaseType `
+        ~ `{aa=0,bbbb=1,c=2} enum length = 3; enum min = 0; enum max = 2; `
+        ~ `enum min_descr_length = 1; enum max_descr_length = 4; `
+        ~ `static this() {map["aa"]=aa;map["bbbb"]=bbbb;map["c"]=c;`
+        ~ `map.rehash;} mixin SmartEnumCore!(int);}`);
 }
 
 /*******************************************************************************

@@ -335,7 +335,7 @@ unittest
 
     static struct S4
     {
-        Const!(char[])[] str = ["Hello", "World"];
+        const(char[])[] str = ["Hello", "World"];
     }
 
     auto tested2 = cast(S4*) memset(buffer.ptr, 0, buffer.length);

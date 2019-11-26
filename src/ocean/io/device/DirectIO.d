@@ -219,7 +219,7 @@ private template AlignedBufferedStream ( )
 
     ***************************************************************************/
 
-    static public bool isAligned ( Const!(void)* ptr )
+    static public bool isAligned ( const(void)* ptr )
     {
         return (cast(size_t) ptr & (BLOCK_SIZE - 1)) == 0;
     }
@@ -451,7 +451,7 @@ public class BufferedDirectWriteFile: OutputStream
 
     ***************************************************************************/
 
-    public size_t write (Const!(void)[] src)
+    public size_t write (const(void)[] src)
     {
         verify(this.file.fileHandle != -1);
 

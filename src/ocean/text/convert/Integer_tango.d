@@ -198,7 +198,7 @@ dchar[] toString32 (long i, dchar[] fmt = null)
 
  *******************************************************************************/
 
-Const!(T)[] format(T, N) (T[] dst, N i, in T[] fmt = null)
+const(T)[] format(T, N) (T[] dst, N i, in T[] fmt = null)
 {
     static assert(isIntegerType!(N),
                   "Integer_tango.format only supports integers");
@@ -239,17 +239,17 @@ private struct _FormatterInfo(T)
     T[]     numbers;
 }
 
-Const!(T)[] formatter(T, N) (T[] dst, N i_, char type, char pre, int width)
+const(T)[] formatter(T, N) (T[] dst, N i_, char type, char pre, int width)
 {
     static assert(isIntegerType!(N),
                   "Integer_tango.formatter only supports integers");
     Unqual!(N) i = i_;
 
 
-    static immutable Immut!(T)[] lower = "0123456789abcdef";
-    static immutable Immut!(T)[] upper = "0123456789ABCDEF";
+    static immutable immutable(T)[] lower = "0123456789abcdef";
+    static immutable immutable(T)[] upper = "0123456789ABCDEF";
 
-    alias _FormatterInfo!(Immut!(T)) Info;
+    alias _FormatterInfo!(immutable(T)) Info;
 
     static immutable Info[] formats = [
         { 10, null, lower},

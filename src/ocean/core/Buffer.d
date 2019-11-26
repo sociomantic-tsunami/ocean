@@ -68,7 +68,7 @@ struct Buffer ( T )
         alias ubyte ElementType;
         mixin VoidBufferImpl Impl;
     }
-    else static if (is(typeof({ T x; Const!(T) y; x = y; })))
+    else static if (is(typeof({ T x; const(T) y; x = y; })))
     {
         alias T ElementType;
         mixin NoIndirectionsBufferImpl Impl;
@@ -161,7 +161,7 @@ struct Buffer ( T )
 
     ***************************************************************************/
 
-    Inout!(T[]) opSlice ( size_t begin, size_t end ) inout
+    inout(T[]) opSlice ( size_t begin, size_t end ) inout
     {
         return this.data[begin .. end];
     }
@@ -175,7 +175,7 @@ struct Buffer ( T )
 
     ***************************************************************************/
 
-    Inout!(T[]) opSlice ( ) inout
+    inout(T[]) opSlice ( ) inout
     {
         return this.data[];
     }

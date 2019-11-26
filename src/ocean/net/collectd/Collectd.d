@@ -407,7 +407,7 @@ public final class Collectd
 
     ***************************************************************************/
 
-    private void formatIdentifier (ref Const!(Identifier) identifier)
+    private void formatIdentifier (ref const(Identifier) identifier)
     {
         verify(identifier.host.length != 0, "No host for identifier");
         verify(identifier.plugin.length != 0, "No plugin for identifier");
@@ -440,7 +440,7 @@ public final class Collectd
 
     private void format (T...) (in T args)
     {
-        scope sink = (Const!(char)[] v)
+        scope sink = (const(char)[] v)
                      {
                          this.format_buff ~= v;
                      };

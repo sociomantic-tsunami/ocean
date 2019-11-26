@@ -88,7 +88,7 @@ public template isCharType ( T )
 unittest
 {
     static assert ( isCharType!(wchar));
-    static assert ( isCharType!(Const!(char)));
+    static assert ( isCharType!(const(char)));
     static assert (!isCharType!(byte));
 }
 
@@ -115,7 +115,7 @@ public template isSignedIntegerType ( T )
 unittest
 {
     static assert ( isSignedIntegerType!(int));
-    static assert ( isSignedIntegerType!(Const!(long)));
+    static assert ( isSignedIntegerType!(const(long)));
     static assert (!isSignedIntegerType!(ubyte));
 }
 
@@ -143,7 +143,7 @@ unittest
 {
     static assert (!isUnsignedIntegerType!(int));
     static assert ( isUnsignedIntegerType!(ubyte));
-    static assert ( isUnsignedIntegerType!(Const!(ulong)));
+    static assert ( isUnsignedIntegerType!(const(ulong)));
 }
 
 /*******************************************************************************
@@ -221,7 +221,7 @@ public template isComplexType( T )
 unittest
 {
     static assert ( isComplexType!(cdouble));
-    static assert ( isComplexType!(Const!(cdouble)));
+    static assert ( isComplexType!(const(cdouble)));
     static assert (!isComplexType!(double));
 }
 
@@ -247,7 +247,7 @@ public template isImaginaryType( T )
 unittest
 {
     static assert ( isImaginaryType!(idouble));
-    static assert ( isImaginaryType!(Const!(idouble)));
+    static assert ( isImaginaryType!(const(idouble)));
     static assert (!isImaginaryType!(double));
 }
 
@@ -329,7 +329,7 @@ unittest
     static assert ( isArrayType!(char[][5]) == ArrayKind.Static);
     static assert ( isArrayType!(char) == ArrayKind.NotArray);
     static assert ( isArrayType!(int[int]) == ArrayKind.Associative);
-    static assert ( isArrayType!(Const!(int[int])) == ArrayKind.Associative);
+    static assert ( isArrayType!(const(int[int])) == ArrayKind.Associative);
     static assert (!isArrayType!(char));
 }
 
@@ -384,7 +384,7 @@ unittest
 {
     static assert (staticArrayLength!(int[][5]) == 5);
     static assert (staticArrayLength!(char[42]) == 42);
-    static assert (staticArrayLength!(Immut!(mstring[2])) == 2);
+    static assert (staticArrayLength!(immutable(mstring[2])) == 2);
 }
 
 /*******************************************************************************
@@ -416,7 +416,7 @@ unittest
 {
     static assert ( isPointerType!(char[]*));
     static assert (!isPointerType!(char*[]));
-    static assert ( isPointerType!(Const!(real)*));
+    static assert ( isPointerType!(const(real)*));
     static assert (!isPointerType!(uint));
 
     class Ham { void* a; }
@@ -430,7 +430,7 @@ unittest
     }
 
     static assert (!isPointerType!(Eggs));
-    static assert ( isPointerType!(Immut!(Eggs*)));
+    static assert ( isPointerType!(immutable(Eggs*)));
 
     struct Bacon { }
 

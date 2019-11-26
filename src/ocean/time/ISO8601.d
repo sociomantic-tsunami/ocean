@@ -185,7 +185,7 @@ private size_t doIso8601Date(T)(
 
    size_t eaten() { return p - src.ptr; }
    size_t remaining() { return src.length - eaten(); }
-   bool done(Const!(T)[] s) { return .done(eaten(), src.length, p, s); }
+   bool done(const(T)[] s) { return .done(eaten(), src.length, p, s); }
 
    if (!parseYear(p, src.length, expanded, fd))
       return 0;
@@ -387,7 +387,7 @@ private size_t doIso8601Time(T)(
 ) {
    size_t eaten() { return p - src.ptr; }
    size_t remaining() { return src.length - eaten(); }
-   bool done(Const!(T)[] s) { return .done(eaten(), src.length, p, s); }
+   bool done(const(T)[] s) { return .done(eaten(), src.length, p, s); }
    bool checkColon() { return .checkColon(p, separators); }
 
    byte getTimeZone() { return .getTimeZone(p, remaining(), fd, separators, &done); }

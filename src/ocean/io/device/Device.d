@@ -176,7 +176,7 @@ class Device : Conduit, ISelectable
 
     ***************************************************************************/
 
-    override size_t write (Const!(void)[] src)
+    override size_t write (const(void)[] src)
     {
         ssize_t written;
 
@@ -244,7 +244,7 @@ class Device : Conduit, ISelectable
 
     ***************************************************************************/
 
-    public size_t pwrite (Const!(void)[] src, off_t offset)
+    public size_t pwrite (const(void)[] src, off_t offset)
     {
         ssize_t written;
 

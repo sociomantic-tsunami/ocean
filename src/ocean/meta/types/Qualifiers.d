@@ -34,8 +34,8 @@ module ocean.meta.types.Qualifiers;
 
 *******************************************************************************/
 
-alias Immut!(char)[] istring;
-alias Const!(char)[] cstring;
+alias immutable(char)[] istring;
+alias const(char)[] cstring;
 alias char[]         mstring;
 
 /*******************************************************************************
@@ -50,7 +50,7 @@ alias char[]         mstring;
     Example:
 
     ---
-    void foo(Element)(Const!(Element)[] buf)
+    void foo(Element)(const(Element)[] buf)
     {
     }
 
@@ -75,12 +75,12 @@ unittest
 
 /*******************************************************************************
 
-    Same as Const!(T) but for immutable
+    Same as const(T) but for immutable
 
     Example:
 
     ---
-    Immut!(char)[] foo()
+    immutable(char)[] foo()
     {
         return "aaa"; // ok, immutable
         return new char[]; // error, mutable
@@ -105,12 +105,12 @@ unittest
 
 /*******************************************************************************
 
-    Same as Const!(T) but for inout
+    Same as const(T) but for inout
 
     Example:
 
     ---
-    Inout!(char[]) foo(Inout!(char[]) arg)
+    inout(char[]) foo(inout(char[]) arg)
     {
         return arg;
     }
@@ -134,7 +134,7 @@ unittest
     Str foo ( Str arg ) { return arg; }
 
     char[] s1 = foo("aaa".dup);
-    Immut!(char)[] s2 = foo("aaa");
+    immutable(char)[] s2 = foo("aaa");
 }
 
 /*******************************************************************************

@@ -260,8 +260,8 @@ struct StringSearch ( bool wide_char = false )
 
         length = min(length, str.length);
 
-        Const!(void)* item = pLocateBinChar(str.ptr + start, value, length - start);
-        Const!(void)* pstr = str.ptr;
+        const(void)* item = pLocateBinChar(str.ptr + start, value, length - start);
+        const(void)* pstr = str.ptr;
 
         return item? (item - pstr) : length;
     }
@@ -364,7 +364,7 @@ struct StringSearch ( bool wide_char = false )
 
         auto str_search = str[start .. $] ~ TERM;
 
-        Const!(Char)* item = pLocatePattern(str_search.ptr, (pattern ~ TERM).ptr);
+        const(Char)* item = pLocatePattern(str_search.ptr, (pattern ~ TERM).ptr);
 
         return item? ((item - str_search.ptr) + start) : str.length;
     }
@@ -760,7 +760,7 @@ struct StringSearch ( bool wide_char = false )
 
      **************************************************************************/
 
-    Const!(Char)[] charConvDup ( alias convert ) ( Const!(Char)[] str )
+    const(Char)[] charConvDup ( alias convert ) ( const(Char)[] str )
     {
         foreach (Char c; str)
         {

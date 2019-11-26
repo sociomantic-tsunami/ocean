@@ -56,7 +56,7 @@ public abstract class IEntitySet
 
     ***************************************************************************/
 
-    public abstract Const!(Entity)[] entities ( );
+    public abstract const(Entity)[] entities ( );
 
 
     /***************************************************************************
@@ -274,7 +274,7 @@ public abstract class IEntitySet
 
     ***************************************************************************/
 
-    public int opApply ( scope int delegate ( ref Const!(istring), ref Const!(dchar) ) dg )
+    public int opApply ( scope int delegate ( ref const(istring), ref const(dchar) ) dg )
     {
         int res;
         foreach ( ref entity; this.entities )

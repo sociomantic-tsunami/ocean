@@ -226,7 +226,7 @@ abstract package class MerkleDamgard : Digest
 
         ***********************************************************************/
 
-        override MerkleDamgard update (Const!(void)[] input)
+        override MerkleDamgard update (const(void)[] input)
         {
                 auto block = blockSize();
                 uint i = bytes & (block-1);

@@ -262,7 +262,7 @@ unittest
 unittest
 {
     assert(!ReduceType!(CheckPrimitiveReducer, CheckPrimitiveReducer));
-    assert(ReduceType!(Const!TestAggregate, CheckPrimitiveReducer));
+    assert(ReduceType!(const TestAggregate, CheckPrimitiveReducer));
 }
 
 // Sanity test of instantiation of `ReduceType` with static array types

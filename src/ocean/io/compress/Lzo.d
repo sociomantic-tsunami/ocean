@@ -100,7 +100,7 @@ class Lzo
 
         size_t len;
 
-        this.checkStatus(lzo1x_1_compress(cast (Const!(ubyte)*) src.ptr, src.length, cast (ubyte*) dst.ptr, &len, this.workmem.ptr));
+        this.checkStatus(lzo1x_1_compress(cast (const(ubyte)*) src.ptr, src.length, cast (ubyte*) dst.ptr, &len, this.workmem.ptr));
 
         return len;
     }
@@ -128,7 +128,7 @@ class Lzo
     {
         size_t len;
 
-        this.checkStatus(lzo1x_decompress(cast (Const!(ubyte)*) src.ptr, src.length, cast (ubyte*) dst.ptr, &len));
+        this.checkStatus(lzo1x_decompress(cast (const(ubyte)*) src.ptr, src.length, cast (ubyte*) dst.ptr, &len));
 
         return len;
     }
@@ -153,7 +153,7 @@ class Lzo
     {
         size_t len = dst.length;
 
-        this.checkStatus(lzo1x_decompress_safe(cast (Const!(ubyte)*) src.ptr, src.length, cast (ubyte*) dst.ptr, &len));
+        this.checkStatus(lzo1x_decompress_safe(cast (const(ubyte)*) src.ptr, src.length, cast (ubyte*) dst.ptr, &len));
 
         return len;
     }

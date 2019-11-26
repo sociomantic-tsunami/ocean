@@ -48,7 +48,7 @@ final class Ripemd320 : MerkleDamgard
 
     ***********************************************************************/
 
-    private static Const!(uint[10]) initial =
+    private static const(uint[10]) initial =
     [
         0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476, 0xc3d2e1f0,
         0x76543210, 0xfedcba98, 0x89abcdef, 0x01234567, 0x3c2d1e0f

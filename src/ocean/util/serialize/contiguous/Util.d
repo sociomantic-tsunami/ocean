@@ -116,7 +116,7 @@ unittest
         int[] arr;
     }
 
-    Const!(Test) t = Test([ 1, 2, 3 ]);
+    const(Test) t = Test([ 1, 2, 3 ]);
     Contiguous!(Test) dst;
     copy(t, dst);
     test!("==")(dst.ptr.arr, t.arr);

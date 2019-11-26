@@ -617,7 +617,7 @@ class NotifyingQueue ( T ) : NotifyingByteQueue
                 return null;
             }
 
-            Const!(void[]) void_buffer = data;
+            const(void[]) void_buffer = data;
 
             Deserializer.deserialize(void_buffer, cont_buffer);
 

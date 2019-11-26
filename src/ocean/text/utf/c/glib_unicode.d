@@ -159,12 +159,12 @@ long        g_utf8_pointer_to_offset    (char* str, char* pos);
 char*       g_utf8_prev_char            (char* p);
 char*       g_utf8_find_next_char       (char* p,   char* end);
 char*       g_utf8_find_prev_char       (char* str, char* p);
-long        g_utf8_strlen               (Const!(char)* p,   ptrdiff_t max);
+long        g_utf8_strlen               (const(char)* p,   ptrdiff_t max);
 char*       g_utf8_strncpy              (char* dest, char* src, size_t n);
 char*       g_utf8_strchr               (char* p,   ptrdiff_t len, dchar c);
 char*       g_utf8_strrchr              (char* p,   ptrdiff_t len, dchar c);
 char*       g_utf8_strreverse           (char* str, ptrdiff_t len);
-bool        g_utf8_validate             (Const!(char)* str, ptrdiff_t max_len, char** end);
+bool        g_utf8_validate             (const(char)* str, ptrdiff_t max_len, char** end);
 
 char*       g_utf8_strup        (char* str, ptrdiff_t len);
 char*       g_utf8_strdown      (char* str, ptrdiff_t len);

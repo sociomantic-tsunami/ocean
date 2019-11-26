@@ -30,7 +30,7 @@ import ocean.transition;
  */
 public class Hijri : Calendar {
 
-  private static Const!(uint[]) DAYS_TO_MONTH = [ 0, 30, 59, 89, 118, 148, 177, 207, 236, 266, 295, 325, 355 ];
+  private static const(uint[]) DAYS_TO_MONTH = [ 0, 30, 59, 89, 118, 148, 177, 207, 236, 266, 295, 325, 355 ];
 
   /**
    * Represents the current era.

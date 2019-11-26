@@ -479,7 +479,7 @@ class File : Device, Device.Seek, Device.Truncate
 
         ***********************************************************************/
 
-        static void set (cstring path, Const!(void)[] content)
+        static void set (cstring path, const(void)[] content)
         {
                 scope file = new File (path, ReadWriteCreate);
                 file.write (content);
@@ -491,7 +491,7 @@ class File : Device, Device.Seek, Device.Truncate
 
         ***********************************************************************/
 
-        static void append (cstring path, Const!(void)[] content)
+        static void append (cstring path, const(void)[] content)
         {
                 scope file = new File (path, WriteAppending);
                 file.write (content);

@@ -266,7 +266,7 @@ public class BufferedInput : InputFilter, InputBuffer
 
     ***************************************************************************/
 
-    public final size_t reader (scope size_t delegate (Const!(void)[]) dg)
+    public final size_t reader (scope size_t delegate (const(void)[]) dg)
     {
         auto count = dg(this.data[this.index .. this.extent]);
 
@@ -481,7 +481,7 @@ public class BufferedInput : InputFilter, InputBuffer
 
     ***************************************************************************/
 
-    public final bool next (scope size_t delegate (Const!(void)[]) scan)
+    public final bool next (scope size_t delegate (const(void)[]) scan)
     {
         while (this.reader(scan) is Eof)
         {
@@ -654,9 +654,9 @@ public class BufferedInput : InputFilter, InputBuffer
 
     ***************************************************************************/
 
-    static Inout!(T)[] convert (T) (Inout!(void)[] x)
+    static inout(T)[] convert (T) (inout(void)[] x)
     {
-        return (cast(Inout!(T)*) x.ptr) [0 .. (x.length / T.sizeof)];
+        return (cast(inout(T)*) x.ptr) [0 .. (x.length / T.sizeof)];
     }
 
     /***************************************************************************
@@ -942,7 +942,7 @@ public class BufferedOutput : OutputFilter, OutputBuffer
 
     ***************************************************************************/
 
-    public final override size_t write (Const!(void)[] src)
+    public final override size_t write (const(void)[] src)
     {
         this.append(src.ptr, src.length);
         return src.length;
@@ -966,7 +966,7 @@ public class BufferedOutput : OutputFilter, OutputBuffer
 
     ***************************************************************************/
 
-    public final BufferedOutput append (Const!(void)[] src)
+    public final BufferedOutput append (const(void)[] src)
     {
         return this.append(src.ptr, src.length);
     }
@@ -990,7 +990,7 @@ public class BufferedOutput : OutputFilter, OutputBuffer
 
     ***************************************************************************/
 
-    public final BufferedOutput append (Const!(void)* src, size_t length)
+    public final BufferedOutput append (const(void)* src, size_t length)
     {
         if (length > this.writable)
         {
@@ -1291,7 +1291,7 @@ public class BufferedOutput : OutputFilter, OutputBuffer
 
    ***************************************************************************/
 
-    private final size_t reader (scope size_t delegate (Const!(void)[]) dg)
+    private final size_t reader (scope size_t delegate (const(void)[]) dg)
     {
         auto count = dg (this.data[this.index..this.extent]);
 
@@ -1391,7 +1391,7 @@ unittest
         "il occupait le siège de Digne depuis 1806.");
     device.seek(0);
 
-    size_t finder (Const!(void)[] raw)
+    size_t finder (const(void)[] raw)
     {
         auto text = cast(cstring) raw;
         if (raw.length >= 5 && raw[$ - 5 .. $] == "1806.")

@@ -153,7 +153,7 @@ struct Terminal
         Default
     }
 
-    public static Immut!(istring[]) fg_colour_codes = [
+    public static immutable(istring[]) fg_colour_codes = [
         Colour.Black: Foreground.BLACK,
         Colour.Red: Foreground.RED,
         Colour.Green: Foreground.GREEN,
@@ -165,7 +165,7 @@ struct Terminal
         Colour.Default: Foreground.DEFAULT
     ];
 
-    public static Immut!(istring[]) bg_colour_codes = [
+    public static immutable(istring[]) bg_colour_codes = [
         Colour.Black: Background.BLACK,
         Colour.Red: Background.RED,
         Colour.Green: Background.GREEN,

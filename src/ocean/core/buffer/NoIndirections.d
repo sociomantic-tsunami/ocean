@@ -148,7 +148,7 @@ template NoIndirectionsBufferImpl ( )
 
     ***************************************************************************/
 
-    int opApply ( scope int delegate(ref Const!(T)) dg ) const
+    int opApply ( scope int delegate(ref const(T)) dg ) const
     {
         foreach (elem; this.data)
         {
@@ -169,7 +169,7 @@ template NoIndirectionsBufferImpl ( )
 
     ***************************************************************************/
 
-    int opApply ( scope int delegate(ref size_t, ref Const!(T)) dg ) const
+    int opApply ( scope int delegate(ref size_t, ref const(T)) dg ) const
     {
         foreach (index, elem; this.data)
         {

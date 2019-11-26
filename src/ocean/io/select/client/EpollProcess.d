@@ -777,7 +777,7 @@ public abstract class EpollProcess
 
     ***************************************************************************/
 
-    public void start ( Const!(mstring)[] args_with_command )
+    public void start ( const(mstring)[] args_with_command )
     {
         verify(this.state == State.None); // TODO: error notification?
 

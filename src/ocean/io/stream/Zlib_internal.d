@@ -610,7 +610,7 @@ class ZlibOutput : OutputFilter
 
     ***************************************************************************/
 
-    override size_t write(Const!(void)[] src)
+    override size_t write(const(void)[] src)
     {
         check_valid();
         scope(failure) kill_zs();
@@ -873,7 +873,7 @@ version (unittest)
     import ocean.core.Test;
 
     void check_array(istring FILE=__FILE__, int LINE=__LINE__)(
-            Const!(ubyte)[] as, ubyte[] bs, lazy istring msg)
+            const(ubyte)[] as, ubyte[] bs, lazy istring msg)
     {
         test( as.length == bs.length,
             FILE ~":"~ toString(LINE) ~ ": " ~ msg()

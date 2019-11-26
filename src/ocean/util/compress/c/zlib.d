@@ -383,11 +383,11 @@ uLong crc32_combine(uLong crc1, uLong crc2, z_off_t len2);
 /// See original's library documentation for details.
 int deflateInit_(z_streamp  strm,
                  int        level,
-                 Const!(char)* ver,
+                 const(char)* ver,
                  int        stream_size);
 /// See original's library documentation for details.
 int inflateInit_(z_streamp  strm,
-                 Const!(char)* ver,
+                 const(char)* ver,
                  int        stream_size);
 /// See original's library documentation for details.
 int deflateInit2_(z_streamp strm,
@@ -396,18 +396,18 @@ int deflateInit2_(z_streamp strm,
                   int       windowBits,
                   int       memLevel,
                   int       strategy,
-                  Const!(char)* ver,
+                  const(char)* ver,
                   int       stream_size);
 /// See original's library documentation for details.
 int inflateInit2_(z_streamp strm,
                   int       windowBits,
-                  Const!(char)* ver,
+                  const(char)* ver,
                   int       stream_size);
 /// See original's library documentation for details.
 int inflateBackInit_(z_streamp strm,
                      int       windowBits,
                      ubyte*    window,
-                     Const!(char)* ver,
+                     const(char)* ver,
                      int       stream_size);
 
 extern (D) int deflateInit(z_streamp  strm,

@@ -602,7 +602,7 @@ public T[] substitute ( T ) ( in T[] source, in T[] match,
     in T[] replacement, ref Buffer!(T) result )
 {
     result.length = 0;
-    Const!(T)[] src = source;
+    const(T)[] src = source;
 
     do
     {

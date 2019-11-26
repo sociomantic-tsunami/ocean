@@ -122,7 +122,7 @@ class StringC
 
     ***************************************************************************/
 
-    public static Inout!(char)[] toDString ( Inout!(char)* str )
+    public static inout(char)[] toDString ( inout(char)* str )
     {
         return str ? str[0 .. strlen(str)] : null;
     }
@@ -141,7 +141,7 @@ class StringC
 
     ***************************************************************************/
 
-    public static Inout!(Wchar)[] toDString ( Inout!(Wchar)* str )
+    public static inout(Wchar)[] toDString ( inout(Wchar)* str )
     {
         return str ? str[0 .. wcslen(str)] : null;
     }
@@ -176,7 +176,7 @@ unittest
     // String literals are null terminated
     istring r1 = StringC.toDString("Hello".ptr);
     test!("==")(r1, "Hello");
-    Const!(char)* const_empty = "".ptr;
+    const(char)* const_empty = "".ptr;
     test(const_empty !is null);
     cstring r2 = StringC.toDString(const_empty);
     test!("is")(const_empty, r2.ptr);
