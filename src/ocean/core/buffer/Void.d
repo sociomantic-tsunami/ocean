@@ -96,11 +96,12 @@ template VoidBufferImpl ( )
         Appends to current buffer
 
         Params:
+            op = operation to perform
             rhs = array or element to append
 
     ***************************************************************************/
 
-    void opCatAssign ( in ubyte rhs )
+    void opOpAssign (string op) ( in ubyte rhs ) if (op == "~")
     {
         this.length = this.data.length + 1;
         this.data[$-1] = rhs;
@@ -112,7 +113,7 @@ template VoidBufferImpl ( )
 
     ***************************************************************************/
 
-    void opCatAssign ( in ubyte[] rhs )
+    void opOpAssign (string op) ( in ubyte[] rhs ) if (op == "~")
     {
         this.length = this.data.length + rhs.length;
         this.data[$-rhs.length .. $] = rhs[];
