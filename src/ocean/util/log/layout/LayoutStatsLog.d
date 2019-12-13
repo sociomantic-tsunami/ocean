@@ -68,7 +68,7 @@ public class LayoutStatsLog : Appender.Layout
         const dt = (localTime) ? WallClock.toDate(tm) : Clock.toDate(tm);
 
         // format date according to ISO-8601 (lightweight formatter)
-        sformat(dg, "{u4}-{u2}-{u2} {u2}:{u2}:{u2},{u2} {}",
+        sformat(dg, "{u4}-{u2}-{u2} {u2}:{u2}:{u2},{u3} {}",
             dt.date.year, dt.date.month, dt.date.day,
             dt.time.hours, dt.time.minutes, dt.time.seconds, dt.time.millis,
             event);
@@ -86,11 +86,11 @@ unittest
     LogEvent event = {
         msg_: "Baguette: 420, Radler: +Inf",
         name_: "Irrelevant",
-        time_: Time.fromUnixTime(1525048962) + TimeSpan.fromMillis(420),
+        time_: Time.fromUnixTime(1525048962) + TimeSpan.fromMillis(42),
         level_: ILogger.Level.Warn,
         host_: null,
     };
 
     testNoAlloc(layout.format(event, dg));
-    test!("==")(result, "2018-04-30 00:42:42,420 Baguette: 420, Radler: +Inf");
+    test!("==")(result, "2018-04-30 00:42:42,042 Baguette: 420, Radler: +Inf");
 }
