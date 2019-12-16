@@ -399,6 +399,18 @@ unittest
     test!("==")(stack.unused(), 0);
 }
 
+unittest
+{
+    // Check overloaded operators
+    Stack!(int) stack;
+    stack ~= 4;
+    stack ~= 5;
+    stack >>= 2;
+    test!("==")(stack.pop(), 4);
+    stack <<= 1;
+    test!("==")(stack.pop(), 5);
+}
+
 /*******************************************************************************
 
     Exception that indicates any kind of out of bound access in stack, for
