@@ -33,9 +33,21 @@ public struct Stack ( V, int Size = 0 )
 {
     public alias nth         opIndex;
     public alias slice       opSlice;
-    public alias rotateRight opShrAssign;
-    public alias rotateLeft  opShlAssign;
-    public alias push        opCatAssign;
+
+    public template opOpAssign ( string op : ">>" )
+    {
+        alias opOpAssign = rotateRight;
+    }
+
+    public template opOpAssign ( string op : "<<" )
+    {
+        alias opOpAssign = rotateLeft;
+    }
+
+    public template opOpAssign ( string op : "~" )
+    {
+        alias opOpAssign = push;
+    }
 
     static if (Size == 0)
     {
