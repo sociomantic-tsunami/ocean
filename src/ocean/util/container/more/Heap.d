@@ -50,7 +50,11 @@ struct Heap (T, alias Compare = minHeapCompare!(T), alias Move = defaultHeapSwap
         import ocean.core.Verify;
 
         alias pop       remove;
-        alias push      opCatAssign;
+
+        public template opOpAssign ( string op : "~" )
+        {
+            alias opOpAssign = push;
+        }
 
         // The actual data.
         private T[]     heap;
