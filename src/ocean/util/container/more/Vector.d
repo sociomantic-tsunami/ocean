@@ -32,7 +32,11 @@ struct Vector (V, int Size = 0)
 {
         alias add       push;
         alias slice     opSlice;
-        alias push      opCatAssign;
+
+        public template opOpAssign ( string op : "~" )
+        {
+            alias opOpAssign = push;
+        }
 
         static if (Size == 0)
                   {
