@@ -908,7 +908,7 @@ private struct Result
 
      **********************************************************************/
 
-    private void opCatAssign (cstring rhs)
+    private void opOpAssign (string op : "~") (cstring rhs)
     {
         auto end = index + rhs.length;
         verify(end < target_.length);
@@ -921,7 +921,7 @@ private struct Result
 
      **********************************************************************/
 
-    private void opCatAssign (char rhs)
+    private void opOpAssign (string op : "~") (char rhs)
     {
         verify(index < target_.length);
         target_[index++] = rhs;
