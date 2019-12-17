@@ -92,7 +92,7 @@ struct HttpVersionIds
 
      **************************************************************************/
 
-    static HttpVersion* opIn_r ( cstring id )
+    static HttpVersion* opBinaryRight (string op : "in") ( cstring id )
     {
         return id.length? id in codes : null;
     }
@@ -113,7 +113,7 @@ struct HttpVersionIds
 
     static HttpVersion opIndex ( cstring id )
     {
-        HttpVersion* code = opIn_r(id);
+        HttpVersion* code = opBinaryRight!("in")(id);
 
         return code? *code : (*code).Undefined;
     }
