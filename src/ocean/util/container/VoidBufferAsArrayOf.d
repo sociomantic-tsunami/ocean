@@ -120,9 +120,6 @@ public struct VoidBufferAsArrayOf ( T )
         Note that mutable copies of appended elements are made internally, but
         to access them from the outside, the constness of T applies.
 
-        but
-        are inaccessible from the outside.
-
         Params:
             arr = elements to append
 
