@@ -45,12 +45,12 @@ public alias Range!(hash_t) HashRange;
 
     Provides a mapping from HashRange to the specified type
 
-    Note: Unittests for `put`, `remove` and `opIn_r` are not placed directly
-    in this struct as they depend on the assumption that type `Value`
-    (the template argument) has a meaningful equality operator (opEquals).
-    Instead, private external functions exist to test these methods. These are
-    then called on HashRangeMaps with various different types of Value,
-    in a unittest block outside the struct.
+    Note: Unittests for `put`, `remove` and `opopBinaryRight!"in"` are not
+    placed directly in this struct as they depend on the assumption that type
+    `Value` (the template argument) has a meaningful equality operator
+    (opEquals). Instead, private external functions exist to test these methods.
+    These are then called on HashRangeMaps with various different types of
+    Value, in a unittest block outside the struct.
 
     Params:
         Value = type to store in values of map
@@ -274,7 +274,7 @@ public struct HashRangeMap ( Value )
 
     ***************************************************************************/
 
-    public Value* opIn_r ( HashRange range )
+    public Value* opBinaryRight (string op : "in") ( HashRange range )
     {
         size_t insert_place;
         if (!bsearch(this.ranges, range, insert_place))
@@ -788,7 +788,7 @@ version (unittest)
         test!("==")(hrm.values, [v[0], v[1], v[3], v[4]][]);
     }
 
-    // Unittest function for opIn_r().
+    // Unittest function for opBinaryRight!"in".
     private void testOpInR ( Value ) ( Value[] v )
     {
         verify(v.length == 5, "You should provide an array of 5 different values");

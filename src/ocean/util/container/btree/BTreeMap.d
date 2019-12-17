@@ -247,7 +247,7 @@ struct BTreeMap(TreeKeyType, TreeValueType, int tree_degree)
 
     ***************************************************************************/
 
-    public ValueType* opIn_r (KeyType key)
+    public ValueType* opBinaryRight (string op : "in") (KeyType key)
     {
         return this.impl.get(key);
     }
