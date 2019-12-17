@@ -769,12 +769,12 @@ version (unittest)
         test(E().max == max);
 
         // opApply 1
-        size_t i;
+        size_t outer_i;
         foreach ( n, v; E() )
         {
-            test(n == names[i]);
-            test(v == values[i]);
-            i++;
+            test(n == names[outer_i]);
+            test(v == values[outer_i]);
+            outer_i++;
         }
 
         // opApply 2
