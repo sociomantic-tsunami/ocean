@@ -25,7 +25,7 @@ import ocean.io.device.File;
 
 *******************************************************************************/
 
-version(UnitTest) {} else
+version (unittest) {} else
 void main ( )
 {
     auto dev_null = new File("/dev/null", File.WriteAppending);

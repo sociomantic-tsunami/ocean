@@ -81,7 +81,7 @@ class RegularTask : Task
     void copyArguments ( ) { }
 }
 
-version(UnitTest) {} else
+version (unittest) {} else
 void main ( )
 {
     SchedulerConfiguration config;

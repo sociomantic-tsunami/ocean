@@ -115,7 +115,7 @@ class AsyncIOUsingApp: DaemonApp
     }
 }
 
-version(UnitTest) {} else
+version (unittest) {} else
 void main(istring[] args)
 {
 

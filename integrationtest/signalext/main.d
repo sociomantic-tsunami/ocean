@@ -72,7 +72,7 @@ class MyApp : DaemonApp
     }
 }
 
-version(UnitTest) {} else
+version (unittest) {} else
 void main(istring[] args)
 {
     static extern(C) void sighandler (int sig)

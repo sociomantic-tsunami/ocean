@@ -59,7 +59,7 @@ class TestApp : CliApp
 }
 
 
-version(UnitTest) {} else
+version (unittest) {} else
 int main ( istring[] cl_args )
 {
     auto app = new TestApp;

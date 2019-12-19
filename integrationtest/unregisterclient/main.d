@@ -43,7 +43,7 @@ private void corruptEventObject (SelectEvent client)
     ptr[0..initializer.length] = 0;
 }
 
-version(UnitTest) {} else
+version (unittest) {} else
 void main(istring[] args)
 {
     bool handler1()

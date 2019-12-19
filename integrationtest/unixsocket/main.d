@@ -80,7 +80,7 @@ int runClient ( sockaddr_un* socket_address )
     return 0;
 }
 
-version(UnitTest) {} else
+version (unittest) {} else
 int main ( )
 {
     bool in_child = false;

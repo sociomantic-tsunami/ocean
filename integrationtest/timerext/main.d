@@ -77,7 +77,7 @@ class App : Application
     }
 }
 
-version(UnitTest) {} else
+version (unittest) {} else
 void main (istring[] args)
 {
     auto sandbox = DirectorySandbox.create(["etc", "log"]);
