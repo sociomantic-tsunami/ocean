@@ -156,7 +156,7 @@ void client_process (cstring socket_path)
 
 *******************************************************************************/
 
-version(UnitTest) {} else
+version (unittest) {} else
 int main ( )
 {
     // Since this is a one-off test, we will not care about destroying

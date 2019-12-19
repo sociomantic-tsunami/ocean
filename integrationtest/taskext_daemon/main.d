@@ -70,7 +70,7 @@ class TestApp : DaemonApp
     }
 }
 
-version(UnitTest) {} else
+version (unittest) {} else
 int main ( istring[] cl_args )
 {
     with (DirectorySandbox.create(["etc", "log"]))

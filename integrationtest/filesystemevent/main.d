@@ -281,7 +281,7 @@ class FileCreationTestTask: Task
 
 *******************************************************************************/
 
-version(UnitTest) {} else
+version (unittest) {} else
 void main ( )
 {
     initScheduler(SchedulerConfiguration.init);

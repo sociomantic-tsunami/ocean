@@ -490,7 +490,7 @@ private class SignalFDTest
 
 *******************************************************************************/
 
-version(UnitTest) {} else
+version (unittest) {} else
 void main ( )
 {
     // Test a single signal handled by a signalfd

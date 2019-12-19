@@ -139,7 +139,7 @@ class ClientTask: Task
 
 *******************************************************************************/
 
-version(UnitTest) {} else
+version (unittest) {} else
 int main ( )
 {
     initScheduler(SchedulerConfiguration.init);

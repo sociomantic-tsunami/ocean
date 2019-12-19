@@ -145,7 +145,7 @@ void run_test ( istring socket_path )
 
 *******************************************************************************/
 
-version(UnitTest) {} else
+version (unittest) {} else
 int main ( )
 {
     run_test("/tmp/ocean_socket_test");
