@@ -7,3 +7,9 @@ copyright "Copyright (c) 2004 dunnhumby Germany GmbH and Tango contributors. All
 systemDependencies "Depending on the component used you might need one of the following libraries (check the used modules for details): -lglib-2.0 -lpcre -lxml2 -lxslt -lreadline -lhistory -llzo2 -lbz2 -lz -ldl -lgcrypt -lgpg-error -lrt -lebtree (version from https://github.com/sociomantic-tsunami/ebtree)"
 importPaths "src"
 targetType "sourceLibrary"
+
+configuration "unittest" {
+    excludedSourceFiles "src/ocean/core/UnitTestRunner.d"
+    libs "glib-2.0" "pcre" "ebtree" "readline" "lzo2" "gcrypt" "gpg-error"
+    lflags "-l:libcrypto.so.1.0.0" "-l:libssl.so.1.0.0"
+}
