@@ -588,7 +588,7 @@ struct BitArray
      * Returns:
      *  A new array which is the complement of this array.
      */
-    BitArray opUnary ( string op )( ) if (op == "~")
+    BitArray opUnary ( string op : "~" )( )
     {
         auto dim = this.dim();
 
@@ -705,7 +705,7 @@ struct BitArray
      * Returns:
      *  A new array which is the result of this array minus the supplied array.
      */
-    BitArray opBinary ( string op )( BitArray rhs ) if (op == "-")
+    BitArray opBinary ( string op : "-" )( BitArray rhs )
     {
         verify(len == rhs.length);
 
@@ -745,7 +745,7 @@ struct BitArray
      *  A new array which is the result of this array concatenated with the
      *  supplied array.
      */
-    BitArray opBinary ( string op )( bool rhs ) if (op == "~")
+    BitArray opBinary ( string op : "~" )( bool rhs )
     {
         BitArray result;
 
@@ -757,7 +757,7 @@ struct BitArray
 
 
     /** ditto */
-    BitArray opBinaryRight ( string op )( bool lhs ) if (op == "~")
+    BitArray opBinaryRight ( string op : "~" )( bool lhs )
     {
         BitArray result;
 
@@ -770,7 +770,7 @@ struct BitArray
 
 
     /** ditto */
-    BitArray opBinary ( string op )( BitArray rhs ) if (op == "~")
+    BitArray opBinary ( string op : "~" )( BitArray rhs )
     {
         BitArray result;
 
@@ -949,7 +949,7 @@ struct BitArray
      * Returns:
      *  A shallow copy of this array.
      */
-    BitArray opOpAssign ( string op )( bool b ) if (op == "~")
+    BitArray opOpAssign ( string op : "~" )( bool b )
     {
         length = len + 1;
         this[len - 1] = b;
@@ -973,7 +973,7 @@ struct BitArray
     }
 
     /** ditto */
-    BitArray opOpAssign ( string op )( BitArray rhs ) if (op == "~")
+    BitArray opOpAssign ( string op : "~" )( BitArray rhs )
     {
         auto istart = len;
         length = len + rhs.length;
