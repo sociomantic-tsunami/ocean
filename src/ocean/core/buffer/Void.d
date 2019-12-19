@@ -101,7 +101,7 @@ template VoidBufferImpl ( )
 
     ***************************************************************************/
 
-    void opOpAssign (string op) ( in ubyte rhs ) if (op == "~")
+    void opOpAssign (string op : "~") ( in ubyte rhs )
     {
         this.length = this.data.length + 1;
         this.data[$-1] = rhs;
@@ -113,7 +113,7 @@ template VoidBufferImpl ( )
 
     ***************************************************************************/
 
-    void opOpAssign (string op) ( in ubyte[] rhs ) if (op == "~")
+    void opOpAssign (string op: "~") ( in ubyte[] rhs )
     {
         this.length = this.data.length + rhs.length;
         this.data[$-rhs.length .. $] = rhs[];
