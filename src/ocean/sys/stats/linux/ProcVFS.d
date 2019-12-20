@@ -317,7 +317,7 @@ public struct ProcUptime
 
         ***********************************************************************/
 
-        Time opSub(Time rhs)
+        Time opBinary ( string op : "-" ) (Time rhs)
         {
             Time res_time;
 
