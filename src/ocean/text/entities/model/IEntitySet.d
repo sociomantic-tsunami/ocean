@@ -135,7 +135,7 @@ public abstract class IEntitySet
 
     ***************************************************************************/
 
-    public bool opIn_r ( char[] name )
+    public final bool opIn_r ( char[] name )
     {
         foreach ( ref entity; this.entities )
         {
@@ -161,7 +161,7 @@ public abstract class IEntitySet
 
     ***************************************************************************/
 
-    public bool opIn_r ( wchar[] name )
+    public final bool opIn_r ( wchar[] name )
     {
         foreach ( ref entity; this.entities )
         {
@@ -187,7 +187,7 @@ public abstract class IEntitySet
 
     ***************************************************************************/
 
-    public bool opIn_r ( dchar[] name )
+    public final bool opIn_r ( dchar[] name )
     {
         foreach ( ref entity; this.entities )
         {
@@ -213,7 +213,7 @@ public abstract class IEntitySet
 
     ***************************************************************************/
 
-    public bool opIn_r ( dchar unicode )
+    public final bool opIn_r ( dchar unicode )
     {
         foreach ( ref entity; this.entities )
         {
@@ -239,7 +239,7 @@ public abstract class IEntitySet
 
     ***************************************************************************/
 
-    public bool opIn_r ( wchar unicode )
+    public final bool opIn_r ( wchar unicode )
     {
         return (cast(dchar)unicode) in this;
     }
@@ -257,7 +257,7 @@ public abstract class IEntitySet
 
     ***************************************************************************/
 
-    public bool opIn_r ( char unicode )
+    public final bool opIn_r ( char unicode )
     {
         return (cast(dchar)unicode) in this;
     }

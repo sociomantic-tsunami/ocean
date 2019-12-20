@@ -354,7 +354,7 @@ abstract class ICache : ICacheInfo
 
     ***************************************************************************/
 
-    protected TimeToIndex.Node** opIn_r ( hash_t key )
+    protected final TimeToIndex.Node** opIn_r ( hash_t key )
     out (node)
     {
         if (node) assert (*node !is null, "null pointer value was stored in key_to_node");

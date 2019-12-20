@@ -434,7 +434,7 @@ class EBTree32 ( bool signed = false ) : IEBTree
 
     ***************************************************************************/
 
-    public Node* opIn_r ( Key key )
+    public final Node* opIn_r ( Key key )
     {
         static if (signed)
         {

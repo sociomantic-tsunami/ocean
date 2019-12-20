@@ -1075,7 +1075,7 @@ public struct TwoWayMap ( A )
 
     ***************************************************************************/
 
-    public KeyType* opIn_r ( cstring b )
+    public final KeyType* opIn_r ( cstring b )
     {
         return b in this.b_to_a;
     }
@@ -1095,7 +1095,7 @@ public struct TwoWayMap ( A )
 
     ***************************************************************************/
 
-    public ValueType* opIn_r ( KeyType a )
+    public final ValueType* opIn_r ( KeyType a )
     {
         return a in this.a_to_b;
     }

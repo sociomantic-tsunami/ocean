@@ -216,7 +216,7 @@ public class FixedKeyMap ( K, V )
 
     ***************************************************************************/
 
-    public V* opIn_r ( const(K) key )
+    public final V* opIn_r ( const(K) key )
     {
         auto pos = this.keyIndex(key, false);
         auto found = pos < this.keys.length;

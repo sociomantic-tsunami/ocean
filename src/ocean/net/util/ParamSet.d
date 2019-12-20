@@ -155,7 +155,7 @@ class ParamSet
 
      **************************************************************************/
 
-    cstring* opIn_r ( cstring key )
+    final cstring* opIn_r ( cstring key )
     {
         Element* element = this.get_(key);
 

@@ -332,7 +332,7 @@ class CachingStructLoader ( S )
 
      **************************************************************************/
 
-    public S* opIn_r ( hash_t key )
+    public final S* opIn_r ( hash_t key )
     {
         return this.load(key).ptr;
     }

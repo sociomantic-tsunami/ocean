@@ -286,7 +286,7 @@ public abstract class Set ( K ) : BucketSet!(0, K)
 
     ***************************************************************************/
 
-    public bool opIn_r ( K key )
+    public final bool opIn_r ( K key )
     {
         return this.get_(key) !is null;
     }
