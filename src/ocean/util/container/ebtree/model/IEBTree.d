@@ -80,7 +80,7 @@ abstract class IEBTree
 
     ***************************************************************************/
 
-    protected size_t opAddAssign ( size_t n )
+    protected final size_t opAddAssign ( size_t n )
     {
         return this.count += n;
     }
@@ -100,7 +100,7 @@ abstract class IEBTree
 
     ***************************************************************************/
 
-    protected size_t opSubAssign ( size_t n )
+    protected final size_t opSubAssign ( size_t n )
     {
         verify (this.count >= n);
         return this.count -= n;
