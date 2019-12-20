@@ -152,38 +152,6 @@ public interface IEnum
 
     /***************************************************************************
 
-        Looks up an enum member's name from its value.
-
-        Params:
-            v = value to look up
-
-        Returns:
-            pointer to corresponding name, or null if value doesn't exist in
-            enum
-
-    ***************************************************************************/
-
-    public Name* opIn_r ( Value v );
-
-
-    /***************************************************************************
-
-        Looks up an enum member's value from its name.
-
-        Params:
-            n = name to look up
-
-        Returns:
-            pointer to corresponding value, or null if name doesn't exist in
-            enum
-
-    ***************************************************************************/
-
-    public Value* opIn_r ( Name n );
-
-
-    /***************************************************************************
-
         Looks up an enum member's name from its value, using opIndex.
 
         Params:
@@ -533,7 +501,7 @@ public template EnumBase ( T ... )
 
     ***************************************************************************/
 
-    public override Name* opIn_r ( Value v )
+    public static Name* opIn_r ( Value v )
     {
         return v in v_to_n;
     }
@@ -552,7 +520,7 @@ public template EnumBase ( T ... )
 
     ***************************************************************************/
 
-    public override Value* opIn_r ( Name n )
+    public static Value* opIn_r ( Name n )
     {
         return n in n_to_v;
     }
