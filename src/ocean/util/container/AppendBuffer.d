@@ -358,7 +358,7 @@ public class AppendBuffer ( T, Base: AppendBufferImpl ): Base, IAppendBufferRead
 
          **************************************************************************/
 
-        T[] opCatAssign ( T element )
+        final T[] opCatAssign ( T element )
         {
             T[] dst = this.extend(1);
 
@@ -477,7 +477,7 @@ public class AppendBuffer ( T, Base: AppendBufferImpl ): Base, IAppendBufferRead
 
      **************************************************************************/
 
-    T[] opCatAssign ( ParamT[] chunk )
+    final T[] opCatAssign ( ParamT[] chunk )
     {
         T[] dst = this.extend(chunk.length);
 
