@@ -49,7 +49,7 @@ public abstract class IRegisteredClients
 
     ***************************************************************************/
 
-    final public void opAddAssign ( ISelectClient client )
+    final public void opOpAssign ( string op : "+" ) ( ISelectClient client )
     {
         debug ( ISelectClient ) Stderr.formatln("{} :: Registered", client).flush();
         client.registered();
@@ -68,7 +68,7 @@ public abstract class IRegisteredClients
 
     ***************************************************************************/
 
-    final public void opSubAssign ( ISelectClient client )
+    final public void opOpAssign ( string op : "-" ) ( ISelectClient client )
     {
         debug ( ISelectClient ) Stderr.formatln("{} :: Unregistered", client).flush();
         client.unregistered();
