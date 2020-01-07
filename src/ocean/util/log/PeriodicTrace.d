@@ -180,7 +180,7 @@ struct PeriodicTracer
             this.last_update_time = this.now;
 
             this.formatted.length = 0;
-            enableStomping(this.formatted);
+            assumeSafeAppend(this.formatted);
             sformat(this.formatted, fmt, args);
 
             if (this.static_display)

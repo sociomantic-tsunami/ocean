@@ -245,7 +245,7 @@ private class UnitTestRunner
             //      calling toHumanTime() and the different xmlAdd*() methods
             static mstring e;
             e.length = 0;
-            enableStomping(e);
+            assumeSafeAppend(e);
             scope (exit)
             {
                 if (this.verbose)
@@ -597,7 +597,7 @@ private class UnitTestRunner
     private cstring convert ( T ) ( T val, cstring fmt = "{}" )
     {
         this.buf.length = 0;
-        enableStomping(this.buf);
+        assumeSafeAppend(this.buf);
         return sformat(this.buf, fmt, val);
     }
 

@@ -1014,7 +1014,7 @@ class Json(T) : JsonParser!(T)
         {
             // discard since prior lists are not initialized
             lists.length = 0;
-            enableStomping(lists);
+            assumeSafeAppend(lists);
             block = -1;
             newlist;
         }
@@ -1034,7 +1034,7 @@ class Json(T) : JsonParser!(T)
             if (++block >= lists.length)
             {
                 lists.length = lists.length + 1;
-                enableStomping(lists);
+                assumeSafeAppend(lists);
                 lists[$-1] = new T[256];
             }
             list = lists [block];

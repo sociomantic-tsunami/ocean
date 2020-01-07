@@ -1508,7 +1508,7 @@ public class Arguments
     private mstring formatArgumentHelp ( Argument arg, ref mstring buf )
     {
         buf.length = 0;
-        enableStomping(buf);
+        assumeSafeAppend(buf);
 
         sformat(buf, "  ");
 
@@ -1619,7 +1619,7 @@ public class Arguments
         }
 
         this.spaces.length = width;
-        enableStomping(this.spaces);
+        assumeSafeAppend(this.spaces);
 
         this.spaces[] = ' ';
 

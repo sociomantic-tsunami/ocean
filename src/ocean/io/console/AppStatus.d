@@ -784,7 +784,7 @@ public class AppStatus
         verify(index < this.static_lines.length, "adding too many static lines" );
 
         this.static_lines[index].length = 0;
-        enableStomping(this.static_lines[index]);
+        assumeSafeAppend(this.static_lines[index]);
         sformat(this.static_lines[index], format, args);
 
         structConvert!(DisplayProperties)(
@@ -957,7 +957,7 @@ public class AppStatus
         auto dt = MicrosecondsClock.toDateTime(MicrosecondsClock.now(), us);
 
         this.heading_line.length = 0;
-        enableStomping(this.heading_line);
+        assumeSafeAppend(this.heading_line);
 
         sformat(this.heading_line, "[{:d2}/{:d2}/{:d2} "
           ~ "{:d2}:{:d2}:{:d2}] {}", dt.date.day, dt.date.month, dt.date.year,
@@ -1056,7 +1056,7 @@ public class AppStatus
     private void printVersionInformation ( )
     {
         this.footer_line.length = 0;
-        enableStomping(this.footer_line);
+        assumeSafeAppend(this.footer_line);
 
         sformat(this.footer_line, "Version {} built on {} by {}",
             this.app_version, this.app_build_date, this.app_build_author);
@@ -1068,7 +1068,7 @@ public class AppStatus
         if ( remaining )
         {
             this.footer_line.length = 0;
-            enableStomping(this.footer_line);
+            assumeSafeAppend(this.footer_line);
             this.printExtraVersionInformation(this.terminal_output, this.footer_line,
                 remaining);
         }
@@ -1187,7 +1187,7 @@ public class AppStatus
         foreach ( ref line; this.static_lines )
         {
             line.length = 0;
-            enableStomping(line);
+            assumeSafeAppend(line);
         }
     }
 

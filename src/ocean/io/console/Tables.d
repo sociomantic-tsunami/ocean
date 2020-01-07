@@ -676,7 +676,7 @@ public class Table
                 if ( this.type == Type.Divider )
                 {
                     content_buf.length = width + inter_cell_spacing;
-                    enableStomping(content_buf);
+                    assumeSafeAppend(content_buf);
                     content_buf[] = '-';
 
                     output.format("{}", content_buf);
@@ -694,11 +694,11 @@ public class Table
                     {
                         case Type.Empty:
                             content_buf.length = 0;
-                            enableStomping(content_buf);
+                            assumeSafeAppend(content_buf);
                             break;
                         case Type.BinaryMetric:
                             content_buf.length = 0;
-                            enableStomping(content_buf);
+                            assumeSafeAppend(content_buf);
 
                             MetricPrefix metric;
                             metric.bin(this.contents.integer);
@@ -718,7 +718,7 @@ public class Table
                             break;
                         case Type.DecimalMetric:
                             content_buf.length = 0;
-                            enableStomping(content_buf);
+                            assumeSafeAppend(content_buf);
 
                             MetricPrefix metric;
                             metric.dec(this.contents.integer);
@@ -744,14 +744,14 @@ public class Table
                             else
                             {
                                 content_buf.length = 0;
-                                enableStomping(content_buf);
+                                assumeSafeAppend(content_buf);
                                 sformat(content_buf,
                                     "{}", this.contents.integer);
                             }
                             break;
                         case Type.Float:
                             content_buf.length = 0;
-                            enableStomping(content_buf);
+                            assumeSafeAppend(content_buf);
                             sformat(content_buf,
                                     "{}", this.contents.floating);
                             break;
@@ -765,7 +765,7 @@ public class Table
                     verify(width >= utf8Length(content_buf), "column not wide enough");
 
                     spacing_buf.length = width - utf8Length(content_buf);
-                    enableStomping(spacing_buf);
+                    assumeSafeAppend(spacing_buf);
                     spacing_buf[] = ' ';
                     output.format(" {}{} ", spacing_buf, content_buf);
 
@@ -875,7 +875,7 @@ public class Table
         public void setWidth ( size_t width )
         {
             this.cells.length = width;
-            enableStomping(this.cells);
+            assumeSafeAppend(this.cells);
         }
 
 

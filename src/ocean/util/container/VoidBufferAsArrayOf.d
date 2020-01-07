@@ -110,7 +110,7 @@ public struct VoidBufferAsArrayOf ( T )
     public void length ( size_t len )
     {
         this.buffer.length = len * T.sizeof;
-        enableStomping(*this.buffer);
+        assumeSafeAppend(*this.buffer);
     }
 
     /***************************************************************************

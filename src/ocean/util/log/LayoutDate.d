@@ -27,7 +27,6 @@ import ocean.util.log.Event;
 version (unittest)
 {
     import ocean.core.Test;
-    import ocean.transition : enableStomping;
     import ocean.util.log.ILogger;
 }
 
@@ -77,7 +76,7 @@ unittest
 {
        mstring result = new mstring(2048);
        result.length = 0;
-       enableStomping(result);
+       assumeSafeAppend(result);
 
        scope dg = (cstring v) { result ~= v; };
        scope layout = new LayoutDate(false);

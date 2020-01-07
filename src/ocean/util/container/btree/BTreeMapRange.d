@@ -80,7 +80,7 @@ public BTreeMapRange!(BTreeMap) byKeyValue (BTreeMap) (ref BTreeMap tree, void[]
     else
     {
         (*buff).length = 0;
-        enableStomping(*buff);
+        assumeSafeAppend(*buff);
     }
 
     auto range = BTreeMapRange!(BTreeMap)(&tree.impl);

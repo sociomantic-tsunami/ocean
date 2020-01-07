@@ -241,7 +241,7 @@ unittest
         ref void[] dst )
     {
         dst.length = expected_decompressed_length;
-        enableStomping(dst);
+        assumeSafeAppend(dst);
         auto decompressed_length = lzo.decompressSafe(src, dst);
 
         // Check that the length of the uncompressed data is what we expected.

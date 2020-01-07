@@ -941,32 +941,32 @@ public struct Range ( T )
         ranges ~= [This(1, 5)];
         test!("<=")(target.isTessellatedBy(ranges), target.isCoveredBy(ranges));
         ranges.length = 0;
-        enableStomping(ranges);
+        assumeSafeAppend(ranges);
 
         ranges ~= [This(12, 15)];
         test!("<=")(target.isTessellatedBy(ranges), target.isCoveredBy(ranges));
         ranges.length = 0;
-        enableStomping(ranges);
+        assumeSafeAppend(ranges);
 
         ranges ~= [This(14, 17)];
         test!("<=")(target.isTessellatedBy(ranges), target.isCoveredBy(ranges));
         ranges.length = 0;
-        enableStomping(ranges);
+        assumeSafeAppend(ranges);
 
         ranges ~= [This(18, 25)];
         test!("<=")(target.isTessellatedBy(ranges), target.isCoveredBy(ranges));
         ranges.length = 0;
-        enableStomping(ranges);
+        assumeSafeAppend(ranges);
 
         ranges ~= [This(1, 5), This(19, 20)];
         test!("<=")(target.isTessellatedBy(ranges), target.isCoveredBy(ranges));
         ranges.length = 0;
-        enableStomping(ranges);
+        assumeSafeAppend(ranges);
 
         ranges ~= [This(1, 13), This(16, 20)];
         test!("<=")(target.isTessellatedBy(ranges), target.isCoveredBy(ranges));
         ranges.length = 0;
-        enableStomping(ranges);
+        assumeSafeAppend(ranges);
 
         test!("<=")(target.isTessellatedBy(ranges), target.isCoveredBy(ranges));
 
@@ -974,43 +974,43 @@ public struct Range ( T )
         ranges ~= [This(11, 17)];
         test!("<=")(target.isTessellatedBy(ranges), target.isCoveredBy(ranges));
         ranges.length = 0;
-        enableStomping(ranges);
+        assumeSafeAppend(ranges);
 
         ranges ~= [This(12, 18)];
         test!("<=")(target.isTessellatedBy(ranges), target.isCoveredBy(ranges));
         ranges.length = 0;
-        enableStomping(ranges);
+        assumeSafeAppend(ranges);
 
         ranges ~= [This(11, 18)];
         test!("<=")(target.isTessellatedBy(ranges), target.isCoveredBy(ranges));
         ranges.length = 0;
-        enableStomping(ranges);
+        assumeSafeAppend(ranges);
 
         ranges ~= [This(1, 15), This(14, 20)];
         test!("<=")(target.isTessellatedBy(ranges), target.isCoveredBy(ranges));
         ranges.length = 0;
-        enableStomping(ranges);
+        assumeSafeAppend(ranges);
 
         ranges ~= [This(12, 15), This(15, 17)];
         test!("<=")(target.isTessellatedBy(ranges), target.isCoveredBy(ranges));
         ranges.length = 0;
-        enableStomping(ranges);
+        assumeSafeAppend(ranges);
 
         ranges ~= [This(12, 16), This(14, 17)];
         test!("<=")(target.isTessellatedBy(ranges), target.isCoveredBy(ranges));
         ranges.length = 0;
-        enableStomping(ranges);
+        assumeSafeAppend(ranges);
 
         // tessellated
         ranges ~= [This(12, 17)];
         test!("<=")(target.isTessellatedBy(ranges), target.isCoveredBy(ranges));
         ranges.length = 0;
-        enableStomping(ranges);
+        assumeSafeAppend(ranges);
 
         ranges ~= [This(12, 14), This(15, 17)];
         test!("<=")(target.isTessellatedBy(ranges), target.isCoveredBy(ranges));
         ranges.length = 0;
-        enableStomping(ranges);
+        assumeSafeAppend(ranges);
     }
 
 
@@ -1748,25 +1748,25 @@ unittest
     ranges ~= [Range!(uint)(1, 5), Range!(uint)(6, 12), Range!(uint)(13, 15)];
     test!("==")(isContiguous(ranges), !hasGap(ranges) && !hasOverlap(ranges));
     ranges.length = 0;
-    enableStomping(ranges);
+    assumeSafeAppend(ranges);
 
     // overlap
     ranges ~= [Range!(uint)(1, 5), Range!(uint)(6, 13), Range!(uint)(13, 15)];
     test!("==")(isContiguous(ranges), !hasGap(ranges) && !hasOverlap(ranges));
     ranges.length = 0;
-    enableStomping(ranges);
+    assumeSafeAppend(ranges);
 
     // gap
     ranges ~= [Range!(uint)(1, 4), Range!(uint)(6, 12), Range!(uint)(13, 15)];
     test!("==")(isContiguous(ranges), !hasGap(ranges) && !hasOverlap(ranges));
     ranges.length = 0;
-    enableStomping(ranges);
+    assumeSafeAppend(ranges);
 
     // gap and overlap
     ranges ~= [Range!(uint)(1, 4), Range!(uint)(6, 13), Range!(uint)(13, 15)];
     test!("==")(isContiguous(ranges), !hasGap(ranges) && !hasOverlap(ranges));
     ranges.length = 0;
-    enableStomping(ranges);
+    assumeSafeAppend(ranges);
 
     // range.length == 0
     test!("==")(isContiguous(ranges), !hasGap(ranges) && !hasOverlap(ranges));

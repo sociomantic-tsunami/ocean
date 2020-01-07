@@ -204,13 +204,13 @@ unittest
     test(buffer == "1");
 
     buffer.length = 0;
-    enableStomping(buffer);
+    assumeSafeAppend(buffer);
     test(sformat(buffer, "{}", 1234567890123) == "1234567890123");
     test(buffer == "1234567890123");
 
     auto old_buffer_ptr = buffer.ptr;
     buffer.length = 0;
-    enableStomping(buffer);
+    assumeSafeAppend(buffer);
     test(sformat(buffer, "{}", 1.24) == "1.24");
     test(buffer == "1.24");
     test(buffer.ptr == old_buffer_ptr);

@@ -621,7 +621,7 @@ unittest
         regex.compile("a[ ]", false);
 
         matches_buffer.length = 0;
-        enableStomping(matches_buffer);
+        assumeSafeAppend(matches_buffer);
 
         foreach ( match; regex.findAll(str, matches_buffer) )
         {
