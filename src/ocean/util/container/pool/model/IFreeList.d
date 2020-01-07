@@ -317,7 +317,7 @@ version (unittest)
                 this.lengthCheck(busy_items.length, ++idle_count);
             }
 
-            enableStomping(busy_items);
+            assumeSafeAppend(busy_items);
         }
     }
 }

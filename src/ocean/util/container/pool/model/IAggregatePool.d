@@ -783,7 +783,7 @@ public abstract class IAggregatePool ( T ) : IPool, IFreeList!(ItemType_!(T))
 
             this.outer.safe_iterator_open = true;
             auto slice = this.outer.items[start .. end];
-            enableStomping(this.outer.iteration_items);
+            assumeSafeAppend(this.outer.iteration_items);
             this.outer.iteration_items.length = slice.length;
             slice = (this.outer.iteration_items[] = slice[]);
             super(slice);

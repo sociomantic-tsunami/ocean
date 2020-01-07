@@ -76,7 +76,7 @@ unittest
 {
     mstring result = new mstring(2048);
     result.length = 0;
-    enableStomping(result);
+    assumeSafeAppend(result);
 
     scope dg = (cstring v) { result ~= v; };
     scope layout = new LayoutSimple();

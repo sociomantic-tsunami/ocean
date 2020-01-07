@@ -329,7 +329,7 @@ public class SliceBuffer ( T ) : ConcatBuffer!(T)
     {
         super.clear;
         this.slices.length = 0;
-        enableStomping(this.slices);
+        assumeSafeAppend(this.slices);
     }
 
 

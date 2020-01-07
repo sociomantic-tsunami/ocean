@@ -160,7 +160,7 @@ abstract public class ISuspendableThrottler
     {
         this.suspendables =
             this.suspendables[0 .. this.suspendables.moveToEnd(s)];
-        enableStomping(suspendables);
+        assumeSafeAppend(suspendables);
     }
 
     unittest
@@ -219,7 +219,7 @@ abstract public class ISuspendableThrottler
     public void clear ( )
     {
         this.suspendables.length = 0;
-        enableStomping(this.suspendables);
+        assumeSafeAppend(this.suspendables);
         this.suspended_ = false;
     }
 

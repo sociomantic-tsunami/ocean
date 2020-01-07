@@ -163,7 +163,7 @@ public struct WideUInt ( size_t N )
         auto n = this.decimal_digits();
         static mstring buffer;
         buffer.length = n;
-        enableStomping(buffer);
+        assumeSafeAppend(buffer);
 
         WideUInt copy = this;
         for (ptrdiff_t idx = n-1; idx >= 0; --idx)

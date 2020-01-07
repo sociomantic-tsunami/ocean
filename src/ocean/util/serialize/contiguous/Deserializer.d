@@ -327,7 +327,7 @@ struct Deserializer
 
         This.e.enforceInputSize!(S)(src.length, S.sizeof);
 
-        enableStomping(dst.data);
+        assumeSafeAppend(dst.data);
 
         /*
          * Calculate the number of bytes used in src, data_len, and the number
@@ -351,7 +351,7 @@ struct Deserializer
         if (dst.data.length < total_length)
         {
             dst.data.length = total_length;
-            enableStomping(dst.data);
+            assumeSafeAppend(dst.data);
         }
 
         size_t end_copy = (src.length < total_length) ? src.length : total_length;

@@ -266,7 +266,7 @@ public class BitGrouping
     public static mstring format ( ulong num, ref mstring output, cstring unit = null )
     {
         output.length = 0;
-        enableStomping(output);
+        assumeSafeAppend(output);
 
         if ( num == 0 )
         {

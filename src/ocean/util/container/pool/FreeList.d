@@ -227,7 +227,7 @@ public class FreeList ( T ) : IFreeList!(ItemType_!(T))
         if ( this.free_list.length > num )
         {
             this.free_list.length = num;
-            enableStomping(this.free_list);
+            assumeSafeAppend(this.free_list);
         }
 
         return this;

@@ -351,7 +351,7 @@ class HttpRequest : HttpHeader
                 }
 
                 this.msg_body_.length = msg_body_length();
-                enableStomping(this.msg_body_);
+                assumeSafeAppend(this.msg_body_);
 
                 consumed += this.appendMsgBody(msg_body_start);
             }

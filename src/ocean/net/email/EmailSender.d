@@ -96,7 +96,7 @@ class EmailSender
             auto first_entry = true;
 
             buf.length = 0;
-            enableStomping(buf);
+            assumeSafeAppend(buf);
 
             foreach ( entry; param_to_format )
             {

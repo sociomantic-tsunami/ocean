@@ -232,7 +232,7 @@ public class TimerSet ( EventData ) : TimerEventTimeoutManager
             protected cstring id ( )
             {
                 this.id_buf.length = 0;
-                enableStomping(this.id_buf);
+                assumeSafeAppend(this.id_buf);
                 sformat(this.id_buf, "Scheduler.Event {}", this.id_num);
                 return this.id_buf;
             }
