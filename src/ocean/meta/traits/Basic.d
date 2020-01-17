@@ -674,7 +674,8 @@ unittest
 
 bool isManifestConstant ( T, string name ) ( )
 {
-    mixin(`return is(typeof(T.init.`~name~`)) && !is(typeof(&T.init.`~name~`));`);
+    T instance;
+    mixin(`return is(typeof(instance.`~name~`)) && !is(typeof(&instance.`~name~`));`);
 }
 
 unittest
