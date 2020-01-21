@@ -376,7 +376,7 @@ public class SignalFD : ISelectable
     public void handle ( ref SignalInfo[] siginfos )
     {
         siginfos.length = 0;
-        enableStomping(siginfos);
+        assumeSafeAppend(siginfos);
 
         SignalInfo siginfo;
 

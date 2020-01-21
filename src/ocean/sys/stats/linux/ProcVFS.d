@@ -796,7 +796,7 @@ private bool parseProcStatData (cstring data, ref ProcStat s)
         return false;
 
     s.cmd.length = last_bracket;
-    enableStomping(s.cmd);
+    assumeSafeAppend(s.cmd);
     s.cmd[] = data[0..last_bracket];
 
     // chop last bracket and space

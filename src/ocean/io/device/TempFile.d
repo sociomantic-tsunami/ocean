@@ -213,7 +213,7 @@ class TempFile : File
         // Check suitability
         {
             mstring path_mut = Path.parse(path.dup).path;
-            enableStomping(path_mut);
+            assumeSafeAppend(path_mut);
             auto parentz = StringC.toCString(path_mut);
 
             // Make sure we have write access

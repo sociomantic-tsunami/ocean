@@ -252,7 +252,7 @@ public class AppendSysLog : Appender
         }
 
         this.buf.length = 0;
-        enableStomping(this.buf);
+        assumeSafeAppend(this.buf);
         this.layout.format(event, &sink);
         this.buf ~= '\0';
 

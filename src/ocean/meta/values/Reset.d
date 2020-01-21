@@ -80,7 +80,7 @@ private struct Reset
         static if (isArrayType!(T) == ArrayKind.Dynamic)
         {
             (*value).length = 0;
-            enableStomping(*value);
+            assumeSafeAppend(*value);
         }
         else static if (isPrimitiveType!(T))
         {

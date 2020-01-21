@@ -88,7 +88,7 @@ public void DynamicArrayDeepReset ( T ) ( ref T[] dst )
 {
     ArrayDeepReset(dst);
     dst.length = 0;
-    enableStomping(dst);
+    assumeSafeAppend(dst);
 }
 
 

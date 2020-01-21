@@ -268,7 +268,7 @@ public class StructTable ( S )
     private char[] defaultFieldString ( T ) ( T* field )
     {
         this.format_buffer.length = 0;
-        enableStomping(this.format_buffer);
+        assumeSafeAppend(this.format_buffer);
         sformat(this.format_buffer, "{}", *field);
         return this.format_buffer;
     }

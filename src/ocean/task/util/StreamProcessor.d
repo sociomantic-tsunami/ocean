@@ -288,7 +288,7 @@ unittest
             override public void recycle ( )
             {
                 this.buffer.length = 0;
-                enableStomping(this.buffer);
+                assumeSafeAppend(this.buffer);
             }
         }
 

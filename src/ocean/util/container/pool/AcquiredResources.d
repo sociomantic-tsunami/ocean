@@ -671,7 +671,7 @@ private void[] acquireBuffer ( FreeList!(ubyte[]) buffer_pool, size_t capacity )
 {
     auto buffer = buffer_pool.get(cast(ubyte[])new void[capacity]);
     buffer.length = 0;
-    enableStomping(buffer);
+    assumeSafeAppend(buffer);
 
     return buffer;
 }

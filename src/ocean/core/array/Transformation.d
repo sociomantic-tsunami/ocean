@@ -706,7 +706,7 @@ unittest
     int[] array;
 
     array.length = 10;
-    enableStomping(array);
+    assumeSafeAppend(array);
 
     auto previous_ptr = array.ptr;
     testNoAlloc(array.fill(0, 1, 2, 3, 4, 5, 6, 7, 8, 9));

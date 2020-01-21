@@ -107,7 +107,7 @@ public class StaticSyncPrint
     public typeof(this) format (Args...) ( cstring fmt, Args args )
     {
         formatted.length = 0;
-        enableStomping(this.formatted);
+        assumeSafeAppend(this.formatted);
 
         sformat(formatted, fmt, args);
 
@@ -143,7 +143,7 @@ public class StaticSyncPrint
         else with ( this.output )
         {
             formatted.length = 0;
-            enableStomping(this.formatted);
+            assumeSafeAppend(this.formatted);
             sformat(formatted, "{}", lines - 1);
 
             write(CSI);

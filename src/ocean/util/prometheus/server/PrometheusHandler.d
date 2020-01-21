@@ -107,7 +107,7 @@ public class PrometheusHandler : HttpConnectionHandler
         catch (Exception ex)
         {
             err_buf.length = 0;
-            enableStomping(err_buf);
+            assumeSafeAppend(err_buf);
 
             sformat(err_buf, "{}({}):{}", ex.file, ex.line, ex.message());
 

@@ -106,7 +106,7 @@ public class Collector
     public void reset ( )
     {
         this.collect_buf.length = 0;
-        enableStomping(this.collect_buf);
+        assumeSafeAppend(this.collect_buf);
     }
 
     /***************************************************************************

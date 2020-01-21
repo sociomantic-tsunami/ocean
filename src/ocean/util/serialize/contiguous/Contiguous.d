@@ -129,7 +129,7 @@ struct Contiguous( S )
     public Contiguous!(S) reset()
     {
         this.data.length = 0;
-        enableStomping(this.data);
+        assumeSafeAppend(this.data);
         return this;
     }
 

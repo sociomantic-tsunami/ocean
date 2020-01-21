@@ -88,7 +88,7 @@ struct BitArray
                 uint[] buf = ptr[0 .. olddim];
 
                 buf.length = newdim; // realloc
-                enableStomping(buf);
+                assumeSafeAppend(buf);
 
                 ptr = buf.ptr;
             }

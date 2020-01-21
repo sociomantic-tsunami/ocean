@@ -395,11 +395,11 @@ class Document(T_) : PullParser!(T_)
                 p.firstAttr =
                 p.lastAttr = null;
                 p.rawValue.length = 0;
-                enableStomping(p.rawValue);
+                assumeSafeAppend(p.rawValue);
                 p.localName.length = 0;
-                enableStomping(p.localName);
+                assumeSafeAppend(p.localName);
                 p.prefixed.length = 0;
-                enableStomping(p.prefixed);
+                assumeSafeAppend(p.prefixed);
                 return p;
         }
 

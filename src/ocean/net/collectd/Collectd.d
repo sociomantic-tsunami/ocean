@@ -222,7 +222,7 @@ public final class Collectd
         // This ought to be enough for any numeric argument
         this.format_buff = new mstring(256);
         this.format_buff.length = 0;
-        enableStomping(this.format_buff);
+        assumeSafeAppend(this.format_buff);
     }
 
 
@@ -499,7 +499,7 @@ public final class Collectd
     private void startNewRequest (istring reqname /*= __FUNCTION__*/) ()
     {
         this.format_buff.length = 0;
-        enableStomping(this.format_buff);
+        assumeSafeAppend(this.format_buff);
 
         this.e.enforce(this.reader.empty(),
                        "Called " ~ reqname ~ " with a non-empty buffer");

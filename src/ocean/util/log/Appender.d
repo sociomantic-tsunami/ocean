@@ -33,7 +33,6 @@ version (unittest)
     import ocean.core.Test;
     import ocean.time.Clock;
     import ocean.time.Time;
-    import ocean.transition : enableStomping;
     import ocean.util.log.Hierarchy;
     import ocean.util.log.Logger;
 }
@@ -292,7 +291,7 @@ unittest
 {
        mstring result = new mstring(2048);
        result.length = 0;
-       enableStomping(result);
+       assumeSafeAppend(result);
 
        scope dg = (cstring v) { result ~= v; };
        scope layout = new LayoutTimer();

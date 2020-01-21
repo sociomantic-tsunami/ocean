@@ -126,7 +126,7 @@ class DirectorySandbox
             this.old_cwd.ptr,
             this.old_cwd.length);
         this.old_cwd.length = strlen(this.old_cwd.ptr);
-        enableStomping(this.old_cwd);
+        assumeSafeAppend(this.old_cwd);
 
         this.sandbox_path = StringC.toDString(this.exception.enforceRetPtr!(mkdtemp).call(
                 StringC.toCString(this.path_template)));

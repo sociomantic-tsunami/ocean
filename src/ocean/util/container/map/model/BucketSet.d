@@ -614,7 +614,7 @@ public abstract class BucketSet ( size_t V, K = hash_t ) : IBucketSet
                 // Resize the array of buckets and the bucket_info and calculate
                 // the new bucket_mask.
 
-                enableStomping(this.buckets);
+                assumeSafeAppend(this.buckets);
                 this.buckets.length = n_new;
 
                 .clear(this.buckets[0 .. (n_prev < $)? n_prev : $]);

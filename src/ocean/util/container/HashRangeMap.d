@@ -240,10 +240,10 @@ public struct HashRangeMap ( Value )
     public void clear ()
     {
         this.ranges.length = 0;
-        enableStomping(this.ranges);
+        assumeSafeAppend(this.ranges);
 
         this.values.length = 0;
-        enableStomping(this.values);
+        assumeSafeAppend(this.values);
     }
 
     unittest

@@ -1312,7 +1312,7 @@ private abstract class AppendBufferImpl: IAppendBufferBase
     body
     {
         content_.length = n;
-        enableStomping(content_);
+        assumeSafeAppend(content_);
     }
 
     /**************************************************************************

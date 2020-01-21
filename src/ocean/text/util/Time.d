@@ -111,10 +111,10 @@ public mstring formatTimeRef ( time_t timestamp, ref mstring output,
     cstring format_string = "%F %T\0", uint max_output_len = 50 )
 {
     output.length = max_output_len;
-    enableStomping(output);
+    assumeSafeAppend(output);
 
     output.length = formatTime(timestamp, output, format_string).length;
-    enableStomping(output);
+    assumeSafeAppend(output);
 
     return output;
 }
@@ -137,7 +137,7 @@ public mstring formatTimeRef ( time_t timestamp, ref mstring output,
 public mstring formatDuration ( ulong s, ref mstring output )
 {
     output.length = 0;
-    enableStomping(output);
+    assumeSafeAppend(output);
 
     bool comma = false;
 
@@ -203,7 +203,7 @@ public mstring formatDuration ( ulong s, ref mstring output )
 public mstring formatDurationShort ( ulong s, ref mstring output )
 {
     output.length = 0;
-    enableStomping(output);
+    assumeSafeAppend(output);
 
     /***************************************************************************
 
