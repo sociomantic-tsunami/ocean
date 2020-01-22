@@ -49,10 +49,8 @@
 
 module ocean.core.UnitTestRunner;
 
-import ocean.transition;
-
-
 import ocean.core.Verify;
+import ocean.meta.types.Qualifiers;
 import ocean.stdc.string: strdup, strlen, strncmp;
 import core.sys.posix.unistd: unlink;
 import core.sys.posix.sys.time: gettimeofday, timeval;
@@ -186,6 +184,8 @@ private class UnitTestRunner
 
     private int run ( )
     {
+        import ocean.transition;
+
         verify(prog.length > 0);
 
         timeval start_time = this.now();
