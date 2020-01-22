@@ -28,10 +28,10 @@
 module ocean.core.Test;
 
 
-import ocean.transition;
-
 import core.memory;
 import ocean.core.Enforce;
+import ocean.meta.types.Qualifiers;
+
 import ocean.text.convert.Formatter;
 
 /******************************************************************************
@@ -321,6 +321,8 @@ unittest
 public void testNoAlloc ( lazy void expr, istring file = __FILE__,
     int line = __LINE__ )
 {
+    import ocean.transition;
+
     size_t used1, free1;
     ocean.transition.gc_usage(used1, free1);
 
@@ -368,6 +370,8 @@ unittest
 
 unittest
 {
+    import ocean.meta.types.Typedef;
+
     auto t = new NamedTest("typedef");
 
     mixin(Typedef!(int, "MyInt"));

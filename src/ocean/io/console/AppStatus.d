@@ -66,9 +66,9 @@ import ocean.io.Console;
 import ocean.io.Stdout;
 import ocean.io.Terminal;
 import ocean.io.model.IConduit;
+import ocean.meta.types.Qualifiers;
 import ocean.text.convert.Formatter;
 import ocean.time.MicrosecondsClock;
-import ocean.transition;
 import ocean.util.container.AppendBuffer;
 import ocean.text.convert.Integer;
 
@@ -907,6 +907,8 @@ public class AppStatus
 
     public bool getMemoryUsage ( out float mem_allocated, out float mem_free )
     {
+        import ocean.transition;
+
         static immutable float Mb = 1024 * 1024;
         size_t used, free;
         ocean.transition.gc_usage(used, free);
