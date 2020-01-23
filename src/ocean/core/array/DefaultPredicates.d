@@ -21,7 +21,6 @@ module ocean.core.array.DefaultPredicates;
 version (unittest)
 {
     import ocean.core.Test;
-    import ocean.transition;
 }
 
 struct DefaultPredicates
@@ -59,23 +58,22 @@ unittest
     {
         int x;
 
-        mixin (genOpEquals(
-        `{
+        override equals_t opEquals(Object rhs)
+        {
             auto o = cast(typeof(this)) rhs;
             if (o is null) return false;
             return (this.x == o.x);
-        }`));
+        }
     }
 
     struct S
     {
         int x;
 
-        mixin (genOpEquals("
+        bool opEquals(const typeof(this) rhs) const
         {
             return this.x == rhs.x;
         }
-        "));
     }
 
     auto c1 = new C;
