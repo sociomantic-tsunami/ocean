@@ -136,17 +136,16 @@ struct TimeSpan
         /**
          * Compares this object against another TimeSpan value.
          */
-        mixin(genOpCmp(`
-            {
-                    if (ticks_ < rhs.ticks_)
-                        return -1;
+        public int opCmp ( const typeof(this) rhs ) const
+        {
+            if (ticks_ < rhs.ticks_)
+                return -1;
 
-                    if (ticks_ > rhs.ticks_)
-                        return 1;
+            if (ticks_ > rhs.ticks_)
+                return 1;
 
-                    return 0;
-            }
-        `));
+            return 0;
+        }
 
         /**
          * Add or subtract the TimeSpan given to this TimeSpan returning a

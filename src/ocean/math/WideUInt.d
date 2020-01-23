@@ -297,7 +297,7 @@ public struct WideUInt ( size_t N )
 
     ***************************************************************************/
 
-    mixin(genOpCmp("
+    public int opCmp ( const typeof(this) rhs ) const
     {
         ptrdiff_t idx = N-1;
         while (idx > 0)
@@ -311,7 +311,6 @@ public struct WideUInt ( size_t N )
         auto b = rhs.payload[idx];
         return a < b ? -1 : (a > b ? 1 : 0);
     }
-    "));
 
     unittest
     {
