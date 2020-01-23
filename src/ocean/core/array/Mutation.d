@@ -21,8 +21,6 @@
 module ocean.core.array.Mutation;
 
 
-import ocean.transition;
-
 import core.stdc.string; // memmove, memset
 import core.stdc.math; // fabs;
 
@@ -36,6 +34,7 @@ import ocean.core.Verify;
 version (unittest)
 {
     import ocean.core.Test;
+    import ocean.meta.types.Qualifiers;
     import ocean.text.convert.Formatter;
 }
 

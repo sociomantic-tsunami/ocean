@@ -22,7 +22,6 @@
 module ocean.core.array.Transformation;
 
 
-import ocean.transition;
 import ocean.meta.traits.Basic;
 import ocean.meta.types.Function;
 
@@ -34,6 +33,7 @@ import ocean.core.array.Search;
 version (unittest)
 {
     import ocean.core.Test;
+    import ocean.meta.types.Qualifiers;
 }
 
 /*******************************************************************************
