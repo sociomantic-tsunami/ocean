@@ -19,8 +19,8 @@
 
 module ocean.math.Range;
 
-import ocean.transition;
 import ocean.core.Verify;
+import ocean.meta.types.Qualifiers;
 
 version (unittest)
 {
@@ -613,8 +613,8 @@ public struct Range ( T )
 
     ***************************************************************************/
 
-    mixin (genOpCmp(
-    `{
+    public int opCmp ( const typeof(this) rhs ) const
+    {
         auto _this = cast(Unqual!(typeof(this))) this;
         auto _rhs = cast(Unqual!(typeof(rhs))) rhs;
 
@@ -627,7 +627,7 @@ public struct Range ( T )
         if ( _this.max_ < _rhs.max_ ) return -1;
         if ( _rhs.max_ < _this.max_ ) return 1;
         return 0;
-    }`));
+    }
 
     unittest
     {

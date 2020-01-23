@@ -156,12 +156,12 @@ class EBTree32 ( bool signed = false ) : IEBTree
 
          **********************************************************************/
 
-        public mixin (genOpCmp(
-        `{
+        public int opCmp ( const typeof(this) rhs ) const
+        {
             return (this.hi > rhs.hi)? +1 :
                    (this.hi < rhs.hi)? -1 :
                    (this.lo >= rhs.lo)? (this.lo > rhs.lo) : -1;
-        }`));
+        }
 
         /**********************************************************************
 

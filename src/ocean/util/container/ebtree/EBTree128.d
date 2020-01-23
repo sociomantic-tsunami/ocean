@@ -110,8 +110,8 @@ class EBTree128 ( bool signed = false ) : IEBTree
 
          **********************************************************************/
 
-        public mixin(genOpCmp(
-        `{
+        public int opCmp ( const typeof(this) rhs ) const
+        {
             static if (signed)
             {
                 return eb128i_cmp_264(this.lo, this.hi, rhs.lo, rhs.hi);
@@ -120,7 +120,7 @@ class EBTree128 ( bool signed = false ) : IEBTree
             {
                 return eb128_cmp_264(this.lo, this.hi, rhs.lo, rhs.hi);
             }
-        }`));
+        }
 
         public equals_t opEquals(Key rhs)
         {

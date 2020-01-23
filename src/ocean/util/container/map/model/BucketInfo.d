@@ -60,10 +60,10 @@ class BucketInfo
 
          **********************************************************************/
 
-        public mixin (genOpCmp(
-        `{
+        public int opCmp ( const typeof(this) rhs ) const
+        {
             return (this.length >= rhs.length)? this.length > rhs.length : -1;
-        }`));
+        }
 
         public equals_t opEquals (Bucket rhs)
         {
