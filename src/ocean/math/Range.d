@@ -50,8 +50,8 @@ public struct Range ( T )
 
     ***************************************************************************/
 
-    import ocean.transition: TypeofThis, assumeUnique;
-    mixin TypeofThis!();
+    alias typeof(this) This;
+
 
     /***************************************************************************
 
@@ -215,6 +215,8 @@ public struct Range ( T )
     {
         public istring toString()
         {
+            import ocean.core.TypeConvert: assumeUnique;
+
             auto msg = format("{}({}, {}", This.stringof, this.min_, this.max_);
 
             if (this.is_empty)

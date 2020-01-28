@@ -76,7 +76,7 @@ private struct SmartUnionFormatter ( SU )
 
     static assert(is(TemplateInstanceArgs!(SmartUnion, SU)));
 
-    mixin TypeofThis;
+    alias typeof(this) This;
 
     /// Smart union to format.
     private SU smart_union;
