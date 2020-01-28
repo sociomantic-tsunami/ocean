@@ -916,7 +916,8 @@ D toStringFromString(D,S)(S value)
     static if (is(S : D))
         return value;
 
-    else static if (!isMutable!(DElem) || !isMutable!(SElem))
+    else static if ( is(DElem == const) || is(DElem == immutable)
+        || is(SElem == const) || is(SElem == immutable) )
         // both cases require creating new string which makes
         // blindly casting result of transcoding to D inherently const correct
         return cast(D) toStringFromString!(Unqual!(DElem)[])(value.dup);
