@@ -203,7 +203,7 @@ struct S
         int union_b;
     }
 
-    mixin TypeofThis!();
+    alias typeof(this) This;
 
     /***************************************************************************
 
