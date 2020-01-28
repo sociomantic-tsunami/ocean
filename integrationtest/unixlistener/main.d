@@ -94,7 +94,7 @@ void client_process (cstring socket_path)
     cstring readData ()
     {
         read_buffer.length = 100;
-        enableStomping(read_buffer);
+        assumeSafeAppend(read_buffer);
 
         auto buff = cast(void[])read_buffer;
 
@@ -110,7 +110,7 @@ void client_process (cstring socket_path)
         enforce(read_bytes > 0);
 
         read_buffer.length = read_bytes;
-        enableStomping(read_buffer);
+        assumeSafeAppend(read_buffer);
         return read_buffer;
     }
 
