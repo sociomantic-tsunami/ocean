@@ -23,8 +23,9 @@
 
 module ocean.io.device.TempFile;
 
-import ocean.transition;
 import ocean.core.Verify;
+import ocean.core.TypeConvert: assumeUnique;
+import ocean.meta.types.Qualifiers;
 
 import Path = ocean.io.Path;
 import ocean.math.random.Kiss : Kiss;
@@ -210,6 +211,8 @@ class TempFile : File
      */
     private bool openTempFile(cstring path, TempStyle style)
     {
+        import ocean.transition : Octal;
+
         // Check suitability
         {
             mstring path_mut = Path.parse(path.dup).path;

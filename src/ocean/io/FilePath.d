@@ -17,10 +17,12 @@
 
 module ocean.io.FilePath;
 
-import ocean.transition;
+import ocean.transition : Octal;
 import ocean.core.Verify;
+import ocean.core.TypeConvert: assumeUnique;
 import ocean.io.Path;
 import ocean.io.model.IFile : FileConst, FileInfo;
+import ocean.meta.types.Qualifiers;
 
 import core.sys.posix.unistd : link;
 import ocean.stdc.string : memmove;

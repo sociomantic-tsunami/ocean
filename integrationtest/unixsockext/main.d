@@ -15,7 +15,7 @@
 
 module integrationtest.unixsockext.main;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import core.sys.posix.sys.stat;
 import ocean.core.Test;
@@ -44,6 +44,8 @@ class UnixSockListeningApp : DaemonApp
     // Called after arguments and config file parsing.
     override protected int run ( Arguments args, ConfigParser config )
     {
+        import ocean.transition : Octal;
+
         this.startEventHandling(theScheduler.epoll);
         auto errnoexception = new ErrnoException;
 

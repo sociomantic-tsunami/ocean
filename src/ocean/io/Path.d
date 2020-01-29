@@ -62,7 +62,8 @@ import ocean.core.Verify;
 import ocean.io.model.IFile : FileConst, FileInfo;
 import ocean.sys.Common;
 public import ocean.time.Time : Time, TimeSpan;
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
+import ocean.transition : Octal;
 
 import core.stdc.string : memmove;
 
