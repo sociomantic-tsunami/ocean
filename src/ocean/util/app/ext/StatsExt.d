@@ -52,7 +52,7 @@ import ocean.util.log.Appender;
 import ocean.util.log.Stats;
 import ConfigFiller = ocean.util.config.ConfigFiller;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.core.Verify;
 import ocean.io.device.File;
 

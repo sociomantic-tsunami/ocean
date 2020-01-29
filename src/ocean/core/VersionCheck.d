@@ -19,7 +19,7 @@
 
 module ocean.core.VersionCheck;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.meta.codegen.CTFE;
 
 /// ditto

@@ -82,7 +82,7 @@ module ocean.util.container.map.Map;
 
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.util.container.map.model.BucketSet;
 

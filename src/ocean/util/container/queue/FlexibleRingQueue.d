@@ -17,8 +17,9 @@ module ocean.util.container.queue.FlexibleRingQueue;
 
 
 
+import ocean.core.TypeConvert: assumeUnique;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.util.container.queue.model.IRingQueue;
 

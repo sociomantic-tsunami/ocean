@@ -25,7 +25,7 @@ module ocean.text.convert.Hash;
 
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import Integer = ocean.text.convert.Integer;
 

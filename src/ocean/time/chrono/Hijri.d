@@ -21,7 +21,7 @@ module ocean.time.chrono.Hijri;
 
 import ocean.time.chrono.Calendar;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 
 /**

@@ -55,7 +55,7 @@ module ocean.text.csv.HeadingsCSV;
 
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.text.csv.CSV;
 

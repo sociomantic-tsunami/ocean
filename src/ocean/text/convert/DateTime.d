@@ -18,7 +18,7 @@ module ocean.text.convert.DateTime;
 
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import core.stdc.stdio : sscanf;
 

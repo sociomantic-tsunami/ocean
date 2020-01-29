@@ -14,7 +14,7 @@
 
 module ocean.util.container.btree.BTreeMapRange;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.util.container.btree.BTreeMap;
 
 /*******************************************************************************

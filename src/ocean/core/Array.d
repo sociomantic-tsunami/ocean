@@ -33,7 +33,7 @@
 module ocean.core.Array;
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.core.Test;
 import ocean.core.Buffer;

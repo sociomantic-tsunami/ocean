@@ -20,7 +20,7 @@
 
 module ocean.util.digest.Sha256;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.core.ByteSwap;
 

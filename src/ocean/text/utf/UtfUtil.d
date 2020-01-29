@@ -36,7 +36,7 @@ module ocean.text.utf.UtfUtil;
 
 import core.exception: onUnicodeError;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.stdc.string: memrchr;
 

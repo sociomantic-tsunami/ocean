@@ -23,7 +23,7 @@
 module ocean.task.TaskPool;
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.task.Task;
 import ocean.task.IScheduler;

@@ -64,7 +64,7 @@ module ocean.text.utf.UtfString;
 
 import Utf = ocean.text.convert.Utf;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.core.Verify;
 

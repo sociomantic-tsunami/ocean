@@ -17,7 +17,7 @@
 
 module ocean.text.xml.DocPrinter;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.io.model.IConduit;
 

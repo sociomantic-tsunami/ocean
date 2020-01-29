@@ -39,7 +39,7 @@ module ocean.util.container.pool.model.IPool;
 
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.util.container.pool.model.IPoolInfo;
 import ocean.util.container.pool.model.ILimitable;

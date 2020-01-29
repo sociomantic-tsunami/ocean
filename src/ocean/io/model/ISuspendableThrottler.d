@@ -18,7 +18,7 @@
 
 module ocean.io.model.ISuspendableThrottler;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 
 /*******************************************************************************

@@ -22,7 +22,7 @@
 module ocean.net.http.HttpConnectionHandler;
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.net.http.HttpRequest,
        ocean.net.http.HttpResponse,
        ocean.net.http.HttpException;

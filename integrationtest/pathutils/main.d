@@ -15,7 +15,7 @@
 
 module integrationtest.pathutils.main;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.core.Enforce;
 

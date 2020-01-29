@@ -29,7 +29,7 @@
 module ocean.util.serialize.Version;
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.core.Verify;
 import ocean.core.Buffer;
 

@@ -26,7 +26,7 @@ import core.stdc.stdlib : malloc, free;
 
 import core.memory;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 /*******************************************************************************
 

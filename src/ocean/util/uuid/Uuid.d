@@ -20,7 +20,8 @@
  */
 module ocean.util.uuid.Uuid;
 
-import ocean.transition;
+import ocean.core.TypeConvert: assumeUnique;
+import ocean.meta.types.Qualifiers;
 
 import ocean.core.ExceptionDefinitions;
 import Integer = ocean.text.convert.Integer_tango;

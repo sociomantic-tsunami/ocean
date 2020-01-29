@@ -113,7 +113,7 @@ module ocean.core.SmartEnum;
 
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 public import ocean.core.Enforce;
 
@@ -179,7 +179,7 @@ unittest
 
 public template SmartEnumCore ( BaseType )
 {
-    import ocean.transition;
+    import ocean.meta.types.Qualifiers;
 
     /***************************************************************************
 

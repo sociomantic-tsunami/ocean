@@ -22,7 +22,7 @@ import ocean.core.Verify;
 /// ditto
 class DirectorySandbox
 {
-    import ocean.transition;
+    import ocean.meta.types.Qualifiers;
     import ocean.sys.ErrnoException;
     import ocean.io.device.File;
     import Path = ocean.io.Path;

@@ -110,7 +110,7 @@ module ocean.util.container.map.model.BucketElementMallocAllocator;
 import ocean.util.container.map.model.IAllocator;
 
 import core.memory;
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 /*******************************************************************************
 

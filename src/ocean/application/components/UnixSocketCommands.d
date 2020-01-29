@@ -18,7 +18,7 @@ module ocean.application.components.UnixSocketCommands;
 /// ditto
 public class UnixSocketCommands
 {
-    import ocean.transition;
+    import ocean.meta.types.Qualifiers;
     import ocean.core.Enforce;
     import ocean.io.select.EpollSelectDispatcher;
     import ocean.text.convert.Integer;

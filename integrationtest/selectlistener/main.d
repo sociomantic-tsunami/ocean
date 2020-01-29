@@ -21,7 +21,7 @@
 
 module integrationtest.selectlistener.main;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.core.Enforce: enforce;
 import Ocean = ocean.core.Test;

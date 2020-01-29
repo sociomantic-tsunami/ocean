@@ -35,7 +35,7 @@
 module ocean.io.select.timeout.TimerEventTimeoutManager;
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.time.timeout.TimeoutManager;
 

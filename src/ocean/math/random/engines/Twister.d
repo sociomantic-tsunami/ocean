@@ -19,7 +19,8 @@
 *******************************************************************************/
 
 module ocean.math.random.engines.Twister;
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
+import ocean.core.TypeConvert: assumeUnique;
 import Integer = ocean.text.convert.Integer_tango;
 import ocean.core.Verify;
 

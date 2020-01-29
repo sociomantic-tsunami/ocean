@@ -15,7 +15,7 @@
 
 module integrationtest.taskext_cli.main;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.util.app.CliApp;
 import ocean.text.Arguments;
 import ocean.task.Task;

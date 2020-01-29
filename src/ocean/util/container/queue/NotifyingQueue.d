@@ -104,7 +104,7 @@ import ocean.util.serialize.contiguous.Deserializer;
 
 import ocean.core.Array;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.util.container.AppendBuffer;
 

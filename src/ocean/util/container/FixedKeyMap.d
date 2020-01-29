@@ -60,7 +60,7 @@ module ocean.util.container.FixedKeyMap;
 
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.core.Array;
 import ocean.core.Array: copy, bsearch;
 import ocean.core.Enforce;

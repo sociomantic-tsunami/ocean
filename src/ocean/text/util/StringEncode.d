@@ -43,7 +43,7 @@ module ocean.text.util.StringEncode;
 
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 version (unittest) import ocean.core.Test;
 

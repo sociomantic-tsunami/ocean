@@ -23,7 +23,7 @@
 
 module ocean.util.digest.Whirlpool;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.util.digest.MerkleDamgard;
 

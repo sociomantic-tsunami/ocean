@@ -13,7 +13,8 @@
 
 module ocean.meta.types.ReduceType_test;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
+import ocean.meta.types.Typedef;
 import ocean.meta.traits.Basic;
 import ocean.meta.types.ReduceType;
 

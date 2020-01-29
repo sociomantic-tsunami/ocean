@@ -31,7 +31,7 @@ module ocean.io.console.readline.History;
 
 import C = ocean.io.console.readline.c.history;
 import ocean.text.util.StringC;
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 static this()
 {

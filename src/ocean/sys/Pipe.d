@@ -15,7 +15,7 @@
 
 module ocean.sys.Pipe;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.sys.Common;
 import ocean.io.device.Device;

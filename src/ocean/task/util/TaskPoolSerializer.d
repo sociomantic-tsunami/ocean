@@ -34,7 +34,7 @@ module ocean.task.util.TaskPoolSerializer;
 
 public class TaskPoolSerializer
 {
-    import ocean.transition;
+    import ocean.meta.types.Qualifiers;
 
     import ocean.core.Array: concat;
     import ocean.core.Enforce;

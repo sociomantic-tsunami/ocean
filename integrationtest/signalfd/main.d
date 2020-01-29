@@ -28,7 +28,7 @@ import ocean.sys.SignalFD;
 import ocean.sys.Epoll;
 import ocean.sys.SignalMask;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.core.Array : contains;
 import ocean.core.Enforce;
 import ocean.core.Test;

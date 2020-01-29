@@ -57,7 +57,7 @@ module ocean.text.convert.Utf;
 
 static import core.exception;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 /*******************************************************************************
 

@@ -24,7 +24,7 @@
 module ocean.task.util.StreamProcessor;
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.task.Task;
 import ocean.task.ThrottledTaskPool;

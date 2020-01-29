@@ -27,7 +27,7 @@
 module ocean.core.Buffer;
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.meta.traits.Basic;
 import ocean.meta.types.Arrays;

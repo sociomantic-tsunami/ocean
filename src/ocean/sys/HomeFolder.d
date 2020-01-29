@@ -22,7 +22,7 @@
 
 module ocean.sys.HomeFolder;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.core.Verify;
 import TextUtil = ocean.text.Util;
 import Path = ocean.io.Path;

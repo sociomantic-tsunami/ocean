@@ -45,7 +45,7 @@
 
 module ocean.math.Math;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 static import core.stdc.math;
 import ocean.math.IEEE;

@@ -14,7 +14,7 @@
 
 module ocean.util.container.btree.Implementation;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 /*******************************************************************************
 

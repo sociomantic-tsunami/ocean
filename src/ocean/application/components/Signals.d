@@ -22,7 +22,7 @@
 
 module ocean.application.components.Signals;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 /// ditto
 public class Signals

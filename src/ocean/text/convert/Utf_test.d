@@ -12,7 +12,7 @@
 
 module ocean.text.convert.Utf_test;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.text.convert.Utf;
 import ocean.core.Test;
 

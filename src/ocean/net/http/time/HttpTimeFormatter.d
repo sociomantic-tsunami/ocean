@@ -20,7 +20,7 @@
 module ocean.net.http.time.HttpTimeFormatter;
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.core.Verify;
 import core.stdc.time:       time_t, tm, time;
 import core.sys.posix.time: gmtime_r, localtime_r;

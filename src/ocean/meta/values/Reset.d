@@ -17,7 +17,7 @@
 
 module ocean.meta.values.Reset;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.meta.values.VisitValue;
 import ocean.meta.traits.Basic;

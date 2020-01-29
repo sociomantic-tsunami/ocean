@@ -84,7 +84,7 @@
 
 module ocean.sys.CloseOnExec;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 /*******************************************************************************
 

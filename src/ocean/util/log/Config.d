@@ -71,7 +71,7 @@
 module ocean.util.log.Config;
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.io.Stdout;
 import ocean.core.Array : insertShift, removePrefix, removeSuffix, sort;

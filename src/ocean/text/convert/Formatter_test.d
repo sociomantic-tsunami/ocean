@@ -18,7 +18,7 @@ module ocean.text.convert.Formatter_test;
 import ocean.core.Test;
 import ocean.core.Buffer;
 import ocean.text.convert.Formatter;
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 unittest
 {
@@ -333,6 +333,12 @@ unittest
     Additional unit tests
 
 *******************************************************************************/
+
+version (unittest)
+{
+    import ocean.meta.types.Typedef;
+}
+
 
 unittest
 {

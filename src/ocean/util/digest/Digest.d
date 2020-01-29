@@ -19,7 +19,7 @@
 
 module ocean.util.digest.Digest;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.core.Verify;
 

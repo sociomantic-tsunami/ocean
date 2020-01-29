@@ -17,7 +17,7 @@
 module ocean.util.container.map.model.BucketInfo;
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 debug (BucketInfo) import ocean.io.Stdout;
 
 /*******************************************************************************/

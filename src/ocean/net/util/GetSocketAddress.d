@@ -26,7 +26,7 @@
 
 module ocean.net.util.GetSocketAddress;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.io.model.IConduit: ISelectable;
 import ocean.stdc.posix.sys.socket: getsockname, getpeername, socklen_t, sockaddr;
 import ocean.sys.ErrnoException;

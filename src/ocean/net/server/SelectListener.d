@@ -24,7 +24,7 @@
 module ocean.net.server.SelectListener;
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.core.Verify;
 import ocean.io.select.client.model.ISelectClient;
 import ocean.net.server.connection.IConnectionHandler;

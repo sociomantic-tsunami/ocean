@@ -36,7 +36,7 @@ import ocean.util.config.ConfigParser;
 import ocean.io.Stdout;
 import ocean.core.Array: startsWith, map;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.core.Verify;
 import ocean.util.log.Logger;
 import ocean.util.log.AppendFile;

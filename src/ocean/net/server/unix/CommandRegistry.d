@@ -19,7 +19,7 @@
 
 module ocean.net.server.unix.CommandRegistry;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 /// ditto
 public class CommandsRegistry

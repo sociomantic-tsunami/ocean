@@ -23,7 +23,7 @@ module ocean.task.Scheduler;
 
 import core.thread;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.core.Enforce;
 import ocean.core.Verify;
 import ocean.core.TypeConvert;

@@ -129,7 +129,7 @@ module ocean.core.Enum;
 
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.core.Test;
 
 /*******************************************************************************
@@ -367,7 +367,7 @@ public template SuperClassIndex ( size_t i, T ... )
 
 public template EnumBase ( T ... )
 {
-    import ocean.transition;
+    import ocean.meta.types.Qualifiers;
 
     alias IEnum.Name Name;
     alias IEnum.Value Value;

@@ -17,7 +17,7 @@
 
 module ocean.net.http.HttpTriplet;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 /******************************************************************************
 

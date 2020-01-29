@@ -16,7 +16,7 @@
 module ocean.net.http.consts.HttpVersion;
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.core.Verify;
 import core.stdc.ctype: isdigit;
 

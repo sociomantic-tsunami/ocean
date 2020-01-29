@@ -25,7 +25,7 @@ import ocean.util.container.RedBlack;
 
 import ocean.util.container.model.IContainer;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.core.ExceptionDefinitions : NoSuchElementException;
 

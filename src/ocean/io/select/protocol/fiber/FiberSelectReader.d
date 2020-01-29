@@ -545,7 +545,7 @@ version (unittest)
     import ocean.io.select.fiber.SelectFiber;
     import core.sys.posix.stdlib;
     import ocean.core.Test;
-    import ocean.transition;
+    import ocean.meta.types.Qualifiers;
 }
 
 unittest

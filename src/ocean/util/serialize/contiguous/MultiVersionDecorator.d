@@ -17,7 +17,7 @@
 
 module ocean.util.serialize.contiguous.MultiVersionDecorator;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.core.Buffer;
 import ocean.core.Verify;

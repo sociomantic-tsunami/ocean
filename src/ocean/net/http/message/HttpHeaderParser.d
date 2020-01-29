@@ -22,7 +22,7 @@
 module ocean.net.http.message.HttpHeaderParser;
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.core.Enforce;
 import ocean.core.Verify;
 import ocean.text.util.SplitIterator: ChrSplitIterator, ISplitIterator;

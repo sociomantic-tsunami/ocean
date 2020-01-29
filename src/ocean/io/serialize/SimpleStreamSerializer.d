@@ -50,7 +50,7 @@ module ocean.io.serialize.SimpleStreamSerializer;
 
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.core.Enforce: enforce;
 

@@ -22,7 +22,7 @@
 
 module ocean.util.log.StatsReader;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.core.Buffer;
 import ocean.core.Enforce;
 import ocean.core.array.Search;

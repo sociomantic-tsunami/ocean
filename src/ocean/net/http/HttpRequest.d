@@ -42,7 +42,7 @@
 module ocean.net.http.HttpRequest;
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.net.http.message.HttpHeader;
 

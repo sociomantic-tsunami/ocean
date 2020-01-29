@@ -30,7 +30,7 @@
 
 module ocean.util.app.ext.TaskExt;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.util.app.ext.model.IConfigExtExtension;
 import ocean.task.Scheduler;
 import ocean.util.config.ConfigParser;

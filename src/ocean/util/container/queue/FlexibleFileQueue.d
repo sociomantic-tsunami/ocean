@@ -24,7 +24,7 @@
 module ocean.util.container.queue.FlexibleFileQueue;
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.core.Buffer;
 import ocean.util.container.queue.FlexibleRingQueue;
 import ocean.util.container.queue.model.IByteQueue;

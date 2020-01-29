@@ -19,7 +19,7 @@
 
 module ocean.text.formatter.SmartUnion;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.core.SmartUnion;
 import ocean.core.Verify;
 import ocean.text.convert.Formatter;

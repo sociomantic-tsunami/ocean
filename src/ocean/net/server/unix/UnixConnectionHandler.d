@@ -45,7 +45,7 @@ module ocean.net.server.unix.UnixConnectionHandler;
 
 import ocean.net.server.connection.IFiberConnectionHandler;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.core.array.Mutation;
 
 import ocean.io.select.EpollSelectDispatcher;

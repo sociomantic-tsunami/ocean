@@ -47,7 +47,7 @@ unittest
     class App : Application
     {
         import ocean.io.select.EpollSelectDispatcher;
-        import ocean.transition;
+        import ocean.meta.types.Qualifiers;
 
         private EpollSelectDispatcher epoll;
         private TimerExt timers;
@@ -92,7 +92,7 @@ unittest
 
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.util.app.model.IApplicationExtension;
 
 

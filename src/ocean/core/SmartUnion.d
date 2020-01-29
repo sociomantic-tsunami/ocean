@@ -20,7 +20,7 @@
 
 module ocean.core.SmartUnion;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.core.ExceptionDefinitions;
 import ocean.core.Test;
 import ocean.core.Verify;

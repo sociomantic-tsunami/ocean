@@ -33,7 +33,7 @@
 
 module ocean.text.Unicode;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.text.UnicodeData;
 import ocean.text.convert.Utf;
 import ocean.core.Verify;

@@ -30,7 +30,7 @@ module ocean.net.collectd.Identifier;
 
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.core.ExceptionDefinitions; // IllegalArgumentException
 import ocean.text.convert.Formatter;
 import ocean.text.util.StringSearch; // locateChar

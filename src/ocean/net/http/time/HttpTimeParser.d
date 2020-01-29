@@ -17,7 +17,7 @@
 module ocean.net.http.time.HttpTimeParser;
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import TimeStamp = ocean.text.convert.TimeStamp: rfc1123, rfc850, asctime;
 

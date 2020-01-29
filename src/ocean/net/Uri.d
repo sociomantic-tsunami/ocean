@@ -15,7 +15,7 @@ module ocean.net.Uri;
 
 public import ocean.net.model.UriView;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.core.Exception;
 import ocean.core.Buffer;
 import ocean.stdc.string : memchr;

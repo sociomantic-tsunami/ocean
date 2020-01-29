@@ -23,7 +23,7 @@ import ocean.sys.socket.IPSocket,
        ocean.sys.socket.InetAddress,
        ocean.sys.socket.AddrInfo;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.io.device.Conduit: ISelectable;
 

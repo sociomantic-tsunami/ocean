@@ -16,7 +16,7 @@
 module ocean.util.config.ConfigParser;
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.core.Array;
 import ocean.core.ExceptionDefinitions;

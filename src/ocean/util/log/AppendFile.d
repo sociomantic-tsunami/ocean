@@ -21,7 +21,7 @@ import ocean.io.device.File;
 import ocean.io.model.IFile;
 import ocean.io.model.IConduit;
 import ocean.io.stream.Buffered;
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.util.log.Appender;
 import ocean.util.log.Event;
 

@@ -15,7 +15,7 @@
 
 module ocean.text.xml.PullParser;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.text.Util : indexOf;
 

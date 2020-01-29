@@ -22,7 +22,7 @@
 
 module ocean.task.util.Timer;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.io.select.client.TimerSet;
 import ocean.util.container.pool.ObjectPool;
 import ocean.task.Task;

@@ -15,7 +15,7 @@
 
 module integrationtest.unregisterclient.main;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.io.select.EpollSelectDispatcher;
 import ocean.io.select.client.SelectEvent;

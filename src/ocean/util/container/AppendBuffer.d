@@ -23,7 +23,7 @@
 module ocean.util.container.AppendBuffer;
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import core.stdc.stdlib: malloc, realloc, free;
 

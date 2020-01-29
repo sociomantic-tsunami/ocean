@@ -15,7 +15,7 @@
 
 module integrationtest.prometheusstats.main;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.io.select.EpollSelectDispatcher;
 import ocean.task.Task;

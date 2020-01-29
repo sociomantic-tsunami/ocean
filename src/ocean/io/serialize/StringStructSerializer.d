@@ -53,7 +53,7 @@ module ocean.io.serialize.StringStructSerializer;
 
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.core.Array;
 
@@ -556,6 +556,7 @@ public class StringStructSerializer ( Char )
 version (unittest)
 {
     import ocean.core.Test;
+    import ocean.meta.types.Typedef;
     import core.stdc.time;
 }
 

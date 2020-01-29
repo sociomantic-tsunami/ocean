@@ -16,7 +16,7 @@
  */
 module ocean.core.ExceptionDefinitions;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 ////////////////////////////////////////////////////////////////////////////////
 /*

@@ -20,11 +20,12 @@
 
 module ocean.util.log.Appender;
 
-import ocean.transition;
 import ocean.core.Verify;
 import ocean.core.ExceptionDefinitions;
 import ocean.io.model.IConduit;
 import ocean.text.convert.Formatter;
+import ocean.meta.types.Qualifiers;
+import ocean.meta.types.Typedef;
 import ocean.util.log.Event;
 import ocean.util.log.ILogger;
 

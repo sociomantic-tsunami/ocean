@@ -15,8 +15,9 @@
 
 module ocean.application.components.ConfigOverrides;
 
-import ocean.transition;
+import ocean.core.TypeConvert: assumeUnique;
 import ocean.core.Verify;
+import ocean.meta.types.Qualifiers;
 import ocean.text.Arguments;
 import ocean.text.Util : join, locate, locatePrior, trim;
 import ocean.util.config.ConfigParser;

@@ -17,7 +17,7 @@ module ocean.io.select.protocol.task.TimeoutException;
 
 class TimeoutException: Exception
 {
-    import ocean.transition;
+    import ocean.meta.types.Qualifiers;
 
     this ( istring file = __FILE__, int line = __LINE__ )
     {

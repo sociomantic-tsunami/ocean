@@ -26,7 +26,7 @@ public class PrometheusHandler : HttpConnectionHandler
     import ocean.net.http.HttpConst: HttpResponseCode;
     import ocean.net.http.consts.HttpMethod: HttpMethod;
     import ocean.text.convert.Formatter : sformat;
-    import ocean.transition;
+    import ocean.meta.types.Qualifiers;
     import ocean.util.log.Logger : Logger, Log;
     import ocean.util.prometheus.collector.CollectorRegistry :
         CollectorRegistry;

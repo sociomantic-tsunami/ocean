@@ -52,7 +52,7 @@ class TaskSelectTransceiver
     debug (Raw) import ocean.io.Stdout: Stdout;
 
     import ocean.core.Enforce: enforce;
-    import ocean.transition;
+    import ocean.meta.types.Qualifiers;
 
     /***************************************************************************
 
@@ -725,7 +725,7 @@ version (unittest)
 {
     import ocean.io.select.protocol.generic.ErrnoIOException;
     import ocean.task.Task;
-    import ocean.transition;
+    import ocean.meta.types.Qualifiers;
 }
 
 /// Example of sending and receiving data with the `TaskSelectTransceiver`.

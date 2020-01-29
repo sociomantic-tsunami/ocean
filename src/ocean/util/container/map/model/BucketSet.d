@@ -36,7 +36,7 @@
 
 module ocean.util.container.map.model.BucketSet;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.util.container.map.model.Bucket,
        ocean.util.container.map.model.BucketInfo,

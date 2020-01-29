@@ -19,7 +19,8 @@
 
 module ocean.util.container.RedBlack;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
+import ocean.meta.types.Typedef;
 
 import ocean.util.container.model.IContainer;
 

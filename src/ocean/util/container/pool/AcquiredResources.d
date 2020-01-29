@@ -52,7 +52,7 @@
 
 module ocean.util.container.pool.AcquiredResources;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.core.Verify;
 import ocean.util.container.pool.FreeList;
 

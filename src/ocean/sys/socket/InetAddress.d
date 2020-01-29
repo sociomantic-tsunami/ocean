@@ -43,7 +43,7 @@ module ocean.sys.socket.InetAddress;
 
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.stdc.posix.sys.socket: sockaddr;
 

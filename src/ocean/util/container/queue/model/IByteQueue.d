@@ -20,7 +20,7 @@ module ocean.util.container.queue.model.IByteQueue;
 
 import ocean.util.container.queue.model.IQueueInfo;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 
 /*******************************************************************************

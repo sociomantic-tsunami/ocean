@@ -91,7 +91,7 @@ module ocean.util.app.ext.SignalExt;
 
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.core.Verify;
 
 import ocean.util.app.model.IApplicationExtension;

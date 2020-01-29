@@ -23,7 +23,7 @@
 module ocean.text.json.JsonParserIter;
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.text.json.JsonParser;
 

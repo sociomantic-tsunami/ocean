@@ -17,7 +17,7 @@ module ocean.io.digest.FirstName;
 
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.io.digest.Fnv1;
 

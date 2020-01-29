@@ -56,7 +56,7 @@
 
 module ocean.core.MessageFiber;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.core.Verify;
 import ocean.core.Array: copy;
 import ocean.core.SmartUnion;

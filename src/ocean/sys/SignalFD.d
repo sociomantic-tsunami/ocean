@@ -101,7 +101,7 @@ import core.stdc.errno : EAGAIN, EWOULDBLOCK, errno;
 
 import ocean.core.Array : contains;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 debug import ocean.io.Stdout;
 

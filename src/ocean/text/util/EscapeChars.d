@@ -16,7 +16,7 @@
 module ocean.text.util.EscapeChars;
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.core.Array: concat;
 import ocean.core.Verify;

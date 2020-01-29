@@ -26,7 +26,7 @@
 
 module ocean.text.convert.Integer;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.meta.traits.Basic;
 

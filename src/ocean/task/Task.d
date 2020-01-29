@@ -26,7 +26,7 @@ module ocean.task.Task;
 
 static import core.thread;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.core.array.Mutation : moveToEnd, reverse;
 import ocean.core.Buffer;
 import ocean.core.Verify;

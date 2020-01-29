@@ -16,7 +16,7 @@
 module ocean.net.server.SelectListener_slowtest;
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.net.server.SelectListener;
 import ocean.net.server.connection.IConnectionHandler;

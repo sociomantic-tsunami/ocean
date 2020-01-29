@@ -20,7 +20,7 @@
 
 module ocean.io.Console;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.sys.Common;
 

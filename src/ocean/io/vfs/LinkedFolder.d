@@ -17,7 +17,7 @@
 
 module ocean.io.vfs.LinkedFolder;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.io.vfs.model.Vfs;
 

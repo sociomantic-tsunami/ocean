@@ -27,7 +27,7 @@ module ocean.text.entities.model.IEntitySet;
 
 import ocean.text.utf.UtfString : InvalidUnicode, utf_match;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 /*******************************************************************************
 

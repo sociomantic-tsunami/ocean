@@ -17,7 +17,7 @@ module ocean.sys.socket.UnixSocket;
 
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.core.Enforce;
 import ocean.sys.socket.model.ISocket;

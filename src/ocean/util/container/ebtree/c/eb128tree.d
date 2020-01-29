@@ -37,7 +37,7 @@ module ocean.util.container.ebtree.c.eb128tree;
 
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.util.container.ebtree.c.ebtree: eb_root, eb_node;
 
 

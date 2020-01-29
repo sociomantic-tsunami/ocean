@@ -20,7 +20,7 @@ module ocean.text.util.Time;
 
 import core.sys.posix.time : gmtime_r;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.core.Enforce;
 

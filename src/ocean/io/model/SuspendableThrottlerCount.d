@@ -27,7 +27,7 @@ module ocean.io.model.SuspendableThrottlerCount;
 
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.core.Verify;
 
 import ocean.io.model.ISuspendable,

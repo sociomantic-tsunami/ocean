@@ -25,7 +25,7 @@
 
 module ocean.util.app.ext.UnixSocketExt;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.core.Verify;
 
 import ocean.core.Enforce;

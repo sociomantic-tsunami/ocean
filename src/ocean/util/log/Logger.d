@@ -13,7 +13,7 @@
     // Workaround: https://github.com/dlang/dub/issues/1761
     module_ superapp.main;
 
-    import ocean.transition;
+    import ocean.meta.types.Qualifiers;
     import ocean.util.log.Logger;
 
     private Logger log;
@@ -57,7 +57,7 @@
 
 module ocean.util.log.Logger;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.core.Verify;
 import ocean.core.ExceptionDefinitions;
 import ocean.io.model.IConduit;
@@ -97,7 +97,7 @@ public alias ILogger.Level Level;
 
 public struct Log
 {
-    mixin TypeofThis!();
+    alias typeof(this) This;
 
     /***************************************************************************
 
@@ -111,7 +111,7 @@ public struct Log
 
     public struct Stats
     {
-        mixin TypeofThis!();
+        alias typeof(this) This;
 
         /// Number of trace log events issued
         public uint logged_trace;
