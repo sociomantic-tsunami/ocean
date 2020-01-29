@@ -20,7 +20,7 @@ import ocean.net.server.unix.UnixConnectionHandler;
 import ocean.net.server.SelectListener;
 import ocean.io.select.EpollSelectDispatcher;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 /// Provides default functionality for handling unix socket commands.
 public class UnixListener : UnixSocketListener!( BasicCommandHandler )
@@ -178,6 +178,8 @@ public class UnixSocketListener ( CommandHandlerType ) : SelectListener!(
             address.sun_family = AF_UNIX;
             address.sun_path[0 .. this.address_pathnul.length] =
                 this.address_pathnul;
+
+            import ocean.transition : Octal;
 
             // The socket should be opened with rw-rw-r-- permissions,
             // so the owner and group could connect to it by default.

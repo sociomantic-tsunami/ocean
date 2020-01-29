@@ -17,7 +17,8 @@
 
 module ocean.sys.Environment;
 
-import ocean.transition;
+import ocean.core.TypeConvert: assumeUnique;
+import ocean.meta.types.Qualifiers;
 
 import ocean.sys.Common;
 
@@ -103,6 +104,8 @@ struct Environment
 
                     if (bin.path(pe).exists)
                     {
+                        import ocean.transition : Octal;
+
                         stat_t stats;
                         stat(bin.cString.ptr, &stats);
                         if (stats.st_mode & Octal!("100"))
