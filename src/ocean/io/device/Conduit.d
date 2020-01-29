@@ -18,7 +18,7 @@
 module ocean.io.device.Conduit;
 
 import ocean.core.ExceptionDefinitions;
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 public import ocean.io.model.IConduit;
 
 import core.thread;

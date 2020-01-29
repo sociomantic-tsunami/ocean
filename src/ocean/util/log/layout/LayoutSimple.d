@@ -16,7 +16,7 @@
 module ocean.util.log.layout.LayoutSimple;
 
 import ocean.text.convert.Formatter;
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.util.log.Appender;
 import ocean.util.log.Event;
 

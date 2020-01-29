@@ -37,7 +37,7 @@ module ocean.text.convert.TimeStamp;
 
 import ocean.core.ExceptionDefinitions;
 import ocean.core.Verify;
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.time.Time;
 import ocean.text.convert.Formatter;
 import ocean.time.chrono.Gregorian;

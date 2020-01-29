@@ -26,7 +26,7 @@
 module ocean.util.container.ebtree.c.ebtree;
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 
 /// See original's library documentation for details.

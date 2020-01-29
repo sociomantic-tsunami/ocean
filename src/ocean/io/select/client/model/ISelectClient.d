@@ -27,7 +27,7 @@ module ocean.io.select.client.model.ISelectClient;
 
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.core.Verify;
 
@@ -398,6 +398,7 @@ public abstract class ISelectClient : ITimeoutClient, ISelectable, ISelectClient
 
     debug public override istring toString ( )
     {
+        import ocean.core.TypeConvert: assumeUnique;
         mstring to_string_buf;
         this.fmtInfo((cstring chunk) {to_string_buf ~= chunk;});
         return assumeUnique(to_string_buf);

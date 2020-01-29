@@ -22,7 +22,7 @@ module ocean.io.Terminal;
 
 ******************************************************************************/
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import core.sys.posix.signal;
 

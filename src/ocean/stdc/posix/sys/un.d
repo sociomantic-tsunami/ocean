@@ -14,7 +14,7 @@
 
 module ocean.stdc.posix.sys.un;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 public import core.sys.posix.sys.un;
 import core.sys.posix.sys.socket;

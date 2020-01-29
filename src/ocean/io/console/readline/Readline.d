@@ -45,7 +45,7 @@ import ocean.text.util.StringC;
 import core.stdc.string: strlen;
 import core.stdc.stdlib : free;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 /*******************************************************************************
 

@@ -42,7 +42,7 @@ module ocean.text.entities.model.MarkupEntityCodec;
 
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.core.Array;
 

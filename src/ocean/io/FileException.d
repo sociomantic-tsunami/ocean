@@ -16,7 +16,7 @@
 module ocean.io.FileException;
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.sys.ErrnoException;
 import core.stdc.errno;

@@ -17,7 +17,8 @@
 
 module ocean.sys.Common;
 
-import ocean.transition;
+import ocean.core.TypeConvert : assumeUnique;
+import ocean.meta.types.Qualifiers;
 
 public import ocean.sys.linux.linux;
 alias ocean.sys.linux.linux posix;

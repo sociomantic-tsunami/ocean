@@ -29,7 +29,7 @@ abstract class TaskConnectionHandler : IConnectionHandler, Resettable
     import ocean.task.Task: Task;
     import ocean.task.IScheduler: theScheduler;
 
-    import ocean.transition;
+    import ocean.meta.types.Qualifiers;
 
     /***************************************************************************
 

@@ -28,7 +28,7 @@ import ocean.util.container.pool.model.ILimitable;
 import ocean.meta.traits.Aggregates /* : hasMethod */;
 import ocean.meta.types.Function /* ParametersOf */;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.core.Verify;
 
 debug (TaskScheduler)

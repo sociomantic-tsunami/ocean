@@ -16,7 +16,7 @@
 *******************************************************************************/
 module ocean.math.random.engines.URandom;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import Integer = ocean.text.convert.Integer_tango;
 import ocean.io.device.File; // use stdc read/write?
 import ocean.core.Verify;

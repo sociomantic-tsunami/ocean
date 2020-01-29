@@ -30,7 +30,7 @@
 
 module ocean.text.convert.DateTime_tango;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.core.ExceptionDefinitions;
 import ocean.stdc.posix.langinfo;
@@ -40,7 +40,7 @@ import ocean.text.convert.Formatter;
 import ocean.text.util.StringC;
 import ocean.time.chrono.Calendar;
 import ocean.time.chrono.Gregorian;
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.core.Verify;
 
 import core.sys.posix.time; // timezone

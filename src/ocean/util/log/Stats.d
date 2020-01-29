@@ -39,7 +39,7 @@ module ocean.util.log.Stats;
 
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.core.Verify;
 import ocean.core.Verify;
 import ocean.core.Enforce;

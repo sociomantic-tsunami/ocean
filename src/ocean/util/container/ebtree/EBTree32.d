@@ -53,7 +53,7 @@
 module ocean.util.container.ebtree.EBTree32;
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.util.container.ebtree.model.IEBTree,
        ocean.util.container.ebtree.model.Node,

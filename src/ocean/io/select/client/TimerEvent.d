@@ -23,7 +23,7 @@ import ocean.io.select.client.model.ISelectClient: ISelectClient;
 import ocean.sys.TimerFD;
 import ocean.core.Verify;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.io.model.IConduit: ISelectable;
 
 import core.sys.posix.time: time_t, timespec, itimerspec;

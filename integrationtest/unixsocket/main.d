@@ -32,7 +32,7 @@ import ocean.stdc.posix.sys.wait;
 import ocean.stdc.string;
 import ocean.sys.socket.UnixSocket;
 import ocean.text.util.StringC;
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import core.stdc.stdio;
 import core.sys.posix.stdlib : mkdtemp;

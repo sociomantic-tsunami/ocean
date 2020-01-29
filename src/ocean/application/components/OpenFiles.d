@@ -15,7 +15,7 @@
 
 module ocean.application.components.OpenFiles;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 /// ditto
 public class OpenFiles

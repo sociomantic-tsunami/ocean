@@ -16,7 +16,7 @@
 module ocean.util.cipher.misc.Padding;
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.core.Verify;
 
 version (unittest)

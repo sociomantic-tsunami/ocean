@@ -36,7 +36,7 @@
 
 module ocean.time.ISO8601;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 public import ocean.time.Time;
 public import ocean.time.chrono.Gregorian;

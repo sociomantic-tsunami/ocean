@@ -17,7 +17,7 @@
 
 module ocean.util.container.ebtree.nodepool.NodePool;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 /*******************************************************************************
 

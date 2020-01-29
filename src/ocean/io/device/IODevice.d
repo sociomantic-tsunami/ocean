@@ -21,7 +21,7 @@
 module ocean.io.device.IODevice;
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.io.model.IConduit: ISelectable;
 

@@ -16,7 +16,7 @@
 
 module ocean.task.util.Event;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.task.Task;
 
 debug (TaskScheduler)

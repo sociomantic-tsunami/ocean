@@ -18,7 +18,7 @@ module ocean.io.select.client.model.ISelectClientInfo;
 
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.io.model.IConduit: ISelectable;
 

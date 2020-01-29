@@ -19,7 +19,7 @@
 
 module integrationtest.httpserver.main;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.net.http.TaskHttpConnectionHandler;
 import ocean.net.http.HttpConst : HttpResponseCode;

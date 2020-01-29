@@ -16,7 +16,8 @@
 *******************************************************************************/
 
 module ocean.math.random.engines.KissCmwc;
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
+import ocean.core.TypeConvert: assumeUnique;
 import Integer = ocean.text.convert.Integer_tango;
 import ocean.core.Verify;
 

@@ -33,7 +33,7 @@ import ocean.util.container.ebtree.c.ebtree;
 
 struct TreeMap ( T )
 {
-    import ocean.transition;
+    import ocean.meta.types.Qualifiers;
 
     /***************************************************************************
 

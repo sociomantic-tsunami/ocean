@@ -25,7 +25,7 @@ module ocean.io.Stdout;
 
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.io.Terminal;
 

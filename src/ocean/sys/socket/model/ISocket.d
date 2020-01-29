@@ -15,7 +15,7 @@
 
 module ocean.sys.socket.model.ISocket;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.stdc.posix.sys.socket;
 import ocean.io.device.Conduit: ISelectable;
 import ocean.io.device.IODevice: IODevice;

@@ -17,7 +17,7 @@ module ocean.util.app.ext.RefuseRootExt;
 
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.util.app.ext.model.IArgumentsExtExtension;
 import core.sys.posix.unistd;
 

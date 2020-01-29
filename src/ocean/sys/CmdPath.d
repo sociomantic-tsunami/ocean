@@ -16,7 +16,7 @@
 module ocean.sys.CmdPath;
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.sys.Environment;
 

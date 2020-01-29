@@ -20,7 +20,7 @@
 
 module ocean.util.log.layout.LayoutStatsLog;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.text.convert.Formatter;
 import ocean.time.Clock;
 import ocean.time.WallClock;

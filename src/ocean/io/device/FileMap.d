@@ -17,7 +17,7 @@
 
 module ocean.io.device.FileMap;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.stdc.posix.sys.mman;
 import ocean.sys.Common;
 

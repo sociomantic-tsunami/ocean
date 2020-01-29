@@ -15,7 +15,7 @@
 
 module integrationtest.reopenfiles.main;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import core.sys.posix.sys.stat;
 import core.sys.linux.fcntl;

@@ -87,7 +87,7 @@ module ocean.util.container.pool.model.IAggregatePool;
 
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.util.container.pool.model.IPool;
 import ocean.util.container.pool.model.IFreeList;

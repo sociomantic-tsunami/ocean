@@ -50,7 +50,7 @@ import ocean.core.Enforce;
 import ocean.text.Arguments;
 import ocean.text.convert.DateTime;
 import ocean.text.convert.Integer;
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 version (unittest)
 {

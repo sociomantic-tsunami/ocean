@@ -22,7 +22,7 @@ import ocean.stdc.posix.sys.socket;
 import ocean.sys.socket.InetAddress;
 import ocean.sys.socket.model.ISocket;
 import ocean.text.convert.Formatter;
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import core.sys.posix.netinet.in_: AF_INET, AF_INET6;
 import core.sys.posix.sys.types: ssize_t;

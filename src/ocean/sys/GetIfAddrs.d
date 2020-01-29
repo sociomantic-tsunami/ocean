@@ -16,7 +16,7 @@
 module ocean.sys.GetIfAddrs;
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import core.stdc.errno;
 import core.stdc.string;

@@ -27,7 +27,7 @@
 
 module ocean.util.digest.Ripemd160;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.util.digest.MerkleDamgard;
 

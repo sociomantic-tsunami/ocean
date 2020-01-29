@@ -27,7 +27,7 @@ import ocean.sys.TimerFD;
 
 import ocean.io.select.client.model.IFiberSelectClient;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import core.stdc.math: modf;
 
 

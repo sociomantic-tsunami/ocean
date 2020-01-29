@@ -18,7 +18,7 @@ module ocean.util.app.model.IApplicationExtension;
 
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 public import ocean.util.app.ExitException : ExitException;
 

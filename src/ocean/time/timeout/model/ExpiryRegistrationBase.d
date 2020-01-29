@@ -20,7 +20,7 @@
 module ocean.time.timeout.model.ExpiryRegistrationBase;
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.time.timeout.model.IExpiryRegistration,
        ocean.time.timeout.model.ITimeoutClient;

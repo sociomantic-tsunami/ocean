@@ -17,7 +17,7 @@
 module ocean.util.serialize.contiguous.Serializer;
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.util.serialize.contiguous.Contiguous;
 import ocean.meta.traits.Indirections;

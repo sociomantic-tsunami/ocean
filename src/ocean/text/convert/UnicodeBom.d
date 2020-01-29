@@ -19,7 +19,7 @@ module ocean.text.convert.UnicodeBom;
 
 import core.exception : onUnicodeError;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.core.ByteSwap;
 
 import  Utf = ocean.text.convert.Utf;

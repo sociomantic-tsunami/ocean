@@ -13,7 +13,7 @@ module ocean.net.ssl.SslClientConnection;
 
 import ocean.net.ssl.openssl.OpenSsl;
 import ocean.text.util.StringC;
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 
 

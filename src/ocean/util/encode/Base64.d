@@ -29,7 +29,7 @@
 
 module ocean.util.encode.Base64;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.core.Verify;
 
 version (unittest) import ocean.core.Test;
@@ -610,6 +610,8 @@ private istring validateEncodeTable (istring s)
 
 unittest
 {
+    import ocean.core.TypeConvert: assumeUnique;
+
     test!("is")(validateEncodeTable(defaultEncodeTable), istring.init);
     test!("is")(validateEncodeTable(urlSafeEncodeTable), istring.init);
     istring too_long = defaultEncodeTable ~ 'A';

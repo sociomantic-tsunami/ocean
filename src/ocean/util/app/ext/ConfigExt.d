@@ -28,7 +28,7 @@ import ocean.util.config.ConfigParser;
 import ocean.text.Arguments;
 import ocean.io.Stdout : Stderr;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.core.Verify;
 import ocean.text.Util : join, locate, locatePrior, trim;
 import ocean.core.ExceptionDefinitions : IOException;

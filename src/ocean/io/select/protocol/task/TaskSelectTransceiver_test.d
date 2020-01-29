@@ -15,7 +15,7 @@ module ocean.io.select.protocol.task.TaskSelectTransceiver_test;
 
 import ocean.io.select.protocol.task.TaskSelectTransceiver;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.stdc.posix.fcntl: O_NONBLOCK;
 import core.sys.posix.unistd: write, close;
 import ocean.sys.ErrnoException;

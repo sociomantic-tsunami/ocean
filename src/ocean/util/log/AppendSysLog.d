@@ -16,7 +16,7 @@
 module ocean.util.log.AppendSysLog;
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.core.Verify;
 import ocean.util.log.Appender;
 import ocean.util.log.Event;

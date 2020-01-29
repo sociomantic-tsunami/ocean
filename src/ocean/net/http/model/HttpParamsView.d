@@ -17,7 +17,7 @@
 
 module ocean.net.http.model.HttpParamsView;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.time.Time;
 

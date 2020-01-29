@@ -25,7 +25,7 @@ import ocean.util.app.ext.model.IArgumentsExtExtension;
 import ocean.text.Arguments;
 import ocean.io.Stdout : Stdout, Stderr;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.io.stream.Format : FormatOutput;
 
 

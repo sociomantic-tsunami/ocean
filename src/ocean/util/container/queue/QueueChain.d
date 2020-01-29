@@ -40,7 +40,7 @@ import ocean.io.stream.Buffered,
        ocean.io.device.File,
        Filesystem = ocean.io.Path;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 
 public class QueueChain : IByteQueue

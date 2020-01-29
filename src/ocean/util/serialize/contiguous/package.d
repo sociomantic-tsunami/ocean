@@ -144,7 +144,7 @@ version (unittest):
 
 ******************************************************************************/
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.core.Test;
 import ocean.core.Verify;
 import ocean.core.StructConverter;

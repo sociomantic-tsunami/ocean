@@ -20,7 +20,7 @@
 module ocean.net.collectd.SocketReader;
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.core.Verify;
 import ocean.sys.ErrnoException;
 import ocean.sys.socket.model.ISocket;

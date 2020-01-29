@@ -25,7 +25,7 @@
 
 module ocean.io.select.protocol.fiber.FiberSelectWriter;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.core.Verify;
 import ocean.io.select.protocol.fiber.model.IFiberSelectProtocol;
 import ocean.io.select.client.model.ISelectClient;

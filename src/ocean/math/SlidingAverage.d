@@ -206,7 +206,7 @@ version (unittest)
 {
     import ocean.util.Convert: to;
     import ocean.core.Test;
-    import ocean.transition;
+    import ocean.meta.types.Qualifiers;
 
     /*******************************************************************************
 

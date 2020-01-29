@@ -86,7 +86,7 @@ unittest
 }
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.core.Enforce;
 import ocean.core.Verify;
 import ocean.core.Exception;

@@ -16,6 +16,6 @@
 module ocean.util.app.ext.VersionInfo;
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 public import ocean.application.components.Version : VersionInfo;

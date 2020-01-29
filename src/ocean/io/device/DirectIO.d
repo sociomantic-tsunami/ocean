@@ -62,7 +62,7 @@ module ocean.io.device.DirectIO;
 
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.core.Verify;
 
 import core.memory;

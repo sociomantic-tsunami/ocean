@@ -19,7 +19,7 @@ module ocean.net.http.HttpStack;
 
 import ocean.core.ExceptionDefinitions;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 /******************************************************************************
 

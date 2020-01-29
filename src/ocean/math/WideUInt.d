@@ -17,8 +17,9 @@
 
 module ocean.math.WideUInt;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.core.Test;
+import ocean.core.TypeConvert: assumeUnique;
 import ocean.core.Enforce;
 import ocean.core.Verify;
 

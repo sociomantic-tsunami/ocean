@@ -79,7 +79,7 @@ public class Collector
     import Traits = ocean.core.Traits;
     import ocean.math.IEEE;
     import ocean.text.convert.Formatter;
-    import ocean.transition;
+    import ocean.meta.types.Qualifiers;
     import StatFormatter = ocean.util.prometheus.collector.StatFormatter;
 
     /// A buffer used for storing collected stats. Is cleared when the `reset`
@@ -188,7 +188,7 @@ public class Collector
 version (unittest)
 {
     import ocean.core.Test;
-    import ocean.transition;
+    import ocean.meta.types.Qualifiers;
 
     struct Statistics
     {

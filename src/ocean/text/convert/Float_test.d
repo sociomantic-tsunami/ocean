@@ -12,7 +12,7 @@
 
 module ocean.text.convert.Float_test;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.text.convert.Float;
 import ocean.core.Test;
 

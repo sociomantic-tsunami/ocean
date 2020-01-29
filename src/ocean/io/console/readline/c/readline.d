@@ -26,7 +26,7 @@ module ocean.io.console.readline.c.readline;
 
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 
 public extern (C)

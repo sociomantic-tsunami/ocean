@@ -25,7 +25,7 @@
 
 module ocean.text.xml.SaxParser;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.io.model.IConduit;
 import ocean.text.xml.PullParser;

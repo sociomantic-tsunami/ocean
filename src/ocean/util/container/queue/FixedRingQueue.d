@@ -32,7 +32,7 @@ import ocean.util.container.mem.MemManager;
 
 version (unittest) import ocean.core.Test;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 
 /*******************************************************************************

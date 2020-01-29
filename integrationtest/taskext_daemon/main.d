@@ -15,7 +15,7 @@
 
 module integrationtest.taskext_daemon.main;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.util.app.DaemonApp;
 import ocean.util.test.DirectorySandbox;
 import ocean.task.Task;

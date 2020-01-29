@@ -41,7 +41,7 @@ import ocean.io.select.timeout.TimerEventTimeoutManager;
 
 import ocean.time.timeout.model.ITimeoutClient;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.util.container.map.model.IAllocator;
 debug import ocean.text.convert.Formatter;
 

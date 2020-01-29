@@ -27,7 +27,7 @@ import ocean.io.compress.CompressException;
 
 import ocean.core.Enforce: enforce;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.core.Verify;
 

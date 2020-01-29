@@ -17,7 +17,7 @@
 
 module ocean.io.stream.TextFile;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 public  import ocean.io.device.File;
 

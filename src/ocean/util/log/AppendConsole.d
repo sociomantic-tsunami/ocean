@@ -17,7 +17,7 @@
 
 module ocean.util.log.AppendConsole;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.io.Console;
 

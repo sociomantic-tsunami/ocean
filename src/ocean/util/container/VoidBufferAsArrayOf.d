@@ -46,7 +46,7 @@
 
 module ocean.util.container.VoidBufferAsArrayOf;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 /*******************************************************************************
 

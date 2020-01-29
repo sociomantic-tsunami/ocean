@@ -30,7 +30,7 @@
 
 module ocean.text.convert.Float;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.core.ExceptionDefinitions;
 import ocean.math.IEEE;

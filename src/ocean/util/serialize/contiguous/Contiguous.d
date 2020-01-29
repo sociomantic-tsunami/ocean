@@ -17,7 +17,7 @@
 module ocean.util.serialize.contiguous.Contiguous;
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.core.Verify;
 import ocean.meta.traits.Indirections;
 import ocean.core.Enforce;
@@ -297,7 +297,11 @@ package template ensureValueTypeMember ( S, size_t i, T )
 }
 
 version (unittest)
+{
     import core.stdc.string: memset;
+    import ocean.meta.types.Typedef;
+
+}
 
 unittest
 {

@@ -13,7 +13,7 @@
 
 module ocean.util.aio.internal.JobQueue;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import core.stdc.errno;
 import core.stdc.stdint;

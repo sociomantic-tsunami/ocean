@@ -107,7 +107,7 @@ module ocean.io.console.StructTable;
 
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.meta.codegen.Identifier /* : fieldIdentifier */;
 

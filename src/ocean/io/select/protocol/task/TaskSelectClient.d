@@ -28,7 +28,7 @@ class TaskSelectClient: ISelectClient
     import ocean.task.IScheduler: theScheduler;
     import ocean.io.select.protocol.task.TimeoutException;
     import ocean.util.log.Logger;
-    import ocean.transition;
+    import ocean.meta.types.Qualifiers;
 
     debug (SelectFiber) import ocean.io.Stdout: Stdout;
 

@@ -26,7 +26,7 @@ import ocean.text.entities.model.IEntitySet;
 
 import Utf = ocean.text.convert.Utf;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 /*******************************************************************************
 

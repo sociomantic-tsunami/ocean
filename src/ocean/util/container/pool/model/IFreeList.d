@@ -15,7 +15,7 @@
 
 module ocean.util.container.pool.model.IFreeList;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 /*******************************************************************************
 

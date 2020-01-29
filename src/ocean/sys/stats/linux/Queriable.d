@@ -16,7 +16,7 @@
 
 module ocean.sys.stats.linux.Queriable;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.sys.ErrnoException;
 import core.sys.posix.sys.resource;
 import core.stdc.errno;

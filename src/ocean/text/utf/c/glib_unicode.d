@@ -25,7 +25,7 @@
 
 module ocean.text.utf.c.glib_unicode;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 enum GUnicodeType
 {

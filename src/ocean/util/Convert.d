@@ -20,7 +20,7 @@
 
 module ocean.util.Convert;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.core.ExceptionDefinitions;
 

@@ -51,7 +51,7 @@ import ocean.util.container.map.Map,
        ocean.util.container.map.model.StandardHash,
        ocean.util.container.map.model.IAllocator;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 debug
 {

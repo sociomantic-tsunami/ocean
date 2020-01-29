@@ -72,7 +72,7 @@ import ocean.core.TypeConvert;
 import ocean.io.Stdout;
 import ocean.text.convert.Formatter;
 import ocean.time.StopWatch;
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.util.log.StaticTrace;
 
 

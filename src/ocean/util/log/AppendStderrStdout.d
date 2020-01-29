@@ -17,7 +17,7 @@
 module ocean.util.log.AppendStderrStdout;
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.util.log.Appender;
 import ocean.util.log.Event;
 import ocean.util.log.ILogger;

@@ -74,7 +74,7 @@
 
 module ocean.text.convert.Formatter;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.core.Buffer;
 import Integer = ocean.text.convert.Integer_tango;
 import Float = ocean.text.convert.Float;
@@ -125,6 +125,8 @@ private alias void delegate(cstring, ref const(FormatInfo)) ElemSink;
 
 public istring format (Args...) (cstring fmt, Args args)
 {
+    import ocean.core.TypeConvert : assumeUnique;
+
     mstring buffer;
 
     scope FormatterSink sink = (cstring s)

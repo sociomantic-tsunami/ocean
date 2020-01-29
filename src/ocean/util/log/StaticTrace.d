@@ -24,7 +24,7 @@ import ocean.io.model.IConduit;
 import ocean.io.Terminal;
 import ocean.text.convert.Formatter;
 import ocean.text.Search;
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 
 /*******************************************************************************

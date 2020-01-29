@@ -19,7 +19,7 @@
 
 module ocean.text.util.SplitIterator;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.core.Array: concat, copy;
 import ocean.core.Verify;
 import ocean.io.Stdout;

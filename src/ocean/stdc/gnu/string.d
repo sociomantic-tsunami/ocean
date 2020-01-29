@@ -15,7 +15,7 @@
 
 module ocean.stdc.gnu.string;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import core.stdc.stddef: wchar_t;
 
 

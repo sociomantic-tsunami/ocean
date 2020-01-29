@@ -16,7 +16,7 @@
 
 module ocean.sys.stats.linux.ProcVFS;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import Path = ocean.io.Path;
 import ocean.sys.ErrnoException;
 import core.sys.posix.stdio;

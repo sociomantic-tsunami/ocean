@@ -15,7 +15,7 @@
 
 module integrationtest.unixlistener.main;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import core.thread;
 import core.stdc.errno;

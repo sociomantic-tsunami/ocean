@@ -20,7 +20,7 @@
 
 module ocean.util.digest.Sha0;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.util.digest.Sha01;
 

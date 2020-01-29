@@ -12,7 +12,7 @@
 
 module integrationtest.flexiblefilequeue.main;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.io.Stdout;
 import ocean.text.util.StringC;
 import ocean.util.container.queue.FlexibleFileQueue;

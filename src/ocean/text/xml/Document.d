@@ -18,7 +18,7 @@
 module ocean.text.xml.Document;
 
 import Array = ocean.core.Array;
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.core.Verify;
 
 package import ocean.text.xml.PullParser;

@@ -26,7 +26,7 @@ import ocean.util.app.Application : Application;
 import ocean.util.app.ext.model.IArgumentsExtExtension;
 import ocean.task.IScheduler;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 /*******************************************************************************
 

@@ -15,7 +15,7 @@
 
 module ocean.application.components.PidLock;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 /// ditto
 public struct PidLock

@@ -39,7 +39,7 @@ module ocean.text.util.DigitGrouping;
 
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.core.TypeConvert;
 

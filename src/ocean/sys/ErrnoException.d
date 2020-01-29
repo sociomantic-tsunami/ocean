@@ -16,7 +16,7 @@
 module ocean.sys.ErrnoException;
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import core.stdc.errno;
 
 version (unittest)

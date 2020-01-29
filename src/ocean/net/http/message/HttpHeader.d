@@ -21,7 +21,7 @@
 module ocean.net.http.message.HttpHeader;
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.core.TypeConvert;
 import ocean.core.Verify;

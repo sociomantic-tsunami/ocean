@@ -103,7 +103,7 @@
 module ocean.text.Util;
 
 //import ocean.meta.types.Qualifiers : cstring, mstring;
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.core.Verify;
 
 version (unittest) import ocean.core.Test;

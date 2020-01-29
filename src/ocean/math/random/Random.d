@@ -178,7 +178,7 @@
 *******************************************************************************/
 module ocean.math.random.Random;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.math.random.engines.URandom;
 import ocean.math.random.engines.KissCmwc;

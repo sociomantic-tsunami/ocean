@@ -118,7 +118,7 @@ module ocean.io.console.Tables;
 
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.core.Array : copy, appendCopy, concat;
 import ocean.core.Verify;

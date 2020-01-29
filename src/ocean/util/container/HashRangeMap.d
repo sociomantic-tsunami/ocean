@@ -24,7 +24,7 @@ module ocean.util.container.HashRangeMap;
 import ocean.core.Enforce;
 import ocean.math.Range;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 version (unittest)
 {

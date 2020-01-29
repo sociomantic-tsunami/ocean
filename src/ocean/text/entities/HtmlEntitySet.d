@@ -21,7 +21,7 @@ import ocean.text.entities.model.IEntitySet;
 
 import ocean.text.entities.XmlEntitySet;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 /*******************************************************************************
 

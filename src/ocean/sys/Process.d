@@ -15,7 +15,7 @@
 
 module ocean.sys.Process;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.core.Verify;
 import ocean.core.Array : copy;
 import ocean.io.model.IFile;

@@ -19,7 +19,7 @@ import ocean.meta.traits.Basic;
 import ocean.meta.codegen.Identifier;
 import ocean.math.IEEE;
 import ocean.text.convert.Formatter;
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 /*******************************************************************************
 
@@ -301,7 +301,7 @@ unittest
 version (unittest)
 {
     import ocean.core.Test;
-    import ocean.transition;
+    import ocean.meta.types.Qualifiers;
 
     struct Statistics
     {
