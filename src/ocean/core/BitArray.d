@@ -16,8 +16,6 @@
  */
 module ocean.core.BitArray;
 
-import ocean.transition;
-
 import ocean.core.BitManip;
 import ocean.core.Verify;
 
