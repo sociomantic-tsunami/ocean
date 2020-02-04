@@ -1063,7 +1063,7 @@ public struct TwoWayMap ( A )
 
     /***************************************************************************
 
-        opIn_r operator - performs a lookup of an item A in the map
+        `in` operator - performs a lookup of an item A in the map
         corresponding to an item B.
 
         Params:
@@ -1075,7 +1075,7 @@ public struct TwoWayMap ( A )
 
     ***************************************************************************/
 
-    public KeyType* opIn_r ( cstring b )
+    public KeyType* opBinaryRight ( istring op : "in" ) ( cstring b )
     {
         return b in this.b_to_a;
     }
@@ -1095,7 +1095,7 @@ public struct TwoWayMap ( A )
 
     ***************************************************************************/
 
-    public ValueType* opIn_r ( KeyType a )
+    public ValueType* opBinaryRight ( istring op : "in" ) ( KeyType a )
     {
         return a in this.a_to_b;
     }
