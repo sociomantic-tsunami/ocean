@@ -125,6 +125,18 @@ public abstract class IEntitySet
 
     /***************************************************************************
 
+        Support for the 'in' operator
+
+        Aliased to the various opIn_r member functions, for backwards
+        compatibility
+
+    ***************************************************************************/
+
+    public alias opBinaryRight ( istring op : "in" ) = opIn_r;
+
+
+    /***************************************************************************
+
         Checks whether the passed name is in the list of entities.
 
         Params:
