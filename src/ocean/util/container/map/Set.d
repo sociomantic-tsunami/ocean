@@ -44,6 +44,7 @@ module ocean.util.container.map.Set;
 
 
 
+import ocean.meta.types.Qualifiers;
 
 import ocean.util.container.map.model.BucketSet;
 
@@ -290,6 +291,17 @@ public abstract class Set ( K ) : BucketSet!(0, K)
     {
         return this.get_(key) !is null;
     }
+
+
+    /***************************************************************************
+
+        Support for the 'in' operator
+
+        Aliased to opIn_r, for backwards compatibility
+
+    ***************************************************************************/
+
+    public alias opBinaryRight ( istring op : "in" ) = opIn_r;
 
 
     /***************************************************************************
