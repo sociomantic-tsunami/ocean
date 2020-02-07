@@ -227,6 +227,17 @@ public class FixedKeyMap ( K, V )
 
     /***************************************************************************
 
+        Support for the 'in' operator
+
+        Aliased to opIn_r, for backwards compatibility
+
+    ***************************************************************************/
+
+    public alias opBinaryRight ( istring op : "in" ) = opIn_r;
+
+
+    /***************************************************************************
+
         foreach operator over keys in the map.
 
     ***************************************************************************/
