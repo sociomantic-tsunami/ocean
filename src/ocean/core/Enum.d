@@ -184,6 +184,17 @@ public interface IEnum
 
     /***************************************************************************
 
+        Support for the 'in' operator
+
+        Aliased to opIn_r, for backwards compatibility
+
+    ***************************************************************************/
+
+    public alias opBinaryRight ( istring op : "in" ) = opIn_r;
+
+
+    /***************************************************************************
+
         Looks up an enum member's name from its value, using opIndex.
 
         Params:
