@@ -18,6 +18,8 @@
 module ocean.util.container.cache.ExpiredCacheReloader;
 
 
+import ocean.meta.types.Qualifiers;
+
 import ocean.util.container.cache.ExpiringLRUCache,
        ocean.util.container.cache.model.IExpiringCacheInfo;
 import CacheValue = ocean.util.container.cache.model.Value;
@@ -338,6 +340,16 @@ class ExpiredCacheReloader ( S )
     {
         return this.load(key).ptr;
     }
+
+    /***************************************************************************
+
+        Support for the 'in' operator
+
+        Aliased to opIn_r, for backwards compatibility
+
+    ***************************************************************************/
+
+    public alias opBinaryRight ( istring op : "in" ) = opIn_r;
 }
 
 unittest
