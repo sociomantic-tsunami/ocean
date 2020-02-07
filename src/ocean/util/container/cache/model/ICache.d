@@ -16,6 +16,8 @@
 module ocean.util.container.cache.model.ICache;
 
 
+import ocean.meta.types.Qualifiers;
+
 import ocean.util.container.cache.model.ICacheInfo;
 
 import ocean.util.container.cache.model.containers.TimeToIndex;
@@ -368,6 +370,18 @@ abstract class ICache : ICacheInfo
 
         return node;
     }
+
+
+    /***************************************************************************
+
+        Support for the 'in' operator
+
+        Aliased to opIn_r, for backwards compatibility
+
+    ***************************************************************************/
+
+    protected alias opBinaryRight ( istring op : "in" ) = opIn_r;
+
 
     /***************************************************************************
 
