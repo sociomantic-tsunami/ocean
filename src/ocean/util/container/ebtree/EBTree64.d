@@ -401,6 +401,18 @@ class EBTree64 ( bool signed = false ) : IEBTree
         }
     }
 
+
+    /***************************************************************************
+
+        Support for the 'in' operator
+
+        Aliased to opIn_r, for backwards compatibility
+
+    ***************************************************************************/
+
+    public alias opBinaryRight ( istring op : "in" ) = opIn_r;
+
+
     /***************************************************************************
 
         Adds node to the tree, automatically inserting it in the correct
