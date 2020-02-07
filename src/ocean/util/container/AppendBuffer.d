@@ -378,6 +378,18 @@ public class AppendBuffer ( T, Base: AppendBufferImpl ): Base, IAppendBufferRead
         }
     }
 
+
+    /***************************************************************************
+
+        Support for operator ~= for appending elements and concatenating chunks
+
+        Aliased to opCatAssign, for backwards compatibility
+
+    ***************************************************************************/
+
+    alias opOpAssign ( istring op = "~" ) = opCatAssign;
+
+
     /**************************************************************************
 
         Returns:
