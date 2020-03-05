@@ -30,6 +30,8 @@ import ocean.core.Verify;
 public import ocean.util.cipher.gcrypt.c.libversion;
 import core.stdc.string;
 
+shared static this ( ) { gpg_err_init(); }
+
 extern (C):
 
 /// See original's library documentation for details.
@@ -607,8 +609,6 @@ static immutable GPG_ERR_SOURCE_SHIFT  = 24;
 
 /// See original's library documentation for details.
 uint gpg_err_init();
-
-shared static this ( ) { gpg_err_init(); }
 
 /// See original's library documentation for details.
 void gpg_err_deinit (int mode);
