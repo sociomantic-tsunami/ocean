@@ -246,7 +246,7 @@ class EBTree128 ( bool signed = false ) : IEBTree
 
     ***************************************************************************/
 
-    public Node* update ( ref Node node, Key key )
+    public Node* update ( return ref Node node, Key key )
     out (node_out)
     {
         assert (node_out !is null);

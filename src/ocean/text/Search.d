@@ -456,7 +456,7 @@ public struct SearchFruct
 
      ***********************************************************************/
 
-    Substitute tokens (cstring content, cstring sub = null)
+    Substitute tokens (cstring content, cstring sub = null) return
     {
         return Substitute (sub, what, content, &forward);
     }
@@ -476,7 +476,7 @@ public struct SearchFruct
 
      ***********************************************************************/
 
-    Indices indices (cstring content)
+    Indices indices (cstring content) return
     {
         return Indices (content, &forward);
     }
