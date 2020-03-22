@@ -15,6 +15,7 @@
  * Authors: Pavel Sountsov
  *
  */
+deprecated("Use `core.time` directly")
 module ocean.core.Time;
 
 static import core.time;
@@ -22,6 +23,7 @@ static import core.time;
 /**
  * Returns a Duration struct that represents secs seconds.
  */
+deprecated("Use `core.time : seconds` (or variants such as `msecs` if you need sub-second precision)")
 core.time.Duration seconds(double secs)
 {
         // TODO: check if this can be replaced with plain
