@@ -25,7 +25,6 @@ import ocean.meta.types.Qualifiers;
 
 import ocean.core.Enforce: enforce;
 import Ocean = ocean.core.Test;
-import ocean.core.Time: seconds;
 import ocean.io.select.EpollSelectDispatcher;
 import ocean.stdc.posix.sys.wait: waitpid;
 import ocean.time.timeout.TimeoutManager;
@@ -37,6 +36,7 @@ import core.sys.posix.unistd: fork, unlink;
 import core.sys.posix.sys.socket;
 import core.sys.posix.sys.types : pid_t;
 import core.thread;
+import core.time;
 
 import integrationtest.selectlistener.UnixServer;
 

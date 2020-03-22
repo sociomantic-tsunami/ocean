@@ -24,7 +24,6 @@ module integrationtest.unixsocket.main;
 
 import ocean.core.Enforce;
 import ocean.core.Test;
-import ocean.core.Time;
 import ocean.math.Math;
 import ocean.stdc.posix.sys.socket;
 import ocean.stdc.posix.sys.un;
