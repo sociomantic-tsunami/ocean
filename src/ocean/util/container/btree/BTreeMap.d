@@ -641,7 +641,7 @@ version (unittest)
         char[48] name_buf;
         ubyte name_length;
 
-        cstring name () const
+        cstring name () const return
         {
             return name_buf[0..name_length];
         }
