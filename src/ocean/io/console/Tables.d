@@ -408,7 +408,7 @@ public class Table
 
             *******************************************************************/
 
-            public typeof(&this) setString ( cstring str )
+            public typeof(&this) setString ( cstring str ) return
             {
                 this.type = Type.String;
                 this.contents.utf8.copy(str);
@@ -432,7 +432,7 @@ public class Table
             *******************************************************************/
 
             public typeof(&this) setInteger ( ulong num,
-                bool use_thousands_separator = true )
+                bool use_thousands_separator = true ) return
             {
                 this.type = Type.Integer;
                 this.use_thousands_separator = use_thousands_separator;
@@ -457,7 +457,8 @@ public class Table
 
             *******************************************************************/
 
-            public typeof(&this) setBinaryMetric ( ulong num, cstring metric_string = "" )
+            public typeof(&this) setBinaryMetric ( ulong num,
+                cstring metric_string = "" ) return
             {
                 this.type = Type.BinaryMetric;
                 this.contents.integer = num;
@@ -482,7 +483,8 @@ public class Table
 
             *******************************************************************/
 
-            public typeof(&this) setDecimalMetric ( ulong num, cstring metric_string = "" )
+            public typeof(&this) setDecimalMetric ( ulong num,
+                cstring metric_string = "" ) return
             {
                 this.type = Type.DecimalMetric;
                 this.contents.integer = num;
@@ -504,7 +506,7 @@ public class Table
 
             *******************************************************************/
 
-            public typeof(&this) setFloat ( double num )
+            public typeof(&this) setFloat ( double num ) return
             {
                 this.type = Type.Float;
                 this.contents.floating = num;
@@ -522,7 +524,7 @@ public class Table
 
             *******************************************************************/
 
-            public typeof(&this) setEmpty ( )
+            public typeof(&this) setEmpty ( ) return
             {
                 this.type = Type.Empty;
 
@@ -539,7 +541,7 @@ public class Table
 
             *******************************************************************/
 
-            public typeof(&this) setDivider ( )
+            public typeof(&this) setDivider ( ) return
             {
                 this.type = Type.Divider;
 
@@ -556,7 +558,7 @@ public class Table
 
             *******************************************************************/
 
-            public typeof(&this) setMerged ( )
+            public typeof(&this) setMerged ( ) return
             {
                 this.type = Type.Merged;
 
@@ -577,6 +579,7 @@ public class Table
             *******************************************************************/
 
             public typeof(&this) setForegroundColour ( Terminal.Colour colour )
+                return
             {
                 auto colour_str = Terminal.fg_colour_codes[colour];
                 this.fg_colour_string.concat(Terminal.CSI, colour_str);
@@ -598,6 +601,7 @@ public class Table
             *******************************************************************/
 
             public typeof(&this) setBackgroundColour ( Terminal.Colour colour )
+                return
             {
                 auto colour_str = Terminal.bg_colour_codes[colour];
                 this.bg_colour_string.concat(Terminal.CSI, colour_str);
