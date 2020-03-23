@@ -7,7 +7,7 @@ TEST_RUNNER_MODULE := ocean.core.UnitTestRunner
 export ASSERT_ON_STOMPING_PREVENTION=1
 
 # Common D compiler flags
-override DFLAGS += -w -version=GLIBC
+override DFLAGS += -w -version=GLIBC -dip25
 
 # Treat deprecations as errors to ensure ocean doesn't use own deprecated
 # symbols internally. Disable it on explicit flag to make possible regression
