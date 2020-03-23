@@ -262,7 +262,7 @@ class EBTree64 ( bool signed = false ) : IEBTree
     }
     body
     {
-        scope (success) ++this;
+        scope (success) this.increaseNodeCount(1);
 
         return this.add_(this.node_pool.get(), key);
     }
