@@ -209,7 +209,7 @@ public template SmartEnumCore ( BaseType )
         return code in map;
     }
 
-    public alias description opIn_r;
+    public alias opBinaryRight ( istring op : "in" ) = description;
 
 
     /***************************************************************************
@@ -231,7 +231,8 @@ public template SmartEnumCore ( BaseType )
         return description in map;
     }
 
-    public alias code opIn_r;
+    public alias opBinaryRight ( istring op : "in" ) = code;
+
 
 
     /***************************************************************************
