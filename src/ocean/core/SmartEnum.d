@@ -372,9 +372,9 @@ public template SmartEnumCore ( BaseType )
     static public int opApply ( scope int delegate ( ref BaseType code, ref istring desc ) dg )
     {
         int res;
-        foreach ( code, description; map )
+        foreach ( enum_code, enum_description; map )
         {
-            res = dg(code, description);
+            res = dg(enum_code, enum_description);
         }
         return res;
     }
@@ -390,9 +390,9 @@ public template SmartEnumCore ( BaseType )
     static public int opApply ( scope int delegate ( ref size_t index, ref BaseType code, ref istring desc ) dg )
     {
         int res;
-        foreach ( index, code, description; map )
+        foreach ( index, enum_code, enum_description; map )
         {
-            res = dg(index, code, description);
+            res = dg(index, enum_code, enum_description);
         }
         return res;
     }
