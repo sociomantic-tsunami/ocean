@@ -350,9 +350,9 @@ unittest
 
     // find the element by key
     bool found;
-    auto val = map.get(5, found);
+    auto valfive = map.get(5, found);
     test!("==")(found, true);
-    test!("==")(val.x, 10);
+    test!("==")(valfive.x, 10);
 
     // remove the element
     map.remove(10);
