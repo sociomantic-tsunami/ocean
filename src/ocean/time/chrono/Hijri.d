@@ -17,6 +17,7 @@
 
 ******************************************************************************/
 
+deprecated("This module is deprecated without replacement")
 module ocean.time.chrono.Hijri;
 
 import ocean.time.chrono.Calendar;
@@ -28,6 +29,7 @@ import ocean.meta.types.Qualifiers;
  * $(ANCHOR _Hijri)
  * Represents the Hijri calendar.
  */
+deprecated("This class is deprecated without replacement")
 public class Hijri : Calendar {
 
   private static const(uint[]) DAYS_TO_MONTH = [ 0, 30, 59, 89, 118, 148, 177, 207, 236, 266, 295, 325, 355 ];

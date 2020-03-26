@@ -17,6 +17,7 @@
 
 ******************************************************************************/
 
+deprecated("This module is deprecated without replacement")
 module ocean.time.chrono.Taiwan;
 
 import ocean.time.chrono.GregorianBased;
@@ -25,6 +26,7 @@ import ocean.time.chrono.GregorianBased;
  * $(ANCHOR _Taiwan)
  * Represents the Taiwan calendar.
  */
+deprecated("This class is deprecated without replacement")
 public class Taiwan : GregorianBased
 {
   /**
@@ -36,4 +38,3 @@ public class Taiwan : GregorianBased
   }
 
 }
-
