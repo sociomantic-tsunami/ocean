@@ -9,8 +9,14 @@ importPaths "src"
 targetType "sourceLibrary"
 
 // Deprecated files are excluded
-excludedSourceFiles "src/ocean/core/Time.d" "src/ocean/stdc/posix/arpa/inet.d" "src/ocean/stdc/posix/net/if_.d" "src/ocean/stdc/posix/netinet/in_.d" "src/ocean/stdc/posix/stdlib.d" \
-                    "src/ocean/stdc/posix/sys/types.d" "src/ocean/util/log/model/ILogger.d"
+excludedSourceFiles \
+    "src/ocean/core/Time.d" \
+    "src/ocean/stdc/posix/arpa/inet.d" \
+    "src/ocean/stdc/posix/net/if_.d" \
+    "src/ocean/stdc/posix/netinet/in_.d" \
+    "src/ocean/stdc/posix/stdlib.d" \
+    "src/ocean/stdc/posix/sys/types.d" \
+    "src/ocean/util/log/model/ILogger.d"
 
 configuration "unittest" {
     excludedSourceFiles "src/ocean/core/UnitTestRunner.d"
