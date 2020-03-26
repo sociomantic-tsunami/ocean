@@ -41,27 +41,18 @@
 
 module ocean.sys.socket.InetAddress;
 
-
-
+import ocean.core.TypeConvert;
+import ocean.core.Verify;
 import ocean.meta.types.Qualifiers;
 
-import ocean.stdc.posix.sys.socket: sockaddr;
-
-import core.sys.posix.netinet.in_ :
+import core.stdc.errno: errno, EINVAL;
+import core.stdc.string: strlen;
+import core.sys.posix.netdb;
+import core.sys.posix.arpa.inet: inet_ntop, inet_pton, ntohs, htons, htonl;
+import core.sys.posix.netinet.in_ : sockaddr,
            sockaddr_in,  AF_INET,  INET_ADDRSTRLEN,  INADDR_ANY,
            sockaddr_in6, AF_INET6, INET6_ADDRSTRLEN;
 
-import core.sys.posix.netdb;
-
-import core.sys.posix.arpa.inet: inet_ntop, inet_pton, ntohs, htons, htonl;
-
-import core.stdc.string: strlen;
-
-import core.stdc.errno: errno, EINVAL;
-
-import ocean.core.TypeConvert;
-
-import ocean.core.Verify;
 
 /******************************************************************************
 
