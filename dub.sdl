@@ -16,7 +16,16 @@ excludedSourceFiles \
     "src/ocean/stdc/posix/netinet/in_.d" \
     "src/ocean/stdc/posix/netinet/tcp.d" \
     "src/ocean/stdc/posix/stdlib.d" \
+    "src/ocean/stdc/posix/sys/ipc.d" \
+    "src/ocean/stdc/posix/sys/mman.d" \
+    "src/ocean/stdc/posix/sys/select.d" \
+    "src/ocean/stdc/posix/sys/shm.d" \
+    "src/ocean/stdc/posix/sys/stat.d" \
+    "src/ocean/stdc/posix/sys/statvfs.d" \
     "src/ocean/stdc/posix/sys/types.d" \
+    "src/ocean/stdc/posix/sys/uio.d" \
+    "src/ocean/stdc/posix/sys/utsname.d" \
+    "src/ocean/stdc/posix/sys/wait.d" \
     "src/ocean/time/chrono/Hebrew.d" \
     "src/ocean/time/chrono/Hijri.d" \
     "src/ocean/time/chrono/Japanese.d" \

@@ -11,7 +11,7 @@
 
 *******************************************************************************/
 
-
+deprecated("Use `core.sys.posix.sys.ipc` directly")
 module ocean.stdc.posix.sys.ipc;
 
 public import core.sys.posix.sys.ipc;
