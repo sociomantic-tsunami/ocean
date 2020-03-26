@@ -15,26 +15,22 @@
 
 module integrationtest.reopenfiles.main;
 
-import ocean.meta.types.Qualifiers;
-
-import core.sys.posix.sys.stat;
-import core.sys.linux.fcntl;
-
 import ocean.core.Enforce;
 import ocean.core.Test;
 import ocean.io.FilePath;
 import ocean.io.device.File;
 import ocean.io.select.protocol.task.TaskSelectTransceiver;
 import ocean.io.select.protocol.generic.ErrnoIOException: IOWarning, IOError;
-
-import ocean.sys.socket.UnixSocket;
+import ocean.meta.types.Qualifiers;
 import ocean.stdc.posix.sys.un;
-
+import ocean.sys.socket.UnixSocket;
 import ocean.task.Scheduler;
 import ocean.task.Task;
-
 import ocean.util.app.DaemonApp;
 import ocean.util.test.DirectorySandbox;
+
+import core.sys.posix.sys.stat;
+import core.sys.linux.fcntl;
 
 /// Socket class to bind/connect
 private istring socket_path = "reopensocket.socket";
