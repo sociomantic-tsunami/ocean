@@ -49,5 +49,11 @@ TEST_FILTER_OUT += \
 	$C/src/ocean/stdc/posix/netinet/in_.d \
 	$C/src/ocean/stdc/posix/netinet/tcp.d \
 	$C/src/ocean/stdc/posix/stdlib.d \
-	$C/src/ocean/stdc/posix/sys/types.d   \
+	$C/src/ocean/stdc/posix/sys/types.d \
+	$C/src/ocean/time/chrono/Hebrew.d \
+	$C/src/ocean/time/chrono/Hijri.d \
+	$C/src/ocean/time/chrono/Japanese.d \
+	$C/src/ocean/time/chrono/Korean.d \
+	$C/src/ocean/time/chrono/Taiwan.d \
+	$C/src/ocean/time/chrono/ThaiBuddhist.d \
 	$C/src/ocean/util/log/model/ILogger.d

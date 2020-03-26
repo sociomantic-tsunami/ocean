@@ -17,6 +17,12 @@ excludedSourceFiles \
     "src/ocean/stdc/posix/netinet/tcp.d" \
     "src/ocean/stdc/posix/stdlib.d" \
     "src/ocean/stdc/posix/sys/types.d" \
+    "src/ocean/time/chrono/Hebrew.d" \
+    "src/ocean/time/chrono/Hijri.d" \
+    "src/ocean/time/chrono/Japanese.d" \
+    "src/ocean/time/chrono/Korean.d" \
+    "src/ocean/time/chrono/Taiwan.d" \
+    "src/ocean/time/chrono/ThaiBuddhist.d" \
     "src/ocean/util/log/model/ILogger.d"
 
 configuration "unittest" {

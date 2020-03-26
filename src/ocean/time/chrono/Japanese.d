@@ -17,6 +17,7 @@
 
 ******************************************************************************/
 
+deprecated("This module is deprecated without replacement")
 module ocean.time.chrono.Japanese;
 
 import ocean.time.chrono.GregorianBased;
@@ -26,6 +27,7 @@ import ocean.time.chrono.GregorianBased;
  * $(ANCHOR _Japanese)
  * Represents the Japanese calendar.
  */
+deprecated("This class is deprecated without replacement")
 public class Japanese : GregorianBased
 {
   /**

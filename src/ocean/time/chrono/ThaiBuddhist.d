@@ -17,6 +17,7 @@
 
 ******************************************************************************/
 
+deprecated("This module is deprecated without replacement")
 module ocean.time.chrono.ThaiBuddhist;
 
 import ocean.time.chrono.GregorianBased;
@@ -26,6 +27,7 @@ import ocean.time.chrono.GregorianBased;
  * $(ANCHOR _ThaiBuddhist)
  * Represents the Thai Buddhist calendar.
  */
+deprecated("This class is deprecated without replacement")
 public class ThaiBuddhist : GregorianBased {
   /**
    * $(I Property.) Overridden. Retrieves the identifier associated with the current calendar.
