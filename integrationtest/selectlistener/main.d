@@ -26,15 +26,16 @@ import ocean.meta.types.Qualifiers;
 import ocean.core.Enforce: enforce;
 import Ocean = ocean.core.Test;
 import ocean.io.select.EpollSelectDispatcher;
-import ocean.stdc.posix.sys.wait: waitpid;
 import ocean.time.timeout.TimeoutManager;
-import ocean.sys.socket.UnixSocket;
 import ocean.stdc.posix.sys.un;
+import ocean.sys.socket.UnixSocket;
+
 import core.stdc.errno: ECONNREFUSED;
 import core.stdc.stdlib;
 import core.sys.posix.unistd: fork, unlink;
 import core.sys.posix.sys.socket;
 import core.sys.posix.sys.types : pid_t;
+import core.sys.posix.sys.wait: waitpid;
 import core.thread;
 import core.time;
 

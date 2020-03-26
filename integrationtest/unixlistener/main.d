@@ -15,36 +15,29 @@
 
 module integrationtest.unixlistener.main;
 
-import ocean.meta.types.Qualifiers;
-
 import core.thread;
 import core.stdc.errno;
 import core.stdc.stdio;
-import core.sys.posix.stdlib;
+import core.stdc.string;
 import core.sys.posix.semaphore;
-import core.sys.posix.sys.mman;
+import core.sys.posix.stdlib;
 import core.sys.posix.unistd;
+import core.sys.posix.sys.mman;
 import core.sys.posix.sys.wait;
 
 import ocean.core.Test;
 import ocean.core.Enforce;
 import ocean.io.select.EpollSelectDispatcher;
-import core.stdc.errno: ECONNREFUSED;
+import ocean.meta.types.Qualifiers;
+import ocean.net.server.unix.UnixListener;
 import ocean.stdc.posix.sys.un;
 import ocean.sys.socket.UnixSocket;
-import ocean.net.server.unix.UnixListener;
+import ocean.task.Task;
+import ocean.task.Scheduler;
 import Integer = ocean.text.convert.Integer_tango;
 import ocean.text.util.SplitIterator: ChrSplitIterator;
 import ocean.text.util.StringC;
-import ocean.task.Task;
-import ocean.task.Scheduler;
 import ocean.sys.ErrnoException;
-import core.stdc.string;
-
-static if (!is(typeof(mkdtemp)))
-{
-    extern (C) char* mkdtemp(char*);
-}
 
 /*******************************************************************************
 
