@@ -49,7 +49,16 @@ TEST_FILTER_OUT += \
 	$C/src/ocean/stdc/posix/netinet/in_.d \
 	$C/src/ocean/stdc/posix/netinet/tcp.d \
 	$C/src/ocean/stdc/posix/stdlib.d \
+	$C/src/ocean/stdc/posix/sys/ipc.d \
+	$C/src/ocean/stdc/posix/sys/mman.d \
+	$C/src/ocean/stdc/posix/sys/select.d \
+	$C/src/ocean/stdc/posix/sys/shm.d \
+	$C/src/ocean/stdc/posix/sys/stat.d \
+	$C/src/ocean/stdc/posix/sys/statvfs.d \
 	$C/src/ocean/stdc/posix/sys/types.d \
+	$C/src/ocean/stdc/posix/sys/uio.d \
+	$C/src/ocean/stdc/posix/sys/utsname.d \
+	$C/src/ocean/stdc/posix/sys/wait.d \
 	$C/src/ocean/time/chrono/Hebrew.d \
 	$C/src/ocean/time/chrono/Hijri.d \
 	$C/src/ocean/time/chrono/Japanese.d \

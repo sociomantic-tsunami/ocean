@@ -11,7 +11,7 @@
 
 *******************************************************************************/
 
-
+deprecated("Use `core.sys.posix.sys.mman` directly")
 module ocean.stdc.posix.sys.mman;
 
 public import core.sys.posix.sys.mman;
