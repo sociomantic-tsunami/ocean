@@ -22,33 +22,20 @@
 
 module ocean.sys.SafeFork;
 
-
-
-
 import ocean.sys.ErrnoException;
-
-import core.sys.posix.stdlib : exit;
-
-import core.sys.posix.unistd : fork;
-
 import ocean.stdc.posix.sys.wait;
 
-import core.sys.posix.signal;
-
 import core.stdc.errno;
-
 import core.stdc.string;
-
-
-
+import core.sys.posix.stdlib : exit;
+import core.sys.posix.unistd : fork;
+import core.sys.posix.signal;
 
 version ( TimeFork )
 {
     import ocean.io.Stdout;
-
     import ocean.time.StopWatch;
 }
-
 
 
 /*******************************************************************************
@@ -286,4 +273,3 @@ public class SafeFork
         return siginfo._sifields._kill.si_pid == 0;
     }
 }
-

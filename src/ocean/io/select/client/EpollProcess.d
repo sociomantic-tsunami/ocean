@@ -91,35 +91,20 @@
 
 module ocean.io.select.client.EpollProcess;
 
-
-
-
-import ocean.meta.types.Qualifiers;
-
 import ocean.core.Verify;
-
-import ocean.util.container.map.Map;
-
 import ocean.io.select.client.model.ISelectClient;
-
 import ocean.io.select.client.SelectEvent;
-
 import ocean.io.select.EpollSelectDispatcher;
-
-import ocean.io.model.IConduit;
-
-import ocean.stdc.posix.sys.wait;
-
-import ocean.sys.Process;
-
 debug import ocean.io.Stdout;
-
-import core.stdc.errno;
-
+import ocean.io.model.IConduit;
+import ocean.meta.types.Qualifiers;
+import ocean.stdc.posix.sys.wait;
+import ocean.sys.Process;
+import ocean.util.container.map.Map;
 import ocean.util.log.Logger;
 
+import core.stdc.errno;
 import core.sys.posix.signal : SIGCHLD;
-
 
 
 /*******************************************************************************
