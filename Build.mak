@@ -47,6 +47,7 @@ TEST_FILTER_OUT += \
 	$C/src/ocean/stdc/posix/arpa/inet.d \
 	$C/src/ocean/stdc/posix/net/if_.d \
 	$C/src/ocean/stdc/posix/netinet/in_.d \
+	$C/src/ocean/stdc/posix/netinet/tcp.d \
 	$C/src/ocean/stdc/posix/stdlib.d \
 	$C/src/ocean/stdc/posix/sys/types.d   \
 	$C/src/ocean/util/log/model/ILogger.d
