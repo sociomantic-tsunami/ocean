@@ -32,13 +32,13 @@ import ocean.io.device.Device : Device;
 import ocean.io.device.File;
 import ocean.text.util.StringC;
 
+import core.stdc.string : strlen;
 import core.sys.posix.pwd : getpwnam;
 import core.sys.posix.unistd : access, getuid, lseek, unlink, W_OK;
 import core.sys.posix.sys.types : off_t;
-import ocean.stdc.posix.sys.stat : stat, stat_t;
+import core.sys.posix.sys.stat : stat, stat_t;
 import ocean.stdc.posix.fcntl : O_NOFOLLOW;
 import core.sys.posix.stdlib : getenv;
-import ocean.stdc.string : strlen;
 
 /******************************************************************************
  *

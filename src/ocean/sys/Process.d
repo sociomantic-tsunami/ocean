@@ -34,7 +34,7 @@ import core.stdc.string;
 import core.stdc.errno;
 import ocean.stdc.posix.fcntl;
 import core.sys.posix.unistd;
-import ocean.stdc.posix.sys.wait;
+import core.sys.posix.sys.wait;
 
 private
 {
