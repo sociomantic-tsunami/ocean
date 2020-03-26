@@ -98,13 +98,13 @@ import ocean.io.select.EpollSelectDispatcher;
 debug import ocean.io.Stdout;
 import ocean.io.model.IConduit;
 import ocean.meta.types.Qualifiers;
-import ocean.stdc.posix.sys.wait;
 import ocean.sys.Process;
 import ocean.util.container.map.Map;
 import ocean.util.log.Logger;
 
 import core.stdc.errno;
 import core.sys.posix.signal : SIGCHLD;
+import core.sys.posix.sys.wait;
 
 
 /*******************************************************************************

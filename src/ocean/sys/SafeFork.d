@@ -23,13 +23,13 @@
 module ocean.sys.SafeFork;
 
 import ocean.sys.ErrnoException;
-import ocean.stdc.posix.sys.wait;
 
 import core.stdc.errno;
 import core.stdc.string;
 import core.sys.posix.stdlib : exit;
 import core.sys.posix.unistd : fork;
 import core.sys.posix.signal;
+import core.sys.posix.sys.wait;
 
 version ( TimeFork )
 {

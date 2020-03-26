@@ -19,11 +19,11 @@ module ocean.text.convert.DateTime;
 import ocean.core.Array : contains;
 import ocean.core.Verify;
 import ocean.meta.types.Qualifiers;
-import ocean.stdc.posix.sys.stat;
 import ocean.text.Unicode;
 import ocean.time.chrono.Gregorian;
 
 import core.stdc.stdio : sscanf;
+import core.sys.posix.sys.stat;
 import core.sys.posix.time;
 
 
