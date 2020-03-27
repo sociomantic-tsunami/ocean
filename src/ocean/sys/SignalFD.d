@@ -83,34 +83,21 @@
 
 module ocean.sys.SignalFD;
 
-
-import ocean.core.Exception;
-import ocean.sys.ErrnoException;
-
-import ocean.sys.SignalMask;
-
-import ocean.meta.codegen.Identifier;
-
-import ocean.io.model.IConduit;
-
-import core.sys.posix.signal;
-
-import core.sys.posix.unistd : read, close;
-
-import core.stdc.errno : EAGAIN, EWOULDBLOCK, errno;
-
 import ocean.core.Array : contains;
-
+import ocean.core.Exception;
+import ocean.meta.codegen.Identifier;
 import ocean.meta.types.Qualifiers;
-
+import ocean.sys.ErrnoException;
+import ocean.sys.SignalMask;
+import ocean.io.model.IConduit;
 debug import ocean.io.Stdout;
 
-/*******************************************************************************
+import core.stdc.errno : EAGAIN, EWOULDBLOCK, errno;
+import core.sys.posix.signal;
+import core.sys.posix.unistd : read, close;
 
-    Signal fd class
 
-*******************************************************************************/
-
+/// Ditto
 public class SignalFD : ISelectable
 {
     import core.sys.linux.sys.signalfd;
