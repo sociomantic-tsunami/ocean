@@ -30,14 +30,13 @@
 
 module ocean.text.convert.Float;
 
-import ocean.meta.types.Qualifiers;
-
 import ocean.core.ExceptionDefinitions;
-import ocean.math.IEEE;
 import ocean.core.Verify;
+import ocean.math.IEEE;
+import ocean.meta.types.Qualifiers;
+static import Integer = ocean.text.convert.Integer_tango;
 
 static import tsm = core.stdc.math;
-static import Integer = ocean.text.convert.Integer_tango;
 
 private alias real NumType;
 
