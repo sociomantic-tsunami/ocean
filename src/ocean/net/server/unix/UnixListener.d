@@ -109,9 +109,9 @@ public class UnixSocketListener ( CommandHandlerType ) : SelectListener!(
 {
     import ocean.sys.socket.UnixSocket;
     import ocean.stdc.posix.sys.un: sockaddr_un;
-    import ocean.stdc.posix.sys.socket: AF_UNIX, sockaddr;
     import ocean.text.convert.Formatter;
 
+    import core.sys.posix.sys.socket: AF_UNIX, sockaddr;
     import core.sys.posix.sys.stat;
     import core.sys.posix.unistd: unlink;
     import core.stdc.errno: errno;

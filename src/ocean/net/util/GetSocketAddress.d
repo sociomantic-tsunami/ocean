@@ -28,14 +28,14 @@ module ocean.net.util.GetSocketAddress;
 
 import ocean.meta.types.Qualifiers;
 import ocean.io.model.IConduit: ISelectable;
-import ocean.stdc.posix.sys.socket: getsockname, getpeername, socklen_t, sockaddr;
 import ocean.sys.ErrnoException;
 
 import core.stdc.errno;
 import core.stdc.string: strlen, strerror_r;
 import core.sys.posix.arpa.inet: ntohs, inet_ntop, INET_ADDRSTRLEN, INET6_ADDRSTRLEN;
 import core.sys.posix.netinet.in_: sa_family_t, in_port_t, sockaddr_in, sockaddr_in6, in_addr, in6_addr;
-import consts = core.sys.posix.sys.socket;
+import core.sys.posix.sys.socket: AF_INET, AF_INET6, getsockname, getpeername,
+    socklen_t, sockaddr;
 
 
 /******************************************************************************/
@@ -58,8 +58,8 @@ class GetSocketAddress
 
         enum Family : sa_family_t
         {
-            INET  = consts.AF_INET,
-            INET6 = consts.AF_INET6
+            INET  = .AF_INET,
+            INET6 = .AF_INET6
         }
 
         /**********************************************************************

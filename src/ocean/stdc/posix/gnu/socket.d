@@ -15,7 +15,7 @@
 
 module ocean.stdc.posix.gnu.socket;
 
-import ocean.stdc.posix.sys.socket;
+import core.sys.posix.sys.socket;
 
 extern (C):
 
