@@ -21,15 +21,15 @@ module ocean.util.aio.internal.ThreadWorker;
 import core.memory;
 import core.stdc.errno;
 import core.sys.posix.semaphore;
+import core.sys.posix.signal: SIGRTMIN;
 import core.sys.posix.pthread;
 import core.sys.posix.unistd;
 import core.stdc.stdint;
 import core.stdc.stdio;
-import ocean.util.aio.AsyncIO;
 
+import ocean.util.aio.AsyncIO;
 import ocean.util.aio.internal.JobQueue;
 
-import core.sys.posix.signal: SIGRTMIN;
 
 extern(C) int pthread_getattr_np(pthread_t thread, pthread_attr_t* attr);
 
