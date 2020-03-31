@@ -37,6 +37,7 @@ import core.sys.posix.unistd : gethostname;
 
 import ocean.core.Enforce;
 import ocean.core.TypeConvert;
+import ocean.stdc.gnu.string;
 import ocean.sys.ErrnoException;
 
 import ocean.util.app.model.ExtensibleClassMixin;
@@ -220,5 +221,3 @@ private istring getHostName ()
     return idup(buffer[0 .. strnlen(buffer.ptr, buffer.length)]);
 
 }
-
-private extern(C) size_t strnlen(const(char)* s, size_t maxlen);
