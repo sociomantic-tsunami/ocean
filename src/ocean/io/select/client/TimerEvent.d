@@ -392,7 +392,7 @@ abstract class ITimerEvent : ISelectClient, ISelectable
 version (unittest)
 {
     import ocean.core.Test;
-    import core.sys.posix.time;
+    import core.sys.posix.time : CLOCK_MONOTONIC;
 
     extern ( C )
     {
@@ -419,7 +419,7 @@ version (unittest)
 unittest
 {
     timespec now;
-    clock_gettime(ocean.sys.TimerFD.CLOCK_MONOTONIC, &now);
+    clock_gettime(CLOCK_MONOTONIC, &now);
 
     auto timer = new TestTimerEvent;
     timer.absolute = true;

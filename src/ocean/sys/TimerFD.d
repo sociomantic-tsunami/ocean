@@ -20,170 +20,33 @@ import ocean.meta.codegen.Identifier;
 import ocean.sys.ErrnoException;
 
 import core.stdc.errno: EAGAIN, EWOULDBLOCK, errno;
+import Upstream = core.sys.linux.timerfd;
 import core.sys.posix.time: time_t, timespec, itimerspec, CLOCK_REALTIME;
 import core.sys.posix.sys.types: ssize_t;
 import core.sys.posix.unistd: read, close;
 
-/*******************************************************************************
 
-    Definitions of external constants and functions required to manage timer
-    events.
+deprecated("Use `core.sys.linux.timerfd : TFD_TIMER_ABSTIME` directly")
+static immutable TFD_TIMER_ABSTIME = Upstream.TFD_TIMER_ABSTIME;
+deprecated("Use `core.sys.linux.timerfd : TFD_CLOEXEC` directly")
+static immutable TFD_CLOEXEC = Upstream.TFD_CLOEXEC;
+deprecated("Use `core.sys.linux.timerfd : TFD_NONBLOCK` directly")
+static immutable TFD_NONBLOCK = Upstream.TFD_NONBLOCK;
 
-*******************************************************************************/
+deprecated("Use `core.sys.posix.time : CLOCK_MONOTONIC` directly")
+static immutable CLOCK_MONOTONIC = Upstream.CLOCK_MONOTONIC;
 
-/// <sys/timerfd.h>
-
-static immutable TFD_TIMER_ABSTIME = 1,
-      TFD_CLOEXEC       = 0x80000, // octal 02000000
-      TFD_NONBLOCK      = 0x800;   // octal 04000
-
-/// <linux/time.h>
-
-static immutable CLOCK_MONOTONIC = 1;
-
-// TODO: move into C bindings
-
-extern (C)
+deprecated("Use `core.sys.linuix.timerfd : timerfd_create` directly")
+int timerfd_create(int clockid, int flags = 0)
 {
-    /**************************************************************************
-
-        Creates a new timer object.
-
-        The file descriptor supports the following operations:
-
-        read(2)
-               If  the timer has already expired one or more times since its
-               settings were last modified using timerfd_settime(), or since the
-               last successful read(2), then the buffer given to read(2) returns
-               an unsigned 8-byte integer (uint64_t) containing  the  number of
-               expirations that have occurred.  (The returned value is in host
-               byte order, i.e., the native byte order for integers on the host
-               machine.)
-
-               If no timer expirations have occurred at the time of the read(2),
-               then the call either blocks until the next timer  expiration, or
-               fails with the error EAGAIN if the file descriptor has been made
-               non-blocking (via the use of the fcntl(2) F_SETFL operation to
-               set the O_NONBLOCK flag).
-
-               A read(2) will fail with the error EINVAL if the size of the
-               supplied buffer is less than 8 bytes.
-
-        poll(2), select(2) (and similar)
-               The file descriptor is readable (the select(2) readfds argument;
-               the poll(2) POLLIN flag) if one or more timer expirations have
-               occurred.
-
-               The file descriptor also supports the other file-descriptor
-               multiplexing APIs: pselect(2), ppoll(2), and epoll(7).
-
-        close(2)
-               When  the  file descriptor is no longer required it should be
-               closed.  When all file descriptors associated with the same timer
-               object have been closed, the timer is disarmed and its resources
-               are freed by the kernel.
-
-        fork(2) semantics
-            After a fork(2), the child inherits a copy of the file descriptor
-            created by timerfd_create().  The file descriptor refers to the same
-            underlying  timer  object  as the corresponding file descriptor in
-            the parent, and read(2)s in the child will return information about
-            expirations of the timer.
-
-        execve(2) semantics
-            A file descriptor created by timerfd_create() is preserved across
-            execve(2), and continues to generate timer expirations if the  timer
-            was armed.
-
-        Params:
-            clockid = Specifies the clock  that is used to mark the progress of
-                      the timer, and must be either CLOCK_REALTIME or
-                      CLOCK_MONOTONIC.
-                      - CLOCK_REALTIME is a settable system-wide clock.
-                      - CLOCK_MONOTONIC is a non-settable clock that is not
-                          affected by discontinuous changes in the system clock
-                          (e.g., manual changes to system time). The current
-                          value of each of these clocks can be retrieved using
-                          clock_gettime(2).
-
-            flags   = Starting with Linux 2.6.27: 0 or a bitwise OR combination
-                      of
-                      - TFD_NONBLOCK: Set the O_NONBLOCK file status flag on the
-                            new open file description.
-                      - TFD_CLOEXEC: Set the close-on-exec (FD_CLOEXEC) flag on
-                            the new file descriptor. (See the description of the
-                            O_CLOEXEC  flag  in open(2) for reasons why this may
-                            be useful.)
-
-                      Up to Linux version 2.6.26: Must be 0.
-
-        Returns:
-            a file descriptor that refers to that timer
-
-     **************************************************************************/
-
-    int timerfd_create(int clockid, int flags = 0);
-
-
-    /**************************************************************************
-
-        Sets next expiration time of interval timer source fd to new_value.
-
-        Params:
-            fd        = file descriptor referring to the timer
-
-            flags     = 0 starts a relative timer using new_value.it_interval;
-                        TFD_TIMER_ABSTIME starts an absolute timer using
-                        new_value.it_value.
-
-            new_value = - it_value: Specifies the initial expiration of the
-                            timer. Setting either field to a non-zero value arms
-                            the timer. Setting both fields to zero disarms the
-                            timer.
-                        - it_interval: Setting one or both fields to non-zero
-                            values specifies the period for repeated timer
-                            expirations after the initial expiration. If both
-                            fields are zero, the timer expires just once, at the
-                            time specified by it_value.
-
-            old_value = Returns the old expiration time as timerfd_gettime().
-
-        Returns:
-            0 on success or -1 on error. Sets errno in case of error.
-
-     **************************************************************************/
-
-    int timerfd_settime(int fd, int flags,
-                        itimerspec* new_value,
-                        itimerspec* old_value);
-
-
-    /**************************************************************************
-
-        Returns the next expiration time of fd.
-
-        Params:
-            fd         = file descriptor referring to the timer
-            curr_value = - it_value:
-                             Returns the amount of time until the timer will
-                             next expire. If both fields are zero, then the
-                             timer is currently disarmed. Contains always a
-                             relative value, regardless of whether the
-                             TFD_TIMER_ABSTIME flag was specified when setting
-                             the timer.
-                        - it_interval: Returns the interval of the timer. If
-                             both fields are zero, then the timer is set to
-                             expire just once, at the time specified by
-                             it_value.
-
-        Returns:
-            0 on success or -1 on error. Sets errno in case of error.
-
-     **************************************************************************/
-
-    int timerfd_gettime(int fd, itimerspec* curr_value);
+    return Upstream.timerfd_create(clockid, flags);
 }
 
+deprecated("Use `core.sys.linuix.timerfd : timerfd_settime` directly")
+alias timerfd_settime = Upstream.timerfd_settime;
+
+deprecated("Use `core.sys.linuix.timerfd : timerfd_gettime` directly")
+alias timerfd_gettime = Upstream.timerfd_gettime;
 
 
 /*******************************************************************************
@@ -275,9 +138,9 @@ public class TimerFD : ISelectable
     {
         this.e = e;
         static bool verify (int fd) { return fd >= 0; }
-        this.fd = this.e.enforceRet!(.timerfd_create)(&verify).call(
-            realtime ? CLOCK_REALTIME : CLOCK_MONOTONIC,
-            setCloExec(TFD_NONBLOCK, TFD_CLOEXEC)
+        this.fd = this.e.enforceRet!(Upstream.timerfd_create)(&verify).call(
+            realtime ? Upstream.CLOCK_REALTIME : Upstream.CLOCK_MONOTONIC,
+            setCloExec(Upstream.TFD_NONBLOCK, Upstream.TFD_CLOEXEC)
         );
     }
 
@@ -329,7 +192,7 @@ public class TimerFD : ISelectable
     public itimerspec time ( )
     {
         itimerspec t;
-        this.e.enforceRetCode!(timerfd_gettime)().call(this.fd, &t);
+        this.e.enforceRetCode!(Upstream.timerfd_gettime)().call(this.fd, &t);
         return t;
     }
 
@@ -361,9 +224,9 @@ public class TimerFD : ISelectable
         itimerspec t_new = itimerspec(interval, first);
         itimerspec t_old;
 
-        this.e.enforceRetCode!(timerfd_settime)().call(
+        this.e.enforceRetCode!(Upstream.timerfd_settime)().call(
             this.fd,
-            this.absolute? TFD_TIMER_ABSTIME : 0,
+            this.absolute? Upstream.TFD_TIMER_ABSTIME : 0,
             &t_new,
             &t_old
         );
