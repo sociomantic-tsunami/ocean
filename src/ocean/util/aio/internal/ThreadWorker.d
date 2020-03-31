@@ -26,12 +26,13 @@ import core.sys.posix.pthread;
 import core.sys.posix.unistd;
 import core.stdc.stdint;
 import core.stdc.stdio;
+static import core.thread;
 
 import ocean.util.aio.AsyncIO;
 import ocean.util.aio.internal.JobQueue;
 
-
-extern(C) int pthread_getattr_np(pthread_t thread, pthread_attr_t* attr);
+deprecated("Use `core.thread : pthread_getattr_np` directly")
+alias pthread_getattr_np = core.thread.pthread_getattr_np;
 
 /**************************************************************************
 
@@ -67,7 +68,7 @@ extern (C) static void* thread_entry_point(ThreadInitializationContext)(void* in
         void* stack_addr;
         size_t stack_size;
 
-        pthread_getattr_np(pthread_self(), &attr);
+        core.thread.pthread_getattr_np(pthread_self(), &attr);
         pthread_attr_getstack(&attr, &stack_addr, &stack_size);
         pthread_attr_destroy(&attr);
 
