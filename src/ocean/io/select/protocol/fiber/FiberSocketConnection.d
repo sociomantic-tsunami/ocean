@@ -38,8 +38,6 @@ import ocean.sys.socket.AddressIPSocket,
 
 import ocean.io.select.protocol.generic.ErrnoIOException: SocketError;
 
-import ocean.stdc.posix.sys.socket: SOL_SOCKET, IPPROTO_TCP, SO_KEEPALIVE;
-
 import core.stdc.errno: errno, EINPROGRESS, EINTR, EALREADY, EISCONN;
 
 debug ( EpollTiming ) import ocean.time.StopWatch;

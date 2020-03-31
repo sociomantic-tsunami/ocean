@@ -34,7 +34,7 @@ class TaskSelectTransceiver
 
     import core.stdc.errno: errno, EAGAIN, EWOULDBLOCK, EINTR;
     import core.sys.posix.sys.uio: iovec, readv;
-    import ocean.stdc.posix.sys.socket: setsockopt;
+    import core.sys.posix.sys.socket: setsockopt;
     import core.sys.posix.netinet.in_: IPPROTO_TCP;
 
     static if (__VERSION__ < 2073)
