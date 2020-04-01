@@ -76,7 +76,6 @@ module ocean.util.prometheus.collector.Collector;
 public class Collector
 {
     import core.stdc.time;
-    import Traits = ocean.core.Traits;
     import ocean.math.IEEE;
     import ocean.text.convert.Formatter;
     import ocean.meta.types.Qualifiers;

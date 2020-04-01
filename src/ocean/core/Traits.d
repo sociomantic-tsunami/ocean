@@ -17,6 +17,7 @@
 
 *******************************************************************************/
 
+deprecated("All symbols in this module have been moved to ocean.meta or are built-in in D2")
 module ocean.core.Traits;
 
 
@@ -529,7 +530,7 @@ public template AAType (T : V[K], V, K)
     public alias V Value;
 }
 
-deprecated("Use ocean.meta.traits.Templates.TemplateInstanceArgs")
+deprecated("Use ocean.meta.types.Templates.TemplateInstanceArgs")
 public template TemplateInstanceArgs (alias Template, Type : Template!(TA), TA...)
 {
     public alias TA TemplateInstanceArgs;
