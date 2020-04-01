@@ -72,7 +72,7 @@ unittest
 
 private struct SmartUnionFormatter ( SU )
 {
-    import ocean.core.Traits : TemplateInstanceArgs;
+    import ocean.meta.types.Templates : TemplateInstanceArgs;
 
     static assert(is(TemplateInstanceArgs!(SmartUnion, SU)));
 

@@ -43,6 +43,7 @@ $O/%unittests: override LDFLAGS += -lglib-2.0 -lpcre -lxml2 -lxslt -lebtree \
 # Remove deprecated modules from testing:
 TEST_FILTER_OUT += \
 	$C/src/ocean/core/Time.d \
+	$C/src/ocean/core/Traits.d \
 	$C/src/ocean/stdc/posix/arpa/inet.d \
 	$C/src/ocean/stdc/posix/net/if_.d \
 	$C/src/ocean/stdc/posix/netinet/in_.d \

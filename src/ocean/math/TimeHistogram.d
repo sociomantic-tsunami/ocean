@@ -25,7 +25,6 @@ import ocean.meta.types.Qualifiers;
 struct TimeHistogram
 {
     import ocean.meta.types.Qualifiers;
-    import ocean.core.Traits : FieldName;
 
     /***************************************************************************
 

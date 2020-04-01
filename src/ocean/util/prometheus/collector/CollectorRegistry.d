@@ -98,7 +98,6 @@ public class CollectorRegistry
 version (unittest)
 {
     import ocean.core.Test;
-    import Traits = ocean.core.Traits;
     import ocean.meta.types.Qualifiers;
     import ocean.util.prometheus.collector.Collector;
 
