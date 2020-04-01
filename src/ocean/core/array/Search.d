@@ -28,7 +28,13 @@ import ocean.core.Verify;
 import ocean.meta.traits.Basic;
 import ocean.meta.types.Qualifiers;
 
-import core.sys.posix.sys.types; // ssize_t;
+// ssize_t is only available on this header, but should really be in `object`
+version (Posix)
+    import core.sys.posix.sys.types;
+else static if (size_t.sizeof == 8)
+    alias ssize_t = long;
+else
+    alias ssize_t = int;
 
 version (unittest)
 {
