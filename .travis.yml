@@ -33,20 +33,20 @@ jobs:
     include:
         # Test matrix
         - <<: *test-matrix-d2
-          env: DMD=2.071.2.s* F=production
+          env: DIST=xenial DMD=2.071.2.s* F=production
         - <<: *test-matrix-d2
-          env: DMD=2.071.2.s* F=devel
+          env: DIST=xenial DMD=2.071.2.s* F=devel
         - <<: *test-matrix-d2
-          env: DMD=2.078.3.s* F=production
+          env: DIST=xenial DMD=2.078.3.s* F=production
         - <<: *test-matrix-d2
-          env: DMD=2.078.3.s* F=devel
+          env: DIST=xenial DMD=2.078.3.s* F=devel
         - <<: *test-matrix-d2
-          env: DMD=2.078.3.s* F=devel DFLAGS=-debug=ISelectClient
+          env: DIST=xenial DMD=2.078.3.s* F=devel DFLAGS=-debug=ISelectClient
           script: 2>/dev/null beaver dlang make
         - <<: *test-matrix-d2
-          env: DMD=2.085.* F=production
+          env: DIST=xenial DMD=2.085.* F=production
         - <<: *test-matrix-d2
-          env: DMD=2.085.* F=devel
+          env: DIST=xenial DMD=2.085.* F=devel
 
         # Additional stages
 
