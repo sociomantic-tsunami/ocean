@@ -415,18 +415,61 @@ unittest
     empty_aa.remove(42);
     test(format("{}", empty_aa) == "[:]");
 
-    // Enums
+    // Basic integer-based enums (use `switch` jump table)
     enum Foo : ulong
     {
         A = 0,
         B = 1,
         FooBar = 42
     }
+    char[256] buffer;
+    Foo[] foo_inputs = [ Foo.FooBar, cast(Foo)1, cast(Foo)36 ];
+    string[] foo_outputs = [ "Foo.FooBar", "Foo.B", "cast(Foo) 36" ];
+    foreach (i, ref item; foo_inputs)
+        testNoAlloc(assert(snformat(buffer, "{}", item) == foo_outputs[i]));
 
-    Foo f = Foo.FooBar;
-    test("42" == format("{}", f));
-    f = cast(Foo)36;
-    test("36" == format("{}", f));
+    // Simple test for `const` and `immutable` values
+    const Foo fa = Foo.A;
+    immutable Foo fb = Foo.B;
+    const Foo fc = cast(Foo) 420;
+    test(format("{}", fa) == "const(Foo).A");
+    test(format("{}", fb) == "immutable(Foo).B");
+    test(format("{}", fc) == "cast(const(Foo)) 420");
+
+    // Enums with `string` as base type (use `switch` binary search)
+    enum FooA : string
+    {
+        a = "alpha",
+        b = "beta"
+    }
+    FooA[] fooa_inputs = [ FooA.a, cast(FooA)"beta", cast(FooA)"gamma" ];
+    string[] fooa_outputs = [ "FooA.a", "FooA.b", "cast(FooA) gamma" ];
+    foreach (i, ref item; fooa_inputs)
+        testNoAlloc(assert(snformat(buffer, "{}", item) == fooa_outputs[i]));
+
+    // Enums with `real` as base type (use `if` forest)
+    enum FooB : real
+    {
+        a = 1,
+        b = 1.41421,
+        c = 1.73205
+    }
+    FooB[] foob_inputs = [ FooB.a, cast(FooB)1.41421, cast(FooB)42 ];
+    string[] foob_outputs = [ "FooB.a", "FooB.b", "cast(FooB) 42.00" ];
+    foreach (i, ref item; foob_inputs)
+        testNoAlloc(assert(snformat(buffer, "{}", item) == foob_outputs[i]));
+
+    // Enums with struct as base type (use `if` forest)
+    static struct S
+    {
+        int value;
+        int opCmp(S rhs) const nothrow { return value - rhs.value; }
+    }
+    enum FooC : S { a = S(1), b = S(2), c = S(3) }
+    FooC[] fooc_inputs = [ FooC.a, cast(FooC)S(2), cast(FooC)S(42) ];
+    string[] fooc_outputs = [ "FooC.a", "FooC.b", "cast(FooC) { value: 42 }" ];
+    foreach (i, ref item; fooc_inputs)
+        testNoAlloc(assert(snformat(buffer, "{}", item) == fooc_outputs[i]));
 
     // Chars
     static struct CharC { char c = 'H'; }
