@@ -463,7 +463,6 @@ unittest
     static struct S
     {
         int value;
-        int opCmp(S rhs) const nothrow { return value - rhs.value; }
     }
     enum FooC : S { a = S(1), b = S(2), c = S(3) }
     FooC[] fooc_inputs = [ FooC.a, cast(FooC)S(2), cast(FooC)S(42) ];
