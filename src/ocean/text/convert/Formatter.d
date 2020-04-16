@@ -384,7 +384,7 @@ private void handle (T) (T v, FormatInfo f, scope FormatterSink sf, scope ElemSi
     // Note that switch is only available for string and integer based enums.
     // However, since it expands to a jump table for integers and a binary
     // search for strings, we still want to special case it.
-    else static if (is(T V == enum) && canSwitchOn!(T))
+    else static if (is(T V == enum) && canSwitchOn!T)
     {
         sw: switch (v)
         {
