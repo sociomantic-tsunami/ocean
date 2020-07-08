@@ -246,10 +246,10 @@ public class AppendSysLog : Appender
 
     private char* format ( LogEvent event )
     {
-        void sink ( cstring data )
+        scope FormatterSink sink = (data)
         {
             this.buf ~= data;
-        }
+        };
 
         this.buf.length = 0;
         assumeSafeAppend(this.buf);
