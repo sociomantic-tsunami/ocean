@@ -33,10 +33,6 @@ jobs:
     include:
         # Test matrix
         - <<: *test-matrix-d2
-          env: DIST=xenial DMD=2.071.2.s* F=production
-        - <<: *test-matrix-d2
-          env: DIST=xenial DMD=2.071.2.s* F=devel
-        - <<: *test-matrix-d2
           env: DIST=xenial DMD=2.078.3.s* F=production
         - <<: *test-matrix-d2
           env: DIST=xenial DMD=2.078.3.s* F=devel
