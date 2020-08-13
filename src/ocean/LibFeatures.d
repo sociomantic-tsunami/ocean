@@ -17,6 +17,17 @@
 
 module ocean.LibFeatures;
 
+static immutable has_features_5_4  = true;
+static immutable has_features_5_3  = true;
+static immutable has_features_5_2  = true;
+static immutable has_features_5_1  = true;
+static immutable has_features_5_0  = true;
+static immutable has_features_4_8  = true;
+static immutable has_features_4_7  = true;
+static immutable has_features_4_6  = true;
+static immutable has_features_4_5  = true;
+static immutable has_features_4_4  = true;
+static immutable has_features_4_3  = true;
 static immutable has_features_4_2  = true;
 static immutable has_features_4_1  = true;
 static immutable has_features_4_0  = true;
