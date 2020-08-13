@@ -88,7 +88,7 @@ private struct SmartUnionFormatter ( SU )
 
     /// Formatting sink delegate, passed to toString and used by
     /// formatUnionMember.
-    static private void delegate ( cstring chunk ) sink;
+    static private FormatterSink sink;
 
     /***************************************************************************
 
@@ -108,7 +108,7 @@ private struct SmartUnionFormatter ( SU )
 
     ***************************************************************************/
 
-    public void toString ( scope void delegate ( cstring chunk ) sink )
+    public void toString ( scope FormatterSink sink )
     {
         if ( this.smart_union.active )
         {

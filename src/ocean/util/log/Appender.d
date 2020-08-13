@@ -59,7 +59,20 @@ public class Appender
 
     public interface Layout
     {
-        void format (LogEvent event, scope void delegate(cstring) dg);
+        /// Convenience alias for implementing classes
+        protected alias FormatterSink = .FormatterSink;
+
+        /***********************************************************************
+
+            Format the provided `event` to the `sink` using `this` layout
+
+            Params:
+              event = The log event to format
+              sink = Where to output the result
+
+        ***********************************************************************/
+
+        void format (LogEvent event, scope FormatterSink sink);
     }
 
     /***************************************************************************
