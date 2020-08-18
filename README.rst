@@ -1,5 +1,5 @@
-Description
-===========
+Description |TravisCI|_
+=======================
 
 Ocean is a general purpose library, compatible with both D1 and D2, with a focus
 on supporting the development of high-performance, real-time applications. This
@@ -116,3 +116,6 @@ Contributing
 
 See the guide for `contributing to Neptune-versioned libraries
 <https://github.com/sociomantic-tsunami/neptune/blob/v0.x.x/doc/library-contributor.rst>`_.
+
+.. |TravisCI| image:: https://travis-ci.com/sociomantic-tsunami/ocean.svg?branch=v5.x.x
+.. _TravisCI: https://travis-ci.com/github/sociomantic-tsunami/ocean
