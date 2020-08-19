@@ -33,13 +33,7 @@ import ocean.io.device.IODevice: IOutputDevice;
 import core.stdc.errno: errno, EAGAIN, EWOULDBLOCK, EINTR;
 import core.sys.posix.netinet.in_: IPPROTO_TCP;
 import core.sys.posix.sys.socket: setsockopt;
-
-static if (__VERSION__ < 2073)
-    enum { TCP_CORK = 3 }
-else static if (__VERSION__ >= 2077)
-    import core.sys.linux.netinet.tcp: TCP_CORK;
-else
-    import core.sys.linux.sys.netinet.tcp: TCP_CORK;
+import core.sys.linux.netinet.tcp: TCP_CORK;
 
 debug (Raw) import ocean.io.Stdout: Stderr;
 
