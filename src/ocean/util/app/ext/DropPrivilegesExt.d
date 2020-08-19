@@ -17,7 +17,8 @@ module ocean.util.app.ext.DropPrivilegesExt;
 
 
 import ocean.core.array.Mutation;
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
+import ocean.core.TypeConvert: assumeUnique;
 import ocean.text.util.StringC;
 import ConfigFiller = ocean.util.config.ConfigFiller;
 import ocean.util.app.ext.model.IConfigExtExtension;

@@ -16,7 +16,7 @@
 
 module ocean.util.cipher.misc.ByteConverter;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 version (unittest)
 {

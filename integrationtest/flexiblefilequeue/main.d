@@ -12,13 +12,13 @@
 
 module integrationtest.flexiblefilequeue.main;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.io.Stdout;
 import ocean.text.util.StringC;
 import ocean.util.container.queue.FlexibleFileQueue;
 import ocean.util.test.DirectorySandbox;
 
-version(UnitTest) {} else
+version (unittest) {} else
 public void main ()
 {
     // Create will cd us into the sandbox

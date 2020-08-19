@@ -24,7 +24,7 @@ module ocean.core.DeepCompare;
 
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 version (unittest) import ocean.core.Test;
 

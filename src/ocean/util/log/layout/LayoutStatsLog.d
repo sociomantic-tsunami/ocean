@@ -20,7 +20,7 @@
 
 module ocean.util.log.layout.LayoutStatsLog;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.text.convert.Formatter;
 import ocean.time.Clock;
 import ocean.time.WallClock;
@@ -61,14 +61,14 @@ public class LayoutStatsLog : Appender.Layout
 
     ***************************************************************************/
 
-    public override void format (LogEvent event, scope void delegate(cstring) dg)
+    public override void format (LogEvent event, scope FormatterSink dg)
     {
         // convert time to field values
         const tm = event.time;
         const dt = (localTime) ? WallClock.toDate(tm) : Clock.toDate(tm);
 
         // format date according to ISO-8601 (lightweight formatter)
-        sformat(dg, "{u4}-{u2}-{u2} {u2}:{u2}:{u2},{u2} {}",
+        sformat(dg, "{u4}-{u2}-{u2} {u2}:{u2}:{u2},{u3} {}",
             dt.date.year, dt.date.month, dt.date.day,
             dt.time.hours, dt.time.minutes, dt.time.seconds, dt.time.millis,
             event);
@@ -79,18 +79,18 @@ unittest
 {
     mstring result = new mstring(2048);
     result.length = 0;
-    enableStomping(result);
+    assumeSafeAppend(result);
 
     scope dg = (cstring v) { result ~= v; };
     scope layout = new LayoutStatsLog(false);
     LogEvent event = {
         msg_: "Baguette: 420, Radler: +Inf",
         name_: "Irrelevant",
-        time_: Time.fromUnixTime(1525048962) + TimeSpan.fromMillis(420),
+        time_: Time.fromUnixTime(1525048962) + TimeSpan.fromMillis(42),
         level_: ILogger.Level.Warn,
         host_: null,
     };
 
     testNoAlloc(layout.format(event, dg));
-    test!("==")(result, "2018-04-30 00:42:42,420 Baguette: 420, Radler: +Inf");
+    test!("==")(result, "2018-04-30 00:42:42,042 Baguette: 420, Radler: +Inf");
 }

@@ -35,7 +35,7 @@
 
 module ocean.util.aio.internal.AioScheduler;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.io.select.client.SelectEvent;
 
 /// Ditto

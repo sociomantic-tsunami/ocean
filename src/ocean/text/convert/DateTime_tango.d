@@ -30,7 +30,7 @@
 
 module ocean.text.convert.DateTime_tango;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.core.ExceptionDefinitions;
 import ocean.stdc.posix.langinfo;
@@ -40,7 +40,7 @@ import ocean.text.convert.Formatter;
 import ocean.text.util.StringC;
 import ocean.time.chrono.Calendar;
 import ocean.time.chrono.Gregorian;
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.core.Verify;
 
 import core.sys.posix.time; // timezone
@@ -908,7 +908,7 @@ private struct Result
 
      **********************************************************************/
 
-    private void opCatAssign (cstring rhs)
+    private void opOpAssign (string op : "~") (cstring rhs)
     {
         auto end = index + rhs.length;
         verify(end < target_.length);
@@ -921,7 +921,7 @@ private struct Result
 
      **********************************************************************/
 
-    private void opCatAssign (char rhs)
+    private void opOpAssign (string op : "~") (char rhs)
     {
         verify(index < target_.length);
         target_[index++] = rhs;

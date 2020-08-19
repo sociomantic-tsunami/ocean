@@ -50,7 +50,7 @@ module ocean.io.serialize.SimpleStreamSerializer;
 
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.core.Enforce: enforce;
 
@@ -293,7 +293,7 @@ static:
                 size_t length;
                 transmitted += transmit(stream, length);
                 data.length = length;
-                enableStomping(data);
+                assumeSafeAppend(data);
             }
 
             // recursively transmit arrays of arrays

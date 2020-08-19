@@ -16,7 +16,7 @@
 module ocean.util.config.ConfigParser;
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.core.Array;
 import ocean.core.ExceptionDefinitions;
@@ -953,7 +953,7 @@ public class ConfigParser
         }
 
         ctx.value.length = 0;
-        enableStomping(ctx.value);
+        assumeSafeAppend(ctx.value);
     }
 
 
@@ -1007,7 +1007,7 @@ public class ConfigParser
             }
 
             keys_to_remove.length = 0;
-            enableStomping(keys_to_remove);
+            assumeSafeAppend(keys_to_remove);
         }
 
         // Remove categories that have no keys
@@ -1038,11 +1038,11 @@ public class ConfigParser
         auto ctx = &this.context;
 
         ctx.value.length    = 0;
-        enableStomping(ctx.value);
+        assumeSafeAppend(ctx.value);
         ctx.category.length = 0;
-        enableStomping(ctx.category);
+        assumeSafeAppend(ctx.category);
         ctx.key.length      = 0;
-        enableStomping(ctx.key);
+        assumeSafeAppend(ctx.key);
         ctx.multiline_first = true;
     }
 
@@ -1103,7 +1103,7 @@ public class ConfigParser
             ctx.category.copy(cat);
 
             ctx.key.length = 0;
-            enableStomping(ctx.key);
+            assumeSafeAppend(ctx.key);
         }
         else
         {

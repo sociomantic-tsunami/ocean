@@ -22,7 +22,6 @@
 module ocean.core.array.Transformation;
 
 
-import ocean.transition;
 import ocean.meta.traits.Basic;
 import ocean.meta.types.Function;
 
@@ -34,6 +33,7 @@ import ocean.core.array.Search;
 version (unittest)
 {
     import ocean.core.Test;
+    import ocean.meta.types.Qualifiers;
 }
 
 /*******************************************************************************
@@ -706,7 +706,7 @@ unittest
     int[] array;
 
     array.length = 10;
-    enableStomping(array);
+    assumeSafeAppend(array);
 
     auto previous_ptr = array.ptr;
     testNoAlloc(array.fill(0, 1, 2, 3, 4, 5, 6, 7, 8, 9));

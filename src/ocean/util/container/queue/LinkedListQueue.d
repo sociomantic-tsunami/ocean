@@ -13,7 +13,7 @@
 
 module ocean.util.container.queue.LinkedListQueue;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import core.memory;
 import ocean.util.container.Container;

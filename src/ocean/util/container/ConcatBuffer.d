@@ -28,7 +28,7 @@ module ocean.util.container.ConcatBuffer;
 
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.core.Array : removeShift;
 
@@ -329,7 +329,7 @@ public class SliceBuffer ( T ) : ConcatBuffer!(T)
     {
         super.clear;
         this.slices.length = 0;
-        enableStomping(this.slices);
+        assumeSafeAppend(this.slices);
     }
 
 

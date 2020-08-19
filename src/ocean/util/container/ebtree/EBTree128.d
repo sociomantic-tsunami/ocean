@@ -21,7 +21,7 @@
 module ocean.util.container.ebtree.EBTree128;
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.util.container.ebtree.model.IEBTree,
        ocean.util.container.ebtree.model.Node,
@@ -110,8 +110,8 @@ class EBTree128 ( bool signed = false ) : IEBTree
 
          **********************************************************************/
 
-        public mixin(genOpCmp(
-        `{
+        public int opCmp ( const typeof(this) rhs ) const
+        {
             static if (signed)
             {
                 return eb128i_cmp_264(this.lo, this.hi, rhs.lo, rhs.hi);
@@ -120,7 +120,7 @@ class EBTree128 ( bool signed = false ) : IEBTree
             {
                 return eb128_cmp_264(this.lo, this.hi, rhs.lo, rhs.hi);
             }
-        }`));
+        }
 
         public equals_t opEquals(Key rhs)
         {
@@ -228,7 +228,7 @@ class EBTree128 ( bool signed = false ) : IEBTree
     }
     body
     {
-        scope (success) ++this;
+        scope (success) this.increaseNodeCount(1);
 
         return this.add_(this.node_pool.get(), key);
     }
@@ -246,7 +246,7 @@ class EBTree128 ( bool signed = false ) : IEBTree
 
     ***************************************************************************/
 
-    public Node* update ( ref Node node, Key key )
+    public Node* update ( return ref Node node, Key key )
     out (node_out)
     {
         assert (node_out !is null);
@@ -335,6 +335,18 @@ class EBTree128 ( bool signed = false ) : IEBTree
             return this.ebCall!(eb128_lookup_264)(key.lo, key.hi);
         }
     }
+
+
+    /***************************************************************************
+
+        Support for the 'in' operator
+
+        Aliased to opIn_r, for backwards compatibility
+
+    ***************************************************************************/
+
+    public alias opBinaryRight ( istring op : "in" ) = opIn_r;
+
 
     /***************************************************************************
 

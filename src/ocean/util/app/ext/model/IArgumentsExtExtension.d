@@ -18,7 +18,7 @@ module ocean.util.app.ext.model.IArgumentsExtExtension;
 
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 public import ocean.util.app.model.IApplication;
 public import ocean.text.Arguments : Arguments;

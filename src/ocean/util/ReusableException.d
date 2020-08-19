@@ -15,7 +15,7 @@
 
 module ocean.util.ReusableException;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 /*******************************************************************************
 

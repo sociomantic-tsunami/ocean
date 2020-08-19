@@ -32,7 +32,7 @@ import ocean.util.app.model.ExtensibleClassMixin;
 import ocean.util.app.model.IApplicationExtension;
 import ocean.util.app.ext.model.IConfigExtExtension;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 
 /// ditto

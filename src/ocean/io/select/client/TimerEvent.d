@@ -23,7 +23,7 @@ import ocean.io.select.client.model.ISelectClient: ISelectClient;
 import ocean.sys.TimerFD;
 import ocean.core.Verify;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.io.model.IConduit: ISelectable;
 
 import core.sys.posix.time: time_t, timespec, itimerspec;
@@ -392,7 +392,7 @@ abstract class ITimerEvent : ISelectClient, ISelectable
 version (unittest)
 {
     import ocean.core.Test;
-    import core.sys.posix.time;
+    import core.sys.posix.time : CLOCK_MONOTONIC;
 
     extern ( C )
     {
@@ -419,7 +419,7 @@ version (unittest)
 unittest
 {
     timespec now;
-    clock_gettime(ocean.sys.TimerFD.CLOCK_MONOTONIC, &now);
+    clock_gettime(CLOCK_MONOTONIC, &now);
 
     auto timer = new TestTimerEvent;
     timer.absolute = true;

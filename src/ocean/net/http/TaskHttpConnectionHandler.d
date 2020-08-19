@@ -20,7 +20,7 @@
 
 module ocean.net.http.TaskHttpConnectionHandler;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.net.server.connection.TaskConnectionHandler;
 

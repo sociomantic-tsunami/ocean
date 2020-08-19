@@ -32,7 +32,7 @@ module ocean.text.util.StringC;
 
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.core.Buffer;
 import ocean.stdc.string: strlen, wcslen;

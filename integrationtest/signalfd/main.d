@@ -28,7 +28,7 @@ import ocean.sys.SignalFD;
 import ocean.sys.Epoll;
 import ocean.sys.SignalMask;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.core.Array : contains;
 import ocean.core.Enforce;
 import ocean.core.Test;
@@ -37,7 +37,7 @@ import core.sys.posix.signal : kill, pid_t, sigaction, sigaction_t,
     SIGHUP, SIGINT, SIGQUIT, SIGILL, SIGABRT, SIGBUS;
 import core.sys.posix.stdlib : exit;
 import core.sys.posix.unistd : fork;
-import ocean.stdc.posix.sys.wait : waitpid;
+import core.sys.posix.sys.wait : waitpid;
 
 
 /*******************************************************************************
@@ -490,7 +490,7 @@ private class SignalFDTest
 
 *******************************************************************************/
 
-version(UnitTest) {} else
+version (unittest) {} else
 void main ( )
 {
     // Test a single signal handled by a signalfd

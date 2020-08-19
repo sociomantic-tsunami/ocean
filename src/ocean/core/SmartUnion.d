@@ -20,7 +20,7 @@
 
 module ocean.core.SmartUnion;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.core.ExceptionDefinitions;
 import ocean.core.Test;
 import ocean.core.Verify;
@@ -484,8 +484,19 @@ private template Methods ( U, uint i )
         ~ "{ _.active = _.active." ~ member ~ ";"
         ~ "return " ~ member_access ~ '=' ~ member ~ "; }";
 
-    static immutable ini = "static Type opCall(" ~ type ~ ' ' ~ member ~ ")"
-        ~ "{ Type su; su." ~ member ~ '=' ~ member ~ "; return su; }";
+    import ocean.core.Tuple : IndexOf;
+    alias Ts = typeof(U.tupleof);
+
+    // Create an `opCall` only for unique types
+    static if (IndexOf!(Ts[i], Ts[0 .. i], Ts[i + 1 .. $]) == Ts.length - 1)
+    {
+        static immutable ini = "static Type opCall(" ~ type ~ ' ' ~ member ~ ")"
+            ~ "{ Type su; su." ~ member ~ '=' ~ member ~ "; return su; }";
+    }
+    else
+    {
+        static immutable ini = "";
+    }
 
     static immutable local_import = "import ocean.core.Enforce;\n";
 
@@ -517,4 +528,27 @@ private template AllMethods ( U, istring pre, uint i)
     {
         static immutable AllMethods = pre;
     }
+}
+
+// https://github.com/sociomantic-tsunami/ocean/issues/827
+unittest
+{
+    static union HasDuplicates
+    {
+        Object a;
+        int b;
+        string c;
+        int d;
+        bool[] e;
+    }
+
+    alias U = SmartUnion!HasDuplicates;
+
+    // These calls are unambiguous.
+    U(Object.init);
+    U("c");
+    U([true]);
+
+    // Dont allow ambiguous opCalls
+    static assert(!__traits(compiles, U(1)));
 }

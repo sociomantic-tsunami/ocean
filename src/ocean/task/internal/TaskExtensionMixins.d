@@ -17,7 +17,7 @@
 module ocean.task.internal.TaskExtensionMixins;
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 version (unittest)
 {

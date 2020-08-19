@@ -21,7 +21,8 @@
 
 module ocean.util.compress.c.zlib;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
+import ocean.meta.types.Typedef;
 
 /// See original's library documentation for details.
 static immutable ZLIB_VERSION = "1.2.3".ptr;

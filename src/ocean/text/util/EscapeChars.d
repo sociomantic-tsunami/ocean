@@ -16,7 +16,7 @@
 module ocean.text.util.EscapeChars;
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.core.Array: concat;
 import ocean.core.Verify;
@@ -83,13 +83,13 @@ struct EscapeChars
                 verify (str.length > 0);
                 verify (!str[$ - 1]);
                 str.length = str.length - 1;
-                enableStomping(str);
+                assumeSafeAppend(str);
             }
 
             size_t end = str.length - 1;
 
             this.occurrences.length = 0;
-            enableStomping(this.occurrences);
+            assumeSafeAppend(this.occurrences);
 
             for (size_t pos = strcspn(str.ptr, tokens.ptr); pos < end;)
             {

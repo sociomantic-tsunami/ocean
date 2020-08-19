@@ -23,7 +23,7 @@
 
 module ocean.util.log.Event;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.core.Verify;
 import ocean.time.Clock;
 import ocean.util.log.ILogger;

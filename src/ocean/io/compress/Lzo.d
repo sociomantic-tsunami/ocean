@@ -27,7 +27,7 @@ import ocean.io.compress.CompressException;
 
 import ocean.core.Enforce: enforce;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.core.Verify;
 
@@ -241,7 +241,7 @@ unittest
         ref void[] dst )
     {
         dst.length = expected_decompressed_length;
-        enableStomping(dst);
+        assumeSafeAppend(dst);
         auto decompressed_length = lzo.decompressSafe(src, dst);
 
         // Check that the length of the uncompressed data is what we expected.

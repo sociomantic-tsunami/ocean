@@ -15,7 +15,7 @@
 
 module integrationtest.filesystemevent.main;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.core.Enforce;
 
@@ -281,7 +281,7 @@ class FileCreationTestTask: Task
 
 *******************************************************************************/
 
-version(UnitTest) {} else
+version (unittest) {} else
 void main ( )
 {
     initScheduler(SchedulerConfiguration.init);

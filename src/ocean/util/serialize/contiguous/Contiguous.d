@@ -17,7 +17,7 @@
 module ocean.util.serialize.contiguous.Contiguous;
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.core.Verify;
 import ocean.meta.traits.Indirections;
 import ocean.core.Enforce;
@@ -129,7 +129,7 @@ struct Contiguous( S )
     public Contiguous!(S) reset()
     {
         this.data.length = 0;
-        enableStomping(this.data);
+        assumeSafeAppend(this.data);
         return this;
     }
 
@@ -297,7 +297,11 @@ package template ensureValueTypeMember ( S, size_t i, T )
 }
 
 version (unittest)
+{
     import core.stdc.string: memset;
+    import ocean.meta.types.Typedef;
+
+}
 
 unittest
 {

@@ -33,7 +33,7 @@ import ocean.util.container.ebtree.c.ebtree;
 
 struct TreeMap ( T )
 {
-    import ocean.transition;
+    import ocean.meta.types.Qualifiers;
 
     /***************************************************************************
 
@@ -138,7 +138,7 @@ struct TreeMap ( T )
 
     ***********************************************************************/
 
-    private T* opIn_r ( ulong key )
+    private T* opBinaryRight (string op : "in") ( ulong key )
     {
         return &((cast(Node*)eb64_lookup(&this.root, key)).value);
     }

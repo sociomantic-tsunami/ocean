@@ -92,7 +92,7 @@ unittest
 
 public template ReusableExceptionImplementation()
 {
-    import ocean.transition;
+    import ocean.meta.types.Qualifiers;
     import ocean.core.Buffer;
     static import ocean.core.array.Mutation;
     static import ocean.text.convert.Formatter;
@@ -333,7 +333,7 @@ version (unittest)
 
 public template DefaultExceptionCtor()
 {
-    import ocean.transition;
+    import ocean.meta.types.Qualifiers;
 
     public this (istring msg, istring file = __FILE__,
                  typeof(__LINE__) line = __LINE__)

@@ -1,1 +1,1 @@
-FROM sociomantictsunami/dlang:v4
+FROM sociomantictsunami/develdlang:v8

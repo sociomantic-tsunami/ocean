@@ -14,7 +14,7 @@
 
 module ocean.util.container.btree.BTreeMapRange;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.util.container.btree.BTreeMap;
 
 /*******************************************************************************
@@ -80,7 +80,7 @@ public BTreeMapRange!(BTreeMap) byKeyValue (BTreeMap) (ref BTreeMap tree, void[]
     else
     {
         (*buff).length = 0;
-        enableStomping(*buff);
+        assumeSafeAppend(*buff);
     }
 
     auto range = BTreeMapRange!(BTreeMap)(&tree.impl);

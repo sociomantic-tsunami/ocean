@@ -46,7 +46,7 @@ template KeylessMethods ( Node, alias eb_first, alias eb_last )
     {
         this.node_pool.recycle(node.remove());
 
-        --this;
+        this.decreaseNodeCount(1);
     }
 
     /***************************************************************************

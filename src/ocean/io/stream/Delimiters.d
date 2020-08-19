@@ -17,7 +17,7 @@
 
 module ocean.io.stream.Delimiters;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.io.stream.Iterator;
 

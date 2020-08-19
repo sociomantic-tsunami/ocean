@@ -23,8 +23,9 @@
 
 module ocean.util.log.Hierarchy;
 
-import ocean.transition;
 import ocean.core.ExceptionDefinitions;
+import ocean.core.TypeConvert: assumeUnique;
+import ocean.meta.types.Qualifiers;
 import ocean.util.log.ILogger;
 
 

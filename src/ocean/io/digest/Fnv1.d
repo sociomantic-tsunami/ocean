@@ -17,7 +17,7 @@ module  ocean.io.digest.Fnv1;
 
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.util.digest.Digest;
 
 import ocean.core.ByteSwap;

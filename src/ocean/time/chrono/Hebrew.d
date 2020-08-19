@@ -17,6 +17,7 @@
 
 ******************************************************************************/
 
+deprecated("This module is deprecated without replacement")
 module ocean.time.chrono.Hebrew;
 
 import ocean.core.ExceptionDefinitions;
@@ -29,6 +30,7 @@ import ocean.time.chrono.Calendar;
  * $(ANCHOR _Hebrew)
  * Represents the Hebrew calendar.
  */
+deprecated("This class is deprecated without replacement")
 public class Hebrew : Calendar {
 
   private static immutable uint[14][7] MonthDays = [
@@ -291,4 +293,3 @@ public class Hebrew : Calendar {
   }
 
 }
-

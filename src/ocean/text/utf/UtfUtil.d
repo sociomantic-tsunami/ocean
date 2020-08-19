@@ -36,7 +36,7 @@ module ocean.text.utf.UtfUtil;
 
 import core.exception: onUnicodeError;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.stdc.string: memrchr;
 
@@ -600,9 +600,9 @@ body
         }
         // Copy up to the prev positon, which may be the 2nd last Unicode
         // character or the Unicode character before the last space.
-        enableStomping(buffer);
+        assumeSafeAppend(buffer);
         buffer.length = bytes_needed + ending.length;
-        enableStomping(buffer);
+        assumeSafeAppend(buffer);
         buffer[0 .. bytes_needed] = src[0 .. bytes_needed];
         // And append an ending
         buffer[bytes_needed .. bytes_needed + ending.length] = ending[];
@@ -622,9 +622,9 @@ body
             }
         }
         // No need to append the ending so use the full string we found
-        enableStomping(buffer);
+        assumeSafeAppend(buffer);
         buffer.length = last_space_bytes_n;
-        enableStomping(buffer);
+        assumeSafeAppend(buffer);
         buffer[] = src[0 .. last_space_bytes_n];
     }
     return(buffer);

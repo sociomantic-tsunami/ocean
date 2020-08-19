@@ -17,7 +17,7 @@
 
 module ocean.io.stream.Quotes;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.io.stream.Iterator;
 

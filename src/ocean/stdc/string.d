@@ -21,6 +21,14 @@ public import ocean.stdc.gnu.string;
 
 extern (C):
 
-char *strsignal(int sig);
-int strcasecmp(in char *s1, in char *s2);
-int strncasecmp(in char *s1, in char *s2, size_t n);
+static if (__VERSION__ < 2089)
+{
+    char *strsignal(int sig);
+    int strcasecmp(in char *s1, in char *s2);
+    int strncasecmp(in char *s1, in char *s2, size_t n);
+}
+else
+{
+    public import core.sys.posix.string  : strsignal;
+    public import core.sys.posix.strings : strcasecmp, strncasecmp;
+}

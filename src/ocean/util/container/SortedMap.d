@@ -25,7 +25,7 @@ import ocean.util.container.RedBlack;
 
 import ocean.util.container.model.IContainer;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.core.ExceptionDefinitions : NoSuchElementException;
 
@@ -57,7 +57,7 @@ import ocean.core.ExceptionDefinitions : NoSuchElementException;
         bool opIndexAssign (V element, K key)
         K    nearbyKey (K key, bool greater)
         V    opIndex (K key)
-        V*   opIn_r (K key)
+        V*   opBinaryRight!"in" (K key)
 
         size_t size ()
         bool isEmpty ()
@@ -391,7 +391,7 @@ class SortedMap (K, V, alias Reap = Container.reap,
 
         ***********************************************************************/
 
-        final V* opIn_r (K key)
+        V* opBinaryRight (string op : "in") (K key)
         {
                 if (count)
                    {
@@ -589,7 +589,7 @@ class SortedMap (K, V, alias Reap = Container.reap,
 
         final V opIndex (K key)
         {
-                auto p = opIn_r (key);
+                auto p = key in this;
                 if (p)
                     return *p;
 

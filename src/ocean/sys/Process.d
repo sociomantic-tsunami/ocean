@@ -15,7 +15,7 @@
 
 module ocean.sys.Process;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.core.Verify;
 import ocean.core.Array : copy;
 import ocean.io.model.IFile;
@@ -34,7 +34,7 @@ import core.stdc.string;
 import core.stdc.errno;
 import ocean.stdc.posix.fcntl;
 import core.sys.posix.unistd;
-import ocean.stdc.posix.sys.wait;
+import core.sys.posix.sys.wait;
 
 private
 {
@@ -1504,14 +1504,14 @@ class Process
                 if (path[$-1] != FileConst.PathSeparatorChar)
                 {
                     path_buf.length = path.length + 1 + filename.length + 1;
-                    enableStomping(path_buf);
+                    assumeSafeAppend(path_buf);
 
                     path_buf[] = path ~ FileConst.PathSeparatorChar ~ filename ~ '\0';
                 }
                 else
                 {
                     path_buf.length = path.length +filename.length + 1;
-                    enableStomping(path_buf);
+                    assumeSafeAppend(path_buf);
 
                     path_buf[] = path ~ filename ~ '\0';
                 }

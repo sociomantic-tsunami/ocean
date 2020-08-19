@@ -20,7 +20,7 @@ import ocean.util.serialize.contiguous.Contiguous;
 import ocean.util.serialize.contiguous.Serializer;
 import ocean.util.serialize.contiguous.Deserializer;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.core.Test;
 
 /*******************************************************************************

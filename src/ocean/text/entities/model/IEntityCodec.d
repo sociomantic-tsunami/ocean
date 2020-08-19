@@ -26,7 +26,7 @@ import ocean.text.entities.model.IEntitySet;
 
 import Utf = ocean.text.convert.Utf;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 /*******************************************************************************
 
@@ -189,7 +189,7 @@ public abstract class IEntityCodec ( E : IEntitySet )
     protected static Char[] charTo ( Char ) ( char[] text, ref Char[] output )
     {
         output.length = text.length;
-        enableStomping(output);
+        assumeSafeAppend(output);
 
         static if ( is(Char == dchar) )
         {
@@ -248,7 +248,7 @@ public abstract class IEntityCodec ( E : IEntitySet )
     protected static Char[] dcharTo ( Char ) ( dchar[] text, ref Char[] output )
     {
         output.length = text.length * 4; // Maximum one unicode character -> 4 bytes
-        enableStomping(output);
+        assumeSafeAppend(output);
 
         static if ( is(Char == dchar) )
         {

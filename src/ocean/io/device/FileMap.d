@@ -17,12 +17,12 @@
 
 module ocean.io.device.FileMap;
 
-import ocean.transition;
-import ocean.stdc.posix.sys.mman;
+import ocean.io.device.Array;
+import ocean.io.device.File;
+import ocean.meta.types.Qualifiers;
 import ocean.sys.Common;
 
-import ocean.io.device.File,
-               ocean.io.device.Array;
+import core.sys.posix.sys.mman;
 
 
 /*******************************************************************************

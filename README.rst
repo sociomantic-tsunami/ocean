@@ -1,5 +1,5 @@
-Description
-===========
+Description |TravisCI|_
+=======================
 
 Ocean is a general purpose library, compatible with both D1 and D2, with a focus
 on supporting the development of high-performance, real-time applications. This
@@ -88,10 +88,8 @@ Maintained Major Branches
 ====== ==================== ===============
 Major  Initial release date Supported until
 ====== ==================== ===============
-v4.x.x v4.0.0_: 30/01/2018  04/10/2019
 v5.x.x v5.0.0_: 04/04/2019  TBD
 ====== ==================== ===============
-.. _v4.0.0: https://github.com/sociomantic-tsunami/ocean/releases/tag/v4.0.0
 .. _v5.0.0: https://github.com/sociomantic-tsunami/ocean/releases/tag/v5.0.0
 
 Releases
@@ -118,3 +116,6 @@ Contributing
 
 See the guide for `contributing to Neptune-versioned libraries
 <https://github.com/sociomantic-tsunami/neptune/blob/v0.x.x/doc/library-contributor.rst>`_.
+
+.. |TravisCI| image:: https://travis-ci.com/sociomantic-tsunami/ocean.svg?branch=v5.x.x
+.. _TravisCI: https://travis-ci.com/github/sociomantic-tsunami/ocean

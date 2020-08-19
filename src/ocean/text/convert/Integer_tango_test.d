@@ -12,7 +12,7 @@
 
 module ocean.text.convert.Integer_tango_test;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.text.convert.Integer_tango;
 import ocean.core.Test;
 

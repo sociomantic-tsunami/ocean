@@ -18,7 +18,7 @@ module ocean.util.app.model.IApplication;
 
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.util.app.model.IApplicationExtension;
 

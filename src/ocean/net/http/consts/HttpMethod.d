@@ -18,7 +18,7 @@
 module ocean.net.http.consts.HttpMethod;
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 version (unittest) import ocean.core.Test;
 

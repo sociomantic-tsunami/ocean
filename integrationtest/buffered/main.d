@@ -5,7 +5,7 @@ import ocean.util.test.DirectorySandbox;
 import ocean.io.device.File;
 import ocean.core.Test;
 
-version(UnitTest) {} else
+version (unittest) {} else
 void main ()
 {
     auto sandbox = DirectorySandbox.create();

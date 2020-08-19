@@ -37,7 +37,7 @@
 
 module ocean.util.encode.Base32;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.core.Verify;
 
 version (unittest) import ocean.core.Test;

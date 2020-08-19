@@ -16,7 +16,7 @@
 module ocean.util.log.layout.LayoutSimple;
 
 import ocean.text.convert.Formatter;
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.util.log.Appender;
 import ocean.util.log.Event;
 
@@ -76,7 +76,7 @@ unittest
 {
     mstring result = new mstring(2048);
     result.length = 0;
-    enableStomping(result);
+    assumeSafeAppend(result);
 
     scope dg = (cstring v) { result ~= v; };
     scope layout = new LayoutSimple();

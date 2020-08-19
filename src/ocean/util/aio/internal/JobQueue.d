@@ -13,7 +13,7 @@
 
 module ocean.util.aio.internal.JobQueue;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import core.stdc.errno;
 import core.stdc.stdint;
@@ -215,7 +215,7 @@ public static struct Job
 
     ***************************************************************************/
 
-    public Job* registerCallback (scope void delegate(ssize_t) dg)
+    public Job* registerCallback (scope void delegate(ssize_t) dg) return
     {
         this.finish_callback_dgs ~= dg;
         return &this;
@@ -403,7 +403,7 @@ public static class JobQueue
         free_job.is_slot_free = false;
         free_job.owner_queue = this;
         free_job.finish_callback_dgs.length = 0;
-        enableStomping(free_job.finish_callback_dgs);
+        assumeSafeAppend(free_job.finish_callback_dgs);
         free_job.ret_val = null;
         free_job.errno_val = null;
 

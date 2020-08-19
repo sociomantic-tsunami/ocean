@@ -20,7 +20,7 @@
 
 module ocean.util.digest.Md4;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 public  import ocean.util.digest.Digest;
 

@@ -16,7 +16,7 @@
 module ocean.util.log.AppendSysLog;
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.core.Verify;
 import ocean.util.log.Appender;
 import ocean.util.log.Event;
@@ -63,7 +63,7 @@ public class AppendSysLog : Appender
 
     private static class SysLogLayout : Layout
     {
-        override public void format ( LogEvent event, scope void delegate(cstring) dg )
+        override public void format ( LogEvent event, scope FormatterSink dg )
         {
             dg("[");
             dg(event.name);
@@ -252,7 +252,7 @@ public class AppendSysLog : Appender
         }
 
         this.buf.length = 0;
-        enableStomping(this.buf);
+        assumeSafeAppend(this.buf);
         this.layout.format(event, &sink);
         this.buf ~= '\0';
 

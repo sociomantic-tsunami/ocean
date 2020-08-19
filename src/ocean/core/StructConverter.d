@@ -20,7 +20,7 @@ module ocean.core.StructConverter;
 
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.meta.codegen.Identifier;
 import ocean.meta.traits.Basic;
 import ocean.meta.types.Arrays : StripAllArrays;

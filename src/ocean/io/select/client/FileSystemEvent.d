@@ -32,7 +32,7 @@ import ocean.io.select.EpollSelectDispatcher;
 import ocean.io.select.client.model.ISelectClient: ISelectClient;
 import ocean.core.Buffer;
 import ocean.core.SmartUnion;
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 
 /*******************************************************************************

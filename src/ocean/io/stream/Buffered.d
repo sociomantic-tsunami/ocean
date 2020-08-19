@@ -21,7 +21,7 @@ module ocean.io.stream.Buffered;
 
 import core.stdc.string;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 version (unittest)  import ocean.core.Test;
 import ocean.core.Verify;
 

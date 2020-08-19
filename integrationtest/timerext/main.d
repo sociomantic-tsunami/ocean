@@ -16,8 +16,8 @@
 
 module integrationtest.timerext.main;
 
-import ocean.transition;
 import ocean.core.Test;
+import ocean.meta.types.Qualifiers;
 import ocean.util.app.Application;
 import ocean.util.app.ext.TimerExt;
 import ocean.util.test.DirectorySandbox;
@@ -26,7 +26,7 @@ import ocean.io.device.File;
 class App : Application
 {
     import ocean.io.select.EpollSelectDispatcher;
-    import ocean.transition;
+    import ocean.meta.types.Qualifiers;
 
     private EpollSelectDispatcher epoll;
     private TimerExt timers;
@@ -77,7 +77,7 @@ class App : Application
     }
 }
 
-version(UnitTest) {} else
+version (unittest) {} else
 void main (istring[] args)
 {
     auto sandbox = DirectorySandbox.create(["etc", "log"]);

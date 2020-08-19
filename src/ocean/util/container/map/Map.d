@@ -82,7 +82,7 @@ module ocean.util.container.map.Map;
 
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.util.container.map.model.BucketSet;
 
@@ -459,7 +459,7 @@ public abstract class Map ( V, K ) : BucketSet!(V.sizeof, K)
 
     ***************************************************************************/
 
-    public V* opIn_r ( in K key )
+    public V* opBinaryRight (string op : "in") ( in K key )
     {
         auto element = this.get_(key);
 
@@ -473,7 +473,7 @@ public abstract class Map ( V, K ) : BucketSet!(V.sizeof, K)
 
         Note: Use this method if it is sure that a value for key is in the map,
         in other words, it would be a bug if it isn't. To look up a mapping that
-        may or may not exist, use the 'in' operator (opIn_r() above).
+        may or may not exist, use the 'in' operator (opBinaryRight!"in" above).
 
         Params:
             key = key to obtain the value for
@@ -503,7 +503,7 @@ public abstract class Map ( V, K ) : BucketSet!(V.sizeof, K)
 
         Note: Use this method if it is sure that a value for key is in the map,
         in other words, it would be a bug if it isn't. To look up a mapping that
-        may or may not exist, use the 'in' operator (opIn_r() above).
+        may or may not exist, use the 'in' operator (opBinaryRight!"in" above).
 
         Params:
             key = key to obtain the value for
@@ -859,7 +859,7 @@ public abstract class Map ( size_t V, K ) : BucketSet!(V, K)
 
      ***************************************************************************/
 
-    public void[] opIn_r ( in K key )
+    public void[] opBinaryRight (string op : "in") ( in K key )
     out (val)
     {
         if (val)
@@ -879,7 +879,7 @@ public abstract class Map ( size_t V, K ) : BucketSet!(V, K)
 
         Note: Use this method if it is sure that a value for key is in the map,
         in other words, it would be a bug if it isn't. To look up a mapping that
-        may or may not exist, use the 'in' operator (opIn_r() above).
+        may or may not exist, use the 'in' operator (opBinaryRight!"in"above).
 
         Params:
             key = key to obtain the value for
@@ -909,7 +909,7 @@ public abstract class Map ( size_t V, K ) : BucketSet!(V, K)
 
         Note: Use this method if it is sure that a value for key is in the map,
         in other words, it would be a bug if it isn't. To look up a mapping that
-        may or may not exist, use the 'in' operator (opIn_r() above).
+        may or may not exist, use the 'in' operator (opBinaryRight"in" above).
 
         Params:
             key = key to obtain the value for

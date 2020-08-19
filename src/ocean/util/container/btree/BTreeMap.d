@@ -14,7 +14,7 @@
 
 module ocean.util.container.btree.BTreeMap;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.util.container.mem.MemManager;
 
 /******************************************************************************
@@ -247,7 +247,7 @@ struct BTreeMap(TreeKeyType, TreeValueType, int tree_degree)
 
     ***************************************************************************/
 
-    public ValueType* opIn_r (KeyType key)
+    public ValueType* opBinaryRight (string op : "in") (KeyType key)
     {
         return this.impl.get(key);
     }
@@ -350,9 +350,9 @@ unittest
 
     // find the element by key
     bool found;
-    auto val = map.get(5, found);
+    auto valfive = map.get(5, found);
     test!("==")(found, true);
-    test!("==")(val.x, 10);
+    test!("==")(valfive.x, 10);
 
     // remove the element
     map.remove(10);
@@ -641,7 +641,7 @@ version (unittest)
         char[48] name_buf;
         ubyte name_length;
 
-        cstring name () const
+        cstring name () const return
         {
             return name_buf[0..name_length];
         }

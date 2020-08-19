@@ -15,7 +15,7 @@
 
 module ocean.sys.Stats;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.core.Enforce;
 import ocean.core.array.Mutation;
 import core.sys.posix.sys.resource;

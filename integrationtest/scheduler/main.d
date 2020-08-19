@@ -23,7 +23,7 @@ import ocean.task.Task;
 import ocean.task.TaskPool;
 import ocean.task.util.Timer;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.core.Test;
 import ocean.io.Stdout;
 
@@ -81,7 +81,7 @@ class RegularTask : Task
     void copyArguments ( ) { }
 }
 
-version(UnitTest) {} else
+version (unittest) {} else
 void main ( )
 {
     SchedulerConfiguration config;

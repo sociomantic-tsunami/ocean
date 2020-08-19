@@ -15,7 +15,7 @@ module ocean.net.Uri;
 
 public import ocean.net.model.UriView;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.core.Exception;
 import ocean.core.Buffer;
 import ocean.stdc.string : memchr;
@@ -1019,7 +1019,7 @@ unittest
     void encode ( cstring url, ref mstring working_buffer, int flags )
     {
         working_buffer.length = 0;
-        enableStomping(working_buffer);
+        assumeSafeAppend(working_buffer);
 
         Uri.encode((const(void)[] data)
         {

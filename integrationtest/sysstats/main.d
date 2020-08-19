@@ -15,7 +15,7 @@
 
 module integrationtest.sysstats.main;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.core.Test;
 import ocean.sys.ErrnoException;
@@ -97,7 +97,7 @@ class MyApp : DaemonApp
 import ocean.io.device.File;
 import ocean.util.test.DirectorySandbox;
 
-version(UnitTest) {} else
+version (unittest) {} else
 void main(istring[] args)
 {
     auto sandbox = DirectorySandbox.create(["etc", "log"]);

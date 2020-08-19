@@ -18,7 +18,7 @@
 module ocean.text.util.StringSearch;
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.core.Verify;
 
 import c_stddef = core.stdc.stddef: wchar_t;
@@ -1071,7 +1071,7 @@ struct StringSearch ( bool wide_char = false )
         size_t pos   = locateDelim(str, delim, start);
 
         slices.length = 0;
-        enableStomping(slices);
+        assumeSafeAppend(slices);
 
         while ((pos < str.length) && (!n || (i < n)))
         {

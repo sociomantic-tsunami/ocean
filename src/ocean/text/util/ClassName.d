@@ -15,7 +15,7 @@
 module ocean.text.util.ClassName;
 
 import ocean.stdc.gnu.string;
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 istring classname ( const(Object) o )
 {

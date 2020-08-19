@@ -16,8 +16,6 @@
  */
 module ocean.core.BitArray;
 
-import ocean.transition;
-
 import ocean.core.BitManip;
 import ocean.core.Verify;
 
@@ -88,7 +86,7 @@ struct BitArray
                 uint[] buf = ptr[0 .. olddim];
 
                 buf.length = newdim; // realloc
-                enableStomping(buf);
+                assumeSafeAppend(buf);
 
                 ptr = buf.ptr;
             }
@@ -576,10 +574,13 @@ struct BitArray
      * Generates a copy of this array with the unary complement operation
      * applied.
      *
+     * Params:
+     *  op = operation to perform
+     *
      * Returns:
      *  A new array which is the complement of this array.
      */
-    BitArray opCom()
+    BitArray opUnary ( string op : "~" )( )
     {
         auto dim = this.dim();
 
@@ -607,20 +608,24 @@ struct BitArray
     }
 
     /**
-     * Generates a new array which is the result of a bitwise and operation
+     * Generates a new array which is the result of bitwise operation `op`
      * between this array and the supplied array.
      *
+     * Supported are bitwise binary operation "&amp;", "|", "^".
+     *
      * Params:
-     *  rhs = The array with which to perform the bitwise and operation.
+     *  op = operation to perform
+     *  rhs = The array with which to perform the bitwise operation.
      *
      * In:
      *  rhs.length must equal the length of this array.
      *
      * Returns:
-     *  A new array which is the result of a bitwise and with this array and
-     *  the supplied array.
+     *  A new array which is the result of a bitwise operation between
+     *  this array and the supplied array.
      */
-    BitArray opAnd( BitArray rhs )
+    BitArray opBinary ( string op )( BitArray rhs )
+        if (op == "&" || op == "|" || op == "^")
     {
         verify(len == rhs.length);
 
@@ -630,10 +635,9 @@ struct BitArray
 
         result.length = len;
         for( size_t i = 0; i < dim; ++i )
-            result.ptr[i] = this.ptr[i] & rhs.ptr[i];
+            result.ptr[i] = mixin(`this.ptr[i]` ~ op ~ `rhs.ptr[i]`);
         return result;
     }
-
 
     unittest
     {
@@ -649,35 +653,6 @@ struct BitArray
         test(c[4] == 0);
     }
 
-    /**
-     * Generates a new array which is the result of a bitwise or operation
-     * between this array and the supplied array.
-     *
-     * Params:
-     *  rhs = The array with which to perform the bitwise or operation.
-     *
-     * In:
-     *  rhs.length must equal the length of this array.
-     *
-     * Returns:
-     *  A new array which is the result of a bitwise or with this array and
-     *  the supplied array.
-     */
-    BitArray opOr( BitArray rhs )
-    {
-        verify(len == rhs.length);
-
-        auto dim = this.dim();
-
-        BitArray result;
-
-        result.length = len;
-        for( size_t i = 0; i < dim; ++i )
-            result.ptr[i] = this.ptr[i] | rhs.ptr[i];
-        return result;
-    }
-
-
     unittest
     {
         BitArray a = [1,0,1,0,1];
@@ -690,34 +665,6 @@ struct BitArray
         test(c[2] == 1);
         test(c[3] == 1);
         test(c[4] == 1);
-    }
-
-    /**
-     * Generates a new array which is the result of a bitwise xor operation
-     * between this array and the supplied array.
-     *
-     * Params:
-     *  rhs = The array with which to perform the bitwise xor operation.
-     *
-     * In:
-     *  rhs.length must equal the length of this array.
-     *
-     * Returns:
-     *  A new array which is the result of a bitwise xor with this array and
-     *  the supplied array.
-     */
-    BitArray opXor( BitArray rhs )
-    {
-        verify(len == rhs.length);
-
-        auto dim = this.dim();
-
-        BitArray result;
-
-        result.length = len;
-        for( size_t i = 0; i < dim; ++i )
-            result.ptr[i] = this.ptr[i] ^ rhs.ptr[i];
-        return result;
     }
 
     unittest
@@ -736,10 +683,12 @@ struct BitArray
 
     /**
      * Generates a new array which is the result of this array minus the
-     * supplied array.  $(I a - b) for BitArrays means the same thing as
-     * $(I a &amp; ~b).
+     * supplied array.
+     *
+     *$(I a - b) for BitArrays means the same thing as $(I a &amp; ~b).
      *
      * Params:
+     *  op = operation to perform
      *  rhs = The array with which to perform the subtraction operation.
      *
      * In:
@@ -748,7 +697,7 @@ struct BitArray
      * Returns:
      *  A new array which is the result of this array minus the supplied array.
      */
-    BitArray opSub( BitArray rhs )
+    BitArray opBinary ( string op : "-" )( BitArray rhs )
     {
         verify(len == rhs.length);
 
@@ -781,13 +730,14 @@ struct BitArray
      * with the supplied array.
      *
      * Params:
+     *  op = operation to perform
      *  rhs = The array with which to perform the concatenation operation.
      *
      * Returns:
      *  A new array which is the result of this array concatenated with the
      *  supplied array.
      */
-    BitArray opCat( bool rhs )
+    BitArray opBinary ( string op : "~" )( bool rhs )
     {
         BitArray result;
 
@@ -799,7 +749,7 @@ struct BitArray
 
 
     /** ditto */
-    BitArray opCat_r( bool lhs )
+    BitArray opBinaryRight ( string op : "~" )( bool lhs )
     {
         BitArray result;
 
@@ -812,7 +762,7 @@ struct BitArray
 
 
     /** ditto */
-    BitArray opCat( BitArray rhs )
+    BitArray opBinary ( string op : "~" )( BitArray rhs )
     {
         BitArray result;
 
@@ -874,11 +824,14 @@ struct BitArray
 
 
     /**
-     * Updates the contents of this array with the result of a bitwise and
+     * Updates the contents of this array with the result of a bitwise `op`
      * operation between this array and the supplied array.
      *
+     * Supported are bitwise assignment "&amp;", "|", "^"
+     *
      * Params:
-     *  rhs = The array with which to perform the bitwise and operation.
+     *  op = operation to perform
+     *  rhs = The array with which to perform the bitwise `op`d operation.
      *
      * In:
      *  rhs.length must equal the length of this array.
@@ -886,14 +839,15 @@ struct BitArray
      * Returns:
      *  A shallow copy of this array.
      */
-    BitArray opAndAssign( BitArray rhs )
+    BitArray opOpAssign ( string op )( BitArray rhs )
+        if (op == "&" || op == "|" || op == "^")
     {
         verify(len == rhs.length);
 
         auto dim = this.dim();
 
         for( size_t i = 0; i < dim; ++i )
-            ptr[i] &= rhs.ptr[i];
+            mixin(`ptr[i]` ~ op ~ `= rhs.ptr[i];`);
         return this;
     }
 
@@ -910,31 +864,6 @@ struct BitArray
         test( a[4] == 0 );
     }
 
-    /**
-     * Updates the contents of this array with the result of a bitwise or
-     * operation between this array and the supplied array.
-     *
-     * Params:
-     *  rhs = The array with which to perform the bitwise or operation.
-     *
-     * In:
-     *  rhs.length must equal the length of this array.
-     *
-     * Returns:
-     *  A shallow copy of this array.
-     */
-    BitArray opOrAssign( BitArray rhs )
-    {
-        verify(len == rhs.length);
-
-        auto dim = this.dim();
-
-        for( size_t i = 0; i < dim; ++i )
-            ptr[i] |= rhs.ptr[i];
-        return this;
-    }
-
-
     unittest
     {
         BitArray a = [1,0,1,0,1];
@@ -946,30 +875,6 @@ struct BitArray
         test( a[2] == 1 );
         test( a[3] == 1 );
         test( a[4] == 1 );
-    }
-
-    /**
-     * Updates the contents of this array with the result of a bitwise xor
-     * operation between this array and the supplied array.
-     *
-     * Params:
-     *  rhs = The array with which to perform the bitwise xor operation.
-     *
-     * In:
-     *  rhs.length must equal the length of this array.
-     *
-     * Returns:
-     *  A shallow copy of this array.
-     */
-    BitArray opXorAssign( BitArray rhs )
-    {
-        verify(len == rhs.length);
-
-        auto dim = this.dim();
-
-        for( size_t i = 0; i < dim; ++i )
-            ptr[i] ^= rhs.ptr[i];
-        return this;
     }
 
     unittest
@@ -987,10 +892,12 @@ struct BitArray
 
     /**
      * Updates the contents of this array with the result of this array minus
-     * the supplied array.  $(I a - b) for BitArrays means the same thing as
-     * $(I a &amp; ~b).
+     * the supplied array.
+     *
+     * $(I a - b) for BitArrays means the same thing as $(I a &amp; ~b).
      *
      * Params:
+     *  op = operation to perform
      *  rhs = The array with which to perform the subtraction operation.
      *
      * In:
@@ -999,7 +906,7 @@ struct BitArray
      * Returns:
      *  A shallow copy of this array.
      */
-    BitArray opSubAssign( BitArray rhs )
+    BitArray opOpAssign ( string op )( BitArray rhs ) if (op == "-")
     {
         verify(len == rhs.length);
 
@@ -1028,12 +935,13 @@ struct BitArray
      * concatenated with the supplied array.
      *
      * Params:
+     *  op = operation to perform
      *  rhs = The array with which to perform the concatenation operation.
      *
      * Returns:
      *  A shallow copy of this array.
      */
-    BitArray opCatAssign( bool b )
+    BitArray opOpAssign ( string op : "~" )( bool b )
     {
         length = len + 1;
         this[len - 1] = b;
@@ -1057,7 +965,7 @@ struct BitArray
     }
 
     /** ditto */
-    BitArray opCatAssign( BitArray rhs )
+    BitArray opOpAssign ( string op : "~" )( BitArray rhs )
     {
         auto istart = len;
         length = len + rhs.length;

@@ -29,7 +29,7 @@ import ocean.io.select.fiber.SelectFiber;
 
 import ocean.io.select.protocol.generic.ErrnoIOException: IOError, IOWarning;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 debug ( SelectFiber ) import ocean.io.Stdout : Stderr;
 

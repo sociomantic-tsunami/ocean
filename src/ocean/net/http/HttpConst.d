@@ -17,7 +17,7 @@
 
 module ocean.net.http.HttpConst;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 /*******************************************************************************
 

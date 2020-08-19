@@ -11,7 +11,7 @@ module integrationtest.signalext.main;
 import ocean.core.Test;
 import ocean.sys.ErrnoException;
 import ocean.text.util.StringC;
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.util.app.DaemonApp;
 import ocean.io.device.File;
 import Path = ocean.io.Path;
@@ -72,7 +72,7 @@ class MyApp : DaemonApp
     }
 }
 
-version(UnitTest) {} else
+version (unittest) {} else
 void main(istring[] args)
 {
     static extern(C) void sighandler (int sig)

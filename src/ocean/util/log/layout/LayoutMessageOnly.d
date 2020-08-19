@@ -16,7 +16,7 @@
 
 module ocean.util.log.layout.LayoutMessageOnly;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.util.log.Appender;
 import ocean.util.log.Event;
 
@@ -31,7 +31,7 @@ public class LayoutMessageOnly : Appender.Layout
 
     ***************************************************************************/
 
-    public override void format (LogEvent event, scope void delegate(cstring) dg)
+    public override void format (LogEvent event, scope FormatterSink dg)
     {
         dg(event.toString);
     }

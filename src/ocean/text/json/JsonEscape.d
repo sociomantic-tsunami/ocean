@@ -17,7 +17,7 @@
 
 module ocean.text.json.JsonEscape;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.text.json.JsonParser;
 

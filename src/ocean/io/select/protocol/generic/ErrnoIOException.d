@@ -16,7 +16,7 @@
 module ocean.io.select.protocol.generic.ErrnoIOException;
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.sys.ErrnoException;
 

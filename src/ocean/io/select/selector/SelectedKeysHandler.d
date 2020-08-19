@@ -18,7 +18,7 @@
 module ocean.io.select.selector.SelectedKeysHandler;
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.io.select.selector.model.ISelectedKeysHandler;
 

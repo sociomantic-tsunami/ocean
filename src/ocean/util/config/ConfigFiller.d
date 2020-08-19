@@ -50,7 +50,7 @@ module ocean.util.config.ConfigFiller;
 
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.core.Verify;
 

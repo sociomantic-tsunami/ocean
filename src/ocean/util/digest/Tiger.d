@@ -20,7 +20,7 @@
 
 module ocean.util.digest.Tiger;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.core.Verify;
 import ocean.core.TypeConvert;

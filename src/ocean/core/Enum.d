@@ -129,7 +129,7 @@ module ocean.core.Enum;
 
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.core.Test;
 
 /*******************************************************************************
@@ -180,6 +180,17 @@ public interface IEnum
     ***************************************************************************/
 
     public Value* opIn_r ( Name n );
+
+
+    /***************************************************************************
+
+        Support for the 'in' operator
+
+        Aliased to opIn_r, for backwards compatibility
+
+    ***************************************************************************/
+
+    public alias opBinaryRight ( istring op : "in" ) = opIn_r;
 
 
     /***************************************************************************
@@ -367,7 +378,7 @@ public template SuperClassIndex ( size_t i, T ... )
 
 public template EnumBase ( T ... )
 {
-    import ocean.transition;
+    import ocean.meta.types.Qualifiers;
 
     alias IEnum.Name Name;
     alias IEnum.Value Value;
@@ -769,12 +780,12 @@ version (unittest)
         test(E().max == max);
 
         // opApply 1
-        size_t i;
+        size_t outer_i;
         foreach ( n, v; E() )
         {
-            test(n == names[i]);
-            test(v == values[i]);
-            i++;
+            test(n == names[outer_i]);
+            test(v == values[outer_i]);
+            outer_i++;
         }
 
         // opApply 2

@@ -604,7 +604,7 @@ module ocean.text.Arguments;
 
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.io.Stdout;
 import ocean.io.stream.Format : FormatOutput;
@@ -614,7 +614,9 @@ import ocean.text.convert.Formatter;
 import ocean.text.convert.Integer;
 import ocean.util.container.SortedMap;
 import ocean.util.container.more.Stack;
+import ocean.core.TypeConvert: assumeUnique;
 import ocean.core.Verify;
+
 
 version (unittest) import ocean.core.Test;
 
@@ -1508,7 +1510,7 @@ public class Arguments
     private mstring formatArgumentHelp ( Argument arg, ref mstring buf )
     {
         buf.length = 0;
-        enableStomping(buf);
+        assumeSafeAppend(buf);
 
         sformat(buf, "  ");
 
@@ -1619,7 +1621,7 @@ public class Arguments
         }
 
         this.spaces.length = width;
-        enableStomping(this.spaces);
+        assumeSafeAppend(this.spaces);
 
         this.spaces[] = ' ';
 

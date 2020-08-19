@@ -53,7 +53,7 @@ module ocean.io.serialize.StringStructSerializer;
 
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.core.Array;
 
@@ -450,7 +450,7 @@ public class StringStructSerializer ( Char )
     private void increaseIndent ( )
     {
         this.indent.length = this.indent.length + indent_size;
-        enableStomping(this.indent);
+        assumeSafeAppend(this.indent);
         this.indent[] = ' ';
     }
 
@@ -467,7 +467,7 @@ public class StringStructSerializer ( Char )
                 typeof(this).stringof ~ ".decreaseIndent - indentation cannot be decreased");
 
         this.indent.length = this.indent.length - indent_size;
-        enableStomping(this.indent);
+        assumeSafeAppend(this.indent);
     }
 
 
@@ -491,7 +491,7 @@ public class StringStructSerializer ( Char )
     private mstring getCharAsString ( char c )
     {
         this.buf.length = 0;
-        enableStomping(this.buf);
+        assumeSafeAppend(this.buf);
 
         if ( !this.turn_ws_char_to_str )
         {
@@ -556,6 +556,7 @@ public class StringStructSerializer ( Char )
 version (unittest)
 {
     import ocean.core.Test;
+    import ocean.meta.types.Typedef;
     import core.stdc.time;
 }
 
@@ -635,7 +636,7 @@ unittest
                      "   long update_time : 0 (1970-01-01 00:00:00)\n");
 
     buffer.length = 0;
-    enableStomping(buffer);
+    assumeSafeAppend(buffer);
     serializer.serialize(buffer, text_fragment_time);
 
     test!("==")(buffer.length, 163);
@@ -775,7 +776,7 @@ unittest
     su.u.b = 'a';
 
     buffer.length = 0;
-    enableStomping(buffer);
+    assumeSafeAppend(buffer);
     serializer.serialize(buffer, su);
 
     test!("==")(buffer.length, 65);
@@ -834,7 +835,7 @@ unittest
 
     // Generation of friendly string representations of characters enabled
     buffer.length = 0;
-    enableStomping(buffer);
+    assumeSafeAppend(buffer);
     serializer.serialize(buffer, sc, [""], true);
 
     test!("==")(buffer.length, 198);

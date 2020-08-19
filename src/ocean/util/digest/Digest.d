@@ -19,7 +19,7 @@
 
 module ocean.util.digest.Digest;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.core.Verify;
 
@@ -132,7 +132,7 @@ abstract class Digest
 
                 static ubyte[] buf;
                 buf.length = ds;
-                enableStomping(buf);
+                assumeSafeAppend(buf);
                 ubyte[] ret = binaryDigest(buf);
                 verify(ret.ptr == buf.ptr);
 

@@ -26,7 +26,7 @@ public class PrometheusHandler : HttpConnectionHandler
     import ocean.net.http.HttpConst: HttpResponseCode;
     import ocean.net.http.consts.HttpMethod: HttpMethod;
     import ocean.text.convert.Formatter : sformat;
-    import ocean.transition;
+    import ocean.meta.types.Qualifiers;
     import ocean.util.log.Logger : Logger, Log;
     import ocean.util.prometheus.collector.CollectorRegistry :
         CollectorRegistry;
@@ -107,7 +107,7 @@ public class PrometheusHandler : HttpConnectionHandler
         catch (Exception ex)
         {
             err_buf.length = 0;
-            enableStomping(err_buf);
+            assumeSafeAppend(err_buf);
 
             sformat(err_buf, "{}({}):{}", ex.file, ex.line, ex.message());
 

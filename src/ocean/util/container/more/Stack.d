@@ -33,9 +33,21 @@ public struct Stack ( V, int Size = 0 )
 {
     public alias nth         opIndex;
     public alias slice       opSlice;
-    public alias rotateRight opShrAssign;
-    public alias rotateLeft  opShlAssign;
-    public alias push        opCatAssign;
+
+    public template opOpAssign ( string op : ">>" )
+    {
+        alias opOpAssign = rotateRight;
+    }
+
+    public template opOpAssign ( string op : "<<" )
+    {
+        alias opOpAssign = rotateLeft;
+    }
+
+    public template opOpAssign ( string op : "~" )
+    {
+        alias opOpAssign = push;
+    }
 
     static if (Size == 0)
     {
@@ -397,6 +409,18 @@ unittest
     // dynamic size specific tests
     Stack!(int) stack;
     test!("==")(stack.unused(), 0);
+}
+
+unittest
+{
+    // Check overloaded operators
+    Stack!(int) stack;
+    stack ~= 4;
+    stack ~= 5;
+    stack >>= 2;
+    test!("==")(stack.pop(), 4);
+    stack <<= 1;
+    test!("==")(stack.pop(), 5);
 }
 
 /*******************************************************************************

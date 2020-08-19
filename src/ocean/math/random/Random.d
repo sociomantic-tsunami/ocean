@@ -178,7 +178,7 @@
 *******************************************************************************/
 module ocean.math.random.Random;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.math.random.engines.URandom;
 import ocean.math.random.engines.KissCmwc;
@@ -1301,9 +1301,13 @@ version (unittest)
             if (cast(real)maxV<minmax) printM=true;
             if (expectedMean-maxOffset>meanV || meanV>expectedMean+maxOffset) printM=true;
             if (printM){
-                printf("WARNING ocean.math.Random statistic is strange: %.*s[%d] %Lg %Lg %Lg\n\0",cast(int)T.stringof.length,T.stringof.ptr,a.length,cast(real)minV,meanV,cast(real)maxV);
+                printf("WARNING ocean.math.Random statistic is strange: %.*s[%d] %Lg %Lg %Lg\n\0",
+                    cast(int)T.stringof.length, T.stringof.ptr, cast(int)a.length,
+                    cast(real)minV,meanV,cast(real)maxV);
             } else if (alwaysPrint) {
-                printf("ocean.math.Random statistic: %.*s[%d] %Lg %Lg %Lg\n\0",cast(int)T.stringof.length,T.stringof.ptr,a.length,cast(real)minV,meanV,cast(real)maxV);
+                printf("ocean.math.Random statistic: %.*s[%d] %Lg %Lg %Lg\n\0",
+                    cast(int)T.stringof.length, T.stringof.ptr, cast(int)a.length,
+                    cast(real)minV,meanV,cast(real)maxV);
             }
             return printM;
         }

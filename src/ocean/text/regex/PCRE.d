@@ -49,7 +49,8 @@ module ocean.text.regex.PCRE;
 
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
+import ocean.core.TypeConvert: assumeUnique;
 
 import ocean.core.Array : copy, concat;
 import ocean.text.util.StringC;
@@ -621,7 +622,7 @@ unittest
         regex.compile("a[ ]", false);
 
         matches_buffer.length = 0;
-        enableStomping(matches_buffer);
+        assumeSafeAppend(matches_buffer);
 
         foreach ( match; regex.findAll(str, matches_buffer) )
         {

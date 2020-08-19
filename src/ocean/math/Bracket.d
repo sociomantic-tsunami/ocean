@@ -14,7 +14,7 @@
  *
  */
 module ocean.math.Bracket;
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 static import tsm = core.stdc.math;
 import ocean.math.Math;

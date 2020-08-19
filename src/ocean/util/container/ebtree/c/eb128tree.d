@@ -37,7 +37,7 @@ module ocean.util.container.ebtree.c.eb128tree;
 
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.util.container.ebtree.c.ebtree: eb_root, eb_node;
 
 
@@ -71,10 +71,10 @@ struct UCent
 
      **************************************************************************/
 
-    public mixin (genOpCmp(
-    `{
+    public int opCmp ( const typeof(this) rhs ) const
+    {
         return eb128_cmp_264(this.tupleof, rhs.tupleof);
-    }`));
+    }
 
     public equals_t opEquals(UCent rhs)
     {
@@ -113,10 +113,10 @@ struct Cent
 
      **************************************************************************/
 
-    public mixin(genOpCmp(
-    `{
+    public int opCmp ( const typeof(this) rhs ) const
+    {
         return eb128i_cmp_264(this.tupleof, rhs.tupleof);
-    }`));
+    }
 
     public equals_t opEquals(Cent rhs)
     {

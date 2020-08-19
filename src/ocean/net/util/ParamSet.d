@@ -32,7 +32,7 @@
 module ocean.net.util.ParamSet;
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.core.TypeConvert;
 

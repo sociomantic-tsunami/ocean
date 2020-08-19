@@ -30,30 +30,15 @@
 
 module ocean.text.convert.Float;
 
-import ocean.transition;
-
 import ocean.core.ExceptionDefinitions;
-import ocean.math.IEEE;
 import ocean.core.Verify;
-
-static import tsm = core.stdc.math;
+import ocean.math.IEEE;
+import ocean.meta.types.Qualifiers;
 static import Integer = ocean.text.convert.Integer_tango;
 
+static import tsm = core.stdc.math;
+
 private alias real NumType;
-
-/******************************************************************************
-
-  optional math functions
-
- ******************************************************************************/
-
-private extern (C)
-{
-    real log10l (real x);
-    real ceill (real num);
-    real modfl (real num, real *i);
-    real powl  (real base, real exp);
-}
 
 /******************************************************************************
 
@@ -240,7 +225,7 @@ T[] format(T) (T[] dst, NumType x, int decimals=Dec, int e=Exp, bool pad=Pad)
     char[32]  buf = void;
 
     // test exponent to determine mode
-    exp = (x == 0) ? 1 : cast(int) log10l (x < 0 ? -x : x);
+    exp = (x == 0) ? 1 : cast(int) tsm.log10l(x < 0 ? -x : x);
     if (exp <= -e || exp >= e)
         mode = 2, ++decimals;
 
@@ -348,10 +333,10 @@ private const(char)* convertl (char* buf, real value, int ndigit,
     if (isInfinity(value))
         return "inf\0".ptr;
 
-    int exp10 = (value == 0) ? !fflag : cast(int) ceill(log10l(value));
+    int exp10 = (value == 0) ? !fflag : cast(int) tsm.ceill(tsm.log10l(value));
     if (exp10 < -4931)
         exp10 = -4931;
-    value *= powl (10.0, -exp10);
+    value *= tsm.powl(10.0, -exp10);
     if (value)
     {
         while (value <  0.1) { value *= 10;  --exp10; }
@@ -380,7 +365,7 @@ private const(char)* convertl (char* buf, real value, int ndigit,
     while (ptr <= ndigit)
     {
         real i = void;
-        value = modfl (value * 10, &i);
+        value = tsm.modfl(value * 10, &i);
         buf [ptr++]= cast(char) ('0' + cast(int) i);
     }
 

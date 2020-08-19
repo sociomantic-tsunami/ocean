@@ -19,7 +19,7 @@
 
 module ocean.time.chrono.Gregorian;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.time.chrono.Calendar;
 

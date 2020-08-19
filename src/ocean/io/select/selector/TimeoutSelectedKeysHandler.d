@@ -28,7 +28,7 @@ import ocean.io.select.client.model.ISelectClient;
 
 import ocean.time.timeout.model.ITimeoutManager,
                ocean.time.timeout.model.ITimeoutClient;
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.util.container.AppendBuffer: AppendBuffer;
 

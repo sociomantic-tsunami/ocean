@@ -18,7 +18,7 @@ module ocean.io.compress.lzo.LzoCrc;
 
 import ocean.io.compress.lzo.c.lzoconf: lzo_crc32, lzo_crc32_init;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.core.TypeConvert;
 
 /******************************************************************************

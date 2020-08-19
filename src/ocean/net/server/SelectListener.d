@@ -24,7 +24,7 @@
 module ocean.net.server.SelectListener;
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.core.Verify;
 import ocean.io.select.client.model.ISelectClient;
 import ocean.net.server.connection.IConnectionHandler;
@@ -60,9 +60,8 @@ static this ( )
 
 abstract class ISelectListener : ISelectClient
 {
-    import ocean.stdc.posix.sys.socket: accept, SOL_SOCKET, SO_ERROR,
-                                        SO_REUSEADDR, sockaddr;
     import core.sys.posix.netinet.in_: SOCK_STREAM;
+    import core.sys.posix.sys.socket: accept, SOL_SOCKET, SO_REUSEADDR, sockaddr;
     import core.sys.posix.unistd:     close;
 
     /**************************************************************************

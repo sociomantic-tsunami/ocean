@@ -15,7 +15,7 @@
 
 module integrationtest.prometheusstats.main;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.io.select.EpollSelectDispatcher;
 import ocean.task.Task;
@@ -154,7 +154,7 @@ class ClientTask: Task
 
 *******************************************************************************/
 
-version(UnitTest) {} else
+version (unittest) {} else
 int main ( )
 {
     initScheduler(SchedulerConfiguration.init);

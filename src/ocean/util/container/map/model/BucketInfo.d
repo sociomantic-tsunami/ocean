@@ -17,7 +17,7 @@
 module ocean.util.container.map.model.BucketInfo;
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 debug (BucketInfo) import ocean.io.Stdout;
 
 /*******************************************************************************/
@@ -60,10 +60,10 @@ class BucketInfo
 
          **********************************************************************/
 
-        public mixin (genOpCmp(
-        `{
+        public int opCmp ( const typeof(this) rhs ) const
+        {
             return (this.length >= rhs.length)? this.length > rhs.length : -1;
-        }`));
+        }
 
         public equals_t opEquals (Bucket rhs)
         {
@@ -512,9 +512,9 @@ class BucketInfo
 
     package void clearResize ( size_t n )
     {
-        enableStomping(this.buckets);
+        assumeSafeAppend(this.buckets);
         this.buckets.length             = n;
-        enableStomping(this.bucket_list_indices);
+        assumeSafeAppend(this.bucket_list_indices);
         this.bucket_list_indices.length = n;
 
         /*

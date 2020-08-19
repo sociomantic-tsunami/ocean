@@ -20,11 +20,12 @@
 
 module ocean.util.log.Appender;
 
-import ocean.transition;
 import ocean.core.Verify;
 import ocean.core.ExceptionDefinitions;
 import ocean.io.model.IConduit;
 import ocean.text.convert.Formatter;
+import ocean.meta.types.Qualifiers;
+import ocean.meta.types.Typedef;
 import ocean.util.log.Event;
 import ocean.util.log.ILogger;
 
@@ -33,7 +34,6 @@ version (unittest)
     import ocean.core.Test;
     import ocean.time.Clock;
     import ocean.time.Time;
-    import ocean.transition : enableStomping;
     import ocean.util.log.Hierarchy;
     import ocean.util.log.Logger;
 }
@@ -59,7 +59,20 @@ public class Appender
 
     public interface Layout
     {
-        void format (LogEvent event, scope void delegate(cstring) dg);
+        /// Convenience alias for implementing classes
+        protected alias FormatterSink = .FormatterSink;
+
+        /***********************************************************************
+
+            Format the provided `event` to the `sink` using `this` layout
+
+            Params:
+              event = The log event to format
+              sink = Where to output the result
+
+        ***********************************************************************/
+
+        void format (LogEvent event, scope FormatterSink sink);
     }
 
     /***************************************************************************
@@ -292,7 +305,7 @@ unittest
 {
        mstring result = new mstring(2048);
        result.length = 0;
-       enableStomping(result);
+       assumeSafeAppend(result);
 
        scope dg = (cstring v) { result ~= v; };
        scope layout = new LayoutTimer();

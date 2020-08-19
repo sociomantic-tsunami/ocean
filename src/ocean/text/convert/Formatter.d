@@ -74,7 +74,7 @@
 
 module ocean.text.convert.Formatter;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.core.Buffer;
 import Integer = ocean.text.convert.Integer_tango;
 import Float = ocean.text.convert.Float;
@@ -125,6 +125,8 @@ private alias void delegate(cstring, ref const(FormatInfo)) ElemSink;
 
 public istring format (Args...) (cstring fmt, Args args)
 {
+    import ocean.core.TypeConvert : assumeUnique;
+
     mstring buffer;
 
     scope FormatterSink sink = (cstring s)
@@ -377,9 +379,51 @@ private void handle (T) (T v, FormatInfo f, scope FormatterSink sf, scope ElemSi
     static if (is(T == typeof(null)))
         se("null", f);
 
-    // Cannot print enum member name in D1, so just print the value
-    else static if (is (T V == enum))
-        handle!(V)(v, f, sf, se);
+
+    // Pretty print enum
+    // Note that switch is only available for string and integer based enums.
+    // However, since it expands to a jump table for integers and a binary
+    // search for strings, we still want to special case it.
+    else static if (is(T V == enum) && canSwitchOn!T)
+    {
+        sw: switch (v)
+        {
+            foreach (member; __traits(allMembers, T))
+            {
+            case mixin("T." ~ member):
+                sf(T.stringof);
+                sf(".");
+                sf(member);
+                break sw;
+            }
+            default :
+                sf("cast(");
+                sf(T.stringof);
+                sf(") ");
+                handle!(V)(v, f, sf, se);
+        }
+    }
+
+    // Pretty print enum for non-integer, non-string base types
+    // This branch should be rarely, if ever, used.
+    else static if (is(T E == enum))
+    {
+        foreach (member; __traits(allMembers, T))
+        {
+            if (v == mixin("T." ~ member))
+            {
+                sf(T.stringof);
+                sf(".");
+                sf(member);
+                return;
+            }
+        }
+
+        sf("cast(");
+        sf(T.stringof);
+        sf(") ");
+        handle!(E)(v, f, sf, se);
+    }
 
     // Delegate / Function pointers
     else static if (is(T == delegate))
@@ -897,4 +941,17 @@ private struct FormatInfo
     ***************************************************************************/
 
     public Flags flags;
+}
+
+/// Returns: Whether or not `T` can be `switch`ed on
+private template canSwitchOn (T)
+{
+    enum canSwitchOn = is(typeof(() { switch (T.init) { default: break; }}));
+}
+
+unittest
+{
+    static assert(canSwitchOn!string);
+    static assert(canSwitchOn!(immutable int));
+    static assert(!canSwitchOn!(real));
 }

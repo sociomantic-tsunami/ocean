@@ -18,7 +18,7 @@ module ocean.sys.socket.model.IAddressIPSocketInfo;
 
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.io.device.Conduit: ISelectable;
 
 

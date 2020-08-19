@@ -16,7 +16,7 @@
 
 module ocean.sys.stats.linux.ProcVFS;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import Path = ocean.io.Path;
 import ocean.sys.ErrnoException;
 import core.sys.posix.stdio;
@@ -317,7 +317,7 @@ public struct ProcUptime
 
         ***********************************************************************/
 
-        Time opSub(Time rhs)
+        Time opBinary ( string op : "-" ) (Time rhs)
         {
             Time res_time;
 
@@ -796,7 +796,7 @@ private bool parseProcStatData (cstring data, ref ProcStat s)
         return false;
 
     s.cmd.length = last_bracket;
-    enableStomping(s.cmd);
+    assumeSafeAppend(s.cmd);
     s.cmd[] = data[0..last_bracket];
 
     // chop last bracket and space

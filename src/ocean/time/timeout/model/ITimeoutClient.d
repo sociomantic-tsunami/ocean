@@ -17,7 +17,7 @@ module ocean.time.timeout.model.ITimeoutClient;
 
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 
 /******************************************************************************/

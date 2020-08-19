@@ -11,7 +11,7 @@
 
 *******************************************************************************/
 
-
+deprecated("Use `core.sys.posix.sys.wait` directly")
 module ocean.stdc.posix.sys.wait;
 
 public import core.sys.posix.sys.wait;

@@ -15,19 +15,15 @@
 
 module ocean.sys.socket.UnixSocket;
 
-
-
-import ocean.transition;
-
 import ocean.core.Enforce;
-import ocean.sys.socket.model.ISocket;
-
+import ocean.meta.types.Qualifiers;
 import ocean.stdc.posix.sys.socket;
-import ocean.stdc.posix.sys.un: UNIX_PATH_MAX;
-import core.sys.posix.unistd;
+import ocean.stdc.posix.sys.un;
+import ocean.sys.socket.model.ISocket;
 import ocean.text.convert.Formatter;
 
-import ocean.stdc.posix.sys.un;
+import core.sys.posix.unistd;
+
 
 /*******************************************************************************
 

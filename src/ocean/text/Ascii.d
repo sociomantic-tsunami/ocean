@@ -20,7 +20,7 @@
 
 module ocean.text.Ascii;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.core.Array;
 

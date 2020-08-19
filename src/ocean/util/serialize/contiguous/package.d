@@ -144,7 +144,7 @@ version (unittest):
 
 ******************************************************************************/
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.core.Test;
 import ocean.core.Verify;
 import ocean.core.StructConverter;
@@ -203,7 +203,7 @@ struct S
         int union_b;
     }
 
-    mixin TypeofThis!();
+    alias typeof(this) This;
 
     /***************************************************************************
 

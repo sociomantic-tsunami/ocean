@@ -34,7 +34,7 @@ module ocean.task.util.TaskPoolSerializer;
 
 public class TaskPoolSerializer
 {
-    import ocean.transition;
+    import ocean.meta.types.Qualifiers;
 
     import ocean.core.Array: concat;
     import ocean.core.Enforce;
@@ -118,7 +118,7 @@ public class TaskPoolSerializer
         foreach ( raw_task; pool_itr )
         {
             this.serialize_buffer.length = 0;
-            enableStomping(this.serialize_buffer);
+            assumeSafeAppend(this.serialize_buffer);
 
             auto task = downcast!(TaskPoolT.TaskType)(raw_task);
             assert(task);

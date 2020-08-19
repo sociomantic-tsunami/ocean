@@ -98,7 +98,7 @@ module ocean.math.Distribution;
 
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.core.Enforce;
 import ocean.core.Array : bsearch, sort;

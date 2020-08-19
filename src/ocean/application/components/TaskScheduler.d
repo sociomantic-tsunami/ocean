@@ -15,7 +15,7 @@
 
 module ocean.application.components.TaskScheduler;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.core.array.Search : find;
 import ocean.core.Enforce;
 import ocean.meta.codegen.Identifier;

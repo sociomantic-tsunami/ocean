@@ -15,7 +15,7 @@
 
 module ocean.util.container.pool.model.IFreeList;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 /*******************************************************************************
 
@@ -317,7 +317,7 @@ version (unittest)
                 this.lengthCheck(busy_items.length, ++idle_count);
             }
 
-            enableStomping(busy_items);
+            assumeSafeAppend(busy_items);
         }
     }
 }

@@ -33,8 +33,8 @@ class TaskSelectTransceiver
     import ocean.io.select.protocol.task.internal.BufferedReader;
 
     import core.stdc.errno: errno, EAGAIN, EWOULDBLOCK, EINTR;
-    import ocean.stdc.posix.sys.uio: iovec, readv;
-    import ocean.stdc.posix.sys.socket: setsockopt;
+    import core.sys.posix.sys.uio: iovec, readv;
+    import core.sys.posix.sys.socket: setsockopt;
     import core.sys.posix.netinet.in_: IPPROTO_TCP;
 
     static if (__VERSION__ < 2073)
@@ -52,7 +52,7 @@ class TaskSelectTransceiver
     debug (Raw) import ocean.io.Stdout: Stdout;
 
     import ocean.core.Enforce: enforce;
-    import ocean.transition;
+    import ocean.meta.types.Qualifiers;
 
     /***************************************************************************
 
@@ -725,7 +725,7 @@ version (unittest)
 {
     import ocean.io.select.protocol.generic.ErrnoIOException;
     import ocean.task.Task;
-    import ocean.transition;
+    import ocean.meta.types.Qualifiers;
 }
 
 /// Example of sending and receiving data with the `TaskSelectTransceiver`.

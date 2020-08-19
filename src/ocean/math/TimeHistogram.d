@@ -19,13 +19,12 @@
 
 module ocean.math.TimeHistogram;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 /// ditto
 struct TimeHistogram
 {
-    import ocean.transition;
-    import ocean.core.Traits : FieldName;
+    import ocean.meta.types.Qualifiers;
 
     /***************************************************************************
 

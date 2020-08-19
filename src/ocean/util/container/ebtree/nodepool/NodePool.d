@@ -17,7 +17,7 @@
 
 module ocean.util.container.ebtree.nodepool.NodePool;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 /*******************************************************************************
 
@@ -68,7 +68,7 @@ class NodePool ( Node ) : INodePool!(Node)
             scope (success)
             {
                 this.free_nodes.length = this.free_nodes.length - 1;
-                enableStomping(this.free_nodes);
+                assumeSafeAppend(this.free_nodes);
             }
 
             return this.free_nodes[$ - 1];
@@ -91,7 +91,7 @@ class NodePool ( Node ) : INodePool!(Node)
     public void recycle ( Node* node )
     {
         this.free_nodes.length = this.free_nodes.length + 1;
-        enableStomping(this.free_nodes);
+        assumeSafeAppend(this.free_nodes);
         this.free_nodes[$ - 1] = node;
     }
 
@@ -132,6 +132,6 @@ class NodePool ( Node ) : INodePool!(Node)
     protected void resetFreeList ()
     {
         this.free_nodes.length = 0;
-        enableStomping(this.free_nodes);
+        assumeSafeAppend(this.free_nodes);
     }
 }

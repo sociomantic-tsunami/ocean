@@ -18,7 +18,7 @@ module ocean.sys.socket.AddrInfo;
 import ocean.core.Array: concat;
 import ocean.core.TypeConvert;
 import ocean.core.Verify;
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import core.stdc.errno: errno, EAFNOSUPPORT;
 import core.stdc.string: strlen;

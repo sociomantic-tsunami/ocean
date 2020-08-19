@@ -19,7 +19,8 @@
 
 module ocean.sys.CpuAffinity;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
+import ocean.meta.types.Typedef;
 
 import core.sys.posix.sys.types : pid_t;
 

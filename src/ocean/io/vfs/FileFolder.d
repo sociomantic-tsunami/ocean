@@ -17,7 +17,8 @@
 
 module ocean.io.vfs.FileFolder;
 
-import ocean.transition;
+import ocean.core.TypeConvert: assumeUnique;
+import ocean.meta.types.Qualifiers;
 
 import ocean.core.Verify;
 

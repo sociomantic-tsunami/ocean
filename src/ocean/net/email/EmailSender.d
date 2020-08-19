@@ -20,7 +20,7 @@ module ocean.net.email.EmailSender;
 
 import ocean.core.Array : append;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.io.Stdout;
 import ocean.sys.Process;
 import ocean.core.ExceptionDefinitions : ProcessException;
@@ -96,7 +96,7 @@ class EmailSender
             auto first_entry = true;
 
             buf.length = 0;
-            enableStomping(buf);
+            assumeSafeAppend(buf);
 
             foreach ( entry; param_to_format )
             {

@@ -17,7 +17,7 @@
 
 module ocean.util.digest.Crc32;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 public import ocean.util.digest.Digest;
 
 version (unittest) import ocean.core.Test;

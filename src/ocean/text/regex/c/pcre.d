@@ -21,7 +21,7 @@
 
 module ocean.text.regex.c.pcre;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 extern (C):
 

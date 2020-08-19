@@ -16,7 +16,7 @@
 
 module ocean.util.container.map.model.StandardHash;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 struct StandardHash
 {

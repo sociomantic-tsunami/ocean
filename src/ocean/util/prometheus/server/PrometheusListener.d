@@ -45,7 +45,7 @@ public class PrometheusListener :
     import ocean.text.convert.Formatter : sformat;
     import ocean.util.log.Logger : Logger, Log;
 
-    import ocean.transition;
+    import ocean.meta.types.Qualifiers;
 
     /// A static logger for logging information about connections.
     private static Logger log;
@@ -128,7 +128,7 @@ public class PrometheusListener :
 
 version (unittest)
 {
-    import ocean.stdc.posix.sys.socket;
+    import core.sys.posix.sys.socket;
     import ocean.sys.socket.IPSocket;
     import ocean.util.prometheus.collector.Collector;
 }

@@ -15,7 +15,7 @@
 
 module integrationtest.taskext_cli.main;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.util.app.CliApp;
 import ocean.text.Arguments;
 import ocean.task.Task;
@@ -59,7 +59,7 @@ class TestApp : CliApp
 }
 
 
-version(UnitTest) {} else
+version (unittest) {} else
 int main ( istring[] cl_args )
 {
     auto app = new TestApp;

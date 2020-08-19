@@ -62,7 +62,15 @@ class FilePath : PathView
     private PathParser      p;              // the parsed path
     private bool            dir_;           // this represents a dir?
 
-    public alias    append  opCatAssign;    // path ~= x;
+
+    /***********************************************************************
+
+        Support path ~= x; syntax
+
+    ***********************************************************************/
+
+    public alias opOpAssign ( istring op = "~" ) = append;
+
 
     /***********************************************************************
 

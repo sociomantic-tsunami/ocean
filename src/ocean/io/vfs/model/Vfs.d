@@ -17,7 +17,7 @@
 
 module ocean.io.vfs.model.Vfs;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.time.Time : Time;
 

@@ -15,7 +15,7 @@
 
 module integrationtest.unregisterclient.main;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.io.select.EpollSelectDispatcher;
 import ocean.io.select.client.SelectEvent;
@@ -30,20 +30,13 @@ private int count;
 // segfault at access
 private void corruptEventObject (SelectEvent client)
 {
-    version (D_Version2)
-    {
-        auto initializer = client.classinfo.initializer();
-    }
-    else
-    {
-        auto initializer = client.classinfo.init;
-    }
+    auto initializer = client.classinfo.initializer();
 
     ubyte* ptr = cast(ubyte*)client;
     ptr[0..initializer.length] = 0;
 }
 
-version(UnitTest) {} else
+version (unittest) {} else
 void main(istring[] args)
 {
     bool handler1()

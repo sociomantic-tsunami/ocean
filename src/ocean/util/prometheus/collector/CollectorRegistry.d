@@ -18,7 +18,7 @@ module ocean.util.prometheus.collector.CollectorRegistry;
 /// ditto
 public class CollectorRegistry
 {
-    import ocean.transition;
+    import ocean.meta.types.Qualifiers;
     import ocean.util.prometheus.collector.Collector : Collector;
 
     /// An alias for the type of delegates that are called for stat collection
@@ -98,8 +98,7 @@ public class CollectorRegistry
 version (unittest)
 {
     import ocean.core.Test;
-    import Traits = ocean.core.Traits;
-    import ocean.transition;
+    import ocean.meta.types.Qualifiers;
     import ocean.util.prometheus.collector.Collector;
 
     ///

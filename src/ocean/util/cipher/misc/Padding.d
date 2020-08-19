@@ -16,7 +16,7 @@
 module ocean.util.cipher.misc.Padding;
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.core.Verify;
 
 version (unittest)
@@ -51,7 +51,7 @@ ubyte[] padPKCS7 ( ref ubyte[] buffer, size_t pad_len )
     verify(pad_len >= buffer.length);
     verify(pad_len - buffer.length <= ubyte.max);
 
-    enableStomping(buffer);
+    assumeSafeAppend(buffer);
 
     ubyte pad_byte = cast(ubyte)(pad_len - buffer.length);
 

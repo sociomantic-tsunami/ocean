@@ -15,37 +15,29 @@
 
 module integrationtest.unixlistener.main;
 
-import ocean.transition;
-
 import core.thread;
 import core.stdc.errno;
 import core.stdc.stdio;
-import core.sys.posix.stdlib;
+import core.stdc.string;
 import core.sys.posix.semaphore;
-import core.sys.posix.sys.mman;
+import core.sys.posix.stdlib;
 import core.sys.posix.unistd;
+import core.sys.posix.sys.mman;
 import core.sys.posix.sys.wait;
 
 import ocean.core.Test;
 import ocean.core.Enforce;
-import ocean.core.Time;
 import ocean.io.select.EpollSelectDispatcher;
-import core.stdc.errno: ECONNREFUSED;
+import ocean.meta.types.Qualifiers;
+import ocean.net.server.unix.UnixListener;
 import ocean.stdc.posix.sys.un;
 import ocean.sys.socket.UnixSocket;
-import ocean.net.server.unix.UnixListener;
+import ocean.task.Task;
+import ocean.task.Scheduler;
 import Integer = ocean.text.convert.Integer_tango;
 import ocean.text.util.SplitIterator: ChrSplitIterator;
 import ocean.text.util.StringC;
-import ocean.task.Task;
-import ocean.task.Scheduler;
 import ocean.sys.ErrnoException;
-import core.stdc.string;
-
-static if (!is(typeof(mkdtemp)))
-{
-    extern (C) char* mkdtemp(char*);
-}
 
 /*******************************************************************************
 
@@ -94,7 +86,7 @@ void client_process (cstring socket_path)
     cstring readData ()
     {
         read_buffer.length = 100;
-        enableStomping(read_buffer);
+        assumeSafeAppend(read_buffer);
 
         auto buff = cast(void[])read_buffer;
 
@@ -110,7 +102,7 @@ void client_process (cstring socket_path)
         enforce(read_bytes > 0);
 
         read_buffer.length = read_bytes;
-        enableStomping(read_buffer);
+        assumeSafeAppend(read_buffer);
         return read_buffer;
     }
 
@@ -156,7 +148,7 @@ void client_process (cstring socket_path)
 
 *******************************************************************************/
 
-version(UnitTest) {} else
+version (unittest) {} else
 int main ( )
 {
     // Since this is a one-off test, we will not care about destroying

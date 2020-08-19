@@ -19,7 +19,7 @@
 
 module ocean.text.formatter.SmartUnion;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.core.SmartUnion;
 import ocean.core.Verify;
 import ocean.text.convert.Formatter;
@@ -72,11 +72,11 @@ unittest
 
 private struct SmartUnionFormatter ( SU )
 {
-    import ocean.core.Traits : TemplateInstanceArgs;
+    import ocean.meta.types.Templates : TemplateInstanceArgs;
 
     static assert(is(TemplateInstanceArgs!(SmartUnion, SU)));
 
-    mixin TypeofThis;
+    alias typeof(this) This;
 
     /// Smart union to format.
     private SU smart_union;
@@ -88,7 +88,7 @@ private struct SmartUnionFormatter ( SU )
 
     /// Formatting sink delegate, passed to toString and used by
     /// formatUnionMember.
-    static private void delegate ( cstring chunk ) sink;
+    static private FormatterSink sink;
 
     /***************************************************************************
 
@@ -108,7 +108,7 @@ private struct SmartUnionFormatter ( SU )
 
     ***************************************************************************/
 
-    public void toString ( scope void delegate ( cstring chunk ) sink )
+    public void toString ( scope FormatterSink sink )
     {
         if ( this.smart_union.active )
         {

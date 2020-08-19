@@ -15,7 +15,7 @@
 
 module ocean.application.components.Version;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.core.Array: startsWith, map;
 import ocean.core.array.Mutation /* : moveToEnd, sort */;
 import ocean.text.Util;

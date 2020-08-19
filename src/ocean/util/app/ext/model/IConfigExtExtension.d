@@ -23,7 +23,7 @@ public import ocean.util.config.ConfigParser : ConfigParser;
 
 import ocean.util.app.model.IExtension;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 
 /*******************************************************************************

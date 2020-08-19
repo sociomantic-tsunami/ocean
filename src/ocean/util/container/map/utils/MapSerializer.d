@@ -26,7 +26,7 @@
 module ocean.util.container.map.utils.MapSerializer;
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.io.digest.Fnv1,
        ocean.io.serialize.SimpleStreamSerializer,

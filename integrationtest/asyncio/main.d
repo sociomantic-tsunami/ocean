@@ -15,7 +15,7 @@
 
 module integrationtest.asyncio.main;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import core.sys.posix.sys.stat;
 import core.sys.posix.pthread;
@@ -115,7 +115,7 @@ class AsyncIOUsingApp: DaemonApp
     }
 }
 
-version(UnitTest) {} else
+version (unittest) {} else
 void main(istring[] args)
 {
 

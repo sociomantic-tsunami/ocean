@@ -53,7 +53,7 @@
 module ocean.util.container.ebtree.EBTree32;
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.util.container.ebtree.model.IEBTree,
        ocean.util.container.ebtree.model.Node,
@@ -156,12 +156,12 @@ class EBTree32 ( bool signed = false ) : IEBTree
 
          **********************************************************************/
 
-        public mixin (genOpCmp(
-        `{
+        public int opCmp ( const typeof(this) rhs ) const
+        {
             return (this.hi > rhs.hi)? +1 :
                    (this.hi < rhs.hi)? -1 :
                    (this.lo >= rhs.lo)? (this.lo > rhs.lo) : -1;
-        }`));
+        }
 
         /**********************************************************************
 
@@ -284,7 +284,7 @@ class EBTree32 ( bool signed = false ) : IEBTree
     }
     body
     {
-        scope (success) ++this;
+        scope (success) this.increaseNodeCount(1);
 
         return this.add_(this.node_pool.get(), key);
     }
@@ -325,7 +325,7 @@ class EBTree32 ( bool signed = false ) : IEBTree
 
      ***************************************************************************/
 
-    public Node* update ( ref Node node, Key key )
+    public Node* update ( return ref Node node, Key key )
     out (node_out)
     {
         assert (node_out !is null);
@@ -349,7 +349,7 @@ class EBTree32 ( bool signed = false ) : IEBTree
 
     ***************************************************************************/
 
-    public Node* update ( ref Node node, Dual16Key key )
+    public Node* update ( return ref Node node, Dual16Key key )
     out (node_out)
     {
         assert (node_out !is null);
@@ -445,6 +445,18 @@ class EBTree32 ( bool signed = false ) : IEBTree
             return this.ebCall!(eb32_lookup)(key);
         }
     }
+
+
+    /***************************************************************************
+
+        Support for the 'in' operator
+
+        Aliased to opIn_r, for backwards compatibility
+
+    ***************************************************************************/
+
+    public alias opBinaryRight ( istring op : "in" ) = opIn_r;
+
 
     /***************************************************************************
 

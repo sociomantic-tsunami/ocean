@@ -33,7 +33,7 @@ import ocean.util.config.ConfigParser;
 import LogUtil = ocean.util.log.Config;
 import ConfigFiller = ocean.util.config.ConfigFiller;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.io.device.File;
 
 import ocean.util.log.Appender;

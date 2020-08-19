@@ -305,7 +305,7 @@ class HashFile(K, V)
 
 debug (HashFile)
 {
-        extern(C) int printf (char*, ...);
+        import core.stdc.stdio;
 
         import ocean.io.Path;
         import ocean.io.Stdout;

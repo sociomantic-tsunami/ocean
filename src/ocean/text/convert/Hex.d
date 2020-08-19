@@ -18,7 +18,7 @@ module ocean.text.convert.Hex;
 
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import Integer = ocean.text.convert.Integer_tango;
 
@@ -293,23 +293,23 @@ unittest
     test!("==")(hexToBin("FFFF", arr), true);
     test!("==")(arr, cast(ubyte[])[255, 255]);
     arr.length = 0;
-    enableStomping(arr);
+    assumeSafeAppend(arr);
 
     test!("==")(hexToBin("0000", arr), true);
     test!("==")(arr, cast(ubyte[])[0, 0]);
     arr.length = 0;
-    enableStomping(arr);
+    assumeSafeAppend(arr);
 
     test!("==")(hexToBin("", arr), true);
     test!("==")(arr, cast(ubyte[])[]);
     arr.length = 0;
-    enableStomping(arr);
+    assumeSafeAppend(arr);
 
     test!("==")(hexToBin("FFF", arr), false);
     arr.length = 0;
-    enableStomping(arr);
+    assumeSafeAppend(arr);
 
     test!("==")(hexToBin("(FFF", arr), false);
     arr.length = 0;
-    enableStomping(arr);
+    assumeSafeAppend(arr);
 }

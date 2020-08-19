@@ -15,7 +15,7 @@
 
 module integrationtest.taskext_daemon.main;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.util.app.DaemonApp;
 import ocean.util.test.DirectorySandbox;
 import ocean.task.Task;
@@ -70,7 +70,7 @@ class TestApp : DaemonApp
     }
 }
 
-version(UnitTest) {} else
+version (unittest) {} else
 int main ( istring[] cl_args )
 {
     with (DirectorySandbox.create(["etc", "log"]))

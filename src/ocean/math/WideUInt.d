@@ -17,8 +17,9 @@
 
 module ocean.math.WideUInt;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.core.Test;
+import ocean.core.TypeConvert: assumeUnique;
 import ocean.core.Enforce;
 import ocean.core.Verify;
 
@@ -163,7 +164,7 @@ public struct WideUInt ( size_t N )
         auto n = this.decimal_digits();
         static mstring buffer;
         buffer.length = n;
-        enableStomping(buffer);
+        assumeSafeAppend(buffer);
 
         WideUInt copy = this;
         for (ptrdiff_t idx = n-1; idx >= 0; --idx)
@@ -297,7 +298,7 @@ public struct WideUInt ( size_t N )
 
     ***************************************************************************/
 
-    mixin(genOpCmp("
+    public int opCmp ( const typeof(this) rhs ) const
     {
         ptrdiff_t idx = N-1;
         while (idx > 0)
@@ -311,7 +312,6 @@ public struct WideUInt ( size_t N )
         auto b = rhs.payload[idx];
         return a < b ? -1 : (a > b ? 1 : 0);
     }
-    "));
 
     unittest
     {

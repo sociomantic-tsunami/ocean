@@ -21,7 +21,7 @@ module ocean.io.select.protocol.fiber.FiberSocketConnection;
 
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.core.Verify;
 
@@ -37,8 +37,6 @@ import ocean.sys.socket.AddressIPSocket,
 
 
 import ocean.io.select.protocol.generic.ErrnoIOException: SocketError;
-
-import ocean.stdc.posix.sys.socket: SOL_SOCKET, IPPROTO_TCP, SO_KEEPALIVE;
 
 import core.stdc.errno: errno, EINPROGRESS, EINTR, EALREADY, EISCONN;
 

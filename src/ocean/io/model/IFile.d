@@ -17,7 +17,7 @@
 
 module ocean.io.model.IFile;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 /*******************************************************************************
 

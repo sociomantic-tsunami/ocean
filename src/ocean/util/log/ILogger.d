@@ -24,7 +24,7 @@
 module ocean.util.log.ILogger;
 
 import ocean.stdc.string;
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 version (unittest)
 {

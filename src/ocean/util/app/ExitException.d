@@ -17,7 +17,7 @@ module ocean.util.app.ExitException;
 
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 
 /*******************************************************************************

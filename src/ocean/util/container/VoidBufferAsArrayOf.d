@@ -46,7 +46,7 @@
 
 module ocean.util.container.VoidBufferAsArrayOf;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 /*******************************************************************************
 
@@ -61,7 +61,7 @@ import ocean.transition;
 public struct VoidBufferAsArrayOf ( T )
 {
     // T == void is not only pointless but is also invalid: it's illegal to pass
-    // a void argument to a function (e.g. opCatAssign).
+    // a void argument to a function (e.g. opOpAssign!("~")).
     static assert(!is(T == void));
 
     /// Pointer to the underlying void buffer. Must be set before use by struct
@@ -110,7 +110,7 @@ public struct VoidBufferAsArrayOf ( T )
     public void length ( size_t len )
     {
         this.buffer.length = len * T.sizeof;
-        enableStomping(*this.buffer);
+        assumeSafeAppend(*this.buffer);
     }
 
     /***************************************************************************
@@ -120,9 +120,6 @@ public struct VoidBufferAsArrayOf ( T )
         Note that mutable copies of appended elements are made internally, but
         to access them from the outside, the constness of T applies.
 
-        but
-        are inaccessible from the outside.
-
         Params:
             arr = elements to append
 
@@ -131,7 +128,7 @@ public struct VoidBufferAsArrayOf ( T )
 
     ***************************************************************************/
 
-    public T[] opCatAssign ( in T[] arr )
+    public T[] opOpAssign ( string op : "~" ) ( in T[] arr )
     {
         return cast(T[])((*this.buffer) ~= cast(void[])arr);
     }
@@ -151,9 +148,9 @@ public struct VoidBufferAsArrayOf ( T )
 
     ***************************************************************************/
 
-    public T[] opCatAssign ( in T element )
+    public T[] opOpAssign ( string op : "~" ) ( in T element )
     {
-        return this.opCatAssign((&element)[0 .. 1]);
+        return this.opOpAssign!("~")((&element)[0 .. 1]);
     }
 }
 

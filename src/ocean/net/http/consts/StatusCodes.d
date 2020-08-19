@@ -18,7 +18,7 @@
 module ocean.net.http.consts.StatusCodes;
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.net.http.HttpConst: HttpHeader, HttpResponseCode;
 

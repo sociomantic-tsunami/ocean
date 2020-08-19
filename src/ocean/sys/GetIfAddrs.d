@@ -16,13 +16,14 @@
 module ocean.sys.GetIfAddrs;
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import core.stdc.errno;
 import core.stdc.string;
-import ocean.stdc.posix.sys.socket;
 import core.sys.posix.arpa.inet;
+import core.sys.posix.netdb : getnameinfo, NI_MAXHOST, NI_NUMERICHOST;
 import core.sys.posix.netinet.in_: sockaddr_in, sockaddr_in6;
+import core.sys.posix.sys.socket;
 
 static if (__VERSION__ < 2073)
 {

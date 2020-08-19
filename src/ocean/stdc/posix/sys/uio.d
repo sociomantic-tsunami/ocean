@@ -11,7 +11,7 @@
 
 *******************************************************************************/
 
-
+deprecated("Use `core.sys.posix.sys.uio` directly")
 module ocean.stdc.posix.sys.uio;
 
 public import core.sys.posix.sys.uio;

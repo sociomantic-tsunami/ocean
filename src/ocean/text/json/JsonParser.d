@@ -17,7 +17,7 @@
 
 module ocean.text.json.JsonParser;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.core.Exception;
 import ocean.util.container.more.Stack;
 

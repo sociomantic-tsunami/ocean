@@ -15,7 +15,7 @@
 
 module integrationtest.pathutils.main;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.core.Enforce;
 
@@ -32,7 +32,7 @@ import ocean.util.test.DirectorySandbox;
 import core.sys.posix.sys.stat;
 
 /// Test method
-version(UnitTest) {} else
+version (unittest) {} else
 void main ( )
 {
     auto sandbox = DirectorySandbox.create();

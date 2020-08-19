@@ -18,7 +18,7 @@ module ocean.util.log.Stats_slowtest;
 import ocean.core.Test,
        ocean.util.log.Stats;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.io.device.TempFile;
 
 unittest

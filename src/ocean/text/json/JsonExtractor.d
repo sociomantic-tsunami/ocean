@@ -157,7 +157,7 @@
 module ocean.text.json.JsonExtractor;
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.text.json.JsonParserIter;
 import ocean.core.Array;

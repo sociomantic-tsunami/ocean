@@ -39,7 +39,6 @@ import ocean.core.Array : pop;
 import ocean.meta.traits.Basic;
 import ocean.meta.types.Typedef;
 
-import ocean.transition;
 import ocean.core.Buffer;
 import ocean.core.TypeConvert;
 
@@ -227,7 +226,7 @@ public class FreeList ( T ) : IFreeList!(ItemType_!(T))
         if ( this.free_list.length > num )
         {
             this.free_list.length = num;
-            enableStomping(this.free_list);
+            assumeSafeAppend(this.free_list);
         }
 
         return this;
@@ -368,11 +367,11 @@ version (unittest)
 
     private class Class
     {
-        mixin(genOpEquals(`
+        override equals_t opEquals(Object rhs)
         {
             auto crhs = cast(typeof(this)) rhs;
             return this.i == crhs.i && this.s == crhs.s;
-        }`));
+        }
 
         size_t i;
         char[] s;

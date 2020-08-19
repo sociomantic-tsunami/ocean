@@ -16,7 +16,7 @@
 module ocean.net.http.consts.HeaderFieldNames;
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 
 /******************************************************************************/

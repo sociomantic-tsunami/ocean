@@ -20,9 +20,9 @@
 
 module ocean.time.Time;
 
-import ocean.transition;
-
+import core.time;
 import core.stdc.time: time_t;
+import ocean.meta.types.Qualifiers;
 
 version (unittest)
 {
@@ -62,7 +62,12 @@ version (unittest)
 struct TimeSpan
 {
         // this is the only member of the struct.
-        package long ticks_;
+        package Duration duration_;
+
+        /// Convenience function (older compilers don't allow public alias to package)
+        public Duration duration () const { return this.duration_; }
+        /// Allow implicit conversion from `TimeSpan` to `Duration`
+        alias duration this;
 
         // useful constants.  Shouldn't be used in normal code, use the
         // static TimeSpan members below instead.  i.e. instead of
@@ -99,30 +104,49 @@ struct TimeSpan
         /**
          * Minimum TimeSpan
          */
-        enum TimeSpan min = {long.min};
+        enum TimeSpan min = TimeSpan(Duration.min);
 
         /**
          * Maximum TimeSpan
          */
-        enum TimeSpan max = {long.max};
+        enum TimeSpan max = TimeSpan(Duration.max);
 
         /**
          * Zero TimeSpan.  Useful for comparisons.
          */
-        enum TimeSpan zero = {0};
+        enum TimeSpan zero = TimeSpan(Duration.zero);
+
+        /// Compatibility constructors
+        public this (long ticks)
+        {
+            this.duration_ = ticks.hnsecs;
+        }
+
+        ///
+        public this (Duration dur)
+        {
+            this.duration_ = dur;
+        }
 
         /**
-         * Get the number of ticks that this timespan represents.  This can be
-         * used to construct another TimeSpan:
+         * Get the number of ticks that this timespan represents.
          *
+         * A tick correspond to an hecto-nanosecond, or 100ns.
+         * This is the way this struct stores data internally,
+         * which is the representation `core.time : Duration` uses.
+         *
+         * This method can be used to construct another `TimeSpan`:
          * --------
          * long ticks = myTimeSpan.ticks;
          * TimeSpan copyOfMyTimeSpan = TimeSpan(ticks);
          * --------
+         *
+         * See_Also:
+         * https://dlang.org/phobos/core_time.html
          */
         long ticks()
         {
-                return ticks_;
+            return this.duration_.total!"hnsecs";
         }
 
         /**
@@ -130,23 +154,16 @@ struct TimeSpan
          */
         equals_t opEquals(TimeSpan t)
         {
-                return ticks_ is t.ticks_;
+                return this.duration_ == t.duration_;
         }
 
         /**
          * Compares this object against another TimeSpan value.
          */
-        mixin(genOpCmp(`
-            {
-                    if (ticks_ < rhs.ticks_)
-                        return -1;
-
-                    if (ticks_ > rhs.ticks_)
-                        return 1;
-
-                    return 0;
-            }
-        `));
+        public int opCmp ( const typeof(this) rhs ) const
+        {
+            return this.duration_.opCmp(rhs.duration_);
+        }
 
         /**
          * Add or subtract the TimeSpan given to this TimeSpan returning a
@@ -159,21 +176,21 @@ struct TimeSpan
          */
         TimeSpan opBinary (string op) (TimeSpan t) if (op == "+" || op == "-")
         {
-            mixin("return TimeSpan(ticks_ " ~ op ~ " t.ticks_);");
+            mixin("return TimeSpan(this.duration_ " ~ op ~ " t.duration_);");
         }
 
         unittest
         {
             TimeSpan time_span;
-            time_span.ticks_ = 5;
+            time_span.duration_ = 5.hnsecs;
 
             TimeSpan test_span;
-            test_span.ticks_ = 10;
+            test_span.duration_ = 10.hnsecs;
 
             auto res = time_span + test_span;
             test!("==")(res.ticks(), 15);
 
-            test_span.ticks_ = 3;
+            test_span.duration_ = 3.hnsecs;
 
             res = time_span - test_span;
             test!("==")(res.ticks(), 2);
@@ -190,22 +207,22 @@ struct TimeSpan
 
         TimeSpan opOpAssign (string op) (TimeSpan t) if (op == "+" || op == "-")
         {
-            mixin("ticks_ " ~ op ~ "= t.ticks_;");
+            mixin("duration_ " ~ op ~ "= t.duration_;");
             return this;
         }
 
         unittest
         {
             TimeSpan time_span;
-            time_span.ticks_ = 5;
+            time_span.duration_ = 5.hnsecs;
 
             TimeSpan test_span;
-            test_span.ticks_ = 10;
+            test_span.duration_ = 10.hnsecs;
 
             time_span += test_span;
             test!("==")(time_span.ticks(), 15);
 
-            test_span.ticks_ = 3;
+            test_span.duration_ = 3.hnsecs;
 
             time_span -= test_span;
             test!("==")(time_span.ticks(), 12);
@@ -224,13 +241,13 @@ struct TimeSpan
          */
         TimeSpan opBinary (string op) (long v) if (op == "*" || op == "/")
         {
-                mixin("return TimeSpan(ticks_ " ~ op ~ " v);");
+                mixin("return TimeSpan(duration_ " ~ op ~ " v);");
         }
 
         unittest
         {
             TimeSpan time_span;
-            time_span.ticks_ = 5;
+            time_span.duration_ = 5.hnsecs;
 
             auto res = time_span * 10;
             test!("==")(res.ticks(), 50);
@@ -248,14 +265,14 @@ struct TimeSpan
          */
         TimeSpan opOpAssign (string op) (long v) if (op == "*" || op == "/")
         {
-                mixin("ticks_ " ~ op ~ "= v;");
+                mixin("duration_ " ~ op ~ "= v;");
                 return this;
         }
 
         unittest
         {
             TimeSpan time_span;
-            time_span.ticks_ = 5;
+            time_span.duration_ = 5.hnsecs;
 
             time_span *= 10;
             test!("==")(time_span.ticks(), 50);
@@ -274,16 +291,16 @@ struct TimeSpan
          */
         long opBinary (string op) (TimeSpan t) if (op == "/")
         {
-                return ticks_ / t.ticks;
+            return duration_ / t.duration_;
         }
 
         unittest
         {
             TimeSpan time_span;
-            time_span.ticks_ = 10;
+            time_span.duration_ = 10.hnsecs;
 
             TimeSpan test_span;
-            test_span.ticks_ = 5;
+            test_span.duration_ = 5.hnsecs;
 
             test!("==")(time_span / test_span, 2);
         }
@@ -296,13 +313,13 @@ struct TimeSpan
          */
         TimeSpan opUnary (string op) () if (op == "-")
         {
-                return TimeSpan(-ticks_);
+                return TimeSpan(-duration_);
         }
 
         unittest
         {
             TimeSpan time_span;
-            time_span.ticks_ = 10;
+            time_span.duration_ = 10.hnsecs;
 
             auto res = (-time_span);
 
@@ -319,7 +336,7 @@ struct TimeSpan
          */
         long nanos()
         {
-                return ticks_ * NanosecondsPerTick;
+            return duration_.total!"nsecs";
         }
 
         /**
@@ -329,7 +346,7 @@ struct TimeSpan
          */
         long micros()
         {
-                return ticks_ / TicksPerMicrosecond;
+            return duration_.total!"usecs";
         }
 
         /**
@@ -339,7 +356,7 @@ struct TimeSpan
          */
         long millis()
         {
-                return ticks_ / TicksPerMillisecond;
+            return duration_.total!"msecs";
         }
 
         /**
@@ -349,7 +366,7 @@ struct TimeSpan
          */
         long seconds()
         {
-                return ticks_ / TicksPerSecond;
+            return duration_.total!"seconds";
         }
 
         /**
@@ -359,7 +376,7 @@ struct TimeSpan
          */
         long minutes()
         {
-                return ticks_ / TicksPerMinute;
+            return duration_.total!"minutes";
         }
 
         /**
@@ -369,7 +386,7 @@ struct TimeSpan
          */
         long hours()
         {
-                return ticks_ / TicksPerHour;
+            return duration_.total!"hours";
         }
 
         /**
@@ -379,7 +396,7 @@ struct TimeSpan
          */
         long days()
         {
-                return ticks_ / TicksPerDay;
+            return duration_.total!"days";
         }
 
         /**
@@ -393,7 +410,7 @@ struct TimeSpan
          */
         double interval()
         {
-                return (cast(double) ticks_) / TicksPerSecond;
+            return (cast(double) duration_.total!"hnsecs") / TicksPerSecond;
         }
 
         /**
@@ -403,7 +420,7 @@ struct TimeSpan
          */
         TimeOfDay time()
         {
-                return TimeOfDay(ticks_);
+                return TimeOfDay(duration_);
         }
 
         /**
@@ -417,7 +434,7 @@ struct TimeSpan
          */
         static TimeSpan fromNanos(long value)
         {
-                return TimeSpan(value / NanosecondsPerTick);
+            return TimeSpan(value.dur!"nsecs");
         }
 
         /**
@@ -428,7 +445,7 @@ struct TimeSpan
          */
         static TimeSpan fromMicros(long value)
         {
-                return TimeSpan(TicksPerMicrosecond * value);
+            return TimeSpan(value.dur!"usecs");
         }
 
         /**
@@ -439,7 +456,7 @@ struct TimeSpan
          */
         static TimeSpan fromMillis(long value)
         {
-                return TimeSpan(TicksPerMillisecond * value);
+                return TimeSpan(value.dur!"msecs");
         }
 
         /**
@@ -450,7 +467,7 @@ struct TimeSpan
          */
         static TimeSpan fromSeconds(long value)
         {
-                return TimeSpan(TicksPerSecond * value);
+            return TimeSpan(value.dur!"seconds");
         }
 
         /**
@@ -461,7 +478,7 @@ struct TimeSpan
          */
         static TimeSpan fromMinutes(long value)
         {
-                return TimeSpan(TicksPerMinute * value);
+            return TimeSpan(value.dur!"minutes");
         }
 
         /**
@@ -472,7 +489,7 @@ struct TimeSpan
          */
         static TimeSpan fromHours(long value)
         {
-                return TimeSpan(TicksPerHour * value);
+            return TimeSpan(value.dur!"hours");
         }
 
         /**
@@ -483,7 +500,7 @@ struct TimeSpan
          */
         static TimeSpan fromDays(long value)
         {
-                return TimeSpan(TicksPerDay * value);
+            return TimeSpan(value.dur!"days");
         }
 
         /**
@@ -496,7 +513,7 @@ struct TimeSpan
          */
         static TimeSpan fromInterval(double sec)
         {
-                return TimeSpan(cast(long)(sec * TicksPerSecond + .1));
+            return TimeSpan((cast(long)(sec * TicksPerSecond + .1)).dur!"hnsecs");
         }
 }
 
@@ -611,7 +628,7 @@ struct Time
 
         Time opBinary (string op) (TimeSpan t) if (op == "+" || op == "-")
         {
-            mixin("return Time(ticks_ " ~ op ~ " t.ticks_);");
+            mixin("return Time(ticks_ " ~ op ~ " t.duration_.total!`hnsecs`);");
         }
 
         unittest
@@ -620,12 +637,12 @@ struct Time
             time_span.ticks_ = 5;
 
             TimeSpan test_span;
-            test_span.ticks_ = 10;
+            test_span.duration_ = 10.dur!"hnsecs";
 
             auto res = time_span + test_span;
             test!("==")(res.ticks(), 15);
 
-            test_span.ticks_ = 3;
+            test_span.duration_ = 3.dur!"hnsecs";
 
             res = time_span - test_span;
             test!("==")(res.ticks(), 2);
@@ -645,7 +662,7 @@ struct Time
 
         Time opOpAssign (string op) (TimeSpan t) if (op == "+" || op == "-")
         {
-                mixin("ticks_ " ~ op ~ "= t.ticks_;");
+                mixin("ticks_ " ~ op ~ "= t.duration_.total!`hnsecs`;");
                 return this;
         }
 
@@ -655,12 +672,12 @@ struct Time
             time_span.ticks_ = 5;
 
             TimeSpan test_span;
-            test_span.ticks_ = 10;
+            test_span.duration_ = 10.dur!"hnsecs";
 
             time_span += test_span;
             test!("==")(time_span.ticks(), 15);
 
-            test_span.ticks_ = 3;
+            test_span.duration_ = 3.dur!"hnsecs";
 
             time_span -= test_span;
             test!("==")(time_span.ticks(), 12);
@@ -680,7 +697,7 @@ struct Time
 
         TimeSpan opBinary (string op) (Time t) if (op == "-")
         {
-                return TimeSpan(ticks_ - t.ticks_);
+            return TimeSpan((ticks - t.ticks_).dur!"hnsecs");
         }
 
         unittest
@@ -689,7 +706,7 @@ struct Time
             time_span.ticks_ = 5;
 
             TimeSpan test_span;
-            test_span.ticks_ = 3;
+            test_span.duration_ = 3.dur!"hnsecs";
 
             auto res = time_span - test_span;
             test!("==")(res.ticks(), 2);
@@ -866,14 +883,18 @@ struct TimeOfDay
          */
         static TimeOfDay opCall (long ticks)
         {
-                TimeOfDay t = void;
-                ticks = modulo24(ticks).ticks_;
-                t.millis  = cast(uint) (ticks / TimeSpan.TicksPerMillisecond);
-                t.seconds = (t.millis / 1_000) % 60;
-                t.minutes = (t.millis / 60_000) % 60;
-                t.hours   = (t.millis / 3_600_000) % 24;
-                t.millis %= 1000;
-                return t;
+            return TimeOfDay(modulo24(ticks));
+        }
+
+        /// Ditto
+        static TimeOfDay opCall (Duration dur)
+        {
+            // Note: Since this represents a time of day, hours needs to be
+            // 0 <= hours < 24. Using `days` ensures that, even if we don't
+            // use the value.
+            auto splitted = dur.split!("days", "hours", "minutes", "seconds", "msecs");
+            return TimeOfDay(cast(uint)splitted.hours, cast(uint)splitted.minutes,
+                             cast(uint)splitted.seconds, cast(uint)splitted.msecs);
         }
 
         /**

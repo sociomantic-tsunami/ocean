@@ -27,7 +27,7 @@ module ocean.text.entities.model.IEntitySet;
 
 import ocean.text.utf.UtfString : InvalidUnicode, utf_match;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 /*******************************************************************************
 
@@ -121,6 +121,18 @@ public abstract class IEntitySet
 
         return "";
     }
+
+
+    /***************************************************************************
+
+        Support for the 'in' operator
+
+        Aliased to the various opIn_r member functions, for backwards
+        compatibility
+
+    ***************************************************************************/
+
+    public alias opBinaryRight ( istring op : "in" ) = opIn_r;
 
 
     /***************************************************************************

@@ -17,6 +17,7 @@
 
 ******************************************************************************/
 
+deprecated("This module is deprecated without replacement")
 module ocean.time.chrono.Korean;
 
 import ocean.time.chrono.GregorianBased;
@@ -26,6 +27,7 @@ import ocean.time.chrono.GregorianBased;
  * $(ANCHOR _Korean)
  * Represents the Korean calendar.
  */
+deprecated("This class is deprecated without replacement")
 public class Korean : GregorianBased {
   /**
    * $(I Property.) Overridden. Retrieves the identifier associated with the current calendar.
@@ -36,5 +38,3 @@ public class Korean : GregorianBased {
   }
 
 }
-
-

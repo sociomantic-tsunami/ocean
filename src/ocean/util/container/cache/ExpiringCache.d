@@ -23,7 +23,7 @@
 
 module ocean.util.container.cache.ExpiringCache;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.util.container.cache.model.IExpiringCacheInfo;
 

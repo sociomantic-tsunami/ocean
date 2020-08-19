@@ -113,7 +113,7 @@ module ocean.core.SmartEnum;
 
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 public import ocean.core.Enforce;
 
@@ -179,7 +179,7 @@ unittest
 
 public template SmartEnumCore ( BaseType )
 {
-    import ocean.transition;
+    import ocean.meta.types.Qualifiers;
 
     /***************************************************************************
 
@@ -209,7 +209,7 @@ public template SmartEnumCore ( BaseType )
         return code in map;
     }
 
-    public alias description opIn_r;
+    public alias opBinaryRight ( istring op : "in" ) = description;
 
 
     /***************************************************************************
@@ -231,7 +231,8 @@ public template SmartEnumCore ( BaseType )
         return description in map;
     }
 
-    public alias code opIn_r;
+    public alias opBinaryRight ( istring op : "in" ) = code;
+
 
 
     /***************************************************************************
@@ -371,9 +372,9 @@ public template SmartEnumCore ( BaseType )
     static public int opApply ( scope int delegate ( ref BaseType code, ref istring desc ) dg )
     {
         int res;
-        foreach ( code, description; map )
+        foreach ( enum_code, enum_description; map )
         {
-            res = dg(code, description);
+            res = dg(enum_code, enum_description);
         }
         return res;
     }
@@ -389,9 +390,9 @@ public template SmartEnumCore ( BaseType )
     static public int opApply ( scope int delegate ( ref size_t index, ref BaseType code, ref istring desc ) dg )
     {
         int res;
-        foreach ( index, code, description; map )
+        foreach ( index, enum_code, enum_description; map )
         {
-            res = dg(index, code, description);
+            res = dg(index, enum_code, enum_description);
         }
         return res;
     }
@@ -1063,7 +1064,7 @@ public struct TwoWayMap ( A )
 
     /***************************************************************************
 
-        opIn_r operator - performs a lookup of an item A in the map
+        `in` operator - performs a lookup of an item A in the map
         corresponding to an item B.
 
         Params:
@@ -1075,7 +1076,7 @@ public struct TwoWayMap ( A )
 
     ***************************************************************************/
 
-    public KeyType* opIn_r ( cstring b )
+    public KeyType* opBinaryRight ( istring op : "in" ) ( cstring b )
     {
         return b in this.b_to_a;
     }
@@ -1095,7 +1096,7 @@ public struct TwoWayMap ( A )
 
     ***************************************************************************/
 
-    public ValueType* opIn_r ( KeyType a )
+    public ValueType* opBinaryRight ( istring op : "in" ) ( KeyType a )
     {
         return a in this.a_to_b;
     }

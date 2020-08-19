@@ -25,7 +25,7 @@
  *  NAN = $(RED NAN)
  */
 module ocean.math.GammaFunction;
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.math.Math;
 import ocean.math.IEEE;
 import ocean.math.ErrorFunction;

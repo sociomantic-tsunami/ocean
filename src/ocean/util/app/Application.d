@@ -19,7 +19,7 @@ module ocean.util.app.Application;
 
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.util.app.model.ExtensibleClassMixin;
 import ocean.util.app.model.IApplicationExtension;

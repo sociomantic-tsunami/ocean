@@ -45,7 +45,7 @@ module ocean.net.server.unix.UnixConnectionHandler;
 
 import ocean.net.server.connection.IFiberConnectionHandler;
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 import ocean.core.array.Mutation;
 
 import ocean.io.select.EpollSelectDispatcher;
@@ -303,7 +303,7 @@ public class UnixSocketConnectionHandler ( CommandHandlerType ) : IFiberConnecti
             log.info("{} - client disconnected", this.address_path);
 
         this.remaining_request_ln.length = 0;
-        enableStomping(this.remaining_request_ln);
+        assumeSafeAppend(this.remaining_request_ln);
 
         while (true)
         {
@@ -349,7 +349,7 @@ public class UnixSocketConnectionHandler ( CommandHandlerType ) : IFiberConnecti
         // to process, or for this facility to call the next command, and
         // save the optional rest
         this.last_read_line.length = 0;
-        enableStomping(this.last_read_line);
+        assumeSafeAppend(this.last_read_line);
 
         this.last_read_line ~= this.remaining_request_ln;
         this.last_read_line ~= before_newline;

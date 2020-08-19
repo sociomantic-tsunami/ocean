@@ -13,7 +13,7 @@ module ocean.net.ssl.openssl.OpenSsl;
 
 
 import core.stdc.config : c_ulong, c_long;
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 
 extern (C):

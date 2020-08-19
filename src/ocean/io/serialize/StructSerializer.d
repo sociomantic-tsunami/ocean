@@ -19,7 +19,7 @@
 module ocean.io.serialize.StructSerializer;
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import ocean.io.serialize.SimpleStreamSerializer;
 

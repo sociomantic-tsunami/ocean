@@ -23,7 +23,7 @@
 module ocean.util.container.AppendBuffer;
 
 
-import ocean.transition;
+import ocean.meta.types.Qualifiers;
 
 import core.stdc.stdlib: malloc, realloc, free;
 
@@ -377,6 +377,18 @@ public class AppendBuffer ( T, Base: AppendBufferImpl ): Base, IAppendBufferRead
             return this[];
         }
     }
+
+
+    /***************************************************************************
+
+        Support for operator ~= for appending elements and concatenating chunks
+
+        Aliased to opCatAssign, for backwards compatibility
+
+    ***************************************************************************/
+
+    alias opOpAssign ( istring op = "~" ) = opCatAssign;
+
 
     /**************************************************************************
 
@@ -1312,7 +1324,7 @@ private abstract class AppendBufferImpl: IAppendBufferBase
     body
     {
         content_.length = n;
-        enableStomping(content_);
+        assumeSafeAppend(content_);
     }
 
     /**************************************************************************
