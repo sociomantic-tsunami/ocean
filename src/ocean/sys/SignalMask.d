@@ -92,13 +92,6 @@ public struct SignalSet
         sigdelset(&this.sigset, signal);
     }
 
-    // deprecated not only because D1 binary operators are being deprecated
-    // in more recent D2 versions, but because this is an inappropriate way
-    // to represent removing signals from the mask
-    deprecated("Use `remove` method instead of subtraction operator!")
-    public alias remove opSub;
-
-
     /***************************************************************************
 
         Adds the specified signal to the set.
@@ -114,13 +107,6 @@ public struct SignalSet
     {
         sigaddset(&this.sigset, signal);
     }
-
-    // deprecated not only because D1 binary operators are being deprecated
-    // in more recent D2 versions, but because this is an inappropriate way
-    // to represent adding signals to the mask
-    deprecated("Use `add` method instead of addition operator!")
-    public alias add opAdd;
-
 
     /***************************************************************************
 
@@ -141,13 +127,6 @@ public struct SignalSet
         }
     }
 
-    // deprecated not only because D1 binary operators are being deprecated
-    // in more recent D2 versions, but because this is an inappropriate way
-    // to represent removing signals from the mask
-    deprecated("Use `remove` method instead of subtraction operator!")
-    public alias remove opSub;
-
-
     /***************************************************************************
 
         Adds the specified signals to the set.
@@ -166,13 +145,6 @@ public struct SignalSet
             this.add(signal);
         }
     }
-
-    // deprecated not only because D1 binary operators are being deprecated
-    // in more recent D2 versions, but because this is an inappropriate way
-    // to represent adding signals to the mask
-    deprecated("Use `add` method instead of addition operator!")
-    public alias add opAdd;
-
 
     /***************************************************************************
 
