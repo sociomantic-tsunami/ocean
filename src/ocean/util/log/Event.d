@@ -88,19 +88,4 @@ public struct LogEvent
     {
         return ILogger.convert(this.level_);
     }
-
-    /// Convert a time value (in milliseconds) to ascii
-    deprecated("Use a direct call to `sformat` instead")
-    static mstring toMilli (mstring s, TimeSpan time)
-    {
-        verify (s.length > 0);
-        long ms = time.millis;
-
-        auto len = s.length;
-        do {
-            s[--len] = cast(char)(ms % 10 + '0');
-            ms /= 10;
-        } while (ms && len);
-        return s[len..s.length];
-    }
 }

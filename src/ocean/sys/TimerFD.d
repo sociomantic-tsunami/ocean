@@ -25,30 +25,6 @@ import core.sys.posix.time: time_t, timespec, itimerspec, CLOCK_REALTIME;
 import core.sys.posix.sys.types: ssize_t;
 import core.sys.posix.unistd: read, close;
 
-
-deprecated("Use `core.sys.linux.timerfd : TFD_TIMER_ABSTIME` directly")
-static immutable TFD_TIMER_ABSTIME = Upstream.TFD_TIMER_ABSTIME;
-deprecated("Use `core.sys.linux.timerfd : TFD_CLOEXEC` directly")
-static immutable TFD_CLOEXEC = Upstream.TFD_CLOEXEC;
-deprecated("Use `core.sys.linux.timerfd : TFD_NONBLOCK` directly")
-static immutable TFD_NONBLOCK = Upstream.TFD_NONBLOCK;
-
-deprecated("Use `core.sys.posix.time : CLOCK_MONOTONIC` directly")
-static immutable CLOCK_MONOTONIC = Upstream.CLOCK_MONOTONIC;
-
-deprecated("Use `core.sys.linuix.timerfd : timerfd_create` directly")
-int timerfd_create(int clockid, int flags = 0)
-{
-    return Upstream.timerfd_create(clockid, flags);
-}
-
-deprecated("Use `core.sys.linuix.timerfd : timerfd_settime` directly")
-alias timerfd_settime = Upstream.timerfd_settime;
-
-deprecated("Use `core.sys.linuix.timerfd : timerfd_gettime` directly")
-alias timerfd_gettime = Upstream.timerfd_gettime;
-
-
 /*******************************************************************************
 
     Timer fd class -- can be used in an allocation-free context if instantiated

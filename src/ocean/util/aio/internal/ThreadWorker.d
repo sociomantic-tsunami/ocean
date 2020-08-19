@@ -26,13 +26,10 @@ import core.sys.posix.pthread;
 import core.sys.posix.unistd;
 import core.stdc.stdint;
 import core.stdc.stdio;
-static import core.thread;
+import core.thread;
 
 import ocean.util.aio.AsyncIO;
 import ocean.util.aio.internal.JobQueue;
-
-deprecated("Use `core.thread : pthread_getattr_np` directly")
-alias pthread_getattr_np = core.thread.pthread_getattr_np;
 
 /**************************************************************************
 

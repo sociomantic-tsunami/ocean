@@ -105,64 +105,6 @@ unittest
 
 /*******************************************************************************
 
-    In D1 ModuleInfo is a class. In D2 it is a struct. ModuleInfoPtr aliases
-    to matching reference type for each of those.
-
-*******************************************************************************/
-
-deprecated("Replace `ModuleInfoPtr` with `ModuleInfo*`")
-alias ModuleInfo* ModuleInfoPtr;
-
-/*******************************************************************************
-
-    In D2 variables are thread-local by default. In many cases this is exactly
-    what you need but sometimes true globals are necessary - primarily related
-    to thread and related tool implementation.
-
-    This small mixin helper prepends __gshared to input declaration when
-    compiled in D2 mode.
-
-*******************************************************************************/
-
-deprecated("Replace `mixin(global('decl'));` with `__gshared decl;`")
-istring global(istring decl)
-{
-    return "__gshared " ~ decl ~ ";";
-}
-
-deprecated unittest
-{
-    mixin(global("int x = 42"));
-    assert(x == 42);
-}
-
-/*******************************************************************************
-
-    In D2 .min was renamed to .min_normal for floating point types to
-    make its meaning more obvious. This is a trivial template wrapper that
-    unifies the naming.
-
-    Params:
-        T = any floating point type
-
-    Return:
-        minimal normalized value for that type
-
-*******************************************************************************/
-
-deprecated("Replace call to `min_normal!(T)` with `T.min_normal`")
-template min_normal(T : real)
-{
-    static immutable min_normal = T.min_normal;
-}
-
-deprecated unittest
-{
-    static assert (min_normal!(double) == double.min_normal);
-}
-
-/*******************************************************************************
-
     Mixin helper to generate proper opCmp declaration. It differs between D1
     and D2 runtime and not matching exact signature will result in weird
     segmentation faults from inside the runtime.
