@@ -24,44 +24,7 @@ import core.sys.posix.arpa.inet;
 import core.sys.posix.netdb : getnameinfo, NI_MAXHOST, NI_NUMERICHOST;
 import core.sys.posix.netinet.in_: sockaddr_in, sockaddr_in6;
 import core.sys.posix.sys.socket;
-
-static if (__VERSION__ < 2073)
-{
-    extern (C)
-    {
-        struct ifaddrs
-        {
-            /// Next item in the list
-            ifaddrs*         ifa_next;
-            /// Name of the interface
-            char*            ifa_name;
-            /// Flags from SIOCGIFFLAGS
-            uint      ifa_flags;
-            /// Address of interface
-            sockaddr* ifa_addr;
-            /// Netmask of interface
-            sockaddr* ifa_netmask;
-
-            union
-            {
-                /// Broadcast address of the interface
-                sockaddr* ifu_broadaddr;
-                /// Point-to-point destination addresss
-                sockaddr* if_dstaddr;
-            }
-
-            /// Address specific data
-            void* ifa_data;
-        };
-
-        int getifaddrs (ifaddrs**);
-
-        void freeifaddrs (ifaddrs*);
-    }
-}
-else
-    import core.sys.linux.ifaddrs;
-
+import core.sys.linux.ifaddrs;
 import core.sys.posix.sys.socket: AF_INET, AF_INET6;
 
 import ocean.core.Test;
