@@ -18,8 +18,8 @@ env:
     global:
         # Make sure beaver is in the PATH
         - PATH="$(git config -f .gitmodules submodule.beaver.path)/bin:$PATH"
-        - DIST=xenial
-        - COV=1
+        - DIST=bionic
+        - COV=0
 
 # Basic config is inherited from the global scope
 jobs:
@@ -33,31 +33,21 @@ jobs:
     include:
         # Test matrix
         - <<: *test-matrix-d2
-          env: DIST=xenial DMD=2.078.3.s* F=production
+          env: DMD=2.092.* F=production
         - <<: *test-matrix-d2
-          env: DIST=xenial DMD=2.078.3.s* F=devel
+          env: DMD=2.092.* F=devel
         - <<: *test-matrix-d2
-          env: DIST=xenial DMD=2.078.3.s* F=devel DFLAGS=-debug=ISelectClient
+          env: DMD=2.093.* F=production COV=1
+        - <<: *test-matrix-d2
+          env: DMD=2.093.* F=devel COV=1
+
+        # Special row(s), try to always use the latest compiler
+        - <<: *test-matrix-d2
+          env: DMD=2.093.* F=devel DFLAGS=-debug=ISelectClient
           script: 2>/dev/null beaver dlang make
-        - <<: *test-matrix-d2
-          env: DIST=xenial DMD=2.085.* F=production
-        - <<: *test-matrix-d2
-          env: DIST=xenial DMD=2.085.* F=devel
-        - <<: *test-matrix-d2
-          env: DIST=bionic DMD=2.078.3.s* F=production
-        - <<: *test-matrix-d2
-          env: DIST=bionic DMD=2.078.3.s* F=devel
-        - <<: *test-matrix-d2
-          env: DIST=bionic DMD=2.078.3.s* F=devel DFLAGS=-debug=ISelectClient
-          script: 2>/dev/null beaver dlang make
-        - <<: *test-matrix-d2
-          env: DIST=bionic DMD=2.091.* F=production
-        - <<: *test-matrix-d2
-          env: DIST=bionic DMD=2.091.* F=devel
 
         # Additional stages
-
         - stage: Closure allocation check
-          env: DMD=2.078.3.s* F=devel
+          env: DMD=2.093.* F=devel
           install: beaver dlang install
           script: ci/closures.sh

@@ -33,9 +33,8 @@ $O/test-taskext_daemon: override LDFLAGS += -lglib-2.0
 $O/test-unixsockext: override LDFLAGS += -lglib-2.0
 
 # Link unittests to all used libraries
-# TODO: Remove the specific version of libssl and libcrypto once the support
-# for Ubuntu xenial is dropped and the bindings for libssl have been updated
-# to v1.1.x
+# TODO: Remove the specific version of libssl and libcrypto once the bindings
+# for libssl have been updated to v1.1.x
 $O/%unittests: override LDFLAGS += -lglib-2.0 -lpcre -lxml2 -lxslt -lebtree \
 		-lreadline -lhistory -llzo2 -lbz2 -lz -ldl -lgcrypt -lgpg-error -lrt \
 		-l:libssl.so.1.0.0 -l:libcrypto.so.1.0.0
