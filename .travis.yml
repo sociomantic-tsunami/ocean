@@ -33,11 +33,11 @@ jobs:
     include:
         # Test matrix
         - <<: *test-matrix-d2
-          env: DMD=2.092.* F=production
+          env: DMD=2.092.* F=prod
         - <<: *test-matrix-d2
           env: DMD=2.092.* F=devel
         - <<: *test-matrix-d2
-          env: DMD=2.093.* F=production COV=1
+          env: DMD=2.093.* F=prod COV=1
         - <<: *test-matrix-d2
           env: DMD=2.093.* F=devel COV=1
 
