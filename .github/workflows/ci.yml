@@ -1,0 +1,54 @@
+# Github worflows for Ocean
+
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  main:
+    name: Run
+    strategy:
+      # Disable `fail-fast` because even if things fail for one compiler release
+      # or build flavour we still want to see how things perform with the others
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-18.04 ]
+        dmd: [ '2.092.*', '2.093.*' ]
+        flavor: [ prod, devel ]
+        include:
+          - { os: ubuntu-18.04, dmd: '2.092.*', dist: bionic, coverage: 0, closure_check: false }
+          - { os: ubuntu-18.04, dmd: '2.093.*', dist: bionic, coverage: 1, closure_check: true  }
+
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    steps:
+
+    # Checkout this repository and its submodules
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+
+    - name: Setup environment
+      run: |
+        echo "$(git config -f .gitmodules submodule.beaver.path)/bin" >> $GITHUB_PATH
+        echo "COV=${{ matrix.coverage }}" >> $GITHUB_ENV
+        echo "DIST=${{ matrix.dist }}" >> $GITHUB_ENV
+        echo "DMD=${{ matrix.dmd }}" >> $GITHUB_ENV
+        echo "F=${{ matrix.flavor }}" >> $GITHUB_ENV
+
+    - name: Install compiler
+      run: beaver dlang install
+
+    - name: Test
+      run: beaver dlang make
+
+    - name: Test closures
+      if: ${{ matrix.closure_check }}
+      run: |
+        2>/dev/null beaver dlang make
+
+    - name: 'Upload coverage'
+      if: ${{ matrix.coverage == 1 }}
+      uses: codecov/codecov-action@v1
+      with:
+        flags: ${{ matrix.dist }}-${{ matrix.flavor }}
