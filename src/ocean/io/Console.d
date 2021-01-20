@@ -108,7 +108,7 @@ struct Console
 
         final bool readln (out cstring content, bool raw=false)
         {
-            size_t line (const(void)[] input)
+            size_t line (scope const(void)[] input)
             {
                 auto text = cast(cstring) input;
                 foreach (i, c; text)

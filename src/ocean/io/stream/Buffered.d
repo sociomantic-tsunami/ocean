@@ -266,7 +266,7 @@ public class BufferedInput : InputFilter, InputBuffer
 
     ***************************************************************************/
 
-    public final size_t reader (scope size_t delegate (const(void)[]) dg)
+    public final size_t reader (scope size_t delegate (scope const(void)[]) dg)
     {
         auto count = dg(this.data[this.index .. this.extent]);
 
@@ -297,7 +297,7 @@ public class BufferedInput : InputFilter, InputBuffer
 
     ***************************************************************************/
 
-    public size_t writer (scope size_t delegate (void[]) dg)
+    public size_t writer (scope size_t delegate (scope void[]) dg)
     {
         auto count = dg(this.data[this.extent .. $]);
 
@@ -326,7 +326,7 @@ public class BufferedInput : InputFilter, InputBuffer
 
     ***************************************************************************/
 
-    public final override size_t read (void[] dst)
+    public final override size_t read (scope void[] dst)
     {
         size_t content = this.readable;
         if (content)
@@ -481,7 +481,7 @@ public class BufferedInput : InputFilter, InputBuffer
 
     ***************************************************************************/
 
-    public final bool next (scope size_t delegate (const(void)[]) scan)
+    public final bool next (scope size_t delegate (scope const(void)[]) scan)
     {
         while (this.reader(scan) is Eof)
         {
@@ -942,7 +942,7 @@ public class BufferedOutput : OutputFilter, OutputBuffer
 
     ***************************************************************************/
 
-    public final override size_t write (const(void)[] src)
+    public final override size_t write (scope const(void)[] src)
     {
         this.append(src.ptr, src.length);
         return src.length;
@@ -966,7 +966,7 @@ public class BufferedOutput : OutputFilter, OutputBuffer
 
     ***************************************************************************/
 
-    public final BufferedOutput append (const(void)[] src)
+    public final BufferedOutput append (scope const(void)[] src)
     {
         return this.append(src.ptr, src.length);
     }
@@ -990,7 +990,7 @@ public class BufferedOutput : OutputFilter, OutputBuffer
 
     ***************************************************************************/
 
-    public final BufferedOutput append (const(void)* src, size_t length)
+    public final BufferedOutput append (scope const(void)* src, size_t length)
     {
         if (length > this.writable)
         {
@@ -1260,7 +1260,7 @@ public class BufferedOutput : OutputFilter, OutputBuffer
 
    ***************************************************************************/
 
-    final size_t writer (scope size_t delegate (void[]) dg)
+    final size_t writer (scope size_t delegate (scope void[]) dg)
     {
         auto count = dg (this.data[this.extent..this.dimension]);
 
@@ -1291,7 +1291,7 @@ public class BufferedOutput : OutputFilter, OutputBuffer
 
    ***************************************************************************/
 
-    private final size_t reader (scope size_t delegate (const(void)[]) dg)
+    private final size_t reader (scope size_t delegate (scope const(void)[]) dg)
     {
         auto count = dg (this.data[this.index..this.extent]);
 
