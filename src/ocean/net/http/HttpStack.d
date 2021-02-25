@@ -32,7 +32,6 @@ import ocean.stdc.string: strncasecmp;
 
 import ocean.stdc.string: memmove;
 import core.stdc.stdio;
-import core.stdc.stdlib;
 
 /******************************************************************************
 
@@ -61,9 +60,7 @@ class Token
     {
         printf(("Use Token.get instead of Token.toString :" ~
                 " latter allocates each time. Aborting\n").ptr);
-        abort();
-
-        return idup(value);
+        assert(0);
     }
 }
 
