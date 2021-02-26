@@ -45,7 +45,7 @@ jobs:
     - name: Test closures
       if: ${{ matrix.closure_check }}
       run: |
-        2>/dev/null beaver dlang make
+        ./ci/closures.sh
 
     - name: 'Upload coverage'
       if: ${{ matrix.coverage == 1 }}
