@@ -13,42 +13,67 @@ jobs:
       fail-fast: false
       matrix:
         os: [ ubuntu-18.04 ]
-        dmd: [ '2.092.*', '2.093.*' ]
+        dc: [ dmd-2.092.1, dmd-2.093.1 ]
         flavor: [ prod, devel ]
         include:
-          - { os: ubuntu-18.04, dmd: '2.092.*', dist: bionic, coverage: 0, closure_check: false }
-          - { os: ubuntu-18.04, dmd: '2.093.*', dist: bionic, coverage: 1, closure_check: true  }
+          - { dc: dmd-2.093.1, coverage: 1, closure_check: 1 }
 
     runs-on: ${{ matrix.os }}
     timeout-minutes: 30
     steps:
+    - name: "Ensure tools/ exists"
+      run: mkdir -p ${{ github.workspace }}/tools/
+
+    - name: 'Restore ebtree from cache'
+      id: cache-ebtree
+      uses: actions/cache@v1
+      with:
+        path: ${{ github.workspace }}/tools/
+        key:  ebtree
+
+    - name: 'Download ebtree from bintray'
+      if: steps.cache-ebtree.outputs.cache-hit != 'true'
+      run: |
+        wget -O ${{ github.workspace }}/tools/libebtree.deb https://bintray.com/sociomantic-tsunami/dlang/download_file?file_path=libebtree6_6.0.s7-rc5-xenial_amd64.deb
+        wget -O ${{ github.workspace }}/tools/libebtree-dev.deb https://bintray.com/sociomantic-tsunami/dlang/download_file?file_path=libebtree6-dev_6.0.s7-rc5-xenial_amd64.deb
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update && \
+        sudo apt-get install -y libxslt-dev liblzo2-dev libgcrypt-dev libgpg-error-dev
+        sudo dpkg -i ${{ github.workspace }}/tools/libebtree*.deb
+
+    - name: Install compiler
+      uses: dlang-community/setup-dlang@v1
+      with:
+        compiler: ${{ matrix.dc }}
 
     # Checkout this repository and its submodules
     - uses: actions/checkout@v2
       with:
         submodules: true
-
-    - name: Setup environment
-      run: |
-        echo "$(git config -f .gitmodules submodule.beaver.path)/bin" >> $GITHUB_PATH
-        echo "COV=${{ matrix.coverage }}" >> $GITHUB_ENV
-        echo "DIST=${{ matrix.dist }}" >> $GITHUB_ENV
-        echo "DMD=${{ matrix.dmd }}" >> $GITHUB_ENV
-        echo "F=${{ matrix.flavor }}" >> $GITHUB_ENV
-
-    - name: Install compiler
-      run: beaver dlang install
+        # Required for codecov (codecov/codecov-action#190)
+        fetch-depth: 2
 
     - name: Test
-      run: beaver dlang make
+      run: |
+        make all test V=1 F=${{ matrix.flavor }} COV=${{ matrix.coverage }}
 
     - name: Test closures
-      if: ${{ matrix.closure_check }}
+      if: ${{ matrix.closure_check == 1 }}
+      env:
+        F: ${{ matrix.flavor }}
+        DFLAGS: -vgc
       run: |
-        ./ci/closures.sh
+        # Run tests and write compiler output to temporary file
+        compiler_output=`mktemp`
+        make fasttest 2>&1 > $compiler_output
+        # Ensure there are no lines about closure allocations in the output.
+        # Note explicit check for `grep` exit status 1, i.e. no lines found.
+        ! grep -e "closure" $compiler_output
 
     - name: 'Upload coverage'
       if: ${{ matrix.coverage == 1 }}
       uses: codecov/codecov-action@v1
       with:
-        flags: ${{ matrix.dist }}-${{ matrix.flavor }}
+        flags: ${{ matrix.dc }}-${{ matrix.flavor }}
