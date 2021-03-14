@@ -2,18 +2,12 @@
 
     Logging system for applications
 
-    Alternative to `ocean.util.log.Log` that uses `ocean.text.convert.Formatter`
-    instead of Tango's Layout. The major difference in the API is on
-    the logging primitives (`Logger.{trace,info,warn,error,fatal}`).
-
     The most common pattern for using this class is to have a module-global
     object and initialize it on construction:
 
     ---
-    // Workaround: https://github.com/dlang/dub/issues/1761
-    module_ superapp.main;
+    module superapp.main;
 
-    import ocean.meta.types.Qualifiers;
     import ocean.util.log.Logger;
 
     private Logger log;
@@ -22,7 +16,7 @@
         log = Log.lookup("superapp.main");
     }
 
-    void main (istring[] args)
+    void main (string[] args)
     {
         log.info("App started with {} arguments: {}", args.length, args);
     }
