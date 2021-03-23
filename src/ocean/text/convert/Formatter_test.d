@@ -35,6 +35,22 @@ unittest
     test!("==")(format("{}", f), "Hello void");
 }
 
+// scope cstring
+unittest
+{
+    static struct Foo
+    {
+        int i = 0x2A;
+        void toString (scope void delegate (scope cstring) sink)
+        {
+            sink("Hello void");
+        }
+    }
+
+    Foo f;
+    test!("==")(format("{}", f), "Hello void");
+}
+
 /// Test for Buffer overload
 unittest
 {

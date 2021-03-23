@@ -239,7 +239,7 @@ class Conduit : IConduit
 
         ***********************************************************************/
 
-        final Conduit put (void[] src)
+        final Conduit put (scope void[] src)
         {
                 put (src, this);
                 return this;
@@ -370,7 +370,7 @@ class Conduit : IConduit
 
         ***********************************************************************/
 
-        static void put (void[] src, OutputStream output)
+        static void put (scope void[] src, OutputStream output)
         {
                 while (src.length)
                       {
@@ -484,7 +484,7 @@ class InputFilter : InputStream
 
         ***********************************************************************/
 
-        size_t read (void[] dst)
+        size_t read (scope void[] dst)
         {
                 return source.read (dst);
         }
@@ -598,7 +598,7 @@ class OutputFilter : OutputStream
 
         ***********************************************************************/
 
-        size_t write (const(void)[] src)
+        size_t write (scope const(void)[] src)
         {
                 return sink.write (src);
         }

@@ -288,7 +288,7 @@ class Iterator : InputFilter
                     return true;
 
                 // consume trailing token
-                source.reader ((const(void)[] arr)
+                source.reader ((scope const(void)[] arr)
                               {
                               slice = (cast(const(char)*) arr.ptr) [0 .. arr.length];
                               return arr.length;

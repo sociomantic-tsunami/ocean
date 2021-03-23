@@ -473,7 +473,7 @@ public class StatsLog
 
     private void format ( istring category, T ) ( ref T values, cstring instance )
     {
-        scope sink = (cstring v) { this.buffer ~= v; };
+        scope FormatterSink sink = (v) { this.buffer ~= v; };
         foreach ( i, value; values.tupleof )
         {
             auto value_name = .identifier!(T.tupleof[i]);
