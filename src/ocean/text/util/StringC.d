@@ -30,12 +30,11 @@
 
 module ocean.text.util.StringC;
 
-
-
+import ocean.core.Buffer;
 import ocean.meta.types.Qualifiers;
 
-import ocean.core.Buffer;
-import ocean.stdc.string: strlen, wcslen;
+import core.stdc.string: strlen;
+import core.stdc.wchar_: wcslen;
 import core.stdc.stddef: wchar_t;
 
 

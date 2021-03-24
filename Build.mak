@@ -40,4 +40,5 @@ $O/%unittests: override LDFLAGS += -lglib-2.0 -lpcre -lxml2 -lxslt -lebtree \
 		-l:libssl.so.1.0.0 -l:libcrypto.so.1.0.0
 
 # Remove deprecated modules from testing:
-# TEST_FILTER_OUT +=
+TEST_FILTER_OUT += \
+	$C/src/ocean/stdc/string.d

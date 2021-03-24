@@ -11,7 +11,8 @@
 
 *******************************************************************************/
 
-
+deprecated("Import `core.stdc.{string,wchar_}`, `occean.stdc.gnu.string`, " ~
+           "or `core.sys.posix.string[s]` directly")
 module ocean.stdc.string;
 
 public import core.stdc.string;

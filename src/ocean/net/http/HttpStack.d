@@ -18,20 +18,11 @@
 module ocean.net.http.HttpStack;
 
 import ocean.core.ExceptionDefinitions;
-
 import ocean.meta.types.Qualifiers;
 
-/******************************************************************************
-
-        Unix doesn't appear to have a memicmp() ... JJR notes that the
-        strncasecmp() is available instead.
-
-******************************************************************************/
-
-import ocean.stdc.string: strncasecmp;
-
-import ocean.stdc.string: memmove;
+import core.stdc.string: memmove;
 import core.stdc.stdio;
+import core.sys.posix.strings: strncasecmp;
 
 /******************************************************************************
 

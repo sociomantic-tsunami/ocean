@@ -18,8 +18,9 @@ public import ocean.net.model.UriView;
 import ocean.meta.types.Qualifiers;
 import ocean.core.Exception;
 import ocean.core.Buffer;
-import ocean.stdc.string : memchr;
 import Integer = ocean.text.convert.Integer_tango;
+
+import core.stdc.string : memchr;
 
 version (unittest)
 {

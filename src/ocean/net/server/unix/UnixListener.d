@@ -107,22 +107,18 @@ public class UnixSocketListener ( CommandHandlerType ) : SelectListener!(
     cstring // address_path
 )
 {
-    import ocean.sys.socket.UnixSocket;
+    import ocean.core.Enforce;
     import ocean.stdc.posix.sys.un: sockaddr_un;
+    import ocean.sys.socket.UnixSocket;
     import ocean.text.convert.Formatter;
+    import ocean.util.log.Logger;
 
+    import core.stdc.errno: errno;
+    import core.stdc.string: strerror_r, strlen;
     import core.sys.posix.sys.socket: AF_UNIX, sockaddr;
     import core.sys.posix.sys.stat;
     import core.sys.posix.unistd: unlink;
-    import core.stdc.errno: errno;
 
-    import ocean.stdc.string: strerror_r, strlen;
-
-    import ocean.core.Enforce;
-
-    import ocean.util.log.Logger;
-
-    import core.sys.posix.sys.stat: umask;
 
     /***************************************************************************
 

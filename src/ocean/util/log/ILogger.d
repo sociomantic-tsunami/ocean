@@ -23,8 +23,8 @@
 
 module ocean.util.log.ILogger;
 
-import ocean.stdc.string;
 import ocean.meta.types.Qualifiers;
+import core.sys.posix.strings;
 
 version (unittest)
 {

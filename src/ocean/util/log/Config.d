@@ -79,7 +79,6 @@ import ocean.util.config.ConfigFiller;
 import ocean.util.config.ConfigParser;
 import ocean.util.log.AppendFile;
 import ocean.util.log.AppendSysLog;
-import ocean.stdc.string;
 import ocean.text.util.StringSearch;
 
 import ocean.util.log.Logger;
@@ -95,6 +94,7 @@ import ocean.util.log.layout.LayoutStatsLog;
 import ocean.util.log.layout.LayoutSimple;
 import ocean.util.log.LayoutDate;
 
+import core.sys.posix.strings;
 
 
 /*******************************************************************************

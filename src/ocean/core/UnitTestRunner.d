@@ -49,26 +49,24 @@
 
 module ocean.core.UnitTestRunner;
 
-import ocean.transition;
-
-
+import ocean.core.array.Mutation: uniq;
+import ocean.core.Test: TestException, test;
 import ocean.core.Verify;
-import ocean.stdc.string: strdup, strlen, strncmp;
-import core.sys.posix.unistd: unlink;
-import core.sys.posix.sys.time: gettimeofday, timeval;
-import core.sys.posix.libgen: basename;
-import core.sys.posix.sys.time: timersub;
-
 import ocean.io.Stdout: Stdout, Stderr;
 import ocean.io.stream.Format: FormatOutput;
 import ocean.io.stream.TextFile: TextFileOutput;
 import ocean.text.xml.Document: Document;
 import ocean.text.xml.DocPrinter: DocPrinter;
 import ocean.text.convert.Formatter;
-import ocean.core.Test: TestException, test;
-import ocean.core.array.Mutation: uniq;
+import ocean.transition;
+
 import core.memory;
 import core.runtime: Runtime;
+import core.stdc.string: strdup, strlen, strncmp;
+import core.sys.posix.unistd: unlink;
+import core.sys.posix.sys.time: gettimeofday, timeval;
+import core.sys.posix.libgen: basename;
+import core.sys.posix.sys.time: timersub;
 
 
 /******************************************************************************

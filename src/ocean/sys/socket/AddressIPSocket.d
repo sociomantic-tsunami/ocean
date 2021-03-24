@@ -27,7 +27,7 @@ import ocean.meta.types.Qualifiers;
 
 import ocean.io.device.Conduit: ISelectable;
 
-import ocean.stdc.string: strlen;
+import core.stdc.string: strlen;
 
 
 /******************************************************************************

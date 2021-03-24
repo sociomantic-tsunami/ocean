@@ -20,14 +20,12 @@
 
 module ocean.text.Ascii;
 
+import ocean.core.Array;
+import ocean.core.Verify;
 import ocean.meta.types.Qualifiers;
 
-import ocean.core.Array;
-
-import ocean.core.Verify;
-
-import ocean.stdc.string: strncasecmp, memcmp;
-private alias strncasecmp memicmp;
+import core.stdc.string: memcmp;
+import core.sys.posix.strings : strncasecmp;
 
 version (unittest) import ocean.core.Test;
 
@@ -122,7 +120,7 @@ int icompare (cstring s1, cstring s2)
     if (s2.length < len)
         len = s2.length;
 
-    auto result = memicmp (s1.ptr, s2.ptr, len);
+    auto result = strncasecmp(s1.ptr, s2.ptr, len);
 
     if (result is 0)
         result = cast(int) (s1.length - s2.length);
