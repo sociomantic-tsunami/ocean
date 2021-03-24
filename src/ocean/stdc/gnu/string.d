@@ -17,7 +17,8 @@ module ocean.stdc.gnu.string;
 
 import ocean.meta.types.Qualifiers;
 import core.stdc.stddef: wchar_t;
-
+public import core.sys.posix.string : strnlen, strndup;
+public import core.sys.linux.string : memmem;
 
 extern (C):
 
@@ -30,16 +31,3 @@ inout(void)* rawmemchr(inout(void)* block, int c);
 inout(void)* memrchr(inout(void)* block, int c, size_t size);
 inout(char)* strchrnul(inout(char)* str, int c);
 inout(wchar_t)* wcschrnul(inout(wchar_t)* wstr, wchar_t wc);
-
-static if (__VERSION__ < 2089)
-{
-    size_t   strnlen(in char* s, size_t maxlen);
-    char*    strndup(in char* s, size_t size);
-    inout(void)* memmem(inout(void)* haystack, size_t hlen,
-                        in void *needle, size_t nlen);
-}
-else
-{
-    public import core.sys.posix.string : strnlen, strndup;
-    public import core.sys.linux.string : memmem;
-}
