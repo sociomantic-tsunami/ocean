@@ -8,32 +8,8 @@ systemDependencies "Depending on the component used you might need one of the fo
 importPaths "src"
 targetType "sourceLibrary"
 
-// Deprecated files are excluded
-excludedSourceFiles \
-    "src/ocean/core/Time.d" \
-    "src/ocean/core/Traits.d" \
-    "src/ocean/stdc/posix/arpa/inet.d" \
-    "src/ocean/stdc/posix/net/if_.d" \
-    "src/ocean/stdc/posix/netinet/in_.d" \
-    "src/ocean/stdc/posix/netinet/tcp.d" \
-    "src/ocean/stdc/posix/stdlib.d" \
-    "src/ocean/stdc/posix/sys/ipc.d" \
-    "src/ocean/stdc/posix/sys/mman.d" \
-    "src/ocean/stdc/posix/sys/select.d" \
-    "src/ocean/stdc/posix/sys/shm.d" \
-    "src/ocean/stdc/posix/sys/stat.d" \
-    "src/ocean/stdc/posix/sys/statvfs.d" \
-    "src/ocean/stdc/posix/sys/types.d" \
-    "src/ocean/stdc/posix/sys/uio.d" \
-    "src/ocean/stdc/posix/sys/utsname.d" \
-    "src/ocean/stdc/posix/sys/wait.d" \
-    "src/ocean/time/chrono/Hebrew.d" \
-    "src/ocean/time/chrono/Hijri.d" \
-    "src/ocean/time/chrono/Japanese.d" \
-    "src/ocean/time/chrono/Korean.d" \
-    "src/ocean/time/chrono/Taiwan.d" \
-    "src/ocean/time/chrono/ThaiBuddhist.d" \
-    "src/ocean/util/log/model/ILogger.d"
+// Add deprecated source files to the following exclusion list
+// excludedSourceFiles
 
 configuration "unittest" {
     excludedSourceFiles "src/ocean/core/UnitTestRunner.d"
