@@ -21,14 +21,11 @@
 
 module ocean.net.util.UrlDecoder;
 
-
-import ocean.meta.types.Qualifiers;
-
 import ocean.core.Verify;
-
+import ocean.meta.types.Qualifiers;
 import ocean.text.util.SplitIterator: ChrSplitIterator;
 
-import ocean.stdc.string: memmove;
+import core.stdc.string: memmove;
 
 version (unittest) import ocean.core.Test;
 

@@ -17,7 +17,7 @@
 
 module ocean.util.container.more.Vector;
 
-import ocean.stdc.string : memmove;
+import core.stdc.string : memmove;
 
 /******************************************************************************
 

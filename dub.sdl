@@ -9,7 +9,8 @@ importPaths "src"
 targetType "sourceLibrary"
 
 // Add deprecated source files to the following exclusion list
-// excludedSourceFiles
+excludedSourceFiles \
+    "src/ocean/stdc/string.d"
 
 configuration "unittest" {
     excludedSourceFiles "src/ocean/core/UnitTestRunner.d"

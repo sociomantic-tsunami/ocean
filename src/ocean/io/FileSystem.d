@@ -19,22 +19,18 @@
 
 module ocean.io.FileSystem;
 
-import ocean.meta.types.Qualifiers;
-
-import ocean.sys.Common;
-
-import ocean.io.FilePath;
-
 import ocean.core.ExceptionDefinitions;
-
+import ocean.io.device.File;
+import ocean.io.FilePath;
 import ocean.io.Path : standard, native;
+import ocean.meta.types.Qualifiers;
+import ocean.sys.Common;
+import Integer = ocean.text.convert.Integer_tango;
 
-import ocean.stdc.string;
+import core.stdc.string;
 import core.sys.posix.unistd;
 import core.sys.posix.sys.statvfs;
 
-import ocean.io.device.File;
-import Integer = ocean.text.convert.Integer_tango;
 
 /*******************************************************************************
 

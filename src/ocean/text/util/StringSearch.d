@@ -24,7 +24,8 @@ import ocean.core.Verify;
 import c_stddef = core.stdc.stddef: wchar_t;
 import c_wctype = core.stdc.wctype;
 import c_ctype  = core.stdc.ctype;
-import c_string = ocean.stdc.string;
+import c_wchar  = core.stdc.wchar_;
+import c_string = core.stdc.string;
 
 import ocean.math.Math:   min;
 
@@ -192,15 +193,15 @@ struct StringSearch ( bool wide_char = false )
         alias c_wctype.towlower  toLower;
         alias c_wctype.towupper  toUpper;
 
-        alias c_string.wcslen    lengthOf;
+        alias c_wchar.wcslen     lengthOf;
 
-        alias c_string.wmemchr   pLocateBinChar;
+        alias c_wchar.wmemchr    pLocateBinChar;
 
-        alias c_string.wcsstr    pLocatePattern;
-        alias c_string.wmemmove  pMemMove;
-        alias c_string.wcscspn   pLocateFirstInSet;
+        alias c_wchar.wcsstr     pLocatePattern;
+        alias c_wchar.wmemmove   pMemMove;
+        alias c_wchar.wcscspn    pLocateFirstInSet;
 
-        alias c_string.wcstok    pSplit;
+        alias c_wchar.wcstok     pSplit;
     }
     else
     {

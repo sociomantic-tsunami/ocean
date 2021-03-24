@@ -15,14 +15,12 @@
 
 module ocean.text.util.EscapeChars;
 
-
-import ocean.meta.types.Qualifiers;
-
 import ocean.core.Array: concat;
 import ocean.core.Verify;
 version (unittest) import ocean.core.Test;
+import ocean.meta.types.Qualifiers;
 
-import ocean.stdc.string: strcspn, memmove, memcpy, memchr, strlen;
+import core.stdc.string: strcspn, memmove, memcpy, memchr, strlen;
 
 /******************************************************************************/
 

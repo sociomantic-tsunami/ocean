@@ -35,9 +35,9 @@ public class ErrnoException : Exception
     import ocean.core.Exception : ReusableExceptionImplementation;
     import ocean.meta.types.Function : ReturnTypeOf;
     import ocean.meta.codegen.Identifier;
-    import ocean.stdc.string;
     import ocean.text.util.StringC;
 
+    import core.stdc.string;
 
     /**************************************************************************
 

@@ -25,7 +25,6 @@ import ocean.core.Exception;
 import ocean.core.Enforce;
 import ocean.core.StructConverter : structConvert;
 
-import ocean.stdc.string : memmove;
 import ocean.math.Math : abs;
 import ocean.util.container.ConcatBuffer;
 
@@ -33,6 +32,8 @@ import ocean.util.serialize.Version;
 import ocean.util.serialize.contiguous.Serializer;
 import ocean.util.serialize.contiguous.Deserializer;
 import ocean.util.serialize.contiguous.Contiguous;
+
+import core.stdc.string : memmove;
 
 version (unittest)
 {

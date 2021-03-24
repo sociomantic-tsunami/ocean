@@ -22,8 +22,8 @@ import ocean.core.Verify;
 import ocean.io.Path;
 import ocean.io.model.IFile : FileConst, FileInfo;
 
+import core.stdc.string : memmove;
 import core.sys.posix.unistd : link;
-import ocean.stdc.string : memmove;
 
 version (unittest) import ocean.core.Test;
 

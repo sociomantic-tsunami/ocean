@@ -20,10 +20,10 @@
 
 module ocean.io.device.MemoryDevice;
 
-
 import ocean.meta.types.Qualifiers;
 import ocean.io.model.IConduit;
-import ocean.stdc.string : memmove;
+
+import core.stdc.string : memmove;
 
 /*******************************************************************************
 

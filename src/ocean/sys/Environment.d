@@ -17,26 +17,22 @@
 
 module ocean.sys.Environment;
 
-import ocean.transition;
-
-import ocean.sys.Common;
-
+import ocean.core.ExceptionDefinitions;
+import ocean.io.model.IFile;
 import ocean.io.Path;
 import ocean.io.FilePath;
-
-import ocean.core.ExceptionDefinitions;
-
-import ocean.io.model.IFile;
-
+import ocean.sys.Common;
 import Text = ocean.text.Util;
+import ocean.transition;
+
+import core.stdc.string;
+import core.sys.posix.stdlib;
 
 private
 {
     __gshared extern (C) extern char** environ;
 }
 
-import core.sys.posix.stdlib;
-import ocean.stdc.string;
 
 /*******************************************************************************
 

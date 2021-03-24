@@ -34,23 +34,16 @@
 
 module ocean.text.utf.UtfUtil;
 
-import core.exception: onUnicodeError;
-
-import ocean.meta.types.Qualifiers;
-
-import ocean.stdc.string: memrchr;
-
 import ocean.core.Array: append, copy;
+import ocean.core.Test;
 import ocean.core.Verify;
-
 import ocean.math.IEEE: isNaN;
-
+import ocean.meta.types.Qualifiers;
+import ocean.stdc.gnu.string: memrchr;
 import ocean.text.Unicode : isSpace;
-
 import ocean.text.utf.c.glib_unicode;
 
-import ocean.core.Test;
-
+import core.exception: onUnicodeError;
 
 /*******************************************************************************
 
