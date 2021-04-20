@@ -214,7 +214,7 @@ class FlexibleByteRingQueue : IRingQueue!(IByteQueue)
         assert(slice is null || slice.length == size,
                classname(this) ~ "push: length of returned buffer not as requested");
     }
-    body
+    do
     {
         return this.willFit(size) ? this.push_(size) : null;
     }
@@ -611,7 +611,7 @@ class FlexibleByteRingQueue : IRingQueue!(IByteQueue)
                classname(this) ~ "push_: length of returned slice not as requested");
         assert(this); // invariant
     }
-    body
+    do
     {
         assert(this); // invariant
         verify(this.willFit(size), classname(this) ~ ".push_: item will not fit");
@@ -684,7 +684,7 @@ class FlexibleByteRingQueue : IRingQueue!(IByteQueue)
         assert(buffer, classname(this) ~ ".pop_: returned a null buffer");
         assert(this); // invariant
     }
-    body
+    do
     {
         assert(this); // invariant
         verify(this.items > 0, classname(this) ~ ".pop_: no items in the queue");
@@ -1043,7 +1043,7 @@ unittest
         {
             test(n <= ubyte.max);
         }
-        body
+        do
         {
             for (ubyte i = 0; i < n; i++)
             {

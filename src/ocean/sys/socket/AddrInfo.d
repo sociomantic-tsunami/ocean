@@ -139,7 +139,7 @@ struct addrinfo
     {
         if (result.length) assert (result.ptr is dst.ptr);
     }
-    body
+    do
     {
         void sanity_check ( )
         {

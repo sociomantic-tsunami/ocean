@@ -274,7 +274,7 @@ abstract class ExpiryRegistrationBase : IExpiryRegistration
     {
         assert (this.expiry, "not registered");
     }
-    body
+    do
     {
         return this.expiry? this.expiry.key - this.mgr.now : long.max;
     }
@@ -298,7 +298,7 @@ abstract class ExpiryRegistrationBase : IExpiryRegistration
     {
         assert (this.expiry !is null, "timeout - no client");                   // The invariant makes sure that
     }                                                                           // this.client !is null if this.expiry !is null.
-    body
+    do
     {
         debug ( TimeoutManager ) Stderr("*** timeout for ")(this.id)('\n').flush();
 
@@ -361,7 +361,7 @@ abstract class ExpiryRegistrationBase : IExpiryRegistration
         assert (this.expiry is null, "already registered");
         assert (this.client !is null, "client required to register");
     }
-    body
+    do
     {
         debug ( TimeoutManager ) Stderr("*** register ")(this.id)(": ");
 

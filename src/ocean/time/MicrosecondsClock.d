@@ -115,7 +115,7 @@ class MicrosecondsClock
                           (cast (ulong) t.tv_sec.max + 1) * 1_000_000);
         }
     }
-    body
+    do
     {
         return t.tv_sec * 1_000_000UL + t.tv_usec;
     }
@@ -142,7 +142,7 @@ class MicrosecondsClock
     {
         assert (local || datetime.tm_isdst <= 0, "DST enabled with GMT");
     }
-    body
+    do
     {
         tm datetime;
 

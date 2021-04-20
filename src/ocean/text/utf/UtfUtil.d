@@ -217,7 +217,7 @@ out (result)
         assert(g_utf8_strlen(result.ptr, result.length) <= n);
     }
 }
-body
+do
 {
     if (n < str.length)
     {
@@ -479,7 +479,7 @@ out (result)
 
     assert(result_length <= n);
 }
-body
+do
 {
     {
         size_t ending_length = 0;   // Ending's number of Unicode characters

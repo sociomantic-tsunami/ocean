@@ -576,7 +576,7 @@ abstract class TimeoutManagerBase : ITimeoutManager
     {
         assert (expiry);
     }
-    body
+    do
     {
         ulong now = this.now;
 

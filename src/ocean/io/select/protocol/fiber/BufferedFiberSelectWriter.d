@@ -168,7 +168,7 @@ class BufferedFiberSelectWriter : FiberSelectWriter
     {
         assert (n == s);
     }
-    body
+    do
     {
         verify(s != 0, typeof (this).stringof ~ ".buffer_size: 0 specified");
 

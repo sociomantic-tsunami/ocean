@@ -238,7 +238,7 @@ public class PCRE
         {
             assert(this.pcre_object !is null);
         }
-        body
+        do
         {
 
             this.cleanup();
@@ -709,4 +709,3 @@ unittest
         t.test!("==")(matches_buffer.length, 695);
     }
 }
-

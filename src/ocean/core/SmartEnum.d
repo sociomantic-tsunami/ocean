@@ -1008,7 +1008,7 @@ public struct TwoWayMap ( A )
         assert(this.a_to_index[a] < this.keys_list.length);
         assert(this.b_to_index[b] < this.values_list.length);
     }
-    body
+    do
     {
         auto already_exists = !!(a in this.a_to_b);
 
@@ -1030,7 +1030,7 @@ public struct TwoWayMap ( A )
         assert(this.a_to_index[a] < this.keys_list.length);
         assert(this.b_to_index[b] < this.values_list.length);
     }
-    body
+    do
     {
         auto already_exists = !!(a in this.a_to_b);
 

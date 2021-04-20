@@ -612,7 +612,7 @@ class HttpHeaderParser : IHttpHeaderParser
     {
         assert (remaining.length <= chunk.length);
     }
-    body
+    do
     {
         verify(this.content_length <= this.content.length);
 

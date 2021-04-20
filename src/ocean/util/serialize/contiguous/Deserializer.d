@@ -247,7 +247,7 @@ struct Deserializer
                 src[].ptr, s.ptr);
         }
     }
-    body
+    do
     {
         debug (DeserializationTrace)
         {
@@ -312,7 +312,7 @@ struct Deserializer
                 src.ptr, dst.ptr, s.ptr);
         }
     }
-    body
+    do
     {
         static assert (is(S == Unqual!(S)),
                        "Cannot deserialize qualified type : " ~ S.stringof);
@@ -396,7 +396,7 @@ struct Deserializer
             nesting--;
         }
     }
-    body
+    do
     {
         debug (DeserializationTrace)
         {
@@ -449,7 +449,7 @@ struct Deserializer
             nesting--;
         }
     }
-    body
+    do
     {
         debug (DeserializationTrace)
         {
@@ -508,7 +508,7 @@ struct Deserializer
             nesting--;
         }
     }
-    body
+    do
     {
         debug (DeserializationTrace)
         {
@@ -590,7 +590,7 @@ struct Deserializer
             nesting--;
         }
     }
-    body
+    do
     {
         debug (DeserializationTrace)
         {
@@ -688,7 +688,7 @@ struct Deserializer
             nesting--;
         }
     }
-    body
+    do
     {
         debug (DeserializationTrace)
         {
@@ -770,7 +770,7 @@ struct Deserializer
             nesting--;
         }
     }
-    body
+    do
     {
         debug (DeserializationTrace)
         {
@@ -823,7 +823,7 @@ struct Deserializer
             nesting--;
         }
     }
-    body
+    do
     {
         verify(slices_buffer !is null);
 
@@ -908,7 +908,7 @@ struct Deserializer
             nesting--;
         }
     }
-    body
+    do
     {
         verify (slices_buffer !is null);
 
@@ -1019,7 +1019,7 @@ struct Deserializer
             nesting--;
         }
     }
-    body
+    do
     {
         verify (slices_buffer !is null);
 

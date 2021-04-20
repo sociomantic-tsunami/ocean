@@ -251,7 +251,7 @@ struct BitArray
     {
         assert(compare(result, this));
     }
-    body
+    do
     {
         if( len >= 2 )
         {
@@ -295,7 +295,7 @@ struct BitArray
     {
         assert(compare(result, this));
     }
-    body
+    do
     {
         if( len >= 2 )
         {

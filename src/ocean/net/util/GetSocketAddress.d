@@ -149,7 +149,7 @@ class GetSocketAddress
         {
             assert (a);
         }
-        body
+        do
         {
             void* addrp = &this.addr_;
 

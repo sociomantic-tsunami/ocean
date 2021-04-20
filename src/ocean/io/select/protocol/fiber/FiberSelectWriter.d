@@ -172,7 +172,7 @@ class FiberSelectWriter : IFiberSelectProtocol
     {
         assert (!this.data);
     }*/
-    body
+    do
     {
         if (data.length)
         {
@@ -328,7 +328,7 @@ class FiberSelectWriter : IFiberSelectProtocol
     {
         assert (this);
     }
-    body
+    do
     {
         debug (Raw) Stderr.formatln("[{}] Write {:X2} ({} bytes)",
             super.conduit.fileHandle, this.data_slice, this.data_slice.length);

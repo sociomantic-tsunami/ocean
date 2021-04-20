@@ -70,7 +70,7 @@ template KeylessMethods ( Node, alias eb_first, alias eb_last )
                            ".first: got a node but the tree is empty");
         }
     }
-    body
+    do
     {
         return this.ebCall!(eb_first)();
     }
@@ -97,7 +97,7 @@ template KeylessMethods ( Node, alias eb_first, alias eb_last )
                            ".last: got a node but the tree is empty");
         }
     }
-    body
+    do
     {
         return this.ebCall!(eb_last)();
     }

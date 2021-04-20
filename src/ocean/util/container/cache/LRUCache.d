@@ -333,7 +333,7 @@ class LRUCache(T, bool TrackCreateTimes = false) : PriorityCache!(ValueT!(T, Tra
     {
         assert (val !is null);
     }
-    body
+    do
     {
         bool existed_ignore;
 
@@ -370,7 +370,7 @@ class LRUCache(T, bool TrackCreateTimes = false) : PriorityCache!(ValueT!(T, Tra
     {
         assert (val !is null);
     }
-    body
+    do
     {
         time_t access_time;
 
@@ -408,7 +408,7 @@ class LRUCache(T, bool TrackCreateTimes = false) : PriorityCache!(ValueT!(T, Tra
     {
         assert (val !is null);
     }
-    body
+    do
     {
         if ( Value* val = this.getRefreshOrCreateRaw(key, access_time, existed) )
         {
@@ -451,7 +451,7 @@ class LRUCache(T, bool TrackCreateTimes = false) : PriorityCache!(ValueT!(T, Tra
     {
         assert (val !is null);
     }
-    body
+    do
     {
         access_time = this.now();
 

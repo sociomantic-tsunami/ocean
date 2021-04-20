@@ -189,7 +189,7 @@ private template AlignedBufferedStream ( )
         assert(isAligned(buffer.ptr));
         assert((buffer.length % BLOCK_SIZE) == 0);
     }
-    body
+    do
     {
         auto bytes = buffer_blocks * BLOCK_SIZE;
         auto buffer = cast(ubyte[]) GC.malloc(bytes)[0 .. bytes];
@@ -832,4 +832,3 @@ public class BufferedDirectReadFile: InputStream
     }
 
 }
-

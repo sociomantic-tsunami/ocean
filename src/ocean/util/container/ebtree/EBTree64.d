@@ -260,7 +260,7 @@ class EBTree64 ( bool signed = false ) : IEBTree
     {
         assert (node_out !is null);
     }
-    body
+    do
     {
         scope (success) this.increaseNodeCount(1);
 
@@ -285,7 +285,7 @@ class EBTree64 ( bool signed = false ) : IEBTree
     {
         assert (node_out !is null);
     }
-    body
+    do
     {
         return this.add(cast (Key) key);
     }
@@ -308,7 +308,7 @@ class EBTree64 ( bool signed = false ) : IEBTree
     {
         assert (node_out !is null);
     }
-    body
+    do
     {
         return (node.node_.key != cast (ulong) key)?
                 this.add_(node.remove(), key) : &node;
@@ -332,7 +332,7 @@ class EBTree64 ( bool signed = false ) : IEBTree
     {
         assert (node_out !is null);
     }
-    body
+    do
     {
         return this.update(node, cast (Key) key);
     }
@@ -432,7 +432,7 @@ class EBTree64 ( bool signed = false ) : IEBTree
     {
         assert (node_out !is null);
     }
-    body
+    do
     {
         verify (node !is null, "attempted to add null node (node pool returned null?)");
 

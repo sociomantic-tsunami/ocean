@@ -193,7 +193,7 @@ public class FreeList ( T ) : IFreeList!(ItemType_!(T))
     {
         assert(this.free_list.length >= num);
     }
-    body
+    do
     {
         if ( this.free_list.length < num )
         {
@@ -429,4 +429,3 @@ unittest
         fl.test();
     }
 }
-

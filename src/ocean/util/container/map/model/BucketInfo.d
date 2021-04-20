@@ -289,7 +289,7 @@ class BucketInfo
 
         debug (BucketInfo) this.print("    ", bucket_index);
     }
-    body
+    do
     {
         assert (this); // call invariant
 
@@ -335,7 +335,7 @@ class BucketInfo
 
         debug (BucketInfo) this.print("    ", bucket_index);
     }
-    body
+    do
     {
         assert (this); // call invariant
 
@@ -374,7 +374,7 @@ class BucketInfo
 
         debug (BucketInfo) this.print("    ", bucket_index);
     }
-    body
+    do
     {
         assert (this); // call invariant
 
@@ -485,7 +485,7 @@ class BucketInfo
 
         assert (!this.n_elements, "clear: remaining elements");
     }
-    body
+    do
     {
         /*
          * Reset all buckets that have been in use.
@@ -579,7 +579,7 @@ unittest
     {
         test(expected.length == info.num_buckets);
     }
-    body
+    do
     {
         foreach (i, n; expected)
         {

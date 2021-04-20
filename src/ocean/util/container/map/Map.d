@@ -491,7 +491,7 @@ public abstract class Map ( V, K ) : BucketSet!(V.sizeof, K)
     {
         assert (val !is null);
     }
-    body
+    do
     {
         return cast(V*)this.get_(key, true).val[0 .. V.sizeof].ptr;
     }
@@ -545,7 +545,7 @@ public abstract class Map ( V, K ) : BucketSet!(V.sizeof, K)
     {
         assert (val !is null);
     }
-    body
+    do
     {
         return cast(V*)this.put_(key, added).val[0 .. V.sizeof].ptr;
     }
@@ -575,7 +575,7 @@ public abstract class Map ( V, K ) : BucketSet!(V.sizeof, K)
     {
         assert (val !is null);
     }
-    body
+    do
     {
         return cast(V*)this.put_(key).val[0 .. V.sizeof].ptr;
     }
@@ -867,7 +867,7 @@ public abstract class Map ( size_t V, K ) : BucketSet!(V, K)
             assert (val.length == V);
         }
     }
-    body
+    do
     {
         return this.get_(key).val;
     }
@@ -897,7 +897,7 @@ public abstract class Map ( size_t V, K ) : BucketSet!(V, K)
     {
         assert (val.length == V);
     }
-    body
+    do
     {
         return this.get_(key, true).val;
     }
@@ -949,7 +949,7 @@ public abstract class Map ( size_t V, K ) : BucketSet!(V, K)
     {
         assert (val.length == V);
     }
-    body
+    do
     {
         return this.put_(key, added).val;
     }
@@ -978,7 +978,7 @@ public abstract class Map ( size_t V, K ) : BucketSet!(V, K)
     {
         assert (val.length == V);
     }
-    body
+    do
     {
         bool added;
 
@@ -1039,7 +1039,7 @@ public abstract class Map ( size_t V, K ) : BucketSet!(V, K)
             assert (val.length == V);
         }
     }
-    body
+    do
     {
         return this.remove_(key).val;
     }

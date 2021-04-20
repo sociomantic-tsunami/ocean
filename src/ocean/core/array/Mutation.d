@@ -1419,7 +1419,7 @@ unittest
     {
         test(n_iterations);
     }
-    body
+    do
     {
         test(index);
         test(index < array.length);
@@ -1517,7 +1517,7 @@ out (end)
 {
     assert(end <= array.length, "result index out of bounds");
 }
-body
+do
 {
     static assert (
         isCallableType!(Exclude),
@@ -1589,7 +1589,7 @@ out (end)
 {
     assert(end <= length, "result length out of bounds");
 }
-body
+do
 {
     for (size_t i = 0; i < length; i++)
     {

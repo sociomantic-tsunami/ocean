@@ -283,7 +283,7 @@ abstract class ICache : ICacheInfo
     {
         assert (index < this.insert, "cache index out of bounds");
     }
-    body
+    do
     {
         TimeToIndex.Key key = node.key;
 
@@ -361,7 +361,7 @@ abstract class ICache : ICacheInfo
     {
         if (node) assert (*node !is null, "null pointer value was stored in key_to_node");
     }
-    body
+    do
     {
         TimeToIndex.Node** node = key in this.key_to_node;
 
@@ -417,7 +417,7 @@ abstract class ICache : ICacheInfo
     {
         assert (index < this.max_length);
     }
-    body
+    do
     {
         size_t index;
 

@@ -67,7 +67,7 @@ public struct ExtendedDate {
    out(val) {
       assert (  (val >= -1_000_000_000 && val <=          -1)
              || (val >=              1 && val <= 999_999_999));
-   } body {
+   } do {
       if (year_)
          return year_;
 
@@ -675,7 +675,7 @@ in {
    assert (day    >= 1 && day    <= 31);
 } out(result) {
    assert (result >= 1 && result <= 7);
-} body {
+} do {
    uint era = erafy(year);
 
    int result =

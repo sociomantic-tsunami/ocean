@@ -178,7 +178,7 @@ struct BTreeMap(TreeKeyType, TreeValueType, int tree_degree)
     {
         assert(ptr !is null);
     }
-    body
+    do
     {
         return this.impl.insert(key, value, added);
     }

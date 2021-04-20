@@ -183,7 +183,7 @@ public struct IrregularMovingAverage (Time = time_t, Value = real)
     {
         assert(&ima); // confirm the invariant holds
     }
-    body
+    do
     {
         verify(!isNaN(beta));
         verify(!isInfinity(beta));
@@ -312,7 +312,7 @@ public struct IrregularMovingAverage (Time = time_t, Value = real)
         assert(!isNaN(estimate));
         assert(!isInfinity(estimate));
     }
-    body
+    do
     {
         enforce(t >= this.update_time_,
                 "Cannot calculate predicted value from the past!");

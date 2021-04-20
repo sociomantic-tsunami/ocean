@@ -85,7 +85,7 @@ struct Serializer
                 dst[].ptr, data.ptr);
         }
     }
-    body
+    do
     {
         debug (SerializationTrace)
         {
@@ -165,7 +165,7 @@ struct Serializer
             Stdout.formatln("< countRequiredSize!({})(<input>) : {}", S.stringof, cast(size_t)size);
         }
     }
-    body
+    do
     {
         debug (SerializationTrace)
         {
@@ -212,7 +212,7 @@ struct Serializer
                 buffer_out.ptr);
         }
     }
-    body
+    do
     {
         debug (SerializationTrace)
         {
@@ -255,7 +255,7 @@ struct Serializer
                 S.stringof, cast(size_t)size);
         }
     }
-    body
+    do
     {
         debug (SerializationTrace)
         {
@@ -338,7 +338,7 @@ struct Serializer
                 T.stringof, array.length, array.ptr, cast(size_t)size);
         }
     }
-    body
+    do
     {
         debug (SerializationTrace)
         {
@@ -400,7 +400,7 @@ struct Serializer
                 T.stringof, cast(size_t)size);
         }
     }
-    body
+    do
     {
         static assert (containsDynamicArray!(T), T.stringof ~
                        " contains no dynamic array - nothing to do");
@@ -471,7 +471,7 @@ struct Serializer
                 S.stringof, &s, data.ptr, result.length, result.ptr);
         }
     }
-    body
+    do
     {
         debug (SerializationTrace)
         {
@@ -563,7 +563,7 @@ struct Serializer
                 T.stringof, array.length, array.ptr, data.length, data.ptr, result.length, result.ptr);
         }
     }
-    body
+    do
     {
         debug (SerializationTrace)
         {
@@ -699,7 +699,7 @@ struct Serializer
                 T.stringof, array.ptr, data.ptr, result.ptr);
         }
     }
-    body
+    do
     {
         debug (SerializationTrace)
         {
@@ -765,7 +765,7 @@ struct Serializer
                 S.stringof, &s, result);
         }
     }
-    body
+    do
     {
         static assert (is (S == struct), "struct expected, not " ~ S.stringof);
         static assert (containsDynamicArray!(S), "nothing to do for " ~ S.stringof);
@@ -837,7 +837,7 @@ struct Serializer
                 T.stringof, array.ptr, arr.ptr);
         }
     }
-    body
+    do
     {
         debug (SerializationTrace)
         {

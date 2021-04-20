@@ -385,7 +385,7 @@ class Cache ( size_t ValueSize = 0, bool TrackCreateTimes = false ) : CacheBase!
             assert (val.length == ValueSize);
         }
     }
-    body
+    do
     {
         bool existed;
 
@@ -433,7 +433,7 @@ class Cache ( size_t ValueSize = 0, bool TrackCreateTimes = false ) : CacheBase!
             }
         }
     }
-    body
+    do
     {
         time_t access_time;
 
@@ -480,7 +480,7 @@ class Cache ( size_t ValueSize = 0, bool TrackCreateTimes = false ) : CacheBase!
             assert (val.length == ValueSize);
         }
     }
-    body
+    do
     {
         time_t access_time;
 
@@ -580,7 +580,7 @@ class Cache ( size_t ValueSize = 0, bool TrackCreateTimes = false ) : CacheBase!
     {
         assert(key == this.items[replaced].key);
     }
-    body
+    do
     {
         verify(replaced != replace);
 
@@ -622,7 +622,7 @@ class Cache ( size_t ValueSize = 0, bool TrackCreateTimes = false ) : CacheBase!
     {
         assert (item !is null);
     }
-    body
+    do
     {
         return this.getItem(this.accessIndex(node, access_time));
     }
@@ -693,7 +693,7 @@ class Cache ( size_t ValueSize = 0, bool TrackCreateTimes = false ) : CacheBase!
     {
         assert (item !is null);
     }
-    body
+    do
     {
         CacheItem* item = this.get__(key, access_time);
 
@@ -724,7 +724,7 @@ class Cache ( size_t ValueSize = 0, bool TrackCreateTimes = false ) : CacheBase!
     {
         assert (cache_item !is null);
     }
-    body
+    do
     {
         // Add key->item mapping
 
@@ -897,7 +897,7 @@ class Cache ( T, bool TrackCreateTimes = false ) : Cache!(T.sizeof, TrackCreateT
     {
         assert (val !is null);
     }
-    body
+    do
     {
         return cast (T*) this.createRaw(key)[0 .. T.sizeof].ptr;
     }
@@ -949,7 +949,7 @@ class Cache ( T, bool TrackCreateTimes = false ) : Cache!(T.sizeof, TrackCreateT
     {
         assert (val !is null);
     }
-    body
+    do
     {
         return cast (T*) this.getOrCreateRaw(key, existed)[0 .. T.sizeof].ptr;
     }

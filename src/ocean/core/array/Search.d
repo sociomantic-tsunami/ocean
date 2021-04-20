@@ -1172,7 +1172,7 @@ out (found)
         assert (position <= array.length);
     }
 }
-body
+do
 {
     return bsearchCustom(
         array.length,
@@ -1266,7 +1266,7 @@ out (found)
         assert (position <= array_length);
     }
 }
-body
+do
 {
     verify(cast (ssize_t) array_length >= 0,
         "bsearchCustom: array_length integer overflow (maximum is " ~

@@ -742,7 +742,7 @@ struct Epoll
     {
         assert (n <= cast (int) events.length);
     }
-    body
+    do
     {
         verify(events.length <= int.max);
         return epoll_wait(this.fd, events.ptr, cast (int) events.length, timeout_ms);

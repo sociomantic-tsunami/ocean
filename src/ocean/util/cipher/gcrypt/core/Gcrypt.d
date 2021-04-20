@@ -278,7 +278,7 @@ private class GcryptBase ( Algorithm algorithm, Mode mode )
     {
         assert(blk_len != 0);
     }
-    body
+    do
     {
         return gcry_cipher_get_algo_keylen(algorithm);
     }
@@ -295,7 +295,7 @@ private class GcryptBase ( Algorithm algorithm, Mode mode )
     {
         assert(key_len != 0);
     }
-    body
+    do
     {
         return gcry_cipher_get_algo_blklen(algorithm);
     }
@@ -538,7 +538,7 @@ public class GcryptWithIV ( Algorithm algorithm, Mode mode )
     {
         assert(iv_len != 0);
     }
-    body
+    do
     {
         return gcry_cipher_get_algo_blklen(algorithm);
     }

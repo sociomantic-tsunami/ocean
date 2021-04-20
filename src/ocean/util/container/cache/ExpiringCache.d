@@ -167,7 +167,7 @@ class ExpiringCache ( size_t ValueSize = 0 ) : Cache!(ValueSize, true),
     {
         if (expired) assert (val is null);
     }
-    body
+    do
     {
         bool existed;
 
@@ -231,7 +231,7 @@ class ExpiringCache ( size_t ValueSize = 0 ) : Cache!(ValueSize, true),
     {
         if (expired) assert (!does_exist);
     }
-    body
+    do
     {
         return this.getRaw(key, expired) !is null;
     }
@@ -321,7 +321,7 @@ class ExpiringCache ( size_t ValueSize = 0 ) : Cache!(ValueSize, true),
             assert (val is null);
         }
     }
-    body
+    do
     {
         TimeToIndex.Node** node = key in this;
 

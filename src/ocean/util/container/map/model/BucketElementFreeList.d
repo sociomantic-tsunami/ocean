@@ -213,7 +213,7 @@ abstract class IBucketElementFreeList: IAllocator
     {
         assert (object !is null);
     }
-    body
+    do
     {
         if (this.first)
         {

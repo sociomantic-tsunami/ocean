@@ -370,7 +370,7 @@ public struct WideUInt ( size_t N )
     {
         assert(remainder < rhs);
     }
-    body
+    do
     {
         ulong remainder = 0;
 

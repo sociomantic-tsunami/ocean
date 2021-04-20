@@ -186,7 +186,7 @@ public struct HashRangeMap ( Value )
     {
         assert(result !is null);
     }
-    body
+    do
     {
         enforce(!range.is_empty, "An empty range can't be put in HashRangeMap");
 

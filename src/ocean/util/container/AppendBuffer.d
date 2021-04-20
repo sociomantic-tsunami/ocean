@@ -268,7 +268,7 @@ public class AppendBuffer ( T, Base: AppendBufferImpl ): Base, IAppendBufferRead
                 assert (element.length == T.length);
             }
         }
-        body
+        do
         {
             return *cast (T*) this.index_(i);
         }
@@ -298,7 +298,7 @@ public class AppendBuffer ( T, Base: AppendBufferImpl ): Base, IAppendBufferRead
                 assert (element.length == T.length);
             }
         }
-        body
+        do
         {
             static if (static_array_element)
             {
@@ -517,7 +517,7 @@ public class AppendBuffer ( T, Base: AppendBufferImpl ): Base, IAppendBufferRead
     {
         assert (elements.length <= n);
     }
-    body
+    do
     {
         size_t end   = this.length,
         start = (end >= n)? end - n : 0;
@@ -945,7 +945,7 @@ private abstract class AppendBufferImpl: IAppendBufferBase
             assert (n_new == n);
         }
     }
-    body
+    do
     {
         size_t len = n * this.e;
 
@@ -1148,7 +1148,7 @@ private abstract class AppendBufferImpl: IAppendBufferBase
             assert (dst.length == src.length);
         }
     }
-    body
+    do
     {
         verify (!(src.length % this.e), typeof (this).stringof ~ ": data alignment mismatch");
 
@@ -1211,7 +1211,7 @@ private abstract class AppendBufferImpl: IAppendBufferBase
             assert (slice.length == n * this.e);
         }
     }
-    body
+    do
     {
         return this.extendBytes(n * this.e);
     }
@@ -1244,7 +1244,7 @@ private abstract class AppendBufferImpl: IAppendBufferBase
             assert (slice.length == extent);
         }
     }
-    body
+    do
     {
         verify (!(extent % this.e));
 
@@ -1291,7 +1291,7 @@ private abstract class AppendBufferImpl: IAppendBufferBase
     {
         assert (content_.length == n);
     }
-    body
+    do
     {
         verify (n > 0, typeof (this).stringof ~ ".newContent: attempted to allocate zero bytes");
 
@@ -1321,7 +1321,7 @@ private abstract class AppendBufferImpl: IAppendBufferBase
         //assert (content_.length == n,
         //        typeof (this).stringof ~ ".setContentLength: content length mismatch");
     }
-    body
+    do
     {
         content_.length = n;
         assumeSafeAppend(content_);

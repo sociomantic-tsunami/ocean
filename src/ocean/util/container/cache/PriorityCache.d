@@ -317,7 +317,7 @@ class PriorityCache(T) : ICacheInfo
             assert(val !is null, "Null return value although item exists");
         }
     }
-    body
+    do
     {
         T* item = this.updatePriority(key, priority, tracK_get_miss);
         existed = item !is null;
@@ -713,7 +713,7 @@ class PriorityCache(T) : ICacheInfo
     ***************************************************************************/
 
     private T* create ( hash_t key, ulong priority )
-    body
+    do
     {
         bool item_added;
         auto index = this.attemptCreateNode(key, priority, item_added);
@@ -782,7 +782,7 @@ class PriorityCache(T) : ICacheInfo
         assert(&node, "ref argument is a dereferenced null pointer");
         assert (index < this.insert, "cache index out of bounds");
     }
-    body
+    do
     {
         TimeToIndex.Key node_key = node.key;
 
@@ -820,7 +820,7 @@ class PriorityCache(T) : ICacheInfo
     {
         if (node) assert (*node !is null, "null pointer value was stored in key_to_node");
     }
-    body
+    do
     {
         TimeToIndex.Node** node = key in this.key_to_node;
         if (track_misses)
@@ -863,7 +863,7 @@ class PriorityCache(T) : ICacheInfo
             assert(this.items[index].key == key, "keys mismatch");
         }
     }
-    body
+    do
     {
         size_t index;
 
