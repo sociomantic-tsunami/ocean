@@ -509,7 +509,7 @@ public class SelectListener ( T : IConnectionHandler, Args ... ) : ISelectListen
     {
         assert (still_existent >= n);
     }
-    body
+    do
     {
         size_t limit = this.receiver_pool.limit,
                busy = this.receiver_pool.num_busy;

@@ -182,7 +182,7 @@ class ParamSet
     {
        assert (element.key || !element.val);
     }
-    body
+    do
     {
         Element* element = this.get_(key);
 
@@ -518,7 +518,7 @@ class ParamSet
         if (element)
             assert (element.key || !element.val);
     }
-    body
+    do
     {
         return this.tolower(key) in this.paramset;
     }
@@ -605,7 +605,7 @@ class ParamSet
         assert (!n);
         assert (&dec[$ - 1] is &dst[$ - 1]);
     }
-    body
+    do
     {
         foreach_reverse (i, ref c; dst)
         {
@@ -673,7 +673,7 @@ class ParamSet
         static assert (T.init == 0, "initial value of type \"" ~ T.stringof ~ "\" is " ~ T.init.stringof ~ " (need 0)");
         static assert (cast (T) (T.max + 1) < T.max);                           // ensure overflow checking works
     }
-    body
+    do
     {
         cstring trimmed = ISplitIterator.trim(src);
 

@@ -352,7 +352,7 @@ class TaskSelectTransceiver
     {
         assert(n > 0);
     }
-    body
+    do
     {
         // Prevent misinformation if an error happens that is not detected by
         // io_op, such as a socket error reported by getsockopt(SO_ERROR) or an
@@ -459,7 +459,7 @@ class TaskSelectTransceiver
             "[{}] Read  {:X2} ({} bytes)", this.iodev.fileHandle, dst[0 .. n], n
         );
     }
-    body
+    do
     {
         return this.transfer(this.iodev.read(dst), Event.EPOLLIN, "read");
     }
@@ -502,7 +502,7 @@ class TaskSelectTransceiver
                     this.iodev.fileHandle, dst_a[0 .. n], n);
         }
     }
-    body
+    do
     {
         // Work around a linker error caused by a druntime packagin bug: The
         // druntime is by mistake currently not linked with the

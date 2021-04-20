@@ -56,7 +56,7 @@ class CookiesHttpResponse : HttpResponse
             assert (cookie !is null, "null cookie instance");
         }
     }
-    body
+    do
     {
         this.cookies = cookies.dup; // No .dup caused segfaults, apparently the
                                     // array is then sliced.

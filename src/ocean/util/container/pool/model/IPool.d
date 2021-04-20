@@ -298,7 +298,7 @@ public abstract class IPool : IPoolInfo, ILimitable
             assert (item.ptr !is null);
         }
     }
-    body
+    do
     {
         this.limited = limit != this.unlimited;
 
@@ -418,7 +418,7 @@ public abstract class IPool : IPoolInfo, ILimitable
             }
         }
     }
-    body
+    do
     {
         Item item;
 

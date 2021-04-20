@@ -425,7 +425,7 @@ abstract class FixedRingQueueBase ( IBaseQueue ) : IRingQueue!(IBaseQueue)
     {
         assert (!element || element.length == this.element_size);
     }
-    body
+    do
     {
         if (super.items < this.max_items)
         {
@@ -456,7 +456,7 @@ abstract class FixedRingQueueBase ( IBaseQueue ) : IRingQueue!(IBaseQueue)
     {
         assert (!element || element.length == this.element_size);
     }
-    body
+    do
     {
         if (super.items)
         {
@@ -476,7 +476,7 @@ abstract class FixedRingQueueBase ( IBaseQueue ) : IRingQueue!(IBaseQueue)
     {
         assert (!element || element.length == this.element_size);
     }
-    body
+    do
     {
         if (super.items)
         {
@@ -577,4 +577,3 @@ unittest
     test (!queue.pop());
     test (queue.get_write_to == queue.get_read_from);
 }
-

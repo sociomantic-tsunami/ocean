@@ -258,7 +258,7 @@ public struct Range ( T )
     {
         assert(&result);
     }
-    body
+    do
     {
         enforce(This.isValid(min, max));
 
@@ -292,7 +292,7 @@ public struct Range ( T )
     {
         assert(&result);
     }
-    body
+    do
     {
         static assert(boundaries == "[]" || boundaries == "[)"
                       || boundaries == "(]" || boundaries == "()",

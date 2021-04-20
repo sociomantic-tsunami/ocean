@@ -257,7 +257,7 @@ private class SignalFDTest
         {
             assert(signal < max_signal);
         }
-        body
+        do
         {
             return typeof(this).fired_signals[signal];
         }

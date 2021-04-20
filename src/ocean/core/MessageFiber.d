@@ -468,7 +468,7 @@ class MessageFiber
         assert (a);
         assert (a != a.exc);
     }
-    body
+    do
     {
         verify(
             this.fiber.state != this.fiber.State.EXEC,
@@ -528,7 +528,7 @@ class MessageFiber
         auto msg_out = cast(Unqual!(typeof(_msg_out))) _msg_out;
         assert(msg_out.active);
     }
-    body
+    do
     {
         verify (
             this.fiber.state == this.fiber.State.EXEC,
@@ -638,7 +638,7 @@ class MessageFiber
         assert (a);
         assert (a != a.exc);
     }
-    body
+    do
     {
         verify(
             this.fiber.state == this.fiber.State.HOLD,

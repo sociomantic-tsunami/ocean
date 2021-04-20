@@ -682,7 +682,7 @@ public class MarkupEntityCodec ( E : IEntitySet ) : IEntityCodec!(E)
         assert(entity.length >= 2, "character entity too short");
         assert(entity[0] == '&' && entity[$ - 1] == ';', "invalid character entity");
     }
-    body
+    do
     {
         static assert(
             is(Unqual!(Char) == char)
@@ -728,7 +728,7 @@ public class MarkupEntityCodec ( E : IEntitySet ) : IEntityCodec!(E)
         assert(entity.length >= 2, "character entity too short");
         assert(entity[0] == '&' && entity[$ - 1] == ';', "invalid character entity");
     }
-    body
+    do
     {
         static assert(
             is(Unqual!(Char) == char)

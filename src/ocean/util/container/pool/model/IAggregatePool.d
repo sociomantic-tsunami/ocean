@@ -243,7 +243,7 @@ public abstract class IAggregatePool ( T ) : IPool, IFreeList!(ItemType_!(T))
     {
         assert (item !is null);
     }
-    body
+    do
     {
         return this.fromItem(super.get_(Item.from(new_item)));
     }
@@ -302,7 +302,7 @@ public abstract class IAggregatePool ( T ) : IPool, IFreeList!(ItemType_!(T))
         {
             assert (item !is null);
         }
-        body
+        do
         {
             return this.get(new T);
         }
@@ -441,7 +441,7 @@ public abstract class IAggregatePool ( T ) : IPool, IFreeList!(ItemType_!(T))
     {
         assert (obj !is null);
     }
-    body+/
+    do+/
     {
         return this.fromItem(super.opIndex_(n));
     }
@@ -602,7 +602,7 @@ public abstract class IAggregatePool ( T ) : IPool, IFreeList!(ItemType_!(T))
     {
         assert (this.isNull(item));
     }
-    body
+    do
     {
         import core.memory;
 

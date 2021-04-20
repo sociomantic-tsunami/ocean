@@ -206,7 +206,7 @@ class UrlDecoder
         assert (slice.ptr is dst.ptr, typeof (this).stringof ~ ".decodeCharacter: bad returned slice");
         assert(pos <= source.length, typeof (this).stringof ~ ".decodeCharacter (out): offset out of array bounds");
     }
-    body
+    do
     {
         verify(
             pos <= source.length,
@@ -288,7 +288,7 @@ class UrlDecoder
     {
         assert (str_out.ptr is str.ptr);
     }
-    body
+    do
     {
         size_t pos = 0;
 
@@ -458,7 +458,7 @@ class UrlDecoder
     {
         assert (utf8_buf.ptr is utf8.ptr);
     }
-    body
+    do
     {
         verify (hex.length == 4);
         verify (utf8_buf.length >= 6);

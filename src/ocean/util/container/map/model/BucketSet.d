@@ -396,7 +396,7 @@ public abstract class BucketSet ( size_t V, K = hash_t ) : IBucketSet
             }
         }
     }
-    body
+    do
     {
         auto element = this
             .buckets[this.toHash(key) & this.bucket_mask]
@@ -443,7 +443,7 @@ public abstract class BucketSet ( size_t V, K = hash_t ) : IBucketSet
             assert (element.key == key, "key mismatch");
         }
     }
-    body
+    do
     {
         size_t bucket_index = this.toHash(key) & this.bucket_mask;
 
@@ -675,7 +675,7 @@ public abstract class BucketSet ( size_t V, K = hash_t ) : IBucketSet
             assert(bucket.first == null, "non-Null first bucket element found");
         }
     }
-    body
+    do
     {
         verify (!val_init.length || val_init.length == V);
 

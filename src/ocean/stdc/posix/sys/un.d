@@ -46,7 +46,7 @@ struct sockaddr_un
             assert(typeof(this).sun_path.length > path.length,
                     "Can't set path longer than UNIX_PATH_MAX.");
         }
-        body
+        do
         {
             sockaddr_un addr;
             addr.sun_path[0..path.length] = path;

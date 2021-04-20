@@ -278,7 +278,7 @@ public class Distribution ( T )
             assert(result == 0, "percentValue should be 0 for empty distributions");
         }
     }
-    body
+    do
     {
         enforce(fraction >= 0.0 && fraction <= 1.0,
             "fraction must be within [0.0 ... 1.0]");

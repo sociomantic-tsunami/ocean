@@ -226,7 +226,7 @@ class EBTree128 ( bool signed = false ) : IEBTree
     {
         assert (node_out !is null);
     }
-    body
+    do
     {
         scope (success) this.increaseNodeCount(1);
 
@@ -251,7 +251,7 @@ class EBTree128 ( bool signed = false ) : IEBTree
     {
         assert (node_out !is null);
     }
-    body
+    do
     {
         return (node.key != key)? this.add_(node.remove(), key) : &node;
     }
@@ -367,7 +367,7 @@ class EBTree128 ( bool signed = false ) : IEBTree
     {
         assert (node_out !is null);
     }
-    body
+    do
     {
         verify (node !is null, "attempted to add null node (node pool returned null?)");
 

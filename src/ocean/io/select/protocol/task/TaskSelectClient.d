@@ -131,7 +131,7 @@ class TaskSelectClient: ISelectClient
     {
         assert(!this.task);
     }
-    body
+    do
     {
         verify(events_expected != Event.init);
         verify(this.task is null);

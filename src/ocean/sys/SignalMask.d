@@ -201,7 +201,7 @@ public struct SignalSet
                 assert(false, "invalid pthread_sigmask opcode");
         }
     }
-    body
+    do
     {
         typeof(this) old_set;
 

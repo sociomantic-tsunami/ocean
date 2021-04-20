@@ -191,7 +191,7 @@ struct HttpTimeFormatter
     {
         assert (!n, "decimal formatting overflow");
     }
-    body
+    do
     {
         verify(n >= 0);
 

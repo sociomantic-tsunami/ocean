@@ -142,7 +142,7 @@ class ExpiringLRUCache(T = void[]) : LRUCache!(T, true), IExpiringCacheInfo
     {
         if (expired) assert (val is null);
     }
-    body
+    do
     {
         bool existed;
 
@@ -215,7 +215,7 @@ class ExpiringLRUCache(T = void[]) : LRUCache!(T, true), IExpiringCacheInfo
     {
         if (expired) assert (!does_exist);
     }
-    body
+    do
     {
         return this.getAndRefresh(key, expired) !is null;
     }
@@ -305,7 +305,7 @@ class ExpiringLRUCache(T = void[]) : LRUCache!(T, true), IExpiringCacheInfo
             assert (val is null);
         }
     }
-    body
+    do
     {
         verify (this.lifetime > 0,
                 "cache element lifetime is expected to be at least 1");

@@ -62,7 +62,7 @@ abstract class MessageDigestCore
     {
         assert(this.md !is null);
     }
-    body
+    do
     {
         // `gcry_md_open` sets `this.md = null` on failure.
         GcryptException.throwNewIfGcryptError(

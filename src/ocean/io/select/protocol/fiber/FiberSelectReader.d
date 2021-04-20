@@ -474,7 +474,7 @@ class FiberSelectReader : IFiberSelectProtocol
     {
         assert (received <= data.length, "received length too high");
     }
-    body
+    do
     {
         verify(this.available < this.data.length, "requested to receive nothing");
 

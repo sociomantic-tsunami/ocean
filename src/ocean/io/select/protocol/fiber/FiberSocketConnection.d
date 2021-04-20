@@ -474,7 +474,7 @@ public class IFiberSocketConnection : IFiberSelectProtocol
     {
         assert (!this.connected_);
     }
-    body
+    do
     {
         if (this.connected_ || force)
         {
@@ -556,7 +556,7 @@ public class IFiberSocketConnection : IFiberSelectProtocol
         assert (this.connected_);
         assert (status);
     }
-    body
+    do
     {
         // Create a socket if it is currently closed.
         if (this.socket.fileHandle < 0)

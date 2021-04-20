@@ -125,7 +125,7 @@ public abstract class IRingQueue ( IBaseQueue ) : IBaseQueue
         assert(mem_manager !is null, typeof(this).stringof ~ ": memory manager is null");
         assert(dimension > 0, typeof(this).stringof ~ ": cannot construct a 0-length queue");
     }
-    body
+    do
     {
         this.mem_manager = mem_manager;
 

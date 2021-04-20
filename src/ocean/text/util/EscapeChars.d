@@ -132,7 +132,7 @@ struct EscapeChars
         assert (!this.tokens[$ - 1]);
         assert (this.tokens.length - 1 == strlen(this.tokens.ptr));
     }
-    body
+    do
     {
         verify (tokens.ptr !is null);
         verify (!memchr(tokens.ptr, '\0', tokens.length),

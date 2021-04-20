@@ -225,7 +225,7 @@ abstract class IAllocator
                 assert(!this.n);
             }
         }
-        body
+        do
         {
             if (this.n)
             {

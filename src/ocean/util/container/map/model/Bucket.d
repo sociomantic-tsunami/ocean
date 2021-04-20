@@ -185,7 +185,7 @@ public struct Bucket ( size_t V, K = hash_t )
                     "element found is not from this bucket");
         }
     }
-    body
+    do
     {
         for (Element* element = this.first; element; element = element.next)
         {
@@ -224,7 +224,7 @@ public struct Bucket ( size_t V, K = hash_t )
     {
         assert (element !is null);
     }
-    body
+    do
     {
         Element* element = this.find(key);
 
@@ -287,7 +287,7 @@ public struct Bucket ( size_t V, K = hash_t )
             }
         }
     }
-    body
+    do
     {
         element.next = this.first;
         this.first   = element;
@@ -326,7 +326,7 @@ public struct Bucket ( size_t V, K = hash_t )
             }
         }
     }
-    body
+    do
     {
         if (this.first !is null)
         {

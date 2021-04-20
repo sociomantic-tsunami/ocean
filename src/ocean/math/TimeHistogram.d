@@ -136,7 +136,7 @@ struct TimeHistogram
         {
             assert(suffixes.length > 0);
         }
-        body
+        do
         {
             enum type = typeof(TimeHistogram.bins[0]).stringof;
 
@@ -214,7 +214,7 @@ struct TimeHistogram
     {
         assert(this.count || !this.total_time_micros);
     }
-    body
+    do
     {
         return cast(double)this.total_time_micros / this.count;
     }

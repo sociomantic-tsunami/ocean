@@ -314,7 +314,7 @@ public class TimerSet ( EventData ) : TimerEventTimeoutManager
     {
         assert(event !is null);
     }
-    body
+    do
     {
         verify(setup_dg !is null, typeof(this).stringof ~ ".schedule: event setup delegate is null");
         verify(fired_dg !is null, typeof(this).stringof ~ ".schedule: event fired delegate is null");

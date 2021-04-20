@@ -759,7 +759,7 @@ out (ret)
     assert(s.ptr == p);
     assert(ret.ptr + ret.length == p);
 }
-body
+do
 {
     verify(s.ptr <= p);
     verify(s.ptr + s.length >= p);
