@@ -118,7 +118,6 @@ class GenericArrayPool
         else
         {
             onOutOfMemoryError();
-            this.elements = null;
         }
     }
 
