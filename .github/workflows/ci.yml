@@ -15,6 +15,8 @@ jobs:
         os: [ ubuntu-18.04 ]
         dc: [ dmd-2.092.1, dmd-2.093.1 ]
         flavor: [ prod, devel ]
+        # Not a matrix row, but referenced as a constant in this file
+        ebtree_version: [ v6.0.socio10 ]
         include:
           - { dc: dmd-2.093.1, coverage: 1, closure_check: 1 }
 
@@ -24,24 +26,40 @@ jobs:
     - name: "Ensure tools/ exists"
       run: mkdir -p ${{ github.workspace }}/tools/
 
-    - name: 'Restore ebtree from cache'
+    - name: 'Restore ebtree ${{ matrix.ebtree_version }} from cache'
       id: cache-ebtree
       uses: actions/cache@v1
       with:
         path: ${{ github.workspace }}/tools/
-        key:  ebtree
+        key:  ebtree-${{ matrix.ebtree_version }}
 
-    - name: 'Download ebtree from bintray'
+    - name: 'Checkout ebtree ${{ matrix.ebtree_version }}'
+      uses: actions/checkout@v2
+      if: steps.cache-ebtree.outputs.cache-hit != 'true'
+      with:
+        repository: sociomantic-tsunami/ebtree
+        ref: ${{ matrix.ebtree_version }}
+        # Relative to Github workspace
+        path: tools/ebtree
+
+    - name: 'Build ebtree ${{ matrix.ebtree_version }}'
       if: steps.cache-ebtree.outputs.cache-hit != 'true'
       run: |
-        wget -O ${{ github.workspace }}/tools/libebtree.deb https://bintray.com/sociomantic-tsunami/dlang/download_file?file_path=libebtree6_6.0.s7-rc5-xenial_amd64.deb
-        wget -O ${{ github.workspace }}/tools/libebtree-dev.deb https://bintray.com/sociomantic-tsunami/dlang/download_file?file_path=libebtree6-dev_6.0.s7-rc5-xenial_amd64.deb
+        # fpm is used to build the `.deb` and depends on ruby
+        sudo apt-get update
+        sudo apt-get install -y build-essential ruby ruby-dev
+        sudo gem install --no-document fpm
+        # Build the debian package
+        # Package lives in tools/ebtree/deb/libebtree6[-{dbg,dev}]_$VERSION-distro_arch.deb
+        # $VERSION is ${{ matrix.ebtree_version }} without the leading 'v'
+        # E.g. libebtree6[-{dbg,dev}]_6.0.socio10-bionic_amd64.deb
+        make -C '${{ github.workspace }}/tools/ebtree' deb
 
     - name: Install dependencies
       run: |
-        sudo apt-get update && \
+        sudo apt-get update
         sudo apt-get install -y libxslt-dev liblzo2-dev libgcrypt-dev libgpg-error-dev
-        sudo dpkg -i ${{ github.workspace }}/tools/libebtree*.deb
+        sudo dpkg -i ${{ github.workspace }}/tools/ebtree/deb/libebtree6*.deb
 
     - name: Install compiler
       uses: dlang-community/setup-dlang@v1
