@@ -48,27 +48,18 @@
 
 module ocean.util.config.ConfigFiller;
 
-
-
-import ocean.meta.types.Qualifiers;
-
+import ocean.core.Enforce;
+import ocean.core.ExceptionDefinitions;
 import ocean.core.Verify;
-
-public import ocean.util.config.ConfigParser: ConfigException;
-
-import ocean.core.ExceptionDefinitions, ocean.core.Enforce;
-
-import ocean.util.config.ConfigParser;
-
-import ocean.util.Convert;
-
-import ocean.meta.traits.Basic /* : isArrayType, isCharType, isIntegerType, isRealType */ ;
-import ocean.meta.traits.Arrays /* : isUTF8StringType */ ;
-import ocean.meta.types.Arrays /* : ElementTypeOf */ ;
-
 import ocean.io.Stdout;
-
+import ocean.meta.traits.Basic : isArrayType, isCharType, isIntegerType, isRealType;
+import ocean.meta.traits.Arrays : isUTF8StringType;
+import ocean.meta.types.Arrays : ElementTypeOf ;
+import ocean.meta.types.Qualifiers;
 import ocean.text.convert.Formatter;
+import ocean.util.config.ConfigParser;
+public import ocean.util.config.ConfigParser: ConfigException;
+import ocean.util.Convert;
 
 version (unittest) import ocean.core.Test;
 
