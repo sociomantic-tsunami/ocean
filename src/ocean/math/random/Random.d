@@ -426,8 +426,10 @@ final class RandomG(SourceT=DefaultEngine)
                 }
             }
         } else static if (is(T==cfloat)||is(T==cdouble)||is(T==creal)){
+            // TODO: Remove in v7.0.0
             return cast(T)(uniform!(realType!(T))()+1i*uniform!(realType!(T))());
         } else static if (is(T==ifloat)||is(T==idouble)||is(T==ireal)){
+            // TODO: Remove in v7.0.0
             return cast(T)(1i*uniform!(realType!(T))());
         } else static assert(0,T.stringof~" unsupported type for uniform distribution");
     }

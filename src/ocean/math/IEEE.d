@@ -774,6 +774,7 @@ real fma(float x, float y, float z)
  * almost twice as fast as calculating sin(y) and cos(y)
  * seperately, and is the preferred method when both are required.
  */
+deprecated("Use `std.complex.Complex` instead")
 creal expi(real y)
 {
     version(Naked_D_InlineAsm_X86)
@@ -790,7 +791,7 @@ creal expi(real y)
     }
 }
 
-unittest
+deprecated unittest
 {
     test(expi(1.3e5L) == core.stdc.math.cosl(1.3e5L) + core.stdc.math.sinl(1.3e5L) * 1i);
     test(expi(0.0L) == 1L + 0.0Li);
@@ -895,11 +896,13 @@ bool isIdentical(real x, real y)
 }
 
 /** ditto */
+deprecated("Use `real` instead")
 bool isIdentical(ireal x, ireal y) {
     return isIdentical(x.im, y.im);
 }
 
 /** ditto */
+deprecated("Use `std.complex.Complex` instead")
 bool isIdentical(creal x, creal y) {
     return isIdentical(x.re, y.re) && isIdentical(x.im, y.im);
 }
@@ -911,6 +914,9 @@ unittest {
     test(!isIdentical(NaN(0xABC), NaN(218)));
     test(isIdentical(1.234e56, 1.234e56));
     test(isNaN(NaN(0x12345)));
+}
+
+deprecated unittest {
     test(isIdentical(3.1 + NaN(0xDEF) * 1i, 3.1 + NaN(0xDEF)*1i));
     test(!isIdentical(3.1+0.0i, 3.1-0i));
     test(!isIdentical(0.0i, 2.5e58i));

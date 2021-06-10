@@ -1183,11 +1183,6 @@ version (unittest)
         {
             return 3.14159;
         }
-
-        ireal toIreal()
-        {
-            return 42.0i;
-        }
     }
 
     struct Baz
@@ -1267,22 +1262,6 @@ unittest
      */
     test( to!(real)(3) == 3.0 );
     test( to!(real)("1.125"[]) == 1.125 );
-
-    /*
-     * Imaginary
-     */
-    static assert( !is( typeof(to!(ireal)(3.0)) ) );
-
-    test( to!(ireal)(0.0+1.0i) == 1.0i );
-    test(nx( to!(ireal)(0.0+1.0i) ));
-    test(ex( to!(ireal)(1.0+0.0i) ));
-
-    /*
-     * Complex
-     */
-    test( to!(creal)(1) == (1.0+0.0i) );
-    test( to!(creal)(2.0) == (2.0+0.0i) );
-    test( to!(creal)(3.0i) == (0.0+3.0i) );
 
     /*
      * Char
@@ -1365,7 +1344,6 @@ unittest
         test( to!(wchar[])(foo) == "string foo"w );
         test( to!(dchar[])(foo) == "string foo"d );
         test( to!(int[])(foo) == [1,2,3] );
-        test( to!(ireal)(to!(Bar)(foo)) == 42.0i );
         test( to!(real)(to!(Bar)(to!(Baz)(foo))) == 3.14159 );
     }
 

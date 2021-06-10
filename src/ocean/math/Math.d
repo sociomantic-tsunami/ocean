@@ -117,12 +117,14 @@ int abs(int x)
 }
 
 /** ditto */
+deprecated("Use `std.complex.Complex` instead")
 real abs(creal z)
 {
     return hypot(z.re, z.im);
 }
 
 /** ditto */
+deprecated("Use `real` instead")
 real abs(ireal y)
 {
     return ocean.math.IEEE.fabs(y.im);
@@ -133,10 +135,14 @@ unittest
     test(isIdentical(0.0L,abs(-0.0L)));
     test(isNaN(abs(real.nan)));
     test(abs(-real.infinity) == real.infinity);
-    test(abs(-3.2Li) == 3.2L);
-    test(abs(71.6Li) == 71.6L);
     test(abs(-56) == 56);
     test(abs(2321312L)  == 2321312L);
+}
+
+deprecated unittest
+{
+    test(abs(-3.2Li) == 3.2L);
+    test(abs(71.6Li) == 71.6L);
     test(abs(-1.0L+1.0Li) == sqrt(2.0L));
 }
 
@@ -148,18 +154,20 @@ unittest
  * Note that z * conj(z) = $(POWER z.re, 2) + $(POWER z.im, 2)
  * is always a real number
  */
+deprecated("Use `std.complex.Complex` instead")
 creal conj(creal z)
 {
     return z.re - z.im*1i;
 }
 
 /** ditto */
+deprecated("Use `real` instead")
 ireal conj(ireal y)
 {
     return -y;
 }
 
-unittest
+deprecated unittest
 {
     test(conj(7 + 3i) == 7-3i);
     ireal z = -3.2Li;
@@ -472,6 +480,7 @@ unittest {
  * If both sin(&theta;) and cos(&theta;) are required,
  * it is most efficient to use expi(&theta).
  */
+deprecated("Use `std.complex.Complex` instead")
 creal sin(creal z)
 {
   creal cs = expi(z.re);
@@ -479,12 +488,13 @@ creal sin(creal z)
 }
 
 /** ditto */
+deprecated("Use `ireal` instead")
 ireal sin(ireal y)
 {
   return cosh(y.im)*1i;
 }
 
-unittest
+deprecated unittest
 {
   test(sin(0.0+0.0i) == 0.0);
   test(sin(2.0+0.0i) == sin(2.0L) );
@@ -495,6 +505,7 @@ unittest
  *
  *  cos(z) = cos(z.re)*cosh(z.im) + sin(z.re)*sinh(z.im)i
  */
+deprecated("Use `std.complex.Complex` instead")
 creal cos(creal z)
 {
   creal cs = expi(z.re);
@@ -502,12 +513,13 @@ creal cos(creal z)
 }
 
 /** ditto */
+deprecated("Use `real` instead")
 real cos(ireal y)
 {
   return cosh(y.im);
 }
 
-unittest
+deprecated unittest
 {
   test(cos(0.0+0.0i)==1.0);
   test(cos(1.3L+0.0i)==cos(1.3L));
@@ -622,12 +634,13 @@ unittest
  * asin(z) = -i log( sqrt(1-$(POWER z, 2)) + iz)
  * where both log and sqrt are complex.
  */
+deprecated("Use `std.complex.Complex` instead")
 creal asin(creal z)
 {
     return -log(sqrt(1-z*z) + z*1i)*1i;
 }
 
-unittest
+deprecated unittest
 {
    test(asin(sin(0+0i)) == 0 + 0i);
 }
@@ -637,6 +650,7 @@ unittest
  *
  * acos(z) = $(PI)/2 - asin(z)
  */
+deprecated("Use `std.complex.Complex` instead")
 creal acos(creal z)
 {
     return PI_2 - asin(z);
@@ -723,6 +737,7 @@ unittest
  *
  *  sinh(z) = cos(z.im)*sinh(z.re) + sin(z.im)*cosh(z.re)i
  */
+deprecated("Use `std.complex.Complex` instead")
 creal sinh(creal z)
 {
   creal cs = expi(z.im);
@@ -730,12 +745,13 @@ creal sinh(creal z)
 }
 
 /** ditto */
+deprecated("Use `real` instead")
 ireal sinh(ireal y)
 {
   return sin(y.im)*1i;
 }
 
-unittest
+deprecated unittest
 {
   test(sinh(4.2L + 0i)==sinh(4.2L));
 }
@@ -745,6 +761,7 @@ unittest
  *
  *  cosh(z) = cos(z.im)*cosh(z.re) + sin(z.im)*sinh(z.re)i
  */
+deprecated("Use `std.complex.Complex` instead")
 creal cosh(creal z)
 {
   creal cs = expi(z.im);
@@ -752,12 +769,13 @@ creal cosh(creal z)
 }
 
 /** ditto */
+deprecated("Use `ireal` instead")
 real cosh(ireal y)
 {
   return cos(y.im);
 }
 
-unittest
+deprecated unittest
 {
   test(cosh(8.3L + 0i)==cosh(8.3L));
 }
@@ -866,6 +884,7 @@ unittest
 }
 
 /** ditto */
+deprecated("Use `std.complex.Complex` / `real` instead")
 creal atanh(ireal y)
 {
     // Not optimised for accuracy or speed
@@ -873,6 +892,7 @@ creal atanh(ireal y)
 }
 
 /** ditto */
+deprecated("Use `std.complex.Complex` instead")
 creal atanh(creal z)
 {
     // Not optimised for accuracy or speed
@@ -942,6 +962,7 @@ real sqrt(real x) /* intrinsic */ /// ditto
 }
 
 /** ditto */
+deprecated("Use `std.complex.Complex` instead")
 creal sqrt(creal z)
 {
 
@@ -971,6 +992,9 @@ creal sqrt(creal z)
 unittest {
     // NaN payloads
     test(isIdentical(sqrt(NaN(0xABC)), NaN(0xABC)));
+}
+
+deprecated unittest {
     test(sqrt(-1+0i) == 1i);
     test(isIdentical(sqrt(0-0i), 0-0i));
     test(cfeqrel(sqrt(4+16i)*sqrt(4+16i), 4+16i)>=real.mant_dig-2);
@@ -1489,18 +1513,20 @@ unittest {
  *  exp(&theta;i)  = cos(&theta;) + sin(&theta;)i.
  *
  */
+deprecated("Use `std.complex.Complex` / `real` instead")
 creal exp(ireal y)
 {
    return expi(y.im);
 }
 
 /** ditto */
+deprecated("Use `std.complex.Complex` instead")
 creal exp(creal z)
 {
   return expi(z.im) * exp(z.re);
 }
 
-unittest {
+deprecated unittest {
     test(exp(1.3e5Li)==cos(1.3e5L)+sin(1.3e5L)*1i);
     test(exp(0.0Li)==1L+0.0Li);
     test(exp(7.2 + 0.0i) == exp(7.2L));
@@ -1528,6 +1554,7 @@ unittest {
  *    log(-0.0 + yi) = log(-y) - PI_2i  // y<=-0.0
  * ------------
  */
+deprecated("Use `std.complex.Complex` instead")
 creal log(creal z)
 {
   return log(abs(z)) + atan2(z.im, z.re)*1i;
@@ -1537,13 +1564,13 @@ creal log(creal z)
  * feqrel for complex numbers. Returns the worst relative
  * equality of the two components.
  */
-private int cfeqrel(creal a, creal b)
+deprecated private int cfeqrel(creal a, creal b)
 {
     int intmin(int a, int b) { return a<b? a: b; }
     return intmin(feqrel(a.re, b.re), feqrel(a.im, b.im));
 }
 
-unittest {
+deprecated unittest {
 
   test(log(3.0L +0i) == log(3.0L)+0i);
   test(cfeqrel(log(0.0L-2i),( log(2.0L)-PI_2*1i)) >= real.mant_dig-10);

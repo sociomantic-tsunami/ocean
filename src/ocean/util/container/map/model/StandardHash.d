@@ -31,6 +31,7 @@ struct StandardHash
 
     template IsPrimitiveValueType ( T )
     {
+        // TODO: Remove `creal` in v7.0.0
         enum IsPrimitiveValueType = is (T : real) || is (T : creal) || is (T : dchar);
     }
 
