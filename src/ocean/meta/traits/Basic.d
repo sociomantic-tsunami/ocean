@@ -193,9 +193,11 @@ public template isRealType ( T )
 ///
 unittest
 {
+    static struct Converts { double value; alias value this; }
+
     static assert ( isRealType!(double));
     static assert (!isRealType!(long));
-    static assert (!isRealType!(cdouble));
+    static assert (!isRealType!(Converts));
 }
 
 
@@ -218,7 +220,7 @@ public template isComplexType( T )
 }
 
 ///
-unittest
+deprecated unittest
 {
     static assert ( isComplexType!(cdouble));
     static assert ( isComplexType!(const(cdouble)));
@@ -244,7 +246,7 @@ public template isImaginaryType( T )
 }
 
 ///
-unittest
+deprecated unittest
 {
     static assert ( isImaginaryType!(idouble));
     static assert ( isImaginaryType!(const(idouble)));
