@@ -545,9 +545,9 @@ unittest
     alias U = SmartUnion!HasDuplicates;
 
     // These calls are unambiguous.
-    U(Object.init);
-    U("c");
-    U([true]);
+    cast(void) U(Object.init);
+    cast(void) U("c");
+    cast(void) U([true]);
 
     // Dont allow ambiguous opCalls
     static assert(!__traits(compiles, U(1)));
