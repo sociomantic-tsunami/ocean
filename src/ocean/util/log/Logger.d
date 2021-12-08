@@ -72,9 +72,6 @@ version (unittest)
 
     These represent the standard LOG4J event levels.
 
-    Note that `Debug` is called `Trace` here, because debug is a reserved word
-    in D.
-
 *******************************************************************************/
 
 public alias ILogger.Level Level;
@@ -107,8 +104,14 @@ public struct Log
     {
         alias typeof(this) This;
 
+        /// Number of debug log events issued
+        public uint logged_debug;
+
         /// Number of trace log events issued
         public uint logged_trace;
+
+        /// Number of verbose log events issued
+        public uint logged_verbose;
 
         /// Number of info log events issued
         public uint logged_info;
@@ -168,8 +171,14 @@ public struct Log
         {
             with (Level) switch (event_level)
             {
+            case Debug:
+                this.logged_debug++;
+                break;
             case Trace:
                 this.logged_trace++;
+                break;
+            case Verbose:
+                this.logged_verbose++;
                 break;
             case Info:
                 this.logged_info++;
@@ -399,7 +408,9 @@ public struct Log
 
 public final class Logger : ILogger
 {
-    public alias Level.Trace Trace;     /// Shortcut to `Level` values
+    public alias Level.Info  Debug;     /// Shortcut to `Level` values
+    public alias Level.Trace Trace;     /// Ditto
+    public alias Level.Info  Verbose;   /// Ditto
     public alias Level.Info  Info;      /// Ditto
     public alias Level.Warn  Warn;      /// Ditto
     public alias Level.Error Error;     /// Ditto
@@ -465,6 +476,27 @@ public final class Logger : ILogger
 
     /***************************************************************************
 
+        Append a message with a severity of `Level.Debug`.
+
+        Unlike other log level, this has to be abbreviated as `debug`
+        is a keyword.
+
+        Params:
+            Args = Auto-deduced format string arguments
+            fmt = Format string to use.
+                  See `ocean.text.convert.Formatter` documentation for
+                  more informations.
+            args = Arguments to format according to `fmt`.
+
+    ***************************************************************************/
+
+    public void dbg (Args...) (cstring fmt, Args args)
+    {
+        this.format(Level.Debug, fmt, args);
+    }
+
+    /***************************************************************************
+
         Append a message with a severity of `Level.Trace`.
 
         Params:
@@ -479,6 +511,24 @@ public final class Logger : ILogger
     public void trace (Args...) (cstring fmt, Args args)
     {
         this.format(Level.Trace, fmt, args);
+    }
+
+    /***************************************************************************
+
+        Append a message with a severity of `Level.Verbose`.
+
+        Params:
+            Args = Auto-deduced format string arguments
+            fmt = Format string to use.
+                  See `ocean.text.convert.Formatter` documentation for
+                  more informations.
+            args = Arguments to format according to `fmt`.
+
+    ***************************************************************************/
+
+    public void verbose (Args...) (cstring fmt, Args args)
+    {
+        this.format(Level.Debug, fmt, args);
     }
 
     /***************************************************************************
@@ -923,11 +973,15 @@ unittest
     static void test ()
     {
         Logger log = Log.lookup("ocean.util.log.Logger");
-        log.trace("Souvent, pour s'amuser, les hommes d'équipage");
-        log.info("Prennent des albatros, vastes oiseaux des mers,");
-        log.warn("Qui suivent, indolents compagnons de voyage,");
-        log.error("Le navire glissant sur les gouffres amers.");
-        log.fatal("Ses ailes de géant l'empêchent de marcher.");
+        log.dbg("Souvent, pour s'amuser, les hommes d'équipage");
+        log.trace("Prennent des albatros, vastes oiseaux des mers,");
+        log.verbose("Qui suivent, indolents compagnons de voyage,");
+        log.info("Le navire glissant sur les gouffres amers.");
+
+        log.warn("Le Poète est semblable au prince des nuées");
+        log.error("Qui hante la tempête et se rit de l'archer");
+        log.fatal("Exilé sur le sol au milieu des huées,");
+        log.format(Level.Fatal, "Ses ailes de géant l'empêchent de marcher.");
     }
 }
 
