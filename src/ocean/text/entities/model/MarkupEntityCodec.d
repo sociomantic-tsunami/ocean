@@ -755,7 +755,7 @@ public class MarkupEntityCodec ( E : IEntitySet ) : IEntityCodec!(E)
                 unicode = cast(dchar) Integer.toInt(entity[2 .. $ - 1], 10);
             }
         }
-        catch {}
+        catch (Exception) {}
 
         return unicode;
     }
