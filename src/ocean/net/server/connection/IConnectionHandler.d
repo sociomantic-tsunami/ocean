@@ -339,7 +339,7 @@ abstract class IConnectionHandler : IConnectionHandlerInfo,
             debug ( ConnectionHandler ) Stderr.formatln("[{}]: Caught non-io exception while handling connection: '{}' @ {}:{}",
                     this.connection_id, exception.toString(), exception.file, exception.line);
         }
-        catch { /* Theoretically io_error() could throw. */ }
+        catch (Exception) { /* Theoretically io_error() could throw. */ }
 
         if ( this.error_dg_ )
         {
