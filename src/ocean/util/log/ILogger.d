@@ -36,20 +36,25 @@ version (unittest)
 interface ILogger
 {
     /// Defines the level at which a message can be logged
-    public enum Level
+    public enum Level : ubyte
     {
-        ///
-        Trace = 0,
-        ///
+        /// The lowest level: Used for programming debug statement
+        Debug,
+        /// Trace messages let the user "trace" the program behavior,
+        /// e.g. what function calls are made (or when they exit)
+        Trace,
+        /// Verbose message provide extra informations about the program
+        Verbose,
+        /// Informative message, this is the "default" value for the user
         Info,
-        ///
+        /// Warnings about potential issues
         Warn,
-        ///
+        /// Notify the user of a hard error
         Error,
-        ///
+        /// A Fatal error, which could lead to the program termination
         Fatal,
-        ///
-        None
+        /// No message should be output
+        None,
     };
 
     /// Internal struct to associate a `Level` with its name
@@ -72,12 +77,14 @@ interface ILogger
 
     private static immutable Pair[Level.max + 1] Pairs =
     [
-        { "Trace",  Level.Trace },
-        { "Info",   Level.Info },
-        { "Warn",   Level.Warn },
-        { "Error",  Level.Error },
-        { "Fatal",  Level.Fatal },
-        { "None",   Level.None }
+        { "Debug",   Level.Debug },
+        { "Trace",   Level.Trace },
+        { "Verbose", Level.Verbose },
+        { "Info",    Level.Info },
+        { "Warn",    Level.Warn },
+        { "Error",   Level.Error },
+        { "Fatal",   Level.Fatal },
+        { "None",    Level.None },
     ];
 
     /***************************************************************************
