@@ -231,7 +231,7 @@ public class AppendNull : Appender
     /// Append an event to the output
     final override void append (LogEvent event)
     {
-        this.layout.format(event, (cstring) {});
+        this.layout.format(event, (in cstring) {});
     }
 }
 
@@ -271,7 +271,7 @@ public class AppendStream : Appender
     {
         static immutable istring Eol = "\n";
 
-        this.layout.format(event, (cstring content) { this.stream_.write(content); });
+        this.layout.format(event, (in cstring content) { this.stream_.write(content); });
         this.stream_.write(Eol);
         if (this.flush_)
             this.stream_.flush;
@@ -307,7 +307,7 @@ unittest
        result.length = 0;
        assumeSafeAppend(result);
 
-       scope dg = (cstring v) { result ~= v; };
+       scope dg = (in cstring v) { result ~= v; };
        scope layout = new LayoutTimer();
        LogEvent event = {
            msg_: "Have you met Ted?",
