@@ -465,7 +465,7 @@ private void handle (T) (T v, FormatInfo f, scope FormatterSink sf, scope ElemSi
     // Note: sink `toString` overload should take a `scope` delegate
     else static if (is(typeof(v.toString(sf))))
         nullWrapper(&v,
-                    v.toString((cstring e) { se(e, f); }),
+                    v.toString((in cstring e) { se(e, f); }),
                     se("null", f));
     else static if (is(typeof(v.toString()) : cstring))
         nullWrapper(&v, se(v.toString(), f), se("null", f));
