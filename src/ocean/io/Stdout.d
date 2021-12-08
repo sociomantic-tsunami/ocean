@@ -84,7 +84,7 @@ public class TerminalOutput : FormatOutput
 
     ***************************************************************************/
 
-    private typeof(this) csiSeq ( istring seq ) ( )
+    public typeof(this) csiSeq ( istring seq ) ( )
     {
         if ( !this.redirect )
         {
