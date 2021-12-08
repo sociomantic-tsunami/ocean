@@ -93,7 +93,7 @@ import ocean.meta.codegen.Identifier;
 
 *******************************************************************************/
 
-public alias void delegate(cstring) FormatterSink;
+public alias void delegate(in cstring) FormatterSink;
 
 /*******************************************************************************
 
@@ -129,7 +129,7 @@ public istring format (Args...) (cstring fmt, Args args)
 
     mstring buffer;
 
-    scope FormatterSink sink = (cstring s)
+    scope FormatterSink sink = (in cstring s)
     {
         buffer ~= s;
     };
@@ -156,7 +156,7 @@ public istring format (Args...) (cstring fmt, Args args)
 
 public mstring sformat (Args...) (ref mstring buffer, cstring fmt, Args args)
 {
-    scope FormatterSink sink = (cstring s)
+    scope FormatterSink sink = (in cstring s)
     {
         buffer ~= s;
     };
@@ -167,7 +167,7 @@ public mstring sformat (Args...) (ref mstring buffer, cstring fmt, Args args)
 /// ditto
 public mstring sformat (Args...) (ref Buffer!(char) buffer, cstring fmt, Args args)
 {
-    scope FormatterSink sink = (cstring s)
+    scope FormatterSink sink = (in cstring s)
     {
         buffer ~= s;
     };
@@ -201,7 +201,7 @@ public mstring snformat (Args...) (mstring buffer, cstring fmt, Args args)
 {
     size_t start;
 
-    scope FormatterSink sink = (cstring s)
+    scope FormatterSink sink = (in cstring s)
     {
         size_t left = buffer.length - start;
         size_t wsize = left <= s.length ? left : s.length;
