@@ -545,8 +545,7 @@ private void handle (T) (T v, FormatInfo f, scope FormatterSink sf, scope ElemSi
                     || is(typeof((&v)[0 .. 1]) : const(wchar)[])
                     || is(typeof((&v)[0 .. 1]) : const(dchar)[]))
     {
-        Unqual!(T)[3] b = "'_'";
-        b[1] = v;
+        T[3] b = [ '\'', v, '\'' ];
         if (f.flags & Flags.Nested)
             UTF.toString(b, (cstring val) { se(val, f); return val.length; });
         else

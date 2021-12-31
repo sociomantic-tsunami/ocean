@@ -567,3 +567,12 @@ unittest
     // Used to work only with "{:X}", however this limitation was lifted
     assert(format("{X}", 42) == "2A");
 }
+
+unittest
+{
+    static void myFunc (inout char[] arg)
+    {
+        assert(format("{}", arg[0]) == "H");
+    }
+    myFunc("Hello World");
+}
