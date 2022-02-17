@@ -40,7 +40,7 @@ import ocean.meta.types.Qualifiers;
 import ocean.core.Verify;
 import ocean.util.log.Logger;
 import ocean.util.log.AppendFile;
-import ocean.util.log.LayoutDate;
+import ocean.util.log.layout.Date;
 import ocean.core.array.Mutation /* : moveToEnd, sort */;
 
 
