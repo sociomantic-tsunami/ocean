@@ -33,8 +33,8 @@ class UnixSockListeningApp : DaemonApp
             throw e;
         };
 
-        istring name = "Application";
-        istring desc = "Testing unix socket listener mode.";
+        string name = "Application";
+        string desc = "Testing unix socket listener mode.";
 
         DaemonApp.OptionalSettings settings;
 
@@ -61,7 +61,7 @@ import ocean.io.device.File;
 import ocean.util.test.DirectorySandbox;
 
 version (unittest) {} else
-void main(istring[] args)
+void main(string[] args)
 {
     auto sandbox = DirectorySandbox.create(["etc", "log"]);
 

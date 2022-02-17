@@ -144,7 +144,7 @@ public class InsertConsole: Appender
 
         ushort pos = 0;
 
-        static immutable istring Eol = "\n";
+        static immutable string Eol = "\n";
 
         with ( Terminal )
         {

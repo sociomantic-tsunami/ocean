@@ -657,7 +657,7 @@ struct PathParser
 
         ***********************************************************************/
 
-        istring toString ()
+        string toString ()
         {
                 return idup(fp [0 .. end_]);
         }

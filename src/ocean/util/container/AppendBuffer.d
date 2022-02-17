@@ -387,7 +387,7 @@ public class AppendBuffer ( T, Base: AppendBufferImpl ): Base, IAppendBufferRead
 
     ***************************************************************************/
 
-    alias opOpAssign ( istring op = "~" ) = opCatAssign;
+    alias opOpAssign ( string op = "~" ) = opCatAssign;
 
 
     /**************************************************************************

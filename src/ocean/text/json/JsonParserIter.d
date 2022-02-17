@@ -73,7 +73,7 @@ class JsonParserIter(bool AllowNaN = false) : JsonParser!(char, AllowNaN)
 
      **************************************************************************/
 
-    public static istring[Token.max + 1] type_description = [
+    public static string[Token.max + 1] type_description = [
         Token.Empty:        "Empty",
         Token.Name:         "Name",
         Token.String:       "String",
@@ -545,7 +545,7 @@ unittest
     alias JsonParserIter!(false) JsonParserIterNoNan;
 
     bool found;
-    istring json = `{ "object": { "cost": 12.34, "sub": { "cost": 42 } } }`;
+    string json = `{ "object": { "cost": 12.34, "sub": { "cost": 42 } } }`;
 
     scope parser = new JsonParserIterNoNan();
     parser.reset(json);

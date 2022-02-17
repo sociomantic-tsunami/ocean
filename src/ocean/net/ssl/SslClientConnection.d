@@ -78,9 +78,9 @@ public class SslClientConnection
         *******************************************************************/
 
         public typeof(this) set ( cstring host_path,
-                istring func_name,
+                string func_name,
                 cstring msg,
-                istring file = __FILE__, long line = __LINE__)
+                string file = __FILE__, long line = __LINE__)
         {
             this.error_num = error_num;
             this.func_name = func_name;
@@ -420,8 +420,8 @@ public class SslClientConnection
 
     *******************************************************************/
 
-    public void error ( cstring host_name, istring func_name,
-            istring msg = "", istring file = __FILE__, long line = __LINE__ )
+    public void error ( cstring host_name, string func_name,
+            string msg = "", string file = __FILE__, long line = __LINE__ )
     {
         throw this.exception.set(host_name, func_name, msg, file, line);
     }
@@ -441,8 +441,8 @@ public class SslClientConnection
 
     *******************************************************************/
 
-    public void ssl_error ( cstring host_name, istring func_name,
-            const(char*) c_msg, istring file = __FILE__, long line = __LINE__ )
+    public void ssl_error ( cstring host_name, string func_name,
+            const(char*) c_msg, string file = __FILE__, long line = __LINE__ )
     {
         throw this.exception.set(host_name, func_name, StringC.toDString(c_msg),
             file, line);

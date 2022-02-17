@@ -365,7 +365,7 @@ public class VersionHandlingException : Exception
     ***************************************************************************/
 
     void enforceInputLength ( S ) ( size_t input_length,
-        istring file = __FILE__, int line = __LINE__ )
+        string file = __FILE__, int line = __LINE__ )
     {
         if (input_length <= Version.Type.sizeof)
         {
@@ -399,7 +399,7 @@ public class VersionHandlingException : Exception
     ***************************************************************************/
 
     void throwCantConvert ( S ) ( Version.Type input_version,
-        istring file = __FILE__, int line = __LINE__ )
+        string file = __FILE__, int line = __LINE__ )
     {
         this.set("Got version ")
             .append(input_version)

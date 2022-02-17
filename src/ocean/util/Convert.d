@@ -188,7 +188,7 @@ else
  */
 class ConversionException : Exception
 {
-    this( istring msg )
+    this( string msg )
     {
         super( msg );
     }
@@ -226,9 +226,9 @@ char ctfe_upper(char c)
         return c;
 }
 
-istring ctfe_camelCase(istring s)
+string ctfe_camelCase(string s)
 {
-    istring result;
+    string result;
 
     bool nextIsCapital = true;
 
@@ -424,14 +424,14 @@ int intCmp(T,U)(T lhs, U rhs)
     }
 }
 
-template unsupported(istring desc="")
+template unsupported(string desc="")
 {
     static assert(false, "Unsupported conversion: cannot convert to "
             ~ctfe_trim(D.stringof)~" from "
             ~(desc!="" ? desc~" " : "")~ctfe_trim(S.stringof)~".");
 }
 
-template unsupported_backwards(istring desc="")
+template unsupported_backwards(string desc="")
 {
     static assert(false, "Unsupported conversion: cannot convert to "
             ~(desc!="" ? desc~" " : "")~ctfe_trim(D.stringof)
@@ -566,7 +566,7 @@ template toUDT()
 }
 
 // This mixin defines a general function for converting from a UDT.
-template fromUDT(istring fallthrough="")
+template fromUDT(string fallthrough="")
 {
     D toDfromS()
     {
@@ -621,7 +621,7 @@ template convError()
     {
         // Since we're going to use to!(T) to convert the value to a string,
         // we need to make sure we don't end up in a loop...
-        static if( isString!(D) || !is( typeof(to!(istring)(value)) == istring ) )
+        static if( isString!(D) || !is( typeof(to!(string)(value)) == string ) )
         {
             throw new ConversionException("Could not convert a value of type "
                     ~S.stringof~" to type "~D.stringof~".");
@@ -629,7 +629,7 @@ template convError()
         else
         {
             throw new ConversionException("Could not convert `"
-                    ~to!(istring)(value)~"` of type "
+                    ~to!(string)(value)~"` of type "
                     ~S.stringof~" to type "~D.stringof~".");
         }
     }
@@ -935,7 +935,7 @@ D toStringFromString(D,S)(S value)
     }
 }
 
-static immutable istring CHARS =
+static immutable string CHARS =
 "\x20\x21\x22\x23\x24\x25\x26\x27\x28\x29\x2a\x2b\x2c\x2d\x2e\x2f"
 ~ "\x30\x31\x32\x33\x34\x35\x36\x37\x38\x39\x3a\x3b\x3c\x3d\x3e\x3f"
 ~ "\x40\x41\x42\x43\x44\x45\x46\x47\x48\x49\x4a\x4b\x4c\x4d\x4e\x4f"
@@ -1159,7 +1159,7 @@ version (unittest)
     {
         int toInt() { return 42; }
 
-        istring toString() { return "string foo"; }
+        string toString() { return "string foo"; }
 
         int[] toIntArray() { return [1,2,3]; }
 
@@ -1284,9 +1284,9 @@ unittest
      * String-string
      */
     test( to!(char[])("Í love to æt "w[]) == "Í love to æt "c );
-    test( to!(istring)("Í love to æt "w[]) == "Í love to æt "c );
+    test( to!(string)("Í love to æt "w[]) == "Í love to æt "c );
     test( to!(char[])("them smûrƒies™,"d[]) == "them smûrƒies™,"c );
-    test( to!(istring)("them smûrƒies™,"d[]) == "them smûrƒies™,"c );
+    test( to!(string)("them smûrƒies™,"d[]) == "them smûrƒies™,"c );
     test( to!(wchar[])("Smûrﬁes™ I love"c[]) == "Smûrﬁes™ I love"w );
     test( to!(wchar[])("２ 食い散らす"d[]) == "２ 食い散らす"w );
     test( to!(dchar[])("bite đey µgly"c[]) == "bite đey µgly"d );
@@ -1297,13 +1297,13 @@ unittest
      * String
      */
     test( to!(char[])(true) == "true" );
-    test( to!(istring)(true) == "true" );
+    test( to!(string)(true) == "true" );
     test( to!(char[])(false) == "false" );
 
     test( to!(char[])(12345678) == "12345678" );
-    test( to!(istring)(12345678) == "12345678" );
+    test( to!(string)(12345678) == "12345678" );
     test( to!(char[])(1234.567800) == "1234.57");
-    test( to!(istring)(1234.567800) == "1234.57");
+    test( to!(string)(1234.567800) == "1234.57");
 
     test( to!( char[])(cast(char) 'a') == "a"c );
     test( to!(wchar[])(cast(char) 'b') == "b"w );
@@ -1325,7 +1325,7 @@ unittest
      * Map-map
      */
     {
-        istring[int] src = [1:"true"[], 2:"false"];
+        string[int] src = [1:"true"[], 2:"false"];
         bool[ubyte] dst = to!(bool[ubyte])(src);
         test( dst.keys.length == 2 );
         test( dst[1] == true );

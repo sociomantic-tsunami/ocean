@@ -35,7 +35,7 @@ import ocean.meta.types.Qualifiers;
 
 *******************************************************************************/
 
-public template hasMember ( T, istring name )
+public template hasMember ( T, string name )
 {
     static assert (isAggregateType!(T));
     enum hasMember = __traits(hasMember, T, name);
@@ -72,7 +72,7 @@ unittest
 
 *******************************************************************************/
 
-public template hasMethod ( T, istring name, F )
+public template hasMethod ( T, string name, F )
 {
     static if (hasMember!(T, name))
     {

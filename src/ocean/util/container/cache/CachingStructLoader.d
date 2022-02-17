@@ -348,7 +348,7 @@ class CachingStructLoader ( S )
 
     ***************************************************************************/
 
-    public alias opBinaryRight ( istring op : "in" ) = opIn_r;
+    public alias opBinaryRight ( string op : "in" ) = opIn_r;
 
 
     /**************************************************************************

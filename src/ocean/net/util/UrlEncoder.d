@@ -265,7 +265,7 @@ unittest
     ~ "\"%7E\" by older URI processing implementations; the \"%7E\" can be "
     ~ "replaced by \"~\" without chänging its interpretation.");
 
-    static immutable istring[] chunks =
+    static immutable string[] chunks =
     [
         "For", "%20", "example", "%2C", "%20", "the", "%20", "octet", "%20",
         "corresponding","%20", "to", "%20", "the", "%20", "tilde", "%20",

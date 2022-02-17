@@ -98,8 +98,8 @@ class ArgumentsExt : IApplicationExtension
 
     ***************************************************************************/
 
-    public this ( istring name = null, istring desc = null,
-            istring usage = null, istring help = null,
+    public this ( string name = null, string desc = null,
+            string usage = null, string help = null,
             FormatOutput stdout = Stdout,
             FormatOutput stderr = Stderr )
     {
@@ -143,7 +143,7 @@ class ArgumentsExt : IApplicationExtension
 
     ***************************************************************************/
 
-    public override void preRun ( IApplication app, istring[] cl_args )
+    public override void preRun ( IApplication app, string[] cl_args )
     {
         auto args = this.args;
 
@@ -214,19 +214,19 @@ class ArgumentsExt : IApplicationExtension
 
     ***************************************************************************/
 
-    public override void postRun ( IApplication app, istring[] args, int status )
+    public override void postRun ( IApplication app, string[] args, int status )
     {
         // Unused
     }
 
-    public override void atExit ( IApplication app, istring[] args, int status,
+    public override void atExit ( IApplication app, string[] args, int status,
             ExitException exception )
     {
         // Unused
     }
 
     public override ExitException onExitException ( IApplication app,
-            istring[] args, ExitException exception )
+            string[] args, ExitException exception )
     {
         // Unused
         return exception;
@@ -253,7 +253,7 @@ version (unittest)
     class App : Application
     {
         this ( ) { super("app", "A test application"); }
-        protected override int run ( istring[] args ) { return 10; }
+        protected override int run ( string[] args ) { return 10; }
     }
 }
 
@@ -273,8 +273,8 @@ unittest
     auto stderr_dev = new MemoryDevice;
     auto stderr = new TextOutput(stderr_dev);
 
-    istring usage_text = "test: usage";
-    istring help_text = "test: help";
+    string usage_text = "test: usage";
+    string help_text = "test: help";
     auto arg = new ArgumentsExt("test-name", "test-desc", usage_text, help_text,
             stdout, stderr);
     arg.args("--required").params(1).required;

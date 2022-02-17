@@ -51,7 +51,7 @@ import core.exception: onUnicodeError;
 
 *******************************************************************************/
 
-public istring ellipsis = "\xE2\x80\xA6";  // The char '…'
+public string ellipsis = "\xE2\x80\xA6";  // The char '…'
 
 
 /*******************************************************************************
@@ -176,14 +176,14 @@ unittest
 
     // test if error delegate is called for an invalid string
     bool error_caught = false;
-    static immutable istring error_str = "error in " ~ char.init ~ " the middle";
+    static immutable string error_str = "error in " ~ char.init ~ " the middle";
     utf8Length(error_str, ( size_t i ) { error_caught = true; });
     test(error_caught,
         "the call to utf8Length should have caught an error");
 
     // test if error delegate is called for a valid string
     error_caught = false;
-    static immutable istring valid_str = "There are no errors in this string!";
+    static immutable string valid_str = "There are no errors in this string!";
     utf8Length(valid_str, ( size_t i ) { error_caught = true; });
     test(!error_caught,
         "the call to utf8Length should not have caught an error");
@@ -637,7 +637,7 @@ unittest
         t.test!("==")(ellipsis[i], c);
     }
 
-    istring str = "Hello World!";
+    string str = "Hello World!";
     t.test!("==")(str.truncateAtN(str.length, buffer), "Hello World!");
     t.test!("==")(str.truncateAtN(str.length + 5, buffer), "Hello World!");
     t.test!("==")(str.truncateAtN(10, buffer), "Hello Wor" ~ ellipsis);

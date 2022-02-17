@@ -36,7 +36,7 @@ version (unittest) import ocean.core.Test;
 
 class BitBucket : Conduit
 {
-        override istring toString () {return "<bitbucket>";}
+        override string toString () {return "<bitbucket>";}
 
         override size_t bufferSize () { return 0;}
 

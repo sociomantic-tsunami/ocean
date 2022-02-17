@@ -24,7 +24,7 @@ import ocean.meta.types.Qualifiers;
 import ocean.core.Test;
 import ocean.net.collectd.Collectd;
 
-void main (istring[] args)
+void main (string[] args)
 {
     auto address = args.length > 1
         ? args[1]
@@ -32,7 +32,7 @@ void main (istring[] args)
     auto put = new Collectd(address);
 
     auto baseId = Identifier.create("localhost/ocean_unittest/bytes");
-    istring[8] inst = [ "0", "1", "2", "3", "4", "5", "6", "7" ];
+    string[8] inst = [ "0", "1", "2", "3", "4", "5", "6", "7" ];
     Collectd.PutvalOptions options = { interval : 60 };
     Bytes c;
 

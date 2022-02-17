@@ -61,7 +61,7 @@ unittest
             this.registerExtension(this.timers);
         }
 
-        override protected int run ( istring[] args )
+        override protected int run ( string[] args )
         {
             // Register some timed events
             this.timers.register(&this.first, 0.0001);
@@ -230,23 +230,23 @@ public class TimerExt : IApplicationExtension
 
     ***************************************************************************/
 
-    public override void preRun ( IApplication app, istring[] args )
+    public override void preRun ( IApplication app, string[] args )
     {
     }
 
     /// ditto
-    public override void postRun ( IApplication app, istring[] args, int status )
+    public override void postRun ( IApplication app, string[] args, int status )
     {
     }
 
     /// ditto
-    public override void atExit ( IApplication app, istring[] args, int status,
+    public override void atExit ( IApplication app, string[] args, int status,
             ExitException exception )
     {
     }
 
     /// ditto
-    public override ExitException onExitException ( IApplication app, istring[] args,
+    public override ExitException onExitException ( IApplication app, string[] args,
             ExitException exception )
     {
         return exception;

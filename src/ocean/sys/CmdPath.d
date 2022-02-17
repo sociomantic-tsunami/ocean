@@ -27,7 +27,7 @@ import PathUtil = ocean.io.Path: normalize;
 ///
 unittest
 {
-    void main ( istring[] args )
+    void main ( string[] args )
     {
         CmdPath cmdpath;
 
@@ -57,7 +57,7 @@ struct CmdPath
 
      **************************************************************************/
 
-    private istring dir;
+    private string dir;
 
     /**************************************************************************
 
@@ -71,7 +71,7 @@ struct CmdPath
 
      **************************************************************************/
 
-    public istring set ( cstring exepath )
+    public string set ( cstring exepath )
     {
         scope path = new FilePath(exepath);
 
@@ -91,7 +91,7 @@ struct CmdPath
 
      **************************************************************************/
 
-    public istring get ( )
+    public string get ( )
     {
         return this.dir;
     }
@@ -108,7 +108,7 @@ struct CmdPath
 
      **************************************************************************/
 
-    public istring prepend ( istring[] path ... )
+    public string prepend ( string[] path ... )
     {
         return FilePath.join(this.dir ~ path);
     }

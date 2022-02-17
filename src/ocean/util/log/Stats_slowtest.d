@@ -93,7 +93,7 @@ unittest
 
     static struct Entry
     {
-        istring name;
+        string name;
         ProductionLineStats stats;
     }
 

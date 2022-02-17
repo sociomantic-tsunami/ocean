@@ -225,7 +225,7 @@ class QueryParamSet: ParamSet
 
      **************************************************************************/
 
-    public this ( char element_delim, char keyval_delim, in istring[] keys ... )
+    public this ( char element_delim, char keyval_delim, in string[] keys ... )
     {
         this.addKeys(keys);
 

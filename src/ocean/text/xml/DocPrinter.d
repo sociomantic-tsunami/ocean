@@ -224,7 +224,7 @@ class DocPrinter(T)
 ///
 unittest
 {
-    istring document = "<blah><xml>foo</xml></blah>";
+    string document = "<blah><xml>foo</xml></blah>";
 
     auto doc = new Document!(char);
     doc.parse (document.dup);

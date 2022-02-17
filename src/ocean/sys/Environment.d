@@ -51,7 +51,7 @@ struct Environment
 
         ***********************************************************************/
 
-        private static void exception (istring msg)
+        private static void exception (string msg)
         {
                 throw new PlatformException (msg);
         }
@@ -65,7 +65,7 @@ struct Environment
 
         ***********************************************************************/
 
-        static istring toAbsolute(mstring path)
+        static string toAbsolute(mstring path)
         {
             scope fp = new FilePath(path);
             if (fp.isAbsolute)
@@ -115,7 +115,7 @@ struct Environment
 
     ***************************************************************************/
 
-    static istring get (cstring variable, istring def = null)
+    static string get (cstring variable, string def = null)
     {
         char* ptr = getenv ((variable ~ '\0').ptr);
 
@@ -150,9 +150,9 @@ struct Environment
 
     ***************************************************************************/
 
-    static istring[istring] get ()
+    static string[string] get ()
     {
-        istring[istring] arr;
+        string[string] arr;
 
         for (char** p = environ; *p; ++p)
         {
@@ -161,7 +161,7 @@ struct Environment
 
             while (*str++ != '=')
                 ++k;
-            istring key = idup((*p)[0..k]);
+            string key = idup((*p)[0..k]);
 
             k = 0;
             char* val = str;
@@ -195,7 +195,7 @@ struct Environment
 
     ***************************************************************************/
 
-    static istring cwd ()
+    static string cwd ()
     {
         char[512] tmp = void;
 

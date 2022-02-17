@@ -146,7 +146,7 @@ public interface IEnum
 
     ***************************************************************************/
 
-    public alias istring Name;
+    public alias string Name;
     public alias int Value;
 
 
@@ -190,7 +190,7 @@ public interface IEnum
 
     ***************************************************************************/
 
-    public alias opBinaryRight ( istring op : "in" ) = opIn_r;
+    public alias opBinaryRight ( string op : "in" ) = opIn_r;
 
 
     /***************************************************************************
@@ -306,7 +306,7 @@ public interface IEnum
 public template EnumValues ( size_t i, T ... )
 {
     static assert(T.length == 2);
-    static assert(is(typeof(T[0]) : const(istring[])));
+    static assert(is(typeof(T[0]) : const(string[])));
     static assert(is(typeof(T[1]) : const(int[])));
 
     static if ( i == T[0].length - 1 )
@@ -732,7 +732,7 @@ version (unittest)
 
     ***************************************************************************/
 
-    void checkEnum ( E : IEnum ) ( istring[] names, int[] values )
+    void checkEnum ( E : IEnum ) ( string[] names, int[] values )
     {
         test(names.length == values.length);
         test(names.length);

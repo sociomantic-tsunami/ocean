@@ -99,7 +99,7 @@ struct CMWC(uint cmwc_r=1024U,ulong cmwc_a=987769338UL){
         cmwc_c=1;
     }
     /// writes the current status in a string
-    istring toString(){
+    string toString(){
         char[] res=new char[4+16+(cmwc_r+5)*9];
         int i=0;
         res[i..i+4]="CMWC";

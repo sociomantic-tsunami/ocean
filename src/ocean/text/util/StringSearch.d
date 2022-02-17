@@ -395,7 +395,7 @@ struct StringSearch ( bool wide_char = false )
      *      If found, the index of the first occurrence, or the length of "str"
      *      otherwise.
      */
-    size_t locatePatternT ( istring pattern ) ( in Char[] str, size_t start = 0 )
+    size_t locatePatternT ( string pattern ) ( in Char[] str, size_t start = 0 )
     {
         verify (start <= str.length,
             "locatePatternT: start index out of range");
@@ -499,7 +499,7 @@ struct StringSearch ( bool wide_char = false )
 
     **************************************************************************/
 
-    size_t locateCharSetT ( istring charset ) ( in Char[] str, size_t start = 0 )
+    size_t locateCharSetT ( string charset ) ( in Char[] str, size_t start = 0 )
     {
         verify (start <= str.length,
             "locateCharSetT: start index out of range");
@@ -568,7 +568,7 @@ struct StringSearch ( bool wide_char = false )
              str = input string
 
      ***************************************************************************/
-    void assertTerm ( istring func ) ( in Char[] str )
+    void assertTerm ( string func ) ( in Char[] str )
     {
         verify (hasTerm(str), msgFunc!(func) ~ ": unterminated string");
     }

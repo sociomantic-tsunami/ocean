@@ -82,7 +82,7 @@ import ocean.util.digest.Crc32;
 
 *******************************************************************************/
 
-public static istring GZipFileSignature = "\x1F\x8b";
+public static string GZipFileSignature = "\x1F\x8b";
 
 
 

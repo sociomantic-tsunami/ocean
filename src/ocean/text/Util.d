@@ -330,7 +330,7 @@ bool containsPattern (cstring source, cstring match)
 unittest
 {
     mstring greeting = "Hello world".dup;
-    istring satan = "Hell";
+    string satan = "Hell";
     test(containsPattern(greeting, satan), "Pattern not found");
 }
 
@@ -1455,7 +1455,7 @@ unittest
     x = split ("one,,", ",");
     test (x.length is 3 && x[0] == "one" && x[1] == "" && x[2] == "");
 
-    istring t, h;
+    string t, h;
     h =  head ("one:two:three", ":", t);
     test (h == "one" && t == "two:three");
     h = head ("one:::two:three", ":::", t);
@@ -1480,7 +1480,7 @@ unittest
     test (chopr("hello world", " ") == "hello world");
     test (chopr("hello world", "") == "hello world");
 
-    istring[] foo = ["one", "two", "three"];
+    string[] foo = ["one", "two", "three"];
     auto j = join (foo);
     test (j == "onetwothree");
     j = join (foo, ", ");

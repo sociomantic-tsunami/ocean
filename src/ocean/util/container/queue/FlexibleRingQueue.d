@@ -758,13 +758,13 @@ class FlexibleByteRingQueue : IRingQueue!(IByteQueue)
         {
             enforce!(ValidationError)(
                 data.length,
-                cast(istring) ("Expected data for a non-empty queue ("
+                cast(string) ("Expected data for a non-empty queue ("
                     ~ itoa(meta.items) ~ " records)")
             );
 
             enforce!(ValidationError)(
                 data.length >= cast(size_t)meta.items * Header.sizeof,
-                cast(istring) ("Queue data shorter than required minimum for " ~
+                cast(string) ("Queue data shorter than required minimum for " ~
                     itoa(meta.items) ~ " records (got " ~ itoa(data.length) ~
                     " bytes)")
             );
@@ -785,7 +785,7 @@ class FlexibleByteRingQueue : IRingQueue!(IByteQueue)
 
                     enforce!(ValidationError)(
                         pos <= data.length,
-                        cast(istring) ("End of queue data in the middle of" ~
+                        cast(string) ("End of queue data in the middle of" ~
                             " the record header which starts at byte " ~
                             itoa(start))
                     );
@@ -794,7 +794,7 @@ class FlexibleByteRingQueue : IRingQueue!(IByteQueue)
 
                     enforce!(ValidationError)(
                         (data.length - pos) >= header.length,
-                        cast(istring) ("End of queue data in the middle of the" ~
+                        cast(string) ("End of queue data in the middle of the" ~
                             " queue record, record length = " ~
                             itoa(header.length))
                     );
@@ -814,7 +814,7 @@ class FlexibleByteRingQueue : IRingQueue!(IByteQueue)
 
             enforce!(ValidationError)(
                 pos >= data.length,
-                cast(istring) ("Queue data  too long (" ~ itoa(meta.items) ~
+                cast(string) ("Queue data  too long (" ~ itoa(meta.items) ~
                     " records, " ~ itoa(pos) ~ "/" ~ itoa(data.length) ~
                     " bytes used)")
             );
@@ -823,7 +823,7 @@ class FlexibleByteRingQueue : IRingQueue!(IByteQueue)
         {
             enforce!(ValidationError)(
                 !data.length,
-                cast(istring) ("Expected no data for an empty queue, not " ~
+                cast(string) ("Expected no data for an empty queue, not " ~
                     itoa(data.length) ~ " bytes")
             );
         }

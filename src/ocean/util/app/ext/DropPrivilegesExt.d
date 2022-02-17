@@ -60,7 +60,7 @@ class DropPrivilegesExt : IConfigExtExtension
 
         ***********************************************************************/
 
-        ConfigFiller.Required!(istring) user;
+        ConfigFiller.Required!(string) user;
 
         /***********************************************************************
 
@@ -68,7 +68,7 @@ class DropPrivilegesExt : IConfigExtExtension
 
         ***********************************************************************/
 
-        ConfigFiller.Required!(istring) group;
+        ConfigFiller.Required!(string) group;
     }
 
 
@@ -119,7 +119,7 @@ class DropPrivilegesExt : IConfigExtExtension
 
     ***************************************************************************/
 
-    private void setUser ( istring usr )
+    private void setUser ( string usr )
     {
         passwd* result;
         passwd passwd_buf;
@@ -168,7 +168,7 @@ class DropPrivilegesExt : IConfigExtExtension
 
     ***************************************************************************/
 
-    private void setGroup ( istring grp )
+    private void setGroup ( string grp )
     {
         group* result;
         group group_buf;
@@ -236,6 +236,6 @@ class DropPrivilegesExt : IConfigExtExtension
 
     ***************************************************************************/
 
-    override istring[] filterConfigFiles ( IApplication app, ConfigParser config,
-                                  istring[] files ) { return files; }
+    override string[] filterConfigFiles ( IApplication app, ConfigParser config,
+                                  string[] files ) { return files; }
 }

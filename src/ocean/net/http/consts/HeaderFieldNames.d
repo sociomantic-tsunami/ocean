@@ -32,7 +32,7 @@ struct HeaderFieldNames
 
     struct General
     {
-        istring CacheControl,        Connection,         Date,
+        string CacheControl,        Connection,         Date,
                 Pragma,              Trailer,            TransferEncoding,
                 Upgrade,             Via,                Warning;
 
@@ -68,14 +68,14 @@ struct HeaderFieldNames
 
      **************************************************************************/
 
-    public static istring[] GeneralNameList ( )
+    public static string[] GeneralNameList ( )
     {
         return _GeneralNameList;
     }
 
-    private static istring[] _GeneralNameList;
+    private static string[] _GeneralNameList;
 
-    private static istring[GeneralNames.tupleof.length] GeneralNameList_;
+    private static string[GeneralNames.tupleof.length] GeneralNameList_;
 
     /**************************************************************************
 
@@ -86,7 +86,7 @@ struct HeaderFieldNames
 
     struct Request
     {
-        istring Accept,              AcceptCharset,      AcceptEncoding,
+        string Accept,              AcceptCharset,      AcceptEncoding,
                 AcceptLanguage,      Authorization,      Cookie,
                 Expect,              From,               Host,
                 IfMatch,             IfModifiedSince,    IfNoneMatch,
@@ -137,9 +137,9 @@ struct HeaderFieldNames
 
      **************************************************************************/
 
-    public static istring[] RequestNameList;
+    public static string[] RequestNameList;
 
-    private static istring[RequestNames.tupleof.length] RequestNameList_;
+    private static string[RequestNames.tupleof.length] RequestNameList_;
 
     /**************************************************************************
 
@@ -150,7 +150,7 @@ struct HeaderFieldNames
 
     struct Response
     {
-        istring AcceptRanges,        Age,                ETag,
+        string AcceptRanges,        Age,                ETag,
                 Location,            ProxyAuthenticate,  RetryAfter,
                 Server,              Vary,               WwwAuthenticate,
                 Allow,               ContentEncoding,    ContentLanguage,
@@ -201,9 +201,9 @@ struct HeaderFieldNames
 
      **************************************************************************/
 
-    public static istring[] ResponseNameList;
+    public static string[] ResponseNameList;
 
-    private static istring[ResponseNames.tupleof.length] ResponseNameList_;
+    private static string[ResponseNames.tupleof.length] ResponseNameList_;
 
     /**************************************************************************
 
@@ -214,7 +214,7 @@ struct HeaderFieldNames
 
     struct Entity
     {
-        istring Allow,               ContentEncoding,    ContentLanguage,
+        string Allow,               ContentEncoding,    ContentLanguage,
                 ContentLength,       ContentLocation,    ContentMD5,
                 ContentRange,        ContentType,        Expires,
                 LastModified;
@@ -252,9 +252,9 @@ struct HeaderFieldNames
 
      **************************************************************************/
 
-    public static istring[] EntityNameList;
+    public static string[] EntityNameList;
 
-    private static istring[EntityNames.tupleof.length] EntityNameList_;
+    private static string[EntityNames.tupleof.length] EntityNameList_;
 
     /**************************************************************************
 

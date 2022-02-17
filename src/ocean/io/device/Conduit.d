@@ -64,7 +64,7 @@ class Conduit : IConduit
 
         ***********************************************************************/
 
-        abstract override istring toString ();
+        abstract override string toString ();
 
         /***********************************************************************
 
@@ -185,7 +185,7 @@ class Conduit : IConduit
 
         ***********************************************************************/
 
-        void error (istring msg)
+        void error (string msg)
         {
                 throw new IOException (msg);
         }
@@ -204,8 +204,8 @@ class Conduit : IConduit
 
         *******************************************************************/
 
-        public void error ( int error_code, istring func_name,
-                istring msg = "", istring file = __FILE__, long line = __LINE__ )
+        public void error ( int error_code, string func_name,
+                string msg = "", string file = __FILE__, long line = __LINE__ )
         {
             throw new IOException (msg, error_code, func_name, file, line);
         }

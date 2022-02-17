@@ -81,7 +81,7 @@ struct SmartUnion ( U )
 
     ***************************************************************************/
 
-    public istring active_name ( )
+    public string active_name ( )
     {
         return this._.active_names[this._.active];
     }
@@ -109,7 +109,7 @@ unittest
     void main ( )
     {
         SmartUnion!(MyUnion) u;
-        istring name;
+        string name;
         u.Active a;             // u.Active is defined as
                                 // `enum u.Active {none, x, y}`
 
@@ -361,7 +361,7 @@ private struct SmartUnionIntern ( U )
 
     ***************************************************************************/
 
-    enum istring[] active_names = member_string_list();
+    enum string[] active_names = member_string_list();
 
     /***************************************************************************
 
@@ -373,9 +373,9 @@ private struct SmartUnionIntern ( U )
 
     ***************************************************************************/
 
-    static private istring[] member_string_list ( )
+    static private string[] member_string_list ( )
     {
-        istring[] names = ["none"[]];
+        string[] names = ["none"[]];
         foreach ( i, F; typeof(U.init.tupleof) )
         {
             names ~= identifier!(U.tupleof[i]);
@@ -517,7 +517,7 @@ private template Methods ( U, uint i )
 
 *******************************************************************************/
 
-private template AllMethods ( U, istring pre, uint i)
+private template AllMethods ( U, string pre, uint i)
 {
     static if (i < U.tupleof.length)
     {

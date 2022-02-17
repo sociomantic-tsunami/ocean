@@ -48,7 +48,7 @@ class TestException : Exception
 
      ***************************************************************************/
 
-    public this ( istring msg, istring file = __FILE__, int line = __LINE__ )
+    public this ( string msg, string file = __FILE__, int line = __LINE__ )
     {
         super( msg, file, line );
     }
@@ -64,7 +64,7 @@ class TestException : Exception
 ******************************************************************************/
 
 public void test ( T ) ( T ok, cstring msg = "",
-    istring file = __FILE__, int line = __LINE__ )
+    string file = __FILE__, int line = __LINE__ )
 {
     if (!msg.length)
     {
@@ -79,8 +79,8 @@ public void test ( T ) ( T ok, cstring msg = "",
 
 ******************************************************************************/
 
-public void test ( istring op, T1, T2 ) ( T1 a,
-    T2 b, istring file = __FILE__, int line = __LINE__ )
+public void test ( string op, T1, T2 ) ( T1 a,
+    T2 b, string file = __FILE__, int line = __LINE__ )
 {
     enforceImpl!(op, TestException)(a, b, file, line);
 }
@@ -131,7 +131,7 @@ unittest
 ******************************************************************************/
 
 public void testThrown ( E : Exception = Exception ) ( lazy void expr,
-    bool strict = true, istring file = __FILE__, int line = __LINE__ )
+    bool strict = true, string file = __FILE__, int line = __LINE__ )
 {
     bool was_thrown = false;
     try
@@ -205,7 +205,7 @@ class NamedTest : TestException
 
      ***************************************************************************/
 
-    private istring name;
+    private string name;
 
     /**************************************************************************
 
@@ -213,7 +213,7 @@ class NamedTest : TestException
 
     ***************************************************************************/
 
-    this(istring name)
+    this(string name)
     {
         super(null);
         this.name = name;
@@ -253,7 +253,7 @@ class NamedTest : TestException
 
     ***************************************************************************/
 
-    public void test ( T ) ( T ok, cstring msg = "", istring file = __FILE__,
+    public void test ( T ) ( T ok, cstring msg = "", string file = __FILE__,
         int line = __LINE__ )
     {
         // uses `enforceImpl` instead of `test` so that pre-constructed
@@ -272,8 +272,8 @@ class NamedTest : TestException
 
     ***************************************************************************/
 
-    public void test ( istring op, T1, T2 ) ( T1 a, T2 b,
-        istring file = __FILE__, int line = __LINE__ )
+    public void test ( string op, T1, T2 ) ( T1 a, T2 b,
+        string file = __FILE__, int line = __LINE__ )
     {
         // uses `enforceImpl` instead of `test` so that pre-constructed
         // exception instance can be used.
@@ -324,7 +324,7 @@ unittest
 
 ******************************************************************************/
 
-public void testNoAlloc ( lazy void expr, istring file = __FILE__,
+public void testNoAlloc ( lazy void expr, string file = __FILE__,
     int line = __LINE__ )
 {
     auto before = GC.stats();

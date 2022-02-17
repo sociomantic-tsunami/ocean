@@ -820,7 +820,7 @@ public class SAXException : Exception {
          *
          * @param message The error or warning message.
          *******************************************************************************/
-        public this (istring message) {
+        public this (string message) {
                 super (message);
         }
 
@@ -846,7 +846,7 @@ public class SAXException : Exception {
          * @param message The detail message.
          * @param e The exception to be wrapped in a SAXException.
          *******************************************************************************/
-        public this (istring message, Exception e) {
+        public this (string message, Exception e) {
                 super (message, e.file, e.line, e);
         }
 
@@ -877,7 +877,7 @@ public class SAXException : Exception {
         else
         {
             // old runtime with no base `message` method, keep old signature
-            public istring message() {
+            public string message() {
                     if (msg is null && next !is null) {
                             return next.msg;
                     }

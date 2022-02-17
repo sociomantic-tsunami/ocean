@@ -56,7 +56,7 @@ class Device : Conduit, ISelectable
 
         ***********************************************************************/
 
-        override istring toString ()
+        override string toString ()
         {
                 return "<device>";
         }

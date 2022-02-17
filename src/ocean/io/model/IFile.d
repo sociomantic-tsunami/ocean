@@ -76,8 +76,8 @@ public interface FileConst
 
 public struct FileInfo
 {
-    public istring path;
-    public istring name;
+    public string path;
+    public string name;
     public ulong bytes;
     public bool folder;
     public bool hidden;

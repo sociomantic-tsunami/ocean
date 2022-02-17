@@ -43,7 +43,7 @@ import ocean.time.Time : Time;
 
 class FileFolder : VfsFolder
 {
-        private istring         path;
+        private string         path;
         private VfsStats        stats;
 
         /***********************************************************************
@@ -55,7 +55,7 @@ class FileFolder : VfsFolder
 
         ***********************************************************************/
 
-        this (istring path, bool create=false)
+        this (string path, bool create=false)
         {
                 auto mpath = Path.standard(path.dup);
                 this.path = open (assumeUnique(mpath), create);
@@ -67,7 +67,7 @@ class FileFolder : VfsFolder
 
         ***********************************************************************/
 
-        private this (istring path, istring name)
+        private this (string path, string name)
         {
                 auto mpath = Path.join (path, name);
                 this.path = assumeUnique(mpath);
@@ -79,7 +79,7 @@ class FileFolder : VfsFolder
 
         ***********************************************************************/
 
-        private this (FileFolder parent, istring name, bool create=false)
+        private this (FileFolder parent, string name, bool create=false)
         {
                 .verify(parent !is null);
                 auto mpath = Path.join(parent.path, name);
@@ -92,7 +92,7 @@ class FileFolder : VfsFolder
 
         ***********************************************************************/
 
-        final istring name ()
+        final string name ()
         {
                 auto mname = Path.parse(path.dup).name;
                 return assumeUnique(mname);
@@ -104,7 +104,7 @@ class FileFolder : VfsFolder
 
         ***********************************************************************/
 
-        final override istring toString ()
+        final override string toString ()
         {
                 return idup(path);
         }
@@ -141,7 +141,7 @@ class FileFolder : VfsFolder
 
         ***********************************************************************/
 
-        final VfsFile file (istring name)
+        final VfsFile file (string name)
         {
             auto mpath = Path.join (path, name);
             return new FileHost (assumeUnique(mpath));
@@ -153,7 +153,7 @@ class FileFolder : VfsFolder
 
         ***********************************************************************/
 
-        final VfsFolderEntry folder (istring path)
+        final VfsFolderEntry folder (string path)
         {
                 return new FolderHost (this, path);
         }
@@ -303,7 +303,7 @@ class FileFolder : VfsFolder
 
         ***********************************************************************/
 
-        private istring open (istring path, bool create)
+        private string open (string path, bool create)
         {
                 if (Path.exists (path))
                    {
@@ -506,7 +506,7 @@ private class FolderGroup : VfsFolders
 
         ***********************************************************************/
 
-        final VfsFolders subset (istring pattern)
+        final VfsFolders subset (string pattern)
         {
                 Path.PathParser parser;
                 auto set = new FolderGroup;
@@ -523,7 +523,7 @@ private class FolderGroup : VfsFolders
 
         ***********************************************************************/
 
-        final FileGroup catalog (istring pattern)
+        final FileGroup catalog (string pattern)
         {
                 bool foo (VfsInfo info)
                 {
@@ -570,14 +570,14 @@ private class FolderGroup : VfsFolders
 
 private class FolderHost : VfsFolderEntry
 {
-        private istring         path;
+        private string         path;
         private FileFolder      parent;
 
         /***********************************************************************
 
         ***********************************************************************/
 
-        private this (FileFolder parent, istring path)
+        private this (FileFolder parent, string path)
         {
                 this.path = idup(path);
                 this.parent = parent;
@@ -633,7 +633,7 @@ private class FileHost : VfsFile
 
         ***********************************************************************/
 
-        this (istring path = null)
+        this (string path = null)
         {
                 this.path.parse (path.dup);
         }
@@ -644,9 +644,9 @@ private class FileHost : VfsFile
 
         ***********************************************************************/
 
-        final istring name()
+        final string name()
         {
-                return cast(istring) path.file;
+                return cast(string) path.file;
         }
 
         /***********************************************************************
@@ -655,7 +655,7 @@ private class FileHost : VfsFile
 
         ***********************************************************************/
 
-        final override istring toString ()
+        final override string toString ()
         {
                 return path.toString;
         }

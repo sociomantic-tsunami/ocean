@@ -50,7 +50,7 @@ public struct FileSystem
 
     ***************************************************************************/
 
-    private static void exception (istring msg)
+    private static void exception (string msg)
     {
         throw new IOException(msg);
     }
@@ -61,10 +61,10 @@ public struct FileSystem
 
     ***************************************************************************/
 
-    static istring[] roots ()
+    static string[] roots ()
     {
-        istring path = "";
-        istring[] list;
+        string path = "";
+        string[] list;
         int spaces;
 
         auto fc = new File("/etc/mtab");

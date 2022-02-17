@@ -192,7 +192,7 @@ unittest
     {
         foreach (element; split.reset(str))
         {
-            istring[] elements = ["ab", "cd", "efg"];
+            string[] elements = ["ab", "cd", "efg"];
 
             test (split.n);
             test (split.n <= elements.length);
@@ -204,7 +204,7 @@ unittest
 
     foreach (element; split.reset("ab" ~ "123" ~ "cd" ~ "123" ~ "efg"))
     {
-        istring[] elements = ["ab", "cd", "efg"];
+        string[] elements = ["ab", "cd", "efg"];
 
         test (split.n);
         test (split.n <= elements.length);
@@ -213,7 +213,7 @@ unittest
 
     foreach (element; split.reset("123" ~ "ab"~ "123" ~ "cd" ~ "123" ~ "efg" ~ "123"))
     {
-        istring[] elements = ["", "ab", "cd", "efg", ""];
+        string[] elements = ["", "ab", "cd", "efg", ""];
 
         test (split.n);
         test (split.n <= elements.length);

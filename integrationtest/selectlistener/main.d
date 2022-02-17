@@ -58,7 +58,7 @@ import integrationtest.selectlistener.UnixServer;
 
 *******************************************************************************/
 
-int run_client( istring socket_path)
+int run_client( string socket_path)
 {
     auto local_address = sockaddr_un.create(socket_path);
     auto client = new UnixSocket();
@@ -70,7 +70,7 @@ int run_client( istring socket_path)
 
     auto connect_result = client.connect(&local_address);
 
-    istring str1 = "HELLO, ... !\n";
+    string str1 = "HELLO, ... !\n";
 
     client.write(str1);
 
@@ -105,7 +105,7 @@ int run_client( istring socket_path)
 
 *******************************************************************************/
 
-void run_test ( istring socket_path )
+void run_test ( string socket_path )
 {
     auto timeout_mgr = new TimeoutManager;
     auto epoll = new EpollSelectDispatcher(timeout_mgr);

@@ -88,7 +88,7 @@ public class GcryptException : Exception
     ***************************************************************************/
 
     public void throwIfGcryptError ( gcry_error_t error,
-                                     istring file = __FILE__,
+                                     string file = __FILE__,
                                      int line = __LINE__  )
     {
         if ( error )
@@ -117,7 +117,7 @@ public class GcryptException : Exception
 
     public void throwIfLenMismatch ( cstring id, size_t len,
                                      size_t expected,
-                                     istring file = __FILE__,
+                                     string file = __FILE__,
                                      int line = __LINE__  )
     {
         if ( len != expected )
@@ -147,7 +147,7 @@ public class GcryptException : Exception
     ***************************************************************************/
 
     public static void throwNewIfGcryptError ( gcry_error_t error,
-                                               istring file = __FILE__,
+                                               string file = __FILE__,
                                                int line = __LINE__ )
     {
         if (error)
@@ -170,7 +170,7 @@ public class GcryptException : Exception
     ***************************************************************************/
 
     private void setGcryptErrorMsg ( gcry_error_t error,
-                                     istring file = __FILE__,
+                                     string file = __FILE__,
                                      int line = __LINE__  )
     {
         this.set(`Error: "`, file, line)

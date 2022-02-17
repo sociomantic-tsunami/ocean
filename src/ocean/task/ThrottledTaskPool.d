@@ -346,7 +346,7 @@ public class SpecializedPoolThrottler : ISuspendableThrottler
 
     ***************************************************************************/
 
-    protected istring task_class_name;
+    protected string task_class_name;
 
     /***************************************************************************
 
@@ -363,7 +363,7 @@ public class SpecializedPoolThrottler : ISuspendableThrottler
     ***************************************************************************/
 
     public this ( IPoolInfo pool, size_t suspend_point, size_t resume_point,
-        istring name )
+        string name )
     {
         assert(suspend_point > resume_point);
         assert(suspend_point < pool.limit());

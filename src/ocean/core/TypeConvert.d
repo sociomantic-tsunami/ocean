@@ -63,7 +63,7 @@ public immutable(T)[] assumeUnique (T) (T[] input)
 unittest
 {
     auto s = assumeUnique("1234".dup);
-    static assert(is(typeof(s) == istring));
+    static assert(is(typeof(s) == string));
     test!("==")(s, "1234");
 }
 
@@ -258,9 +258,9 @@ template arrayOf (T)
         // workaround for dmd1 semantic analysis bug
         auto unused = original[0];
 
-        static istring generateCast ( )
+        static string generateCast ( )
         {
-            istring result = "[ ";
+            string result = "[ ";
 
             foreach (i, _; U)
             {

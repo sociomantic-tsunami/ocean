@@ -37,7 +37,7 @@ private void corruptEventObject (SelectEvent client)
 }
 
 version (unittest) {} else
-void main(istring[] args)
+void main (string[] args)
 {
     bool handler1()
     {

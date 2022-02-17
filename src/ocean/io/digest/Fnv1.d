@@ -106,7 +106,7 @@ public template StaticFnv1a ( T = hash_t )
 
     ***************************************************************************/
 
-    public template Fnv1a ( istring input )
+    public template Fnv1a ( string input )
     {
         public static immutable Fnv1a = Fnv1a!(Fnv1Const!(T).INIT, input);
     }
@@ -118,7 +118,7 @@ public template StaticFnv1a ( T = hash_t )
 
     ***************************************************************************/
 
-    public template Fnv1a ( T hash, istring input )
+    public template Fnv1a ( T hash, string input )
     {
         static if ( input.length )
         {
@@ -147,22 +147,22 @@ public alias Fnv1Const!(ulong) Fnv164Const;
 
 *******************************************************************************/
 
-public template StaticFnv1a32 ( istring input )
+public template StaticFnv1a32 ( string input )
 {
     public static immutable StaticFnv1a32 = StaticFnv1a!(uint).Fnv1a!(input);
 }
 
-public template StaticFnv1a32 ( uint hash, istring input )
+public template StaticFnv1a32 ( uint hash, string input )
 {
     public static immutable StaticFnv1a32 = StaticFnv1a!(uint).Fnv1a!(hash, input);
 }
 
-public template StaticFnv1a64 ( istring input )
+public template StaticFnv1a64 ( string input )
 {
     public static immutable StaticFnv1a64 = StaticFnv1a!(ulong).Fnv1a!(input);
 }
 
-public template StaticFnv1a64 ( ulong hash, istring input )
+public template StaticFnv1a64 ( ulong hash, string input )
 {
     public static immutable StaticFnv1a64 = StaticFnv1a!(ulong).Fnv1a!(hash, input);
 }
@@ -715,7 +715,7 @@ version (unittest)
     // Uncomment the next line to see UnitTest output
     // version = UnitTestVerbose;
 
-    private istring errmsg ( istring func, istring str, bool is_text )
+    private string errmsg ( string func, string str, bool is_text )
     {
         auto errmsg = "unit test failed for " ~ func;
 
@@ -738,7 +738,7 @@ unittest
          */
         uint    fnv1_32;
         ubyte[] fnv1_32_bin;
-        istring  fnv1_32_hex;
+        string  fnv1_32_hex;
 
         /*
          * 32-bit FNV1a digests of "string" below as integer, binary data string
@@ -746,7 +746,7 @@ unittest
          */
         uint    fnv1a_32;
         ubyte[] fnv1a_32_bin;
-        istring  fnv1a_32_hex;
+        string  fnv1a_32_hex;
 
         /*
          * 64-bit FNV1 digests of "string" below as integer, binary data string
@@ -754,7 +754,7 @@ unittest
          */
         ulong   fnv1_64;
         ubyte[] fnv1_64_bin;
-        istring  fnv1_64_hex;
+        string  fnv1_64_hex;
 
         /*
          * 64-bit FNV1a digests of "string" below as integer, binary data string
@@ -762,7 +762,7 @@ unittest
          */
         ulong   fnv1a_64;
         ubyte[] fnv1a_64_bin;
-        istring  fnv1a_64_hex;
+        string  fnv1a_64_hex;
 
         /*
          * is_text == true indicates that the content of "string" is safe to
@@ -771,7 +771,7 @@ unittest
         bool   is_text;
 
         // string of which the digests above are computed from
-        istring str;
+        string str;
     }
 
     static immutable TestData[] testdata =
@@ -822,7 +822,7 @@ unittest
     test ( StaticFnv1a32!("TEST") == Fnv1a32("TEST"[]), "CompileTime Fnv1a32 failed");
 
 
-    istring d1 = "ABC";
+    string d1 = "ABC";
     int d2 = 123;
     ulong d3 = 12354;
 

@@ -497,7 +497,7 @@ version (unittest)
 
 unittest
 {
-    static immutable istring lorem_ipsum =
+    static immutable string lorem_ipsum =
         "Lorem ipsum dolor sit amet, consectetur adipisici elit, sed eiusmod "
       ~ "tempor incidunt ut labore et dolore magna aliqua. Ut enim ad minim "
       ~ "veniam, quis nostrud exercitation ullamco laboris nisi ut aliquid ex "
@@ -552,7 +552,7 @@ unittest
       ~ "kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit "
       ~ "amet.";
 
-    static immutable istring content =
+    static immutable string content =
         "GET /dir?query=Hello%20World!&abc=def&ghi HTTP/1.1\r\n"
       ~ "Host: www.example.org:12345\r\n"
       ~ "User-Agent: Mozilla/5.0 (X11; U; Linux i686; de; rv:1.9.2.17) Gecko/20110422 Ubuntu/9.10 (karmic) Firefox/3.6.17\r\n"

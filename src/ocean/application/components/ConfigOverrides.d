@@ -53,10 +53,10 @@ public void setupArgs ( Arguments args )
 
 public cstring validateArgs ( Arguments args )
 {
-    istring[] errors;
+    string[] errors;
     foreach (opt; args("override-config").assigned)
     {
-        istring cat, key, val;
+        string cat, key, val;
 
         auto error = parseArg(opt, cat, key, val);
 
@@ -81,7 +81,7 @@ public cstring validateArgs ( Arguments args )
 
 public void handleArgs ( Arguments args, ConfigParser config )
 {
-    istring category, key, value;
+    string category, key, value;
 
     foreach (opt; args("override-config").assigned)
     {
@@ -128,8 +128,8 @@ public void handleArgs ( Arguments args, ConfigParser config )
 
 *******************************************************************************/
 
-private istring parseArg ( istring opt, out istring category,
-    out istring key, out istring value )
+private string parseArg ( string opt, out string category,
+    out string key, out string value )
 {
     opt = trim(opt);
 
@@ -169,10 +169,10 @@ version (unittest)
 unittest
 {
     // Errors are compared only with startsWith(), not the whole error
-    void testParser ( istring opt, istring exp_cat, istring exp_key,
-        istring exp_val, istring expected_error = null )
+    void testParser ( string opt, string exp_cat, string exp_key,
+        string exp_val, string expected_error = null )
     {
-        istring cat, key, val;
+        string cat, key, val;
 
         auto t = new NamedTest(opt);
 
@@ -199,7 +199,7 @@ unittest
     }
 
     // Shortcut to test expected errors
-    void testParserError ( istring opt, istring expected_error )
+    void testParserError ( string opt, string expected_error )
     {
         testParser(opt, null, null, null, expected_error);
     }

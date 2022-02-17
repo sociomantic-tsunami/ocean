@@ -237,7 +237,7 @@ public struct Log
 
     ***************************************************************************/
 
-    public static istring convert (Level level)
+    public static string convert (Level level)
     {
         return ILogger.convert(level);
     }
@@ -425,7 +425,7 @@ public final class Logger : ILogger
     /// List of `Appender`s this Logger emits messages to
     private Appender        appender_;
     /// Name of this logger
-    private istring         name_;
+    private string         name_;
     /// Buffer to use for formatting. Can be `null`, see `buffer` properties
     private mstring         buffer_;
     /// `Level` at which this `Logger` is configured
@@ -447,7 +447,7 @@ public final class Logger : ILogger
 
     ***************************************************************************/
 
-    package this (HierarchyT!(Logger) host, istring name)
+    package this (HierarchyT!(Logger) host, string name)
     {
         this.host_ = host;
         this.level_ = Level.Trace;
@@ -933,7 +933,7 @@ public final class Logger : ILogger
 
     ***************************************************************************/
 
-    package bool isChildOf (istring candidate)
+    package bool isChildOf (string candidate)
     {
         auto len = candidate.length;
 

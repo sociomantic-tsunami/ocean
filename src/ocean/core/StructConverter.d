@@ -258,7 +258,7 @@ private void copyField ( From, To ) ( From* from_field, To* to_field,
 
 *******************************************************************************/
 
-private bool structHasMember ( istring name, S ) ( )
+private bool structHasMember ( string name, S ) ( )
 {
     mixin(`
         static if (is(typeof(S.` ~ name ~`)))
@@ -292,7 +292,7 @@ private bool structHasMember ( istring name, S ) ( )
 
 *******************************************************************************/
 
-private void callBestOverloadOld ( From, To, istring function_name )
+private void callBestOverloadOld ( From, To, string function_name )
            ( ref From from, ref To to, void[] delegate ( size_t ) requestBuffer )
 {
      mixin (`
@@ -347,7 +347,7 @@ private void callBestOverloadOld ( From, To, istring function_name )
 
 *******************************************************************************/
 
-private bool isOldOverload ( From, istring func_name, To ) ( )
+private bool isOldOverload ( From, string func_name, To ) ( )
 {
     void delegate ( ref From, void[] delegate ( size_t ) ) longest_convert;
     void delegate ( ref From ) long_convert;
@@ -408,7 +408,7 @@ version (unittest)
 
 *******************************************************************************/
 
-private bool hasConvertFunction ( From, istring func_name, To ) ( )
+private bool hasConvertFunction ( From, string func_name, To ) ( )
 {
     static if (is (typeof(isOldOverload!(From, func_name, To)())))
         if (isOldOverload!(From, func_name, To)())
@@ -452,7 +452,7 @@ private bool hasConvertFunction ( From, istring func_name, To ) ( )
 
 *******************************************************************************/
 
-private void callBestOverload ( From, To, istring function_name )
+private void callBestOverload ( From, To, string function_name )
            ( ref From from, ref To to, void[] delegate ( size_t ) requestBuffer )
 {
      mixin (`
@@ -500,7 +500,7 @@ private void callBestOverload ( From, To, istring function_name )
 
 *******************************************************************************/
 
-private template TypeOf ( istring name, Struct )
+private template TypeOf ( string name, Struct )
 {
     mixin(`alias typeof(Struct.`~name~`) TypeOf;`);
 }
@@ -519,7 +519,7 @@ private template TypeOf ( istring name, Struct )
 
 *******************************************************************************/
 
-private TypeOf!(field_name, Struct)* getField ( istring field_name, Struct )
+private TypeOf!(field_name, Struct)* getField ( string field_name, Struct )
                                               ( ref Struct s )
 {
     mixin(`

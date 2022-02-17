@@ -120,7 +120,7 @@ class PullParser(ChMut = char)
 
     package XmlText!(Ch) text;
     private bool         stream;
-    private istring      errMsg;
+    private string      errMsg;
 
     /***********************************************************************
 
@@ -518,7 +518,7 @@ class PullParser(ChMut = char)
 
      ***********************************************************************/
 
-    private XmlTokenType doUnexpected (istring msg, Ch* p)
+    private XmlTokenType doUnexpected (string msg, Ch* p)
     {
         return position ("parse error :: unexpected  " ~ msg, p);
     }
@@ -527,7 +527,7 @@ class PullParser(ChMut = char)
 
      ***********************************************************************/
 
-    private XmlTokenType doExpected (istring msg, Ch* p)
+    private XmlTokenType doExpected (string msg, Ch* p)
     {
         char[6] tmp = void;
         return position ("parse error :: expected  " ~ msg ~ " instead of "
@@ -538,7 +538,7 @@ class PullParser(ChMut = char)
 
      ***********************************************************************/
 
-    private XmlTokenType position (istring msg, Ch* p)
+    private XmlTokenType position (string msg, Ch* p)
     {
         return error (msg ~ " at position "
                 ~ idup(Integer.toString(p-text.text.ptr)));
@@ -548,7 +548,7 @@ class PullParser(ChMut = char)
 
      ***********************************************************************/
 
-    protected final XmlTokenType error (istring msg)
+    protected final XmlTokenType error (string msg)
     {
         errMsg = msg;
         throw new XmlException (msg);
@@ -584,7 +584,7 @@ class PullParser(ChMut = char)
 
      ***********************************************************************/
 
-    final istring error()
+    final string error()
     {
         return errMsg;
     }
@@ -768,7 +768,7 @@ version (unittest)
 
      ***********************************************************************/
 
-    static immutable istring testXML = "<?xml version=\"1.0\" ?><!DOCTYPE element [ <!ELEMENT element (#PCDATA)>]><element "
+    static immutable string testXML = "<?xml version=\"1.0\" ?><!DOCTYPE element [ <!ELEMENT element (#PCDATA)>]><element "
         ~ "attr=\"1\" attr2=\"two\"><!--comment-->test&amp;&#x5a;<qual:elem /><el2 attr3 = "
         ~ "'3three'><![CDATA[sdlgjsh]]><el3 />data<?pi test?></el2></element>";
 }

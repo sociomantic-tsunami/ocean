@@ -129,7 +129,7 @@ version (unittest)
 
 unittest
 {
-    istring[] expected = [
+    string[] expected = [
         `0`
         ,``
         ,``

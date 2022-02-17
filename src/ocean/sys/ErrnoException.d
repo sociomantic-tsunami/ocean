@@ -61,7 +61,7 @@ public class ErrnoException : Exception
 
     ***************************************************************************/
 
-    private istring func_name;
+    private string func_name;
 
     /**************************************************************************
 
@@ -82,7 +82,7 @@ public class ErrnoException : Exception
 
     ***************************************************************************/
 
-    public istring failedFunctionName ( )
+    public string failedFunctionName ( )
     {
         return this.func_name;
     }
@@ -107,8 +107,8 @@ public class ErrnoException : Exception
 
     ***************************************************************************/
 
-    public void enforce ( bool expr, lazy cstring msg, istring name = "",
-        istring file = __FILE__, int line = __LINE__ )
+    public void enforce ( bool expr, lazy cstring msg, string name = "",
+        string file = __FILE__, int line = __LINE__ )
     {
         if (!expr)
         {
@@ -165,7 +165,7 @@ public class ErrnoException : Exception
 
     public Caller!(typeof(&Func)) enforceRet (alias Func) (
         bool function (ReturnTypeOf!(Func)) verify,
-        istring file = __FILE__, int line = __LINE__ )
+        string file = __FILE__, int line = __LINE__ )
     {
         static assert (is(typeof(Func) == function));
         this.func_name = identifier!(Func);
@@ -185,7 +185,7 @@ public class ErrnoException : Exception
     **************************************************************************/
 
     public Caller!(typeof(&Func)) enforceRetPtr (alias Func) (
-        istring file = __FILE__, int line = __LINE__ )
+        string file = __FILE__, int line = __LINE__ )
     {
         static bool verify ( ReturnTypeOf!(Func) x)
         {
@@ -230,7 +230,7 @@ public class ErrnoException : Exception
     **************************************************************************/
 
     public Caller!(typeof(&Func)) enforceRetCode (alias Func) (
-        istring file = __FILE__, int line = __LINE__ )
+        string file = __FILE__, int line = __LINE__ )
     {
         static bool verify ( ReturnTypeOf!(Func) x )
         {
@@ -280,8 +280,8 @@ public class ErrnoException : Exception
 
      **************************************************************************/
 
-    public typeof (this) useGlobalErrno ( istring name = "",
-        istring file = __FILE__, int line = __LINE__ )
+    public typeof (this) useGlobalErrno ( string name = "",
+        string file = __FILE__, int line = __LINE__ )
     {
         return this.set(.errno, name, file, line);
     }
@@ -313,8 +313,8 @@ public class ErrnoException : Exception
 
      **************************************************************************/
 
-    public typeof (this) set ( int err_num, istring name = "",
-        istring file = __FILE__, int line = __LINE__ )
+    public typeof (this) set ( int err_num, string name = "",
+        string file = __FILE__, int line = __LINE__ )
     {
         this.func_name = name;
         this.last_errno = err_num;
@@ -392,7 +392,7 @@ public struct Caller ( T )
     /// wrapped function to call/verify
     private T              fn;
     /// file where `Caller` was created, used as exception file
-    private istring        original_file;
+    private string        original_file;
     /// line where `Caller` was created, used as exception line
     private int            original_line;
     /// exception to throw if `verify` fails

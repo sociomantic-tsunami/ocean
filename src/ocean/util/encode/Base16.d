@@ -209,7 +209,7 @@ ubyte[] decode(cstring data, ubyte[] buff)
 
 unittest
 {
-    static istring[] testRaw = [
+    static string[] testRaw = [
         "",
         "A",
         "AB",
@@ -218,7 +218,7 @@ unittest
         "Hello, how are you today?",
         "AbCdEfGhIjKlMnOpQrStUvXyZ",
     ];
-    static istring[] testEnc = [
+    static string[] testEnc = [
         "",
         "41",
         "4142",
@@ -246,7 +246,7 @@ private:
     encode and decode data.
 */
 static immutable ubyte hex_PAD = '=';
-static istring _encodeTable = "0123456789ABCDEF";
+static string _encodeTable = "0123456789ABCDEF";
 
 static const(ubyte)[] _decodeTable = [
     0xFF,0xFF,0xFF,0xFF, 0xFF,0xFF,0xFF,0xFF, 0xFF,0xFF,0xFF,0xFF, 0xFF,0xFF,0xFF,0xFF,

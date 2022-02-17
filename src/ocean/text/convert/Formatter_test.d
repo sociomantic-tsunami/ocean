@@ -221,7 +221,7 @@ unittest
 
     class C : I
     {
-        override istring toString()
+        override string toString()
         {
             return "something";
         }
@@ -235,7 +235,7 @@ unittest
 
     static struct S
     {
-        istring toString()
+        string toString()
         {
             return "something";
         }
@@ -308,7 +308,7 @@ unittest
            || formatted == "[ 512: 256, 42: 21 ]");
 
     // bool/string AA
-    bool[istring] e;
+    bool[string] e;
     e["key"] = false;
     e["value"] = true;
     formatted = format("{}", e);
@@ -505,7 +505,7 @@ unittest
     static struct Answer_struct { int value; }
     static class Answer_class
     {
-        public override istring toString () const
+        public override string toString () const
         {
             return "42";
         }
@@ -524,17 +524,17 @@ unittest
 // and that pointers to objects are not dereferenced
 unittest
 {
-    // Since `Object* o; istring s = o.toString();`
+    // Since `Object* o; string s = o.toString();`
     // compiles, the test for `toString` used to pass
     // on pointers to object, which is wrong.
     // Fixed in sociomantic/ocean#1605
     Object* o = cast(Object*) 0xDEADBEEF_DEADBEEF;
     void* ptr = cast(void*) 0xDEADBEEF_DEADBEEF;
 
-    static immutable istring expected = "0XDEADBEEFDEADBEEF";
-    istring object_str = format("{}", o);
-    istring ptr_str = format("{}", ptr);
-    istring null_str = format("{}", null);
+    static immutable string expected = "0XDEADBEEFDEADBEEF";
+    string object_str = format("{}", o);
+    string ptr_str = format("{}", ptr);
+    string null_str = format("{}", null);
 
     test(ptr_str != null_str);
     test(object_str != null_str);

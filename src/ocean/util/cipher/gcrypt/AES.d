@@ -120,7 +120,7 @@ version (unittest)
 {
     import ocean.core.Test;
 
-    void testAES ( Cipher, istring str_key ) ( )
+    void testAES ( Cipher, string str_key ) ( )
     {
         auto key = cast(immutable(ubyte)[])str_key;
 
@@ -128,7 +128,7 @@ version (unittest)
         Cipher.testFixedKeyLength(key);
 
         // AES operates on 16-byte blocks.
-        istring text = "Length divide 16";
+        string text = "Length divide 16";
         mstring encrypted_text, decrypted_text;
 
         // Create the class.
@@ -152,7 +152,7 @@ version (unittest)
         test!("==")(text, decrypted_text);
     }
 
-    void testAES_IV ( Cipher, istring str_key, istring str_iv ) ( )
+    void testAES_IV ( Cipher, string str_key, string str_iv ) ( )
     {
         auto key = cast(immutable(ubyte)[])str_key;
         auto iv = cast(immutable(ubyte)[])str_iv;
@@ -161,7 +161,7 @@ version (unittest)
         Cipher.testFixedKeyLength(key);
 
         // AES operates on 16-byte blocks;
-        istring text = "Length divide 16";
+        string text = "Length divide 16";
         mstring encrypted_text, decrypted_text;
 
         // Create the class.

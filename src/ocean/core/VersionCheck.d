@@ -23,7 +23,7 @@ import ocean.meta.types.Qualifiers;
 import ocean.meta.codegen.CTFE;
 
 /// ditto
-public template hasFeaturesFrom ( istring libname, ulong major, ulong minor )
+public template hasFeaturesFrom ( string libname, ulong major, ulong minor )
 {
     static immutable hasFeaturesFrom = hasFeaturesFromFunc!(libname, major, minor)();
 }
@@ -37,7 +37,7 @@ unittest
                                                         // updated one day
 }
 
-private bool hasFeaturesFromFunc ( istring libname, ulong major, ulong minor ) ()
+private bool hasFeaturesFromFunc ( string libname, ulong major, ulong minor ) ()
 {
     mixin("import Library = " ~ libname ~ ".LibFeatures;");
 

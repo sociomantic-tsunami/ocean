@@ -28,9 +28,9 @@ import ocean.meta.types.Qualifiers;
 
 struct UriDelim
 {
-    enum istring QUERY      = `?`; // separates uri path & query parameter
-    enum istring FRAGMENT   = `#`; // separates uri path & fragment
-    enum istring QUERY_URL  = `/`; // separates url path elements
-    enum istring PARAM      = `&`; // separates key/value pairs
-    enum istring KEY_VALUE  = `=`; // separate key and value
+    enum string QUERY      = `?`; // separates uri path & query parameter
+    enum string FRAGMENT   = `#`; // separates uri path & fragment
+    enum string QUERY_URL  = `/`; // separates url path elements
+    enum string PARAM      = `&`; // separates key/value pairs
+    enum string KEY_VALUE  = `=`; // separate key and value
 }

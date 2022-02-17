@@ -112,7 +112,7 @@ public class StaticSyncPrint
         sformat(formatted, fmt, args);
 
         size_t lines = 0;
-        istring nl = "";
+        string nl = "";
 
         foreach ( token; this.finder.tokens(this.formatted) )
         {

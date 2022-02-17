@@ -202,7 +202,7 @@ public final class Collectd
 
     ***************************************************************************/
 
-    public this (istring socket_path)
+    public this (string socket_path)
     {
         auto socketaddr = sockaddr_un.create(socket_path);
 
@@ -395,7 +395,7 @@ public final class Collectd
 
     ***************************************************************************/
 
-    private static immutable istring PutvalSuccessLineBegin = "0 Success: ";
+    private static immutable string PutvalSuccessLineBegin = "0 Success: ";
 
 
     /***************************************************************************
@@ -496,7 +496,7 @@ public final class Collectd
 
     ***************************************************************************/
 
-    private void startNewRequest (istring reqname /*= __FUNCTION__*/) ()
+    private void startNewRequest (string reqname /*= __FUNCTION__*/) ()
     {
         this.format_buff.length = 0;
         assumeSafeAppend(this.format_buff);

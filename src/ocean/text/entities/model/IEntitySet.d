@@ -45,7 +45,7 @@ public abstract class IEntitySet
 
     public struct Entity
     {
-        istring name;
+        string name;
         dchar unicode;
     }
 
@@ -109,7 +109,7 @@ public abstract class IEntitySet
 
     ***************************************************************************/
 
-    public istring getName ( dchar unicode )
+    public string getName ( dchar unicode )
     {
         foreach ( name, check_unicode; this )
         {
@@ -132,7 +132,7 @@ public abstract class IEntitySet
 
     ***************************************************************************/
 
-    public alias opBinaryRight ( istring op : "in" ) = opIn_r;
+    public alias opBinaryRight ( string op : "in" ) = opIn_r;
 
 
     /***************************************************************************
@@ -286,7 +286,7 @@ public abstract class IEntitySet
 
     ***************************************************************************/
 
-    public int opApply ( scope int delegate ( ref const(istring), ref const(dchar) ) dg )
+    public int opApply ( scope int delegate ( ref const(string), ref const(dchar) ) dg )
     {
         int res;
         foreach ( ref entity; this.entities )

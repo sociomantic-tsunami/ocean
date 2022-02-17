@@ -38,9 +38,9 @@ import core.sys.posix.unistd;
 import core.sys.posix.sys.wait;
 import core.thread;
 
-static immutable istring CLIENT_STRING = "Hello from the client";
+static immutable string CLIENT_STRING = "Hello from the client";
 
-static immutable istring SERVER_STRING = "Hello from the server";
+static immutable string SERVER_STRING = "Hello from the server";
 
 int runClient ( sockaddr_un* socket_address )
 {
@@ -174,7 +174,7 @@ void connection_handler ( UnixSocket peer_socket )
     read_buffer.length = read_bytes;
 
     enforce(read_buffer == CLIENT_STRING,
-            cast(istring) ("Expected: " ~ CLIENT_STRING ~ " Got: " ~ read_buffer));
+            cast(string) ("Expected: " ~ CLIENT_STRING ~ " Got: " ~ read_buffer));
 
     // send the response
     peer_socket.write(SERVER_STRING);

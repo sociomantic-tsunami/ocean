@@ -369,7 +369,7 @@ private class UnitTestRunner
 
     ***************************************************************************/
 
-    private XmlNode xmlAddFailure (istring type = "failure") (
+    private XmlNode xmlAddFailure (string type = "failure") (
             cstring name, timeval tv, cstring msg )
     {
         static assert (type == "failure" || type == "error");

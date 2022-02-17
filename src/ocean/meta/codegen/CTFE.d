@@ -31,7 +31,7 @@ import ocean.text.Ascii : toUpper;
 
 *******************************************************************************/
 
-istring toString ( T ) ( T i )
+string toString ( T ) ( T i )
 {
     if (i == 0)
         return "0";
@@ -71,14 +71,14 @@ unittest
     assert (toString(cast(short) 14) == "14");
 }
 
-istring toStringImpl ( ulong i )
+string toStringImpl ( ulong i )
 {
-    istring digit = "0123456789";
+    string digit = "0123456789";
 
     if (i == 0)
         return "0";
 
-    istring res;
+    string res;
 
     while (i > 0)
     {
@@ -98,7 +98,7 @@ istring toStringImpl ( ulong i )
 
 *******************************************************************************/
 
-public istring stripQualifiedPrefix ( istring name )
+public string stripQualifiedPrefix ( string name )
 {
     ptrdiff_t idx = name.length - 1;
 

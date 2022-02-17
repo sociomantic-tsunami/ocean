@@ -268,7 +268,7 @@ public class SignalExt : IApplicationExtension
 
     ***************************************************************************/
 
-    public override void atExit ( IApplication app, istring[] args, int status,
+    public override void atExit ( IApplication app, string[] args, int status,
             ExitException exception )
     {
         this.signals.clear();
@@ -283,17 +283,17 @@ public class SignalExt : IApplicationExtension
 
     ***************************************************************************/
 
-    public override void preRun ( IApplication app, istring[] args )
+    public override void preRun ( IApplication app, string[] args )
     {
     }
 
     /// ditto
-    public override void postRun ( IApplication app, istring[] args, int status )
+    public override void postRun ( IApplication app, string[] args, int status )
     {
     }
 
     /// ditto
-    public override ExitException onExitException ( IApplication app, istring[] args,
+    public override ExitException onExitException ( IApplication app, string[] args,
             ExitException exception )
     {
         return exception;

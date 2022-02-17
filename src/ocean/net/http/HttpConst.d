@@ -27,7 +27,7 @@ import ocean.meta.types.Qualifiers;
 
 struct HttpConst
 {
-        enum istring Eol = "\r\n";
+        enum string Eol = "\r\n";
 }
 
 /*******************************************************************************

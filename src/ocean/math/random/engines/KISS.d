@@ -82,7 +82,7 @@ struct Kiss99{
         restB=0;
     }
     /// writes the current status in a string
-    istring toString(){
+    string toString(){
         char[] res=new char[6+6*9];
         int i=0;
         res[i..i+6]="KISS99";

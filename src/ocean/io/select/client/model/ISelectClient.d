@@ -396,7 +396,7 @@ public abstract class ISelectClient : ITimeoutClient, ISelectable, ISelectClient
 
     ***************************************************************************/
 
-    debug public override istring toString ( )
+    debug public override string toString ( )
     {
         import ocean.core.TypeConvert: assumeUnique;
         mstring to_string_buf;

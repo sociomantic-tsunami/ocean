@@ -92,7 +92,7 @@ debug ( MessageFiberToken )
 
 debug ( MessageFiberDump ) extern(C) void dumpFibers()
 {
-    istring[] state_str = [ "HOLD" ,"EXEC" ,"TERM" ];
+    string[] state_str = [ "HOLD" ,"EXEC" ,"TERM" ];
 
     void* wpFiber = MessageFiber.last_fiber;
 
@@ -146,7 +146,7 @@ class MessageFiber
 
         **********************************************************************/
 
-        private istring suspender;
+        private string suspender;
 
         /**********************************************************************
 
@@ -189,7 +189,7 @@ class MessageFiber
 
         ***********************************************************************/
 
-        private debug (MessageFiberToken) istring str;
+        private debug (MessageFiberToken) string str;
 
         /***********************************************************************
 
@@ -211,7 +211,7 @@ class MessageFiber
 
         ***********************************************************************/
 
-        public static Token opCall ( istring s )
+        public static Token opCall ( string s )
         {
             Token token;
             token.hash = Fnv1a64(s);
@@ -254,7 +254,7 @@ class MessageFiber
     {
         this ( )  {super("Fiber killed");}
 
-        void set ( istring file, long line )
+        void set ( string file, long line )
         {
             super.file = file;
             super.line = line;
@@ -272,7 +272,7 @@ class MessageFiber
     {
         this ( )  {super("Resumed with invalid identifier!");}
 
-        ResumeException set ( istring file, long line )
+        ResumeException set ( string file, long line )
         {
             super.file = file;
             super.line = line;
@@ -691,7 +691,7 @@ class MessageFiber
 
      **************************************************************************/
 
-    public void kill ( istring file = __FILE__, long line = __LINE__ )
+    public void kill ( string file = __FILE__, long line = __LINE__ )
     {
         verify(
             this.fiber.state == this.fiber.State.HOLD,

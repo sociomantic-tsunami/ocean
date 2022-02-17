@@ -19,7 +19,7 @@ class TimeoutException: Exception
 {
     import ocean.meta.types.Qualifiers;
 
-    this ( istring file = __FILE__, int line = __LINE__ )
+    this ( string file = __FILE__, int line = __LINE__ )
     {
         super("I/O timeout", file, line);
     }

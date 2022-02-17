@@ -118,7 +118,7 @@ public class FixedKeyMap ( K, V )
             super.file = __FILE__;
         }
 
-        public typeof(this) set ( istring msg, long line = __LINE__ )
+        public typeof(this) set ( string msg, long line = __LINE__ )
         {
             super.msg = msg;
             super.line = line;
@@ -233,7 +233,7 @@ public class FixedKeyMap ( K, V )
 
     ***************************************************************************/
 
-    public alias opBinaryRight ( istring op : "in" ) = opIn_r;
+    public alias opBinaryRight ( string op : "in" ) = opIn_r;
 
 
     /***************************************************************************
@@ -333,7 +333,7 @@ public class FixedKeyMap ( K, V )
 
 unittest
 {
-    auto map = new FixedKeyMap!(istring, istring)(["first", "second", "third"]);
+    auto map = new FixedKeyMap!(string, string)(["first", "second", "third"]);
     test(("first" in map) !is null);
     test(("second" in map) !is null);
     test(("third" in map) !is null);

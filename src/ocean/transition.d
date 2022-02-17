@@ -88,7 +88,7 @@ void enableStomping(T)(ref T[] array)
 
 static import ocean.text.convert.Integer_tango;
 
-template Octal(istring literal)
+template Octal(string literal)
 {
     static immutable Octal = ocean.text.convert.Integer_tango.parse(literal, 8);
 }
@@ -117,9 +117,9 @@ unittest
 
 *******************************************************************************/
 
-istring genOpCmp(istring func_body)
+string genOpCmp(string func_body)
 {
-    istring result;
+    string result;
 
     // We need to know if it's a class or not. If it is, one might want to
     // compare against literals, so we cannot take it by `const ref`.
@@ -199,9 +199,9 @@ unittest
 
 *******************************************************************************/
 
-public istring genOpEquals(istring func_body)
+public string genOpEquals(string func_body)
 {
-    istring result;
+    string result;
 
     // We need to know if it's a class or not. If it is, one might want to
     // compare against literals, so we cannot take it by `const ref`.

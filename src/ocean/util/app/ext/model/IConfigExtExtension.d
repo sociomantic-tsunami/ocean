@@ -62,8 +62,8 @@ interface IConfigExtExtension : IExtension
 
     ***************************************************************************/
 
-    istring[] filterConfigFiles ( IApplication app, ConfigParser config,
-                                  istring[] files );
+    string[] filterConfigFiles ( IApplication app, ConfigParser config,
+                                  string[] files );
 
 
     /***************************************************************************

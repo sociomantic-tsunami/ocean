@@ -57,7 +57,7 @@ class FileException : ErrnoException
     **************************************************************************/
 
     public void enforce ( bool ok, cstring filename, FILE* handle,
-        istring file = __FILE__, int line = __LINE__ )
+        string file = __FILE__, int line = __LINE__ )
     {
         int err_num = handle ? ferror(handle) : .errno;
 

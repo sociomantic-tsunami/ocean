@@ -39,7 +39,7 @@ import ocean.text.Util;
 
 *******************************************************************************/
 
-public alias istring[istring] VersionInfo;
+public alias string[string] VersionInfo;
 
 /*******************************************************************************
 
@@ -54,7 +54,7 @@ public alias istring[istring] VersionInfo;
 
 *******************************************************************************/
 
-public istring getVersionString ( istring app_name, VersionInfo ver )
+public string getVersionString ( string app_name, VersionInfo ver )
 {
     auto v = "version" in ver;
     if (v !is null)
@@ -78,12 +78,12 @@ public istring getVersionString ( istring app_name, VersionInfo ver )
 
 *******************************************************************************/
 
-public istring getBuildInfoString ( istring app_name, VersionInfo ver,
+public string getBuildInfoString ( string app_name, VersionInfo ver,
     bool single_line = false )
 {
-    istring s = getVersionString(app_name, ver);
+    string s = getVersionString(app_name, ver);
 
-    istring separator;
+    string separator;
     if (single_line)
         separator = ", ";
     else
@@ -95,7 +95,7 @@ public istring getBuildInfoString ( istring app_name, VersionInfo ver,
         sorted_names.length = moveToEnd(sorted_names, "version");
         sorted_names.sort();
 
-        scope formatter = (istring n)
+        scope formatter = (string n)
         {
             return n ~ "=" ~ ver[n];
         };

@@ -32,7 +32,7 @@ version (unittest) import ocean.core.Test;
 
 struct CookieAttributeNames
 {
-    istring Comment, Domain,
+    string Comment, Domain,
            Expires,
            Path, Secure, Version;
 
@@ -50,14 +50,14 @@ static immutable CookieAttributeNames CookieAttributeNameStrings =
     Version: "version"
 };
 
-istring[] CookieAttributeNameList ( )
+string[] CookieAttributeNameList ( )
 {
     return _CookieAttributeNameList;
 }
 
-private istring[] _CookieAttributeNameList;
+private string[] _CookieAttributeNameList;
 
-private istring[CookieAttributeNames.tupleof.length] CookieAttributeNameList_;
+private string[CookieAttributeNames.tupleof.length] CookieAttributeNameList_;
 
 static this ( )
 {

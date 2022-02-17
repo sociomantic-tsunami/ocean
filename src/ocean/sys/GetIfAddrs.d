@@ -57,9 +57,9 @@ class ResolveIPException : ErrnoException
 
 *******************************************************************************/
 
-istring[] getAddrsForInterface( cstring interface_name, bool ipv6 = false )
+string[] getAddrsForInterface( cstring interface_name, bool ipv6 = false )
 {
-    istring[] addresses;
+    string[] addresses;
     bool delegate_called = false;
 
     auto ret = getAddrsForInterface(interface_name, ipv6,

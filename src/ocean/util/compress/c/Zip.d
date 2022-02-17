@@ -9,10 +9,6 @@
 
 module ocean.util.compress.c.Zip;
 
-
-import ocean.meta.types.Qualifiers : istring;
-
-
 /*******************************************************************************
 
     Signatures of the records in a Zip archive. Each record is preceded by the
@@ -24,19 +20,19 @@ import ocean.meta.types.Qualifiers : istring;
 
 *******************************************************************************/
 
-static istring ZipCentralDirectoryFileHeaderSignature = "PK\x01\x02";
+static string ZipCentralDirectoryFileHeaderSignature = "PK\x01\x02";
 
 /** ditto **/
 
-static istring ZipLocalFileHeaderSignature = "PK\x03\x04";
+static string ZipLocalFileHeaderSignature = "PK\x03\x04";
 
 /** ditto **/
 
-static istring ZipEndOfCentralDirectorySignature = "PK\x05\x06";
+static string ZipEndOfCentralDirectorySignature = "PK\x05\x06";
 
 /** ditto **/
 
-static istring ZipLocalFileSizeSignature = "PK\x07\x08";
+static string ZipLocalFileSizeSignature = "PK\x07\x08";
 
 
 

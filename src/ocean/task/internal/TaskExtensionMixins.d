@@ -38,9 +38,9 @@ version (unittest)
 
 ******************************************************************************/
 
-public istring genExtensionAggregate ( Extensions... ) ( )
+public string genExtensionAggregate ( Extensions... ) ( )
 {
-    istring result = "struct ExtensionAggregate\n{\n";
+    string result = "struct ExtensionAggregate\n{\n";
 
     foreach (i, extension; Extensions)
     {
@@ -89,7 +89,7 @@ unittest
 
 ******************************************************************************/
 
-private mstring toFieldName ( istring type_name )
+private mstring toFieldName ( string type_name )
 {
     mstring result;
 

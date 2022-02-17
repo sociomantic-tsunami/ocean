@@ -3,7 +3,7 @@
     This module is used to decode and encode base64 `cstring` / `ubyte[]` arrays
 
     ---
-    istring blah = "Hello there, my name is Jeff.";
+    string blah = "Hello there, my name is Jeff.";
     scope encodebuf = new char[allocateEncodeSize(blah.length)];
     mstring encoded = encode(cast(const(ubyte)[])blah, encodebuf);
 
@@ -44,7 +44,7 @@ version (unittest) import ocean.core.Test;
 
 *******************************************************************************/
 
-public static immutable istring defaultEncodeTable = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+public static immutable string defaultEncodeTable = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
 
 /// Ditto
 public static immutable ubyte[char.max + 1] defaultDecodeTable = [
@@ -80,7 +80,7 @@ public static immutable ubyte[char.max + 1] defaultDecodeTable = [
 
 *******************************************************************************/
 
-public static immutable istring urlSafeEncodeTable = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_=";
+public static immutable string urlSafeEncodeTable = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_=";
 
 /// Ditto
 public static immutable ubyte[char.max + 1] urlSafeDecodeTable = [
@@ -176,7 +176,7 @@ public size_t allocateEncodeSize (size_t length)
 
 *******************************************************************************/
 
-public int encodeChunk (istring table = defaultEncodeTable)
+public int encodeChunk (string table = defaultEncodeTable)
     (in ubyte[] data, mstring buff, ref int bytesEncoded)
 {
     static assert(validateEncodeTable(table) is null,
@@ -226,7 +226,7 @@ public int encodeChunk (istring table = defaultEncodeTable)
 
 *******************************************************************************/
 
-public mstring encode (istring table = defaultEncodeTable)
+public mstring encode (string table = defaultEncodeTable)
     (in ubyte[] data, mstring buff, bool pad = true)
 {
     verify(data !is null);
@@ -291,7 +291,7 @@ public mstring encode (istring table = defaultEncodeTable)
 
 *******************************************************************************/
 
-public mstring encode (istring table = defaultEncodeTable)
+public mstring encode (string table = defaultEncodeTable)
     (in ubyte[] data, bool pad = true)
 {
     verify(data !is null);
@@ -489,7 +489,7 @@ public ubyte[] decode (Table...) (cstring data, ubyte[] buff)
 
 unittest
 {
-    istring str = "Hello, how are you today?";
+    string str = "Hello, how are you today?";
     const(ubyte)[] payload = cast(const(ubyte)[]) str;
 
     // encodeChunktest
@@ -569,7 +569,7 @@ unittest
 // Encode without padding
 unittest
 {
-    istring str = "Hello, how are you today?";
+    string str = "Hello, how are you today?";
     const(ubyte)[] payload = cast(const(ubyte)[]) str;
     cstring result = encode(payload, false);
     test!("==")(result, "SGVsbG8sIGhvdyBhcmUgeW91IHRvZGF5Pw");
@@ -592,7 +592,7 @@ unittest
 
 *******************************************************************************/
 
-private istring validateEncodeTable (istring s)
+private string validateEncodeTable (string s)
 {
     if (s.length != 65)
         return "Base64 expects a 65-chars string for encoding, not: " ~ s;
@@ -612,15 +612,15 @@ unittest
 {
     import ocean.core.TypeConvert: assumeUnique;
 
-    test!("is")(validateEncodeTable(defaultEncodeTable), istring.init);
-    test!("is")(validateEncodeTable(urlSafeEncodeTable), istring.init);
-    istring too_long = defaultEncodeTable ~ 'A';
-    test!("!is")(validateEncodeTable(too_long), istring.init);
+    test!("is")(validateEncodeTable(defaultEncodeTable), string.init);
+    test!("is")(validateEncodeTable(urlSafeEncodeTable), string.init);
+    string too_long = defaultEncodeTable ~ 'A';
+    test!("!is")(validateEncodeTable(too_long), string.init);
     mstring _dupes = defaultEncodeTable.dup;
     _dupes[1] = 'A';
-    istring dupes = assumeUnique(_dupes);
+    string dupes = assumeUnique(_dupes);
     test(dupes[0] == dupes[1]);
-    test!("!is")(validateEncodeTable(dupes), istring.init);
+    test!("!is")(validateEncodeTable(dupes), string.init);
 }
 
 
@@ -637,7 +637,7 @@ unittest
 
 *******************************************************************************/
 
-private istring validateDecodeTable (T) (in T table)
+private string validateDecodeTable (T) (in T table)
 {
     static if (!is(T : ubyte[char.max + 1]))
     {
@@ -665,24 +665,24 @@ private istring validateDecodeTable (T) (in T table)
 
 unittest
 {
-    test!("is")(validateDecodeTable(defaultDecodeTable), istring.init);
-    test!("is")(validateDecodeTable(urlSafeDecodeTable), istring.init);
+    test!("is")(validateDecodeTable(defaultDecodeTable), string.init);
+    test!("is")(validateDecodeTable(urlSafeDecodeTable), string.init);
 
     ubyte[] notATable = new ubyte[char.max + 1];
-    test!("!is")(validateDecodeTable(notATable), istring.init);
+    test!("!is")(validateDecodeTable(notATable), string.init);
 
     ubyte[char.max + 1] table = defaultDecodeTable;
     test(validateDecodeTable(table) is null);
     table['*'] = BASE64_PAD;
     test(table['='] == table['*']);
-    test!("is")(validateDecodeTable(table), istring.init);
+    test!("is")(validateDecodeTable(table), string.init);
 }
 
 
 // base64url tests
 unittest
 {
-    istring str = "Why so serious?";
+    string str = "Why so serious?";
     const(ubyte)[] payload = cast(const(ubyte)[]) str;
 
     // encodeChunktest

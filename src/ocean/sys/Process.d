@@ -211,7 +211,7 @@ class Process
         }
 
         /// Convenience overload that format this as a string
-        public istring toString ()
+        public string toString ()
         {
             return format("{}", &this);
         }
@@ -223,7 +223,7 @@ class Process
     static immutable Redirect DefaultRedirectFlags  = Redirect.All;
 
     private cstring[]        _args;
-    private istring[istring] _env;
+    private string[string] _env;
     private cstring          _workDir;
     private PipeConduit      _stdin;
     private PipeConduit      _stdout;
@@ -305,7 +305,7 @@ class Process
      * env      = associative array of strings with the process' environment
      *            variables; the variable name must be the key of each entry.
      */
-    public this(cstring command, istring[istring] env)
+    public this(cstring command, string[string] env)
     {
         verify(command.length > 0);
         _args = splitArgs(command);
@@ -318,7 +318,7 @@ class Process
         void example ( )
         {
             cstring command = "myprogram \"first argument\" second third";
-            istring[istring] env;
+            string[string] env;
 
             // Environment variables
             env["MYVAR1"] = "first";
@@ -339,7 +339,7 @@ class Process
      * env      = associative array of strings with the process' environment
      *            variables; the variable name must be the key of each entry.
      */
-    public this(const(mstring)[] args, istring[istring] env)
+    public this(const(mstring)[] args, string[string] env)
     {
         verify(args.length > 0);
         verify(args[0].length > 0);
@@ -352,8 +352,8 @@ class Process
     {
         void example ( )
         {
-             istring[] args;
-             istring[istring] env;
+             string[] args;
+             string[string] env;
 
              // Process name
              args ~= "myprogram";
@@ -540,7 +540,7 @@ class Process
      *
      * Note that if copyEnv is set to true, this value is ignored.
      */
-    public istring[istring] env()
+    public string[string] env()
     {
         return _env;
     }
@@ -559,7 +559,7 @@ class Process
      * Returns: the env set.
      * Examples:
      * ---
-     * istring[istring] env;
+     * string[string] env;
      *
      * env["MYVAR1"] = "first";
      * env["MYVAR2"] = "second";
@@ -567,7 +567,7 @@ class Process
      * p.env = env;
      * ---
      */
-    public istring[istring] env(istring[istring] env)
+    public string[string] env(string[string] env)
     {
         _copyEnv = false;
         return _env = env;
@@ -586,7 +586,7 @@ class Process
      *
      * Returns: A reference to this process object
      */
-    public Process setEnv(istring[istring] env)
+    public Process setEnv(string[string] env)
     {
         _copyEnv = false;
         _env = env;
@@ -599,7 +599,7 @@ class Process
         void example ( )
         {
             auto p = new Process;
-            istring[istring] env;
+            string[string] env;
             env["MYVAR1"] = "first";
             env["MYVAR2"] = "second";
             p.setEnv(env).execute();
@@ -609,9 +609,9 @@ class Process
     /**
      * Return an UTF-8 string with the process' command line.
      */
-    public override istring toString()
+    public override string toString()
     {
-        istring command;
+        string command;
 
         for (uint i = 0; i < _args.length; ++i)
         {
@@ -1466,7 +1466,7 @@ class Process
      * array has a null pointer at the end. This is the format expected by
      * the execv*() family of POSIX functions for environment variables.
      */
-    protected static char*[] toNullEndedArray(istring[istring] src)
+    protected static char*[] toNullEndedArray(string[string] src)
     {
         char*[] dest;
 
@@ -1546,8 +1546,8 @@ class Process
  */
 class ProcessCreateException: ProcessException
 {
-    public this (cstring command, istring message = SysError.lastMsg,
-                 istring file = __FILE__, uint line = __LINE__)
+    public this (cstring command, string message = SysError.lastMsg,
+                 string file = __FILE__, uint line = __LINE__)
     {
         super(
             format("Could not create process for '{}': {}", command, message),
@@ -1562,7 +1562,7 @@ class ProcessCreateException: ProcessException
  */
 class ProcessForkException: ProcessException
 {
-    public this (int pid, istring file = __FILE__, uint line = __LINE__)
+    public this (int pid, string file = __FILE__, uint line = __LINE__)
     {
         super(
             format("Could not fork process {}: {}", pid, SysError.lastMsg),
@@ -1575,7 +1575,7 @@ class ProcessForkException: ProcessException
  */
 class ProcessKillException: ProcessException
 {
-    public this (int pid, istring file = __FILE__, uint line = __LINE__)
+    public this (int pid, string file = __FILE__, uint line = __LINE__)
     {
         super(
             format("Could not kill process {}: {}", pid, SysError.lastMsg),
@@ -1589,7 +1589,7 @@ class ProcessKillException: ProcessException
  */
 class ProcessWaitException: ProcessException
 {
-    public this (int pid, istring file = __FILE__, uint line = __LINE__)
+    public this (int pid, string file = __FILE__, uint line = __LINE__)
     {
         super(
             format("Could not wait on process {}: {}", pid, SysError.lastMsg),
@@ -1601,8 +1601,8 @@ extern (C) uint sleep (uint s);
 
 unittest
 {
-    istring message = "hello world";
-    istring command = "echo " ~ message;
+    string message = "hello world";
+    string command = "echo " ~ message;
 
     try
     {
@@ -1639,7 +1639,7 @@ unittest
 // check non-literals arguments
 unittest
 {
-    istring[] args = [ "aaa", "bbb" ];
+    string[] args = [ "aaa", "bbb" ];
     auto p = new Process(args);
     p.argsWithCommand(args);
 }

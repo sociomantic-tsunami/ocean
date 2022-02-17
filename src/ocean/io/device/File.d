@@ -176,9 +176,9 @@ class File : Device, Device.Seek, Device.Truncate
 
 
             public typeof(this) set ( cstring file_path,
-                    int error_num, istring func_name = "",
-                    istring msg = "",
-                    istring file = __FILE__, long line = __LINE__)
+                    int error_num, string func_name = "",
+                    string msg = "",
+                    string file = __FILE__, long line = __LINE__)
             {
                 this.error_num = error_num;
                 this.func_name = func_name;
@@ -407,7 +407,7 @@ class File : Device, Device.Seek, Device.Truncate
 
         ***********************************************************************/
 
-        override istring toString ()
+        override string toString ()
         {
                 return idup(path_);
         }
@@ -684,8 +684,8 @@ class File : Device, Device.Seek, Device.Truncate
 
         *******************************************************************/
 
-        public override void error ( int error_code, istring func_name,
-                istring msg = "", istring file = __FILE__, long line = __LINE__ )
+        public override void error ( int error_code, string func_name,
+                string msg = "", string file = __FILE__, long line = __LINE__ )
         {
             if (this.exception is null)
             {

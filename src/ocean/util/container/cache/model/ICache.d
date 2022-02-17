@@ -380,7 +380,7 @@ abstract class ICache : ICacheInfo
 
     ***************************************************************************/
 
-    protected alias opBinaryRight ( istring op : "in" ) = opIn_r;
+    protected alias opBinaryRight ( string op : "in" ) = opIn_r;
 
 
     /***************************************************************************

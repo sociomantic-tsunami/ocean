@@ -372,7 +372,7 @@ struct TreeMap ( T )
             }
             else
             {
-                enum istring msg = "malloc(" ~ Node.sizeof.stringof ~
+                enum string msg = "malloc(" ~ Node.sizeof.stringof ~
                                    ") failed: Out of memory\n\0";
                 fputs(msg.ptr, stderr);
                 exit(EXIT_FAILURE);

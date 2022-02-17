@@ -19,8 +19,6 @@
 
 module ocean.core.Verify;
 
-import ocean.meta.types.Qualifiers : istring;
-
 /*******************************************************************************
 
     Verifies that certain condition is met.
@@ -34,8 +32,8 @@ import ocean.meta.types.Qualifiers : istring;
 
 *******************************************************************************/
 
-public void verify ( bool ok, lazy istring msg = "",
-    istring file = __FILE__, int line = __LINE__ )
+public void verify ( bool ok, lazy string msg = "",
+    string file = __FILE__, int line = __LINE__ )
 {
     static SanityException exc;
 
@@ -72,7 +70,7 @@ unittest
 
 public class SanityException : Exception
 {
-    public this ( istring msg, istring file = __FILE__, int line = __LINE__ )
+    public this ( string msg, string file = __FILE__, int line = __LINE__ )
     {
         super(msg, file, line);
     }

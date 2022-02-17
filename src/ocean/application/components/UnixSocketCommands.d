@@ -28,7 +28,7 @@ public class UnixSocketCommands
     import ocean.net.server.unix.UnixListener;
 
     /// Path to create the unix socket.
-    private istring path;
+    private string path;
 
     /// Mode to apply to the unix socket after binding
     private int mode = -1;
@@ -92,7 +92,7 @@ public class UnixSocketCommands
     {
         this.path = config.get("UNIX_SOCKET", "path", "");
 
-        istring modestr = config.get("UNIX_SOCKET", "mode", "");
+        string modestr = config.get("UNIX_SOCKET", "mode", "");
         if (modestr.length)
         {
             enforce(toInteger(modestr, this.mode, 8),

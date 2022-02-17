@@ -81,7 +81,7 @@ class MemoryDevice : IConduit
 
     ***************************************************************************/
 
-    override istring toString ( )
+    override string toString ( )
     {
         return MemoryDevice.stringof;
     }
@@ -114,7 +114,7 @@ class MemoryDevice : IConduit
 
     ***************************************************************************/
 
-    override void error ( istring msg )
+    override void error ( string msg )
     {
         throw new Exception ( msg );
     }

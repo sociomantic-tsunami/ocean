@@ -132,7 +132,7 @@ class TempFile : File
     static immutable TempStyle Permanent = {Transience.Permanent};
 
     // Path to the temporary file
-    private istring _path;
+    private string _path;
 
     // TempStyle we've opened with
     private TempStyle _style;
@@ -144,7 +144,7 @@ class TempFile : File
     }
 
     ///
-    this(istring prefix, TempStyle style = TempStyle.init)
+    this(string prefix, TempStyle style = TempStyle.init)
     {
         open (prefix, style);
     }
@@ -167,7 +167,7 @@ class TempFile : File
         open (tempPath, style);
     }
 
-    private void open (istring prefix, TempStyle style)
+    private void open (string prefix, TempStyle style)
     {
         for( ubyte i=style.attempts; i--; )
         {
@@ -194,7 +194,7 @@ class TempFile : File
      *
      **************************************************************************/
 
-    public static istring tempPath()
+    public static string tempPath()
     {
         // Check for TMPDIR; failing that, use /tmp
         char* ptr = getenv ("TMPDIR".ptr);
@@ -271,9 +271,9 @@ class TempFile : File
     /*
      * Generates a new random file name, sans directory.
      */
-    private istring randomName(uint length=DEFAULT_LENGTH,
-            istring prefix=DEFAULT_PREFIX,
-            istring suffix=DEFAULT_SUFFIX)
+    private string randomName(uint length=DEFAULT_LENGTH,
+            string prefix=DEFAULT_PREFIX,
+            string suffix=DEFAULT_SUFFIX)
     {
         import core.memory;
         auto junk = new char[length];

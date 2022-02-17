@@ -234,7 +234,7 @@ unittest
     {
         auto reporter = new EmailSender();
 
-        alias Tuple!(cstring, istring, mstring) ArgTypes;
+        alias Tuple!(cstring, string, mstring) ArgTypes;
 
         foreach (ArgType; ArgTypes)
         {

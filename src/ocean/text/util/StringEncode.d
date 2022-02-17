@@ -60,7 +60,7 @@ class IconvException : Exception
 {
     static immutable MSG = "Iconv: Error";
 
-    this ( istring msg = MSG, istring file = __FILE__, int line = __LINE__ )
+    this ( string msg = MSG, string file = __FILE__, int line = __LINE__ )
     {
         super(msg, file, line);
     }
@@ -79,7 +79,7 @@ class InvalidMbSeq :  IconvException
 {
     static immutable msg = "Iconv: Invalid Multibyte Sequence";
 
-    this ( istring file = __FILE__, int line = __LINE__ )
+    this ( string file = __FILE__, int line = __LINE__ )
     {
         super(this.msg, file, line);
     }
@@ -95,7 +95,7 @@ class IncompleteMbSeq :  IconvException
 {
     static immutable msg = "Iconv: Incomplete Multibyte Sequence";
 
-    this ( istring file = __FILE__, int line = __LINE__ )
+    this ( string file = __FILE__, int line = __LINE__ )
     {
         super(this.msg, file, line);
     }
@@ -132,7 +132,7 @@ interface StringEncoder
 
 *******************************************************************************/
 
-public class StringEncode ( istring fromcode, istring tocode ) : StringEncoder
+public class StringEncode ( string fromcode, string tocode ) : StringEncoder
 {
     /***************************************************************************
 

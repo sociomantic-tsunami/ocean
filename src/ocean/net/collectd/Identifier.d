@@ -216,7 +216,7 @@ public struct Identifier
 
     ***************************************************************************/
 
-    public static istring create (cstring line, out Identifier identifier)
+    public static string create (cstring line, out Identifier identifier)
     {
         if (!line.length)
             return "Empty string is not a valid identifier";
@@ -306,7 +306,7 @@ public struct Identifier
 
     ***************************************************************************/
 
-    private static istring check (istring fieldname) (cstring field)
+    private static string check (string fieldname) (cstring field)
     {
         if (!field.length)
             return "Empty " ~ fieldname ~ " found";
@@ -359,7 +359,7 @@ public struct Identifier
 
     ***************************************************************************/
 
-    public istring toString ()
+    public string toString ()
     {
         auto pi = this.plugin_instance.length ? "-" : null;
         auto ti = this.type_instance.length ? "-" : null;

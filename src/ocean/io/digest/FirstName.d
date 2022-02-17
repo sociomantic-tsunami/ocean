@@ -55,7 +55,7 @@ public static class FirstName
 
     ***************************************************************************/
 
-    static private istring[] names =
+    static private string[] names =
             ["Sarah",
             "David",
             "Gavin",
@@ -110,7 +110,7 @@ public static class FirstName
 
     ***************************************************************************/
 
-    public static istring opCall ( T ) ( T value )
+    public static string opCall ( T ) ( T value )
     {
         return names[Fnv1a64(value) % names.length];
     }

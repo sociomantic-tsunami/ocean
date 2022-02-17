@@ -60,7 +60,7 @@ class LengthMismatch : SerializerException
     size_t bytes_expected, bytes_got;
 
     this ( size_t bytes_expected, size_t bytes_got,
-           istring msg, istring file, typeof(__LINE__) line )
+           string msg, string file, typeof(__LINE__) line )
     {
         this.set(msg, file, line);
         this.bytes_expected = bytes_expected;
@@ -727,7 +727,7 @@ struct StructSerializer ( bool AllowUnions = false )
 
     ***************************************************************************/
 
-    private void enforceStructPtr ( istring func, S ) ( S* s )
+    private void enforceStructPtr ( string func, S ) ( S* s )
     {
         static if (is (S T == T*))
         {

@@ -95,7 +95,7 @@ public class AppendStderrStdout : Appender
 
     ************************************************************************/
 
-    override public istring name ()
+    override public string name ()
     {
         return this.classinfo.name;
     }

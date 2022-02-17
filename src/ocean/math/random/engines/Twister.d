@@ -156,7 +156,7 @@ struct Twister
         addEntropy(r);
     }
     /// writes the current status in a string
-    istring toString(){
+    string toString(){
         char[] res=new char[7+(N+1)*9];
         int i=0;
         res[i..i+7]="Twister";

@@ -33,7 +33,7 @@ struct StatusPhrases
     struct HttpStatusPhrase
     {
         HttpResponseCode status_code;
-        istring          reason_phrase;
+        string          reason_phrase;
     }
 
     /**************************************************************************
@@ -94,7 +94,7 @@ struct StatusPhrases
 
      **************************************************************************/
 
-    private static istring[HttpResponseCode] reason_phrases;
+    private static string[HttpResponseCode] reason_phrases;
 
     /**************************************************************************
 
@@ -111,7 +111,7 @@ struct StatusPhrases
 
      **************************************************************************/
 
-    static istring opIndex ( HttpResponseCode status_code )
+    static string opIndex ( HttpResponseCode status_code )
     {
         return reason_phrases[status_code];
     }
