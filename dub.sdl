@@ -10,7 +10,8 @@ targetType "sourceLibrary"
 
 // Add deprecated source files to the following exclusion list
 excludedSourceFiles \
-    "src/ocean/stdc/string.d"
+    "src/ocean/stdc/string.d" \
+    "src/ocean/util/log/LayoutDate.d"
 
 configuration "unittest" {
     excludedSourceFiles "src/ocean/core/UnitTestRunner.d"
