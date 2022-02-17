@@ -373,7 +373,7 @@ class HttpCookiesView //: IWritable
 
         **********************************************************************/
 
-        void produce (scope size_t delegate(const(void)[]) consume, istring eol = HttpConst.Eol)
+        void produce (scope size_t delegate(const(void)[]) consume, string eol = HttpConst.Eol)
         {
                 foreach (cookie; parse)
                          cookie.produce (consume), consume (eol);

@@ -1420,7 +1420,7 @@ version (unittest)
 
     ***************************************************************************/
 
-    void testCombination ( K, V, KNew, VNew, istring custom_dump = "" )
+    void testCombination ( K, V, KNew, VNew, string custom_dump = "" )
               ( size_t iterations )
     {
         auto t = new NamedTest("Combination {" ~

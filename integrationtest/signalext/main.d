@@ -35,8 +35,8 @@ class MyApp : DaemonApp
     {
         this.epoll = new EpollSelectDispatcher;
 
-        istring name = "Application";
-        istring desc = "Testing signal handling.";
+        string name = "Application";
+        string desc = "Testing signal handling.";
 
         DaemonApp.OptionalSettings settings;
         settings.signals = [SIGRTMIN];
@@ -73,7 +73,7 @@ class MyApp : DaemonApp
 }
 
 version (unittest) {} else
-void main(istring[] args)
+void main(string[] args)
 {
     static extern(C) void sighandler (int sig)
     {

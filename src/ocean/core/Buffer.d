@@ -202,7 +202,7 @@ unittest
     }
 
     {
-        Buffer!(istring) buffer1;
+        Buffer!(string) buffer1;
         Buffer!(cstring) buffer2;
         Buffer!(mstring) buffer3;
     }

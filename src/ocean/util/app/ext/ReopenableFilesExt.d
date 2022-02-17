@@ -124,7 +124,7 @@ public class ReopenableFilesExt : IApplicationExtension, ISignalExtExtension
     ***************************************************************************/
 
     public void setupUnixSocketHandler ( UnixSocketExt unix_socket_ext,
-            istring reopen_command = "reopen_files" )
+            string reopen_command = "reopen_files" )
     {
         verify(unix_socket_ext !is null);
 
@@ -254,21 +254,21 @@ public class ReopenableFilesExt : IApplicationExtension, ISignalExtExtension
 
     ***************************************************************************/
 
-    override public void preRun ( IApplication app, istring[] args )
+    override public void preRun ( IApplication app, string[] args )
     {
         // Unused
     }
 
 
     /// ditto
-    override public void postRun ( IApplication app, istring[] args, int status )
+    override public void postRun ( IApplication app, string[] args, int status )
     {
         // Unused
     }
 
 
     /// ditto
-    override public void atExit ( IApplication app, istring[] args, int status,
+    override public void atExit ( IApplication app, string[] args, int status,
             ExitException exception )
     {
         // Unused
@@ -276,7 +276,7 @@ public class ReopenableFilesExt : IApplicationExtension, ISignalExtExtension
 
 
     /// ditto
-    override public ExitException onExitException ( IApplication app, istring[] args,
+    override public ExitException onExitException ( IApplication app, string[] args,
             ExitException exception )
     {
         // Unused

@@ -58,20 +58,20 @@ import ocean.io.Stdout;
         {
             super("myapp", "A test application");
         }
-        protected override void preRun ( Application app, istring[] args )
+        protected override void preRun ( Application app, string[] args )
         {
             if ( args.length < 4 )
             {
                 this.exit(1, "Too few arguments");
             }
         }
-        protected override int run ( istring[] args )
+        protected override int run ( string[] args )
         {
             Stdout.formatln("Application is running!");
 
             return 0;
         }
-        protected override void postRun ( Application app, istring[] args,
+        protected override void postRun ( Application app, string[] args,
                 int status )
         {
             Stdout.formatln("Application returned {}", status);
@@ -79,7 +79,7 @@ import ocean.io.Stdout;
         }
     }
 
-    int main(istring[] args)
+    int main(string[] args)
     {
         auto app = new MyApp;
         return app.main(args);
@@ -130,7 +130,7 @@ class Application : IApplication
 
     ***************************************************************************/
 
-    private istring name_;
+    private string name_;
 
 
     /***************************************************************************
@@ -142,7 +142,7 @@ class Application : IApplication
 
     ***************************************************************************/
 
-    public istring desc;
+    public string desc;
 
 
     /***************************************************************************
@@ -156,7 +156,7 @@ class Application : IApplication
 
     ***************************************************************************/
 
-    public istring[] args;
+    public string[] args;
 
 
     /***************************************************************************
@@ -187,7 +187,7 @@ class Application : IApplication
 
     ***************************************************************************/
 
-    public this ( istring name, istring desc )
+    public this ( string name, string desc )
     {
         this.name_ = name;
         this.desc = desc;
@@ -203,7 +203,7 @@ class Application : IApplication
 
     ***************************************************************************/
 
-    public istring name ( )
+    public string name ( )
     {
         return this.name_;
     }
@@ -223,7 +223,7 @@ class Application : IApplication
 
     ***************************************************************************/
 
-    public void exit(int status, istring msg = null)
+    public void exit(int status, string msg = null)
     {
         throw new ExitException(status, msg);
     }
@@ -245,7 +245,7 @@ class Application : IApplication
 
     ***************************************************************************/
 
-    public int main(istring[] args)
+    public int main(string[] args)
     {
         ExitException exit_except = null;
         this.args = args;
@@ -329,7 +329,7 @@ class Application : IApplication
 
     ***************************************************************************/
 
-    protected abstract int run ( istring[] args );
+    protected abstract int run ( string[] args );
 
 
     /***************************************************************************
@@ -356,24 +356,24 @@ class Application : IApplication
 
     ***************************************************************************/
 
-    public void preRun ( IApplication app, istring[] args )
+    public void preRun ( IApplication app, string[] args )
     {
         // Dummy implementation of the interface
     }
 
-    public void postRun ( IApplication app, istring[] args, int status )
+    public void postRun ( IApplication app, string[] args, int status )
     {
         // Dummy implementation of the interface
     }
 
-    public void atExit ( IApplication app, istring[] args, int status,
+    public void atExit ( IApplication app, string[] args, int status,
             ExitException exception )
     {
         // Dummy implementation of the interface
     }
 
     public ExitException onExitException ( IApplication app,
-            istring[] args, ExitException exception )
+            string[] args, ExitException exception )
     {
         // Dummy implementation of the interface
         return exception;

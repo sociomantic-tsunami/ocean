@@ -89,7 +89,7 @@ class ConfigExt : IApplicationExtension, IArgumentsExtExtension
 
     ***************************************************************************/
 
-    public istring[] default_configs;
+    public string[] default_configs;
 
 
     /***************************************************************************
@@ -106,7 +106,7 @@ class ConfigExt : IApplicationExtension, IArgumentsExtExtension
     ***************************************************************************/
 
     this ( bool loose_config_parsing = false,
-           istring[] default_configs = [ "etc/config.ini" ],
+           string[] default_configs = [ "etc/config.ini" ],
            ConfigParser config = null )
     {
         this.loose_config_parsing = loose_config_parsing;
@@ -230,7 +230,7 @@ class ConfigExt : IApplicationExtension, IArgumentsExtExtension
 
     ***************************************************************************/
 
-    public override void preRun ( IApplication app, istring[] cl_args )
+    public override void preRun ( IApplication app, string[] cl_args )
     {
         foreach (ext; this.extensions)
         {
@@ -282,13 +282,13 @@ class ConfigExt : IApplicationExtension, IArgumentsExtExtension
 
     ***************************************************************************/
 
-    public override void postRun ( IApplication app, istring[] args, int status )
+    public override void postRun ( IApplication app, string[] args, int status )
     {
         // Unused
     }
 
     /// ditto
-    public override void atExit ( IApplication app, istring[] args, int status,
+    public override void atExit ( IApplication app, string[] args, int status,
                          ExitException exception )
     {
         // Unused
@@ -296,7 +296,7 @@ class ConfigExt : IApplicationExtension, IArgumentsExtExtension
 
     /// ditto
     public override ExitException onExitException ( IApplication app,
-                                           istring[] args,
+                                           string[] args,
                                            ExitException exception )
     {
         // Unused

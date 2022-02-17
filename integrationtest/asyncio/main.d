@@ -37,8 +37,8 @@ class AsyncIOUsingApp: DaemonApp
     this ( )
     {
 
-        istring name = "Application";
-        istring desc = "Testing async IO";
+        string name = "Application";
+        string desc = "Testing async IO";
 
         DaemonApp.OptionalSettings settings;
         settings.use_task_ext = true;
@@ -116,7 +116,7 @@ class AsyncIOUsingApp: DaemonApp
 }
 
 version (unittest) {} else
-void main(istring[] args)
+void main(string[] args)
 {
 
     initScheduler(SchedulerConfiguration.init);

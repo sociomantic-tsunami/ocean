@@ -638,7 +638,7 @@ public class LimitExceededException : Exception
 
     ***************************************************************************/
 
-    void check ( IPool pool, bool ok, lazy cstring msg, istring file, long line )
+    void check ( IPool pool, bool ok, lazy cstring msg, string file, long line )
     {
         this.limit = pool.items.length;
         this.enforce(ok, msg, file, line);

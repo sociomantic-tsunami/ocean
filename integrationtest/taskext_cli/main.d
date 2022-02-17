@@ -35,8 +35,8 @@ class TestApp : CliApp
 {
     this ( )
     {
-        istring name = "test app";
-        istring desc = name;
+        string name = "test app";
+        string desc = name;
         CliApp.OptionalSettings settings;
         settings.use_task_ext = true;
         settings.scheduler_config.worker_fiber_limit = 5;
@@ -60,7 +60,7 @@ class TestApp : CliApp
 
 
 version (unittest) {} else
-int main ( istring[] cl_args )
+int main ( string[] cl_args )
 {
     auto app = new TestApp;
     testThrown!(HarmlessException)(app.main(cl_args));

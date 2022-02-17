@@ -474,7 +474,7 @@ class Gregorian : Calendar
         return false;
     }
 
-    package static void argumentError(istring str)
+    package static void argumentError(string str)
     {
         throw new IllegalArgumentException(str);
     }

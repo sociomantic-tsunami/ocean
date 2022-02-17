@@ -34,6 +34,7 @@ module ocean.meta.types.Qualifiers;
 
 *******************************************************************************/
 
+deprecated("Use `string` directly")
 alias immutable(char)[] istring;
 alias const(char)[] cstring;
 alias char[]         mstring;

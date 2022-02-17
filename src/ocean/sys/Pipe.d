@@ -78,7 +78,7 @@ class PipeConduit : Device
     /**
      * Returns the name of the device.
      */
-    public override istring toString()
+    public override string toString()
     {
         return "<pipe>";
     }

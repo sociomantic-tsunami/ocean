@@ -87,7 +87,7 @@ class PidLockExt : IConfigExtExtension, IApplicationExtension
 
     ***************************************************************************/
 
-    public override void preRun ( IApplication app, istring[] cl_args )
+    public override void preRun ( IApplication app, string[] cl_args )
     {
         this.pid.lock();
     }
@@ -108,7 +108,7 @@ class PidLockExt : IConfigExtExtension, IApplicationExtension
 
     ***************************************************************************/
 
-    public override void atExit ( IApplication app, istring[] args, int status,
+    public override void atExit ( IApplication app, string[] args, int status,
             ExitException exception )
     {
         this.pid.unlock();
@@ -124,14 +124,14 @@ class PidLockExt : IConfigExtExtension, IApplicationExtension
     ***************************************************************************/
 
     /// ditto
-    public override void postRun ( IApplication app, istring[] args, int status )
+    public override void postRun ( IApplication app, string[] args, int status )
     {
         // Unused
     }
 
     /// ditto
     public override ExitException onExitException ( IApplication app,
-            istring[] args, ExitException exception )
+            string[] args, ExitException exception )
     {
         // Unused
         return exception;
@@ -171,9 +171,9 @@ class PidLockExt : IConfigExtExtension, IApplicationExtension
 
     ***************************************************************************/
 
-    public override istring[] filterConfigFiles ( IApplication app,
+    public override string[] filterConfigFiles ( IApplication app,
                                          ConfigParser config,
-                                         istring[] files )
+                                         string[] files )
     {
         // Unused
         return files;

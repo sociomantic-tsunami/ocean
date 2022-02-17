@@ -666,7 +666,7 @@ public class Table
                 content_buf, ref mstring spacing_buf )
             {
                 // sequence of control characters to reset output colors to default
-                istring default_colours =
+                string default_colours =
                     Terminal.CSI ~ Terminal.fg_colour_codes[Terminal.Colour.Default] ~
                     Terminal.CSI ~ Terminal.bg_colour_codes[Terminal.Colour.Default];
 

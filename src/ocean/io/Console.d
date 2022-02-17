@@ -47,7 +47,7 @@ import core.sys.posix.unistd: isatty;
 
 struct Console
 {
-    enum istring Eol = "\n";
+    enum string Eol = "\n";
 
     /**********************************************************************
 
@@ -414,7 +414,7 @@ struct Console
 
          ***********************************************************************/
 
-        override istring toString()
+        override string toString()
         {
             return "<console>";
         }

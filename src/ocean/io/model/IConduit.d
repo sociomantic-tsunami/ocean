@@ -53,7 +53,7 @@ interface IConduit : InputStream, OutputStream
 
         ***********************************************************************/
 
-        abstract istring toString ();
+        abstract string toString ();
 
         /***********************************************************************
 
@@ -77,7 +77,7 @@ interface IConduit : InputStream, OutputStream
 
         ***********************************************************************/
 
-        abstract void error (istring msg);
+        abstract void error (string msg);
 
         /***********************************************************************
 

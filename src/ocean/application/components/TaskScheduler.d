@@ -55,7 +55,7 @@ public void parseSchedulerConfig ( ConfigParser parser,
         }
     }
 
-    auto specialized_pools = parser.getList!(istring)(
+    auto specialized_pools = parser.getList!(string)(
         category, "specialized_pools", null);
 
     foreach (line; specialized_pools)

@@ -68,10 +68,10 @@ class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
         private size_t  dimension;              // maximum extent of content
         private size_t  expansion;              // for growing instances
 
-        private static istring overflow  = "output buffer is full";
-        private static istring underflow = "input buffer is empty";
-        private static istring eofRead   = "end-of-flow while reading";
-        private static istring eofWrite  = "end-of-flow while writing";
+        private static string overflow  = "output buffer is full";
+        private static string underflow = "input buffer is empty";
+        private static string eofRead   = "end-of-flow while reading";
+        private static string eofWrite  = "end-of-flow while writing";
 
         /***********************************************************************
 
@@ -156,7 +156,7 @@ class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
 
         ***********************************************************************/
 
-        final override istring toString ()
+        final override string toString ()
         {
                 return "<array>";
         }

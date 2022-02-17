@@ -52,7 +52,7 @@ struct SysError
 
         ***********************************************************************/
 
-        static istring lastMsg ()
+        static string lastMsg ()
         {
                 return lookup (lastCode);
         }
@@ -61,7 +61,7 @@ struct SysError
 
         ***********************************************************************/
 
-        static istring lookup (uint errcode)
+        static string lookup (uint errcode)
         {
                 char[] text;
 

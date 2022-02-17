@@ -68,7 +68,7 @@ class LinkedFolder : VirtualFolder
 
         ***********************************************************************/
 
-        this (istring name)
+        this (string name)
         {
                 super (name);
         }
@@ -88,7 +88,7 @@ class LinkedFolder : VirtualFolder
 
         ***********************************************************************/
 
-        final override VfsHost mount (VfsFolder folder, istring name=null)
+        final override VfsHost mount (VfsFolder folder, string name=null)
         {
                 // traverse to the end of the list
                 auto link = &head;
@@ -126,7 +126,7 @@ class LinkedFolder : VirtualFolder
 
         ***********************************************************************/
 
-        final override VfsFile file (istring path)
+        final override VfsFile file (string path)
         {
                 auto link = head;
                 while (link)

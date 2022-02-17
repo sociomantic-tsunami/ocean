@@ -47,13 +47,13 @@ public class CommandsRegistry
             void delegate (ref mstring), IODevice socket ) RawSocketHandler;
 
     /// Our registered map of interactive handlers by command.
-    private InteractiveHandler[istring] interactive_handlers;
+    private InteractiveHandler[string] interactive_handlers;
 
     /// Our registered map of handlers by command.
-    private Handler[istring] handlers;
+    private Handler[string] handlers;
 
     /// Registered map of handlers that accept socket by command.
-    private RawSocketHandler[istring] handlers_ex;
+    private RawSocketHandler[string] handlers_ex;
 
     /// Stores the command arguments split by " ";
     private cstring[] args_buf;
@@ -118,7 +118,7 @@ public class CommandsRegistry
 
     ***************************************************************************/
 
-    public void addHandler ( istring command,
+    public void addHandler ( string command,
         scope InteractiveHandler handler )
     {
         this.interactive_handlers[command] = handler;
@@ -134,7 +134,7 @@ public class CommandsRegistry
 
     ***************************************************************************/
 
-    public void addHandler ( istring command, scope Handler handler )
+    public void addHandler ( string command, scope Handler handler )
     {
         this.handlers[command] = handler;
     }
@@ -149,7 +149,7 @@ public class CommandsRegistry
 
     ***************************************************************************/
 
-    public void addHandler ( istring command, scope RawSocketHandler handler )
+    public void addHandler ( string command, scope RawSocketHandler handler )
     {
         this.handlers_ex[command] = handler;
     }
@@ -163,7 +163,7 @@ public class CommandsRegistry
 
     ***************************************************************************/
 
-    public void removeHandler ( istring command )
+    public void removeHandler ( string command )
     {
         this.handlers.remove(command);
         this.interactive_handlers.remove(command);

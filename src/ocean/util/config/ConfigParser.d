@@ -88,13 +88,13 @@ public class ConfigParser
     /***************************************************************************
 
         Variable Iterator. Iterates over keys or key/value pairs of a category.
-        The values are converted to T, unless T is istring.
+        The values are converted to T, unless T is string.
 
     ***************************************************************************/
 
-    public struct VarIterator ( T = istring )
+    public struct VarIterator ( T = string )
     {
-        ValueNode[istring]* vars;
+        ValueNode[string]* vars;
 
 
         /***********************************************************************
@@ -103,7 +103,7 @@ public class ConfigParser
 
         ***********************************************************************/
 
-        public int opApply ( scope int delegate ( ref istring key, ref T val ) dg )
+        public int opApply ( scope int delegate ( ref string key, ref T val ) dg )
         {
             if ( this.vars !is null )
             {
@@ -126,10 +126,10 @@ public class ConfigParser
 
         ***********************************************************************/
 
-        public int opApply ( scope int delegate ( ref istring x ) dg )
+        public int opApply ( scope int delegate ( ref string x ) dg )
         {
             return this.opApply(
-                (ref istring key, ref istring val)
+                (ref string key, ref string val)
                 {
                     return dg(key);
                 });
@@ -198,7 +198,7 @@ public class ConfigParser
 
         ***********************************************************************/
 
-        istring value;
+        string value;
 
 
         /***********************************************************************
@@ -224,7 +224,7 @@ public class ConfigParser
 
     ***************************************************************************/
 
-    alias istring String;
+    alias string String;
     private ValueNode[String][String] properties;
 
 
@@ -234,7 +234,7 @@ public class ConfigParser
 
     ***************************************************************************/
 
-    private istring config_file;
+    private string config_file;
 
 
     /***************************************************************************
@@ -256,7 +256,7 @@ public class ConfigParser
 
     ***************************************************************************/
 
-    public this ( istring config )
+    public this ( string config )
     {
         this.parseFile(config);
     }
@@ -265,7 +265,7 @@ public class ConfigParser
     /***************************************************************************
 
         Returns an iterator over keys or key/value pairs in a category.
-        The values are converted to T, unless T is istring.
+        The values are converted to T, unless T is string.
 
         Params:
             category = category to iterate over
@@ -275,7 +275,7 @@ public class ConfigParser
 
     ***************************************************************************/
 
-    public VarIterator!(T) iterateCategory ( T = istring ) ( cstring category )
+    public VarIterator!(T) iterateCategory ( T = string ) ( cstring category )
     {
         return VarIterator!(T)(category in this.properties);
     }
@@ -287,7 +287,7 @@ public class ConfigParser
 
     ***************************************************************************/
 
-    public int opApply ( scope int delegate ( ref istring x ) dg )
+    public int opApply ( scope int delegate ( ref string x ) dg )
     {
         int result = 0;
 
@@ -338,7 +338,7 @@ public class ConfigParser
 
     ***************************************************************************/
 
-    public void parseFile ( istring file_path = "etc/config.ini",
+    public void parseFile ( string file_path = "etc/config.ini",
                             bool clean_old = true )
     {
         this.config_file = file_path;
@@ -453,7 +453,7 @@ public class ConfigParser
         Strict method to get the value of a config key. If the requested key
         cannot be found, an exception is thrown.
 
-        Template can be instantiated with integer, float or string (istring)
+        Template can be instantiated with integer, float or string (string)
         type.
 
         Usage Example:
@@ -462,7 +462,7 @@ public class ConfigParser
 
             Config.parseFile("some-config.ini");
             // throws if not found
-            auto str = Config.getStrict!(istring)("some-cat", "some-key");
+            auto str = Config.getStrict!(string)("some-cat", "some-key");
             auto n = Config.getStrict!(int)("some-cat", "some-key");
 
         ---
@@ -510,7 +510,7 @@ public class ConfigParser
         value via a reference. (The advantage being that the template type can
         then be inferred by the compiler.)
 
-        Template can be instantiated with integer, float or string (istring)
+        Template can be instantiated with integer, float or string (string)
         type.
 
         Usage Example:
@@ -519,7 +519,7 @@ public class ConfigParser
 
             Config.parseFile("some-config.ini");
             // throws if not found
-            istring str;
+            string str;
             int n;
 
             Config.getStrict(str, "some-cat", "some-key");
@@ -553,7 +553,7 @@ public class ConfigParser
         output value. If the config key does not exist, the given default value
         is returned.
 
-        Template can be instantiated with integer, float or string (istring)
+        Template can be instantiated with integer, float or string (string)
         type.
 
         Usage Example:
@@ -592,7 +592,7 @@ public class ConfigParser
         value via a reference. (For interface consistency with the reference
         version of getStrict(), above.)
 
-        Template can be instantiated with integer, float or string (istring)
+        Template can be instantiated with integer, float or string (string)
         type.
 
         Usage Example:
@@ -600,7 +600,7 @@ public class ConfigParser
         ---
 
             Config.parseFile("some-config.ini");
-            istring str;
+            string str;
             int n;
 
             Config.get(str, "some-cat", "some-key", "default value");
@@ -647,9 +647,9 @@ public class ConfigParser
 
     ***************************************************************************/
 
-    public T[] getListStrict ( T = istring ) ( cstring category, cstring key )
+    public T[] getListStrict ( T = string ) ( cstring category, cstring key )
     {
-        auto value = this.getStrict!(istring)(category, key);
+        auto value = this.getStrict!(string)(category, key);
         T[] r;
         foreach ( elem; delimit(value, "\n") )
         {
@@ -679,7 +679,7 @@ public class ConfigParser
 
     ***************************************************************************/
 
-    public T[] getList ( T = istring ) ( cstring category, cstring key,
+    public T[] getList ( T = string ) ( cstring category, cstring key,
             T[] default_value )
     {
         if ( exists(category, key) )
@@ -711,7 +711,7 @@ public class ConfigParser
 
     ***************************************************************************/
 
-    public void set ( istring category, istring key, istring value )
+    public void set ( string category, string key, string value )
     {
         if ( category == "" || key == "" || value == "" )
         {
@@ -751,7 +751,7 @@ public class ConfigParser
 
     ***************************************************************************/
 
-    public void remove ( istring category, istring key )
+    public void remove ( string category, string key )
     {
         if ( category == "" || key == "" )
         {
@@ -851,7 +851,7 @@ public class ConfigParser
 
     private static bool toBool ( cstring property )
     {
-        static immutable istring[2][] BOOL_IDS =
+        static immutable string[2][] BOOL_IDS =
         [
            ["false",    "true"],
            ["disabled", "enabled"],
@@ -894,7 +894,7 @@ public class ConfigParser
             auto v = toLong(property);
             enforce!(IllegalArgumentException)(
                 v >= T.min && v <= T.max,
-                "Value of " ~ cast(istring) property ~ " is out of " ~ T.stringof ~ " bounds");
+                "Value of " ~ cast(string) property ~ " is out of " ~ T.stringof ~ " bounds");
             return cast(T) v;
         }
         else static if ( is(T : real) )
@@ -986,8 +986,8 @@ public class ConfigParser
 
     private void pruneConfiguration ( )
     {
-        istring[] keys_to_remove;
-        istring[] categories_to_remove;
+        string[] keys_to_remove;
+        string[] categories_to_remove;
 
         // Remove obsolete keys
 
@@ -1143,13 +1143,13 @@ unittest
         scope config = new ConfigParser("etc/config.ini");
 
         // Read a single value
-        istring value = config.getStrict!(istring)("category", "key");
+        string value = config.getStrict!(string)("category", "key");
 
         // Set a single value
         config.set("category", "key", "new value");
 
         // Read a multi-line value
-        istring[] values = config.getListStrict("category", "key");
+        string[] values = config.getListStrict("category", "key");
     }
 }
 
@@ -1171,7 +1171,7 @@ unittest
     }
 
     void parsedConfigSanityCheck ( ConfigParser config, ConfigSanity expected,
-                                   istring test_name )
+                                   string test_name )
     {
         auto t = new NamedTest(test_name);
         cstring[] obtained_categories;
@@ -1283,7 +1283,7 @@ bool_arr = true
     // Manually set a property (new category).
     Config.set("Section2", "set_key", "set_value"[]);
 
-    istring new_val;
+    string new_val;
     Config.getStrict(new_val, "Section2", "set_key");
     test!("==")(new_val, "set_value"[]);
 
@@ -1330,7 +1330,7 @@ bool_arr = true
 
     // Whitespaces handling
 
-    istring white_str =
+    string white_str =
 `
 [ Section1 ]
 key = val

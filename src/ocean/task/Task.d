@@ -129,7 +129,7 @@ public class WorkerFiber : core.thread.Fiber
 
 public class TaskKillException : Exception
 {
-    public this ( istring file = __FILE__, int line = __LINE__ )
+    public this ( string file = __FILE__, int line = __LINE__ )
     {
         super("Task was killed", file, line);
     }
@@ -393,7 +393,7 @@ public abstract class Task
 
     ***************************************************************************/
 
-    public void kill ( istring file = __FILE__, int line = __LINE__ )
+    public void kill ( string file = __FILE__, int line = __LINE__ )
     {
         Task.kill_exception.file = file;
         Task.kill_exception.line = line;

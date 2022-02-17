@@ -191,18 +191,18 @@ struct StandardHash
 
      **************************************************************************/
 
-    template fnv1aCode ( istring hashvar, istring var, size_t n )
+    template fnv1aCode ( string hashvar, string var, size_t n )
     {
         static if (n)
         {
-            enum istring fnv1aCode = fnv1aCode!(hashvar, var, n - 1) ~ hashvar ~ "=(" ~
+            enum string fnv1aCode = fnv1aCode!(hashvar, var, n - 1) ~ hashvar ~ "=(" ~
                               hashvar ~ "^__" ~ var ~ "[" ~
                               minus1!(n).stringof ~ "])*" ~
                               fnv1a_prime.stringof ~ ";\n";
         }
         else
         {
-            enum istring fnv1aCode = "auto __" ~ var ~
+            enum string fnv1aCode = "auto __" ~ var ~
                                      "=cast(" ~ ubyte.stringof ~ "*)&" ~ var ~
                                      ";\n";
         }

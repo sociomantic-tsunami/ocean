@@ -135,7 +135,7 @@ class Config
 
     ***************************************************************************/
 
-    public istring console_layout = "simple";
+    public string console_layout = "simple";
 
     /***************************************************************************
 
@@ -143,7 +143,7 @@ class Config
 
     ***************************************************************************/
 
-    public SetInfo!(istring) file;
+    public SetInfo!(string) file;
 
     /***************************************************************************
 
@@ -151,7 +151,7 @@ class Config
 
     ***************************************************************************/
 
-    public istring file_layout = "date";
+    public string file_layout = "date";
 
     /***************************************************************************
 
@@ -265,9 +265,9 @@ public Layout newLayout ( cstring layout_str )
             return new LayoutDate;
 
         default:
-            // Has to be 2 statements because `istring ~ cstring`
-            // yields `cstring` instead of `istring`.
-            istring msg = "Invalid layout requested : ";
+            // Has to be 2 statements because `string ~ cstring`
+            // yields `cstring` instead of `string`.
+            string msg = "Invalid layout requested : ";
             msg ~= layout_str;
             throw new Exception(msg, __FILE__, __LINE__);
     }
@@ -283,7 +283,7 @@ unittest
     void myConfigureLoggers (
         ConfigIterator config,
         MetaConfig m_config,
-        scope Appender delegate ( istring file, Layout layout ) file_appender,
+        scope Appender delegate ( string file, Layout layout ) file_appender,
         bool use_insert_appender = false)
     {
         Layout makeLayout (cstring name)
@@ -318,7 +318,7 @@ unittest
 
 public void configureNewLoggers (
     ConfigIterator config, MetaConfig m_config,
-    scope Appender delegate ( istring file, Layout layout ) file_appender,
+    scope Appender delegate ( string file, Layout layout ) file_appender,
     bool use_insert_appender = false)
 {
     configureNewLoggers(config, m_config, file_appender,
@@ -351,7 +351,7 @@ public void configureNewLoggers (
 
 public void configureNewLoggers (
     ConfigIterator config, MetaConfig m_config,
-    scope Appender delegate ( istring file, Layout layout ) file_appender,
+    scope Appender delegate ( string file, Layout layout ) file_appender,
     scope Layout delegate (cstring) makeLayout, bool use_insert_appender = false)
 {
     // DMD1 cannot infer the common type between both return, we have to work
@@ -395,7 +395,7 @@ public void configureNewLoggers (
 
 private void configureLoggers
     (ConfigIterator config, MetaConfig m_config,
-     scope Appender delegate (istring file, Layout layout) file_appender,
+     scope Appender delegate (string file, Layout layout) file_appender,
      scope Appender delegate (Layout) console_appender,
      scope Layout delegate (cstring) makeLayout)
 {
@@ -410,8 +410,8 @@ private void configureLoggers
     // sorting is performed in increasing order of the lengths of the logger
     // names so that parent loggers appear before child loggers.
 
-    istring[] logger_names;
-    istring   root_name;
+    string[] logger_names;
+    string   root_name;
 
     foreach (name; config)
     {
@@ -485,8 +485,8 @@ private void configureLoggers
 *******************************************************************************/
 
 public void configureLogger
-    (Logger log, Config settings, istring name,
-     scope Appender delegate ( istring file, Layout layout ) file_appender,
+    (Logger log, Config settings, string name,
+     scope Appender delegate ( string file, Layout layout ) file_appender,
      scope Appender delegate (Layout) console_appender,
      bool console_enabled, bool syslog_enabled, size_t buffer_size,
      scope Layout delegate (cstring) makeLayout = (cstring v) { return newLayout(v); })
@@ -550,7 +550,7 @@ unittest
         }
 
         final override public Mask mask () { return this.mask_; }
-        final override public istring name () { return null; }
+        final override public string name () { return null; }
     }
 
     auto config_parser = new ConfigParser();
@@ -585,7 +585,7 @@ file = dummy
 
     auto temp_appender = new TempAppender;
 
-    Appender appender(istring, Layout)
+    Appender appender(string, Layout)
     {
         return temp_appender;
     }
@@ -629,7 +629,7 @@ file = dummy
 
 *******************************************************************************/
 
-public void setupLoggerLevel ( Logger log, istring name, Config config )
+public void setupLoggerLevel ( Logger log, string name, Config config )
 {
     with (config) if (level.length > 0)
     {
@@ -667,7 +667,7 @@ public void setupLoggerLevel ( Logger log, istring name, Config config )
                 break;
 
             default:
-                throw new Exception(cast(istring) ("Invalid log level '"
+                throw new Exception(cast(string) ("Invalid log level '"
                                                    ~ level ~ "' " ~
                                                    "requested for logger '"
                                                    ~ name ~ "'"));

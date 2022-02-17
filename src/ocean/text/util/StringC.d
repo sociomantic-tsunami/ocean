@@ -173,7 +173,7 @@ unittest
     test!("==")(StringC.toDString(str.ptr), "Hello");
 
     // String literals are null terminated
-    istring r1 = StringC.toDString("Hello".ptr);
+    string r1 = StringC.toDString("Hello".ptr);
     test!("==")(r1, "Hello");
     const(char)* const_empty = "".ptr;
     test(const_empty !is null);

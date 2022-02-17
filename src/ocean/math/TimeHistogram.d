@@ -131,7 +131,7 @@ struct TimeHistogram
 
         ***********************************************************************/
 
-        private static istring divisionBinVariables ( istring[] suffixes )
+        private static string divisionBinVariables ( string[] suffixes )
         in
         {
             assert(suffixes.length > 0);
@@ -140,7 +140,7 @@ struct TimeHistogram
         {
             enum type = typeof(TimeHistogram.bins[0]).stringof;
 
-            istring res;
+            string res;
 
             res ~= type ~ " from_0" ~ suffixes[0] ~ ";";
 
@@ -232,7 +232,7 @@ struct TimeHistogram
 
     ***************************************************************************/
 
-    public ulong countFor ( istring bin_name ) ( )
+    public ulong countFor ( string bin_name ) ( )
     {
         mixin("static assert(is(typeof(Bins.init." ~ bin_name ~ ")));");
 
@@ -330,7 +330,7 @@ unittest
 
     // Tests if `expected` matches a) the sum of all bin counters and
     // b) th.count.
-    void checkBinSum ( uint expected, istring f = __FILE__, int ln = __LINE__ )
+    void checkBinSum ( uint expected, string f = __FILE__, int ln = __LINE__ )
     {
         uint sum = 0;
         foreach (bin; th.bins)

@@ -61,7 +61,7 @@ public class AppendConsole : AppendStream
 
      ***********************************************************************/
 
-    override istring name ()
+    override string name ()
     {
         return this.classinfo.name;
     }

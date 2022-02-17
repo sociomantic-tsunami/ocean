@@ -104,7 +104,7 @@ public struct Range ( T )
         version (unittest)
         {
             // useful for test!("==")
-            public istring toString ()
+            public string toString ()
             {
                 return format("<{}|{}>", this.value, cast(char)('A' + this.owner_index));
             }
@@ -213,7 +213,7 @@ public struct Range ( T )
 
     version (unittest)
     {
-        public istring toString()
+        public string toString()
         {
             import ocean.core.TypeConvert: assumeUnique;
 
@@ -287,7 +287,7 @@ public struct Range ( T )
 
     ***************************************************************************/
 
-    public static This makeRange ( istring boundaries = "[]" ) ( T min, T max )
+    public static This makeRange ( string boundaries = "[]" ) ( T min, T max )
     out(result)
     {
         assert(&result);
@@ -1217,7 +1217,7 @@ public struct Range ( T )
     {
         static void testSubtract ( This r1, This r2,
                                    This l_expected, This u_expected = This.init,
-                                   istring file = __FILE__, int line = __LINE__ )
+                                   string file = __FILE__, int line = __LINE__ )
         {
             This l, u;
             r1.subtract(r2, l, u);

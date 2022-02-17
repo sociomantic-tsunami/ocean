@@ -172,11 +172,11 @@ public class StructTable ( S )
     {
         static if ( i == S.tupleof.length )
         {
-            static immutable istring CellMethods = "";
+            static immutable string CellMethods = "";
         }
         else
         {
-            static immutable istring CellMethods = "protected char[] "
+            static immutable string CellMethods = "protected char[] "
                 ~ identifier!(S.tupleof[i])
                 ~ "_string(" ~ typeof(S.tupleof[i]).stringof
                 ~ "* field){return this.defaultFieldString(field);}"
@@ -298,11 +298,11 @@ public class StructTable ( S )
     {
         static if ( i == S.tupleof.length )
         {
-            static immutable istring ContentsRow = "";
+            static immutable string ContentsRow = "";
         }
         else
         {
-            static immutable istring ContentsRow = "this.addCell(this."
+            static immutable string ContentsRow = "this.addCell(this."
                 ~ identifier!(S.tupleof[i])
                 ~ "_string(&item.tupleof[" ~ i.stringof ~ "]));"
                 ~ ContentsRow!(i + 1);
@@ -322,11 +322,11 @@ public class StructTable ( S )
     {
         static if ( i == S.tupleof.length )
         {
-            static immutable istring HeaderRow = "";
+            static immutable string HeaderRow = "";
         }
         else
         {
-            static immutable istring HeaderRow = `this.addCell("`
+            static immutable string HeaderRow = `this.addCell("`
                 ~ identifier!(S.tupleof[i])
                 ~ `");` ~ HeaderRow!(i + 1);
         }

@@ -85,7 +85,7 @@ public class FlexibleFileQueue : IByteQueue
 
     ***************************************************************************/
 
-    private static immutable istring IndexExtension = ".index";
+    private static immutable string IndexExtension = ".index";
 
     /***************************************************************************
 

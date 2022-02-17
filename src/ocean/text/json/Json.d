@@ -296,7 +296,7 @@ class Json(T) : JsonParser!(T)
 
      ***********************************************************************/
 
-    private void exception (istring msg)
+    private void exception (string msg)
     {
         throw new Exception (msg);
     }
@@ -978,7 +978,7 @@ class Json(T) : JsonParser!(T)
                     if (type is typeid(Composite))
                         v.set (va_arg!(Composite)(args));
                     else
-                    if (type is typeid(istring))
+                    if (type is typeid(string))
                         v.set (va_arg!(T[])(args));
                     else
                     if (type is typeid(void*))

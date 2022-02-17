@@ -67,7 +67,7 @@ interface VfsHost : VfsFolder
 
         **********************************************************************/
 
-        VfsHost mount (VfsFolder folder, istring name=null);
+        VfsHost mount (VfsFolder folder, string name=null);
 
         /***********************************************************************
 
@@ -94,7 +94,7 @@ interface VfsHost : VfsFolder
 
         **********************************************************************/
 
-        VfsHost map (VfsFile target, istring name);
+        VfsHost map (VfsFile target, string name);
 
         /***********************************************************************
 
@@ -103,7 +103,7 @@ interface VfsHost : VfsFolder
 
         ***********************************************************************/
 
-        VfsHost map (VfsFolderEntry target, istring name);
+        VfsHost map (VfsFolderEntry target, string name);
 }
 
 
@@ -208,7 +208,7 @@ interface VfsFolder
 
         ***********************************************************************/
 
-        istring name ();
+        string name ();
 
         /***********************************************************************
 
@@ -216,7 +216,7 @@ interface VfsFolder
 
         ***********************************************************************/
 
-        istring toString ();
+        string toString ();
 
         /***********************************************************************
 
@@ -224,7 +224,7 @@ interface VfsFolder
 
         ***********************************************************************/
 
-        VfsFile file (istring path);
+        VfsFile file (string path);
 
         /***********************************************************************
 
@@ -232,7 +232,7 @@ interface VfsFolder
 
         ***********************************************************************/
 
-        VfsFolderEntry folder (istring path);
+        VfsFolderEntry folder (string path);
 
         /***********************************************************************
 
@@ -298,9 +298,9 @@ interface VfsFolder
 
         void verify (VfsFolder folder, bool mounting);
 
-        //VfsFolder copy(VfsFolder from, istring to);
-        //VfsFolder move(Entry from, VfsFolder toFolder, istring toName);
-        //istring absolutePath(istring path);
+        //VfsFolder copy(VfsFolder from, string to);
+        //VfsFolder move(Entry from, VfsFolder toFolder, string toName);
+        //string absolutePath(string path);
 }
 
 
@@ -358,7 +358,7 @@ interface VfsFolders
 
         ***********************************************************************/
 
-        VfsFolders subset (istring pattern);
+        VfsFolders subset (string pattern);
 
        /***********************************************************************
 
@@ -366,7 +366,7 @@ interface VfsFolders
 
         ***********************************************************************/
 
-        VfsFiles catalog (istring pattern);
+        VfsFiles catalog (string pattern);
 
         /***********************************************************************
 
@@ -426,7 +426,7 @@ interface VfsFile
 
         ***********************************************************************/
 
-        istring name ();
+        string name ();
 
         /***********************************************************************
 
@@ -434,7 +434,7 @@ interface VfsFile
 
         ***********************************************************************/
 
-        istring toString ();
+        string toString ();
 
         /***********************************************************************
 

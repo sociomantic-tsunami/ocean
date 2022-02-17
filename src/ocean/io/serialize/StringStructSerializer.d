@@ -537,9 +537,9 @@ public class StringStructSerializer ( Char )
 
     ***************************************************************************/
 
-    private static istring ctfeCreateCases ( istring letters )
+    private static string ctfeCreateCases ( string letters )
     {
-        istring mixin_str;
+        string mixin_str;
 
         foreach ( c; letters )
         {

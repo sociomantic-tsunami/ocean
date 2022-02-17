@@ -547,7 +547,7 @@ public ulong getTotalMemoryInBytes ()
 
 *******************************************************************************/
 
-private void throwException( istring name )
+private void throwException( string name )
 {
     auto saved_errno = .errno;
 

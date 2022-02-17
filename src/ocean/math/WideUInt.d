@@ -127,7 +127,7 @@ public struct WideUInt ( size_t N )
 
     ***************************************************************************/
 
-    public istring toString ( )
+    public string toString ( )
     {
         mstring result;
         this.toString((cstring s) { result ~= s; });

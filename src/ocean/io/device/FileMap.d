@@ -113,7 +113,7 @@ class MappedFile
 
         ***********************************************************************/
 
-        final istring path ()
+        final string path ()
         {
                 return host.toString;
         }

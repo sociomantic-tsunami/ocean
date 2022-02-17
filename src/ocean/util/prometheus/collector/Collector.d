@@ -146,7 +146,7 @@ public class Collector
 
     ***************************************************************************/
 
-    public void collect ( istring LabelName, ValuesT, LabelT ) (
+    public void collect ( string LabelName, ValuesT, LabelT ) (
         ValuesT values, LabelT label_val )
     {
         static assert (is(ValuesT == struct) || is(ValuesT == class),

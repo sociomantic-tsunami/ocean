@@ -17,16 +17,16 @@ module ocean.text.util.ClassName;
 import ocean.stdc.gnu.string;
 import ocean.meta.types.Qualifiers;
 
-istring classname ( const(Object) o )
+string classname ( const(Object) o )
 {
-    istring mod;
+    string mod;
 
     return classname(o, mod);
 }
 
-istring classname ( const(Object) o, out istring mod )
+string classname ( const(Object) o, out string mod )
 {
-    istring str = o.classinfo.name;
+    string str = o.classinfo.name;
 
     const(void)* result = memrchr(str.ptr, '.', str.length);
     const(char)* lastdot = cast(const(char)*) result;

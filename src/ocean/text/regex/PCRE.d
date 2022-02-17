@@ -112,7 +112,7 @@ public class PCRE
 
         ***********************************************************************/
 
-        private void set ( int code, istring msg )
+        private void set ( int code, string msg )
         {
             this.error = code;
             this.msg = msg;
@@ -618,7 +618,7 @@ unittest
     auto t = new NamedTest("PCRE findAll");
 
     {
-        istring str = "apa bepa cepa depa epa fepa gepa hepa";
+        string str = "apa bepa cepa depa epa fepa gepa hepa";
         regex.compile("a[ ]", false);
 
         matches_buffer.length = 0;
@@ -633,8 +633,8 @@ unittest
     }
 
     {
-        istring[3] exp = ["ast", "at", "ast"];
-        istring str = "en hast at en annan hast";
+        string[3] exp = ["ast", "at", "ast"];
+        string str = "en hast at en annan hast";
         regex.compile("a[s]*t", false);
 
         matches_buffer = null;
@@ -648,8 +648,8 @@ unittest
     }
 
     {
-        istring[3] exp = ["ta", "tb", "td"];
-        istring str = "tatb t c Tf td";
+        string[3] exp = ["ta", "tb", "td"];
+        string str = "tatb t c Tf td";
         regex.compile("t[\\w]", true);
         regex.study();
 
@@ -664,7 +664,7 @@ unittest
     }
 
     {
-        istring str = "en text";
+        string str = "en text";
         regex.compile("zzz", false);
         matches_buffer = null;
         auto matches = regex.findAll(str, matches_buffer);
@@ -673,7 +673,7 @@ unittest
     }
 
     {
-        istring str = "en text";
+        string str = "en text";
         regex.compile("zzz", false);
         matches_buffer = null;
         auto matches = regex.findAll(str, matches_buffer);
@@ -682,7 +682,7 @@ unittest
     }
 
     {
-        istring str ="aaaaaaaaaaaaaaaaaaaaaaAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        string str ="aaaaaaaaaaaaaaaaaaaaaaAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
                  ~ "aaaaaaaaaaaaaaaaaaaaaaaaAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
                  ~ "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaAaaaaaaaaaaaaaaaaaaaaaaaaa"
                  ~ "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaAaaaaaaaaaaaaaaaaaaaaaaaa"

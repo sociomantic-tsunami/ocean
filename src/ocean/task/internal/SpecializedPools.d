@@ -42,7 +42,7 @@ public class SpecializedPools
     /// mapping element
     public static struct SpecializedPool
     {
-        istring task_name;
+        string task_name;
         FiberPoolEager pool;
     }
 

@@ -118,7 +118,7 @@ class IOError : IOWarning
 
      **************************************************************************/
 
-    public void checkDeviceError ( istring msg, istring file = __FILE__,
+    public void checkDeviceError ( string msg, string file = __FILE__,
                                    int line = __LINE__ )
     {
         int device_errnum = this.error_code;
@@ -178,7 +178,7 @@ class SocketError : IOError
 
      **************************************************************************/
 
-    void assertExSock ( bool ok, istring msg, istring file = __FILE__,
+    void assertExSock ( bool ok, string msg, string file = __FILE__,
                         int line = __LINE__ )
     {
         if (!ok) throw this.setSock(msg, file, line);
@@ -198,8 +198,8 @@ class SocketError : IOError
 
      **************************************************************************/
 
-    public typeof (this) setSock ( lazy int errnum, istring msg,
-                                   istring file = __FILE__,
+    public typeof (this) setSock ( lazy int errnum, string msg,
+                                   string file = __FILE__,
                                    int line = __LINE__ )
     {
         int socket_errnum = this.error_code;
@@ -223,7 +223,7 @@ class SocketError : IOError
 
      **************************************************************************/
 
-    public typeof (this) setSock ( istring msg, istring file = __FILE__,
+    public typeof (this) setSock ( string msg, string file = __FILE__,
                                    int line = __LINE__ )
     {
         return this.setSock(.errno, msg, file, line);

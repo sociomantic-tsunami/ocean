@@ -140,7 +140,7 @@ public class Appender
     protected Mask register (cstring tag)
     {
         static Mask mask = 1;
-        static Mask[istring] registry;
+        static Mask[string] registry;
 
         Mask* p = tag in registry;
         if (p)
@@ -261,7 +261,7 @@ public class AppendStream : Appender
     }
 
     /// Return the name of this class
-    override istring name ()
+    override string name ()
     {
         return this.classinfo.name;
     }
@@ -269,7 +269,7 @@ public class AppendStream : Appender
     /// Append an event to the output.
     final override void append (LogEvent event)
     {
-        static immutable istring Eol = "\n";
+        static immutable string Eol = "\n";
 
         this.layout.format(event, (in cstring content) { this.stream_.write(content); });
         this.stream_.write(Eol);

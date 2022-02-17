@@ -140,7 +140,7 @@ class StatsExt : IConfigExtExtension
     static public StatsLog newStatsLog ( IApplication app,
         StatsLog.Config stats_config )
     {
-        Appender newAppender ( istring file, Appender.Layout layout )
+        Appender newAppender ( string file, Appender.Layout layout )
         {
             auto stream = new File(file, File.WriteAppending);
 
@@ -192,9 +192,9 @@ class StatsExt : IConfigExtExtension
 
     ***************************************************************************/
 
-    public override istring[] filterConfigFiles ( IApplication app,
+    public override string[] filterConfigFiles ( IApplication app,
                                          ConfigParser config,
-                                         istring[] files )
+                                         string[] files )
     {
         // Unused
         return files;
@@ -211,7 +211,7 @@ class StatsExt : IConfigExtExtension
 
 *******************************************************************************/
 
-private istring getHostName ()
+private string getHostName ()
 {
     // SuSv2 ensure that hostname are <= 255 bytes
     // On Linux, they are <= HOST_MAX_NAME which has been 64 bytes

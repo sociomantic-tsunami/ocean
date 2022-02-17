@@ -100,7 +100,7 @@ abstract class CliApp : Application, IArgumentsExtExtension
 
         ***********************************************************************/
 
-        istring usage = null;
+        string usage = null;
 
         /***********************************************************************
 
@@ -108,7 +108,7 @@ abstract class CliApp : Application, IArgumentsExtExtension
 
         ***********************************************************************/
 
-        istring help = null;
+        string help = null;
 
         /***********************************************************************
 
@@ -143,7 +143,7 @@ abstract class CliApp : Application, IArgumentsExtExtension
 
     ***************************************************************************/
 
-    public this ( istring name, istring desc, VersionInfo ver,
+    public this ( string name, string desc, VersionInfo ver,
         OptionalSettings settings = OptionalSettings.init )
     {
         super(name, desc);
@@ -182,7 +182,7 @@ abstract class CliApp : Application, IArgumentsExtExtension
 
     ***************************************************************************/
 
-    override protected int run ( istring[] args )
+    override protected int run ( string[] args )
     {
         if (this.task_ext is null)
             return this.run(this.args);
@@ -265,8 +265,8 @@ unittest
         this ( )
         {
             // The name of your app and a short description of what it does.
-            istring name = "my_app";
-            istring desc = "Dummy app for unittest.";
+            string name = "my_app";
+            string desc = "Dummy app for unittest.";
 
             // The version info for your app. Normally you get this by importing
             // Version and passing the AA which contains the version info
@@ -300,7 +300,7 @@ unittest
 
     ***************************************************************************/
 
-    int main ( istring[] cl_args )
+    int main ( string[] cl_args )
     {
         // Instantiate an instance of your app class.
         auto my_app = new MyApp;

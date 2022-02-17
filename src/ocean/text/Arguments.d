@@ -8,7 +8,7 @@
 
     ---
 
-        int main ( istring[] cl_args )
+        int main ( string[] cl_args )
         {
             // Create an object to parse command-line arguments
             auto args = new Arguments;
@@ -655,7 +655,7 @@ public class Arguments
 
     ***************************************************************************/
 
-    public istring app_name;
+    public string app_name;
 
 
     /***************************************************************************
@@ -681,7 +681,7 @@ public class Arguments
 
     ***************************************************************************/
 
-    public istring usage = "{0} [OPTIONS] [ARGS]";
+    public string usage = "{0} [OPTIONS] [ARGS]";
 
 
     /***************************************************************************
@@ -694,7 +694,7 @@ public class Arguments
 
     ***************************************************************************/
 
-    public istring short_desc;
+    public string short_desc;
 
 
     /***************************************************************************
@@ -708,7 +708,7 @@ public class Arguments
 
     ***************************************************************************/
 
-    public istring long_desc;
+    public string long_desc;
 
 
     /***************************************************************************
@@ -770,7 +770,7 @@ public class Arguments
 
     ***************************************************************************/
 
-    private istring sp;
+    private string sp;
 
 
     /***************************************************************************
@@ -779,7 +779,7 @@ public class Arguments
 
     ***************************************************************************/
 
-    private istring lp;
+    private string lp;
 
 
     /***************************************************************************
@@ -788,7 +788,7 @@ public class Arguments
 
     ***************************************************************************/
 
-    private const(istring)[] msgs;
+    private const(string)[] msgs;
 
 
     /***************************************************************************
@@ -797,7 +797,7 @@ public class Arguments
 
     ***************************************************************************/
 
-    private static immutable istring[] errmsg = [
+    private static immutable string[] errmsg = [
         "argument '{0}' expects {2} parameter(s) but has {1}\n",
         "argument '{0}' expects {3} parameter(s) but has {1}\n",
         "argument '{0}' is missing\n",
@@ -865,9 +865,9 @@ public class Arguments
 
     ***************************************************************************/
 
-    public this ( istring app_name = null, istring short_desc = null,
-        istring usage = null, istring long_desc = null, istring sp = "-",
-        istring lp = "--", char eq = '=' )
+    public this ( string app_name = null, string short_desc = null,
+        string usage = null, string long_desc = null, string sp = "-",
+        string lp = "--", char eq = '=' )
     {
         this.msgs = this.errmsg;
 
@@ -906,9 +906,9 @@ public class Arguments
 
     ***************************************************************************/
 
-    public bool parse ( istring input, bool sloppy = false )
+    public bool parse ( string input, bool sloppy = false )
     {
-        istring[] tmp;
+        string[] tmp;
 
         foreach ( s; quotes(input, " ") )
         {
@@ -936,7 +936,7 @@ public class Arguments
 
     ***************************************************************************/
 
-    public bool parse ( const(istring)[] input, bool sloppy = false )
+    public bool parse ( const(string)[] input, bool sloppy = false )
     {
         bool done;
         int error;
@@ -1091,7 +1091,7 @@ public class Arguments
 
     ***************************************************************************/
 
-    public istring errors ()
+    public string errors ()
     {
         mstring result;
 
@@ -1132,7 +1132,7 @@ public class Arguments
 
     ***************************************************************************/
 
-    public Arguments errors ( const(istring)[] errors )
+    public Arguments errors ( const(string)[] errors )
     {
         if ( errors.length is errmsg.length )
         {
@@ -1163,7 +1163,7 @@ public class Arguments
 
     ***************************************************************************/
 
-    public Arguments help ( scope void delegate ( istring arg, istring help ) dg )
+    public Arguments help ( scope void delegate ( string arg, string help ) dg )
     {
         foreach ( arg; args )
         {
@@ -1317,11 +1317,11 @@ public class Arguments
 
     ***************************************************************************/
 
-    public istring getString ( cstring name )
+    public string getString ( cstring name )
     {
         auto arg = this.get(name);
 
-        istring value;
+        string value;
 
         if ( arg && arg.assigned.length == 1 )
         {
@@ -1355,7 +1355,7 @@ public class Arguments
 
     ***************************************************************************/
 
-    private bool argument ( istring s, istring p, bool sloppy, bool flag )
+    private bool argument ( string s, string p, bool sloppy, bool flag )
     {
         if ( s.length >= p.length && s[0 .. p.length] == p )
         {
@@ -1407,7 +1407,7 @@ public class Arguments
 
     ***************************************************************************/
 
-    private Argument enable ( istring elem, bool sloppy, bool flag = false )
+    private Argument enable ( string elem, bool sloppy, bool flag = false )
     {
         if ( flag && elem.length > 1 )
         {
@@ -1677,7 +1677,7 @@ public class Arguments
         ***********************************************************************/
 
         public alias void    delegate ( )               Invoker;
-        public alias istring delegate ( istring value ) Inspector;
+        public alias string delegate ( string value ) Inspector;
 
 
         /***********************************************************************
@@ -1722,7 +1722,7 @@ public class Arguments
 
         ***********************************************************************/
 
-        public istring aliases;
+        public string aliases;
 
 
         /***********************************************************************
@@ -1731,7 +1731,7 @@ public class Arguments
 
         ***********************************************************************/
 
-        public istring name;
+        public string name;
 
 
         /***********************************************************************
@@ -1740,7 +1740,7 @@ public class Arguments
 
         ***********************************************************************/
 
-        public istring text;
+        public string text;
 
 
         /***********************************************************************
@@ -1750,7 +1750,7 @@ public class Arguments
 
         ***********************************************************************/
 
-        public const(istring)[] options;
+        public const(string)[] options;
 
 
         /***********************************************************************
@@ -1759,7 +1759,7 @@ public class Arguments
 
         ***********************************************************************/
 
-        public const(istring)[] deefalts;
+        public const(string)[] deefalts;
 
 
         /***********************************************************************
@@ -1805,7 +1805,7 @@ public class Arguments
 
         ***********************************************************************/
 
-        private istring bogus;
+        private string bogus;
 
 
         /***********************************************************************
@@ -1814,7 +1814,7 @@ public class Arguments
 
         ***********************************************************************/
 
-        private istring[] values;
+        private string[] values;
 
 
         /***********************************************************************
@@ -1862,7 +1862,7 @@ public class Arguments
 
         ***********************************************************************/
 
-        public this ( istring name )
+        public this ( string name )
         {
             this.name = name;
         }
@@ -1875,7 +1875,7 @@ public class Arguments
 
         ***********************************************************************/
 
-        public override istring toString ( )
+        public override string toString ( )
         {
             return name;
         }
@@ -1889,7 +1889,7 @@ public class Arguments
 
         ***********************************************************************/
 
-        public const(istring)[] assigned ( )
+        public const(string)[] assigned ( )
         {
             return values.length ? values : deefalts;
         }
@@ -1977,7 +1977,7 @@ public class Arguments
 
         ***********************************************************************/
 
-        public Argument requires ( istring other )
+        public Argument requires ( string other )
         {
             return requires(this.outer.get(other));
         }
@@ -1997,7 +1997,7 @@ public class Arguments
 
         public Argument requires ( char other )
         {
-            return requires(cast(istring)(&other)[0 .. 1]);
+            return requires(cast(string)(&other)[0 .. 1]);
         }
 
 
@@ -2034,7 +2034,7 @@ public class Arguments
 
         ***********************************************************************/
 
-        public Argument conflicts ( istring other )
+        public Argument conflicts ( string other )
         {
             return conflicts(this.outer.get(other));
         }
@@ -2055,7 +2055,7 @@ public class Arguments
 
         public Argument conflicts ( char other )
         {
-            return conflicts(cast(istring)(&other)[0 .. 1]);
+            return conflicts(cast(string)(&other)[0 .. 1]);
         }
 
 
@@ -2130,7 +2130,7 @@ public class Arguments
 
         ***********************************************************************/
 
-        public Argument defaults ( istring values )
+        public Argument defaults ( string values )
         {
             this.deefalts ~= values;
 
@@ -2243,7 +2243,7 @@ public class Arguments
 
         ***********************************************************************/
 
-        public Argument title ( istring name )
+        public Argument title ( string name )
         {
             this.name = name;
 
@@ -2263,7 +2263,7 @@ public class Arguments
 
         ***********************************************************************/
 
-        public Argument help ( istring text )
+        public Argument help ( string text )
         {
             this.text = text;
 
@@ -2303,7 +2303,7 @@ public class Arguments
 
         ***********************************************************************/
 
-        public Argument restrict ( const(istring)[] options... )
+        public Argument restrict ( const(string)[] options... )
         {
             this.options = options.dup;
 
@@ -2362,7 +2362,7 @@ public class Arguments
 
         ***********************************************************************/
 
-        private void append ( istring value, bool explicit = false )
+        private void append ( string value, bool explicit = false )
         {
             // pop to an argument that can accept implicit parameters?
             if ( explicit is false )
@@ -2677,11 +2677,11 @@ unittest
 // Test for D2 'static immutable'
 unittest
 {
-    static immutable istring name_ = "encode";
-    static immutable istring conflicts_ = "decode";
-    static immutable istring[] restrict_ = [ "json", "yaml" ];
-    static immutable istring requires_ = "input";
-    static immutable istring help_ = "Convert from native format to JSON/Yaml";
+    static immutable string name_ = "encode";
+    static immutable string conflicts_ = "decode";
+    static immutable string[] restrict_ = [ "json", "yaml" ];
+    static immutable string requires_ = "input";
+    static immutable string help_ = "Convert from native format to JSON/Yaml";
 
     auto args = new Arguments;
     args(name_)

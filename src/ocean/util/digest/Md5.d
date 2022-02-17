@@ -244,7 +244,7 @@ final class Md5 : Md4
 
 unittest
 {
-    static istring[] strings =
+    static string[] strings =
     [
             "",
             "a",
@@ -255,7 +255,7 @@ unittest
             "12345678901234567890123456789012345678901234567890123456789012345678901234567890"
     ];
 
-    static istring[] results =
+    static string[] results =
     [
             "d41d8cd98f00b204e9800998ecf8427e",
             "0cc175b9c0f1b6a831c399e269772661",

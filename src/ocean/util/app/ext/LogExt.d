@@ -157,7 +157,7 @@ class LogExt : IConfigExtExtension
         // tracks already registered files to prevent double registration
         File[cstring] registered_files;
 
-        Appender appender ( istring file, LogUtil.Layout layout )
+        Appender appender ( string file, LogUtil.Layout layout )
         {
             if (!(file in registered_files))
             {
@@ -218,9 +218,9 @@ class LogExt : IConfigExtExtension
 
     ***************************************************************************/
 
-    public override istring[] filterConfigFiles ( IApplication app,
+    public override string[] filterConfigFiles ( IApplication app,
                                          ConfigParser config,
-                                         istring[] files )
+                                         string[] files )
     {
         // Unused
         return files;

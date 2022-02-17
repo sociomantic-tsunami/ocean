@@ -93,7 +93,7 @@ struct Terminal
 
     ***************************************************************************/
 
-    public enum istring CSI        = "\x1B[";
+    public enum string CSI        = "\x1B[";
 
     /***************************************************************************
 
@@ -103,29 +103,29 @@ struct Terminal
 
     public struct Foreground
     {
-        public enum istring BLACK              = "30m";
-        public enum istring RED                = "31m";
-        public enum istring GREEN              = "32m";
-        public enum istring YELLOW             = "33m";
-        public enum istring BLUE               = "34m";
-        public enum istring MAGENTA            = "35m";
-        public enum istring CYAN               = "36m";
-        public enum istring WHITE              = "37m";
-        public enum istring DEFAULT_UNDERSCORE = "38m";
-        public enum istring DEFAULT            = "39m";
+        public enum string BLACK              = "30m";
+        public enum string RED                = "31m";
+        public enum string GREEN              = "32m";
+        public enum string YELLOW             = "33m";
+        public enum string BLUE               = "34m";
+        public enum string MAGENTA            = "35m";
+        public enum string CYAN               = "36m";
+        public enum string WHITE              = "37m";
+        public enum string DEFAULT_UNDERSCORE = "38m";
+        public enum string DEFAULT            = "39m";
     }
 
     public struct Background
     {
-        public enum istring BLACK              = "40m";
-        public enum istring RED                = "41m";
-        public enum istring GREEN              = "42m";
-        public enum istring YELLOW             = "43m";
-        public enum istring BLUE               = "44m";
-        public enum istring MAGENTA            = "45m";
-        public enum istring CYAN               = "46m";
-        public enum istring WHITE              = "47m";
-        public enum istring DEFAULT            = "49m";
+        public enum string BLACK              = "40m";
+        public enum string RED                = "41m";
+        public enum string GREEN              = "42m";
+        public enum string YELLOW             = "43m";
+        public enum string BLUE               = "44m";
+        public enum string MAGENTA            = "45m";
+        public enum string CYAN               = "46m";
+        public enum string WHITE              = "47m";
+        public enum string DEFAULT            = "49m";
     }
 
 
@@ -153,7 +153,7 @@ struct Terminal
         Default
     }
 
-    public static immutable(istring[]) fg_colour_codes = [
+    public static immutable(string[]) fg_colour_codes = [
         Colour.Black: Foreground.BLACK,
         Colour.Red: Foreground.RED,
         Colour.Green: Foreground.GREEN,
@@ -165,7 +165,7 @@ struct Terminal
         Colour.Default: Foreground.DEFAULT
     ];
 
-    public static immutable(istring[]) bg_colour_codes = [
+    public static immutable(string[]) bg_colour_codes = [
         Colour.Black: Background.BLACK,
         Colour.Red: Background.RED,
         Colour.Green: Background.GREEN,
@@ -184,9 +184,9 @@ struct Terminal
 
     ***************************************************************************/
 
-    public enum istring BOLD = "1m";
+    public enum string BOLD = "1m";
 
-    public enum istring NON_BOLD = "22m";
+    public enum string NON_BOLD = "22m";
 
     /***************************************************************************
 
@@ -194,7 +194,7 @@ struct Terminal
 
     ***************************************************************************/
 
-    public enum istring CURSOR_UP = "A";
+    public enum string CURSOR_UP = "A";
 
     /***************************************************************************
 
@@ -202,7 +202,7 @@ struct Terminal
 
     ***************************************************************************/
 
-    public enum istring LINE_UP = "F";
+    public enum string LINE_UP = "F";
 
     /***************************************************************************
 
@@ -210,7 +210,7 @@ struct Terminal
 
     ***************************************************************************/
 
-    public enum istring SCROLL_UP = "S";
+    public enum string SCROLL_UP = "S";
 
     /***************************************************************************
 
@@ -218,7 +218,7 @@ struct Terminal
 
     ***************************************************************************/
 
-    public enum istring INSERT_LINE = "L";
+    public enum string INSERT_LINE = "L";
 
     /***************************************************************************
 
@@ -231,7 +231,7 @@ struct Terminal
 
     ***************************************************************************/
 
-    public enum istring ERASE_REST_OF_LINE = "K";
+    public enum string ERASE_REST_OF_LINE = "K";
 
     /***************************************************************************
 
@@ -245,7 +245,7 @@ struct Terminal
 
     ***************************************************************************/
 
-    public enum istring ERASE_REST_OF_SCREEN = "J";
+    public enum string ERASE_REST_OF_SCREEN = "J";
 
     /***************************************************************************
 
@@ -253,7 +253,7 @@ struct Terminal
 
     ***************************************************************************/
 
-    public enum istring HIDE_CURSOR = "?25l";
+    public enum string HIDE_CURSOR = "?25l";
 
     /***************************************************************************
 
@@ -261,7 +261,7 @@ struct Terminal
 
     ***************************************************************************/
 
-    public enum istring SHOW_CURSOR = "?25h";
+    public enum string SHOW_CURSOR = "?25h";
 
     /***************************************************************************
 
@@ -269,7 +269,7 @@ struct Terminal
 
     ***************************************************************************/
 
-    public enum istring HORIZONTAL_MOVE_CURSOR = "G";
+    public enum string HORIZONTAL_MOVE_CURSOR = "G";
 }
 
 /*******************************************************************************

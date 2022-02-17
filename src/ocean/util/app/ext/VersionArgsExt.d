@@ -90,7 +90,7 @@ class VersionArgsExt : IApplicationExtension, IArgumentsExtExtension,
 
     ***************************************************************************/
 
-    public istring default_file;
+    public string default_file;
 
 
     /***************************************************************************
@@ -108,7 +108,7 @@ class VersionArgsExt : IApplicationExtension, IArgumentsExtExtension,
 
     ***************************************************************************/
 
-    private istring app_name;
+    private string app_name;
 
 
     /***************************************************************************
@@ -125,7 +125,7 @@ class VersionArgsExt : IApplicationExtension, IArgumentsExtExtension,
     ***************************************************************************/
 
     this ( VersionInfo ver, bool default_logging = true,
-            istring default_file = "log/version.log" )
+            string default_file = "log/version.log" )
     {
         this.ver = ver;
         this.default_logging = default_logging;
@@ -181,7 +181,7 @@ class VersionArgsExt : IApplicationExtension, IArgumentsExtExtension,
 
     public override void preValidateArgs ( IApplication app, Arguments args )
     {
-        istring output;
+        string output;
 
         if (args.exists("build-info"))
             output = Version.getBuildInfoString(app.name, this.ver);
@@ -212,7 +212,7 @@ class VersionArgsExt : IApplicationExtension, IArgumentsExtExtension,
 
     public void setupUnixSocketHandler ( IApplication app,
             UnixSocketExt unix_socket_ext,
-            istring version_command = "show_version" )
+            string version_command = "show_version" )
     {
         verify(unix_socket_ext !is null);
 
@@ -297,7 +297,7 @@ class VersionArgsExt : IApplicationExtension, IArgumentsExtExtension,
 
     ***************************************************************************/
 
-    public override void preRun ( IApplication app, istring[] args )
+    public override void preRun ( IApplication app, string[] args )
     {
         auto conf_ext = (cast(Application)app).getExtension!(ConfigExt)();
         if (conf_ext is null)
@@ -324,19 +324,19 @@ class VersionArgsExt : IApplicationExtension, IArgumentsExtExtension,
 
     ***************************************************************************/
 
-    public override void postRun ( IApplication app, istring[] args, int status )
+    public override void postRun ( IApplication app, string[] args, int status )
     {
         // Unused
     }
 
-    public override void atExit ( IApplication app, istring[] args, int status,
+    public override void atExit ( IApplication app, string[] args, int status,
                          ExitException exception )
     {
         // Unused
     }
 
     public override ExitException onExitException ( IApplication app,
-                                           istring[] args,
+                                           string[] args,
                                            ExitException exception )
     {
         // Unused
@@ -423,7 +423,7 @@ unittest
             this.registerExtension(ver_ext);
         }
 
-        override protected int run ( istring[] ) { return 10; }
+        override protected int run ( string[] ) { return 10; }
 
         override public void setupArgs ( IApplication, Arguments args )
         {
@@ -440,7 +440,7 @@ unittest
         // ArgumentsExt.preRun() calls exit(2) if the args parsing fails,
         // VersionArgsExt.displayVersion() should call exit(0) before that
         // happens.
-        override public void exit ( int status, istring msg = null )
+        override public void exit ( int status, string msg = null )
         {
             test!("==")(status, 0);
 

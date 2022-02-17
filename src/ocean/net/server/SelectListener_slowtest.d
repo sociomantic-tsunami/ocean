@@ -121,7 +121,7 @@ class DummyConHandlerUnix : IConnectionHandler
     override public void unregisterSocket() {}
 }
 
-void test_unix (istring path)
+void test_unix (string path)
 {
     // The following test will fail:
     // 1) during the socket creation if the socket file can not be created.

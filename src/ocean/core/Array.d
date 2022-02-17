@@ -106,9 +106,9 @@ version (unittest)
 unittest
 {
     mstring dest;
-    istring str1 = "hello";
-    istring str2 = "world";
-    istring str3 = "something";
+    string str1 = "hello";
+    string str2 = "world";
+    string str3 = "something";
 
     // Check dynamic array concatenation
     test(concat_test(dest, str1, str2, str3), "Concatenation test failed");

@@ -225,8 +225,8 @@ version (unittest)
 
         auto avg = new SlidingAverage!(T)(size);
 
-        istring err_prefix = "SlidingAverage assertion failed for iteration " ~
-            to!(istring)(test_iteration) ~ ": ";
+        string err_prefix = "SlidingAverage assertion failed for iteration " ~
+            to!(string)(test_iteration) ~ ": ";
 
         ulong sum;
 

@@ -567,7 +567,7 @@ public T3[][] split ( T1, T2, T3 ) ( T1[] src, T2[] pattern, ref T3[][] result )
 
 unittest
 {
-    istring[] result;
+    string[] result;
     split("aaa..bbb..ccc", "..", result);
     test!("==")(result, [ "aaa", "bbb", "ccc" ]);
 }

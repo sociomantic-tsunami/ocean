@@ -2107,7 +2107,7 @@ T quickselect ( T, Pred = DefaultPredicates.IsLess!(T) )
 
 version (unittest)
 {
-    void verifySelect ( T, istring file = __FILE__, int line = __LINE__ )
+    void verifySelect ( T, string file = __FILE__, int line = __LINE__ )
         ( T[] buf, size_t k, T expected_value )
     {
         auto t = new NamedTest(file ~ ":" ~ line.stringof);
@@ -2151,7 +2151,7 @@ unittest
 
     struct Person
     {
-        istring name;
+        string name;
         int age;
     }
 

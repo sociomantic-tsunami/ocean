@@ -33,10 +33,10 @@ import ocean.util.log.ILogger;
 package class HierarchyT (LoggerT) : ILogger.Context
 {
     private LoggerT             root_;
-    private istring             label_,
+    private string             label_,
                                 address_;
     private ILogger.Context     context_;
-    private LoggerT[istring]    loggers;
+    private LoggerT[string]    loggers;
 
 
     /***************************************************************************
@@ -45,7 +45,7 @@ package class HierarchyT (LoggerT) : ILogger.Context
 
     ***************************************************************************/
 
-    this (istring hlabel)
+    this (string hlabel)
     {
         this.label_ = hlabel;
         this.address_ = "network";
@@ -62,7 +62,7 @@ package class HierarchyT (LoggerT) : ILogger.Context
 
     ***************************************************************************/
 
-    final istring label ()
+    final string label ()
     {
         return this.label_;
     }
@@ -73,7 +73,7 @@ package class HierarchyT (LoggerT) : ILogger.Context
 
     ***************************************************************************/
 
-    final void label (istring value)
+    final void label (string value)
     {
         this.label_ = value;
     }
@@ -96,7 +96,7 @@ package class HierarchyT (LoggerT) : ILogger.Context
 
     ***************************************************************************/
 
-    final istring address ()
+    final string address ()
     {
         return this.address_;
     }
@@ -108,7 +108,7 @@ package class HierarchyT (LoggerT) : ILogger.Context
 
     ***************************************************************************/
 
-    final void address (istring address)
+    final void address (string address)
     {
         this.address_ = address;
     }
@@ -303,8 +303,8 @@ package class HierarchyT (LoggerT) : ILogger.Context
 
     ***************************************************************************/
 
-    package void propagateValue (istring property, T)
-        (istring parent_name, T value)
+    package void propagateValue (string property, T)
+        (string parent_name, T value)
     {
         foreach (log; this)
         {

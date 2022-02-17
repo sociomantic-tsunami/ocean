@@ -1209,7 +1209,7 @@ public class AppStatus
 
     ***************************************************************************/
 
-    private typeof(this) saveColour ( bool is_foreground, istring colour ) ( )
+    private typeof(this) saveColour ( bool is_foreground, string colour ) ( )
     {
         static if ( is_foreground )
         {

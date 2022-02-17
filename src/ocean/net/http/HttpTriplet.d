@@ -74,7 +74,7 @@ class HttpTriplet
 
         **********************************************************************/
 
-        override istring toString ()
+        override string toString ()
         {
                 return idup(line);
         }

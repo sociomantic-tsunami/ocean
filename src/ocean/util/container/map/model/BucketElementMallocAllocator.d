@@ -195,7 +195,7 @@ public class BucketElementMallocAllocator (Bucket) : IAllocator
         auto inited = cast(Bucket.Element*) malloc(Bucket.Element.sizeof);
         if (inited is null)
         {
-            istring msg = "malloc failed to allocate @" ~ __FILE__ ~ ":" ~
+            string msg = "malloc failed to allocate @" ~ __FILE__ ~ ":" ~
                           __LINE__.stringof ~ "\n\0";
             fputs(msg.ptr, stderr);
             abort();
@@ -256,7 +256,7 @@ public class BucketElementMallocAllocator (Bucket) : IAllocator
             auto allocated_mem = malloc((void*).sizeof * n);
             if (allocated_mem is null)
             {
-                istring msg = "malloc failed to allocate @" ~ __FILE__ ~ ":" ~
+                string msg = "malloc failed to allocate @" ~ __FILE__ ~ ":" ~
                               __LINE__.stringof ~ "\n\0";
                 fputs(msg.ptr, stderr);
                 abort();

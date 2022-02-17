@@ -579,7 +579,7 @@ final class Ripemd320 : MerkleDamgard
 
 unittest
 {
-    static istring[] strings = [
+    static string[] strings = [
         "",
         "a",
         "abc",
@@ -590,7 +590,7 @@ unittest
         "12345678901234567890123456789012345678901234567890123456789012345678901234567890"
     ];
 
-    static istring[] results = [
+    static string[] results = [
         "22d65d5661536cdc75c1fdf5c6de7b41b9f27325ebc61e8557177d705a0ec880151c3a32a00899b8",
         "ce78850638f92658a5a585097579926dda667a5716562cfcf6fbe77f63542f99b04705d6970dff5d",
         "de4c01b3054f8930a79d09ae738e92301e5a17085beffdc1b8d116713e74f82fa942d64cdbc4682d",

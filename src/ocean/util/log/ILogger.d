@@ -61,7 +61,7 @@ interface ILogger
     private struct Pair
     {
         /// The name associated with `value`
-        istring name;
+        string name;
         /// An `ILogger.Level` value
         Level value;
     }
@@ -124,7 +124,7 @@ interface ILogger
 
     ***************************************************************************/
 
-    public static istring convert (Level level)
+    public static string convert (Level level)
     {
         return ILogger.Pairs[level].name;
     }
@@ -141,7 +141,7 @@ interface ILogger
     public interface Context
     {
         /// return a label for this context
-        public istring label ();
+        public string label ();
 
         /// first arg is the setting of the logger itself, and
         /// the second arg is what kind of message we're being

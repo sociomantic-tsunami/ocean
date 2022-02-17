@@ -51,7 +51,7 @@ struct HttpVersionIds
 
      **************************************************************************/
 
-    enum istring[HttpVersion.max + 1] list =
+    enum string[HttpVersion.max + 1] list =
     [
         HttpVersion.v1_1: "HTTP/1.1",
         HttpVersion.v1_0: "HTTP/1.0"
@@ -70,7 +70,7 @@ struct HttpVersionIds
 
      **************************************************************************/
 
-    static istring opIndex ( HttpVersion ver )
+    static string opIndex ( HttpVersion ver )
     {
         verify(ver != 0, "no version id for HttpVersion.Undefined");
         verify(ver <= ver.max, "invalid HttpVersion enumerator value");
@@ -217,7 +217,7 @@ struct HttpVersionIds
 
      **************************************************************************/
 
-    private static HttpVersion[istring] codes;
+    private static HttpVersion[string] codes;
 
     /**************************************************************************
 

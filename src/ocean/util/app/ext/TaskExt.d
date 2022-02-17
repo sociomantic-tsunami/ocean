@@ -152,9 +152,9 @@ class TaskExt : IConfigExtExtension
 
     ***************************************************************************/
 
-    public override istring[] filterConfigFiles ( IApplication app,
+    public override string[] filterConfigFiles ( IApplication app,
                                          ConfigParser config,
-                                         istring[] files )
+                                         string[] files )
     {
         // Unused
         return files;

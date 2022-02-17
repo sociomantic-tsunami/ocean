@@ -64,7 +64,7 @@ class PrometheusStats
     }
 
     ///
-    static istring collection_text =
+    static string collection_text =
         "up_time_s {id=\"1235813\",job=\"ocean\",perf=\"3.14159\"} 3600\n" ~
         "count {id=\"1235813\",job=\"ocean\",perf=\"3.14159\"} 347\n" ~
         "ratio {id=\"1235813\",job=\"ocean\",perf=\"3.14159\"} 3.14\n" ~

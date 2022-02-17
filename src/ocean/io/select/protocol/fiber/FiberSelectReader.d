@@ -557,7 +557,7 @@ unittest
         Message start      (Message)                { assert(false); }
         Message suspend    (Token, Object, Message) { assert(false); }
         Message resume     (Token, Object, Message) { assert(false); }
-        void    kill       (istring, long)          { assert(false); }
+        void    kill       (string, long)          { assert(false); }
         bool    register   (ISelectClient)          { assert(false); }
         bool    unregister ()                       { assert(false); }
     }

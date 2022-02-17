@@ -47,7 +47,7 @@ class Token
 
     // disabled because to work in D2 this requires
     // hidden allocation
-    override istring toString ()
+    override string toString ()
     {
         printf(("Use Token.get instead of Token.toString :" ~
                 " latter allocates each time. Aborting\n").ptr);

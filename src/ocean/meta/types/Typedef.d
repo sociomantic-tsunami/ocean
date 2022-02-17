@@ -39,7 +39,7 @@ import ocean.meta.types.Qualifiers;
 
 *******************************************************************************/
 
-template Typedef(T, istring name, T initval)
+template Typedef(T, string name, T initval)
 {
     static assert (name.length, "Can't create Typedef with an empty identifier");
 
@@ -54,7 +54,7 @@ template Typedef(T, istring name, T initval)
 }
 
 /// ditto
-template Typedef(T, istring name)
+template Typedef(T, string name)
 {
     static assert (name.length, "Can't create Typedef with an empty identifier");
 

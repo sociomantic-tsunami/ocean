@@ -47,8 +47,8 @@ class TestApp : DaemonApp
 {
     this ( )
     {
-        istring name = "test app";
-        istring desc = name;
+        string name = "test app";
+        string desc = name;
         DaemonApp.OptionalSettings settings;
         settings.use_task_ext = true;
         super(name, desc, VersionInfo.init, settings);
@@ -71,7 +71,7 @@ class TestApp : DaemonApp
 }
 
 version (unittest) {} else
-int main ( istring[] cl_args )
+int main ( string[] cl_args )
 {
     with (DirectorySandbox.create(["etc", "log"]))
     {

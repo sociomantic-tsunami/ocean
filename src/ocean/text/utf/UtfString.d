@@ -588,7 +588,7 @@ public struct UtfString ( Char = char, bool pull_dchars = false )
 
 unittest
 {
-    istring str1 = "hello world ®"; // utf8 encoding
+    string str1 = "hello world ®"; // utf8 encoding
     const(dchar)[] str2 = "hello world ®"; // utf32 encoding
 
     test(utf_match(str1, str2));

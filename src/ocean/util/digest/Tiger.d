@@ -861,7 +861,7 @@ private static ulong[1024] table =
 
 unittest
 {
-    static istring[] strings = [
+    static string[] strings = [
         "",
         "abc",
         "Tiger",
@@ -876,7 +876,7 @@ unittest
                 0, 0, 0)
     ];
 
-    static istring[] results = [
+    static string[] results = [
         "3293ac630c13f0245f92bbb1766e16167a4e58492dde73f3",
         "2aab1484e8c158f2bfb8c5ff41b57a525129131c957b5f93",
         "dd00230799f5009fec6debc838bb6a27df2b9d6f110c7937",

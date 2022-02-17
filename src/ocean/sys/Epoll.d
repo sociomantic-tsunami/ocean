@@ -138,7 +138,7 @@ align (1) struct epoll_event_t
 
      **************************************************************************/
 
-    static istring[Event] event_to_name;
+    static string[Event] event_to_name;
 
     static this ( )
     {

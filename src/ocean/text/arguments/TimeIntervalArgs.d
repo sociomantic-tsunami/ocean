@@ -116,7 +116,7 @@ public void setupTimeIntervalArgs ( Arguments args, bool required )
 
 ***************************************************************************/
 
-public istring validateTimeIntervalArgs ( Arguments args )
+public string validateTimeIntervalArgs ( Arguments args )
 {
     auto num_args = args["time-interval"].assigned.length;
     if ( num_args < 1 || num_args > 2 )
@@ -230,7 +230,7 @@ private long parseDateString ( cstring value, bool include_end_date = false )
         return result + (include_end_date ? SECONDS_IN_DAY : 0);
     }
 
-    enforce(isTimeInterval(value), cast(istring) ("`" ~ value ~ "` is an invalid time interval argument. " ~
+    enforce(isTimeInterval(value), cast(string) ("`" ~ value ~ "` is an invalid time interval argument. " ~
         "Only `now`, unix timestamp, iso8601 date and durations are permited."));
 
     return 0;

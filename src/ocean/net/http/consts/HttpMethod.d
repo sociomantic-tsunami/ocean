@@ -57,7 +57,7 @@ struct HttpMethodNames
 
      **************************************************************************/
 
-    enum istring[HttpMethod.max + 1] List =
+    enum string[HttpMethod.max + 1] List =
     [
         HttpMethod.Undefined:  "",
         HttpMethod.Get:        "GET",
@@ -76,7 +76,7 @@ struct HttpMethodNames
 
      **************************************************************************/
 
-    private static HttpMethod[istring] methods_by_name;
+    private static HttpMethod[string] methods_by_name;
 
     /**************************************************************************
 
@@ -113,7 +113,7 @@ struct HttpMethodNames
 
      **************************************************************************/
 
-    static istring opIndex ( HttpMethod method )
+    static string opIndex ( HttpMethod method )
     {
         static assert (method.max < List.length);
         return (method <= method.max)? List[method] : null;

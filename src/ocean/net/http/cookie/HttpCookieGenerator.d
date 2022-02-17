@@ -43,7 +43,7 @@ class HttpCookieGenerator : ParamSet
 
      **************************************************************************/
 
-    public istring id;
+    public string id;
 
     /**************************************************************************
 
@@ -208,7 +208,7 @@ class HttpCookieGenerator : ParamSet
 
      **************************************************************************/
 
-    this ( istring id, istring[] attribute_names ... )
+    this ( string id, string[] attribute_names ... )
     {
         super.addKeys(this.id = id);
 

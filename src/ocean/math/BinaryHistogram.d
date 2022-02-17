@@ -35,7 +35,7 @@ import ocean.core.Verify;
 
 *******************************************************************************/
 
-public struct BinaryHistogram ( uint MaxPow2, istring Suffix = "" )
+public struct BinaryHistogram ( uint MaxPow2, string Suffix = "" )
 {
     // Values above the range of ulong are not supported.
     static assert(MaxPow2 < 64,
@@ -145,13 +145,13 @@ public struct BinaryHistogram ( uint MaxPow2, istring Suffix = "" )
 
         ***********************************************************************/
 
-        private static istring divisionBinVariables ( )
+        private static string divisionBinVariables ( )
         {
             enum type = typeof(BinaryHistogram.bins[0]).stringof;
 
-            istring res;
+            string res;
 
-            istring formatCount ( ulong count )
+            string formatCount ( ulong count )
             {
                 enum prefixes = [""[], "Ki", "Mi", "Gi", "Ti", "Pi", "Ei"];
 
@@ -230,7 +230,7 @@ public struct BinaryHistogram ( uint MaxPow2, istring Suffix = "" )
 
     ***************************************************************************/
 
-    public ulong countFor ( istring bin_name ) ( )
+    public ulong countFor ( string bin_name ) ( )
     {
         mixin("static assert(is(typeof(Bins.init." ~ bin_name ~ ")));");
 
@@ -323,7 +323,7 @@ unittest
 
     // Tests if hist.count is `expected` and matches the sum of all bin
     // counters.
-    void checkBinSum ( uint expected, istring f = __FILE__, int ln = __LINE__ )
+    void checkBinSum ( uint expected, string f = __FILE__, int ln = __LINE__ )
     {
         test!("==")(hist.count, expected, f, ln);
         uint sum = 0;

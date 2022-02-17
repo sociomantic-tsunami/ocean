@@ -104,7 +104,7 @@ public class UnixSocketExt : IApplicationExtension, IConfigExtExtension
 
     ***************************************************************************/
 
-    public void addHandler ( istring command, scope Handler handler )
+    public void addHandler ( string command, scope Handler handler )
     {
         this.unix_socket.commands.addHandler(command, handler);
     }
@@ -117,7 +117,7 @@ public class UnixSocketExt : IApplicationExtension, IConfigExtExtension
 
     ***************************************************************************/
 
-    public void addHandler ( istring command, scope InteractiveHandler handler )
+    public void addHandler ( string command, scope InteractiveHandler handler )
     {
         this.unix_socket.commands.addHandler(command, handler);
     }
@@ -132,7 +132,7 @@ public class UnixSocketExt : IApplicationExtension, IConfigExtExtension
 
     ***************************************************************************/
 
-    public void addHandler ( istring command, scope RawSocketHandler handler )
+    public void addHandler ( string command, scope RawSocketHandler handler )
     {
         this.unix_socket.commands.addHandler(command, handler);
     }
@@ -146,7 +146,7 @@ public class UnixSocketExt : IApplicationExtension, IConfigExtExtension
 
     ***************************************************************************/
 
-    public void removeHandler ( istring command )
+    public void removeHandler ( string command )
     {
         this.unix_socket.commands.removeHandler(command);
     }
@@ -163,7 +163,7 @@ public class UnixSocketExt : IApplicationExtension, IConfigExtExtension
 
     ***************************************************************************/
 
-    public override void atExit ( IApplication app, istring[] args, int status,
+    public override void atExit ( IApplication app, string[] args, int status,
             ExitException exception )
     {
         this.unix_socket.shutdown();
@@ -198,9 +198,9 @@ public class UnixSocketExt : IApplicationExtension, IConfigExtExtension
 
     ***************************************************************************/
 
-    public override istring[] filterConfigFiles ( IApplication app,
+    public override string[] filterConfigFiles ( IApplication app,
                                          ConfigParser config,
-                                         istring[] files )
+                                         string[] files )
     {
         // Unused
         return files;
@@ -224,17 +224,17 @@ public class UnixSocketExt : IApplicationExtension, IConfigExtExtension
 
     ***************************************************************************/
 
-    public override void preRun ( IApplication app, istring[] args )
+    public override void preRun ( IApplication app, string[] args )
     {
     }
 
     /// ditto
-    public override void postRun ( IApplication app, istring[] args, int status )
+    public override void postRun ( IApplication app, string[] args, int status )
     {
     }
 
     /// ditto
-    public override ExitException onExitException ( IApplication app, istring[] args,
+    public override ExitException onExitException ( IApplication app, string[] args,
             ExitException exception )
     {
         return exception;

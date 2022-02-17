@@ -168,6 +168,6 @@ abstract class UriView
 
         ***********************************************************************/
 
-        abstract override istring toString ();
+        abstract override string toString ();
 }
 

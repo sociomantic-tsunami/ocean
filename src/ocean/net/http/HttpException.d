@@ -49,21 +49,21 @@ class HttpException : HttpServerException
 {
     public HttpResponseCode status;
 
-    public override typeof (this) set ( cstring msg, istring file = __FILE__,
+    public override typeof (this) set ( cstring msg, string file = __FILE__,
                                         long line = __LINE__ )
     {
         super.set(msg, file, line);
         return this;
     }
 
-    public typeof (this) set (HttpResponseCode code, istring file = __FILE__,
+    public typeof (this) set (HttpResponseCode code, string file = __FILE__,
                               typeof(__LINE__) line = __LINE__)
     {
         this.status = code;
         return this.set(this.status_phrase, file, line);
     }
 
-    istring status_phrase ( )
+    string status_phrase ( )
     {
         return StatusPhrases[this.status];
     }
@@ -83,7 +83,7 @@ class HttpException : HttpServerException
 
     ***************************************************************************/
 
-    public void enforce ( istring file = __FILE__, long line = __LINE__, T ... )
+    public void enforce ( string file = __FILE__, long line = __LINE__, T ... )
                         ( bool ok, HttpResponseCode code, T messages )
     {
         if ( !ok )

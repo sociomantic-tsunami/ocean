@@ -123,7 +123,7 @@ private alias void delegate(cstring, ref const(FormatInfo)) ElemSink;
 
 *******************************************************************************/
 
-public istring format (Args...) (cstring fmt, Args args)
+public string format (Args...) (cstring fmt, Args args)
 {
     import ocean.core.TypeConvert : assumeUnique;
 
@@ -802,7 +802,7 @@ private const(char)* skipSpace (const(char)* s, const(char)* end)
 
 private void writeSpace (scope FormatterSink s, size_t n)
 {
-    static immutable istring Spaces32 = "                                ";
+    static immutable string Spaces32 = "                                ";
 
     // Make 'n' a multiple of Spaces32.length (32)
     s(Spaces32[0 .. n % Spaces32.length]);

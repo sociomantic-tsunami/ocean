@@ -156,7 +156,7 @@ public struct SmartEnumValue ( T )
 {
     alias T BaseType;
 
-    istring name;
+    string name;
     T value;
 }
 
@@ -204,12 +204,12 @@ public template SmartEnumCore ( BaseType )
 
     ***************************************************************************/
 
-    static public istring* description ( BaseType code )
+    static public string* description ( BaseType code )
     {
         return code in map;
     }
 
-    public alias opBinaryRight ( istring op : "in" ) = description;
+    public alias opBinaryRight ( string op : "in" ) = description;
 
 
     /***************************************************************************
@@ -231,7 +231,7 @@ public template SmartEnumCore ( BaseType )
         return description in map;
     }
 
-    public alias opBinaryRight ( istring op : "in" ) = code;
+    public alias opBinaryRight ( string op : "in" ) = code;
 
 
 
@@ -250,7 +250,7 @@ public template SmartEnumCore ( BaseType )
 
     ***************************************************************************/
 
-    static public istring opIndex ( BaseType code )
+    static public string opIndex ( BaseType code )
     {
         auto description = code in map;
         enforce(description, "code not found in SmartEnum");
@@ -276,7 +276,7 @@ public template SmartEnumCore ( BaseType )
     static public BaseType opIndex ( cstring description )
     {
         auto code = description in map;
-        enforce(code, cast(istring)(description ~ " not found in SmartEnum"));
+        enforce(code, cast(string)(description ~ " not found in SmartEnum"));
         return *code;
     }
 
@@ -357,7 +357,7 @@ public template SmartEnumCore ( BaseType )
 
     ***************************************************************************/
 
-    static public istring descriptionFromIndex ( size_t index )
+    static public string descriptionFromIndex ( size_t index )
     {
         return map.values[index];
     }
@@ -369,7 +369,7 @@ public template SmartEnumCore ( BaseType )
 
     ***************************************************************************/
 
-    static public int opApply ( scope int delegate ( ref BaseType code, ref istring desc ) dg )
+    static public int opApply ( scope int delegate ( ref BaseType code, ref string desc ) dg )
     {
         int res;
         foreach ( enum_code, enum_description; map )
@@ -387,7 +387,7 @@ public template SmartEnumCore ( BaseType )
 
     ***************************************************************************/
 
-    static public int opApply ( scope int delegate ( ref size_t index, ref BaseType code, ref istring desc ) dg )
+    static public int opApply ( scope int delegate ( ref size_t index, ref BaseType code, ref string desc ) dg )
     {
         int res;
         foreach ( index, enum_code, enum_description; map )
@@ -629,7 +629,7 @@ private template ShortestName ( T ... )
 
 private template DeclareConstants ( T ... )
 {
-    static immutable istring DeclareConstants =
+    static immutable string DeclareConstants =
         "enum length = " ~ CTFE.toString(T.length) ~ "; " ~
         "enum min = " ~ CTFE.toString(MinValue!(T)) ~ "; " ~
         "enum max = " ~ CTFE.toString(MaxValue!(T)) ~ "; " ~
@@ -679,7 +679,7 @@ private template MixinCore ( T ... )
 
 *******************************************************************************/
 
-public template SmartEnum ( istring Name, T ... )
+public template SmartEnum ( string Name, T ... )
 {
     static if ( T.length > 0 )
     {
@@ -731,13 +731,13 @@ unittest
         Name = name of class
         BaseType = base type of enum
         Strings = variadic list of descriptions of the enum values (statically
-                  asserted to be istring's)
+                  asserted to be string's)
 
 *******************************************************************************/
 
-public template AutoSmartEnum ( istring Name, BaseType, Strings ... )
+public template AutoSmartEnum ( string Name, BaseType, Strings ... )
 {
-    static assert ( is(typeof(Strings[0]) : istring), "AutoSmartEnum - please only give immutable strings as template parameters");
+    static assert ( is(typeof(Strings[0]) : string), "AutoSmartEnum - please only give immutable strings as template parameters");
 
     static immutable AutoSmartEnum = autoSmartEnumImpl(Name, BaseType.stringof,
         Strings);
@@ -777,15 +777,15 @@ unittest
 
 *******************************************************************************/
 
-private istring autoSmartEnumImpl ( istring name, istring basetype,
-    istring[] members ... )
+private string autoSmartEnumImpl ( string name, string basetype,
+    string[] members ... )
 {
     // Create two strings, one to declare the members, and one to populate
     // the map.
     // Also determine the minimum and maximum length of each member name
 
-    istring declstr = null;
-    istring mapstr = null;
+    string declstr = null;
+    string mapstr = null;
 
     long maxlen = members[0].length;
     long minlen = members[0].length;
@@ -885,7 +885,7 @@ public struct TwoWayMap ( A )
     ***************************************************************************/
 
     public alias A KeyType;
-    public alias istring ValueType;
+    public alias string ValueType;
 
 
     /***************************************************************************
@@ -1076,7 +1076,7 @@ public struct TwoWayMap ( A )
 
     ***************************************************************************/
 
-    public KeyType* opBinaryRight ( istring op : "in" ) ( cstring b )
+    public KeyType* opBinaryRight ( string op : "in" ) ( cstring b )
     {
         return b in this.b_to_a;
     }
@@ -1096,7 +1096,7 @@ public struct TwoWayMap ( A )
 
     ***************************************************************************/
 
-    public ValueType* opBinaryRight ( istring op : "in" ) ( KeyType a )
+    public ValueType* opBinaryRight ( string op : "in" ) ( KeyType a )
     {
         return a in this.a_to_b;
     }

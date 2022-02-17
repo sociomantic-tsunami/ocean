@@ -71,10 +71,10 @@ public class BasicCommandHandler
     public alias void delegate ( cstring, void delegate (cstring) ) Handler;
 
     /// Map of command name to interactive handler response delegate.
-    public InteractiveHandler[istring] interactive_handlers;
+    public InteractiveHandler[string] interactive_handlers;
 
     /// Map of a command name to non-interactive handlers delegate
-    public Handler[istring] handlers;
+    public Handler[string] handlers;
 
     /***************************************************************************
 
@@ -90,8 +90,8 @@ public class BasicCommandHandler
 
     ***************************************************************************/
 
-    public this ( scope Handler[istring] handlers,
-            scope InteractiveHandler[istring] interactive_handlers )
+    public this ( scope Handler[string] handlers,
+            scope InteractiveHandler[string] interactive_handlers )
     {
         this.handlers = handlers;
         this.interactive_handlers = interactive_handlers;
@@ -106,7 +106,7 @@ public class BasicCommandHandler
 
     ***************************************************************************/
 
-    public this ( scope Handler[istring] handlers )
+    public this ( scope Handler[string] handlers )
     {
         this.handlers = handlers;
     }
@@ -162,9 +162,9 @@ public class UnixConnectionHandler : UnixSocketConnectionHandler!(BasicCommandHa
     ***************************************************************************/
 
     public this ( scope FinalizeDg finalize_dg, EpollSelectDispatcher epoll,
-                  scope BasicCommandHandler.Handler[istring] handlers,
-                  scope BasicCommandHandler.InteractiveHandler[istring] interactive_handlers,
-                  istring address_path )
+                  scope BasicCommandHandler.Handler[string] handlers,
+                  scope BasicCommandHandler.InteractiveHandler[string] interactive_handlers,
+                  string address_path )
     {
         super(finalize_dg, epoll,
             new BasicCommandHandler(handlers, interactive_handlers),
@@ -184,7 +184,7 @@ public class UnixConnectionHandler : UnixSocketConnectionHandler!(BasicCommandHa
     ***************************************************************************/
 
     public this ( scope FinalizeDg finalize_dg, EpollSelectDispatcher epoll,
-                  scope BasicCommandHandler.Handler[istring] handlers,
+                  scope BasicCommandHandler.Handler[string] handlers,
                   cstring address_path )
     {
         super(finalize_dg, epoll, new BasicCommandHandler(handlers),

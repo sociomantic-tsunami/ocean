@@ -455,11 +455,11 @@ struct LimitCmp ( T, T init = T.init, alias comp = defComp!(T), Set... )
                 return;
         }
 
-        istring allowed_vals;
+        string allowed_vals;
 
         foreach ( el ; Set )
         {
-            allowed_vals ~= ", " ~ to!(istring)(el);
+            allowed_vals ~= ", " ~ to!(string)(el);
         }
 
         throw new ConfigException(
@@ -473,7 +473,7 @@ struct LimitCmp ( T, T init = T.init, alias comp = defComp!(T), Set... )
 unittest
 {
     test(is(typeof({ LimitCmp!(int, 1, defComp!(int), 0, 1) val; })));
-    test(is(typeof({ LimitCmp!(istring, "", defComp!(istring), "red"[], "green"[]) val; })));
+    test(is(typeof({ LimitCmp!(string, "", defComp!(string), "red"[], "green"[]) val; })));
 }
 
 /*******************************************************************************
@@ -495,7 +495,7 @@ template LimitInit ( T, T init = T.init, Set... )
 unittest
 {
     test(is(typeof({LimitInit!(int, 1, 0, 1) val;})));
-    test(is(typeof({LimitInit!(istring, "green"[], "red"[], "green"[]) val;})));
+    test(is(typeof({LimitInit!(string, "green"[], "red"[], "green"[]) val;})));
 }
 
 
@@ -703,7 +703,7 @@ public T fill ( T, Source = ConfigParser )
     {
         if ( !hasField(reference, var) )
         {
-            auto msg = cast(istring) ("Invalid configuration key "
+            auto msg = cast(string) ("Invalid configuration key "
                 ~ group ~ "." ~ var);
             enforce!(ConfigException)(loose_parsing, msg);
             Stderr.formatln("#### WARNING: {}", msg);
@@ -793,7 +793,7 @@ struct ConfigIterator ( T, Source = ConfigParser )
 
     ***************************************************************************/
 
-    istring root;
+    string root;
 
     /***************************************************************************
 
@@ -816,7 +816,7 @@ struct ConfigIterator ( T, Source = ConfigParser )
 
     ***************************************************************************/
 
-    public int opApply ( scope int delegate ( ref istring name, ref T x ) dg )
+    public int opApply ( scope int delegate ( ref string name, ref T x ) dg )
     {
         int result = 0;
 
@@ -859,7 +859,7 @@ struct ConfigIterator ( T, Source = ConfigParser )
 
     ***************************************************************************/
 
-    public int opApply ( scope int delegate ( ref istring name ) dg )
+    public int opApply ( scope int delegate ( ref string name ) dg )
     {
         int result = 0;
 
@@ -918,7 +918,7 @@ struct ConfigIterator ( T, Source = ConfigParser )
 *******************************************************************************/
 
 public ConfigIterator!(T) iterate ( T, Source = ConfigParser )
-                                 ( istring root, Source config )
+                                 ( string root, Source config )
 {
     verify(config !is null, "ConfigFiller.iterate: Cannot use null config");
 
@@ -1149,7 +1149,7 @@ pi = 3.14
 
     class SingleValues
     {
-        istring str;
+        string str;
         int integer;
         float pi;
         uint default_value = 99;
@@ -1157,7 +1157,7 @@ pi = 3.14
 
     struct SingleValuesStruct
     {
-        istring str;
+        string str;
         int integer;
         float pi;
         uint default_value = 99;
@@ -1235,7 +1235,7 @@ float_arr = 10.2
 
     class ArrayValues
     {
-        istring[] string_arr;
+        string[] string_arr;
         int[] int_arr;
         ulong[] ulong_arr;
         float[] float_arr;
@@ -1262,7 +1262,7 @@ float_arr = 10.2
 
     struct ArrayValuesStruct
     {
-        istring[] string_arr;
+        string[] string_arr;
         int[] int_arr;
         ulong[] ulong_arr;
         float[] float_arr;

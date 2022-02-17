@@ -125,7 +125,7 @@ public class StatsLog
 
     public static class Config
     {
-        public istring file_name;
+        public string file_name;
 
 
         /***********************************************************************
@@ -141,7 +141,7 @@ public class StatsLog
 
         ***********************************************************************/
 
-        public istring socket_path;
+        public string socket_path;
 
 
         /***********************************************************************
@@ -154,7 +154,7 @@ public class StatsLog
 
         ***********************************************************************/
 
-        public istring hostname;
+        public string hostname;
 
 
         /***********************************************************************
@@ -172,7 +172,7 @@ public class StatsLog
 
         ***********************************************************************/
 
-        public istring app_name;
+        public string app_name;
 
 
         /***********************************************************************
@@ -191,7 +191,7 @@ public class StatsLog
 
         ***********************************************************************/
 
-        public istring app_instance;
+        public string app_instance;
 
 
         /***********************************************************************
@@ -207,7 +207,7 @@ public class StatsLog
 
         ***********************************************************************/
 
-        public istring default_type;
+        public string default_type;
 
 
         /***********************************************************************
@@ -231,12 +231,12 @@ public class StatsLog
 
         ***********************************************************************/
 
-        public this ( istring file_name = default_file_name,
-            istring socket_path = null,
-            istring hostname = null,
-            istring app_name = null,
-            istring app_instance = null,
-            istring default_type = null,
+        public this ( string file_name = default_file_name,
+            string socket_path = null,
+            string hostname = null,
+            string app_name = null,
+            string app_instance = null,
+            string default_type = null,
             ulong interval = 30)
 
         {
@@ -260,7 +260,7 @@ public class StatsLog
     ***************************************************************************/
 
     public static immutable time_t default_period = 30; // 30 seconds
-    public static immutable istring default_file_name = "log/stats.log";
+    public static immutable string default_file_name = "log/stats.log";
 
 
     /***************************************************************************
@@ -310,9 +310,9 @@ public class StatsLog
 
     ***************************************************************************/
 
-    public this ( Config config, istring name = "Stats" )
+    public this ( Config config, string name = "Stats" )
     {
-        Appender newAppender ( istring file, Appender.Layout layout )
+        Appender newAppender ( string file, Appender.Layout layout )
         {
             return new AppendFile(file, layout);
         }
@@ -335,8 +335,8 @@ public class StatsLog
     ***************************************************************************/
 
     public this ( Config config,
-        scope Appender delegate ( istring file, Appender.Layout layout ) new_appender,
-        istring name = "Stats" )
+        scope Appender delegate ( string file, Appender.Layout layout ) new_appender,
+        string name = "Stats" )
     {
         if (config.socket_path.length)
         {
@@ -389,9 +389,9 @@ public class StatsLog
     {
         static assert (is(T == struct) || is(T == class),
                        "Parameter to add must be a struct or a class");
-        this.format!(null)(values, istring.init);
+        this.format!(null)(values, string.init);
         if (this.collectd !is null)
-            this.sendToCollectd!(null)(values, istring.init);
+            this.sendToCollectd!(null)(values, string.init);
         return this;
     }
 
@@ -410,7 +410,7 @@ public class StatsLog
 
     ***************************************************************************/
 
-    public typeof(this) addObject (istring category, T)
+    public typeof(this) addObject (string category, T)
         (cstring instance, T values)
     {
         static assert (is(T == struct) || is(T == class),
@@ -471,7 +471,7 @@ public class StatsLog
 
     ***************************************************************************/
 
-    private void format ( istring category, T ) ( ref T values, cstring instance )
+    private void format ( string category, T ) ( ref T values, cstring instance )
     {
         scope sink = (cstring v) { this.buffer ~= v; };
         foreach ( i, value; values.tupleof )
@@ -541,8 +541,8 @@ public class StatsLog
 
     ***************************************************************************/
 
-    private void sendToCollectd (istring category, T) (ref T values,
-                                                       cstring instance)
+    private void sendToCollectd (string category, T) (ref T values,
+                                                      cstring instance)
     {
         verify(this.collectd !is null);
         static if (!category.length)

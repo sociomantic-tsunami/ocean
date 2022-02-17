@@ -121,7 +121,7 @@ unittest
         return false;
     }
 
-    istring good = "0123456789abcdefABCDEF";
+    string good = "0123456789abcdefABCDEF";
 
     for ( int i = char.min; i <= char.max; i++ )
     {

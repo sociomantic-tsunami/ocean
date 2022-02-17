@@ -77,7 +77,7 @@ public interface IScheduler
         {
             /// fully qualified name (same as `Task.classinfo.name()`) for task
             /// type which is to be handled by this pool
-            istring task_name;
+            string task_name;
 
             /// worker fiber allocated stack size
             size_t stack_size;

@@ -38,7 +38,7 @@ import ocean.text.convert.Formatter;
 ******************************************************************************/
 
 public void enforceImpl ( E : Exception = Exception, T ) (
-    T ok, lazy istring msg, istring file, int line )
+    T ok, lazy string msg, string file, int line )
 {
     // duplicate msg/file/line mention to both conform Exception cnstructor
     // signature and fit our reusable exceptions.
@@ -80,7 +80,7 @@ public void enforceImpl ( E : Exception = Exception, T ) (
 ******************************************************************************/
 
 public void enforce ( E : Exception = Exception, T,
-    istring file = __FILE__, int line = __LINE__ ) ( T ok, lazy istring msg = "" )
+    string file = __FILE__, int line = __LINE__ ) ( T ok, lazy string msg = "" )
 {
     enforceImpl!(E, T)(ok, msg, file, line);
 }
@@ -139,8 +139,8 @@ unittest
 
 ******************************************************************************/
 
-public void enforceImpl ( T ) ( lazy Exception e, T ok, lazy istring msg,
-    istring file, int line)
+public void enforceImpl ( T ) ( lazy Exception e, T ok, lazy string msg,
+    string file, int line)
 {
     if (!ok)
     {
@@ -173,8 +173,8 @@ public void enforceImpl ( T ) ( lazy Exception e, T ok, lazy istring msg,
 
 ******************************************************************************/
 
-public void enforce ( T, E : Exception, istring file = __FILE__,
-    int line = __LINE__ ) ( lazy E e, T ok, lazy istring msg = "" )
+public void enforce ( T, E : Exception, string file = __FILE__,
+    int line = __LINE__ ) ( lazy E e, T ok, lazy string msg = "" )
 {
     enforceImpl!(T)(e, ok, msg, file, line);
 }
@@ -183,7 +183,7 @@ unittest
 {
     class MyException : Exception
     {
-        this ( istring msg, istring file = __FILE__, int line = __LINE__ )
+        this ( string msg, string file = __FILE__, int line = __LINE__ )
         {
             super ( msg, file, line );
         }
@@ -291,8 +291,8 @@ unittest
 
 ******************************************************************************/
 
-public void enforceImpl ( istring op, E : Exception = Exception, T1, T2 ) (
-    T1 a, T2 b, istring file, int line )
+public void enforceImpl ( string op, E : Exception = Exception, T1, T2 ) (
+    T1 a, T2 b, string file, int line )
 {
     mixin("auto ok = a " ~ op ~ " b;");
 
@@ -330,8 +330,8 @@ public void enforceImpl ( istring op, E : Exception = Exception, T1, T2 ) (
 
 ******************************************************************************/
 
-public void enforce ( istring op, E : Exception = Exception, T1, T2,
-    istring file = __FILE__ , int line = __LINE__) ( T1 a, T2 b )
+public void enforce ( string op, E : Exception = Exception, T1, T2,
+    string file = __FILE__ , int line = __LINE__) ( T1 a, T2 b )
 {
     enforceImpl!(op, E, T1, T2)(a, b, file, line);
 }
@@ -402,8 +402,8 @@ unittest
 
 ******************************************************************************/
 
-public void enforceImpl ( istring op, T1, T2 ) ( lazy Exception e, T1 a,
-    T2 b, istring file, int line )
+public void enforceImpl ( string op, T1, T2 ) ( lazy Exception e, T1 a,
+    T2 b, string file, int line )
 {
     mixin("auto ok = a " ~ op ~ " b;");
 
@@ -424,7 +424,7 @@ public void enforceImpl ( istring op, T1, T2 ) ( lazy Exception e, T1 a,
 
 ******************************************************************************/
 
-public void enforce ( istring op, E : Exception, T1, T2, istring file = __FILE__,
+public void enforce ( string op, E : Exception, T1, T2, string file = __FILE__,
     int line = __LINE__  ) ( lazy E e, T1 a, T2 b )
 {
     enforceImpl!(op, T1, T2)(e, a, b, file, line);
@@ -434,7 +434,7 @@ unittest
 {
     class MyException : Exception
     {
-        this ( istring msg, istring file = __FILE__, int line = __LINE__ )
+        this ( string msg, string file = __FILE__, int line = __LINE__ )
         {
             super ( msg, file, line );
         }
@@ -521,8 +521,8 @@ unittest
 *******************************************************************************/
 
 void throwChained ( E : Throwable = Exception)
-    ( lazy Throwable e, lazy istring msg,
-      istring file = __FILE__, int line = __LINE__ )
+    ( lazy Throwable e, lazy string msg,
+      string file = __FILE__, int line = __LINE__ )
 {
     throw new E(msg, file, line, e);
 }

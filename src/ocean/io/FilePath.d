@@ -69,7 +69,7 @@ class FilePath : PathView
 
     ***********************************************************************/
 
-    public alias opOpAssign ( istring op = "~" ) = append;
+    public alias opOpAssign ( string op = "~" ) = append;
 
 
     /***********************************************************************
@@ -127,7 +127,7 @@ class FilePath : PathView
 
     ***********************************************************************/
 
-    final override istring toString ()
+    final override string toString ()
     {
             return p.toString;
     }
@@ -611,7 +611,7 @@ class FilePath : PathView
 
     ***********************************************************************/
 
-    static istring join (const(char[][]) paths...)
+    static string join (const(char[][]) paths...)
     {
             auto s = FS.join (paths);
             return assumeUnique(s);
@@ -1098,7 +1098,7 @@ interface PathView
 
     ***********************************************************************/
 
-    abstract istring toString ();
+    abstract string toString ();
 
     /***********************************************************************
 

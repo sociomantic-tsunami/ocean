@@ -288,7 +288,7 @@ class GetSocketAddress
 
      **************************************************************************/
 
-    private Address get ( ISelectable conduit, typeof (&.getsockname) func, istring funcname )
+    private Address get ( ISelectable conduit, typeof (&.getsockname) func, string funcname )
     {
         Address address;
 

@@ -718,7 +718,7 @@ unittest
 {
     static struct IS
     {
-        istring s;
+        string s;
     }
 
     static struct II
@@ -742,7 +742,7 @@ unittest
     //Deserializer.deserialize!(II)(buffer2);
 
     static assert(!is(typeof({Deserializer.deserialize!(IS)(buffer1);})),
-        "Serializer should reject a struct with 'istring'");
+        "Serializer should reject a struct with 'string'");
     static assert(!is(typeof({Deserializer.deserialize!(II)(buffer2);})),
         "Deserializer should reject a struct with 'immutable' element");
 }
@@ -917,7 +917,7 @@ static size_t serialArrayLength ( T : Element[], Element ) ( T array )
 
 *******************************************************************************/
 
-template testArray ( istring op )
+template testArray ( string op )
 {
     alias test!(op, const(void)[], const(void)[]) testArray;
 }

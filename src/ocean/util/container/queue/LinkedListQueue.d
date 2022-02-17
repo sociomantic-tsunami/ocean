@@ -754,7 +754,7 @@ unittest
 
         ***********************************************************************/
 
-        protected istring name;
+        protected string name;
 
 
         /**********************************************************************
@@ -766,7 +766,7 @@ unittest
 
         ***********************************************************************/
 
-        public this (istring in_name)
+        public this (string in_name)
         {
             this.int_queue = new LinkedListQueue!(int)();
             this.name = in_name;

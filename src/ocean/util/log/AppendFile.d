@@ -47,7 +47,7 @@ public class AppendFile : Filer
 
     ***************************************************************************/
 
-    public this (istring fp, Appender.Layout how = null)
+    public this (string fp, Appender.Layout how = null)
     {
         // Get a unique fingerprint for this instance
         this.mask_ = register(fp);
@@ -78,7 +78,7 @@ public class AppendFile : Filer
 
     ***************************************************************************/
 
-    final override istring name ()
+    final override string name ()
     {
         return this.classinfo.name;
     }

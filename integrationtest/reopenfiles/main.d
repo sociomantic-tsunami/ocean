@@ -33,7 +33,7 @@ import core.sys.posix.sys.stat;
 import core.sys.linux.fcntl;
 
 /// Socket class to bind/connect
-private istring socket_path = "reopensocket.socket";
+private string socket_path = "reopensocket.socket";
 
 /// Main application class
 class ReopenableFilesApp : DaemonApp
@@ -105,8 +105,8 @@ class ReopenableFilesApp : DaemonApp
             throw e;
         };
 
-        istring name = "Application";
-        istring desc = "Testing reopenable files ext";
+        string name = "Application";
+        string desc = "Testing reopenable files ext";
 
         DaemonApp.OptionalSettings settings;
 
@@ -159,7 +159,7 @@ class ReopenableFilesApp : DaemonApp
 }
 
 version (unittest) {} else
-void main(istring[] args)
+void main(string[] args)
 {
     auto sandbox = DirectorySandbox.create(["etc", "log"]);
     scope (success)

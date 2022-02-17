@@ -59,7 +59,7 @@ class DeserializationException : Exception
     ***********************************************************************/
 
     void enforceSizeLimit ( S ) ( size_t len, size_t max,
-        istring file = __FILE__, int line = __LINE__ )
+        string file = __FILE__, int line = __LINE__ )
     {
         if (len > max)
         {
@@ -91,7 +91,7 @@ class DeserializationException : Exception
     ***********************************************************************/
 
     void enforceInputSize ( S ) ( size_t len, size_t required,
-        istring file = __FILE__, int line = __LINE__ )
+        string file = __FILE__, int line = __LINE__ )
     {
         if (len < required)
         {

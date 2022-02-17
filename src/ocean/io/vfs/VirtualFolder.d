@@ -47,10 +47,10 @@ import ocean.text.Util : head, locatePrior;
 
 class VirtualFolder : VfsHost
 {
-        private istring                  name_;
-        private VfsFile[istring]         files;
-        private VfsFolder[istring]       mounts;
-        private VfsFolderEntry[istring]  folders;
+        private string                  name_;
+        private VfsFile[string]         files;
+        private VfsFolder[string]       mounts;
+        private VfsFolderEntry[string]  folders;
         private VirtualFolder           parent;
 
         /***********************************************************************
@@ -60,7 +60,7 @@ class VirtualFolder : VfsHost
 
         ***********************************************************************/
 
-        this (istring name)
+        this (string name)
         {
                 validate (this.name_ = name);
         }
@@ -71,7 +71,7 @@ class VirtualFolder : VfsHost
 
         ***********************************************************************/
 
-        final istring name()
+        final string name()
         {
                 return name_;
         }
@@ -84,7 +84,7 @@ class VirtualFolder : VfsHost
 
         ***********************************************************************/
 
-        final override istring toString()
+        final override string toString()
         {
                 return name;
         }
@@ -101,7 +101,7 @@ class VirtualFolder : VfsHost
 
         ***********************************************************************/
 
-        VfsHost mount (VfsFolder folder, istring name = null)
+        VfsHost mount (VfsFolder folder, string name = null)
         {
                 .verify(folder !is null);
                 if (name.length is 0)
@@ -154,7 +154,7 @@ class VirtualFolder : VfsHost
 
         VfsHost dismount (VfsFolder folder)
         {
-                istring name = null;
+                string name = null;
 
                 // check this is a child, and locate the mapped name
                 foreach (key, value; mounts)
@@ -180,7 +180,7 @@ class VirtualFolder : VfsHost
 
         ***********************************************************************/
 
-        final VfsHost map (VfsFile file, istring name)
+        final VfsHost map (VfsFile file, string name)
         {
                 .verify(name !is null);
                 files[name] = file;
@@ -194,7 +194,7 @@ class VirtualFolder : VfsHost
 
         ***********************************************************************/
 
-        final VfsHost map (VfsFolderEntry folder, istring name)
+        final VfsHost map (VfsFolderEntry folder, string name)
         {
                 .verify(name !is null);
                 folders[name] = folder;
@@ -229,9 +229,9 @@ class VirtualFolder : VfsHost
 
         ***********************************************************************/
 
-        final VfsFolderEntry folder (istring path)
+        final VfsFolderEntry folder (string path)
         {
-                istring tail;
+                string tail;
                 auto text = head (path, FileConst.PathSeparatorString, tail);
 
                 auto child = text in mounts;
@@ -252,7 +252,7 @@ class VirtualFolder : VfsHost
 
         ***********************************************************************/
 
-        VfsFile file (istring path)
+        VfsFile file (string path)
         {
                 auto tail = locatePrior (path, FileConst.PathSeparatorChar);
                 if (tail < path.length)
@@ -353,7 +353,7 @@ class VirtualFolder : VfsHost
 
         ***********************************************************************/
 
-        package final istring error (istring msg)
+        package final string error (string msg)
         {
                 throw new VfsException (idup(msg));
         }
@@ -364,7 +364,7 @@ class VirtualFolder : VfsHost
 
         ***********************************************************************/
 
-        private final void validate (istring name)
+        private final void validate (string name)
         {
                 .verify(name !is null);
                 if (locatePrior(name, '.') != name.length ||
@@ -490,7 +490,7 @@ private class VirtualFolders : VfsFolders
 
         ***********************************************************************/
 
-        final VfsFolders subset (istring pattern)
+        final VfsFolders subset (string pattern)
         {
                 auto set = new VirtualFolders;
 
@@ -505,7 +505,7 @@ private class VirtualFolders : VfsFolders
 
         ***********************************************************************/
 
-        final VfsFiles catalog (istring pattern)
+        final VfsFiles catalog (string pattern)
         {
                 return catalog ((VfsInfo info){return patternMatch (info.name, pattern);});
         }

@@ -33,7 +33,7 @@ public interface IApplication : IApplicationExtension
 
     ***************************************************************************/
 
-    istring name ( );
+    string name ( );
 
 
     /***************************************************************************
@@ -50,5 +50,5 @@ public interface IApplication : IApplicationExtension
 
     ***************************************************************************/
 
-    void exit ( int status, istring msg = null );
+    void exit ( int status, string msg = null );
 }

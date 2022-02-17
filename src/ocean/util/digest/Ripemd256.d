@@ -377,7 +377,7 @@ final class Ripemd256 : MerkleDamgard
 
 unittest
 {
-    static istring[] strings =
+    static string[] strings =
     [
             "",
             "a",
@@ -389,7 +389,7 @@ unittest
             "12345678901234567890123456789012345678901234567890123456789012345678901234567890"
     ];
 
-    static istring[] results =
+    static string[] results =
     [
             "02ba4c4e5f8ecd1877fc52d64d30e37a2d9774fb1e5d026380ae0168e3c5522d",
             "f9333e45d857f5d90a91bab70a1eba0cfb1be4b0783c9acfcd883a9134692925",

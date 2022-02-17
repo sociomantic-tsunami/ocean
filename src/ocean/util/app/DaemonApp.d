@@ -247,7 +247,7 @@ public abstract class DaemonApp : Application,
 
         ***********************************************************************/
 
-        istring usage = null;
+        string usage = null;
 
         /***********************************************************************
 
@@ -255,7 +255,7 @@ public abstract class DaemonApp : Application,
 
         ***********************************************************************/
 
-        istring help = null;
+        string help = null;
 
         /***********************************************************************
 
@@ -263,7 +263,7 @@ public abstract class DaemonApp : Application,
 
         ***********************************************************************/
 
-        istring[] default_configs = [ "etc/config.ini" ];
+        string[] default_configs = [ "etc/config.ini" ];
 
         /***********************************************************************
 
@@ -329,7 +329,7 @@ public abstract class DaemonApp : Application,
 
         ***********************************************************************/
 
-        istring reopen_command = "reopen_files";
+        string reopen_command = "reopen_files";
 
         /***********************************************************************
 
@@ -338,7 +338,7 @@ public abstract class DaemonApp : Application,
 
         ***********************************************************************/
 
-        istring show_version_command = "show_version";
+        string show_version_command = "show_version";
 
         /***********************************************************************
 
@@ -392,7 +392,7 @@ public abstract class DaemonApp : Application,
 
     ***************************************************************************/
 
-    public this ( istring name, istring desc,
+    public this ( string name, string desc,
         VersionInfo ver, OptionalSettings settings = OptionalSettings.init )
     {
         super(name, desc);
@@ -569,7 +569,7 @@ public abstract class DaemonApp : Application,
 
     ***************************************************************************/
 
-    override protected int run ( istring[] args )
+    override protected int run ( string[] args )
     {
         this.gc_stats.start();
         scope(exit) this.gc_stats.stop();
@@ -625,13 +625,13 @@ public abstract class DaemonApp : Application,
 
     ***************************************************************************/
 
-    override public void exit ( int status, istring msg = null )
+    override public void exit ( int status, string msg = null )
     {
         this.exit(status, msg, Logger.init);
     }
 
     /// Ditto
-    public void exit ( int status, istring msg, Logger logger )
+    public void exit ( int status, string msg, Logger logger )
     {
         if (logger !is null)
         {
@@ -808,9 +808,9 @@ public abstract class DaemonApp : Application,
     }
 
     /// ditto
-    override public istring[] filterConfigFiles ( IApplication app,
+    override public string[] filterConfigFiles ( IApplication app,
                                                   ConfigParser config,
-                                                  istring[] files )
+                                                  string[] files )
     {
         return files;
     }
@@ -868,8 +868,8 @@ unittest
         {
 
             // The name of your app and a short description of what it does.
-            istring name = "my_app";
-            istring desc = "Dummy app for unittest.";
+            string name = "my_app";
+            string desc = "Dummy app for unittest.";
 
             // The version info for your app. Normally you get this by importing
             // Version and passing the AA which contains the version info
@@ -943,7 +943,7 @@ unittest
 
     ***************************************************************************/
 
-    int main ( istring[] cl_args )
+    int main ( string[] cl_args )
     {
         // Instantiate an instance of your app class.
         auto my_app = new MyApp;

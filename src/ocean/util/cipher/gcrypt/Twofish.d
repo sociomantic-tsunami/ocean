@@ -52,7 +52,7 @@ unittest
     // Twofish requires an initialisation vector of length 16 bytes.
     auto iv = cast(immutable(ubyte)[])"a iv of 16 bytes";
 
-    istring text = "This is a text we are going to encrypt";
+    string text = "This is a text we are going to encrypt";
     mstring encrypted_text, decrypted_text;
 
     // Create the class

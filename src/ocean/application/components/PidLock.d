@@ -86,7 +86,7 @@ public struct PidLock
     {
         if (this.pidlock_path.length)
         {
-            istring msg =
+            string msg =
                 idup("Couldn't lock the pid lock file '" ~ this.pidlock_path
                  ~ "'. Probably another instance of the application is running.");
             enforce(this.tryLockPidFile(), msg);

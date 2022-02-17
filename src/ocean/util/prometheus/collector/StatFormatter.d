@@ -68,7 +68,7 @@ public static void formatStats ( ValuesT ) (
 
 *******************************************************************************/
 
-public static void formatStats ( istring LabelName, ValuesT, LabelT ) (
+public static void formatStats ( string LabelName, ValuesT, LabelT ) (
     ValuesT values, LabelT label_val, ref mstring buffer )
 {
     static assert (is(ValuesT == struct) || is(ValuesT == class),
@@ -155,7 +155,7 @@ public static void formatStats ( ValuesT, LabelsT ) ( ValuesT values,
 
 *******************************************************************************/
 
-private static void appendLabel ( istring LabelName, LabelT ) (
+private static void appendLabel ( string LabelName, LabelT ) (
     LabelT label_val, ref mstring buffer )
 {
     static if (isFloatingPointType!(LabelT))

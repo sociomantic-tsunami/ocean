@@ -50,7 +50,7 @@ public class ExitException : Exception
 
     ***************************************************************************/
 
-    this ( int status, istring msg = null )
+    this ( int status, string msg = null )
     {
         super(msg);
         this.status = status;

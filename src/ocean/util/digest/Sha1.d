@@ -104,14 +104,14 @@ final class Sha1 : Sha01
 
 unittest
 {
-    static istring[] strings = [
+    static string[] strings = [
             "abc",
             "abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq",
             "a",
             "0123456701234567012345670123456701234567012345670123456701234567"
     ];
 
-    static istring[] results = [
+    static string[] results = [
             "a9993e364706816aba3e25717850c26c9cd0d89d",
             "84983e441c3bd26ebaae4aa1f95129e5e54670f1",
             "34aa973cd4c4daa4f61eeb2bdbad27316534016f",

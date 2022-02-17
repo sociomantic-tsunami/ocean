@@ -347,7 +347,7 @@ class TaskSelectTransceiver
 
     ***************************************************************************/
 
-    private size_t transfer ( lazy iodev.ssize_t io_op, Event wait_event, istring opname )
+    private size_t transfer ( lazy iodev.ssize_t io_op, Event wait_event, string opname )
     out (n)
     {
         assert(n > 0);

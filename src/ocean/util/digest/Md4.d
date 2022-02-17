@@ -347,7 +347,7 @@ class Md4 : MerkleDamgard
 
 unittest
 {
-    static istring[] strings = [
+    static string[] strings = [
         "",
         "a",
         "abc",
@@ -357,7 +357,7 @@ unittest
         "12345678901234567890123456789012345678901234567890123456789012345678901234567890"
     ];
 
-    static istring[] results = [
+    static string[] results = [
         "31d6cfe0d16ae931b73c59d7e0c089c0",
         "bde52cb31de33e46245e05fbdbd6fb24",
         "a448017aaf21d8525fc10ae87aa6729d",

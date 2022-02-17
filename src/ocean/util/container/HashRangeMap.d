@@ -595,9 +595,9 @@ unittest
             return this.x == other.x;
         }
 
-        istring toString()
+        string toString()
         {
-            return "S(" ~ to!(istring)(this.x) ~ ")";
+            return "S(" ~ to!(string)(this.x) ~ ")";
         }
     }
 

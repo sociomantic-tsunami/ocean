@@ -41,7 +41,7 @@ class App : Application
         this.registerExtension(this.timers);
     }
 
-    override protected int run ( istring[] args )
+    override protected int run ( string[] args )
     {
         // Register some timed events
         this.timers.register(&this.first, 0.0001);
@@ -78,7 +78,7 @@ class App : Application
 }
 
 version (unittest) {} else
-void main (istring[] args)
+void main (string[] args)
 {
     auto sandbox = DirectorySandbox.create(["etc", "log"]);
 

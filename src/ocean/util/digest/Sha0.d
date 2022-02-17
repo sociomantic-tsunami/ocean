@@ -93,7 +93,7 @@ final class Sha0 : Sha01
 
 unittest
 {
-    static istring[] strings = [
+    static string[] strings = [
         "",
         "abc",
         "message digest",
@@ -102,7 +102,7 @@ unittest
         "12345678901234567890123456789012345678901234567890123456789012345678901234567890"
     ];
 
-    static istring[] results = [
+    static string[] results = [
         "f96cea198ad1dd5617ac084a3d92c6107708c0ef",
         "0164b8a914cd2a5e74c4f7ff082c4d97f1edf880",
         "c1b0f222d150ebb9aa36a40cafdc8bcbed830b14",

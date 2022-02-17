@@ -103,7 +103,7 @@ public template ReusableExceptionImplementation()
     /**************************************************************************
 
         Fields used instead of `msg` for mutable messages. `Exception.msg`
-        has `istring` type thus can't be overwritten with new data
+        has `string` type thus can't be overwritten with new data
 
     ***************************************************************************/
 
@@ -139,7 +139,7 @@ public template ReusableExceptionImplementation()
 
     ***************************************************************************/
 
-    public typeof (this) set ( cstring msg, istring file = __FILE__,
+    public typeof (this) set ( cstring msg, string file = __FILE__,
         long line = __LINE__ )
     {
         ocean.core.array.Mutation.copy(this.reused_msg, msg);
@@ -164,7 +164,7 @@ public template ReusableExceptionImplementation()
 
     ***************************************************************************/
 
-    public void enforce ( T ) ( T ok, lazy cstring msg, istring file = __FILE__,
+    public void enforce ( T ) ( T ok, lazy cstring msg, string file = __FILE__,
         long line = __LINE__ )
     {
         if (!ok)
@@ -307,7 +307,7 @@ version (unittest)
 {
     private class SomeReusableException : Exception
     {
-        void badName(istring name, uint id)
+        void badName(string name, uint id)
         {
             this.set("Wrong name (")
                 .append(name)
@@ -335,7 +335,7 @@ public template DefaultExceptionCtor()
 {
     import ocean.meta.types.Qualifiers;
 
-    public this (istring msg, istring file = __FILE__,
+    public this (string msg, string file = __FILE__,
                  typeof(__LINE__) line = __LINE__)
     {
         super (msg, file, line);

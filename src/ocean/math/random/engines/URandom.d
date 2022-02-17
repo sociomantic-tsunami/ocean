@@ -79,7 +79,7 @@ struct URandom{
     /// does nothing
     void seed(scope uint delegate() r) { }
     /// writes the current status in a string
-    istring toString(){
+    string toString(){
         return "URandom";
     }
     /// reads the current status from a string (that should have been trimmed)

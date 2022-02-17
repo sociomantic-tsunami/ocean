@@ -18,7 +18,7 @@ import ocean.core.Test;
 
 unittest
 {
-    static immutable istring original = "Hello \u262F \u0842 \uEFFF";
+    static immutable string original = "Hello \u262F \u0842 \uEFFF";
     cstring r;
     toString(original, (cstring x) { r ~= x; return x.length; });
     test(original == r);

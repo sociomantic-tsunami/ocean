@@ -244,7 +244,7 @@ private const(ubyte[256]) PI =
 
 unittest
 {
-    static istring[] strings = [
+    static string[] strings = [
         "",
         "a",
         "abc",
@@ -254,7 +254,7 @@ unittest
         "12345678901234567890123456789012345678901234567890123456789012345678901234567890"
     ];
 
-    static istring[] results = [
+    static string[] results = [
         "8350e5a3e24c153df2275c9f80692773",
         "32ec01ec4a6dac72c0ab96fb34c0b5d1",
         "da853b0d3f88d99b30283a69e6ded6bb",

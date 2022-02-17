@@ -25,7 +25,7 @@ public void main ()
     auto test_dir = DirectorySandbox.create(["flexiblefilequeue"]);
     scope (exit) test_dir.remove();
 
-    static immutable istring test_file = "testfile";
+    static immutable string test_file = "testfile";
 
 
     static void pushItems (FlexibleFileQueue queue, size_t size)

@@ -1221,7 +1221,7 @@ final class RandomG(SourceT=DefaultEngine)
     // ---------------
 
     /// writes the current status in a string
-    override istring toString(){
+    override string toString(){
         return source.toString();
     }
     /// reads the current status from a string (that should have been trimmed)

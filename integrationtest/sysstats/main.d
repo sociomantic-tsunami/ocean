@@ -38,8 +38,8 @@ class MyApp : DaemonApp
     {
         this.epoll = new EpollSelectDispatcher;
 
-        istring name = "Application";
-        istring desc = "Testing signal handling.";
+        string name = "Application";
+        string desc = "Testing signal handling.";
 
         DaemonApp.OptionalSettings settings;
 
@@ -98,7 +98,7 @@ import ocean.io.device.File;
 import ocean.util.test.DirectorySandbox;
 
 version (unittest) {} else
-void main(istring[] args)
+void main(string[] args)
 {
     auto sandbox = DirectorySandbox.create(["etc", "log"]);
 
