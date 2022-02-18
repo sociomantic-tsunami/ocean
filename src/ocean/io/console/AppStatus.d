@@ -908,14 +908,13 @@ public class AppStatus
     public bool getMemoryUsage ( out float mem_allocated, out float mem_free )
     {
         static immutable float Mb = 1024 * 1024;
-        size_t used, free;
-        ocean.transition.gc_usage(used, free);
+        auto stats = GC.stats();
 
-        if (used == 0 && free == 0)
+        if (stats.usedSize == 0 && stats.freeSize == 0)
             return false;
 
-        mem_allocated = cast(float)(used + free) / Mb;
-        mem_free = cast(float)free / Mb;
+        mem_allocated = cast(float)(stats.usedSize + stats.freeSize) / Mb;
+        mem_free = cast(float)stats.freeSize / Mb;
 
         return true;
     }

@@ -175,7 +175,7 @@ private class UnitTestRunner
         size_t skipped = 0;
         size_t no_tests = 0;
         size_t no_match = 0;
-        size_t gc_usage_before, gc_usage_after, mem_free;
+        GC.Stats before, after;
         bool collect_gc_usage = !!this.verbose;
 
         if (this.verbose)
@@ -235,7 +235,7 @@ private class UnitTestRunner
             if (collect_gc_usage)
             {
                 GC.collect();
-                ocean.transition.gc_usage(gc_usage_before, mem_free);
+                before = GC.stats();
             }
             switch (this.timedTest(m, t, e))
             {
@@ -243,11 +243,11 @@ private class UnitTestRunner
                     passed++;
                     if (this.verbose)
                     {
-                        ocean.transition.gc_usage(gc_usage_after, mem_free);
+                        after = GC.stats();
                         Stdout.format(" PASS [{}, {} bytes ({} -> {})]",
                                       this.toHumanTime(t),
-                                      cast(long)(gc_usage_after - gc_usage_before),
-                                      gc_usage_before, gc_usage_after);
+                                      cast(long)(after.usedSize - before.usedSize),
+                                      before.usedSize, after.usedSize);
                     }
                     this.xmlAddSuccess(m.name, t);
                     continue;

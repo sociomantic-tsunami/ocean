@@ -321,19 +321,15 @@ unittest
 public void testNoAlloc ( lazy void expr, istring file = __FILE__,
     int line = __LINE__ )
 {
-    size_t used1, free1;
-    ocean.transition.gc_usage(used1, free1);
-
+    auto before = GC.stats();
     expr();
-
-    size_t used2, free2;
-    ocean.transition.gc_usage(used2, free2);
+    auto after = GC.stats();
 
     enforceImpl!(TestException, bool)(
-        used1 == used2 && free1 == free2,
+        before.usedSize == after.usedSize && before.freeSize == after.freeSize,
         format("Expression expected to not allocate but GC usage stats have " ~
                "changed from {} (used) / {} (free) to {} / {}",
-               used1, free1, used2, free2),
+               before.usedSize, before.freeSize, after.usedSize, after.freeSize),
         file,
         line
     );
