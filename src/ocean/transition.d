@@ -320,25 +320,12 @@ unittest
 
 static import core.memory;
 
-static if (is(typeof(core.memory.GC.stats)))
+deprecated("Use `core.memory : GC.stats` directly")
+void gc_usage ( out size_t used, out size_t free )
 {
-    void gc_usage ( out size_t used, out size_t free )
-    {
-        auto stats = core.memory.GC.stats();
-        used = stats.usedSize;
-        free = stats.freeSize;
-    }
-}
-else static if (is(typeof(core.memory.GC.usage)))
-{
-    alias core.memory.GC.usage gc_usage;
-}
-else
-{
-    void gc_usage ( out size_t used, out size_t free )
-    {
-        // no-op
-    }
+    auto stats = core.memory.GC.stats();
+    used = stats.usedSize;
+    free = stats.freeSize;
 }
 
 /*******************************************************************************
