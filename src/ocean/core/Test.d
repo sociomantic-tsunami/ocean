@@ -227,8 +227,14 @@ class NamedTest : TestException
 
     static if (is(typeof(Throwable.message)))
     {
-        public override cstring message ( ) const
+        public override cstring message () const @trusted nothrow
         {
+            // The Formatter currently has no annotation, as it would require
+            // extensive work on it (and a new language feature),
+            // but we know it's neither throwing (it doesn't on its own),
+            // nor does it present a non-safe interface.
+            scope (failure) assert(0);
+
             if (this.name.length)
             {
                 return format("[{}] {}", this.name, this.msg);

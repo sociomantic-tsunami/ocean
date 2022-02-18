@@ -180,7 +180,7 @@ public template ReusableExceptionImplementation()
 
         ***************************************************************************/
 
-        public override cstring message ( ) const
+        public override cstring message ( ) const @safe nothrow
         {
             return this.msg[].ptr is null ? this.reused_msg[] : this.msg;
         }
