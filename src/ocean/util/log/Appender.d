@@ -87,7 +87,7 @@ public class Appender
     abstract Mask mask ();
 
     /// Return the name of this Appender.
-    abstract cstring name ();
+    abstract string name ();
 
     /***************************************************************************
 
@@ -223,7 +223,7 @@ public class AppendNull : Appender
     }
 
     /// Return the name of this class
-    final override cstring name ()
+    final override string name ()
     {
         return this.classinfo.name;
     }
