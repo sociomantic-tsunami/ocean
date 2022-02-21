@@ -597,7 +597,7 @@ class Json(T) : JsonParser!(T)
         {
             Value[]         array;
             real            number;
-            const(T)[]     string;
+            const(T)[]      str;
             Composite       object;
         }
 
@@ -651,10 +651,10 @@ class Json(T) : JsonParser!(T)
         const(T)[] toString (T[] dst = null)
         {
             if (type is Type.RawString)
-                return string;
+                return this.str;
 
             if (type is Type.String)
-                return unescape (string, dst);
+                return unescape (this.str, dst);
 
             return null;
         }
@@ -671,10 +671,10 @@ class Json(T) : JsonParser!(T)
         bool toString (scope void delegate(const(T)[]) dg)
         {
             if (type is Type.RawString)
-                dg(string);
+                dg(this.str);
             else
                 if (type is Type.String)
-                    unescape (string, dg);
+                    unescape (this.str, dg);
                 else
                     return false;
             return true;
@@ -727,7 +727,7 @@ class Json(T) : JsonParser!(T)
         Value set (const(T)[] str, bool escaped = false)
         {
             type = escaped ? Type.String : Type.RawString;
-            string = str;
+            this.str = str;
             return &this;
         }
 
@@ -893,11 +893,11 @@ class Json(T) : JsonParser!(T)
                 switch (val.type)
                 {
                     case Type.String:
-                    append (`"`), append(val.string), append(`"`);
+                    append (`"`), append(val.str), append(`"`);
                     break;
 
                     case Type.RawString:
-                    append (`"`), escape(val.string, append), append(`"`);
+                    append (`"`), escape(val.str, append), append(`"`);
                     break;
 
                     case Type.Number:
