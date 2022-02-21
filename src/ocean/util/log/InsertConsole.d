@@ -118,7 +118,7 @@ public class InsertConsole: Appender
 
      ***********************************************************************/
 
-    override cstring name ( )
+    override string name ( )
     {
         return this.classinfo.name;
     }

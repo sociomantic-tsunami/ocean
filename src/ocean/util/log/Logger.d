@@ -425,7 +425,7 @@ public final class Logger : ILogger
     /// List of `Appender`s this Logger emits messages to
     private Appender        appender_;
     /// Name of this logger
-    private string         name_;
+    private string          name_;
     /// Buffer to use for formatting. Can be `null`, see `buffer` properties
     private mstring         buffer_;
     /// `Level` at which this `Logger` is configured
@@ -610,7 +610,7 @@ public final class Logger : ILogger
 
     ***************************************************************************/
 
-    public cstring name ()
+    public string name ()
     {
         auto i = this.name_.length;
         if (i > 0)
@@ -1007,7 +1007,7 @@ unittest
         public Event[] result;
 
         public override Mask mask () { Mask m = 42; return m; }
-        public override cstring name () { return "BufferAppender"; }
+        public override string name () { return "BufferAppender"; }
         public override void append (LogEvent e)
         {
             this.result ~= Event(e.level, e.toString());
@@ -1042,7 +1042,7 @@ unittest
         private size_t index;
 
         public override Mask mask () { Mask m = 42; return m; }
-        public override cstring name () { return "StaticBufferAppender"; }
+        public override string name () { return "StaticBufferAppender"; }
         public override void append (LogEvent e)
         {
             assert(this.index < this.buffers.length);
