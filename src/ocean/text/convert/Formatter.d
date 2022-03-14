@@ -464,9 +464,13 @@ private void handle (T) (T v, FormatInfo f, scope FormatterSink sf, scope ElemSi
     // toString hook: Give priority to the non-allocating one
     // Note: sink `toString` overload should take a `scope` delegate
     else static if (is(typeof(v.toString(sf))))
+    {
+        // Some `toString` signatures expect a `ref` sink
+        scope sinkRef = (in cstring e) { se(e, f); };
         nullWrapper(&v,
-                    v.toString((in cstring e) { se(e, f); }),
+                    v.toString(sinkRef),
                     se("null", f));
+    }
     else static if (is(typeof(v.toString()) : cstring))
         nullWrapper(&v, se(v.toString(), f), se("null", f));
     else static if (is(T == interface))
