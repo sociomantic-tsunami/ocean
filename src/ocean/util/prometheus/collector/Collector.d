@@ -59,6 +59,10 @@
 
 module ocean.util.prometheus.collector.Collector;
 
+version (unittest) import ocean.core.Test;
+import ocean.meta.types.Qualifiers;
+import ocean.util.prometheus.collector.StatFormatter;
+
 /*******************************************************************************
 
     This class provides methods to collect metrics with no label, one label, or
@@ -75,12 +79,6 @@ module ocean.util.prometheus.collector.Collector;
 
 public class Collector
 {
-    import core.stdc.time;
-    import ocean.math.IEEE;
-    import ocean.text.convert.Formatter;
-    import ocean.meta.types.Qualifiers;
-    import StatFormatter = ocean.util.prometheus.collector.StatFormatter;
-
     /// A buffer used for storing collected stats. Is cleared when the `reset`
     /// method is called.
     private mstring collect_buf;
@@ -126,7 +124,7 @@ public class Collector
         static assert (is(ValuesT == struct) || is(ValuesT == class),
             "'values' parameter must be a struct or a class.");
 
-        StatFormatter.formatStats(values, this.collect_buf);
+        formatStats(values, this.collect_buf);
     }
 
     /***************************************************************************
@@ -152,8 +150,7 @@ public class Collector
         static assert (is(ValuesT == struct) || is(ValuesT == class),
             "'values' parameter must be a struct or a class.");
 
-        StatFormatter.formatStats!(LabelName)(values, label_val,
-            this.collect_buf);
+        formatStats!(LabelName)(values, label_val, this.collect_buf);
     }
 
     /***************************************************************************
@@ -180,33 +177,7 @@ public class Collector
         static assert (is(LabelsT == struct) || is(LabelsT == class),
             "'labels' parameter must be a struct or a class.");
 
-        StatFormatter.formatStats(values, labels, this.collect_buf);
-    }
-}
-
-version (unittest)
-{
-    import ocean.core.Test;
-    import ocean.meta.types.Qualifiers;
-
-    struct Statistics
-    {
-        ulong up_time_s;
-        size_t count;
-        float ratio;
-        double fraction;
-        real very_real;
-
-        // The following should not be collected as stats
-        int delegate ( int ) a_delegate;
-        void function ( ) a_function;
-    }
-
-    struct Labels
-    {
-        hash_t id;
-        cstring job;
-        float perf;
+        formatStats(values, labels, this.collect_buf);
     }
 }
 

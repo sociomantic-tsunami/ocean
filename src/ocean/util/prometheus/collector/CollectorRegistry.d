@@ -15,12 +15,12 @@
 
 module ocean.util.prometheus.collector.CollectorRegistry;
 
+import ocean.meta.types.Qualifiers;
+import ocean.util.prometheus.collector.Collector : Collector;
+
 /// ditto
 public class CollectorRegistry
 {
-    import ocean.meta.types.Qualifiers;
-    import ocean.util.prometheus.collector.Collector : Collector;
-
     /// An alias for the type of delegates that are called for stat collection
     public alias void delegate ( Collector ) CollectionDg;
 
@@ -98,26 +98,8 @@ public class CollectorRegistry
 version (unittest)
 {
     import ocean.core.Test;
-    import ocean.meta.types.Qualifiers;
-    import ocean.util.prometheus.collector.Collector;
 
-    ///
-    public struct Statistics
-    {
-        ulong up_time_s;
-        size_t count;
-        float ratio;
-        double fraction;
-        real very_real;
-    }
-
-    ///
-    public struct Labels
-    {
-        hash_t id;
-        cstring job;
-        float perf;
-    }
+    import ocean.util.prometheus.collector.StatFormatter : Labels, Statistics;
 
     private class ExampleStats
     {
