@@ -576,3 +576,13 @@ unittest
     }
     myFunc("Hello World");
 }
+
+unittest
+{
+    // Some types (e.g. Phobos's `SysTime` take a sink by ref)
+    static struct SysTime
+    {
+        void toString (W) (ref W writer) { writer("Hello World"); }
+    }
+    assert(format("{}", SysTime.init) == "Hello World");
+}
