@@ -14,12 +14,11 @@
 
 module ocean.util.prometheus.collector.StatFormatter;
 
-import core.stdc.time;
-import ocean.meta.traits.Basic;
-import ocean.meta.codegen.Identifier;
 import ocean.math.IEEE;
-import ocean.text.convert.Formatter;
+import ocean.meta.codegen.Identifier;
+import ocean.meta.traits.Basic;
 import ocean.meta.types.Qualifiers;
+import ocean.text.convert.Formatter;
 
 /*******************************************************************************
 
@@ -303,7 +302,7 @@ version (unittest)
     import ocean.core.Test;
     import ocean.meta.types.Qualifiers;
 
-    struct Statistics
+    package struct Statistics
     {
         ulong up_time_s;
         size_t count;
@@ -312,7 +311,7 @@ version (unittest)
         real very_real;
     }
 
-    struct Labels
+    package struct Labels
     {
         hash_t id;
         cstring job;
