@@ -296,8 +296,9 @@ public class LayoutTimer : Appender.Layout
 
     public override void format (LogEvent event, scope FormatterSink dg)
     {
-        sformat(dg, "{} {} [{}] {}- {}", event.span.millis(), event.levelName,
-            event.name, event.host.label, event);
+        sformat(dg, "{} {} [{}] {}- {}", event.span.millis(),
+            ILogger.convert(event.level),
+            event.name, event.host.label, event.msg);
     }
 }
 
@@ -310,11 +311,11 @@ unittest
        scope dg = (in cstring v) { result ~= v; };
        scope layout = new LayoutTimer();
        LogEvent event = {
-           msg_: "Have you met Ted?",
-           name_: "Barney",
-           time_: Clock.startTime() + TimeSpan.fromMillis(420),
-           level_: ILogger.Level.Warn,
-           host_: new HierarchyT!(Logger)("test"),
+           msg: "Have you met Ted?",
+           name: "Barney",
+           time: Clock.startTime() + TimeSpan.fromMillis(420),
+           level: ILogger.Level.Warn,
+           host: new HierarchyT!(Logger)("test"),
        };
 
        testNoAlloc(layout.format(event, dg));

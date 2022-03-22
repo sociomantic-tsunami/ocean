@@ -68,7 +68,7 @@ public class AppendSysLog : Appender
             dg("[");
             dg(event.name);
             dg("] - ");
-            dg(event.toString);
+            dg(event.msg);
         }
     }
 

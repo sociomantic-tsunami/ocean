@@ -19,11 +19,11 @@ import ocean.text.convert.Formatter;
 import ocean.meta.types.Qualifiers;
 import ocean.util.log.Appender;
 import ocean.util.log.Event;
+import ocean.util.log.ILogger;
 
 version (unittest)
 {
     import ocean.core.Test;
-    import ocean.util.log.ILogger;
 }
 
 /*******************************************************************************
@@ -68,7 +68,7 @@ public class LayoutSimple : Appender.Layout
 
     public override void format (LogEvent event, scope FormatterSink dg)
     {
-        sformat(dg, "{} [{}] - {}", event.levelName, event.name, event);
+        sformat(dg, "{} [{}] - {}", ILogger.convert(event.level), event.name, event.msg);
     }
 }
 
@@ -81,9 +81,9 @@ unittest
     scope dg = (cstring v) { result ~= v; };
     scope layout = new LayoutSimple();
     LogEvent event = {
-        msg_: "Have you met Ted?",
-        name_: "Barney",
-        level_: ILogger.Level.Warn,
+        msg: "Have you met Ted?",
+        name: "Barney",
+        level: ILogger.Level.Warn,
     };
 
     testNoAlloc(layout.format(event, dg));

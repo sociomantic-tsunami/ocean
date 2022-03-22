@@ -71,7 +71,7 @@ public class LayoutStatsLog : Appender.Layout
         sformat(dg, "{u4}-{u2}-{u2} {u2}:{u2}:{u2},{u3} {}",
             dt.date.year, dt.date.month, dt.date.day,
             dt.time.hours, dt.time.minutes, dt.time.seconds, dt.time.millis,
-            event);
+            event.msg);
     }
 }
 
@@ -84,11 +84,11 @@ unittest
     scope dg = (cstring v) { result ~= v; };
     scope layout = new LayoutStatsLog(false);
     LogEvent event = {
-        msg_: "Baguette: 420, Radler: +Inf",
-        name_: "Irrelevant",
-        time_: Time.fromUnixTime(1525048962) + TimeSpan.fromMillis(42),
-        level_: ILogger.Level.Warn,
-        host_: null,
+        msg: "Baguette: 420, Radler: +Inf",
+        name: "Irrelevant",
+        time: Time.fromUnixTime(1525048962) + TimeSpan.fromMillis(42),
+        level: ILogger.Level.Warn,
+        host: null,
     };
 
     testNoAlloc(layout.format(event, dg));
