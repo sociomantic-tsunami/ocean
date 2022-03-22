@@ -546,7 +546,7 @@ unittest
 
         final override public void append (LogEvent event)
         {
-            copy(this.latest_log_msg, event.toString());
+            copy(this.latest_log_msg, event.msg);
         }
 
         final override public Mask mask () { return this.mask_; }

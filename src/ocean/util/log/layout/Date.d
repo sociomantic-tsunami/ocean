@@ -23,11 +23,11 @@ import ocean.time.Clock;
 import ocean.time.WallClock;
 import ocean.util.log.Appender;
 import ocean.util.log.Event;
+import ocean.util.log.ILogger;
 
 version (unittest)
 {
     import ocean.core.Test;
-    import ocean.util.log.ILogger;
 }
 
 /*******************************************************************************
@@ -68,7 +68,7 @@ public class LayoutDate : Appender.Layout
         sformat(dg, "{u4}-{u2}-{u2} {u2}:{u2}:{u2},{u2} {} [{}] - {}",
             dt.date.year, dt.date.month, dt.date.day,
             dt.time.hours, dt.time.minutes, dt.time.seconds, dt.time.millis,
-            event.levelName, event.name, event);
+            ILogger.convert(event.level), event.name, event.msg);
     }
 }
 
@@ -81,11 +81,11 @@ unittest
        scope dg = (in cstring v) { result ~= v; };
        scope layout = new LayoutDate(false);
        LogEvent event = {
-           msg_: "Have you met Ted?",
-               name_: "Barney",
-               time_: Time.fromUnixTime(1525048962) + TimeSpan.fromMillis(420),
-               level_: ILogger.Level.Warn,
-               host_: null,
+           msg: "Have you met Ted?",
+           name: "Barney",
+           time: Time.fromUnixTime(1525048962) + TimeSpan.fromMillis(420),
+           level: ILogger.Level.Warn,
+           host: null,
        };
 
        testNoAlloc(layout.format(event, dg));

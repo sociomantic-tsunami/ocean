@@ -826,10 +826,13 @@ public final class Logger : ILogger
     {
         if (host_.context.enabled (level_, level))
         {
-            LogEvent event;
-
-            // set the event attributes and append it
-            event.set(host_, level, exp, name.length ? name_[0..$-1] : "root");
+            LogEvent event = {
+                level: level,
+                name: name.length ? name_[0..$-1] : "root",
+                host: host_,
+                time: Clock.now,
+                msg: exp,
+            };
             this.append(event);
         }
         return this;
@@ -1010,7 +1013,7 @@ unittest
         public override string name () { return "BufferAppender"; }
         public override void append (LogEvent e)
         {
-            this.result ~= Event(e.level, e.toString());
+            this.result ~= Event(e.level, e.msg);
         }
     }
 
@@ -1046,7 +1049,7 @@ unittest
         public override void append (LogEvent e)
         {
             assert(this.index < this.buffers.length);
-            auto str =snformat(this.buffers[this.index].buffer, "{}", e.toString());
+            auto str = snformat(this.buffers[this.index].buffer, "{}", e.msg);
             this.buffers[this.index].message = str;
             this.buffers[this.index++].level = e.level;
         }

@@ -23,69 +23,30 @@
 
 module ocean.util.log.Event;
 
-import ocean.meta.types.Qualifiers;
-import ocean.core.Verify;
 import ocean.time.Clock;
 import ocean.util.log.ILogger;
 
 ///
 public struct LogEvent
 {
-    private cstring         msg_, name_;
-    private Time            time_;
-    private ILogger.Level   level_;
-    private ILogger.Context host_;
+    /// Level at which this even happened
+    public ILogger.Level   level;
 
-    /// Set the various attributes of this event.
-    void set (ILogger.Context host, ILogger.Level level, cstring msg, cstring name)
-    {
-        time_ = Clock.now;
-        level_ = level;
-        host_ = host;
-        name_ = name;
-        msg_ = msg;
-    }
+    /// Name of the logger emitting this event
+    public const(char)[]   name;
 
-    /// Return the message attached to this event.
-    cstring toString ()
-    {
-        return msg_;
-    }
+    /// Host of the Logger emitting this event
+    public ILogger.Context host;
 
-    /// Return the name of the logger which produced this event
-    cstring name ()
-    {
-        return name_;
-    }
+    /// Time at which this event was recorded
+    public Time            time;
 
-    /// Return the logger level of this event.
-    ILogger.Level level ()
-    {
-        return level_;
-    }
+    /// Message emitted
+    public const(char)[]   msg;
 
-    /// Return the hierarchy where the event was produced from
-    ILogger.Context host ()
+    /// Returns: The difference between the program start time and the event time
+    public TimeSpan span () const scope
     {
-        return host_;
-    }
-
-    /// Return the time this event was produced,
-    /// relative to the start of this executable
-    TimeSpan span ()
-    {
-        return time_ - Clock.startTime();
-    }
-
-    /// Return the time this event was produced relative to Epoch
-    Time time ()
-    {
-        return time_;
-    }
-
-    /// Return the logger level name of this event.
-    cstring levelName ()
-    {
-        return ILogger.convert(this.level_);
+        return this.time - Clock.startTime();
     }
 }

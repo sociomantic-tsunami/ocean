@@ -67,6 +67,7 @@ import ocean.io.Stdout;
 import ocean.io.Terminal;
 import ocean.io.model.IConduit;
 import ocean.text.convert.Formatter;
+import ocean.time.Clock;
 import ocean.time.MicrosecondsClock;
 import ocean.transition;
 import ocean.util.container.AppendBuffer;
@@ -842,8 +843,10 @@ public class AppStatus
             return this;
         }
 
-        LogEvent event;
-        event.set(ILogger.Context.init, ILogger.Level.init, this.msg[], "");
+        LogEvent event = {
+            time: Clock.now,
+            msg: this.msg[],
+        };
 
         this.applyDisplayProps(this.current_display_props);
 
