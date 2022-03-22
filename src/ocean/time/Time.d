@@ -152,7 +152,7 @@ struct TimeSpan
         /**
          * Determines whether two TimeSpan values are equal
          */
-        equals_t opEquals(TimeSpan t)
+        public bool opEquals (in TimeSpan t) const scope
         {
                 return this.duration_ == t.duration_;
         }
@@ -160,7 +160,7 @@ struct TimeSpan
         /**
          * Compares this object against another TimeSpan value.
          */
-        public int opCmp ( const typeof(this) rhs ) const
+        public int opCmp (const typeof(this) rhs) const scope
         {
             return this.duration_.opCmp(rhs.duration_);
         }
@@ -174,7 +174,8 @@ struct TimeSpan
          * Returns: A TimeSpan value that is the result of this instance, the
          *          operation, and t.
          */
-        TimeSpan opBinary (string op) (TimeSpan t) if (op == "+" || op == "-")
+        public TimeSpan opBinary (string op) (in TimeSpan t) const scope
+            if (op == "+" || op == "-")
         {
             mixin("return TimeSpan(this.duration_ " ~ op ~ " t.duration_);");
         }
@@ -239,7 +240,8 @@ struct TimeSpan
          *         v = A multiplier or divisor to use for scaling this time span.
          * Returns: A new TimeSpan that is scaled by v
          */
-        TimeSpan opBinary (string op) (long v) if (op == "*" || op == "/")
+        public TimeSpan opBinary (string op) (long v) const scope
+            if (op == "*" || op == "/")
         {
                 mixin("return TimeSpan(duration_ " ~ op ~ " v);");
         }
@@ -289,7 +291,7 @@ struct TimeSpan
          * Returns: The result of integer division between this instance and
          * t.
          */
-        long opBinary (string op) (TimeSpan t) if (op == "/")
+        long opBinary (string op) (in TimeSpan t) const scope if (op == "/")
         {
             return duration_ / t.duration_;
         }
@@ -592,9 +594,9 @@ struct Time
 
         **********************************************************************/
 
-        int opEquals (Time t)
+        public bool opEquals (in Time t) const scope
         {
-                return ticks_ is t.ticks_;
+            return this.ticks_ is t.ticks_;
         }
 
         /**********************************************************************
@@ -603,15 +605,15 @@ struct Time
 
         **********************************************************************/
 
-        int opCmp (Time t)
+        public int opCmp (Time t) const scope
         {
-                if (ticks_ < t.ticks_)
-                    return -1;
+            if (this.ticks_ < t.ticks_)
+                return -1;
 
-                if (ticks_ > t.ticks_)
-                    return 1;
+            if (this.ticks_ > t.ticks_)
+                return 1;
 
-                return 0;
+            return 0;
         }
 
         /**********************************************************************
@@ -626,7 +628,8 @@ struct Time
 
         **********************************************************************/
 
-        Time opBinary (string op) (TimeSpan t) if (op == "+" || op == "-")
+        Time opBinary (string op) (in TimeSpan t) const scope
+            if (op == "+" || op == "-")
         {
             mixin("return Time(ticks_ " ~ op ~ " t.duration_.total!`hnsecs`);");
         }
@@ -695,9 +698,10 @@ struct Time
 
         **********************************************************************/
 
-        TimeSpan opBinary (string op) (Time t) if (op == "-")
+        public TimeSpan opBinary (string op) (in Time t) const scope
+            if (op == "-")
         {
-            return TimeSpan((ticks - t.ticks_).dur!"hnsecs");
+            return TimeSpan((ticks_ - t.ticks_).dur!"hnsecs");
         }
 
         unittest
