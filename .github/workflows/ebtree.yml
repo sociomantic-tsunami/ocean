@@ -1,0 +1,51 @@
+# Build and store ebtree in cache
+
+name: EBTree
+on:
+  workflow_call:
+    inputs:
+      os:
+        type: string
+        required: true
+      # More a constant than a real input
+      ebtree_version:
+        type: string
+        default: 'v6.0.socio10'
+
+jobs:
+  ebtree:
+    name: Build EBTree
+    runs-on: ${{ inputs.os }}
+
+    steps:
+    - name: "Ensure tools/ exists"
+      run: mkdir -p ${{ github.workspace }}/tools/
+
+    - name: 'Restore ebtree ${{ inputs.ebtree_version }} from cache'
+      id: cache-ebtree
+      uses: actions/cache@v3
+      with:
+        path: ${{ github.workspace }}/tools/
+        key:  ebtree-${{ inputs.ebtree_version }}
+
+    - name: 'Checkout ebtree ${{ inputs.ebtree_version }}'
+      uses: actions/checkout@v4
+      if: steps.cache-ebtree.outputs.cache-hit != 'true'
+      with:
+        repository: sociomantic-tsunami/ebtree
+        ref: ${{ inputs.ebtree_version }}
+        # Relative to Github workspace
+        path: tools/ebtree
+
+    - name: 'Build ebtree ${{ inputs.ebtree_version }}'
+      if: steps.cache-ebtree.outputs.cache-hit != 'true'
+      run: |
+        # fpm is used to build the `.deb` and depends on ruby
+        sudo apt-get update
+        sudo apt-get install -y build-essential ruby ruby-dev
+        sudo gem install --no-document fpm
+        # Build the debian package
+        # Package lives in tools/ebtree/deb/libebtree6[-{dbg,dev}]_$VERSION-distro_arch.deb
+        # $VERSION is ${{ inputs.ebtree_version }} without the leading 'v'
+        # E.g. libebtree6[-{dbg,dev}]_6.0.socio10-bionic_amd64.deb
+        make -C '${{ github.workspace }}/tools/ebtree' deb
