@@ -474,18 +474,8 @@ public ulong initializeSslAndCreateCtx ( const(char *) ca_path,
 {
     globalSslContext = null;
 
-    // Initialize SSL
-
-    SSL_library_init();
-
-    // Load  both libssl and libcrypto strings
-
-    SSL_load_error_strings();
-
-
     // Load the SSL v2 or v3 function table
-
-    auto method = SSLv23_method();
+    auto method = TLS_method();
 
     if ( !method )
     {
