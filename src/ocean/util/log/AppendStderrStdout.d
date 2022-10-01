@@ -119,7 +119,7 @@ public class AppendStderrStdout : Appender
 
         layout.format(
             event,
-            (cstring content) {
+            (in cstring content) {
                 stream.write(content);
             }
         );

@@ -189,7 +189,7 @@ class FormatOutput : OutputFilter
 
         **********************************************************************/
 
-        protected void emit (cstring s)
+        protected void emit (in cstring s)
         {
                 auto count = sink.write (s);
                 if (count is Eof)

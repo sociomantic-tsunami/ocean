@@ -440,7 +440,7 @@ public final class Collectd
 
     private void format (T...) (in T args)
     {
-        scope sink = (const(char)[] v)
+        scope sink = (in const(char)[] v)
                      {
                          this.format_buff ~= v;
                      };

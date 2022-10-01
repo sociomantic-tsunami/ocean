@@ -150,9 +150,10 @@ public class InsertConsole: Appender
         {
             layout.format(
               event,
-              ( cstring content )
+              (in cstring content_)
               {
                   size_t written;
+                  scope const(char)[] content = content_;
                   while (pos + content.length > buffer.length)
                   {
                       buffer[pos .. $] = content[0 .. buffer.length - pos];
