@@ -37,7 +37,7 @@ $O/test-unixsockext: override LDFLAGS += -lglib-2.0
 # for libssl have been updated to v1.1.x
 $O/%unittests: override LDFLAGS += -lglib-2.0 -lpcre -lxml2 -lxslt -lebtree \
 		-lreadline -lhistory -llzo2 -lbz2 -lz -ldl -lgcrypt -lgpg-error -lrt \
-		-l:libssl.so.1.0.0 -l:libcrypto.so.1.0.0
+		-l:libssl.so -l:libcrypto.so
 
 # Remove deprecated modules from testing:
 TEST_FILTER_OUT += \

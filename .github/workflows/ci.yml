@@ -12,7 +12,7 @@ jobs:
       # or build flavour we still want to see how things perform with the others
       fail-fast: false
       matrix:
-        os: [ ubuntu-18.04 ]
+        os: [ ubuntu-20.04 ]
         dc: [ dmd-2.092.1, dmd-2.093.1 ]
         flavor: [ prod, devel ]
         # Not a matrix row, but referenced as a constant in this file

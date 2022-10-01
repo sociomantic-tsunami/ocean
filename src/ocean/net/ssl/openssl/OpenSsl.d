@@ -129,7 +129,10 @@ public struct ENGINE;
 
 *******************************************************************************/
 
-public ssl_method_st* SSLv23_method ();
+public ssl_method_st* TLS_method ();
+
+deprecated("Use `TLS_method` instead")
+public alias SSLv23_method = TLS_method;
 
 
 /*******************************************************************************
@@ -141,6 +144,7 @@ public ssl_method_st* SSLv23_method ();
 
 *******************************************************************************/
 
+deprecated("This is no longer needed")
 public int SSL_library_init ();
 
 
@@ -150,6 +154,7 @@ public int SSL_library_init ();
 
 *******************************************************************************/
 
+deprecated("This is no longer needed")
 public void  SSL_load_error_strings ();
 
 
