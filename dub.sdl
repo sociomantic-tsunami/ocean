@@ -15,6 +15,5 @@ excludedSourceFiles \
 
 configuration "unittest" {
     excludedSourceFiles "src/ocean/core/UnitTestRunner.d"
-    libs "glib-2.0" "pcre" "ebtree" "readline" "lzo2" "gcrypt" "gpg-error"
-    lflags "-l:libcrypto.so.1.0.0" "-l:libssl.so.1.0.0"
+    libs "glib-2.0" "pcre" "ebtree" "readline" "lzo2" "gcrypt" "gpg-error" "crypto" "ssl"
 }
