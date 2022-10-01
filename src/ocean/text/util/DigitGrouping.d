@@ -137,7 +137,7 @@ public class DigitGrouping
         char[20] string_buf; // 20 characters is enough to store ulong.max
         size_t layout_pos;
 
-        void layoutSink ( cstring s )
+        void layoutSink (in cstring s)
         {
             string_buf[layout_pos .. layout_pos + s.length] = s[];
             layout_pos += s.length;
@@ -330,4 +330,3 @@ unittest
     test!("==")(BitGrouping.format(10000000000, buf), "9G 320M 761K"[]);
     test!("==")(BitGrouping.format(10000000000, buf, "X"), "9GX 320MX 761KX"[]);
 }
-

@@ -417,7 +417,7 @@ public abstract class ISelectClient : ITimeoutClient, ISelectable, ISelectClient
     public void fmtInfo ( scope void delegate ( cstring chunk ) sink )
     {
         sformat(
-            (cstring chunk) {sink(chunk); },
+            (in cstring chunk) {sink(chunk); },
             "{} fd={} events=", this.id, this.fileHandle
         );
         foreach ( event, name; epoll_event_t.event_to_name )

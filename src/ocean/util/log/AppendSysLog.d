@@ -246,7 +246,7 @@ public class AppendSysLog : Appender
 
     private char* format ( LogEvent event )
     {
-        void sink ( cstring data )
+        void sink (in cstring data)
         {
             this.buf ~= data;
         }

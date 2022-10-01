@@ -102,7 +102,7 @@ public class AppendFile : Filer
 
     final override void append (LogEvent event)
     {
-        this.layout.format(event, (cstring v) { this.buffer.write(v); });
+        this.layout.format(event, (in cstring v) { this.buffer.write(v); });
         this.buffer.append(FileConst.NewlineString).flush;
     }
 }
