@@ -28,43 +28,28 @@
 
 module ocean.io.select.EpollSelectDispatcher;
 
-
-import ocean.meta.types.Qualifiers;
-
-import ocean.core.Verify;
-
-import ocean.io.select.selector.IEpollSelectDispatcherInfo;
-import ocean.io.select.client.model.ISelectClient;
-
-import ocean.io.select.selector.model.ISelectedKeysHandler;
-
-import ocean.io.select.selector.SelectedKeysHandler,
-       ocean.io.select.selector.TimeoutSelectedKeysHandler,
-       ocean.io.select.selector.EpollException;
-
-import ocean.util.ReusableException;
-
-import ocean.io.select.client.SelectEvent;
-
-import ocean.io.select.selector.RegisteredClients;
-
-import ocean.core.Array : copy;
-
-import ocean.core.array.Search;
-
-import ocean.util.container.AppendBuffer;
-
-import ocean.util.container.queue.DynamicQueue;
-
-import ocean.time.timeout.model.ITimeoutManager;
-
-import ocean.sys.Epoll;
-
 import core.stdc.stdlib: bsearch, qsort;
-
 import core.stdc.errno: errno, EINTR, ENOENT, EEXIST, ENOMEM, EINVAL;
 
-debug ( ISelectClient ) import ocean.io.Stdout;
+import ocean.core.Array : copy;
+import ocean.core.array.Search;
+import ocean.core.Verify;
+import ocean.io.select.client.model.ISelectClient;
+import ocean.io.select.client.SelectEvent;
+import ocean.io.select.selector.EpollException;
+import ocean.io.select.selector.IEpollSelectDispatcherInfo;
+import ocean.io.select.selector.model.ISelectedKeysHandler;
+import ocean.io.select.selector.RegisteredClients;
+import ocean.io.select.selector.SelectedKeysHandler;
+import ocean.io.select.selector.TimeoutSelectedKeysHandler;
+import ocean.meta.types.Qualifiers;
+import ocean.sys.Epoll;
+import ocean.time.timeout.model.ITimeoutManager;
+import ocean.util.container.AppendBuffer;
+import ocean.util.container.queue.DynamicQueue;
+import ocean.util.ReusableException;
+
+debug (ISelectClient) import ocean.io.Stdout;
 
 version (unittest)
 {
