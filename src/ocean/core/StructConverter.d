@@ -18,8 +18,6 @@
 
 module ocean.core.StructConverter;
 
-
-
 import ocean.meta.types.Qualifiers;
 import ocean.meta.codegen.Identifier;
 import ocean.meta.traits.Basic;
@@ -60,11 +58,9 @@ version (unittest) import ocean.core.Test;
           memory where as arrays of similar types that were converted use memory
           provided by the requestBuffer delegate.
 
-    Template Parameters:
-        From = type we're copying from
-        To   = type we're copying to
-
-    Parameters:
+    Params:
+        From          = type we're copying from
+        To            = type we're copying to
         from          = instance we're copying from
         to            = instance we're copying to
         requestBuffer = delegate to request temporary buffers used during
@@ -76,7 +72,7 @@ public void structConvert ( From, To ) ( ref From from, out To to,
     void[] delegate ( size_t ) requestBuffer
         = ( size_t n ) { return new void[n]; } )
 {
-    static assert ( is ( From == struct ) && is ( To == struct ),
+    static assert (is(From == struct) && is (To == struct),
             "structConvert works only on structs, not on " ~
             From.stringof ~ " / " ~ To.stringof);
 

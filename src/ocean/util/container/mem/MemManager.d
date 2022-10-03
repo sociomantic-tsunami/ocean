@@ -16,16 +16,11 @@
 
 module ocean.util.container.mem.MemManager;
 
-
-
-import ocean.core.Enforce;
-
-import ocean.core.ExceptionDefinitions : onOutOfMemoryError;
-
+import core.memory;
 import core.stdc.stdlib : malloc, free;
 
-import core.memory;
-
+import ocean.core.Enforce;
+import ocean.core.ExceptionDefinitions : onOutOfMemoryError;
 import ocean.meta.types.Qualifiers;
 
 /*******************************************************************************
@@ -137,7 +132,7 @@ public interface IMemManager
 
     Memory manager implementation using the D garbage collector.
 
-    Template Parameters:
+    Params:
         gc_aware  = whether the gc should scan the allocated memory for
                     pointers or references
 

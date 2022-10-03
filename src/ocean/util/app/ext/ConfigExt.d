@@ -15,24 +15,18 @@
 
 module ocean.util.app.ext.ConfigExt;
 
-
-
-import ocean.util.app.model.ExtensibleClassMixin;
-import ocean.util.app.model.IApplicationExtension;
+import ocean.core.ExceptionDefinitions : IOException;
+import ocean.core.Verify;
+import ocean.meta.types.Qualifiers;
+import ocean.text.Arguments;
+import ocean.text.Util : join, locate, locatePrior, trim;
 import ocean.util.app.Application;
+import ocean.util.app.ext.ArgumentsExt;
 import ocean.util.app.ext.model.IConfigExtExtension;
 import ocean.util.app.ext.model.IArgumentsExtExtension;
-import ocean.util.app.ext.ArgumentsExt;
-
+import ocean.util.app.model.ExtensibleClassMixin;
+import ocean.util.app.model.IApplicationExtension;
 import ocean.util.config.ConfigParser;
-import ocean.text.Arguments;
-
-import ocean.meta.types.Qualifiers;
-import ocean.core.Verify;
-import ocean.text.Util : join, locate, locatePrior, trim;
-import ocean.core.ExceptionDefinitions : IOException;
-
-
 
 /*******************************************************************************
 

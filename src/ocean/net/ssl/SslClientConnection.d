@@ -2,19 +2,16 @@
 
     Task-based implementation of an SSL connection
 
-    copyright: Copyright (c) 2018 dunnhumby Germany GmbH. All rights reserved
-
-
-    Usage example: See documented unittest of X.
+    Copyright:
+      Copyright (c) 2018 dunnhumby Germany GmbH. All rights reserved
 
 *******************************************************************************/
 
 module ocean.net.ssl.SslClientConnection;
 
+import ocean.meta.types.Qualifiers;
 import ocean.net.ssl.openssl.OpenSsl;
 import ocean.text.util.StringC;
-import ocean.meta.types.Qualifiers;
-
 
 
 /***************************************************************************
@@ -25,8 +22,6 @@ import ocean.meta.types.Qualifiers;
 
 private SSL_CTX * globalSslContext;
 
-
-
 /***************************************************************************
 
     Class representing a single SSL client connection.
@@ -36,17 +31,13 @@ private SSL_CTX * globalSslContext;
 
 public class SslClientConnection
 {
-    private import core.sys.posix.netdb : AF_UNSPEC, SOCK_STREAM;
+    import core.sys.posix.netdb : AF_UNSPEC, SOCK_STREAM;
 
     static import ocean.core.ExceptionDefinitions;
-
-    private import ocean.io.select.protocol.task.TaskSelectClient;
-
-    private import ocean.sys.socket.AddrInfo;
-
-    private import ocean.sys.socket.model.ISocket;
-
-    private import ocean.sys.Epoll: epoll_event_t;
+    import ocean.io.select.protocol.task.TaskSelectClient;
+    import ocean.sys.Epoll: epoll_event_t;
+    import ocean.sys.socket.AddrInfo;
+    import ocean.sys.socket.model.ISocket;
 
     private alias epoll_event_t.Event Event;
 

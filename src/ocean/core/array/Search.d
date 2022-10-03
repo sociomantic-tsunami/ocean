@@ -1035,9 +1035,6 @@ unittest
     If both of the arrays are sorted in the same way and don't contain different
     number of duplicate items, see `mismatch`.
 
-    Template params:
-        T = type of array element
-
     Params:
         a = array A
         b = array B
@@ -1084,9 +1081,6 @@ unittest
     compatible to size_t (which includes ssize_t, the signed version of size_t),
     by calculating the difference.
 
-    Template params:
-        T = type of array element
-
     Params:
         array = array to search
         match = element to search for
@@ -1125,9 +1119,6 @@ unittest
     Otherwise, elements of T are compared using ">" and ">=" or, if T is
     compatible to size_t (which includes ssize_t, the signed version of size_t),
     by calculating the difference.
-
-    Template params:
-        T = type of array element
 
     Params:
         array = array to search
@@ -1365,9 +1356,6 @@ unittest
 
     Check if the given array starts with the given prefix
 
-    Template Params:
-        T = The type of the array element
-
     Params:
         arr    = The array to be tested
         prefix = The prefix to test for
@@ -1406,9 +1394,6 @@ unittest
 /*******************************************************************************
 
     Check if the given array ends with the given suffix
-
-    Template Params:
-        T = The type of the array element
 
     Params:
         arr    = The array to be tested
@@ -1449,9 +1434,6 @@ unittest
 
     Remove the given prefix from the given array.
 
-    Template Params:
-        T = The type of the array element
-
     Params:
         arr    = The array from which the prefix is to be removed
         prefix = The prefix to remove
@@ -1491,9 +1473,6 @@ unittest
 /*******************************************************************************
 
     Remove the given suffix from the given array.
-
-    Template Params:
-        T = The type of the array element
 
     Params:
         arr    = The array from which the suffix is to be removed
