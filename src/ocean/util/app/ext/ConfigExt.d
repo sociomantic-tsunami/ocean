@@ -26,7 +26,6 @@ import ocean.util.app.ext.ArgumentsExt;
 
 import ocean.util.config.ConfigParser;
 import ocean.text.Arguments;
-import ocean.io.Stdout : Stderr;
 
 import ocean.meta.types.Qualifiers;
 import ocean.core.Verify;
