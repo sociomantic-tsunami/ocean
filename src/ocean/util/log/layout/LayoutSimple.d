@@ -78,7 +78,7 @@ unittest
     result.length = 0;
     assumeSafeAppend(result);
 
-    scope dg = (cstring v) { result ~= v; };
+    scope dg = (in cstring v) { result ~= v; };
     scope layout = new LayoutSimple();
     LogEvent event = {
         msg: "Have you met Ted?",

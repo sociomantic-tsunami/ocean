@@ -81,7 +81,7 @@ unittest
     result.length = 0;
     assumeSafeAppend(result);
 
-    scope dg = (cstring v) { result ~= v; };
+    scope dg = (in cstring v) { result ~= v; };
     scope layout = new LayoutStatsLog(false);
     LogEvent event = {
         msg: "Baguette: 420, Radler: +Inf",
