@@ -25,7 +25,7 @@ unittest
     static struct Foo
     {
         int i = 0x2A;
-        void toString (scope void delegate (cstring) sink)
+        void toString (scope void delegate (in cstring) sink)
         {
             sink("Hello void");
         }

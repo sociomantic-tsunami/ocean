@@ -85,7 +85,7 @@ public class AppStatus
     /// Simplifies AppendBuffer usage by providing the sink
     private final class StringBuffer : AppendBuffer!(char)
     {
-        public void sink (cstring chunk)
+        public void sink (in cstring chunk)
         {
             this ~= chunk;
         }
