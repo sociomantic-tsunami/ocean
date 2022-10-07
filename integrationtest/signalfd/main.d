@@ -131,7 +131,7 @@ private class SignalFDTest
 
     ***************************************************************************/
 
-    private int[] handled_signals ( )
+    private const(int)[] handled_signals () const
     {
         return this.signal_fd.registered_signals;
     }
