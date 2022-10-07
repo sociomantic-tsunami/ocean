@@ -332,15 +332,14 @@ public class SignalFD : ISelectable
 
     /***************************************************************************
 
-        Getter for the list of registered signals. Changing the contents of the
-        returned array may lead to undefined behaviour.
+        Getter for the list of registered signals.
 
         Returns:
             list of signals which are registered to be handled by this fd
 
     ***************************************************************************/
 
-    public int[] registered_signals ( )
+    public const(int)[] registered_signals () const
     {
         return this.signals;
     }
