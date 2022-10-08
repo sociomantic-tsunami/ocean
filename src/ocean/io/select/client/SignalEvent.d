@@ -33,16 +33,9 @@
 
 module ocean.io.select.client.SignalEvent;
 
-
-
-
 import ocean.core.Verify;
-
 import ocean.io.select.client.model.ISelectClient;
-
 import ocean.sys.SignalFD;
-
-
 
 
 /*******************************************************************************
@@ -244,4 +237,3 @@ public class SignalEvent : ISelectClient
         this.event.unmaskHandledSignals();
     }
 }
-
