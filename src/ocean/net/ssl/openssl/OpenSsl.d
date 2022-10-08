@@ -526,8 +526,13 @@ public void X509_free (X509* a);
 
 *******************************************************************************/
 
-public X509* SSL_get_peer_certificate (const(SSL)* s);
-
+version (Ocean_OpenSSL3)
+{
+    public X509* SSL_get1_peer_certificate (const(SSL)* s);
+    public alias SSL_get_peer_certificate = SSL_get1_peer_certificate;
+}
+else
+    public X509* SSL_get_peer_certificate (const(SSL)* s);
 
 /*******************************************************************************
 
