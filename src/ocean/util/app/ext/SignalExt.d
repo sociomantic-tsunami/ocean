@@ -89,29 +89,18 @@
 
 module ocean.util.app.ext.SignalExt;
 
-
-
-import ocean.meta.types.Qualifiers;
 import ocean.core.Verify;
-
-import ocean.util.app.model.IApplicationExtension;
-import ocean.util.app.model.ExtensibleClassMixin;
-
+import ocean.meta.types.Qualifiers;
 import ocean.util.app.Application;
-
+import ocean.util.app.model.ExtensibleClassMixin;
+import ocean.util.app.model.IApplicationExtension;
 import ocean.util.app.ext.model.ISignalExtExtension;
-
-import ocean.sys.Pipe;
 
 public class SignalExt : IApplicationExtension
 {
     import core.sys.posix.signal;
 
     import ocean.application.components.Signals;
-
-    // For SignalErrnoException
-    import ocean.sys.SignalFD;
-
     import ocean.io.select.protocol.SelectReader;
     import ocean.io.device.IODevice;
     import ocean.io.device.Device;
