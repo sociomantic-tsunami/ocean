@@ -29,20 +29,18 @@ public import ocean.io.compress.lzo.c.lzoconf;
 
 extern (C)
 {
-
     /// See original documentation for details.
-    LzoStatus lzo1x_1_compress ( in ubyte* src, size_t src_len,
+    LzoStatus lzo1x_1_compress ( scope const(ubyte)* src, size_t src_len,
                                  ubyte* dst, size_t * dst_len,
                                  void* wrkmem );
 
     /// See original documentation for details.
-    LzoStatus lzo1x_decompress ( in ubyte* src, size_t src_len,
+    LzoStatus lzo1x_decompress ( scope const(ubyte)* src, size_t src_len,
                            ubyte* dst, size_t* dst_len,
                            void* wrkmem = null /* NOT USED */ );
 
     /// See original documentation for details.
-    LzoStatus lzo1x_decompress_safe ( in ubyte* src, size_t src_len,
+    LzoStatus lzo1x_decompress_safe ( scope const(ubyte)* src, size_t src_len,
                                 ubyte* dst, size_t* dst_len,
                                 void* wrkmem = null /* NOT USED */ );
-
 }
