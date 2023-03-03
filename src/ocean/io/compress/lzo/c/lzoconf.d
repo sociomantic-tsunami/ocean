@@ -174,7 +174,7 @@ extern (C)
 
     **************************************************************************/
 
-    uint lzo_crc32   ( uint _c, in ubyte* _buf, uint _len );
+    uint lzo_crc32 (uint _c, scope const(ubyte)* _buf, uint _len);
 
     /**************************************************************************
 
@@ -255,4 +255,3 @@ uint lzo_crc32_init ( )
 {
     return lzo_crc32(0, null, 0);
 }
-

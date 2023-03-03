@@ -22,11 +22,11 @@ public import core.sys.linux.string : memmem;
 
 extern (C):
 
-size_t   wcsnlen(in wchar_t* ws, size_t maxlen);
+size_t   wcsnlen(scope const(wchar_t)* ws, size_t maxlen);
 void*    mempcpy(void* to, void *from, size_t size);
 wchar_t* wmempcpy(wchar_t* wto, wchar_t* wfrom, size_t size);
-wchar_t* wcsdup (in wchar_t* ws);
-int      strverscmp(in char* s1, in char* s2);
+wchar_t* wcsdup (scope const(wchar_t)* ws);
+int      strverscmp(scope const(char)* s1, scope const(char)* s2);
 inout(void)* rawmemchr(inout(void)* block, int c);
 inout(void)* memrchr(inout(void)* block, int c, size_t size);
 inout(char)* strchrnul(inout(char)* str, int c);

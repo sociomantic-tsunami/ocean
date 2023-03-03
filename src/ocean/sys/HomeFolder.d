@@ -30,11 +30,10 @@ import ocean.sys.Environment;
 version (unittest) import ocean.core.Test;
 
 import core.exception : onOutOfMemoryError;
-import core.stdc.stdlib;
-import core.sys.posix.pwd;
 import core.stdc.errno;
-
-private extern (C) size_t strlen (in char *);
+import core.stdc.stdlib;
+import core.stdc.string;
+import core.sys.posix.pwd;
 
 
 /******************************************************************************
