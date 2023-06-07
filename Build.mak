@@ -16,6 +16,11 @@ ifneq ($(ALLOW_DEPRECATIONS),1)
 	override DFLAGS += -de
 endif
 
+# Enables https://github.com/sociomantic-tsunami/ocean/blob/v6.x.x/src/ocean/net/ssl/openssl/OpenSsl.d#L529
+ ifneq ($(OPENSSL_V3),1)
+ »   override DFLAGS += -version=Ocean_OpenSSL3
+ endif
+
 # Remove coverage files
 clean += .*.lst
 
