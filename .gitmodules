@@ -1,3 +1,6 @@
 [submodule "makd"]
 	path = submodules/makd
 	url = https://github.com/sociomantic-tsunami/makd.git
+[submodule "openssl"]
+	path = submodules/openssl
+	url = https://github.com/D-Programming-Deimos/openssl.git

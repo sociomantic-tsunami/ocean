@@ -9,8 +9,10 @@
 
 module ocean.net.ssl.SslClientConnection;
 
+import deimos.openssl.err;
+import deimos.openssl.ssl;
+
 import ocean.meta.types.Qualifiers;
-import ocean.net.ssl.openssl.OpenSsl;
 import ocean.text.util.StringC;
 
 
