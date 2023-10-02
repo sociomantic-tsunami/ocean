@@ -19,6 +19,7 @@ import ocean.meta.types.Qualifiers;
 
 import core.sys.posix.sys.stat;
 import core.sys.posix.pthread;
+import core.thread : pthread_getattr_np;
 import ocean.core.Test;
 import ocean.sys.ErrnoException;
 import ocean.util.app.DaemonApp;
@@ -27,8 +28,6 @@ import ocean.task.Task;
 import ocean.util.aio.AsyncIO;
 import ocean.io.device.File;
 import ocean.util.test.DirectorySandbox;
-
-extern(C) int pthread_getattr_np(pthread_t thread, pthread_attr_t* attr);
 
 class AsyncIOUsingApp: DaemonApp
 {
