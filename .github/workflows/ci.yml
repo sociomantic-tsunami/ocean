@@ -28,13 +28,13 @@ jobs:
 
     - name: 'Restore ebtree ${{ matrix.ebtree_version }} from cache'
       id: cache-ebtree
-      uses: actions/cache@v1
+      uses: actions/cache@v3
       with:
         path: ${{ github.workspace }}/tools/
         key:  ebtree-${{ matrix.ebtree_version }}
 
     - name: 'Checkout ebtree ${{ matrix.ebtree_version }}'
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
       if: steps.cache-ebtree.outputs.cache-hit != 'true'
       with:
         repository: sociomantic-tsunami/ebtree
@@ -67,7 +67,7 @@ jobs:
         compiler: ${{ matrix.dc }}
 
     # Checkout this repository and its submodules
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
       with:
         submodules: true
         # Required for codecov (codecov/codecov-action#190)
@@ -92,6 +92,6 @@ jobs:
 
     - name: 'Upload coverage'
       if: ${{ matrix.coverage == 1 }}
-      uses: codecov/codecov-action@v1
+      uses: codecov/codecov-action@v3
       with:
         flags: ${{ matrix.dc }}-${{ matrix.flavor }}
