@@ -7,7 +7,7 @@ TEST_RUNNER_MODULE := ocean.core.UnitTestRunner
 export ASSERT_ON_STOMPING_PREVENTION=1
 
 # Common D compiler flags
-override DFLAGS += -w -version=GLIBC
+override DFLAGS += -I$C/submodules/openssl/source/ -w -version=GLIBC
 
 # Treat deprecations as errors to ensure ocean doesn't use own deprecated
 # symbols internally. Disable it on explicit flag to make possible regression
@@ -18,7 +18,7 @@ endif
 
 # Enables https://github.com/sociomantic-tsunami/ocean/blob/v6.x.x/src/ocean/net/ssl/openssl/OpenSsl.d#L529
  ifeq ($(OPENSSL_V3),1)
-     override DFLAGS += -version=Ocean_OpenSSL3
+     override DFLAGS += -version=DeimosOpenSSL_3_0
  endif
 
 # Remove coverage files
