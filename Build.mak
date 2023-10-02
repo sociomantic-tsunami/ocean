@@ -45,6 +45,5 @@ $O/%unittests: override LDFLAGS += -lglib-2.0 -lpcre -lxml2 -lxslt -lebtree \
 		-lssl -lcrypto
 
 # Remove deprecated modules from testing:
-TEST_FILTER_OUT += \
-	$C/src/ocean/stdc/string.d \
-	$C/src/ocean/util/log/LayoutDate.d
+#TEST_FILTER_OUT += \
+	$C/src/ocean/path/to/module.d
