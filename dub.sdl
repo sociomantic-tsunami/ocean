@@ -8,11 +8,6 @@ systemDependencies "Depending on the component used you might need one of the fo
 importPaths "src"
 targetType "sourceLibrary"
 
-// Add deprecated source files to the following exclusion list
-excludedSourceFiles \
-    "src/ocean/stdc/string.d" \
-    "src/ocean/util/log/LayoutDate.d"
-
 configuration "unittest" {
     excludedSourceFiles "src/ocean/core/UnitTestRunner.d"
     libs "glib-2.0" "pcre" "ebtree" "readline" "lzo2" "gcrypt" "gpg-error" "crypto" "ssl"
