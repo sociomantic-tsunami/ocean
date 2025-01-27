@@ -8,7 +8,7 @@ jobs:
   setup-ebtree:
     uses: ./.github/workflows/ebtree.yml
     with:
-      os: ubuntu-20.04
+      os: ubuntu-24.04
 
   test:
     strategy:
@@ -16,7 +16,7 @@ jobs:
       # or build flavour we still want to see how things perform with the others
       fail-fast: false
       matrix:
-        os: [ ubuntu-20.04 ]
+        os: [ ubuntu-24.04 ]
         dc: [ dmd-2.092.1, dmd-2.093.1 ]
         flavor: [ prod, devel ]
         include:
@@ -43,7 +43,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y libxslt-dev liblzo2-dev libgcrypt-dev libgpg-error-dev
+          sudo apt-get install -y libbz2-dev libglib2.0-dev libpcre3-dev libreadline-dev libxslt-dev liblzo2-dev libgcrypt-dev libgpg-error-dev
           sudo dpkg -i ${{ github.workspace }}/tools/ebtree/deb/libebtree6*.deb
 
       - name: Install compiler
