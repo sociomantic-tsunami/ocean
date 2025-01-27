@@ -18,38 +18,26 @@
 
 module ocean.io.select.protocol.fiber.FiberSocketConnection;
 
-
-
-
-import ocean.meta.types.Qualifiers;
-
-import ocean.core.Verify;
-
-import ocean.io.select.protocol.fiber.model.IFiberSelectProtocol;
-
-import ocean.io.select.EpollSelectDispatcher;
-
 import ocean.core.Array : copy;
-
-import ocean.sys.socket.AddressIPSocket,
-       ocean.sys.socket.InetAddress,
-       ocean.sys.socket.IPSocket: IIPSocket;
-
-
+import ocean.core.Verify;
+import ocean.io.select.EpollSelectDispatcher;
+import ocean.io.select.protocol.fiber.model.IFiberSelectProtocol;
 import ocean.io.select.protocol.generic.ErrnoIOException: SocketError;
-
-import core.stdc.errno: errno, EINPROGRESS, EINTR, EALREADY, EISCONN;
-
-debug ( EpollTiming ) import ocean.time.StopWatch;
-debug ( ISelectClient )
+import ocean.meta.types.Qualifiers;
+import ocean.sys.socket.AddressIPSocket;
+import ocean.sys.socket.InetAddress;
+import ocean.sys.socket.IPSocket: IIPSocket;
+debug (EpollTiming) import ocean.time.StopWatch;
+debug (ISelectClient)
 {
     import ocean.io.Stdout : Stderr;
     import ocean.text.util.StringC;
 }
+import core.stdc.errno: errno, EINPROGRESS, EINTR, EALREADY, EISCONN;
 
 
-
-public class FiberSocketConnection ( bool IPv6 = false ) : IFiberSocketConnection
+/// Ditto
+public class FiberSocketConnection (bool IPv6 = false) : IFiberSocketConnection
 {
     /**************************************************************************
 
@@ -562,10 +550,8 @@ public class IFiberSocketConnection : IFiberSelectProtocol
         if (this.socket.fileHandle < 0)
         {
             this.connected_ = false;
-
             this.socket_error.assertExSock(this.socket.tcpSocket(true) >= 0,
                 "error creating socket", __FILE__, __LINE__);
-
             this.initSocket();
         }
 
