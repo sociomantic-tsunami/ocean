@@ -17,10 +17,10 @@ jobs:
       fail-fast: false
       matrix:
         os: [ ubuntu-24.04 ]
-        dc: [ dmd-2.092.1, dmd-2.093.1 ]
+        dc: [ dmd-2.109.1, dmd-2.105.3 ]
         flavor: [ prod, devel ]
         include:
-          - { dc: dmd-2.093.1, coverage: 1, closure_check: 1 }
+          - { dc: dmd-2.109.1, coverage: 1, closure_check: 1 }
 
     runs-on: ${{ matrix.os }}
     timeout-minutes: 30
