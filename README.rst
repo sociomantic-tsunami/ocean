@@ -1,9 +1,9 @@
 Description |CI|
 ================
 
-Ocean is a general purpose library, compatible with both D1 and D2, with a focus
-on supporting the development of high-performance, real-time applications. This
-focus has led to several noteworthy design choices:
+Ocean is a general purpose library, with a focus on supporting the development
+of high-performance, real-time applications. This focus has led to several
+noteworthy design choices:
 
 * **Ocean is not cross-platform.** The only supported platform is Linux.
 * **Ocean assumes a single-threaded environment.** Fiber-based multi-tasking is
@@ -15,12 +15,6 @@ focus has led to several noteworthy design choices:
 Ocean began life as an extension of `Tango
 <http://www.dsource.org/projects/tango>`_, some elements of which were
 eventually merged into Ocean.
-
-
-D2 Compatibility
-================
-
-Since v5.0.0_, Ocean is a D2-only library.
 
 
 Build / Use
