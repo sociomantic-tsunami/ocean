@@ -337,6 +337,8 @@ class ExpiringLRUCache(T = void[]) : LRUCache!(T, true), IExpiringCacheInfo
                 this.n_expired++;
                 // TODO: increase these ones
                 // this.n_misses++;
+
+                return null;
             }
 
             return &item.value;
